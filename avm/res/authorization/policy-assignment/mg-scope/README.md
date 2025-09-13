@@ -448,6 +448,9 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/mg-sc
     metadata: {
       assignedBy: 'Bicep'
     }
+    roleDefinitionIds: [
+      '/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+    ]
   }
 }
 ```
@@ -481,6 +484,11 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/mg-sc
       "value": {
         "assignedBy": "Bicep"
       }
+    },
+    "roleDefinitionIds": {
+      "value": [
+        "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+      ]
     }
   }
 }
@@ -506,6 +514,9 @@ param additionalManagementGroupsIDsToAssignRbacTo = [
 param metadata = {
   assignedBy: 'Bicep'
 }
+param roleDefinitionIds = [
+  '/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+]
 ```
 
 </details>

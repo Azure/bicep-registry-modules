@@ -27,7 +27,10 @@ module testDeployment '../../../sub-scope/main.bicep' = {
       assignedBy: 'Bicep'
     }
     additionalSubscriptionIDsToAssignRbacTo: [
-      subscription().id
+      subscription().subscriptionId
+    ]
+    roleDefinitionIds: [
+      '/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor role
     ]
   }
 }

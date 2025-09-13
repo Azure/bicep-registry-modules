@@ -57,7 +57,7 @@ module testDeployment '../../../sub-scope/main.bicep' = {
     enforcementMode: 'DoNotEnforce'
     location: resourceLocation
     additionalSubscriptionIDsToAssignRbacTo: [
-      subscription().id
+      subscription().subscriptionId
     ]
     additionalResourceGroupResourceIDsToAssignRbacTo: [
       resourceGroup.id

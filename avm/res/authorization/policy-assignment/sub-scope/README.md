@@ -125,7 +125,7 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/sub-s
       '<id>'
     ]
     additionalSubscriptionIDsToAssignRbacTo: [
-      '<id>'
+      '<subscriptionId>'
     ]
     definitionVersion: '1.*.*-preview'
     description: '[Description] Policy Assignment at the subscription scope'
@@ -224,7 +224,7 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/sub-s
     },
     "additionalSubscriptionIDsToAssignRbacTo": {
       "value": [
-        "<id>"
+        "<subscriptionId>"
       ]
     },
     "definitionVersion": {
@@ -341,7 +341,7 @@ param additionalResourceGroupResourceIDsToAssignRbacTo = [
   '<id>'
 ]
 param additionalSubscriptionIDsToAssignRbacTo = [
-  '<id>'
+  '<subscriptionId>'
 ]
 param definitionVersion = '1.*.*-preview'
 param description = '[Description] Policy Assignment at the subscription scope'
@@ -432,11 +432,14 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/sub-s
     policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
     // Non-required parameters
     additionalSubscriptionIDsToAssignRbacTo: [
-      '<id>'
+      '<subscriptionId>'
     ]
     metadata: {
       assignedBy: 'Bicep'
     }
+    roleDefinitionIds: [
+      '/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+    ]
   }
 }
 ```
@@ -463,13 +466,18 @@ module policyAssignment 'br/public:avm/res/authorization/policy-assignment/sub-s
     // Non-required parameters
     "additionalSubscriptionIDsToAssignRbacTo": {
       "value": [
-        "<id>"
+        "<subscriptionId>"
       ]
     },
     "metadata": {
       "value": {
         "assignedBy": "Bicep"
       }
+    },
+    "roleDefinitionIds": {
+      "value": [
+        "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+      ]
     }
   }
 }
@@ -490,11 +498,14 @@ param name = 'rapasubwaf001'
 param policyDefinitionId = '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
 // Non-required parameters
 param additionalSubscriptionIDsToAssignRbacTo = [
-  '<id>'
+  '<subscriptionId>'
 ]
 param metadata = {
   assignedBy: 'Bicep'
 }
+param roleDefinitionIds = [
+  '/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+]
 ```
 
 </details>

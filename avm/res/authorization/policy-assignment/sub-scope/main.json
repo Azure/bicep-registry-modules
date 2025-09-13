@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "18384687109079673010"
+      "templateHash": "17872362881437430211"
     },
     "name": "Policy Assignments (Subscription scope)",
     "description": "This module deploys a Policy Assignment at a Subscription scope."
@@ -196,7 +196,7 @@
   },
   "variables": {
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'))), createObject(format('{0}', parameters('managedIdentities').userAssignedResourceId), createObject()), null())), null())]",
-    "expandedSubRoleAssignments": "[reduce(union(coalesce(parameters('additionalSubscriptionIDsToAssignRbacTo'), createArray()), createArray(subscription().id)), createArray(), lambda('currSubscriptionId', 'nextSubscriptionId', concat(lambdaVariables('currSubscriptionId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('roleDefinitionId', createObject('subscriptionId', lambdaVariables('nextSubscriptionId'), 'roleDefinitionId', lambdaVariables('roleDefinitionId')))))))]",
+    "expandedSubRoleAssignments": "[reduce(union(coalesce(parameters('additionalSubscriptionIDsToAssignRbacTo'), createArray()), createArray(subscription().subscriptionId)), createArray(), lambda('currSubscriptionId', 'nextSubscriptionId', concat(lambdaVariables('currSubscriptionId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('roleDefinitionId', createObject('subscriptionId', lambdaVariables('nextSubscriptionId'), 'roleDefinitionId', lambdaVariables('roleDefinitionId')))))))]",
     "expandedRgRoleAssignments": "[reduce(coalesce(parameters('additionalResourceGroupResourceIDsToAssignRbacTo'), createArray()), createArray(), lambda('currResourceGroupId', 'nextResourceGroupId', concat(lambdaVariables('currResourceGroupId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('roleDefinitionId', createObject('resourceGroupId', lambdaVariables('nextResourceGroupId'), 'roleDefinitionId', lambdaVariables('roleDefinitionId')))))))]"
   },
   "resources": {

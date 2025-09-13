@@ -128,7 +128,7 @@ resource policyAssignment 'Microsoft.Authorization/policyAssignments@2025-03-01'
 // ========================
 // Create all permutations of subscription scopes & role definition Ids
 var expandedSubRoleAssignments = reduce(
-  union(additionalSubscriptionIDsToAssignRbacTo ?? [], [subscription().id]),
+  union(additionalSubscriptionIDsToAssignRbacTo ?? [], [subscription().subscriptionId]),
   [],
   (currSubscriptionId, nextSubscriptionId) =>
     concat(
