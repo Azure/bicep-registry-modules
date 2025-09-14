@@ -198,14 +198,18 @@ function Set-AvmGitHubIssueOwnerConfig {
         # existing module
         else {
             $ownerTeamMembers = [array](Get-GithubTeamMembersLogin -OrgName $RepositoryOwner -TeamName $moduleCsvData.ModuleOwnersGHTeam)
-            $reply = @"
+            if ($ownerTeamMembers) {
+                $reply = @"
 **@$($issue.user.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
 > [!IMPORTANT]
 > A member of the @Azure/$($moduleCsvData.ModuleOwnersGHTeam) team will review it soon!
 "@
+            } else {
+                Write-Warning ('    ⚠️  Issue [{0}] {1}: No members found in owner team [{2}] or team itself does not exist (e.g., because module was deprecated). Skipping comments & assignment.' -f $issue.number, $shortTitle, $moduleCsvData.ModuleOwnersGHTeam)
+                $statistics.'Issues to review by core team'++
+            }
         }
-
         # Existing assignees
         # ------------------
         $existingAssignees = $issue.assignees.login
