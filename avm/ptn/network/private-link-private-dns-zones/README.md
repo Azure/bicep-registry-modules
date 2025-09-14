@@ -487,12 +487,12 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
 - Default:
   ```Bicep
   [
-    '{regionName}.data.privatelink.azurecr.io'
     'privatelink-global.wvd.microsoft.com'
     'privatelink.{regionCode}.backup.windowsazure.com'
     'privatelink.{regionName}.azmk8s.io'
     'privatelink.{regionName}.azurecontainerapps.io'
     'privatelink.{regionName}.kusto.windows.net'
+    'privatelink.{regionName}.prometheus.monitor.azure.com'
     'privatelink.adf.azure.com'
     'privatelink.afs.azure.net'
     'privatelink.agentsvc.azure-automation.net'
@@ -538,6 +538,7 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
     'privatelink.mariadb.database.azure.com'
     'privatelink.media.azure.net'
     'privatelink.mongo.cosmos.azure.com'
+    'privatelink.mongocluster.cosmos.azure.com'
     'privatelink.monitor.azure.com'
     'privatelink.mysql.database.azure.com'
     'privatelink.notebooks.azure.net'
