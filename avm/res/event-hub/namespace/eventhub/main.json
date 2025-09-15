@@ -6,12 +6,60 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "5240492241247082284"
+      "templateHash": "17167481729800422327"
     },
     "name": "Event Hub Namespace Event Hubs",
     "description": "This module deploys an Event Hub Namespace Event Hub."
   },
   "definitions": {
+    "eventHubAuthorizationRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Event Hub authorization rule."
+          }
+        },
+        "rights": {
+          "type": "array",
+          "allowedValues": [
+            "Listen",
+            "Manage",
+            "Send"
+          ],
+          "metadata": {
+            "description": "Required. The allowed rights for an Event Hub authorization rule."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for an Event Hub authorization rule."
+      }
+    },
+    "consumerGroupType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the consumer group."
+          }
+        },
+        "userMetadata": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. User Metadata is a placeholder to store user-defined string data with maximum length 1024. e.g. it can be used to store descriptive data, such as list of teams and their contact information also user-defined configuration settings can be stored."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for an Event Hub consumer group."
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -45,7 +93,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -120,7 +168,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -140,6 +188,9 @@
     },
     "authorizationRules": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/eventHubAuthorizationRuleType"
+      },
       "defaultValue": [
         {
           "name": "RootManageSharedAccessKey",
@@ -192,6 +243,9 @@
     },
     "consumergroups": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/consumerGroupType"
+      },
       "defaultValue": [
         {
           "name": "$Default"
@@ -324,6 +378,13 @@
       "metadata": {
         "description": "Optional. Retention cleanup policy. Number of hours to retain the tombstone markers of a compacted Event Hub. This value is only used when cleanupPolicy is Compact. Consumer must complete reading the tombstone marker within this specified amount of time if consumer begins from starting offset to ensure they get a valid snapshot for the specific key described by the tombstone marker within the compacted Event Hub."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "variables": {
@@ -369,6 +430,26 @@
     }
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.eventhub-nseventhub.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "namespace": {
       "existing": true,
       "type": "Microsoft.EventHub/namespaces",
@@ -451,7 +532,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "2040336008826489483"
+              "templateHash": "17561713370721644464"
             },
             "name": "Event Hub Namespace Event Hub Consumer Groups",
             "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group."
@@ -478,6 +559,7 @@
             "userMetadata": {
               "type": "string",
               "defaultValue": "",
+              "maxLength": 1024,
               "metadata": {
                 "description": "Optional. User Metadata is a placeholder to store user-defined string data with maximum length 1024. e.g. it can be used to store descriptive data, such as list of teams and their contact information also user-defined configuration settings can be stored."
               }
