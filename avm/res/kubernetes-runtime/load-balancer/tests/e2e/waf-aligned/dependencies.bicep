@@ -16,11 +16,14 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.10.
     managedIdentities: {
       systemAssigned: true
     }
-    aadProfile: null
+    aadProfile: {
+      aadProfileEnableAzureRBAC: true
+      aadProfileManaged: true
+    }
     primaryAgentPoolProfiles: [
       {
         name: 'agentpool'
-        count: 1
+        count: 3
         vmSize: 'Standard_DS2_v2'
         osType: 'Linux'
         mode: 'System'
