@@ -160,6 +160,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:0.5.1' = 
     roleAssignmentAKSClusterContributor
     roleAssignmentArcOnboarding
     roleAssignmentContributor
+    roleAssignmentAKSRBACClusterAdmin
   ]
 }
 
