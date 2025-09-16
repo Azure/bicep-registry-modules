@@ -23,11 +23,33 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.10.
     maintenanceConfigurations: [
       {
         name: 'aksManagedAutoUpgradeSchedule'
-        maintenanceWindow: {}
+        maintenanceWindow: {
+          schedule: {
+            weekly: {
+              intervalWeeks: 1
+              dayOfWeek: 'Sunday'
+            }
+          }
+          durationHours: 4
+          utcOffset: '+00:00'
+          startDate: '2024-07-15'
+          startTime: '00:00'
+        }
       }
       {
         name: 'aksManagedNodeOSUpgradeSchedule'
-        maintenanceWindow: {}
+        maintenanceWindow: {
+          schedule: {
+            weekly: {
+              intervalWeeks: 1
+              dayOfWeek: 'Sunday'
+            }
+          }
+          durationHours: 4
+          utcOffset: '+00:00'
+          startDate: '2024-07-15'
+          startTime: '00:00'
+        }
       }
     ]
     primaryAgentPoolProfiles: [
