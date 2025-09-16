@@ -30,7 +30,7 @@ param subscriptionAliasEnabled bool = true
 
 The string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.
 
-> The value for this parameter and the parameter named `subscriptionAliasName` are usually set to the same value for simplicity. But they can be different if required for a reason.
+> The value for this parameter and the parameter named `subscriptionAliasName` are usually set to the same value for simplicity. But they can be different if required.
 
 > **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.
 ''')
@@ -39,7 +39,7 @@ param subscriptionDisplayName string = ''
 @maxLength(63)
 @description('''Optional. The name of the Subscription Alias, that will be created by this module.
 
-The string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.
+The string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, and, `_`. The maximum length is 63 characters.
 
 > **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.
 ''')

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "3900866264503778470"
+      "templateHash": "12426160892116542357"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1342,7 +1342,7 @@
       "defaultValue": "",
       "maxLength": 63,
       "metadata": {
-        "description": "Optional. The name of the subscription alias. The string must be comprised of a-z, A-Z, 0-9, - and _. The maximum length is 63 characters.\n\nThe string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.\n\n> The value for this parameter and the parameter named `subscriptionAliasName` are usually set to the same value for simplicity. But they can be different if required for a reason.\n\n> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.\n"
+        "description": "Optional. The name of the subscription alias. The string must be comprised of a-z, A-Z, 0-9, - and _. The maximum length is 63 characters.\n\nThe string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.\n\n> The value for this parameter and the parameter named `subscriptionAliasName` are usually set to the same value for simplicity. But they can be different if required.\n\n> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.\n"
       }
     },
     "subscriptionAliasName": {
@@ -1350,7 +1350,7 @@
       "defaultValue": "",
       "maxLength": 63,
       "metadata": {
-        "description": "Optional. The name of the Subscription Alias, that will be created by this module.\n\nThe string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.\n\n> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.\n"
+        "description": "Optional. The name of the Subscription Alias, that will be created by this module.\n\nThe string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, and, `_`. The maximum length is 63 characters.\n\n> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.\n"
       }
     },
     "subscriptionBillingScope": {
@@ -1902,7 +1902,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "2886800634378115051"
+              "templateHash": "2432840958642647721"
             }
           },
           "parameters": {
@@ -1917,7 +1917,7 @@
               "type": "string",
               "maxLength": 63,
               "metadata": {
-                "description": "The name of the subscription alias. The string must be comprised of a-z, A-Z, 0-9, -, _ and space. The maximum length is 63 characters."
+                "description": "The name of the subscription alias. The string must be comprised of a-z, A-Z, 0-9, -, _. The maximum length is 63 characters."
               }
             },
             "subscriptionBillingScope": {
