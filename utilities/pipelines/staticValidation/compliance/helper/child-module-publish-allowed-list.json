@@ -34,6 +34,7 @@
     "avm/res/network/private-dns-zone/srv",
     "avm/res/network/private-dns-zone/txt",
     "avm/res/network/virtual-network/subnet",
+    "avm/res/sql/server/database",
     "avm/res/storage/storage-account/blob-service/container",
     "avm/res/storage/storage-account/file-service/share",
     "avm/res/web/site/config",
