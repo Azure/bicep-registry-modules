@@ -145,7 +145,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource profile 'Microsoft.Cdn/profiles@2025-04-15' = {
+resource profile 'Microsoft.Cdn/profiles@2025-06-01' = {
   name: name
   location: location
   identity: identity
