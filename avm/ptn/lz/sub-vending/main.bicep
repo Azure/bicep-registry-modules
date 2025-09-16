@@ -397,10 +397,10 @@ param routeTables routeTableType[] = []
 @description('Optional. The name of the resource group to create the route tables in.')
 param routeTablesResourceGroupName string = ''
 
-@sys.description('Optional. The list of network security groups to create')
+@sys.description('Optional. The list of network security groups to create that are standalone from the NSGs that can be created as part of the `virtualNetworkSubnets` parameter input.')
 param networkSecurityGroups networkSecurityGroupType[] = []
 
-@sys.description('Optional. The name of the resource group to create the network security groups in.')
+@sys.description('Optional. The name of the resource group to create the standalone network security groups in, outside of what can be declared in the `virtualNetworkSubnets` parameter.')
 param networkSecurityGroupResourceGroupName string = ''
 
 // VARIABLES

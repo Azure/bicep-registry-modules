@@ -220,19 +220,19 @@ param managementGroupAssociationDelayCount int = 15
 @sys.description('Optional. The list of user-assigned managed identities.')
 param userAssignedManagedIdentities userAssignedIdentityType[] = []
 
-@sys.description('Enables the deployment of a `CanNotDelete` resource locks to the user-assigned managed identities resource group.')
+@sys.description('Optional. Enables the deployment of a `CanNotDelete` resource locks to the user-assigned managed identities resource group.')
 param userAssignedIdentitiesResourceGroupLockEnabled bool = true
 
-@sys.description('The list of route tables to create.')
+@sys.description('Optional. The list of route tables to create.')
 param routeTables routeTableType[] = []
 
-@sys.description('The name of the resource group to create the route tables in.')
+@sys.description('Optional. The name of the resource group to create the route tables in.')
 param routeTablesResourceGroupName string = ''
 
-@sys.description('The list of network security groups to create')
+@sys.description('Optional. The list of network security groups to create that are standalone from the NSGs that can be created as part of the `virtualNetworkSubnets` parameter input.')
 param networkSecurityGroups networkSecurityGroupType[] = []
 
-@sys.description('The name of the resource group to create the network security groups in.')
+@sys.description('Optional. The name of the resource group to create the standalone network security groups in, outside of what can be declared in the `virtualNetworkSubnets` parameter.')
 param networkSecurityGroupResourceGroupName string = ''
 
 // VARIABLES
@@ -655,19 +655,12 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (virt
             addressPrefix: subnet.?addressPrefix
             networkSecurityGroupResourceId: (virtualNetworkDeployBastion || subnet.name == 'AzureBastionSubnet')
               ? createBastionNsg.?outputs.resourceId
-              : !empty(networkSecurityGroups) && !empty(networkSecurityGroupResourceGroupName)
-                  ? resourceId(
-                      subscriptionId,
-                      networkSecurityGroupResourceGroupName,
-                      'Microsoft.Network/networkSecurityGroups',
-                      '${createLzNsgStandalone[i].?outputs.name}'
-                    )
-                  : resourceId(
-                      subscriptionId,
-                      virtualNetworkResourceGroupName,
-                      'Microsoft.Network/networkSecurityGroups',
-                      '${createLzNsg[i].?outputs.name}'
-                    )
+              : resourceId(
+                  subscriptionId,
+                  virtualNetworkResourceGroupName,
+                  'Microsoft.Network/networkSecurityGroups',
+                  '${createLzNsg[i].?outputs.name}'
+                )
             routeTableResourceId: (!empty(subnet.?routeTableName) && !empty(routeTablesResourceGroupName))
               ? resourceId(
                   subscriptionId,
@@ -858,7 +851,7 @@ module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.1' = [
 
 module createLzNsgStandalone 'br/public:avm/res/network/network-security-group:0.5.1' = [
   for (nsg, i) in networkSecurityGroups: if (!empty(networkSecurityGroups) && !empty(networkSecurityGroupResourceGroupName)) {
-    scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
+    scope: resourceGroup(subscriptionId, networkSecurityGroupResourceGroupName)
     dependsOn: [
       createResourceGroupForNetworkSecurityGroups
     ]
