@@ -118,6 +118,33 @@ resource roleAssignmentContributor 'Microsoft.Authorization/roleAssignments@2022
   }
 }
 
+// Reference to the AKS cluster created by the module
+resource aksCluster 'Microsoft.ContainerService/managedClusters@2024-02-01' existing = {
+  name: clusterName
+  dependsOn: [
+    managedCluster
+  ]
+}
+
+// Role assignment for Azure Kubernetes Service RBAC Cluster Admin
+resource roleAssignmentAKSRBACClusterAdmin 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(
+    resourceGroup().id,
+    createManagedIdentityForDeploymentScript.name,
+    clusterName,
+    'b1ff04bb-8a4e-4dc4-8eb5-8693973ce19b'
+  )
+  scope: aksCluster
+  properties: {
+    principalId: createManagedIdentityForDeploymentScript.outputs.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b1ff04bb-8a4e-4dc4-8eb5-8693973ce19b'
+    ) // Azure Kubernetes Service RBAC Cluster Admin
+    principalType: 'ServicePrincipal'
+  }
+}
+
 module deploymentScript 'br/public:avm/res/resources/deployment-script:0.5.1' = {
   name: '${clusterName}-connect-aks-script'
   params: {
@@ -154,6 +181,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:0.5.1' = 
 
       # Get AKS credentials
       az aks get-credentials --resource-group "$RESOURCE_GROUP_NAME" --name "$CLUSTER_NAME" --overwrite-existing
+      kubelogin convert-kubeconfig -l azurecli
 
       # Connect cluster to Azure Arc
       az connectedk8s connect --name "$CLUSTER_NAME" --resource-group "$RESOURCE_GROUP_NAME"
