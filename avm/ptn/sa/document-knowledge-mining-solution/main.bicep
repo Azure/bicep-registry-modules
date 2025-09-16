@@ -924,7 +924,10 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (en
 // ============ AVM TELEMETRY ============
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.sa-documentknowledgeminingsolution.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, solutionLocation), 0, 4)}'
+  name: take(
+    '46d3xbcp.ptn.sa-documentknowledgeminingsolution.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
+    64
+  )
   properties: {
     mode: 'Incremental'
     template: {

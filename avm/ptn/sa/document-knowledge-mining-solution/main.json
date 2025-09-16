@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "9181187975158519135"
+      "templateHash": "1426211509242263627"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-knowledge-mining-solution) for both Sandbox environments and enterprise-grade environments."
@@ -294,7 +294,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.ptn.sa-documentknowledgeminingsolution.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, variables('solutionLocation')), 0, 4))]",
+      "name": "[take(format('46d3xbcp.ptn.sa-documentknowledgeminingsolution.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
         "template": {
