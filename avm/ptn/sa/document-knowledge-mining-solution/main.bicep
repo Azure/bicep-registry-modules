@@ -82,16 +82,16 @@ param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags =
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Enable private networking for applicable resources, aligned with the WAF recommendations. Defaults to false.')
+@description('Required. Enable private networking for applicable resources, aligned with the WAF recommendations. Defaults to false.')
 param enablePrivateNetworking bool
 
-@description('Optional. Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false.')
+@description('Required. Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false.')
 param enableMonitoring bool
 
-@description('Optional. Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.')
+@description('Required. Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.')
 param enableRedundancy bool
 
-@description('Optional. Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.')
+@description('Required. Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.')
 param enableScalability bool
 
 @metadata({
@@ -918,6 +918,26 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (en
     // WAF aligned configuration for Monitoring
     workspaceResourceId: enableMonitoring ? logAnalyticsWorkspaceResourceId : ''
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }] : null
+  }
+}
+
+// ============ AVM TELEMETRY ============
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.ptn.sa-documentknowledgeminingsolution.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, solutionLocation), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
   }
 }
 

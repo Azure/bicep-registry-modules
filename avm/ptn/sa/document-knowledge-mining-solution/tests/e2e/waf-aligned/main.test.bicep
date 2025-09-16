@@ -1,3 +1,6 @@
+metadata name = 'Document Knowledge Mining Solution - WAF Aligned Test'
+metadata description = 'This test deploys the Document Knowledge Mining Solution with Well-Architected Framework aligned parameters to validate enhanced security, reliability, and scalability features.'
+
 targetScope = 'subscription'
 
 // ========== //

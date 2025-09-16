@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "4943349102567752709"
+      "templateHash": "9181187975158519135"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-knowledge-mining-solution) for both Sandbox environments and enterprise-grade environments."
@@ -141,25 +141,25 @@
     "enablePrivateNetworking": {
       "type": "bool",
       "metadata": {
-        "description": "Optional. Enable private networking for applicable resources, aligned with the WAF recommendations. Defaults to false."
+        "description": "Required. Enable private networking for applicable resources, aligned with the WAF recommendations. Defaults to false."
       }
     },
     "enableMonitoring": {
       "type": "bool",
       "metadata": {
-        "description": "Optional. Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false."
+        "description": "Required. Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false."
       }
     },
     "enableRedundancy": {
       "type": "bool",
       "metadata": {
-        "description": "Optional. Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false."
+        "description": "Required. Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false."
       }
     },
     "enableScalability": {
       "type": "bool",
       "metadata": {
-        "description": "Optional. Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false."
+        "description": "Required. Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false."
       }
     },
     "aiDeploymentsLocation": {
@@ -288,6 +288,26 @@
       "name": "default",
       "properties": {
         "tags": "[shallowMerge(createArray(parameters('tags'), createObject('TemplateName', 'DKM', 'CreatedBy', parameters('createdBy'))))]"
+      }
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.ptn.sa-documentknowledgeminingsolution.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, variables('solutionLocation')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
       }
     },
     "avmPrivateDnsZones": {
@@ -6612,7 +6632,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "4549410452532298925"
+              "templateHash": "18312680638642686681"
             }
           },
           "parameters": {
@@ -6902,7 +6922,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "7252457608293401729"
+                      "templateHash": "10157566721917347549"
                     },
                     "name": "Secure Virtual Network Module",
                     "description": "This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring."
@@ -6940,14 +6960,14 @@
                         "name": {
                           "type": "string",
                           "metadata": {
-                            "description": "The name of the Bastion Host resource."
+                            "description": "Required. The name of the Bastion Host resource."
                           }
                         },
                         "subnet": {
                           "$ref": "#/definitions/subnetType",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Subnet configuration for the Jumpbox VM."
+                            "description": "Optional. Subnet configuration for the Bastion Host."
                           }
                         }
                       },
@@ -6964,26 +6984,26 @@
                         "name": {
                           "type": "string",
                           "metadata": {
-                            "description": "The name of the Virtual Machine."
+                            "description": "Required. The name of the Virtual Machine."
                           }
                         },
                         "size": {
                           "type": "string",
                           "nullable": true,
                           "metadata": {
-                            "description": "The size of the VM."
+                            "description": "Optional. The size of the VM."
                           }
                         },
                         "username": {
                           "type": "string",
                           "metadata": {
-                            "description": "Username to access VM."
+                            "description": "Required. Username to access VM."
                           }
                         },
                         "password": {
                           "type": "securestring",
                           "metadata": {
-                            "description": "Password to access VM."
+                            "description": "Required. Password to access VM."
                           }
                         },
                         "subnet": {
@@ -9866,7 +9886,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.37.4.10188",
-                              "templateHash": "3082168335446205769"
+                              "templateHash": "4276999080155095213"
                             }
                           },
                           "definitions": {
@@ -9876,14 +9896,14 @@
                                 "name": {
                                   "type": "string",
                                   "metadata": {
-                                    "description": "The name of the Bastion Host resource."
+                                    "description": "Required. The name of the Bastion Host resource."
                                   }
                                 },
                                 "subnet": {
                                   "$ref": "#/definitions/subnetType",
                                   "nullable": true,
                                   "metadata": {
-                                    "description": "Optional. Subnet configuration for the Jumpbox VM."
+                                    "description": "Optional. Subnet configuration for the Bastion Host."
                                   }
                                 }
                               },
@@ -10021,32 +10041,32 @@
                             "name": {
                               "type": "string",
                               "metadata": {
-                                "description": "Name of the Azure Bastion Host resource."
+                                "description": "Required. Name of the Azure Bastion Host resource."
                               }
                             },
                             "location": {
                               "type": "string",
                               "defaultValue": "[resourceGroup().location]",
                               "metadata": {
-                                "description": "Azure region to deploy resources."
+                                "description": "Optional. Azure region to deploy resources."
                               }
                             },
                             "vnetId": {
                               "type": "string",
                               "metadata": {
-                                "description": "Resource ID of the Virtual Network where the Azure Bastion Host will be deployed."
+                                "description": "Required. Resource ID of the Virtual Network where the Azure Bastion Host will be deployed."
                               }
                             },
                             "vnetName": {
                               "type": "string",
                               "metadata": {
-                                "description": "Name of the Virtual Network where the Azure Bastion Host will be deployed."
+                                "description": "Required. Name of the Virtual Network where the Azure Bastion Host will be deployed."
                               }
                             },
                             "logAnalyticsWorkspaceId": {
                               "type": "string",
                               "metadata": {
-                                "description": "Resource ID of the Log Analytics Workspace for monitoring and diagnostics."
+                                "description": "Required. Resource ID of the Log Analytics Workspace for monitoring and diagnostics."
                               }
                             },
                             "tags": {
@@ -12532,7 +12552,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.37.4.10188",
-                              "templateHash": "40464970328764907"
+                              "templateHash": "1146686685215355815"
                             }
                           },
                           "definitions": {
@@ -12542,26 +12562,26 @@
                                 "name": {
                                   "type": "string",
                                   "metadata": {
-                                    "description": "The name of the Virtual Machine."
+                                    "description": "Required. The name of the Virtual Machine."
                                   }
                                 },
                                 "size": {
                                   "type": "string",
                                   "nullable": true,
                                   "metadata": {
-                                    "description": "The size of the VM."
+                                    "description": "Optional. The size of the VM."
                                   }
                                 },
                                 "username": {
                                   "type": "string",
                                   "metadata": {
-                                    "description": "Username to access VM."
+                                    "description": "Required. Username to access VM."
                                   }
                                 },
                                 "password": {
                                   "type": "securestring",
                                   "metadata": {
-                                    "description": "Password to access VM."
+                                    "description": "Required. Password to access VM."
                                   }
                                 },
                                 "subnet": {
@@ -12706,26 +12726,26 @@
                             "name": {
                               "type": "string",
                               "metadata": {
-                                "description": "Name of the Jumpbox Virtual Machine."
+                                "description": "Required. Name of the Jumpbox Virtual Machine."
                               }
                             },
                             "location": {
                               "type": "string",
                               "defaultValue": "[resourceGroup().location]",
                               "metadata": {
-                                "description": "Azure region to deploy resources."
+                                "description": "Optional. Azure region to deploy resources."
                               }
                             },
                             "vnetName": {
                               "type": "string",
                               "metadata": {
-                                "description": "Name of the Virtual Network where the Jumpbox VM will be deployed."
+                                "description": "Required. Name of the Virtual Network where the Jumpbox VM will be deployed."
                               }
                             },
                             "size": {
                               "type": "string",
                               "metadata": {
-                                "description": "Size of the Jumpbox Virtual Machine."
+                                "description": "Required. Size of the Jumpbox Virtual Machine."
                               }
                             },
                             "subnet": {
@@ -12738,13 +12758,13 @@
                             "username": {
                               "type": "string",
                               "metadata": {
-                                "description": "Username to access the Jumpbox VM."
+                                "description": "Required. Username to access the Jumpbox VM."
                               }
                             },
                             "password": {
                               "type": "securestring",
                               "metadata": {
-                                "description": "Password to access the Jumpbox VM."
+                                "description": "Required. Password to access the Jumpbox VM."
                               }
                             },
                             "tags": {
@@ -12757,7 +12777,7 @@
                             "logAnalyticsWorkspaceId": {
                               "type": "string",
                               "metadata": {
-                                "description": "Log Analytics Workspace Resource ID for VM diagnostics."
+                                "description": "Required. Log Analytics Workspace Resource ID for VM diagnostics."
                               }
                             },
                             "enableTelemetry": {
@@ -22225,49 +22245,89 @@
                   "outputs": {
                     "vnetName": {
                       "type": "string",
+                      "metadata": {
+                        "description": "The name of the virtual network."
+                      },
                       "value": "[reference('virtualNetwork').outputs.name.value]"
                     },
                     "vnetResourceId": {
                       "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the virtual network."
+                      },
                       "value": "[reference('virtualNetwork').outputs.resourceId.value]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group where the virtual network is deployed."
+                      },
+                      "value": "[resourceGroup().name]"
                     },
                     "subnets": {
                       "type": "array",
                       "items": {
                         "$ref": "#/definitions/subnetOutputType"
                       },
+                      "metadata": {
+                        "description": "The subnet information including NSG details."
+                      },
                       "value": "[reference('virtualNetwork').outputs.subnets.value]"
                     },
                     "bastionSubnetId": {
                       "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the bastion subnet."
+                      },
                       "value": "[reference('bastionHost').outputs.subnetId.value]"
                     },
                     "bastionSubnetName": {
                       "type": "string",
+                      "metadata": {
+                        "description": "The name of the bastion subnet."
+                      },
                       "value": "[reference('bastionHost').outputs.subnetName.value]"
                     },
                     "bastionHostId": {
                       "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the bastion host."
+                      },
                       "value": "[reference('bastionHost').outputs.resourceId.value]"
                     },
                     "bastionHostName": {
                       "type": "string",
+                      "metadata": {
+                        "description": "The name of the bastion host."
+                      },
                       "value": "[reference('bastionHost').outputs.name.value]"
                     },
                     "jumpboxSubnetName": {
                       "type": "string",
+                      "metadata": {
+                        "description": "The name of the jumpbox subnet."
+                      },
                       "value": "[reference('jumpbox').outputs.subnetName.value]"
                     },
                     "jumpboxSubnetId": {
                       "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the jumpbox subnet."
+                      },
                       "value": "[reference('jumpbox').outputs.subnetId.value]"
                     },
                     "jumpboxName": {
                       "type": "string",
+                      "metadata": {
+                        "description": "The name of the jumpbox."
+                      },
                       "value": "[reference('jumpbox').outputs.name.value]"
                     },
                     "jumpboxResourceId": {
                       "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the jumpbox."
+                      },
                       "value": "[reference('jumpbox').outputs.resourceId.value]"
                     }
                   }

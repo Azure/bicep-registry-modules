@@ -115,10 +115,13 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/document-knowledge-mining-solution:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Waf-Aligned](#example-2-waf-aligned)
+- [Document Knowledge Mining Solution - Defaults Test](#example-1-document-knowledge-mining-solution---defaults-test)
+- [Document Knowledge Mining Solution - WAF Aligned Test](#example-2-document-knowledge-mining-solution---waf-aligned-test)
 
-### Example 1: _Defaults_
+### Example 1: _Document Knowledge Mining Solution - Defaults Test_
+
+This test deploys the Document Knowledge Mining Solution with default/minimal parameters to validate basic functionality.
+
 
 <details>
 
@@ -204,7 +207,10 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Waf-Aligned_
+### Example 2: _Document Knowledge Mining Solution - WAF Aligned Test_
+
+This test deploys the Document Knowledge Mining Solution with Well-Architected Framework aligned parameters to validate enhanced security, reliability, and scalability features.
+
 
 <details>
 
@@ -297,6 +303,10 @@ param location = '<location>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`aiDeploymentsLocation`](#parameter-aideploymentslocation) | string | Location for AI Foundry deployment. This is the location where the AI Foundry resources will be deployed. |
+| [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
+| [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for applicable resources, aligned with the WAF recommendations. Defaults to false. |
+| [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
+| [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 
 **Optional parameters**
 
@@ -306,10 +316,6 @@ param location = '<location>'
 | [`embeddingModelCapacity`](#parameter-embeddingmodelcapacity) | int | Capacity of the Text Embedding model deployment. |
 | [`embeddingModelName`](#parameter-embeddingmodelname) | string | Name of the Text Embedding model to deploy. |
 | [`embeddingModelVersion`](#parameter-embeddingmodelversion) | string | Version of the Text Embedding model to deploy. |
-| [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
-| [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for applicable resources, aligned with the WAF recommendations. Defaults to false. |
-| [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
-| [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`gptModelCapacity`](#parameter-gptmodelcapacity) | int | Capacity of the GPT model deployment. |
 | [`gptModelDeploymentType`](#parameter-gptmodeldeploymenttype) | string | GPT model deployment type. |
@@ -329,6 +335,34 @@ Location for AI Foundry deployment. This is the location where the AI Foundry re
 
 - Required: Yes
 - Type: string
+
+### Parameter: `enableMonitoring`
+
+Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `enablePrivateNetworking`
+
+Enable private networking for applicable resources, aligned with the WAF recommendations. Defaults to false.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `enableRedundancy`
+
+Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `enableScalability`
+
+Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
+
+- Required: Yes
+- Type: bool
 
 ### Parameter: `createdBy`
 
@@ -368,34 +402,6 @@ Version of the Text Embedding model to deploy.
 - Required: No
 - Type: string
 - Default: `'1'`
-
-### Parameter: `enableMonitoring`
-
-Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `enablePrivateNetworking`
-
-Enable private networking for applicable resources, aligned with the WAF recommendations. Defaults to false.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `enableRedundancy`
-
-Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `enableScalability`
-
-Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
-
-- Required: Yes
-- Type: bool
 
 ### Parameter: `enableTelemetry`
 

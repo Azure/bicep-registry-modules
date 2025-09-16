@@ -89,18 +89,39 @@ module jumpbox 'jumpbox.bicep' = if (!empty(jumpboxConfiguration)) {
   }
 }
 
+@description('The name of the virtual network.')
 output vnetName string = virtualNetwork.outputs.name
+
+@description('The resource ID of the virtual network.')
 output vnetResourceId string = virtualNetwork.outputs.resourceId
 
+@description('The name of the resource group where the virtual network is deployed.')
+output resourceGroupName string = resourceGroup().name
+
 import { subnetOutputType } from 'virtualNetwork.bicep'
+@description('The subnet information including NSG details.')
 output subnets subnetOutputType[] = virtualNetwork.outputs.subnets // This one holds critical info for subnets, including NSGs
 
+@description('The resource ID of the bastion subnet.')
 output bastionSubnetId string = bastionHost!.outputs.subnetId
+
+@description('The name of the bastion subnet.')
 output bastionSubnetName string = bastionHost!.outputs.subnetName
+
+@description('The resource ID of the bastion host.')
 output bastionHostId string = bastionHost!.outputs.resourceId
+
+@description('The name of the bastion host.')
 output bastionHostName string = bastionHost!.outputs.name
 
+@description('The name of the jumpbox subnet.')
 output jumpboxSubnetName string = jumpbox!.outputs.subnetName
+
+@description('The resource ID of the jumpbox subnet.')
 output jumpboxSubnetId string = jumpbox!.outputs.subnetId
+
+@description('The name of the jumpbox.')
 output jumpboxName string = jumpbox!.outputs.name
+
+@description('The resource ID of the jumpbox.')
 output jumpboxResourceId string = jumpbox!.outputs.resourceId

@@ -580,19 +580,20 @@ Tags to be applied to the resources.
 
 ## Outputs
 
-| Output | Type |
-| :-- | :-- |
-| `bastionHostId` | string |
-| `bastionHostName` | string |
-| `bastionSubnetId` | string |
-| `bastionSubnetName` | string |
-| `jumpboxName` | string |
-| `jumpboxResourceId` | string |
-| `jumpboxSubnetId` | string |
-| `jumpboxSubnetName` | string |
-| `subnets` | array |
-| `vnetName` | string |
-| `vnetResourceId` | string |
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `bastionHostId` | string | The resource ID of the bastion host. |
+| `bastionHostName` | string | The name of the bastion host. |
+| `bastionSubnetId` | string | The resource ID of the bastion subnet. |
+| `bastionSubnetName` | string | The name of the bastion subnet. |
+| `jumpboxName` | string | The name of the jumpbox. |
+| `jumpboxResourceId` | string | The resource ID of the jumpbox. |
+| `jumpboxSubnetId` | string | The resource ID of the jumpbox subnet. |
+| `jumpboxSubnetName` | string | The name of the jumpbox subnet. |
+| `resourceGroupName` | string | The name of the resource group where the virtual network is deployed. |
+| `subnets` | array | The subnet information including NSG details. |
+| `vnetName` | string | The name of the virtual network. |
+| `vnetResourceId` | string | The resource ID of the virtual network. |
 
 ## Cross-referenced modules
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "16267740980577446746"
+      "templateHash": "10157566721917347549"
     },
     "name": "Secure Virtual Network Module",
     "description": "This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring."
@@ -15329,49 +15329,89 @@
   "outputs": {
     "vnetName": {
       "type": "string",
+      "metadata": {
+        "description": "The name of the virtual network."
+      },
       "value": "[reference('virtualNetwork').outputs.name.value]"
     },
     "vnetResourceId": {
       "type": "string",
+      "metadata": {
+        "description": "The resource ID of the virtual network."
+      },
       "value": "[reference('virtualNetwork').outputs.resourceId.value]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group where the virtual network is deployed."
+      },
+      "value": "[resourceGroup().name]"
     },
     "subnets": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/subnetOutputType"
       },
+      "metadata": {
+        "description": "The subnet information including NSG details."
+      },
       "value": "[reference('virtualNetwork').outputs.subnets.value]"
     },
     "bastionSubnetId": {
       "type": "string",
+      "metadata": {
+        "description": "The resource ID of the bastion subnet."
+      },
       "value": "[reference('bastionHost').outputs.subnetId.value]"
     },
     "bastionSubnetName": {
       "type": "string",
+      "metadata": {
+        "description": "The name of the bastion subnet."
+      },
       "value": "[reference('bastionHost').outputs.subnetName.value]"
     },
     "bastionHostId": {
       "type": "string",
+      "metadata": {
+        "description": "The resource ID of the bastion host."
+      },
       "value": "[reference('bastionHost').outputs.resourceId.value]"
     },
     "bastionHostName": {
       "type": "string",
+      "metadata": {
+        "description": "The name of the bastion host."
+      },
       "value": "[reference('bastionHost').outputs.name.value]"
     },
     "jumpboxSubnetName": {
       "type": "string",
+      "metadata": {
+        "description": "The name of the jumpbox subnet."
+      },
       "value": "[reference('jumpbox').outputs.subnetName.value]"
     },
     "jumpboxSubnetId": {
       "type": "string",
+      "metadata": {
+        "description": "The resource ID of the jumpbox subnet."
+      },
       "value": "[reference('jumpbox').outputs.subnetId.value]"
     },
     "jumpboxName": {
       "type": "string",
+      "metadata": {
+        "description": "The name of the jumpbox."
+      },
       "value": "[reference('jumpbox').outputs.name.value]"
     },
     "jumpboxResourceId": {
       "type": "string",
+      "metadata": {
+        "description": "The resource ID of the jumpbox."
+      },
       "value": "[reference('jumpbox').outputs.resourceId.value]"
     }
   }

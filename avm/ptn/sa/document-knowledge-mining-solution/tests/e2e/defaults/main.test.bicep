@@ -1,3 +1,6 @@
+metadata name = 'Document Knowledge Mining Solution - Defaults Test'
+metadata description = 'This test deploys the Document Knowledge Mining Solution with default/minimal parameters to validate basic functionality.'
+
 targetScope = 'subscription'
 
 // ========== //
