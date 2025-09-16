@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/lz/sub-vending/CHANGELOG.md).
 
+## 0.3.9
+
+### Changes
+
+- Added functionality to create a standalone network security group instead of associating a network security group to each subnet created by the module.
+
+### Breaking Changes
+
+- **None**
+
 ## 0.3.8
 
 ### Changes

@@ -229,6 +229,12 @@ param routeTables routeTableType[] = []
 @sys.description('The name of the resource group to create the route tables in.')
 param routeTablesResourceGroupName string = ''
 
+@sys.description('The list of network security groups to create')
+param networkSecurityGroups networkSecurityGroupType[] = []
+
+@sys.description('The name of the resource group to create the network security groups in.')
+param networkSecurityGroupResourceGroupName string = ''
+
 // VARIABLES
 
 // Deployment name variables
@@ -322,6 +328,10 @@ var deploymentNames = {
   )
   createResourceGroupForRouteTables: take(
     'lz-vend-rsg-rt-create-${uniqueString(subscriptionId, routeTablesResourceGroupName, virtualNetworkLocation, deployment().name)}',
+    64
+  )
+  createResourceGroupForNetworkSecurityGroups: take(
+    'lz-vend-rsg-nsg-create-${uniqueString(subscriptionId, networkSecurityGroupResourceGroupName, virtualNetworkLocation, deployment().name)}',
     64
   )
   registerResourceProviders: take(
@@ -645,12 +655,19 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (virt
             addressPrefix: subnet.?addressPrefix
             networkSecurityGroupResourceId: (virtualNetworkDeployBastion || subnet.name == 'AzureBastionSubnet')
               ? createBastionNsg.?outputs.resourceId
-              : resourceId(
-                  subscriptionId,
-                  virtualNetworkResourceGroupName,
-                  'Microsoft.Network/networkSecurityGroups',
-                  '${createLzNsg[i].?outputs.name}'
-                )
+              : !empty(networkSecurityGroups) && !empty(networkSecurityGroupResourceGroupName)
+                  ? resourceId(
+                      subscriptionId,
+                      networkSecurityGroupResourceGroupName,
+                      'Microsoft.Network/networkSecurityGroups',
+                      '${createLzNsgStandalone[i].?outputs.name}'
+                    )
+                  : resourceId(
+                      subscriptionId,
+                      virtualNetworkResourceGroupName,
+                      'Microsoft.Network/networkSecurityGroups',
+                      '${createLzNsg[i].?outputs.name}'
+                    )
             routeTableResourceId: (!empty(subnet.?routeTableName) && !empty(routeTablesResourceGroupName))
               ? resourceId(
                   subscriptionId,
@@ -839,7 +856,23 @@ module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.1' = [
   }
 ]
 
-module createLzRouteTable 'br/public:avm/res/network/route-table:0.4.1' = [
+module createLzNsgStandalone 'br/public:avm/res/network/network-security-group:0.5.1' = [
+  for (nsg, i) in networkSecurityGroups: if (!empty(networkSecurityGroups) && !empty(networkSecurityGroupResourceGroupName)) {
+    scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
+    dependsOn: [
+      createResourceGroupForNetworkSecurityGroups
+    ]
+    name: '${deploymentNames.createLzNsg}-${i}'
+    params: {
+      name: nsg.?name ?? 'nsg-${substring(guid(virtualNetworkName, virtualNetworkResourceGroupName, subscriptionId), 0, 5)}'
+      location: virtualNetworkLocation
+      securityRules: nsg.?securityRules
+      enableTelemetry: enableTelemetry
+    }
+  }
+]
+
+module createLzRouteTable 'br/public:avm/res/network/route-table:0.5.0' = [
   for (routeTable, i) in routeTables: if (!empty(routeTables) && !empty(routeTablesResourceGroupName)) {
     scope: resourceGroup(subscriptionId, routeTablesResourceGroupName)
     dependsOn: [
@@ -1359,6 +1392,17 @@ module createResourceGroupForRouteTables 'br/public:avm/res/resources/resource-g
   }
 }
 
+module createResourceGroupForNetworkSecurityGroups 'br/public:avm/res/resources/resource-group:0.4.1' = if (!empty(networkSecurityGroupResourceGroupName) && !empty(networkSecurityGroups)) {
+  scope: subscription(subscriptionId)
+  name: deploymentNames.createResourceGroupForNetworkSecurityGroups
+  params: {
+    name: networkSecurityGroupResourceGroupName
+    location: virtualNetworkLocation ?? deployment().location
+    tags: virtualNetworkResourceGroupTags
+    enableTelemetry: enableTelemetry
+  }
+}
+
 module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.createDeploymentScriptManagedIdentity
@@ -1409,7 +1453,7 @@ module createDsNsg 'br/public:avm/res/network/network-security-group:0.5.1' = if
   }
 }
 
-module dsFilePrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (!empty(resourceProviders)) {
+module dsFilePrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = if (!empty(resourceProviders)) {
   name: deploymentNames.createDsFilePrivateDnsZone
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   params: {
@@ -1424,7 +1468,7 @@ module dsFilePrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.7.1' =
   }
 }
 
-module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (!empty(resourceProviders)) {
+module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.26.2' = if (!empty(resourceProviders)) {
   dependsOn: [
     createRoleAssignmentsDeploymentScriptStorageAccount
   ]
@@ -1493,7 +1537,7 @@ module createDsVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (!emp
     enableTelemetry: enableTelemetry
   }
 }
-module registerResourceProviders 'br/public:avm/res/resources/deployment-script:0.2.3' = if (!empty(resourceProviders)) {
+module registerResourceProviders 'br/public:avm/res/resources/deployment-script:0.5.1' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.registerResourceProviders
   params: {
@@ -1623,7 +1667,7 @@ module createAdditonalNatGateway 'br/public:avm/res/network/nat-gateway:1.4.0' =
   }
 ]
 
-module createBastionHost 'br/public:avm/res/network/bastion-host:0.7.0' = if (virtualNetworkDeployBastion && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
+module createBastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (virtualNetworkDeployBastion && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
   name: deploymentNames.createBastionHost
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
   dependsOn: [

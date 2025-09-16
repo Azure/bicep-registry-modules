@@ -25,7 +25,7 @@ This module deploys a subscription to accelerate deployment of landing zones. Fo
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
 | `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities_federatedidentitycredentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities/federatedIdentityCredentials)</li></ul> |
 | `Microsoft.Management/managementGroups/subscriptions` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.management_managementgroups_subscriptions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Management/2023-04-01/managementGroups/subscriptions)</li></ul> |
-| `Microsoft.Network/bastionHosts` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_bastionhosts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/bastionHosts)</li></ul> |
+| `Microsoft.Network/bastionHosts` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_bastionhosts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/bastionHosts)</li></ul> |
 | `Microsoft.Network/natGateways` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_natgateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/natGateways)</li></ul> |
 | `Microsoft.Network/networkSecurityGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networksecuritygroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups)</li></ul> |
 | `Microsoft.Network/privateDnsZones` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones)</li></ul> |
@@ -42,7 +42,7 @@ This module deploys a subscription to accelerate deployment of landing zones. Fo
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
 | `Microsoft.Network/publicIPPrefixes` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipprefixes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/publicIPPrefixes)</li></ul> |
-| `Microsoft.Network/routeTables` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_routetables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/routeTables)</li></ul> |
+| `Microsoft.Network/routeTables` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_routetables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/routeTables)</li></ul> |
 | `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubvirtualnetworkconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualHubs/hubVirtualNetworkConnections)</li></ul> |
 | `Microsoft.Network/virtualNetworks` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks)</li></ul> |
 | `Microsoft.Network/virtualNetworks/subnets` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets)</li></ul> |
@@ -81,8 +81,9 @@ The following section provides usage examples for the module, which were used to
 - [Using PIM Active Role assignments.](#example-6-using-pim-active-role-assignments)
 - [Using PIM Eligible Role assignments.](#example-7-using-pim-eligible-role-assignments)
 - [Using RBAC conditions.](#example-8-using-rbac-conditions)
-- [Using user-assigned managed identities.](#example-9-using-user-assigned-managed-identities)
-- [Vwan topology.](#example-10-vwan-topology)
+- [Using standalone NSG deployment.](#example-9-using-standalone-nsg-deployment)
+- [Using user-assigned managed identities.](#example-10-using-user-assigned-managed-identities)
+- [Vwan topology.](#example-11-vwan-topology)
 
 ### Example 1: _Multiple virtual networks._
 
@@ -1881,7 +1882,218 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 9: _Using user-assigned managed identities._
+### Example 9: _Using standalone NSG deployment._
+
+This instance deploys the module to test standalone NSG deployments.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
+  name: 'subVendingDeployment'
+  params: {
+    networkSecurityGroupResourceGroupName: '<networkSecurityGroupResourceGroupName>'
+    networkSecurityGroups: [
+      {
+        location: '<location>'
+        name: '<name>'
+        securityRules: [
+          {
+            name: 'Allow-HTTP-Inbound'
+            properties: {
+              access: 'Allow'
+              destinationAddressPrefix: '*'
+              destinationPortRange: '80'
+              direction: 'Inbound'
+              priority: 100
+              protocol: 'Tcp'
+              sourceAddressPrefix: '*'
+              sourcePortRange: '*'
+            }
+          }
+          {
+            name: 'Allow-HTTPS-Inbound'
+            properties: {
+              access: 'Allow'
+              destinationAddressPrefix: '*'
+              destinationPortRange: '443'
+              direction: 'Inbound'
+              priority: 110
+              protocol: 'Tcp'
+              sourceAddressPrefix: '*'
+              sourcePortRange: '*'
+            }
+          }
+        ]
+      }
+    ]
+    resourceProviders: {}
+    subscriptionAliasEnabled: true
+    subscriptionAliasName: '<subscriptionAliasName>'
+    subscriptionBillingScope: '<subscriptionBillingScope>'
+    subscriptionDisplayName: '<subscriptionDisplayName>'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionTags: {
+      namePrefix: '<namePrefix>'
+      serviceShort: '<serviceShort>'
+    }
+    subscriptionWorkload: 'Production'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "networkSecurityGroupResourceGroupName": {
+      "value": "<networkSecurityGroupResourceGroupName>"
+    },
+    "networkSecurityGroups": {
+      "value": [
+        {
+          "location": "<location>",
+          "name": "<name>",
+          "securityRules": [
+            {
+              "name": "Allow-HTTP-Inbound",
+              "properties": {
+                "access": "Allow",
+                "destinationAddressPrefix": "*",
+                "destinationPortRange": "80",
+                "direction": "Inbound",
+                "priority": 100,
+                "protocol": "Tcp",
+                "sourceAddressPrefix": "*",
+                "sourcePortRange": "*"
+              }
+            },
+            {
+              "name": "Allow-HTTPS-Inbound",
+              "properties": {
+                "access": "Allow",
+                "destinationAddressPrefix": "*",
+                "destinationPortRange": "443",
+                "direction": "Inbound",
+                "priority": 110,
+                "protocol": "Tcp",
+                "sourceAddressPrefix": "*",
+                "sourcePortRange": "*"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "resourceProviders": {
+      "value": {}
+    },
+    "subscriptionAliasEnabled": {
+      "value": true
+    },
+    "subscriptionAliasName": {
+      "value": "<subscriptionAliasName>"
+    },
+    "subscriptionBillingScope": {
+      "value": "<subscriptionBillingScope>"
+    },
+    "subscriptionDisplayName": {
+      "value": "<subscriptionDisplayName>"
+    },
+    "subscriptionManagementGroupAssociationEnabled": {
+      "value": true
+    },
+    "subscriptionManagementGroupId": {
+      "value": "bicep-lz-vending-automation-child"
+    },
+    "subscriptionTags": {
+      "value": {
+        "namePrefix": "<namePrefix>",
+        "serviceShort": "<serviceShort>"
+      }
+    },
+    "subscriptionWorkload": {
+      "value": "Production"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/lz/sub-vending:<version>'
+
+param networkSecurityGroupResourceGroupName = '<networkSecurityGroupResourceGroupName>'
+param networkSecurityGroups = [
+  {
+    location: '<location>'
+    name: '<name>'
+    securityRules: [
+      {
+        name: 'Allow-HTTP-Inbound'
+        properties: {
+          access: 'Allow'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '80'
+          direction: 'Inbound'
+          priority: 100
+          protocol: 'Tcp'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+        }
+      }
+      {
+        name: 'Allow-HTTPS-Inbound'
+        properties: {
+          access: 'Allow'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '443'
+          direction: 'Inbound'
+          priority: 110
+          protocol: 'Tcp'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+        }
+      }
+    ]
+  }
+]
+param resourceProviders = {}
+param subscriptionAliasEnabled = true
+param subscriptionAliasName = '<subscriptionAliasName>'
+param subscriptionBillingScope = '<subscriptionBillingScope>'
+param subscriptionDisplayName = '<subscriptionDisplayName>'
+param subscriptionManagementGroupAssociationEnabled = true
+param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionTags = {
+  namePrefix: '<namePrefix>'
+  serviceShort: '<serviceShort>'
+}
+param subscriptionWorkload = 'Production'
+```
+
+</details>
+<p>
+
+### Example 10: _Using user-assigned managed identities._
 
 This instance deploys the module with user-assigned managed identities.
 
@@ -2120,7 +2332,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 10: _Vwan topology._
+### Example 11: _Vwan topology._
 
 This instance deploys a subscription with a vwan network topology.
 
@@ -2352,6 +2564,8 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | [`existingSubscriptionId`](#parameter-existingsubscriptionid) | string | An existing subscription ID. Use this when you do not want the module to create a new subscription. But do want to manage the management group membership. A subscription ID should be provided in the example format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`. |
 | [`hubNetworkResourceId`](#parameter-hubnetworkresourceid) | string | The resource ID of the Virtual Network or Virtual WAN Hub in the hub to which the created Virtual Network, by this module, will be peered/connected to via Virtual Network Peering or a Virtual WAN Virtual Hub Connection.<p> |
 | [`managementGroupAssociationDelayCount`](#parameter-managementgroupassociationdelaycount) | int | The number of blank ARM deployments to create sequentially to introduce a delay to the Subscription being moved to the target Management Group being, if set, to allow for background platform RBAC inheritance to occur. |
+| [`networkSecurityGroupResourceGroupName`](#parameter-networksecuritygroupresourcegroupname) | string | The name of the resource group to create the network security groups in. |
+| [`networkSecurityGroups`](#parameter-networksecuritygroups) | array | The list of network security groups to create |
 | [`peerAllVirtualNetworks`](#parameter-peerallvirtualnetworks) | bool | Flag to do mesh peering of all virtual networks deployed into the new subscription. |
 | [`pimRoleAssignments`](#parameter-pimroleassignments) | array | Supply an array of objects containing the details of the PIM role assignments to create.<p><p>Each object must contain the following `keys`:<li>`principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.<li>`definition` = The Resource ID of a Built-in or custom RBAC Role Definition as follows:<p>  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition<p>    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`<li>`relativeScope` = 2 options can be provided for input value:<p>    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope<p>    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.<p> |
 | [`resourceProviders`](#parameter-resourceproviders) | object | An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.<p> |
@@ -3097,6 +3311,237 @@ The number of blank ARM deployments to create sequentially to introduce a delay 
 - Required: No
 - Type: int
 - Default: `15`
+
+### Parameter: `networkSecurityGroupResourceGroupName`
+
+The name of the resource group to create the network security groups in.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `networkSecurityGroups`
+
+The list of network security groups to create
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-networksecuritygroupslocation) | string | The location of the network security group. |
+| [`name`](#parameter-networksecuritygroupsname) | string | The name of the network security group. |
+| [`securityRules`](#parameter-networksecuritygroupssecurityrules) | array | The security rules of the network security group. |
+| [`tags`](#parameter-networksecuritygroupstags) | object | The tags of the network security group. |
+
+### Parameter: `networkSecurityGroups.location`
+
+The location of the network security group.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkSecurityGroups.name`
+
+The name of the network security group.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkSecurityGroups.securityRules`
+
+The security rules of the network security group.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-networksecuritygroupssecurityrulesname) | string | The name of the security rule. |
+| [`properties`](#parameter-networksecuritygroupssecurityrulesproperties) | object | The properties of the security rule. |
+
+### Parameter: `networkSecurityGroups.securityRules.name`
+
+The name of the security rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkSecurityGroups.securityRules.properties`
+
+The properties of the security rule.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`access`](#parameter-networksecuritygroupssecurityrulespropertiesaccess) | string | Whether network traffic is allowed or denied. |
+| [`direction`](#parameter-networksecuritygroupssecurityrulespropertiesdirection) | string | The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic. |
+| [`priority`](#parameter-networksecuritygroupssecurityrulespropertiespriority) | int | Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule. |
+| [`protocol`](#parameter-networksecuritygroupssecurityrulespropertiesprotocol) | string | Network protocol this rule applies to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-networksecuritygroupssecurityrulespropertiesdescription) | string | The description of the security rule. |
+| [`destinationAddressPrefix`](#parameter-networksecuritygroupssecurityrulespropertiesdestinationaddressprefix) | string | Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. |
+| [`destinationAddressPrefixes`](#parameter-networksecuritygroupssecurityrulespropertiesdestinationaddressprefixes) | array | The destination address prefixes. CIDR or destination IP ranges. |
+| [`destinationApplicationSecurityGroupResourceIds`](#parameter-networksecuritygroupssecurityrulespropertiesdestinationapplicationsecuritygroupresourceids) | array | The resource IDs of the application security groups specified as destination. |
+| [`destinationPortRange`](#parameter-networksecuritygroupssecurityrulespropertiesdestinationportrange) | string | The destination port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports. |
+| [`destinationPortRanges`](#parameter-networksecuritygroupssecurityrulespropertiesdestinationportranges) | array | The destination port ranges. |
+| [`sourceAddressPrefix`](#parameter-networksecuritygroupssecurityrulespropertiessourceaddressprefix) | string | The CIDR or source IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. If this is an ingress rule, specifies where network traffic originates from. |
+| [`sourceAddressPrefixes`](#parameter-networksecuritygroupssecurityrulespropertiessourceaddressprefixes) | array | The CIDR or source IP ranges. |
+| [`sourceApplicationSecurityGroupResourceIds`](#parameter-networksecuritygroupssecurityrulespropertiessourceapplicationsecuritygroupresourceids) | array | The resource IDs of the application security groups specified as source. |
+| [`sourcePortRange`](#parameter-networksecuritygroupssecurityrulespropertiessourceportrange) | string | The source port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports. |
+| [`sourcePortRanges`](#parameter-networksecuritygroupssecurityrulespropertiessourceportranges) | array | The source port ranges. |
+
+### Parameter: `networkSecurityGroups.securityRules.properties.access`
+
+Whether network traffic is allowed or denied.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'Deny'
+  ]
+  ```
+
+### Parameter: `networkSecurityGroups.securityRules.properties.direction`
+
+The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Inbound'
+    'Outbound'
+  ]
+  ```
+
+### Parameter: `networkSecurityGroups.securityRules.properties.priority`
+
+Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule.
+
+- Required: Yes
+- Type: int
+- MinValue: 100
+- MaxValue: 4096
+
+### Parameter: `networkSecurityGroups.securityRules.properties.protocol`
+
+Network protocol this rule applies to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '*'
+    'Ah'
+    'Esp'
+    'Icmp'
+    'Tcp'
+    'Udp'
+  ]
+  ```
+
+### Parameter: `networkSecurityGroups.securityRules.properties.description`
+
+The description of the security rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkSecurityGroups.securityRules.properties.destinationAddressPrefix`
+
+Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkSecurityGroups.securityRules.properties.destinationAddressPrefixes`
+
+The destination address prefixes. CIDR or destination IP ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkSecurityGroups.securityRules.properties.destinationApplicationSecurityGroupResourceIds`
+
+The resource IDs of the application security groups specified as destination.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkSecurityGroups.securityRules.properties.destinationPortRange`
+
+The destination port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkSecurityGroups.securityRules.properties.destinationPortRanges`
+
+The destination port ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkSecurityGroups.securityRules.properties.sourceAddressPrefix`
+
+The CIDR or source IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. If this is an ingress rule, specifies where network traffic originates from.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkSecurityGroups.securityRules.properties.sourceAddressPrefixes`
+
+The CIDR or source IP ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkSecurityGroups.securityRules.properties.sourceApplicationSecurityGroupResourceIds`
+
+The resource IDs of the application security groups specified as source.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkSecurityGroups.securityRules.properties.sourcePortRange`
+
+The source port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkSecurityGroups.securityRules.properties.sourcePortRanges`
+
+The source port ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkSecurityGroups.tags`
+
+The tags of the network security group.
+
+- Required: No
+- Type: object
 
 ### Parameter: `peerAllVirtualNetworks`
 
@@ -5251,15 +5696,15 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/ptn/authorization/pim-role-assignment:0.1.1` | Remote reference |
 | `br/public:avm/ptn/authorization/role-assignment:0.2.2` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.1` | Remote reference |
-| `br/public:avm/res/network/bastion-host:0.7.0` | Remote reference |
+| `br/public:avm/res/network/bastion-host:0.8.0` | Remote reference |
 | `br/public:avm/res/network/nat-gateway:1.4.0` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.1` | Remote reference |
-| `br/public:avm/res/network/private-dns-zone:0.7.1` | Remote reference |
-| `br/public:avm/res/network/route-table:0.4.1` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.8.0` | Remote reference |
+| `br/public:avm/res/network/route-table:0.5.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
-| `br/public:avm/res/resources/deployment-script:0.2.3` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
 | `br/public:avm/res/resources/resource-group:0.4.1` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.25.1` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.26.2` | Remote reference |
 
 ## Notes
 
