@@ -41,8 +41,14 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       // You parameters go here
-      name: '${namePrefix}${serviceShort}001'
+      // name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      aiDeploymentsLocation: resourceLocation
+      enablePrivateNetworking: true
+      enableMonitoring: true
+      enableRedundancy: true
+      enableScalability: true
+      enableTelemetry: true
     }
   }
 ]
