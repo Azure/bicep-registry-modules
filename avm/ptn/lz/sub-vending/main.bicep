@@ -17,6 +17,7 @@ import { pimRoleAssignmentTypeType } from 'modules/subResourceWrapper.bicep'
 import { userAssignedIdentityType } from 'modules/subResourceWrapper.bicep'
 import { virtualNetworkType } from 'modules/subResourceWrapper.bicep'
 import { routeTableType } from 'modules/subResourceWrapper.bicep'
+import { networkSecurityGroupType } from 'modules/subResourceWrapper.bicep'
 
 // PARAMETERS
 
@@ -396,6 +397,12 @@ param routeTables routeTableType[] = []
 @description('Optional. The name of the resource group to create the route tables in.')
 param routeTablesResourceGroupName string = ''
 
+@sys.description('Optional. The list of network security groups to create that are standalone from the NSGs that can be created as part of the `virtualNetworkSubnets` parameter input.')
+param networkSecurityGroups networkSecurityGroupType[] = []
+
+@sys.description('Optional. The name of the resource group to create the standalone network security groups in, outside of what can be declared in the `virtualNetworkSubnets` parameter.')
+param networkSecurityGroupResourceGroupName string = ''
+
 // VARIABLES
 
 var existingSubscriptionIDEmptyCheck = empty(existingSubscriptionId)
@@ -500,6 +507,8 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     peerAllVirtualNetworks: peerAllVirtualNetworks
     routeTables: routeTables
     routeTablesResourceGroupName: routeTablesResourceGroupName
+    networkSecurityGroups: networkSecurityGroups
+    networkSecurityGroupResourceGroupName: networkSecurityGroupResourceGroupName
     enableTelemetry: enableTelemetry
   }
 }
