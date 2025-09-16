@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "3374415609290319856"
+      "templateHash": "3900866264503778470"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1824,14 +1824,14 @@
       },
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. The list of network security groups to create"
+        "description": "Optional. The list of network security groups to create that are standalone from the NSGs that can be created as part of the `virtualNetworkSubnets` parameter input."
       }
     },
     "networkSecurityGroupResourceGroupName": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The name of the resource group to create the network security groups in."
+        "description": "Optional. The name of the resource group to create the standalone network security groups in, outside of what can be declared in the `virtualNetworkSubnets` parameter."
       }
     }
   },
@@ -2158,7 +2158,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "14281178851861292999"
+              "templateHash": "16639228348597487128"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -3910,7 +3910,7 @@
               "type": "bool",
               "defaultValue": true,
               "metadata": {
-                "description": "Enables the deployment of a `CanNotDelete` resource locks to the user-assigned managed identities resource group."
+                "description": "Optional. Enables the deployment of a `CanNotDelete` resource locks to the user-assigned managed identities resource group."
               }
             },
             "routeTables": {
@@ -3920,14 +3920,14 @@
               },
               "defaultValue": [],
               "metadata": {
-                "description": "The list of route tables to create."
+                "description": "Optional. The list of route tables to create."
               }
             },
             "routeTablesResourceGroupName": {
               "type": "string",
               "defaultValue": "",
               "metadata": {
-                "description": "The name of the resource group to create the route tables in."
+                "description": "Optional. The name of the resource group to create the route tables in."
               }
             },
             "networkSecurityGroups": {
@@ -3937,14 +3937,14 @@
               },
               "defaultValue": [],
               "metadata": {
-                "description": "The list of network security groups to create"
+                "description": "Optional. The list of network security groups to create that are standalone from the NSGs that can be created as part of the `virtualNetworkSubnets` parameter input."
               }
             },
             "networkSecurityGroupResourceGroupName": {
               "type": "string",
               "defaultValue": "",
               "metadata": {
-                "description": "The name of the resource group to create the network security groups in."
+                "description": "Optional. The name of the resource group to create the standalone network security groups in, outside of what can be declared in the `virtualNetworkSubnets` parameter."
               }
             }
           },
@@ -5885,7 +5885,7 @@
                       {
                         "name": "value",
                         "count": "[length(parameters('virtualNetworkSubnets'))]",
-                        "input": "[if(not(empty(parameters('virtualNetworkSubnets'))), createObject('name', parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'addressPrefix', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'addressPrefix'), 'networkSecurityGroupResourceId', if(or(parameters('virtualNetworkDeployBastion'), equals(parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'AzureBastionSubnet')), tryGet(if(and(and(and(and(parameters('virtualNetworkDeployBastion'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), reference('createBastionNsg'), null()), 'outputs', 'resourceId', 'value'), if(and(not(empty(parameters('networkSecurityGroups'))), not(empty(parameters('networkSecurityGroupResourceGroupName')))), resourceId(parameters('subscriptionId'), parameters('networkSecurityGroupResourceGroupName'), 'Microsoft.Network/networkSecurityGroups', format('{0}', tryGet(if(and(not(empty(parameters('networkSecurityGroups'))), not(empty(parameters('networkSecurityGroupResourceGroupName')))), reference(format('createLzNsgStandalone[{0}]', copyIndex('value'))), null()), 'outputs', 'name', 'value'))), resourceId(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/networkSecurityGroups', format('{0}', tryGet(if(not(empty(parameters('virtualNetworkSubnets'))), reference(format('createLzNsg[{0}]', copyIndex('value'))), null()), 'outputs', 'name', 'value'))))), 'routeTableResourceId', if(and(not(empty(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'routeTableName'))), not(empty(parameters('routeTablesResourceGroupName')))), resourceId(parameters('subscriptionId'), parameters('routeTablesResourceGroupName'), 'Microsoft.Network/routeTables', coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'routeTableName'), '')), null()), 'natGatewayResourceId', if(and(parameters('virtualNetworkDeployNatGateway'), coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'associateWithNatGateway'), false())), tryGet(if(and(parameters('virtualNetworkDeployNatGateway'), and(and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName'))))), reference('createNatGateway'), null()), 'outputs', 'resourceId', 'value'), null()), 'delegation', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'delegation')), createObject())]"
+                        "input": "[if(not(empty(parameters('virtualNetworkSubnets'))), createObject('name', parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'addressPrefix', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'addressPrefix'), 'networkSecurityGroupResourceId', if(or(parameters('virtualNetworkDeployBastion'), equals(parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'AzureBastionSubnet')), tryGet(if(and(and(and(and(parameters('virtualNetworkDeployBastion'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), reference('createBastionNsg'), null()), 'outputs', 'resourceId', 'value'), resourceId(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/networkSecurityGroups', format('{0}', tryGet(if(not(empty(parameters('virtualNetworkSubnets'))), reference(format('createLzNsg[{0}]', copyIndex('value'))), null()), 'outputs', 'name', 'value')))), 'routeTableResourceId', if(and(not(empty(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'routeTableName'))), not(empty(parameters('routeTablesResourceGroupName')))), resourceId(parameters('subscriptionId'), parameters('routeTablesResourceGroupName'), 'Microsoft.Network/routeTables', coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'routeTableName'), '')), null()), 'natGatewayResourceId', if(and(parameters('virtualNetworkDeployNatGateway'), coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'associateWithNatGateway'), false())), tryGet(if(and(parameters('virtualNetworkDeployNatGateway'), and(and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName'))))), reference('createNatGateway'), null()), 'outputs', 'resourceId', 'value'), null()), 'delegation', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'delegation')), createObject())]"
                       }
                     ]
                   },
@@ -7515,7 +7515,6 @@
               "dependsOn": [
                 "createBastionNsg",
                 "createLzNsg",
-                "createLzNsgStandalone",
                 "createLzRouteTable",
                 "createNatGateway",
                 "createResourceGroupForLzNetworking"
@@ -8985,7 +8984,7 @@
               "apiVersion": "2022-09-01",
               "name": "[format('{0}-{1}', variables('deploymentNames').createLzNsg, copyIndex())]",
               "subscriptionId": "[parameters('subscriptionId')]",
-              "resourceGroup": "[parameters('virtualNetworkResourceGroupName')]",
+              "resourceGroup": "[parameters('networkSecurityGroupResourceGroupName')]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
