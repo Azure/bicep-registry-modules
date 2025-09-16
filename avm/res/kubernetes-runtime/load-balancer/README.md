@@ -25,12 +25,11 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/kubernetes-runtime/load-balancer:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using only defaults](#example-2-using-only-defaults)
-- [WAF-aligned](#example-3-waf-aligned)
+- [WAF-aligned](#example-2-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
-This instance deploys the module with connected cluster.
+This instance deploys the module with the minimum set of required parameters.
 
 
 <details>
@@ -47,7 +46,7 @@ module loadBalancer 'br/public:avm/res/kubernetes-runtime/load-balancer:<version
     ]
     advertiseMode: 'ARP'
     clusterName: '<clusterName>'
-    name: 'kcecc001'
+    name: 'krlbmin001'
     // Non-required parameters
     clusterType: 'connectedCluster'
   }
@@ -79,7 +78,7 @@ module loadBalancer 'br/public:avm/res/kubernetes-runtime/load-balancer:<version
       "value": "<clusterName>"
     },
     "name": {
-      "value": "kcecc001"
+      "value": "krlbmin001"
     },
     // Non-required parameters
     "clusterType": {
@@ -105,7 +104,7 @@ param addresses = [
 ]
 param advertiseMode = 'ARP'
 param clusterName = '<clusterName>'
-param name = 'kcecc001'
+param name = 'krlbmin001'
 // Non-required parameters
 param clusterType = 'connectedCluster'
 ```
@@ -113,9 +112,9 @@ param clusterType = 'connectedCluster'
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 2: _WAF-aligned_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
@@ -130,9 +129,17 @@ module loadBalancer 'br/public:avm/res/kubernetes-runtime/load-balancer:<version
     addresses: [
       '10.0.0.100-10.0.0.110'
     ]
-    advertiseMode: 'ARP'
+    advertiseMode: 'Both'
     clusterName: '<clusterName>'
-    name: 'krlbmin001'
+    name: 'krlbwaf001'
+    // Non-required parameters
+    bgpPeers: [
+      'test-peer'
+    ]
+    clusterType: 'connectedCluster'
+    serviceSelector: {
+      test: 'waf-test'
+    }
   }
 }
 ```
@@ -156,13 +163,27 @@ module loadBalancer 'br/public:avm/res/kubernetes-runtime/load-balancer:<version
       ]
     },
     "advertiseMode": {
-      "value": "ARP"
+      "value": "Both"
     },
     "clusterName": {
       "value": "<clusterName>"
     },
     "name": {
-      "value": "krlbmin001"
+      "value": "krlbwaf001"
+    },
+    // Non-required parameters
+    "bgpPeers": {
+      "value": [
+        "test-peer"
+      ]
+    },
+    "clusterType": {
+      "value": "connectedCluster"
+    },
+    "serviceSelector": {
+      "value": {
+        "test": "waf-test"
+      }
     }
   }
 }
@@ -182,124 +203,16 @@ using 'br/public:avm/res/kubernetes-runtime/load-balancer:<version>'
 param addresses = [
   '10.0.0.100-10.0.0.110'
 ]
-param advertiseMode = 'ARP'
-param clusterName = '<clusterName>'
-param name = 'krlbmin001'
-```
-
-</details>
-<p>
-
-### Example 3: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module loadBalancer 'br/public:avm/res/kubernetes-runtime/load-balancer:<version>' = {
-  name: 'loadBalancerDeployment'
-  params: {
-    // Required parameters
-    addresses: [
-      '10.0.0.100-10.0.0.120'
-      '10.0.1.50-10.0.1.60'
-    ]
-    advertiseMode: 'BGP'
-    clusterName: '<clusterName>'
-    name: 'krlbwaf001'
-    // Non-required parameters
-    bgpPeers: [
-      '10.0.2.1'
-      '10.0.2.2'
-    ]
-    clusterType: 'managedCluster'
-    serviceSelector: {
-      environment: 'production'
-      tier: 'frontend'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "addresses": {
-      "value": [
-        "10.0.0.100-10.0.0.120",
-        "10.0.1.50-10.0.1.60"
-      ]
-    },
-    "advertiseMode": {
-      "value": "BGP"
-    },
-    "clusterName": {
-      "value": "<clusterName>"
-    },
-    "name": {
-      "value": "krlbwaf001"
-    },
-    // Non-required parameters
-    "bgpPeers": {
-      "value": [
-        "10.0.2.1",
-        "10.0.2.2"
-      ]
-    },
-    "clusterType": {
-      "value": "managedCluster"
-    },
-    "serviceSelector": {
-      "value": {
-        "environment": "production",
-        "tier": "frontend"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/kubernetes-runtime/load-balancer:<version>'
-
-// Required parameters
-param addresses = [
-  '10.0.0.100-10.0.0.120'
-  '10.0.1.50-10.0.1.60'
-]
-param advertiseMode = 'BGP'
+param advertiseMode = 'Both'
 param clusterName = '<clusterName>'
 param name = 'krlbwaf001'
 // Non-required parameters
 param bgpPeers = [
-  '10.0.2.1'
-  '10.0.2.2'
+  'test-peer'
 ]
-param clusterType = 'managedCluster'
+param clusterType = 'connectedCluster'
 param serviceSelector = {
-  environment: 'production'
-  tier: 'frontend'
+  test: 'waf-test'
 }
 ```
 
