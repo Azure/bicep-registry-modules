@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "12426160892116542357"
+      "templateHash": "11036118962451026960"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -2158,7 +2158,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "16639228348597487128"
+              "templateHash": "12076241841135701361"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -41008,7 +41008,7 @@
                   "runOnce": {
                     "value": true
                   },
-                  "managedIdentities": "[if(not(empty(parameters('resourceProviders'))), createObject('value', createObject('userAssignedResourcesIds', createArray(coalesce(tryGet(if(not(empty(parameters('resourceProviders'))), reference('createManagedIdentityForDeploymentScript'), null()), 'outputs', 'resourceId', 'value'), '')))), createObject('value', null()))]",
+                  "managedIdentities": "[if(not(empty(parameters('resourceProviders'))), createObject('value', createObject('userAssignedResourceIds', createArray(coalesce(tryGet(if(not(empty(parameters('resourceProviders'))), reference('createManagedIdentityForDeploymentScript'), null()), 'outputs', 'resourceId', 'value'), '')))), createObject('value', null()))]",
                   "storageAccountResourceId": "[if(not(empty(parameters('resourceProviders'))), createObject('value', tryGet(if(not(empty(parameters('resourceProviders'))), reference('createDsStorageAccount'), null()), 'outputs', 'resourceId', 'value')), createObject('value', null()))]",
                   "subnetResourceIds": "[if(not(empty(parameters('resourceProviders'))), createObject('value', createArray(filter(coalesce(tryGet(if(not(empty(parameters('resourceProviders'))), reference('createDsVnet'), null()), 'outputs', 'subnetResourceIds', 'value'), createArray()), lambda('subnetResourceId', contains(lambdaVariables('subnetResourceId'), 'ds-subnet')))[0])), createObject('value', null()))]",
                   "arguments": {

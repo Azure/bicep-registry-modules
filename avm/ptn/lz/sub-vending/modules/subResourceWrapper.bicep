@@ -1545,7 +1545,7 @@ module registerResourceProviders 'br/public:avm/res/resources/deployment-script:
     runOnce: true
     managedIdentities: !(empty(resourceProviders))
       ? {
-          userAssignedResourcesIds: [
+          userAssignedResourceIds: [
             createManagedIdentityForDeploymentScript.?outputs.resourceId ?? ''
           ]
         }
