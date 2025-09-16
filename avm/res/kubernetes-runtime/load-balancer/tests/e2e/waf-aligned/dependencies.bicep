@@ -20,6 +20,16 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.10.
       aadProfileEnableAzureRBAC: true
       aadProfileManaged: true
     }
+    maintenanceConfigurations: [
+      {
+        name: 'aksManagedAutoUpgradeSchedule'
+        maintenanceWindow: {}
+      }
+      {
+        name: 'aksManagedNodeOSUpgradeSchedule'
+        maintenanceWindow: {}
+      }
+    ]
     primaryAgentPoolProfiles: [
       {
         name: 'agentpool'
