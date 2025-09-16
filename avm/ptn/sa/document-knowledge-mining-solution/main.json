@@ -6,8 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "5681833884444770760"
-    }
+      "templateHash": "4943349102567752709"
+    },
+    "name": "Document Knowledge Mining Solution",
+    "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-knowledge-mining-solution) for both Sandbox environments and enterprise-grade environments."
   },
   "parameters": {
     "solutionName": {
@@ -16,12 +18,12 @@
       "minLength": 3,
       "maxLength": 20,
       "metadata": {
-        "description": "Required. A unique prefix for all resources in this deployment. This should be 3-20 characters long:"
+        "description": "Optional. A unique prefix for all resources in this deployment. This should be 3-20 characters long."
       }
     },
     "location": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "Optional. Azure location for the solution. If not provided, it defaults to the resource group location."
       }
@@ -43,7 +45,7 @@
       ],
       "minLength": 1,
       "metadata": {
-        "description": "Optional. GPT model deployment type:"
+        "description": "Optional. GPT model deployment type."
       }
     },
     "gptModelName": {
@@ -54,7 +56,7 @@
       ],
       "minLength": 1,
       "metadata": {
-        "description": "Optional. Name of the GPT model to deploy:"
+        "description": "Optional. Name of the GPT model to deploy."
       }
     },
     "gptModelVersion": {
@@ -69,7 +71,7 @@
       "defaultValue": 100,
       "minValue": 10,
       "metadata": {
-        "description": "Optional. Capacity of the GPT model deployment:"
+        "description": "Optional. Capacity of the GPT model deployment."
       }
     },
     "embeddingModelName": {
@@ -80,7 +82,7 @@
       ],
       "minLength": 1,
       "metadata": {
-        "description": "Optional. Name of the Text Embedding model to deploy:"
+        "description": "Optional. Name of the Text Embedding model to deploy."
       }
     },
     "embeddingModelVersion": {
@@ -95,7 +97,7 @@
       "defaultValue": 100,
       "minValue": 10,
       "metadata": {
-        "description": "Optional. Capacity of the Text Embedding model deployment:"
+        "description": "Optional. Capacity of the Text Embedding model deployment."
       }
     },
     "vmAdminUsername": {
@@ -131,6 +133,7 @@
     },
     "enableTelemetry": {
       "type": "bool",
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
@@ -176,7 +179,7 @@
       "type": "string",
       "defaultValue": "[if(empty(deployer().userPrincipalName), '', split(deployer().userPrincipalName, '@')[0])]",
       "metadata": {
-        "description": "Optional. created by user name"
+        "description": "Optional. Created by user name."
       }
     }
   },
@@ -6609,7 +6612,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "2843576779006428867"
+              "templateHash": "4549410452532298925"
             }
           },
           "parameters": {
@@ -6899,8 +6902,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "10645092392603021381"
-                    }
+                      "templateHash": "7252457608293401729"
+                    },
+                    "name": "Secure Virtual Network Module",
+                    "description": "This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring."
                   },
                   "definitions": {
                     "_1.networkSecurityGroupType": {
@@ -7138,26 +7143,27 @@
                       "minLength": 6,
                       "maxLength": 25,
                       "metadata": {
-                        "description": "Name used for naming all network resources."
+                        "description": "Required. Name used for naming all network resources."
                       }
                     },
                     "location": {
                       "type": "string",
+                      "defaultValue": "[resourceGroup().location]",
                       "minLength": 3,
                       "metadata": {
-                        "description": "Azure region for all services."
+                        "description": "Optional. Azure region for all services."
                       }
                     },
                     "logAnalyticsWorkSpaceResourceId": {
                       "type": "string",
                       "metadata": {
-                        "description": "Resource ID of the Log Analytics Workspace for monitoring and diagnostics."
+                        "description": "Required. Resource ID of the Log Analytics Workspace for monitoring and diagnostics."
                       }
                     },
                     "addressPrefixes": {
                       "type": "array",
                       "metadata": {
-                        "description": "Networking address prefix for the VNET."
+                        "description": "Required. Networking address prefix for the VNET."
                       }
                     },
                     "subnets": {
@@ -7166,7 +7172,7 @@
                         "$ref": "#/definitions/subnetType"
                       },
                       "metadata": {
-                        "description": "Array of subnets to be created within the VNET."
+                        "description": "Required. Array of subnets to be created within the VNET."
                       }
                     },
                     "jumpboxConfiguration": {
@@ -7239,7 +7245,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.37.4.10188",
-                              "templateHash": "1936468723755149871"
+                              "templateHash": "7979372227542385192"
                             }
                           },
                           "definitions": {
@@ -7403,14 +7409,14 @@
                             "name": {
                               "type": "string",
                               "metadata": {
-                                "description": "Name of the virtual network."
+                                "description": "Required. Name of the virtual network."
                               }
                             },
                             "location": {
                               "type": "string",
                               "defaultValue": "[resourceGroup().location]",
                               "metadata": {
-                                "description": "Azure region to deploy resources."
+                                "description": "Optional. Azure region to deploy resources."
                               }
                             },
                             "addressPrefixes": {
@@ -7425,7 +7431,7 @@
                                 "$ref": "#/definitions/subnetType"
                               },
                               "metadata": {
-                                "description": "An array of subnets to be created within the virtual network. Each subnet can have its own configuration and associated Network Security Group (NSG)."
+                                "description": "Required. An array of subnets to be created within the virtual network. Each subnet can have its own configuration and associated Network Security Group (NSG)."
                               }
                             },
                             "tags": {
@@ -22847,7 +22853,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "1461768805384515582"
+              "templateHash": "16637261679286705149"
             },
             "name": "Container Registry Module"
           },
@@ -22932,34 +22938,35 @@
             "acrName": {
               "type": "string",
               "metadata": {
-                "description": "The name of the Azure Container Registry"
+                "description": "Required. The name of the Azure Container Registry"
               }
             },
             "location": {
               "type": "string",
+              "defaultValue": "[resourceGroup().location]",
               "metadata": {
-                "description": "The location of the Azure Container Registry"
+                "description": "Optional. The location of the Azure Container Registry"
               }
             },
             "acrSku": {
               "type": "string",
               "defaultValue": "Basic",
               "metadata": {
-                "description": "SKU for the Azure Container Registry"
+                "description": "Optional. SKU for the Azure Container Registry"
               }
             },
             "publicNetworkAccess": {
               "type": "string",
               "defaultValue": "Enabled",
               "metadata": {
-                "description": "Public network access setting for the Azure Container Registry"
+                "description": "Optional. Public network access setting for the Azure Container Registry"
               }
             },
             "zoneRedundancy": {
               "type": "string",
               "defaultValue": "Disabled",
               "metadata": {
-                "description": "Zone redundancy setting for the Azure Container Registry"
+                "description": "Optional. Zone redundancy setting for the Azure Container Registry"
               }
             },
             "roleAssignments": {
@@ -22976,7 +22983,7 @@
               "type": "object",
               "defaultValue": {},
               "metadata": {
-                "description": "Tags to be applied to the Container Registry"
+                "description": "Optional. Tags to be applied to the Container Registry"
               }
             }
           },
@@ -39787,8 +39794,8 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "network",
         "userAssignedIdentity"
       ]
@@ -44551,6 +44558,9 @@
           },
           "customSubDomainName": {
             "value": "[variables('docIntelAccountName')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "managedIdentities": {
             "value": {
@@ -51181,154 +51191,154 @@
     }
   },
   "outputs": {
-    "AZURE_TENANT_ID": {
+    "azureTenantId": {
       "type": "string",
       "metadata": {
         "description": "Contains Azure Tenant ID."
       },
       "value": "[subscription().tenantId]"
     },
-    "SOLUTION_NAME": {
+    "solutionName": {
       "type": "string",
       "metadata": {
         "description": "Contains Solution Name."
       },
       "value": "[variables('solutionSuffix')]"
     },
-    "RESOURCE_GROUP_NAME": {
+    "resourceGroupName": {
       "type": "string",
       "metadata": {
         "description": "Contains Resource Group Name."
       },
       "value": "[resourceGroup().name]"
     },
-    "RESOURCE_GROUP_LOCATION": {
+    "resourceGroupLocation": {
       "type": "string",
       "metadata": {
         "description": "Contains Resource Group Location."
       },
       "value": "[variables('solutionLocation')]"
     },
-    "AZURE_RESOURCE_GROUP_ID": {
+    "azureResourceGroupId": {
       "type": "string",
       "metadata": {
         "description": "Contains Resource Group ID."
       },
       "value": "[resourceGroup().id]"
     },
-    "AZURE_APP_CONFIG_NAME": {
+    "azureAppConfigName": {
       "type": "string",
       "metadata": {
         "description": "Contains Azure App Configuration Name."
       },
       "value": "[reference('avmAppConfig').outputs.name.value]"
     },
-    "AZURE_APP_CONFIG_ENDPOINT": {
+    "azureAppConfigEndpoint": {
       "type": "string",
       "metadata": {
         "description": "Contains Azure App Configuration Endpoint."
       },
       "value": "[reference('avmAppConfig').outputs.endpoint.value]"
     },
-    "STORAGE_ACCOUNT_NAME": {
+    "storageAccountName": {
       "type": "string",
       "metadata": {
         "description": "Contains Storage Account Name."
       },
       "value": "[reference('avmStorageAccount').outputs.name.value]"
     },
-    "AZURE_COSMOSDB_NAME": {
+    "azureCosmosDbName": {
       "type": "string",
       "metadata": {
         "description": "Contains Cosmos DB Name."
       },
       "value": "[reference('avmCosmosDB').outputs.name.value]"
     },
-    "AZURE_COGNITIVE_SERVICE_NAME": {
+    "azureCognitiveServiceName": {
       "type": "string",
       "metadata": {
         "description": "Contains Cognitive Service Name."
       },
       "value": "[reference('documentIntelligence').outputs.name.value]"
     },
-    "AZURE_COGNITIVE_SERVICE_ENDPOINT": {
+    "azureCognitiveServiceEndpoint": {
       "type": "string",
       "metadata": {
         "description": "Contains Azure Cognitive Service Endpoint."
       },
       "value": "[reference('documentIntelligence').outputs.endpoint.value]"
     },
-    "AZURE_SEARCH_SERVICE_NAME": {
+    "azureSearchServiceName": {
       "type": "string",
       "metadata": {
         "description": "Contains Azure Search Service Name."
       },
       "value": "[reference('avmSearchSearchServices').outputs.name.value]"
     },
-    "AZURE_AKS_NAME": {
+    "azureAksName": {
       "type": "string",
       "metadata": {
         "description": "Contains Azure AKS Name."
       },
       "value": "[reference('managedCluster').outputs.name.value]"
     },
-    "AZURE_AKS_MI_ID": {
+    "azureAksMiId": {
       "type": "string",
       "metadata": {
         "description": "Contains Azure AKS Managed Identity ID."
       },
       "value": "[reference('managedCluster').outputs.systemAssignedMIPrincipalId.value]"
     },
-    "AZURE_CONTAINER_REGISTRY_NAME": {
+    "azureContainerRegistryName": {
       "type": "string",
       "metadata": {
         "description": "Contains Azure Container Registry Name."
       },
       "value": "[reference('avmContainerRegistry').outputs.name.value]"
     },
-    "AZURE_OPENAI_SERVICE_NAME": {
+    "azureOpenAiServiceName": {
       "type": "string",
       "metadata": {
         "description": "Contains Azure OpenAI Service Name."
       },
       "value": "[reference('avmOpenAi').outputs.name.value]"
     },
-    "AZURE_OPENAI_SERVICE_ENDPOINT": {
+    "azureOpenAiServiceEndpoint": {
       "type": "string",
       "metadata": {
         "description": "Contains Azure OpenAI Service Endpoint."
       },
       "value": "[reference('avmOpenAi').outputs.endpoint.value]"
     },
-    "AZ_SEARCH_SERVICE_ENDPOINT": {
+    "azSearchServiceEndpoint": {
       "type": "string",
       "metadata": {
         "description": "Contains Azure Search Service Endpoint."
       },
       "value": "[reference('avmSearchSearchServices').outputs.name.value]"
     },
-    "AZ_GPT4O_MODEL_ID": {
+    "azGpt4oModelId": {
       "type": "string",
       "metadata": {
         "description": "Contains Azure GPT-4o Model Deployment Name."
       },
       "value": "[variables('gptModelDeployment').deploymentName]"
     },
-    "AZ_GPT4O_MODEL_NAME": {
+    "azGpt4oModelName": {
       "type": "string",
       "metadata": {
         "description": "Contains Azure GPT-4o Model Name."
       },
       "value": "[variables('gptModelDeployment').modelName]"
     },
-    "AZ_GPT_EMBEDDING_MODEL_NAME": {
+    "azGptEmbeddingModelName": {
       "type": "string",
       "metadata": {
         "description": "Contains Azure OpenAI Embedding Model Name."
       },
       "value": "[variables('embeddingModelDeployment').modelName]"
     },
-    "AZ_GPT_EMBEDDING_MODEL_ID": {
+    "azGptEmbeddingModelId": {
       "type": "string",
       "metadata": {
         "description": "Contains Azure OpenAI Embedding Model Deployment Name."

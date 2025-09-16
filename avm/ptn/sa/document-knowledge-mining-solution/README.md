@@ -1,5 +1,6 @@
-#  `[Sa/DocumentKnowledgeMiningSolution]`
+# Document Knowledge Mining Solution `[Sa/DocumentKnowledgeMiningSolution]`
 
+This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-knowledge-mining-solution) for both Sandbox environments and enterprise-grade environments.
 
 ## Navigation
 
@@ -133,8 +134,8 @@ module documentKnowledgeMiningSolution 'br/public:avm/ptn/sa/document-knowledge-
     enablePrivateNetworking: false
     enableRedundancy: false
     enableScalability: false
-    enableTelemetry: true
     // Non-required parameters
+    enableTelemetry: true
     location: '<location>'
   }
 }
@@ -168,10 +169,10 @@ module documentKnowledgeMiningSolution 'br/public:avm/ptn/sa/document-knowledge-
     "enableScalability": {
       "value": false
     },
+    // Non-required parameters
     "enableTelemetry": {
       "value": true
     },
-    // Non-required parameters
     "location": {
       "value": "<location>"
     }
@@ -195,8 +196,8 @@ param enableMonitoring = true
 param enablePrivateNetworking = false
 param enableRedundancy = false
 param enableScalability = false
-param enableTelemetry = true
 // Non-required parameters
+param enableTelemetry = true
 param location = '<location>'
 ```
 
@@ -219,8 +220,8 @@ module documentKnowledgeMiningSolution 'br/public:avm/ptn/sa/document-knowledge-
     enablePrivateNetworking: true
     enableRedundancy: true
     enableScalability: true
-    enableTelemetry: true
     // Non-required parameters
+    enableTelemetry: true
     location: '<location>'
   }
 }
@@ -254,10 +255,10 @@ module documentKnowledgeMiningSolution 'br/public:avm/ptn/sa/document-knowledge-
     "enableScalability": {
       "value": true
     },
+    // Non-required parameters
     "enableTelemetry": {
       "value": true
     },
-    // Non-required parameters
     "location": {
       "value": "<location>"
     }
@@ -281,8 +282,8 @@ param enableMonitoring = true
 param enablePrivateNetworking = true
 param enableRedundancy = true
 param enableScalability = true
-param enableTelemetry = true
 // Non-required parameters
+param enableTelemetry = true
 param location = '<location>'
 ```
 
@@ -296,26 +297,26 @@ param location = '<location>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`aiDeploymentsLocation`](#parameter-aideploymentslocation) | string | Location for AI Foundry deployment. This is the location where the AI Foundry resources will be deployed. |
-| [`solutionName`](#parameter-solutionname) | string | A unique prefix for all resources in this deployment. This should be 3-20 characters long: |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`createdBy`](#parameter-createdby) | string | created by user name |
-| [`embeddingModelCapacity`](#parameter-embeddingmodelcapacity) | int | Capacity of the Text Embedding model deployment: |
-| [`embeddingModelName`](#parameter-embeddingmodelname) | string | Name of the Text Embedding model to deploy: |
+| [`createdBy`](#parameter-createdby) | string | Created by user name. |
+| [`embeddingModelCapacity`](#parameter-embeddingmodelcapacity) | int | Capacity of the Text Embedding model deployment. |
+| [`embeddingModelName`](#parameter-embeddingmodelname) | string | Name of the Text Embedding model to deploy. |
 | [`embeddingModelVersion`](#parameter-embeddingmodelversion) | string | Version of the Text Embedding model to deploy. |
 | [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for applicable resources, aligned with the WAF recommendations. Defaults to false. |
 | [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`gptModelCapacity`](#parameter-gptmodelcapacity) | int | Capacity of the GPT model deployment: |
-| [`gptModelDeploymentType`](#parameter-gptmodeldeploymenttype) | string | GPT model deployment type: |
-| [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy: |
+| [`gptModelCapacity`](#parameter-gptmodelcapacity) | int | Capacity of the GPT model deployment. |
+| [`gptModelDeploymentType`](#parameter-gptmodeldeploymenttype) | string | GPT model deployment type. |
+| [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. |
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy. |
 | [`location`](#parameter-location) | string | Azure location for the solution. If not provided, it defaults to the resource group location. |
+| [`solutionName`](#parameter-solutionname) | string | A unique prefix for all resources in this deployment. This should be 3-20 characters long. |
 | [`solutionUniqueToken`](#parameter-solutionuniquetoken) | string | A unique token for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
 | [`tags`](#parameter-tags) | object | The tags to apply to all deployed Azure resources. |
 | [`vmAdminPassword`](#parameter-vmadminpassword) | securestring | Admin password for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true. |
@@ -329,17 +330,9 @@ Location for AI Foundry deployment. This is the location where the AI Foundry re
 - Required: Yes
 - Type: string
 
-### Parameter: `solutionName`
-
-A unique prefix for all resources in this deployment. This should be 3-20 characters long:
-
-- Required: No
-- Type: string
-- Default: `'kmgs'`
-
 ### Parameter: `createdBy`
 
-created by user name
+Created by user name.
 
 - Required: No
 - Type: string
@@ -347,7 +340,7 @@ created by user name
 
 ### Parameter: `embeddingModelCapacity`
 
-Capacity of the Text Embedding model deployment:
+Capacity of the Text Embedding model deployment.
 
 - Required: No
 - Type: int
@@ -356,7 +349,7 @@ Capacity of the Text Embedding model deployment:
 
 ### Parameter: `embeddingModelName`
 
-Name of the Text Embedding model to deploy:
+Name of the Text Embedding model to deploy.
 
 - Required: No
 - Type: string
@@ -408,12 +401,13 @@ Enable scalability for applicable resources, aligned with the Well Architected F
 
 Enable/Disable usage telemetry for module.
 
-- Required: Yes
+- Required: No
 - Type: bool
+- Default: `True`
 
 ### Parameter: `gptModelCapacity`
 
-Capacity of the GPT model deployment:
+Capacity of the GPT model deployment.
 
 - Required: No
 - Type: int
@@ -422,7 +416,7 @@ Capacity of the GPT model deployment:
 
 ### Parameter: `gptModelDeploymentType`
 
-GPT model deployment type:
+GPT model deployment type.
 
 - Required: No
 - Type: string
@@ -437,7 +431,7 @@ GPT model deployment type:
 
 ### Parameter: `gptModelName`
 
-Name of the GPT model to deploy:
+Name of the GPT model to deploy.
 
 - Required: No
 - Type: string
@@ -463,7 +457,15 @@ Azure location for the solution. If not provided, it defaults to the resource gr
 
 - Required: No
 - Type: string
-- Default: `''`
+- Default: `[resourceGroup().location]`
+
+### Parameter: `solutionName`
+
+A unique prefix for all resources in this deployment. This should be 3-20 characters long.
+
+- Required: No
+- Type: string
+- Default: `'kmgs'`
 
 ### Parameter: `solutionUniqueToken`
 
@@ -507,28 +509,28 @@ Size of the Jumpbox Virtual Machine when created. Set to custom value if enableP
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `AZ_GPT_EMBEDDING_MODEL_ID` | string | Contains Azure OpenAI Embedding Model Deployment Name. |
-| `AZ_GPT_EMBEDDING_MODEL_NAME` | string | Contains Azure OpenAI Embedding Model Name. |
-| `AZ_GPT4O_MODEL_ID` | string | Contains Azure GPT-4o Model Deployment Name. |
-| `AZ_GPT4O_MODEL_NAME` | string | Contains Azure GPT-4o Model Name. |
-| `AZ_SEARCH_SERVICE_ENDPOINT` | string | Contains Azure Search Service Endpoint. |
-| `AZURE_AKS_MI_ID` | string | Contains Azure AKS Managed Identity ID. |
-| `AZURE_AKS_NAME` | string | Contains Azure AKS Name. |
-| `AZURE_APP_CONFIG_ENDPOINT` | string | Contains Azure App Configuration Endpoint. |
-| `AZURE_APP_CONFIG_NAME` | string | Contains Azure App Configuration Name. |
-| `AZURE_COGNITIVE_SERVICE_ENDPOINT` | string | Contains Azure Cognitive Service Endpoint. |
-| `AZURE_COGNITIVE_SERVICE_NAME` | string | Contains Cognitive Service Name. |
-| `AZURE_CONTAINER_REGISTRY_NAME` | string | Contains Azure Container Registry Name. |
-| `AZURE_COSMOSDB_NAME` | string | Contains Cosmos DB Name. |
-| `AZURE_OPENAI_SERVICE_ENDPOINT` | string | Contains Azure OpenAI Service Endpoint. |
-| `AZURE_OPENAI_SERVICE_NAME` | string | Contains Azure OpenAI Service Name. |
-| `AZURE_RESOURCE_GROUP_ID` | string | Contains Resource Group ID. |
-| `AZURE_SEARCH_SERVICE_NAME` | string | Contains Azure Search Service Name. |
-| `AZURE_TENANT_ID` | string | Contains Azure Tenant ID. |
-| `RESOURCE_GROUP_LOCATION` | string | Contains Resource Group Location. |
-| `RESOURCE_GROUP_NAME` | string | Contains Resource Group Name. |
-| `SOLUTION_NAME` | string | Contains Solution Name. |
-| `STORAGE_ACCOUNT_NAME` | string | Contains Storage Account Name. |
+| `azGpt4oModelId` | string | Contains Azure GPT-4o Model Deployment Name. |
+| `azGpt4oModelName` | string | Contains Azure GPT-4o Model Name. |
+| `azGptEmbeddingModelId` | string | Contains Azure OpenAI Embedding Model Deployment Name. |
+| `azGptEmbeddingModelName` | string | Contains Azure OpenAI Embedding Model Name. |
+| `azSearchServiceEndpoint` | string | Contains Azure Search Service Endpoint. |
+| `azureAksMiId` | string | Contains Azure AKS Managed Identity ID. |
+| `azureAksName` | string | Contains Azure AKS Name. |
+| `azureAppConfigEndpoint` | string | Contains Azure App Configuration Endpoint. |
+| `azureAppConfigName` | string | Contains Azure App Configuration Name. |
+| `azureCognitiveServiceEndpoint` | string | Contains Azure Cognitive Service Endpoint. |
+| `azureCognitiveServiceName` | string | Contains Cognitive Service Name. |
+| `azureContainerRegistryName` | string | Contains Azure Container Registry Name. |
+| `azureCosmosDbName` | string | Contains Cosmos DB Name. |
+| `azureOpenAiServiceEndpoint` | string | Contains Azure OpenAI Service Endpoint. |
+| `azureOpenAiServiceName` | string | Contains Azure OpenAI Service Name. |
+| `azureResourceGroupId` | string | Contains Resource Group ID. |
+| `azureSearchServiceName` | string | Contains Azure Search Service Name. |
+| `azureTenantId` | string | Contains Azure Tenant ID. |
+| `resourceGroupLocation` | string | Contains Resource Group Location. |
+| `resourceGroupName` | string | Contains Resource Group Name. |
+| `solutionName` | string | Contains Solution Name. |
+| `storageAccountName` | string | Contains Storage Account Name. |
 
 ## Cross-referenced modules
 

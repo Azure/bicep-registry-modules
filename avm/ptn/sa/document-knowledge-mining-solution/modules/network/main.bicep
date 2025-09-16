@@ -1,25 +1,28 @@
+metadata name = 'Secure Virtual Network Module'
+metadata description = 'This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring.'
+
 @minLength(6)
 @maxLength(25)
-@description('Name used for naming all network resources.')
+@description('Required. Name used for naming all network resources.')
 param resourcesName string
 
 @minLength(3)
-@description('Azure region for all services.')
-param location string
+@description('Optional. Azure region for all services.')
+param location string = resourceGroup().location
 
-@description('Resource ID of the Log Analytics Workspace for monitoring and diagnostics.')
+@description('Required. Resource ID of the Log Analytics Workspace for monitoring and diagnostics.')
 param logAnalyticsWorkSpaceResourceId string
 
-@description('Networking address prefix for the VNET.')
+@description('Required. Networking address prefix for the VNET.')
 param addressPrefixes array
 
 import { subnetType } from 'virtualNetwork.bicep'
-@description('Array of subnets to be created within the VNET.')
-param subnets subnetType[]   
+@description('Required. Array of subnets to be created within the VNET.')
+param subnets subnetType[]
 
 import { jumpBoxConfigurationType } from 'jumpbox.bicep'
 @description('Optional. Configuration for the Jumpbox VM. Leave null to omit Jumpbox creation.')
-param jumpboxConfiguration jumpBoxConfigurationType? 
+param jumpboxConfiguration jumpBoxConfigurationType?
 
 import { bastionHostConfigurationType } from 'bastionHost.bicep'
 @description('Optional. Configuration for the Azure Bastion Host. Leave null to omit Bastion creation.')

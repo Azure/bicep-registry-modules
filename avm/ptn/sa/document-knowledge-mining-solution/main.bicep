@@ -1,13 +1,16 @@
 // ========== main.bicep ========== //
+metadata name = 'Document Knowledge Mining Solution'
+metadata description = '''This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-knowledge-mining-solution) for both Sandbox environments and enterprise-grade environments.'''
+
 targetScope = 'resourceGroup'
 
 @minLength(3)
 @maxLength(20)
-@description('Required. A unique prefix for all resources in this deployment. This should be 3-20 characters long:')
+@description('Optional. A unique prefix for all resources in this deployment. This should be 3-20 characters long.')
 param solutionName string = 'kmgs'
 
 @description('Optional. Azure location for the solution. If not provided, it defaults to the resource group location.')
-param location string = ''
+param location string = resourceGroup().location
 
 @maxLength(5)
 @description('Optional. A unique token for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name.')
@@ -24,7 +27,7 @@ var solutionSuffix = toLower(trim(replace(
 )))
 
 @minLength(1)
-@description('Optional. GPT model deployment type:')
+@description('Optional. GPT model deployment type.')
 @allowed([
   'Standard'
   'GlobalStandard'
@@ -32,7 +35,7 @@ var solutionSuffix = toLower(trim(replace(
 param gptModelDeploymentType string = 'GlobalStandard'
 
 @minLength(1)
-@description('Optional. Name of the GPT model to deploy:')
+@description('Optional. Name of the GPT model to deploy.')
 @allowed([
   'gpt-4.1-mini'
 ])
@@ -41,12 +44,12 @@ param gptModelName string = 'gpt-4.1-mini'
 @description('Optional. Version of the GPT model to deploy.')
 param gptModelVersion string = '2025-04-14'
 
-@description('Optional. Capacity of the GPT model deployment:')
+@description('Optional. Capacity of the GPT model deployment.')
 @minValue(10)
 param gptModelCapacity int = 100
 
 @minLength(1)
-@description('Optional. Name of the Text Embedding model to deploy:')
+@description('Optional. Name of the Text Embedding model to deploy.')
 @allowed([
   'text-embedding-3-large'
 ])
@@ -55,7 +58,7 @@ param embeddingModelName string = 'text-embedding-3-large'
 @description('Optional. Version of the Text Embedding model to deploy.')
 param embeddingModelVersion string = '1'
 
-@description('Optional. Capacity of the Text Embedding model deployment:')
+@description('Optional. Capacity of the Text Embedding model deployment.')
 @minValue(10)
 param embeddingModelCapacity int = 100
 
@@ -77,7 +80,7 @@ param vmSize string = 'Standard_DS2_v2'
 param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
 
 @description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool
+param enableTelemetry bool = true
 
 @description('Optional. Enable private networking for applicable resources, aligned with the WAF recommendations. Defaults to false.')
 param enablePrivateNetworking bool
@@ -103,7 +106,7 @@ param enableScalability bool
 @description('Required. Location for AI Foundry deployment. This is the location where the AI Foundry resources will be deployed.')
 param aiDeploymentsLocation string
 
-@description('Optional. created by user name')
+@description('Optional. Created by user name.')
 param createdBy string = empty(deployer().userPrincipalName) ? '' : split(deployer().userPrincipalName, '@')[0]
 
 // ========== Resource Group Tag ========== //
@@ -774,6 +777,7 @@ module documentIntelligence 'br/public:avm/res/cognitive-services/account:0.13.2
     tags: tags
     sku: 'S0'
     customSubDomainName: docIntelAccountName
+    enableTelemetry: enableTelemetry
     managedIdentities: {
       systemAssigned: true
     }
@@ -921,67 +925,67 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (en
   Outputs
 */
 @description('Contains Azure Tenant ID.')
-output AZURE_TENANT_ID string = subscription().tenantId
+output azureTenantId string = subscription().tenantId
 
 @description('Contains Solution Name.')
-output SOLUTION_NAME string = solutionSuffix
+output solutionName string = solutionSuffix
 
 @description('Contains Resource Group Name.')
-output RESOURCE_GROUP_NAME string = resourceGroup().name
+output resourceGroupName string = resourceGroup().name
 
 @description('Contains Resource Group Location.')
-output RESOURCE_GROUP_LOCATION string = solutionLocation
+output resourceGroupLocation string = solutionLocation
 
 @description('Contains Resource Group ID.')
-output AZURE_RESOURCE_GROUP_ID string = resourceGroup().id
+output azureResourceGroupId string = resourceGroup().id
 
 @description('Contains Azure App Configuration Name.')
-output AZURE_APP_CONFIG_NAME string = avmAppConfig.outputs.name
+output azureAppConfigName string = avmAppConfig.outputs.name
 
 @description('Contains Azure App Configuration Endpoint.')
-output AZURE_APP_CONFIG_ENDPOINT string = avmAppConfig.outputs.endpoint
+output azureAppConfigEndpoint string = avmAppConfig.outputs.endpoint
 
 @description('Contains Storage Account Name.')
-output STORAGE_ACCOUNT_NAME string = avmStorageAccount.outputs.name
+output storageAccountName string = avmStorageAccount.outputs.name
 
 @description('Contains Cosmos DB Name.')
-output AZURE_COSMOSDB_NAME string = avmCosmosDB.outputs.name
+output azureCosmosDbName string = avmCosmosDB.outputs.name
 
 @description('Contains Cognitive Service Name.')
-output AZURE_COGNITIVE_SERVICE_NAME string = documentIntelligence.outputs.name
+output azureCognitiveServiceName string = documentIntelligence.outputs.name
 
 @description('Contains Azure Cognitive Service Endpoint.')
-output AZURE_COGNITIVE_SERVICE_ENDPOINT string = documentIntelligence.outputs.endpoint
+output azureCognitiveServiceEndpoint string = documentIntelligence.outputs.endpoint
 
 @description('Contains Azure Search Service Name.')
-output AZURE_SEARCH_SERVICE_NAME string = avmSearchSearchServices.outputs.name
+output azureSearchServiceName string = avmSearchSearchServices.outputs.name
 
 @description('Contains Azure AKS Name.')
-output AZURE_AKS_NAME string = managedCluster.outputs.name
+output azureAksName string = managedCluster.outputs.name
 
 @description('Contains Azure AKS Managed Identity ID.')
-output AZURE_AKS_MI_ID string = managedCluster.outputs.systemAssignedMIPrincipalId
+output azureAksMiId string = managedCluster.outputs.systemAssignedMIPrincipalId!
 
 @description('Contains Azure Container Registry Name.')
-output AZURE_CONTAINER_REGISTRY_NAME string = avmContainerRegistry.outputs.name
+output azureContainerRegistryName string = avmContainerRegistry.outputs.name
 
 @description('Contains Azure OpenAI Service Name.')
-output AZURE_OPENAI_SERVICE_NAME string = avmOpenAi.outputs.name
+output azureOpenAiServiceName string = avmOpenAi.outputs.name
 
 @description('Contains Azure OpenAI Service Endpoint.')
-output AZURE_OPENAI_SERVICE_ENDPOINT string = avmOpenAi.outputs.endpoint
+output azureOpenAiServiceEndpoint string = avmOpenAi.outputs.endpoint
 
 @description('Contains Azure Search Service Endpoint.')
-output AZ_SEARCH_SERVICE_ENDPOINT string = avmSearchSearchServices.outputs.name
+output azSearchServiceEndpoint string = avmSearchSearchServices.outputs.name
 
 @description('Contains Azure GPT-4o Model Deployment Name.')
-output AZ_GPT4O_MODEL_ID string = gptModelDeployment.deploymentName
+output azGpt4oModelId string = gptModelDeployment.deploymentName
 
 @description('Contains Azure GPT-4o Model Name.')
-output AZ_GPT4O_MODEL_NAME string = gptModelDeployment.modelName
+output azGpt4oModelName string = gptModelDeployment.modelName
 
 @description('Contains Azure OpenAI Embedding Model Name.')
-output AZ_GPT_EMBEDDING_MODEL_NAME string = embeddingModelDeployment.modelName
+output azGptEmbeddingModelName string = embeddingModelDeployment.modelName
 
 @description('Contains Azure OpenAI Embedding Model Deployment Name.')
-output AZ_GPT_EMBEDDING_MODEL_ID string = embeddingModelDeployment.deploymentName
+output azGptEmbeddingModelId string = embeddingModelDeployment.deploymentName
