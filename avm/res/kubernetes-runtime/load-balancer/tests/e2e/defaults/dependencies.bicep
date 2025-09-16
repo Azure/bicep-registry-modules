@@ -147,6 +147,9 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:0.5.1' = 
       # Set subscription
       az account set --subscription "$SUBSCRIPTION_ID"
 
+      # Install kubelogin
+      az aks install-cli
+
       # Get AKS credentials
       az aks get-credentials --resource-group "$RESOURCE_GROUP_NAME" --name "$CLUSTER_NAME" --overwrite-existing
       kubelogin convert-kubeconfig -l azurecli
