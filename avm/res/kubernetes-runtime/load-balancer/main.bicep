@@ -33,6 +33,8 @@ param serviceSelector resourceInput<'Microsoft.KubernetesRuntime/loadBalancers@2
 @secure()
 param kubernetesRuntimeRPObjectId string
 
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.kubernetesruntime-loadbalancer.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
@@ -63,6 +65,7 @@ module arcnetworking 'br/public:avm/res/kubernetes-configuration/extension:0.3.7
       k8sRuntimeFpaObjectId: kubernetesRuntimeRPObjectId
     }
     releaseTrain: 'stable'
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
