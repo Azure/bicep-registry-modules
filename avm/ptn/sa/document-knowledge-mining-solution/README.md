@@ -231,6 +231,8 @@ module documentKnowledgeMiningSolution 'br/public:avm/ptn/sa/document-knowledge-
     // Non-required parameters
     enableTelemetry: true
     location: '<location>'
+    vmAdminPassword: '<vmAdminPassword>'
+    vmAdminUsername: 'adminuser'
   }
 }
 ```
@@ -269,6 +271,12 @@ module documentKnowledgeMiningSolution 'br/public:avm/ptn/sa/document-knowledge-
     },
     "location": {
       "value": "<location>"
+    },
+    "vmAdminPassword": {
+      "value": "<vmAdminPassword>"
+    },
+    "vmAdminUsername": {
+      "value": "adminuser"
     }
   }
 }
@@ -293,6 +301,8 @@ param enableScalability = true
 // Non-required parameters
 param enableTelemetry = true
 param location = '<location>'
+param vmAdminPassword = '<vmAdminPassword>'
+param vmAdminUsername = 'adminuser'
 ```
 
 </details>
