@@ -759,7 +759,7 @@ type networkRestrictionType = {
   networkAclBypass: ('AzureServices' | 'None')?
 
   @description('Optional. Whether requests from the public network are allowed. Default to "Disabled".')
-  publicNetworkAccess: ('Enabled' | 'Disabled')?
+  publicNetworkAccess: ('Enabled' | 'Disabled' | 'SecuredByPerimeter')?
 
   @description('Optional. List of virtual network access control list (ACL) rules configured for the account.')
   virtualNetworkRules: {
