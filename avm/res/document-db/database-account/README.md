@@ -1448,7 +1448,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Required parameters
     name: 'dddansp001'
     // Non-required parameters
-    zoneRedundant: false
+    networkRestrictions: {
+      publicNetworkAccess: 'SecuredByPerimeter'
+    }
   }
 }
 ```
@@ -1470,8 +1472,10 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "dddansp001"
     },
     // Non-required parameters
-    "zoneRedundant": {
-      "value": false
+    "networkRestrictions": {
+      "value": {
+        "publicNetworkAccess": "SecuredByPerimeter"
+      }
     }
   }
 }
@@ -1490,7 +1494,9 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'dddansp001'
 // Non-required parameters
-param zoneRedundant = false
+param networkRestrictions = {
+  publicNetworkAccess: 'SecuredByPerimeter'
+}
 ```
 
 </details>
