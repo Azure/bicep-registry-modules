@@ -1,4 +1,4 @@
-name: "avm.ptn.sa.build-your-own-copilot-solution"
+name: "avm.ptn.sa.build-your-own-copilot-solution-accelerator"
 
 on:
   workflow_dispatch:
@@ -29,16 +29,16 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.ptn.sa.build-your-own-copilot-solution.yml"
-      - "avm/ptn/sa/build-your-own-copilot-solution/**"
+      - ".github/workflows/avm.ptn.sa.build-your-own-copilot-solution-accelerator.yml"
+      - "avm/ptn/sa/build-your-own-copilot-solution-accelerator/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
       - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/ptn/sa/build-your-own-copilot-solution"
-  workflowPath: ".github/workflows/avm.ptn.sa.build-your-own-copilot-solution.yml"
+  modulePath: "avm/ptn/sa/build-your-own-copilot-solution-accelerator"
+  workflowPath: ".github/workflows/avm.ptn.sa.build-your-own-copilot-solution-accelerator.yml"
 
 concurrency:
   group: ${{ github.workflow }}
