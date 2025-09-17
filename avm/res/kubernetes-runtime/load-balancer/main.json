@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "6800977774184531914"
+      "templateHash": "10156071387304067618"
     },
     "name": "Kubernetes Runtime Load Balancers",
     "description": "This module deploys a Kubernetes Runtime Load Balancer for MetalLB and related networking services."
@@ -150,13 +150,16 @@
           "extensionType": {
             "value": "microsoft.arcnetworking"
           },
+          "releaseNamespace": {
+            "value": "kube-system"
+          },
           "configurationSettings": {
             "value": {
               "k8sRuntimeFpaObjectId": "[parameters('kubernetesRuntimeRPObjectId')]"
             }
           },
           "releaseTrain": {
-            "value": "stable"
+            "value": "Stable"
           },
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"

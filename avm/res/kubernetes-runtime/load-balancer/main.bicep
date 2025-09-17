@@ -61,10 +61,11 @@ module arcnetworking 'br/public:avm/res/kubernetes-configuration/extension:0.3.7
     clusterName: clusterName
     clusterType: 'connectedCluster'
     extensionType: 'microsoft.arcnetworking'
+    releaseNamespace: 'kube-system'
     configurationSettings: {
       k8sRuntimeFpaObjectId: kubernetesRuntimeRPObjectId
     }
-    releaseTrain: 'stable'
+    releaseTrain: 'Stable'
     enableTelemetry: enableReferencedModulesTelemetry
   }
 }
