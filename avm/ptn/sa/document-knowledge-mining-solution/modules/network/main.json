@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "13830710440618715420"
+      "templateHash": "8339721587064568882"
     },
     "name": "Secure Virtual Network Module",
     "description": "This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring."
@@ -5640,7 +5640,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "2630763766763769790"
+              "templateHash": "344203094941693556"
             }
           },
           "definitions": {
@@ -5897,20 +5897,13 @@
               },
               "tags": "[parameters('tags')]"
             },
-            "existingVm": {
-              "existing": true,
-              "type": "Microsoft.Compute/virtualMachines",
-              "apiVersion": "2024-07-01",
-              "name": "[variables('vmName')]"
-            },
             "configAssignment": {
               "type": "Microsoft.Maintenance/configurationAssignments",
               "apiVersion": "2023-04-01",
-              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', variables('vmName'))]",
-              "name": "[variables('vmName')]",
-              "location": "[parameters('location')]",
+              "name": "[take(format('assign-{0}', variables('vmName')), 64)]",
               "properties": {
-                "maintenanceConfigurationId": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('maintenance-config-{0}', variables('vmName')))]"
+                "maintenanceConfigurationId": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('maintenance-config-{0}', variables('vmName')))]",
+                "resourceId": "[reference('vm').outputs.resourceId.value]"
               },
               "dependsOn": [
                 "maintenanceConfig",

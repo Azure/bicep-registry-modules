@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "3897465181440494280"
+      "templateHash": "9038447059717091529"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-knowledge-mining-solution) for both Sandbox environments and enterprise-grade environments."
@@ -6681,7 +6681,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "16704220551687339359"
+              "templateHash": "2250581226631003041"
             }
           },
           "parameters": {
@@ -6971,7 +6971,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "13830710440618715420"
+                      "templateHash": "8339721587064568882"
                     },
                     "name": "Secure Virtual Network Module",
                     "description": "This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring."
@@ -12605,7 +12605,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.37.4.10188",
-                              "templateHash": "2630763766763769790"
+                              "templateHash": "344203094941693556"
                             }
                           },
                           "definitions": {
@@ -12862,20 +12862,13 @@
                               },
                               "tags": "[parameters('tags')]"
                             },
-                            "existingVm": {
-                              "existing": true,
-                              "type": "Microsoft.Compute/virtualMachines",
-                              "apiVersion": "2024-07-01",
-                              "name": "[variables('vmName')]"
-                            },
                             "configAssignment": {
                               "type": "Microsoft.Maintenance/configurationAssignments",
                               "apiVersion": "2023-04-01",
-                              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', variables('vmName'))]",
-                              "name": "[variables('vmName')]",
-                              "location": "[parameters('location')]",
+                              "name": "[take(format('assign-{0}', variables('vmName')), 64)]",
                               "properties": {
-                                "maintenanceConfigurationId": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('maintenance-config-{0}', variables('vmName')))]"
+                                "maintenanceConfigurationId": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('maintenance-config-{0}', variables('vmName')))]",
+                                "resourceId": "[reference('vm').outputs.resourceId.value]"
                               },
                               "dependsOn": [
                                 "maintenanceConfig",

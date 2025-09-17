@@ -144,23 +144,16 @@ resource maintenanceConfig 'Microsoft.Maintenance/maintenanceConfigurations@2023
   tags: tags
 }
 
-// Reference the existing VM for maintenance configuration assignment
-resource existingVm 'Microsoft.Compute/virtualMachines@2024-07-01' existing = {
-  name: vmName
-}
-
-// 5. Associate Maintenance Configuration with VM
+// 5. Associate Maintenance Configuration with VM  
 // Required for PSRule.Rules.Azure compliance: Azure.VM.MaintenanceConfig
+// Using proper extension resource syntax for configuration assignment
 resource configAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = {
-  name: vmName
-  location: location
-  scope: existingVm
+  name: take('assign-${vmName}', 64)
+  scope: resourceGroup()
   properties: {
     maintenanceConfigurationId: maintenanceConfig.id
+    resourceId: vm.outputs.resourceId
   }
-  dependsOn: [
-    vm
-  ]
 }
 
 output resourceId string = vm.outputs.resourceId
