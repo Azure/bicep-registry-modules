@@ -902,6 +902,51 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.10.
   }
 }
 
+// ========== AKS Maintenance Windows ========== //
+// Configure customer-controlled maintenance windows for AKS cluster and node OS upgrades
+// This addresses Azure.AKS.MaintenanceWindow PSRule requirement
+resource aksManagedAutoUpgradeSchedule 'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2024-10-01' = {
+  name: 'aks-${solutionSuffix}/aksManagedAutoUpgradeSchedule'
+  properties: {
+    maintenanceWindow: {
+      schedule: {
+        weekly: {
+          intervalWeeks: 1
+          dayOfWeek: 'Sunday'
+        }
+      }
+      durationHours: 4
+      utcOffset: '+00:00'
+      startDate: '2024-07-15'
+      startTime: '02:00'
+    }
+  }
+  dependsOn: [
+    managedCluster
+  ]
+}
+
+resource aksManagedNodeOSUpgradeSchedule 'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2024-10-01' = {
+  name: 'aks-${solutionSuffix}/aksManagedNodeOSUpgradeSchedule'
+  properties: {
+    maintenanceWindow: {
+      schedule: {
+        weekly: {
+          intervalWeeks: 1
+          dayOfWeek: 'Sunday'
+        }
+      }
+      durationHours: 4
+      utcOffset: '+00:00'
+      startDate: '2024-07-15'
+      startTime: '04:00'
+    }
+  }
+  dependsOn: [
+    managedCluster
+  ]
+}
+
 // ========== Application Insights ========== //
 var applicationInsightsResourceName = 'appi-${solutionSuffix}'
 module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (enableMonitoring) {

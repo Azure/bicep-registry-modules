@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "1426211509242263627"
+      "templateHash": "13623328972481610012"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-knowledge-mining-solution) for both Sandbox environments and enterprise-grade environments."
@@ -289,6 +289,50 @@
       "properties": {
         "tags": "[shallowMerge(createArray(parameters('tags'), createObject('TemplateName', 'DKM', 'CreatedBy', parameters('createdBy'))))]"
       }
+    },
+    "aksManagedAutoUpgradeSchedule": {
+      "type": "Microsoft.ContainerService/managedClusters/maintenanceConfigurations",
+      "apiVersion": "2024-10-01",
+      "name": "[format('aks-{0}/aksManagedAutoUpgradeSchedule', variables('solutionSuffix'))]",
+      "properties": {
+        "maintenanceWindow": {
+          "schedule": {
+            "weekly": {
+              "intervalWeeks": 1,
+              "dayOfWeek": "Sunday"
+            }
+          },
+          "durationHours": 4,
+          "utcOffset": "+00:00",
+          "startDate": "2024-07-15",
+          "startTime": "02:00"
+        }
+      },
+      "dependsOn": [
+        "managedCluster"
+      ]
+    },
+    "aksManagedNodeOSUpgradeSchedule": {
+      "type": "Microsoft.ContainerService/managedClusters/maintenanceConfigurations",
+      "apiVersion": "2024-10-01",
+      "name": "[format('aks-{0}/aksManagedNodeOSUpgradeSchedule', variables('solutionSuffix'))]",
+      "properties": {
+        "maintenanceWindow": {
+          "schedule": {
+            "weekly": {
+              "intervalWeeks": 1,
+              "dayOfWeek": "Sunday"
+            }
+          },
+          "durationHours": 4,
+          "utcOffset": "+00:00",
+          "startDate": "2024-07-15",
+          "startTime": "04:00"
+        }
+      },
+      "dependsOn": [
+        "managedCluster"
+      ]
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
