@@ -77,7 +77,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
     adminPassword: password
     tags: tags
     zone: 0
-    maintenanceConfigurationResourceId: maintenanceConfig.id
+    maintenanceConfigurationResourceId: maintenanceConfiguration.outputs.resourceId
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -128,21 +128,43 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
 
 // 4. Create Maintenance Configuration for VM
 // Required for PSRule.Rules.Azure compliance: Azure.VM.MaintenanceConfig
-resource maintenanceConfig 'Microsoft.Maintenance/maintenanceConfigurations@2023-04-01' = {
-  name: 'maintenance-config-${vmName}'
-  location: location
-  properties: {
-    maintenanceScope: 'Host'
-    visibility: 'Custom'
-    // Configure maintenance window - weekends with 4 hour window
+// using AVM Virtual Machine module
+// https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/compute/virtual-machine
+
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.1' = {
+  name: take('${vmName}-jumpbox-maintenance-config', 64)
+  params: {
+    name: 'mc-${vmName}'
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    extensionProperties: {
+      InGuestPatchMode: 'User'
+    }
+    maintenanceScope: 'InGuestPatch'
     maintenanceWindow: {
-      startDateTime: '2025-01-01 02:00'
-      timeZone: 'UTC'
-      duration: '04:00'
-      recurEvery: '1Week Saturday'
+      startDateTime: '2024-06-16 00:00'
+      duration: '03:55'
+      timeZone: 'W. Europe Standard Time'
+      recurEvery: '1Day'
+    }
+    visibility: 'Custom'
+    installPatches: {
+      rebootSetting: 'IfRequired'
+      windowsParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+      linuxParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
     }
   }
-  tags: tags
 }
 
 output resourceId string = vm.outputs.resourceId

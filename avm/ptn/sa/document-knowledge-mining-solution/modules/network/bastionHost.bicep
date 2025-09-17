@@ -57,7 +57,7 @@ module bastionSubnet 'br/public:avm/res/network/virtual-network/subnet:0.1.2' = 
 // 3. Create Azure Bastion Host in AzureBastionsubnetSubnet using AVM Bastion Host module
 // https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/network/bastion-host
 
-module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = {
+module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = {
   name: take('bastionHost-${vnetName}-${name}', 64)
   params: {
     name: name
@@ -80,7 +80,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = {
     enableTelemetry: enableTelemetry
     publicIPAddressObject: {
       name: 'pip-${name}'
-      zones: ['1', '2', '3'] // Zone-redundant Public IP for high availability per PSRule Azure.PublicIP.AvailabilityZone
+      availabilityZones: [1, 2, 3] // Zone-redundant Public IP for high availability per PSRule Azure.PublicIP.AvailabilityZone
     }
   }
   dependsOn: [
