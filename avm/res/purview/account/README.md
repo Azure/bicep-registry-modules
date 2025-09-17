@@ -13,14 +13,14 @@ This module deploys a Purview Account.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Purview/accounts` | [2021-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Purview/2021-12-01/accounts) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Purview/accounts` | 2021-12-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.purview_accounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Purview/2021-12-01/accounts)</li></ul> |
 
 ## Usage examples
 
@@ -1270,6 +1270,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-accountprivateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-accountprivateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-accountprivateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `accountPrivateEndpoints.lock.kind`
 
@@ -1289,6 +1290,13 @@ Specify the type of lock.
 ### Parameter: `accountPrivateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `accountPrivateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -1835,6 +1843,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-eventhubprivateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-eventhubprivateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-eventhubprivateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `eventHubPrivateEndpoints.lock.kind`
 
@@ -1854,6 +1863,13 @@ Specify the type of lock.
 ### Parameter: `eventHubPrivateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `eventHubPrivateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2358,6 +2374,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-portalprivateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-portalprivateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-portalprivateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `portalPrivateEndpoints.lock.kind`
 
@@ -2377,6 +2394,13 @@ Specify the type of lock.
 ### Parameter: `portalPrivateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `portalPrivateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2888,6 +2912,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-storageblobprivateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-storageblobprivateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-storageblobprivateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `storageBlobPrivateEndpoints.lock.kind`
 
@@ -2907,6 +2932,13 @@ Specify the type of lock.
 ### Parameter: `storageBlobPrivateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `storageBlobPrivateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -3299,6 +3331,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-storagequeueprivateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-storagequeueprivateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-storagequeueprivateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `storageQueuePrivateEndpoints.lock.kind`
 
@@ -3318,6 +3351,13 @@ Specify the type of lock.
 ### Parameter: `storageQueuePrivateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `storageQueuePrivateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -3566,6 +3606,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 

@@ -10,7 +10,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Synapse/workspaces@2021-06-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -76,7 +76,7 @@ param bigDataPools bigDataPoolType[]?
 param sqlPools sqlPoolType[]?
 
 @description('Optional. Purview Resource ID.')
-param purviewResourceID string = ''
+param purviewResourceId string = ''
 
 @description('Required. Login for administrator access to the workspace\'s SQL pools.')
 param sqlAdministratorLogin string
@@ -103,7 +103,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
@@ -182,19 +182,19 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName!
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
@@ -231,7 +231,7 @@ resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' = {
                   useSystemAssignedIdentity: empty(customerManagedKey.?userAssignedIdentityResourceId)
                 }
             key: {
-              keyVaultUrl: cMKKeyVault::cMKKey.properties.keyUri
+              keyVaultUrl: cMKKeyVault::cMKKey!.properties.keyUri
               name: customerManagedKey!.keyName
             }
           }
@@ -247,9 +247,9 @@ resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' = {
         }
       : null
     publicNetworkAccess: managedVirtualNetwork ? publicNetworkAccess : null
-    purviewConfiguration: !empty(purviewResourceID)
+    purviewConfiguration: !empty(purviewResourceId)
       ? {
-          purviewResourceId: purviewResourceID
+          purviewResourceId: purviewResourceId
         }
       : null
     sqlAdministratorLogin: sqlAdministratorLogin
@@ -279,7 +279,7 @@ module workspace_cmk_rbac 'modules/nested_cmkRbac.bicep' = if (encryptionActivat
     workspaceIndentityPrincipalId: workspace.identity.principalId
     keyvaultName: !empty(customerManagedKey!.keyVaultResourceId) ? cMKKeyVault.name : ''
     usesRbacAuthorization: !empty(customerManagedKey!.keyVaultResourceId)
-      ? cMKKeyVault.properties.enableRbacAuthorization
+      ? cMKKeyVault!.properties.enableRbacAuthorization
       : true
   }
   scope: resourceGroup(

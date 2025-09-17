@@ -17,6 +17,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added support for the Maintenance Configuration extension via the `maintenanceConfiguration` parameter. Recommended for WAF-reliability alignment
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

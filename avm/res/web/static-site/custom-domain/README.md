@@ -10,9 +10,9 @@ This module deploys a Static Web App Site Custom Domain.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Web/staticSites/customDomains` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-03-01/staticSites/customDomains) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Web/staticSites/customDomains` | 2022-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_staticsites_customdomains.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-03-01/staticSites/customDomains)</li></ul> |
 
 ## Parameters
 

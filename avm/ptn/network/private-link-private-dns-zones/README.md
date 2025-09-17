@@ -13,11 +13,11 @@ Private Link Private DNS Zones
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Network/privateDnsZones` | [2024-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones) |
-| `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2024-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Network/privateDnsZones` | 2024-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones)</li></ul> |
+| `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | 2024-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_virtualnetworklinks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks)</li></ul> |
 
 ## Usage examples
 
@@ -487,12 +487,12 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
 - Default:
   ```Bicep
   [
-    '{regionName}.data.privatelink.azurecr.io'
     'privatelink-global.wvd.microsoft.com'
     'privatelink.{regionCode}.backup.windowsazure.com'
     'privatelink.{regionName}.azmk8s.io'
     'privatelink.{regionName}.azurecontainerapps.io'
     'privatelink.{regionName}.kusto.windows.net'
+    'privatelink.{regionName}.prometheus.monitor.azure.com'
     'privatelink.adf.azure.com'
     'privatelink.afs.azure.net'
     'privatelink.agentsvc.azure-automation.net'
@@ -538,6 +538,7 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
     'privatelink.mariadb.database.azure.com'
     'privatelink.media.azure.net'
     'privatelink.mongo.cosmos.azure.com'
+    'privatelink.mongocluster.cosmos.azure.com'
     'privatelink.monitor.azure.com'
     'privatelink.mysql.database.azure.com'
     'privatelink.notebooks.azure.net'

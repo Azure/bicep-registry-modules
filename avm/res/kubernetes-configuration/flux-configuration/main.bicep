@@ -49,7 +49,7 @@ param scope resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@
 param sourceKind resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.sourceKind
 
 @description('Optional. Reconciliation wait duration (ISO 8601 format).')
-param reconciliationWaitDuration resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.reconciliationWaitDuration?
+param reconciliationWaitDuration string?
 
 @description('Optional. Whether this configuration should suspend its reconciliation of its kustomizations and sources.')
 param suspend bool = false
@@ -73,7 +73,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2022-07-01' existing = if (clusterType == 'managedCluster') {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-04-01' existing = if (clusterType == 'managedCluster') {
   name: clusterName
 }
 

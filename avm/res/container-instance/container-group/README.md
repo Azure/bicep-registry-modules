@@ -13,10 +13,10 @@ This module deploys a Container Instance Container Group.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.ContainerInstance/containerGroups` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerInstance/2023-05-01/containerGroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.ContainerInstance/containerGroups` | 2023-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerinstance_containergroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerInstance/2023-05-01/containerGroups)</li></ul> |
 
 ## Usage examples
 
@@ -2376,40 +2376,6 @@ The DNS config information for a container group.
 
 - Required: No
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`nameServers`](#parameter-dnsconfignameservers) | array | 	The DNS servers for the container group. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`options`](#parameter-dnsconfigoptions) | string | The DNS options for the container group. |
-| [`searchDomains`](#parameter-dnsconfigsearchdomains) | string | The DNS search domains for hostname lookup in the container group. |
-
-### Parameter: `dnsConfig.nameServers`
-
-	The DNS servers for the container group.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `dnsConfig.options`
-
-The DNS options for the container group.
-
-- Required: No
-- Type: string
-
-### Parameter: `dnsConfig.searchDomains`
-
-The DNS search domains for hostname lookup in the container group.
-
-- Required: No
-- Type: string
 
 ### Parameter: `enableTelemetry`
 

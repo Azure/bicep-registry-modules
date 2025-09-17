@@ -18,15 +18,15 @@ Also please ensure you review the [Notes section of the module's README](https:/
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/policyAssignments` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2025-01-01/policyAssignments) |
-| `Microsoft.Authorization/policyDefinitions` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2025-01-01/policyDefinitions) |
-| `Microsoft.Authorization/policySetDefinitions` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2025-01-01/policySetDefinitions) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Authorization/roleDefinitions` | [2022-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-05-01-preview/roleDefinitions) |
-| `Microsoft.Management/managementGroups` | [2021-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Management/2021-04-01/managementGroups) |
-| `Microsoft.Management/managementGroups/subscriptions` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Management/2023-04-01/managementGroups/subscriptions) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/policyAssignments` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_policyassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2025-01-01/policyAssignments)</li></ul> |
+| `Microsoft.Authorization/policyDefinitions` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_policydefinitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2025-01-01/policyDefinitions)</li></ul> |
+| `Microsoft.Authorization/policySetDefinitions` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_policysetdefinitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2025-01-01/policySetDefinitions)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Authorization/roleDefinitions` | 2022-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roledefinitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-05-01-preview/roleDefinitions)</li></ul> |
+| `Microsoft.Management/managementGroups` | 2021-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.management_managementgroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Management/2021-04-01/managementGroups)</li></ul> |
+| `Microsoft.Management/managementGroups/subscriptions` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.management_managementgroups_subscriptions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Management/2023-04-01/managementGroups/subscriptions)</li></ul> |
 
 ## Usage examples
 
@@ -113,6 +113,12 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
     managementGroupCustomPolicySetDefinitions: '<managementGroupCustomPolicySetDefinitions>'
     managementGroupCustomRoleDefinitions: '<managementGroupCustomRoleDefinitions>'
     managementGroupDisplayName: 'AVM ALZ PTN Empty Max Test'
+    managementGroupDoNotEnforcePolicyAssignments: [
+      'diag-activity-log-lz'
+    ]
+    managementGroupExcludedPolicyAssignments: [
+      'allowed-vm-skus-root'
+    ]
     managementGroupPolicyAssignments: [
       {
         definitionVersion: '1.*.*'
@@ -154,9 +160,14 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
         enforcementMode: 'Default'
         identity: 'None'
         name: 'tags-policy'
-        parameters: {
+        parameterOverrides: {
           effect: {
             value: 'Audit'
+          }
+        }
+        parameters: {
+          effect: {
+            value: 'Disabled'
           }
           tagName: {
             value: 'costCenter'
@@ -202,6 +213,16 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
     "managementGroupDisplayName": {
       "value": "AVM ALZ PTN Empty Max Test"
     },
+    "managementGroupDoNotEnforcePolicyAssignments": {
+      "value": [
+        "diag-activity-log-lz"
+      ]
+    },
+    "managementGroupExcludedPolicyAssignments": {
+      "value": [
+        "allowed-vm-skus-root"
+      ]
+    },
     "managementGroupPolicyAssignments": {
       "value": [
         {
@@ -244,9 +265,14 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
           "enforcementMode": "Default",
           "identity": "None",
           "name": "tags-policy",
-          "parameters": {
+          "parameterOverrides": {
             "effect": {
               "value": "Audit"
+            }
+          },
+          "parameters": {
+            "effect": {
+              "value": "Disabled"
             },
             "tagName": {
               "value": "costCenter"
@@ -281,6 +307,12 @@ param managementGroupCustomPolicyDefinitions = '<managementGroupCustomPolicyDefi
 param managementGroupCustomPolicySetDefinitions = '<managementGroupCustomPolicySetDefinitions>'
 param managementGroupCustomRoleDefinitions = '<managementGroupCustomRoleDefinitions>'
 param managementGroupDisplayName = 'AVM ALZ PTN Empty Max Test'
+param managementGroupDoNotEnforcePolicyAssignments = [
+  'diag-activity-log-lz'
+]
+param managementGroupExcludedPolicyAssignments = [
+  'allowed-vm-skus-root'
+]
 param managementGroupPolicyAssignments = [
   {
     definitionVersion: '1.*.*'
@@ -322,9 +354,14 @@ param managementGroupPolicyAssignments = [
     enforcementMode: 'Default'
     identity: 'None'
     name: 'tags-policy'
-    parameters: {
+    parameterOverrides: {
       effect: {
         value: 'Audit'
+      }
+    }
+    parameters: {
+      effect: {
+        value: 'Disabled'
       }
       tagName: {
         value: 'costCenter'
@@ -358,6 +395,8 @@ param managementGroupRoleAssignments = '<managementGroupRoleAssignments>'
 | [`managementGroupCustomPolicySetDefinitions`](#parameter-managementgroupcustompolicysetdefinitions) | array | Array of custom policy set definitions (initiatives) to create on the management group. |
 | [`managementGroupCustomRoleDefinitions`](#parameter-managementgroupcustomroledefinitions) | array | Array of custom role definitions to create on the management group. |
 | [`managementGroupDisplayName`](#parameter-managementgroupdisplayname) | string | The display name of the management group to create or update. If not specified, the management group name will be used. |
+| [`managementGroupDoNotEnforcePolicyAssignments`](#parameter-managementgroupdonotenforcepolicyassignments) | array | An array of policy assignment names (not display names) to set the [`enforcementMode`](https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#enforcement-mode) to `DoNotEnforce`. |
+| [`managementGroupExcludedPolicyAssignments`](#parameter-managementgroupexcludedpolicyassignments) | array | An array of policy assignment names (not display names) to prevent from being assigned (created/updated from a CRUD perspective) at all (not a policy exclusion (`notScope`) or exemption). This is useful if you want to exclude certain policy assignments from being created or updated by the module if included in the `managementGroupPolicyAssignments` parameter via other automation. |
 | [`managementGroupParentId`](#parameter-managementgroupparentid) | string | The parent ID of the management group to create or update. If not specified, the management group will be created at the root level of the tenant. Just provide the management group ID, not the full resource ID. |
 | [`managementGroupPolicyAssignments`](#parameter-managementgrouppolicyassignments) | array | Array of policy assignments to create on the management group. |
 | [`managementGroupRoleAssignments`](#parameter-managementgrouproleassignments) | array | Array of custom role assignments to create on the management group. |
@@ -544,6 +583,22 @@ The display name of the management group to create or update. If not specified, 
 - Required: No
 - Type: string
 
+### Parameter: `managementGroupDoNotEnforcePolicyAssignments`
+
+An array of policy assignment names (not display names) to set the [`enforcementMode`](https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#enforcement-mode) to `DoNotEnforce`.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `managementGroupExcludedPolicyAssignments`
+
+An array of policy assignment names (not display names) to prevent from being assigned (created/updated from a CRUD perspective) at all (not a policy exclusion (`notScope`) or exemption). This is useful if you want to exclude certain policy assignments from being created or updated by the module if included in the `managementGroupPolicyAssignments` parameter via other automation.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
 ### Parameter: `managementGroupParentId`
 
 The parent ID of the management group to create or update. If not specified, the management group will be created at the root level of the tenant. Just provide the management group ID, not the full resource ID.
@@ -582,6 +637,7 @@ Array of policy assignments to create on the management group.
 | [`nonComplianceMessages`](#parameter-managementgrouppolicyassignmentsnoncompliancemessages) | array | The messages that describe why a resource is non-compliant with the policy. |
 | [`notScopes`](#parameter-managementgrouppolicyassignmentsnotscopes) | array | The policy excluded scopes. |
 | [`overrides`](#parameter-managementgrouppolicyassignmentsoverrides) | array | The policy property value override. Allows changing the effect of a policy definition without modifying the underlying policy definition or using a parameterized effect in the policy definition. |
+| [`parameterOverrides`](#parameter-managementgrouppolicyassignmentsparameteroverrides) | object | Parameter Overrides for the policy assignment if needed, useful when passing in parameters via a JSON or YAML file via the `loadJsonContent`, `loadYamlContent` or `loadTextContent` functions. Parameters specified here will override the parameters and their corresponding values provided in the `parameters` parameter of this module. |
 | [`parameters`](#parameter-managementgrouppolicyassignmentsparameters) | object | Parameters for the policy assignment if needed. |
 | [`resourceSelectors`](#parameter-managementgrouppolicyassignmentsresourceselectors) | array | The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location. |
 | [`roleDefinitionIds`](#parameter-managementgrouppolicyassignmentsroledefinitionids) | array | The IDs Of the Azure Role Definition list that is used to assign permissions to the identity. You need to provide either the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition. |
@@ -816,6 +872,13 @@ The value to override the policy property.
 
 - Required: No
 - Type: string
+
+### Parameter: `managementGroupPolicyAssignments.parameterOverrides`
+
+Parameter Overrides for the policy assignment if needed, useful when passing in parameters via a JSON or YAML file via the `loadJsonContent`, `loadYamlContent` or `loadTextContent` functions. Parameters specified here will override the parameters and their corresponding values provided in the `parameters` parameter of this module.
+
+- Required: No
+- Type: object
 
 ### Parameter: `managementGroupPolicyAssignments.parameters`
 
@@ -1056,7 +1119,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/ptn/authorization/policy-assignment:0.4.0` | Remote reference |
+| `br/public:avm/ptn/authorization/policy-assignment:0.5.1` | Remote reference |
 | `br/public:avm/ptn/authorization/role-assignment:0.2.2` | Remote reference |
 | `br/public:avm/ptn/authorization/role-definition:0.1.1` | Remote reference |
 | `br/public:avm/res/management/management-group:0.1.2` | Remote reference |

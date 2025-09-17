@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "14002844115765251791"
+      "templateHash": "3213986800806787192"
     },
     "name": "Local Network Gateways",
     "description": "This module deploys a Local Network Gateway."
@@ -35,6 +35,16 @@
           "metadata": {
             "description": "Optional. The weight added to routes learned from this BGP speaker."
           }
+        },
+        "bgpPeeringAddresses": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/localNetworkGateways@2024-07-01#properties/properties/properties/bgpSettings/properties/bgpPeeringAddresses"
+            },
+            "description": "Optional. BGP peering address with IP configuration ID for virtual network gateway."
+          },
+          "nullable": true
         }
       },
       "metadata": {
@@ -75,7 +85,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -150,7 +160,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -168,12 +178,6 @@
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "Optional. Location for all resources."
-      }
-    },
-    "localAddressPrefixes": {
-      "type": "array",
-      "metadata": {
-        "description": "Required. List of the local (on-premises) IP address ranges."
       }
     },
     "localGatewayPublicIpAddress": {
@@ -201,10 +205,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/localNetworkGateways@2024-07-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -215,9 +222,18 @@
     },
     "fqdn": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. FQDN of local network gateway."
+      }
+    },
+    "localNetworkAddressSpace": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/localNetworkGateways@2024-07-01#properties/properties/properties/localNetworkAddressSpace"
+        },
+        "description": "Required. Local network site address space configuration."
       }
     },
     "bgpSettings": {
@@ -268,17 +284,15 @@
     },
     "localNetworkGateway": {
       "type": "Microsoft.Network/localNetworkGateways",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-07-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "localNetworkAddressSpace": {
-          "addressPrefixes": "[parameters('localAddressPrefixes')]"
-        },
-        "fqdn": "[if(not(empty(parameters('fqdn'))), parameters('fqdn'), null())]",
+        "localNetworkAddressSpace": "[parameters('localNetworkAddressSpace')]",
+        "fqdn": "[parameters('fqdn')]",
         "gatewayIpAddress": "[parameters('localGatewayPublicIpAddress')]",
-        "bgpSettings": "[if(not(empty(parameters('bgpSettings'))), createObject('asn', parameters('bgpSettings').localAsn, 'bgpPeeringAddress', parameters('bgpSettings').localBgpPeeringAddress, 'peerWeight', coalesce(tryGet(parameters('bgpSettings'), 'peerWeight'), 0)), null())]"
+        "bgpSettings": "[if(not(empty(parameters('bgpSettings'))), createObject('asn', parameters('bgpSettings').localAsn, 'bgpPeeringAddresses', tryGet(parameters('bgpSettings'), 'bgpPeeringAddresses'), 'bgpPeeringAddress', parameters('bgpSettings').localBgpPeeringAddress, 'peerWeight', coalesce(tryGet(parameters('bgpSettings'), 'peerWeight'), 0)), null())]"
       }
     },
     "localNetworkGateway_lock": {
@@ -345,7 +359,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('localNetworkGateway', '2023-04-01', 'full').location]"
+      "value": "[reference('localNetworkGateway', '2024-07-01', 'full').location]"
     }
   }
 }

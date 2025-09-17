@@ -13,19 +13,28 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   tags: tags
   properties: {
     addressSpace: {
-      addressPrefixes: ['10.0.0.0/20']
+      // NOTE: Foundry currently requires an address space of 192.168.0.0/16 for agent vnet integration
+      addressPrefixes: ['192.168.0.0/16']
     }
     subnets: [
       {
         name: 'agents'
         properties: {
-          addressPrefix: '10.0.0.0/23'
+          addressPrefix: '192.168.0.0/23'
+          delegations: [
+            {
+              name: 'Microsoft.App/environments'
+              properties: {
+                serviceName: 'Microsoft.App/environments'
+              }
+            }
+          ]
         }
       }
       {
         name: 'private-endpoints'
         properties: {
-          addressPrefix: '10.0.2.0/23'
+          addressPrefix: '192.168.2.0/23'
           privateEndpointNetworkPolicies: 'Disabled'
           privateLinkServiceNetworkPolicies: 'Disabled'
         }
@@ -34,7 +43,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   }
 }
 
-module blobDnsZone 'dependencies.dns.bicep' = {
+module blobDnsZone '../../shared/privateDnsZone.bicep' = {
   name: take('module.dns.storage.blob.${workloadName}', 64)
   params: {
     name: 'privatelink.blob.${environment().suffixes.storage}'
@@ -43,7 +52,7 @@ module blobDnsZone 'dependencies.dns.bicep' = {
   }
 }
 
-module documentsDnsZone 'dependencies.dns.bicep' = {
+module documentsDnsZone '../../shared/privateDnsZone.bicep' = {
   name: take('module.dns.cosmos.documents.${workloadName}', 64)
   params: {
     name: 'privatelink.documents.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}'
@@ -52,7 +61,7 @@ module documentsDnsZone 'dependencies.dns.bicep' = {
   }
 }
 
-module searchDnsZone 'dependencies.dns.bicep' = {
+module searchDnsZone '../../shared/privateDnsZone.bicep' = {
   name: take('module.dns.search.${workloadName}', 64)
   params: {
     name: 'privatelink.search.windows.net'
@@ -61,7 +70,7 @@ module searchDnsZone 'dependencies.dns.bicep' = {
   }
 }
 
-module keyVaultDnsZone 'dependencies.dns.bicep' = {
+module keyVaultDnsZone '../../shared/privateDnsZone.bicep' = {
   name: take('module.dns.keyvault.${workloadName}', 64)
   params: {
     name: 'privatelink.${toLower(environment().name) == 'azureusgovernment' ? 'vaultcore.usgovcloudapi.net' : 'vaultcore.azure.net'}'
@@ -70,7 +79,7 @@ module keyVaultDnsZone 'dependencies.dns.bicep' = {
   }
 }
 
-module openaiDnsZone 'dependencies.dns.bicep' = {
+module openaiDnsZone '../../shared/privateDnsZone.bicep' = {
   name: take('module.dns.openai.${workloadName}', 64)
   params: {
     name: 'privatelink.openai.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}'
@@ -79,7 +88,7 @@ module openaiDnsZone 'dependencies.dns.bicep' = {
   }
 }
 
-module servicesAiDnsZone 'dependencies.dns.bicep' = {
+module servicesAiDnsZone '../../shared/privateDnsZone.bicep' = {
   name: take('module.dns.services.ai.${workloadName}', 64)
   params: {
     name: 'privatelink.services.ai.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}'
@@ -88,7 +97,7 @@ module servicesAiDnsZone 'dependencies.dns.bicep' = {
   }
 }
 
-module cognitiveServicesDnsZone 'dependencies.dns.bicep' = {
+module cognitiveServicesDnsZone '../../shared/privateDnsZone.bicep' = {
   name: take('module.dns.cognitive.services.${workloadName}', 64)
   params: {
     name: 'privatelink.cognitiveservices.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}'

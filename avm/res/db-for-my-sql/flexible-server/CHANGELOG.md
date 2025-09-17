@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+- Updated `privateEndpoints` parameter type to 'avm-common-types' `0.6.1`, adding a type to its `tags` property
 
 ### Breaking Changes
 
@@ -20,6 +21,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - New `configurations` parameter allows setting MySQL server configuration parameters directly through the module
 - Created new configuration child resource module at `configuration/main.bicep`
 - Added `configurationType` definition with proper typing for configuration parameters
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

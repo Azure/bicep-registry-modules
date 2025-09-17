@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/desktop-virtualization/host-pool/CHANGELOG.md).
 
+## 0.8.1
+
+### Changes
+
+- Updated `privateEndpoints` parameter type to 'avm-common-types' `0.6.1`, adding a type to its `tags` property
+
+### Breaking Changes
+
+- None
+
 ## 0.8.0
 
 ### Changes
@@ -16,6 +26,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
   with default values
 - Updated resource to API version `2025-03-01-preview`
 - Added several types
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

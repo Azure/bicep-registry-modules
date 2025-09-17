@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+- Small update to metadata
 
 ### Breaking Changes
 
@@ -18,6 +19,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Updated `avm-common-types` version to latest version `0.6.0`, enabling custom notes on locks
 - Added diverse types
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

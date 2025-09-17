@@ -43,7 +43,7 @@ param operator string = 'GreaterThan'
 
 @maxLength(5)
 @description('Optional. Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000.')
-param thresholds array = [
+param thresholds int[] = [
   50
   75
   90
@@ -68,7 +68,7 @@ param actionGroups array?
 param thresholdType string = 'Actual'
 
 @description('Optional. The filter to use for restricting which resources are considered within the budget.')
-param filter object?
+param filter resourceInput<'Microsoft.Consumption/budgets@2024-08-01'>.properties.filter?
 
 @description('Optional. The list of resource groups that contain the resources that are to be considered within the budget.')
 param resourceGroupFilter string[] = []

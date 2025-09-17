@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "9576530677729438395"
+      "version": "0.37.4.10188",
+      "templateHash": "76263396795506547"
     },
     "name": "Automation Account Modules",
     "description": "This module deploys an Azure Automation Account Module."
@@ -56,12 +56,12 @@
     "automationAccount": {
       "existing": true,
       "type": "Microsoft.Automation/automationAccounts",
-      "apiVersion": "2022-08-08",
+      "apiVersion": "2024-10-23",
       "name": "[parameters('automationAccountName')]"
     },
     "module": {
       "type": "Microsoft.Automation/automationAccounts/modules",
-      "apiVersion": "2022-08-08",
+      "apiVersion": "2024-10-23",
       "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -100,7 +100,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('module', '2022-08-08', 'full').location]"
+      "value": "[reference('module', '2024-10-23', 'full').location]"
     }
   }
 }

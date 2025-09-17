@@ -4,23 +4,58 @@ name: .Platform - Set GitHub issue owner config
 on:
   issues:
     types: [opened]
+  schedule:
+    - cron: "0 0 * * 0" # Every sunday at 0 am
+  workflow_dispatch:
+    inputs:
+      issueNumber:
+        type: string
+        description: "Specific issue to process"
+        required: false
+        default: ''
+      whatIf:
+        type: boolean
+        description: "Simulate execution"
+        required: false
+        default: false
+
+env:
+  workflowPath: ".github/workflows/platform.set-avm-github-issue-owner-config.yml"
 
 jobs:
-  SetAvmGitHubIssueOwnerConfig:
-    name: Set-AvmGitHubIssueOwnerConfig
+  job_initialize_pipeline:
     runs-on: ubuntu-latest
-    permissions:
-      issues: write
+    name: "Initialize pipeline"
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: tibdex/github-app-token@v2
+      - name: "Set input parameters to output variables"
+        id: get-workflow-param
+        uses: ./.github/actions/templates/avm-getWorkflowInput
+        with:
+          workflowPath: "${{ env.workflowPath}}"
+    outputs:
+      workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
+      issueNumber: ${{ steps.get-workflow-param.outputs.issueNumber }}
+  SetAvmGitHubIssueOwnerConfig:
+    name: Set-AvmGitHubIssueOwnerConfig
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    needs:
+      - job_initialize_pipeline
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/create-github-app-token@v2
         id: generate-token
         with:
-          app_id: ${{ secrets.TEAM_LINTER_APP_ID }}
-          private_key: ${{ secrets.TEAM_LINTER_PRIVATE_KEY }}
+          app-id: ${{ secrets.TEAM_LINTER_APP_ID }}
+          private-key: ${{ secrets.TEAM_LINTER_PRIVATE_KEY }}
       - name: "Run scripts"
         shell: pwsh
         env:
@@ -30,12 +65,25 @@ jobs:
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'platform' 'Set-AvmGitHubIssueOwnerConfig.ps1')
 
           $functionInput = @{
-            Repo     = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
-            RepoRoot = $env:GITHUB_WORKSPACE
-            IssueUrl = "${{ github.event.issue.url }}"
+            RepositoryOwner = "${{ github.repository_owner }}"
+            RepositoryName  = "${{ github.event.repository.name }}"
+            RepoRoot        = $env:GITHUB_WORKSPACE
+            WhatIf          = [System.Convert]::ToBoolean((('${{ needs.job_initialize_pipeline.outputs.workflowInput }}') | ConvertFrom-Json).whatIf)
+          }
+
+          if(-not [String]::IsNullOrEmpty('${{ needs.job_initialize_pipeline.outputs.issueNumber }}')) {
+            $functionInput += @{
+              IssueUrl = "https://github.com/${{ github.repository_owner }}/${{ github.event.repository.name }}/issues/${{ needs.job_initialize_pipeline.outputs.issueNumber }}"
+            }
+          }
+
+          if('${{ github.event_name}}' -eq 'issues') {
+            $functionInput += @{
+              IssueUrl = "${{ github.event.issue.url }}"
+            }
           }
 
           Write-Verbose "Invoke task with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Set-AvmGitHubIssueOwnerConfig @functionInput -Verbose # -WhatIf
+          Set-AvmGitHubIssueOwnerConfig @functionInput
