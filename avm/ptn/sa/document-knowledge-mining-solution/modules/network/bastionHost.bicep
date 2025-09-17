@@ -80,7 +80,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = {
     enableTelemetry: enableTelemetry
     publicIPAddressObject: {
       name: 'pip-${name}'
-      zones: []
+      zones: ['1', '2', '3'] // Zone-redundant Public IP for high availability per PSRule Azure.PublicIP.AvailabilityZone
     }
   }
   dependsOn: [

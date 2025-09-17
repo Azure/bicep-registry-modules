@@ -87,7 +87,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
     osDisk: {
       name: 'osdisk-${vmName}'
       managedDisk: {
-        storageAccountType: 'Standard_LRS'
+        storageAccountType: 'Premium_LRS' // Required for PSRule.Rules.Azure compliance: Azure.VM.Standalone
       }
     }
     encryptionAtHost: false // Some Azure subscriptions do not support encryption at host
@@ -123,6 +123,44 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
     ]
     enableTelemetry: enableTelemetry
   }
+}
+
+// 4. Create Maintenance Configuration for VM
+// Required for PSRule.Rules.Azure compliance: Azure.VM.MaintenanceConfig
+resource maintenanceConfig 'Microsoft.Maintenance/maintenanceConfigurations@2023-04-01' = {
+  name: 'maintenance-config-${vmName}'
+  location: location
+  properties: {
+    maintenanceScope: 'Host'
+    visibility: 'Custom'
+    // Configure maintenance window - weekends with 4 hour window
+    maintenanceWindow: {
+      startDateTime: '2025-01-01 02:00'
+      timeZone: 'UTC'
+      duration: '04:00'
+      recurEvery: '1Week Saturday'
+    }
+  }
+  tags: tags
+}
+
+// Reference the existing VM for maintenance configuration assignment
+resource existingVm 'Microsoft.Compute/virtualMachines@2024-07-01' existing = {
+  name: vmName
+}
+
+// 5. Associate Maintenance Configuration with VM
+// Required for PSRule.Rules.Azure compliance: Azure.VM.MaintenanceConfig
+resource configAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = {
+  name: vmName
+  location: location
+  scope: existingVm
+  properties: {
+    maintenanceConfigurationId: maintenanceConfig.id
+  }
+  dependsOn: [
+    vm
+  ]
 }
 
 output resourceId string = vm.outputs.resourceId

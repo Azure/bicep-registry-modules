@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "13623328972481610012"
+      "templateHash": "3897465181440494280"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-knowledge-mining-solution) for both Sandbox environments and enterprise-grade environments."
@@ -3569,7 +3569,12 @@
             ]
           },
           "dailyQuotaGb": "[if(parameters('enableRedundancy'), createObject('value', 10), createObject('value', null()))]",
-          "replication": "[if(parameters('enableRedundancy'), createObject('value', createObject('enabled', true(), 'location', variables('replicaLocation'))), createObject('value', null()))]",
+          "replication": {
+            "value": {
+              "enabled": true,
+              "location": "[variables('replicaLocation')]"
+            }
+          },
           "publicNetworkAccessForIngestion": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "publicNetworkAccessForQuery": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "dataSources": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('tags', parameters('tags'), 'eventLogName', 'Application', 'eventTypes', createArray(createObject('eventType', 'Error'), createObject('eventType', 'Warning'), createObject('eventType', 'Information')), 'kind', 'WindowsEvent', 'name', 'applicationEvent'), createObject('counterName', '% Processor Time', 'instanceName', '*', 'intervalSeconds', 60, 'kind', 'WindowsPerformanceCounter', 'name', 'windowsPerfCounter1', 'objectName', 'Processor'), createObject('kind', 'IISLogs', 'name', 'sampleIISLog1', 'state', 'OnPremiseEnabled'))), createObject('value', null()))]"
@@ -6676,7 +6681,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "18312680638642686681"
+              "templateHash": "16704220551687339359"
             }
           },
           "parameters": {
@@ -6966,7 +6971,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "10157566721917347549"
+                      "templateHash": "13830710440618715420"
                     },
                     "name": "Secure Virtual Network Module",
                     "description": "This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring."
@@ -9930,7 +9935,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.37.4.10188",
-                              "templateHash": "4276999080155095213"
+                              "templateHash": "4114837283960989759"
                             }
                           },
                           "definitions": {
@@ -11249,7 +11254,11 @@
                                   "publicIPAddressObject": {
                                     "value": {
                                       "name": "[format('pip-{0}', parameters('name'))]",
-                                      "zones": []
+                                      "zones": [
+                                        "1",
+                                        "2",
+                                        "3"
+                                      ]
                                     }
                                   }
                                 },
@@ -12596,7 +12605,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.37.4.10188",
-                              "templateHash": "1146686685215355815"
+                              "templateHash": "2630763766763769790"
                             }
                           },
                           "definitions": {
@@ -12836,6 +12845,43 @@
                             "vmName": "[take(parameters('name'), 15)]"
                           },
                           "resources": {
+                            "maintenanceConfig": {
+                              "type": "Microsoft.Maintenance/maintenanceConfigurations",
+                              "apiVersion": "2023-04-01",
+                              "name": "[format('maintenance-config-{0}', variables('vmName'))]",
+                              "location": "[parameters('location')]",
+                              "properties": {
+                                "maintenanceScope": "Host",
+                                "visibility": "Custom",
+                                "maintenanceWindow": {
+                                  "startDateTime": "2025-01-01 02:00",
+                                  "timeZone": "UTC",
+                                  "duration": "04:00",
+                                  "recurEvery": "1Week Saturday"
+                                }
+                              },
+                              "tags": "[parameters('tags')]"
+                            },
+                            "existingVm": {
+                              "existing": true,
+                              "type": "Microsoft.Compute/virtualMachines",
+                              "apiVersion": "2024-07-01",
+                              "name": "[variables('vmName')]"
+                            },
+                            "configAssignment": {
+                              "type": "Microsoft.Maintenance/configurationAssignments",
+                              "apiVersion": "2023-04-01",
+                              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', variables('vmName'))]",
+                              "name": "[variables('vmName')]",
+                              "location": "[parameters('location')]",
+                              "properties": {
+                                "maintenanceConfigurationId": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('maintenance-config-{0}', variables('vmName')))]"
+                              },
+                              "dependsOn": [
+                                "maintenanceConfig",
+                                "vm"
+                              ]
+                            },
                             "nsg": {
                               "condition": "[not(empty(parameters('subnet')))]",
                               "type": "Microsoft.Resources/deployments",
@@ -13950,7 +13996,7 @@
                                     "value": {
                                       "name": "[format('osdisk-{0}', variables('vmName'))]",
                                       "managedDisk": {
-                                        "storageAccountType": "Standard_LRS"
+                                        "storageAccountType": "Premium_LRS"
                                       }
                                     }
                                   },
@@ -30028,6 +30074,14 @@
           "disableLocalAuth": {
             "value": false
           },
+          "replicaLocations": {
+            "value": [
+              {
+                "replicaLocation": "[if(equals(variables('solutionLocation'), 'eastus'), 'westus2', 'eastus')]",
+                "name": "[if(equals(variables('solutionLocation'), 'eastus'), 'westus2-replica', 'eastus-replica')]"
+              }
+            ]
+          },
           "roleAssignments": {
             "value": [
               {
@@ -32157,6 +32211,14 @@
           "disableLocalAuth": {
             "value": true
           },
+          "replicaLocations": {
+            "value": [
+              {
+                "replicaLocation": "[if(equals(variables('solutionLocation'), 'eastus'), 'westus2', 'eastus')]",
+                "name": "[if(equals(variables('solutionLocation'), 'eastus'), 'westus2-replica', 'eastus-replica')]"
+              }
+            ]
+          },
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-appconfig-{0}', variables('solutionSuffix')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'appconfig-dns-zone-group', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').appConfig)).outputs.resourceId.value))), 'subnetResourceId', reference('network').outputs.subnetPrivateEndpointsResourceId.value))), createObject('value', createArray()))]"
         },
@@ -34190,13 +34252,16 @@
               "defaultAction": "[if(parameters('enablePrivateNetworking'), 'Deny', 'Allow')]"
             }
           },
-          "allowBlobPublicAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', true()), createObject('value', false()))]",
+          "allowBlobPublicAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', false()), createObject('value', true()))]",
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-blob-{0}', variables('solutionSuffix')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'storage-dns-zone-group-blob', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)).outputs.resourceId.value))), 'subnetResourceId', reference('network').outputs.subnetPrivateEndpointsResourceId.value, 'service', 'blob'), createObject('name', format('pep-queue-{0}', variables('solutionSuffix')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'storage-dns-zone-group-queue', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)).outputs.resourceId.value))), 'subnetResourceId', reference('network').outputs.subnetPrivateEndpointsResourceId.value, 'service', 'queue'))), createObject('value', createArray()))]",
           "blobServices": {
             "value": {
               "corsRules": [],
-              "deleteRetentionPolicyEnabled": false,
+              "deleteRetentionPolicyEnabled": true,
+              "containerDeleteRetentionPolicyEnabled": true,
+              "containerDeleteRetentionPolicyDays": 7,
+              "deleteRetentionPolicyDays": 6,
               "containers": [
                 {
                   "name": "data",
@@ -39898,8 +39963,8 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "network",
         "userAssignedIdentity"
       ]
@@ -39936,7 +40001,7 @@
             }
           },
           "replicaCount": {
-            "value": 1
+            "value": 3
           },
           "partitionCount": {
             "value": 1
@@ -47257,6 +47322,13 @@
           "enableRBAC": {
             "value": true
           },
+          "aadProfile": {
+            "value": {
+              "aadProfileManaged": true,
+              "aadProfileEnableAzureRBAC": true,
+              "aadProfileTenantId": "[subscription().tenantId]"
+            }
+          },
           "disableLocalAccounts": {
             "value": false
           },
@@ -47282,12 +47354,12 @@
               {
                 "name": "agentpool",
                 "vmSize": "Standard_D4ds_v5",
-                "count": 2,
+                "count": 3,
                 "osType": "Linux",
                 "mode": "System",
                 "type": "VirtualMachineScaleSets",
-                "minCount": 1,
-                "maxCount": 2,
+                "minCount": 3,
+                "maxCount": 5,
                 "enableAutoScaling": true,
                 "scaleSetEvictionPolicy": "Delete",
                 "scaleSetPriority": "Regular",

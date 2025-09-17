@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "10157566721917347549"
+      "templateHash": "13830710440618715420"
     },
     "name": "Secure Virtual Network Module",
     "description": "This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring."
@@ -2970,7 +2970,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "4276999080155095213"
+              "templateHash": "4114837283960989759"
             }
           },
           "definitions": {
@@ -4289,7 +4289,11 @@
                   "publicIPAddressObject": {
                     "value": {
                       "name": "[format('pip-{0}', parameters('name'))]",
-                      "zones": []
+                      "zones": [
+                        "1",
+                        "2",
+                        "3"
+                      ]
                     }
                   }
                 },
@@ -5636,7 +5640,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "1146686685215355815"
+              "templateHash": "2630763766763769790"
             }
           },
           "definitions": {
@@ -5876,6 +5880,43 @@
             "vmName": "[take(parameters('name'), 15)]"
           },
           "resources": {
+            "maintenanceConfig": {
+              "type": "Microsoft.Maintenance/maintenanceConfigurations",
+              "apiVersion": "2023-04-01",
+              "name": "[format('maintenance-config-{0}', variables('vmName'))]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "maintenanceScope": "Host",
+                "visibility": "Custom",
+                "maintenanceWindow": {
+                  "startDateTime": "2025-01-01 02:00",
+                  "timeZone": "UTC",
+                  "duration": "04:00",
+                  "recurEvery": "1Week Saturday"
+                }
+              },
+              "tags": "[parameters('tags')]"
+            },
+            "existingVm": {
+              "existing": true,
+              "type": "Microsoft.Compute/virtualMachines",
+              "apiVersion": "2024-07-01",
+              "name": "[variables('vmName')]"
+            },
+            "configAssignment": {
+              "type": "Microsoft.Maintenance/configurationAssignments",
+              "apiVersion": "2023-04-01",
+              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', variables('vmName'))]",
+              "name": "[variables('vmName')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "maintenanceConfigurationId": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('maintenance-config-{0}', variables('vmName')))]"
+              },
+              "dependsOn": [
+                "maintenanceConfig",
+                "vm"
+              ]
+            },
             "nsg": {
               "condition": "[not(empty(parameters('subnet')))]",
               "type": "Microsoft.Resources/deployments",
@@ -6990,7 +7031,7 @@
                     "value": {
                       "name": "[format('osdisk-{0}', variables('vmName'))]",
                       "managedDisk": {
-                        "storageAccountType": "Standard_LRS"
+                        "storageAccountType": "Premium_LRS"
                       }
                     }
                   },

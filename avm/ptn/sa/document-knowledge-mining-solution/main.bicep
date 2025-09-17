@@ -255,12 +255,11 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
     diagnosticSettings: [{ useThisWorkspace: true }]
     // WAF aligned configuration for Redundancy
     dailyQuotaGb: enableRedundancy ? 10 : null //WAF recommendation: 10 GB per day is a good starting point for most workloads
-    replication: enableRedundancy
-      ? {
-          enabled: true
-          location: replicaLocation
-        }
-      : null
+    // Always enable replication for improved service availability (PSRule Azure.Log.Replication)
+    replication: {
+      enabled: true
+      location: replicaLocation
+    }
     // WAF aligned configuration for Private Networking
     publicNetworkAccessForIngestion: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     publicNetworkAccessForQuery: enablePrivateNetworking ? 'Disabled' : 'Enabled'
@@ -436,6 +435,12 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
     enableTelemetry: enableTelemetry
     tags: tags
     disableLocalAuth: false
+    replicaLocations: [
+      {
+        replicaLocation: solutionLocation == 'eastus' ? 'westus2' : 'eastus'
+        name: solutionLocation == 'eastus' ? 'westus2-replica' : 'eastus-replica'
+      }
+    ]
     roleAssignments: [
       {
         principalId: userAssignedIdentity.outputs.principalId
@@ -557,6 +562,12 @@ module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-st
     enableTelemetry: enableTelemetry
     tags: tags
     disableLocalAuth: true
+    replicaLocations: [
+      {
+        replicaLocation: solutionLocation == 'eastus' ? 'westus2' : 'eastus'
+        name: solutionLocation == 'eastus' ? 'westus2-replica' : 'eastus-replica'
+      }
+    ]
 
     // WAF aligned networking
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
@@ -609,7 +620,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
       bypass: 'AzureServices'
       defaultAction: enablePrivateNetworking ? 'Deny' : 'Allow'
     }
-    allowBlobPublicAccess: enablePrivateNetworking ? true : false
+    allowBlobPublicAccess: enablePrivateNetworking ? false : true
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
 
     privateEndpoints: enablePrivateNetworking
@@ -645,7 +656,10 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
 
     blobServices: {
       corsRules: []
-      deleteRetentionPolicyEnabled: false
+      deleteRetentionPolicyEnabled: true
+      containerDeleteRetentionPolicyEnabled: true
+      containerDeleteRetentionPolicyDays: 7
+      deleteRetentionPolicyDays: 6
       containers: [
         {
           name: 'data'
@@ -668,7 +682,7 @@ module avmSearchSearchServices 'br/public:avm/res/search/search-service:0.9.1' =
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }] : null
     sku: enableScalability ? 'standard' : 'basic'
     managedIdentities: { userAssignedResourceIds: [userAssignedIdentity!.outputs.resourceId] }
-    replicaCount: 1
+    replicaCount: 3 // Minimum 3 replicas for Azure.Search.IndexSLA and minimum 2 for Azure.Search.QuerySLA (PSRule compliance)
     partitionCount: 1
     roleAssignments: [
       {
@@ -830,6 +844,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.10.
     kubernetesVersion: '1.30.4'
     dnsPrefix: 'aks-${solutionSuffix}'
     enableRBAC: true
+    aadProfile: {
+      aadProfileManaged: true
+      aadProfileEnableAzureRBAC: true
+      aadProfileTenantId: subscription().tenantId
+    }
     disableLocalAccounts: false
     publicNetworkAccess: 'Enabled'
     managedIdentities: {
@@ -842,12 +861,12 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.10.
       {
         name: 'agentpool'
         vmSize: 'Standard_D4ds_v5'
-        count: 2
+        count: 3
         osType: 'Linux'
         mode: 'System'
         type: 'VirtualMachineScaleSets'
-        minCount: 1
-        maxCount: 2
+        minCount: 3
+        maxCount: 5
 
         // WAF aligned configuration for Private Networking
         enableAutoScaling: true
