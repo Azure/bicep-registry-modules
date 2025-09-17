@@ -77,6 +77,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
     adminPassword: password
     tags: tags
     zone: 0
+    maintenanceConfigurationResourceId: maintenanceConfig.id
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -142,18 +143,6 @@ resource maintenanceConfig 'Microsoft.Maintenance/maintenanceConfigurations@2023
     }
   }
   tags: tags
-}
-
-// 5. Associate Maintenance Configuration with VM  
-// Required for PSRule.Rules.Azure compliance: Azure.VM.MaintenanceConfig
-// Using proper extension resource syntax for configuration assignment
-resource configAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = {
-  name: take('assign-${vmName}', 64)
-  scope: resourceGroup()
-  properties: {
-    maintenanceConfigurationId: maintenanceConfig.id
-    resourceId: vm.outputs.resourceId
-  }
 }
 
 output resourceId string = vm.outputs.resourceId
