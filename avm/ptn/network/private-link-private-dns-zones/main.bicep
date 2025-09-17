@@ -69,11 +69,11 @@ param privateLinkPrivateDnsZones array = [
   'privatelink.wvd.microsoft.com'
   'privatelink.{regionName}.azmk8s.io'
   'privatelink.azurecr.io'
-  '{regionName}.data.privatelink.azurecr.io'
   #disable-next-line no-hardcoded-env-urls
   'privatelink.database.windows.net'
   'privatelink.documents.azure.com'
   'privatelink.mongo.cosmos.azure.com'
+  'privatelink.mongocluster.cosmos.azure.com'
   'privatelink.cassandra.cosmos.azure.com'
   'privatelink.gremlin.cosmos.azure.com'
   'privatelink.table.cosmos.azure.com'
@@ -103,6 +103,7 @@ param privateLinkPrivateDnsZones array = [
   'privatelink.{regionCode}.backup.windowsazure.com'
   'privatelink.siterecovery.windowsazure.com'
   'privatelink.monitor.azure.com'
+  'privatelink.{regionName}.prometheus.monitor.azure.com'
   'privatelink.oms.opinsights.azure.com'
   'privatelink.ods.opinsights.azure.com'
   'privatelink.agentsvc.azure-automation.net'
@@ -318,7 +319,7 @@ var combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink = map(
 )
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.network-privatelinkprivatednszones.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
