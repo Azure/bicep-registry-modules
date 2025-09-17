@@ -34,22 +34,6 @@ module nestedDependencies 'dependencies.bicep' = {
   }
 }
 
-module arcnetworking 'br/public:avm/res/kubernetes-configuration/extension:0.3.7' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-arcnetworking'
-  params: {
-    name: 'arcnetworking'
-    clusterName: nestedDependencies.outputs.clusterName
-    clusterType: 'connectedCluster'
-    extensionType: 'microsoft.arcnetworking'
-    releaseNamespace: 'kube-system'
-    configurationSettings: {
-      k8sRuntimeFpaObjectId: kubernetesRuntimeRPObjectId
-    }
-    releaseTrain: 'stable'
-  }
-}
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -62,7 +46,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       clusterName: nestedDependencies.outputs.clusterName
-      clusterType: 'connectedCluster'
+      kubernetesRuntimeRPObjectId: kubernetesRuntimeRPObjectId
       addresses: [
         '10.0.0.100-10.0.0.110'
       ]
@@ -72,8 +56,5 @@ module testDeployment '../../../main.bicep' = [
         test: 'waf-test'
       }
     }
-    dependsOn: [
-      arcnetworking
-    ]
   }
 ]

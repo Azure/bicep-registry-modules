@@ -8,12 +8,15 @@ This module deploys a Kubernetes Runtime Load Balancer for MetalLB and related n
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
+| `Microsoft.KubernetesConfiguration/extensions` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kubernetesconfiguration_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2024-11-01/extensions)</li></ul> |
+| `Microsoft.KubernetesConfiguration/fluxConfigurations` | 2025-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kubernetesconfiguration_fluxconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2025-04-01/fluxConfigurations)</li></ul> |
 | `Microsoft.KubernetesRuntime/loadBalancers` | 2024-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kubernetesruntime_loadbalancers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesRuntime/2024-03-01/loadBalancers)</li></ul> |
 
 ## Usage examples
@@ -46,9 +49,8 @@ module loadBalancer 'br/public:avm/res/kubernetes-runtime/load-balancer:<version
     ]
     advertiseMode: 'ARP'
     clusterName: '<clusterName>'
+    kubernetesRuntimeRPObjectId: '<kubernetesRuntimeRPObjectId>'
     name: 'krlbmin001'
-    // Non-required parameters
-    clusterType: 'connectedCluster'
   }
 }
 ```
@@ -77,12 +79,11 @@ module loadBalancer 'br/public:avm/res/kubernetes-runtime/load-balancer:<version
     "clusterName": {
       "value": "<clusterName>"
     },
+    "kubernetesRuntimeRPObjectId": {
+      "value": "<kubernetesRuntimeRPObjectId>"
+    },
     "name": {
       "value": "krlbmin001"
-    },
-    // Non-required parameters
-    "clusterType": {
-      "value": "connectedCluster"
     }
   }
 }
@@ -104,9 +105,8 @@ param addresses = [
 ]
 param advertiseMode = 'ARP'
 param clusterName = '<clusterName>'
+param kubernetesRuntimeRPObjectId = '<kubernetesRuntimeRPObjectId>'
 param name = 'krlbmin001'
-// Non-required parameters
-param clusterType = 'connectedCluster'
 ```
 
 </details>
@@ -131,12 +131,12 @@ module loadBalancer 'br/public:avm/res/kubernetes-runtime/load-balancer:<version
     ]
     advertiseMode: 'Both'
     clusterName: '<clusterName>'
+    kubernetesRuntimeRPObjectId: '<kubernetesRuntimeRPObjectId>'
     name: 'krlbwaf001'
     // Non-required parameters
     bgpPeers: [
       'test-peer'
     ]
-    clusterType: 'connectedCluster'
     serviceSelector: {
       test: 'waf-test'
     }
@@ -168,6 +168,9 @@ module loadBalancer 'br/public:avm/res/kubernetes-runtime/load-balancer:<version
     "clusterName": {
       "value": "<clusterName>"
     },
+    "kubernetesRuntimeRPObjectId": {
+      "value": "<kubernetesRuntimeRPObjectId>"
+    },
     "name": {
       "value": "krlbwaf001"
     },
@@ -176,9 +179,6 @@ module loadBalancer 'br/public:avm/res/kubernetes-runtime/load-balancer:<version
       "value": [
         "test-peer"
       ]
-    },
-    "clusterType": {
-      "value": "connectedCluster"
     },
     "serviceSelector": {
       "value": {
@@ -205,12 +205,12 @@ param addresses = [
 ]
 param advertiseMode = 'Both'
 param clusterName = '<clusterName>'
+param kubernetesRuntimeRPObjectId = '<kubernetesRuntimeRPObjectId>'
 param name = 'krlbwaf001'
 // Non-required parameters
 param bgpPeers = [
   'test-peer'
 ]
-param clusterType = 'connectedCluster'
 param serviceSelector = {
   test: 'waf-test'
 }
@@ -228,6 +228,7 @@ param serviceSelector = {
 | [`addresses`](#parameter-addresses) | array | IP Range - The IP addresses that this load balancer will advertise. |
 | [`advertiseMode`](#parameter-advertisemode) | string | Advertise Mode - The mode in which the load balancer should advertise the IP addresses. |
 | [`clusterName`](#parameter-clustername) | string | The name of the AKS cluster or Arc-enabled connected cluster that should be configured. |
+| [`kubernetesRuntimeRPObjectId`](#parameter-kubernetesruntimerpobjectid) | securestring | The service principal object ID of the Kubernetes Runtime HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 087fca6e-4606-4d41-b3f6-5ebdf75b8b4c`. |
 | [`name`](#parameter-name) | string | The name of the load balancer. |
 
 **Optional parameters**
@@ -235,7 +236,6 @@ param serviceSelector = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`bgpPeers`](#parameter-bgppeers) | array | The list of BGP peers it should advertise to. Null or empty means to advertise to all peers. |
-| [`clusterType`](#parameter-clustertype) | string | The type of cluster to configure. Choose between AKS managed cluster or Arc-enabled connected cluster. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`serviceSelector`](#parameter-serviceselector) | object | A dynamic label mapping to select related services. For instance, if you want to create a load balancer only for services with label "a=b", then please specify {"a": "b"} in the field. |
 
@@ -268,6 +268,13 @@ The name of the AKS cluster or Arc-enabled connected cluster that should be conf
 - Required: Yes
 - Type: string
 
+### Parameter: `kubernetesRuntimeRPObjectId`
+
+The service principal object ID of the Kubernetes Runtime HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 087fca6e-4606-4d41-b3f6-5ebdf75b8b4c`.
+
+- Required: Yes
+- Type: securestring
+
 ### Parameter: `name`
 
 The name of the load balancer.
@@ -281,21 +288,6 @@ The list of BGP peers it should advertise to. Null or empty means to advertise t
 
 - Required: No
 - Type: array
-
-### Parameter: `clusterType`
-
-The type of cluster to configure. Choose between AKS managed cluster or Arc-enabled connected cluster.
-
-- Required: No
-- Type: string
-- Default: `'managedCluster'`
-- Allowed:
-  ```Bicep
-  [
-    'connectedCluster'
-    'managedCluster'
-  ]
-  ```
 
 ### Parameter: `enableTelemetry`
 
@@ -319,6 +311,14 @@ A dynamic label mapping to select related services. For instance, if you want to
 | `name` | string | The name of the load balancer. |
 | `resourceGroupName` | string | The resource group the load balancer was deployed into. |
 | `resourceId` | string | The resource ID of the load balancer. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/res/kubernetes-configuration/extension:0.3.7` | Remote reference |
 
 ## Data Collection
 

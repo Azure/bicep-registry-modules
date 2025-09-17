@@ -12,13 +12,6 @@ param enableTelemetry bool = true
 @description('Required. The name of the AKS cluster or Arc-enabled connected cluster that should be configured.')
 param clusterName string
 
-@allowed([
-  'managedCluster'
-  'connectedCluster'
-])
-@description('Optional. The type of cluster to configure. Choose between AKS managed cluster or Arc-enabled connected cluster.')
-param clusterType string = 'managedCluster'
-
 @description('Required. IP Range - The IP addresses that this load balancer will advertise.')
 param addresses resourceInput<'Microsoft.KubernetesRuntime/loadBalancers@2024-03-01'>.properties.addresses
 
@@ -35,6 +28,10 @@ param bgpPeers resourceInput<'Microsoft.KubernetesRuntime/loadBalancers@2024-03-
 
 @description('Optional. A dynamic label mapping to select related services. For instance, if you want to create a load balancer only for services with label "a=b", then please specify {"a": "b"} in the field.')
 param serviceSelector resourceInput<'Microsoft.KubernetesRuntime/loadBalancers@2024-03-01'>.properties.serviceSelector?
+
+@description('Required. The service principal object ID of the Kubernetes Runtime HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 087fca6e-4606-4d41-b3f6-5ebdf75b8b4c`.')
+@secure()
+param kubernetesRuntimeRPObjectId string
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -55,30 +52,27 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-// Reference existing AKS managed cluster
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-05-01' existing = if (clusterType == 'managedCluster') {
-  name: clusterName
-}
-
-// Reference existing Arc-enabled connected cluster
-resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2024-01-01' existing = if (clusterType == 'connectedCluster') {
-  name: clusterName
-}
-
-// Load Balancer resource for managed cluster (AKS)
-resource loadBalancerManagedCluster 'Microsoft.KubernetesRuntime/loadBalancers@2024-03-01' = if (clusterType == 'managedCluster') {
-  scope: managedCluster
-  name: name
-  properties: {
-    addresses: addresses
-    advertiseMode: advertiseMode
-    bgpPeers: bgpPeers
-    serviceSelector: serviceSelector
+module arcnetworking 'br/public:avm/res/kubernetes-configuration/extension:0.3.7' = {
+  name: '${uniqueString(deployment().name, clusterName)}-arcnetworking'
+  params: {
+    name: 'arcnetworking'
+    clusterName: clusterName
+    clusterType: 'connectedCluster'
+    extensionType: 'microsoft.arcnetworking'
+    configurationSettings: {
+      k8sRuntimeFpaObjectId: kubernetesRuntimeRPObjectId
+    }
+    releaseTrain: 'stable'
   }
 }
 
+// Reference existing Arc-enabled connected cluster
+resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2024-01-01' existing = {
+  name: clusterName
+}
+
 // Load Balancer resource for connected cluster (Arc-enabled)
-resource loadBalancerConnectedCluster 'Microsoft.KubernetesRuntime/loadBalancers@2024-03-01' = if (clusterType == 'connectedCluster') {
+resource loadBalancerConnectedCluster 'Microsoft.KubernetesRuntime/loadBalancers@2024-03-01' = {
   scope: connectedCluster
   name: name
   properties: {
@@ -87,12 +81,13 @@ resource loadBalancerConnectedCluster 'Microsoft.KubernetesRuntime/loadBalancers
     bgpPeers: bgpPeers
     serviceSelector: serviceSelector
   }
+  dependsOn: [
+    arcnetworking
+  ]
 }
 
 @description('The resource ID of the load balancer.')
-output resourceId string = clusterType == 'managedCluster'
-  ? loadBalancerManagedCluster.id
-  : loadBalancerConnectedCluster.id
+output resourceId string = loadBalancerConnectedCluster.id
 
 @description('The name of the load balancer.')
 output name string = name
