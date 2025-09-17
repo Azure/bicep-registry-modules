@@ -154,6 +154,9 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:0.5.1' = 
       az aks get-credentials --resource-group "$RESOURCE_GROUP_NAME" --name "$CLUSTER_NAME" --overwrite-existing
       kubelogin convert-kubeconfig -l azurecli
 
+      # Wait 5 minutes before connecting to Azure Arc
+      sleep 300
+
       # Connect cluster to Azure Arc
       az connectedk8s connect --name "$CLUSTER_NAME" --resource-group "$RESOURCE_GROUP_NAME"
     '''
