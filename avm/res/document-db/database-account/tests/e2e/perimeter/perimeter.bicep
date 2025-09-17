@@ -29,7 +29,7 @@ module perimeter '../../../../../network/network-security-perimeter/main.bicep' 
             direction: 'Inbound'
             subscriptions: [
               {
-                id: subscription().subscriptionId
+                id: subscription().id
               }
             ]
           }
