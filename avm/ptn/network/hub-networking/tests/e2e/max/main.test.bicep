@@ -98,6 +98,9 @@ module testDeployment '../../../main.bicep' = [
             enableShareableLink: false
             scaleUnits: 2
             skuName: 'Standard'
+            publicIPAddressObject: {
+              name: 'hub1-bastion-pip'
+            }
           }
           dnsServers: ['10.0.1.4', '10.0.1.5']
           diagnosticSettings: [
@@ -190,6 +193,9 @@ module testDeployment '../../../main.bicep' = [
             enableShareableLink: false
             scaleUnits: 2
             skuName: 'Standard'
+            publicIPAddressObject: {
+              name: 'hub2-bastion-pip'
+            }
           }
           enableAzureFirewall: true
           enableBastion: true
