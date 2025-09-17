@@ -25,7 +25,6 @@ on:
   push:
     branches:
       - "main"
-      - "vk-avm1"
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
