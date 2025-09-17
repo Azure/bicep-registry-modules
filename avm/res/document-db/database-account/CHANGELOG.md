@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-Added support for Network Perimeter
+Added support to specify SecuredByPerimeter for PublicNetworkAccess
 
 ### Breaking Changes
 

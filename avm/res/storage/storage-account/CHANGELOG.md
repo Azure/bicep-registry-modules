@@ -6,7 +6,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-Added support for Network Perimeter, Added support for TLS1.3
+Added support to specify SecuredByPerimeter for PublicNetworkAccess
+Added support to specify TLS1.3
 
 ### Breaking Changes
 
