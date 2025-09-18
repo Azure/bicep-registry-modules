@@ -18,7 +18,6 @@ This module contains the resources required to deploy the [Chat-with-your-data-s
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
-| `Microsoft.Authorization/locks` | 2017-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2017-04-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.CognitiveServices/accounts` | 2023-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts)</li></ul> |
 | `Microsoft.CognitiveServices/accounts/deployments` | 2023-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_deployments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts/deployments)</li></ul> |
@@ -46,9 +45,9 @@ This module contains the resources required to deploy the [Chat-with-your-data-s
 | `Microsoft.KeyVault/vaults` | 2022-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults)</li></ul> |
 | `Microsoft.KeyVault/vaults/accessPolicies` | 2023-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/accessPolicies)</li></ul> |
 | `Microsoft.KeyVault/vaults/keys` | 2022-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2022-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2023-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
-| `Microsoft.KeyVault/vaults/secrets` | 2022-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets)</li></ul> |
 | `Microsoft.MachineLearningServices/workspaces` | 2024-10-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.machinelearningservices_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01-preview/workspaces)</li></ul> |
 | `Microsoft.MachineLearningServices/workspaces/connections` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.machinelearningservices_workspaces_connections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/connections)</li></ul> |
 | `Microsoft.Maintenance/configurationAssignments` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_configurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments)</li></ul> |
@@ -78,6 +77,7 @@ This module contains the resources required to deploy the [Chat-with-your-data-s
 | `Microsoft.OperationsManagement/solutions` | 2015-11-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationsmanagement_solutions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions)</li></ul> |
 | `Microsoft.Portal/dashboards` | 2020-09-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.portal_dashboards.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Portal/2020-09-01-preview/dashboards)</li></ul> |
 | `Microsoft.Resources/deploymentScripts` | 2020-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_deploymentscripts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2020-10-01/deploymentScripts)</li></ul> |
+| `Microsoft.Resources/deploymentScripts` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_deploymentscripts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts)</li></ul> |
 | `Microsoft.Resources/tags` | 2025-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_tags.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2025-04-01/tags)</li></ul> |
 | `Microsoft.Search/searchServices` | 2025-02-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices)</li></ul> |
 | `Microsoft.Search/searchServices/sharedPrivateLinkResources` | 2025-02-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices_sharedprivatelinkresources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices/sharedPrivateLinkResources)</li></ul> |
@@ -113,8 +113,10 @@ The following section provides usage examples for the module, which were used to
 module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-data-solution-accelerator:<version>' = {
   name: 'chatWithYourDataSolutionAcceleratorDeployment'
   params: {
+    // Required parameters
     location: '<location>'
-    solutionName: 'scwydsdef001'
+    // Non-required parameters
+    solutionName: 'scwydsmin001'
   }
 }
 ```
@@ -131,11 +133,13 @@ module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "location": {
       "value": "<location>"
     },
+    // Non-required parameters
     "solutionName": {
-      "value": "scwydsdef001"
+      "value": "scwydsmin001"
     }
   }
 }
@@ -151,8 +155,10 @@ module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-
 ```bicep-params
 using 'br/public:avm/ptn/sa/chat-with-your-data-solution-accelerator:<version>'
 
+// Required parameters
 param location = '<location>'
-param solutionName = 'scwydsdef001'
+// Non-required parameters
+param solutionName = 'scwydsmin001'
 ```
 
 </details>
@@ -168,7 +174,9 @@ param solutionName = 'scwydsdef001'
 module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-data-solution-accelerator:<version>' = {
   name: 'chatWithYourDataSolutionAcceleratorDeployment'
   params: {
+    // Required parameters
     location: '<location>'
+    // Non-required parameters
     solutionName: 'scwydswaf001'
   }
 }
@@ -186,9 +194,11 @@ module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "location": {
       "value": "<location>"
     },
+    // Non-required parameters
     "solutionName": {
       "value": "scwydswaf001"
     }
@@ -206,7 +216,9 @@ module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-
 ```bicep-params
 using 'br/public:avm/ptn/sa/chat-with-your-data-solution-accelerator:<version>'
 
+// Required parameters
 param location = '<location>'
+// Non-required parameters
 param solutionName = 'scwydswaf001'
 ```
 
@@ -283,7 +295,7 @@ param solutionName = 'scwydswaf001'
 | [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`hostingPlanSku`](#parameter-hostingplansku) | string | The pricing tier for the App Service plan |
+| [`existingLogAnalyticsWorkspaceId`](#parameter-existingloganalyticsworkspaceid) | string | Existing Log Analytics Workspace Resource ID |
 | [`logLevel`](#parameter-loglevel) | string | The log level for application logging. This setting controls the verbosity of logs emitted by the application. Allowed values are CRITICAL, ERROR, WARN, INFO, and DEBUG. The default value is INFO. |
 | [`newGuidString`](#parameter-newguidstring) | string | A new GUID string generated for this deployment. This can be used for unique naming if needed. |
 | [`principalId`](#parameter-principalid) | string | Id of the user or app to assign application roles |
@@ -338,9 +350,8 @@ Hosting model for the web apps. This value is fixed as "container", which uses p
 
 Location for all resources, if you are using existing resource group provide the location of the resorce group.
 
-- Required: No
+- Required: Yes
 - Type: string
-- Default: `[resourceGroup().location]`
 
 ### Parameter: `orchestrationStrategy`
 
@@ -821,30 +832,13 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `hostingPlanSku`
+### Parameter: `existingLogAnalyticsWorkspaceId`
 
-The pricing tier for the App Service plan
+Existing Log Analytics Workspace Resource ID
 
 - Required: No
 - Type: string
-- Default: `'B3'`
-- Allowed:
-  ```Bicep
-  [
-    'B1'
-    'B2'
-    'B3'
-    'D1'
-    'F1'
-    'P1'
-    'P2'
-    'P3'
-    'P4'
-    'S1'
-    'S2'
-    'S3'
-  ]
-  ```
+- Default: `''`
 
 ### Parameter: `logLevel`
 
@@ -986,6 +980,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
+| `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
 | `br/public:avm/res/cognitive-services/account:0.10.2` | Remote reference |
 | `br/public:avm/res/db-for-postgre-sql/flexible-server:0.13.1` | Remote reference |
 | `br/public:avm/res/event-grid/system-topic:0.6.3` | Remote reference |
@@ -1002,6 +997,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/virtual-network/subnet:0.1.2` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.12.0` | Remote reference |
 | `br/public:avm/res/portal/dashboard:0.3.1` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
 | `br/public:avm/res/search/search-service:0.11.1` | Remote reference |
 | `br/public:avm/res/web/serverfarm:0.5.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |

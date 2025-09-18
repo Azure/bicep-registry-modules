@@ -2,33 +2,33 @@
 // Create Jumpbox NSG and Jumpbox Subnet, then create Jumpbox VM
 // /****************************************************************************************************************************/
 
-@description('Name of the Jumpbox Virtual Machine.')
+@description('Required. The name of the Jumpbox Virtual Machine.')
 param name string
 
-@description('Azure region to deploy resources.')
+@description('Required. The Azure region to deploy resources.')
 param location string = resourceGroup().location
 
-@description('Name of the Virtual Network where the Jumpbox VM will be deployed.')
+@description('Required. The name of the Virtual Network where the Jumpbox VM will be deployed.')
 param vnetName string
 
-@description('Size of the Jumpbox Virtual Machine.')
+@description('Required. The size of the Jumpbox Virtual Machine.')
 param size string
 
 import { subnetType } from 'virtualNetwork.bicep'
-@description('Optional. Subnet configuration for the Jumpbox VM.')
+@description('Optional. The Subnet configuration for the Jumpbox VM.')
 param subnet subnetType?
 
-@description('Username to access the Jumpbox VM.')
+@description('Required. The username to access the Jumpbox VM.')
 param username string
 
 @secure()
-@description('Password to access the Jumpbox VM.')
+@description('Required. The password to access the Jumpbox VM.')
 param password string
 
 @description('Optional. Tags to apply to the resources.')
 param tags object = {}
 
-@description('Log Analytics Workspace Resource ID for VM diagnostics.')
+@description('Optional. Log Analytics Workspace Resource ID for VM diagnostics.')
 param logAnalyticsWorkspaceId string
 
 @description('Optional. Enable/Disable usage telemetry for module.')

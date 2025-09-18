@@ -1,0 +1,369 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.37.4.10188",
+      "templateHash": "6632480610516632840"
+    },
+    "name": "Private DNS Zones",
+    "description": "This module deploys a Private DNS zone."
+  },
+  "definitions": {
+    "virtualNetworkLinkType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "minLength": 1,
+          "maxLength": 80,
+          "metadata": {
+            "description": "Optional. The resource name."
+          }
+        },
+        "virtualNetworkResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the virtual network to link."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Azure Region where the resource lives."
+          }
+        },
+        "registrationEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled?."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01#properties/tags"
+            },
+            "description": "Optional. Resource tags."
+          },
+          "nullable": true
+        },
+        "resolutionPolicy": {
+          "type": "string",
+          "allowedValues": [
+            "Default",
+            "NxDomainRedirect"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resolution type of the private-dns-zone fallback machanism."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the virtual network link."
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Private DNS zone name."
+      }
+    },
+    "virtualNetworkLinks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/virtualNetworkLinkType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Array of custom objects describing vNet links of the DNS zone. Each object should contain properties 'virtualNetworkResourceId' and 'registrationEnabled'. The 'vnetResourceId' is a resource ID of a vNet to link, 'registrationEnabled' (bool) enables automatic DNS registration in the zone for the linked vNet."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "global",
+      "metadata": {
+        "description": "Optional. The location of the PrivateDNSZone. Should be global."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.network-privatednszone.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "privateDnsZone": {
+      "type": "Microsoft.Network/privateDnsZones",
+      "apiVersion": "2020-06-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]"
+    },
+    "privateDnsZone_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Network/privateDnsZones/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+      },
+      "dependsOn": [
+        "privateDnsZone"
+      ]
+    },
+    "privateDnsZone_virtualNetworkLinks": {
+      "copy": {
+        "name": "privateDnsZone_virtualNetworkLinks",
+        "count": "[length(coalesce(parameters('virtualNetworkLinks'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-PrivateDnsZone-VNetLink-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "privateDnsZoneName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'name'), format('{0}-vnetlink', last(split(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()].virtualNetworkResourceId, '/'))))]"
+          },
+          "virtualNetworkResourceId": {
+            "value": "[coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()].virtualNetworkResourceId]"
+          },
+          "location": {
+            "value": "[coalesce(tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'location'), 'global')]"
+          },
+          "registrationEnabled": {
+            "value": "[coalesce(tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'registrationEnabled'), false())]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          },
+          "resolutionPolicy": {
+            "value": "[tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'resolutionPolicy')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.37.4.10188",
+              "templateHash": "517173107480898390"
+            },
+            "name": "Private DNS Zone Virtual Network Link",
+            "description": "This module deploys a Private DNS Zone Virtual Network Link."
+          },
+          "parameters": {
+            "privateDnsZoneName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Private DNS zone. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "[format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/')))]",
+              "metadata": {
+                "description": "Optional. The name of the virtual network link."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "global",
+              "metadata": {
+                "description": "Optional. The location of the PrivateDNSZone. Should be global."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01#properties/tags"
+                },
+                "description": "Optional. Tags of the resource."
+              },
+              "nullable": true
+            },
+            "registrationEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled?."
+              }
+            },
+            "virtualNetworkResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Link to another virtual network resource ID."
+              }
+            },
+            "resolutionPolicy": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The resolution policy on the virtual network link. Only applicable for virtual network links to privatelink zones, and for A,AAAA,CNAME queries. When set to `NxDomainRedirect`, Azure DNS resolver falls back to public resolution if private dns query resolution results in non-existent domain response. `Default` is configured as the default option."
+              }
+            }
+          },
+          "resources": {
+            "privateDnsZone": {
+              "existing": true,
+              "type": "Microsoft.Network/privateDnsZones",
+              "apiVersion": "2020-06-01",
+              "name": "[parameters('privateDnsZoneName')]"
+            },
+            "virtualNetworkLink": {
+              "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+              "apiVersion": "2024-06-01",
+              "name": "[format('{0}/{1}', parameters('privateDnsZoneName'), parameters('name'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "registrationEnabled": "[parameters('registrationEnabled')]",
+                "virtualNetwork": {
+                  "id": "[parameters('virtualNetworkResourceId')]"
+                },
+                "resolutionPolicy": "[parameters('resolutionPolicy')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed virtual network link."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed virtual network link."
+              },
+              "value": "[resourceId('Microsoft.Network/privateDnsZones/virtualNetworkLinks', parameters('privateDnsZoneName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed virtual network link."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('virtualNetworkLink', '2024-06-01', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "privateDnsZone"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the private DNS zone."
+      },
+      "value": "[resourceId('Microsoft.Network/privateDnsZones', parameters('name'))]"
+    }
+  }
+}

@@ -2,19 +2,19 @@
 // Create Azure Bastion Subnet and Azure Bastion Host
 // /****************************************************************************************************************************/
 
-@description('Name of the Azure Bastion Host resource.')
+@description('Required. The name of the Azure Bastion Host resource.')
 param name string
 
-@description('Azure region to deploy resources.')
+@description('Required. Azure region to deploy resources.')
 param location string = resourceGroup().location
 
-@description('Resource ID of the Virtual Network where the Azure Bastion Host will be deployed.')
+@description('Required. Resource ID of the Virtual Network where the Azure Bastion Host will be deployed.')
 param vnetId string
 
-@description('Name of the Virtual Network where the Azure Bastion Host will be deployed.')
+@description('Required. Name of the Virtual Network where the Azure Bastion Host will be deployed.')
 param vnetName string
 
-@description('Resource ID of the Log Analytics Workspace for monitoring and diagnostics.')
+@description('Required. Resource ID of the Log Analytics Workspace for monitoring and diagnostics.')
 param logAnalyticsWorkspaceId string
 
 @description('Optional. Tags to apply to the resources.')

@@ -20,7 +20,7 @@ param solutionUniqueText string = take(uniqueString(subscription().id, resourceG
 })
 param location string
 
-@description('Optional: Existing Log Analytics Workspace Resource ID')
+@description('Optional. Existing Log Analytics Workspace Resource ID')
 param existingLogAnalyticsWorkspaceId string = ''
 
 var solutionSuffix = toLower(trim(replace(
