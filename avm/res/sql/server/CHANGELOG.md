@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/CHANGELOG.md).
 
+## 0.20.3
+
+### Changes
+
+- Enabling child module `avm/res/sql/server/database` for publishing (added telemetry option)
+
+### Breaking Changes
+
+- None
+
 ## 0.20.2
 
 ### Changes
