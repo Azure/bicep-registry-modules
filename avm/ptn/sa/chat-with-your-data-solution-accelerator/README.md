@@ -114,7 +114,7 @@ module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-
   name: 'chatWithYourDataSolutionAcceleratorDeployment'
   params: {
     location: '<location>'
-    name: 'scwydsdef001'
+    solutionName: 'scwydsdef001'
   }
 }
 ```
@@ -134,7 +134,7 @@ module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-
     "location": {
       "value": "<location>"
     },
-    "name": {
+    "solutionName": {
       "value": "scwydsdef001"
     }
   }
@@ -152,7 +152,7 @@ module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-
 using 'br/public:avm/ptn/sa/chat-with-your-data-solution-accelerator:<version>'
 
 param location = '<location>'
-param name = 'scwydsdef001'
+param solutionName = 'scwydsdef001'
 ```
 
 </details>
@@ -169,7 +169,7 @@ module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-
   name: 'chatWithYourDataSolutionAcceleratorDeployment'
   params: {
     location: '<location>'
-    name: 'scwydswaf001'
+    solutionName: 'scwydswaf001'
   }
 }
 ```
@@ -189,7 +189,7 @@ module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-
     "location": {
       "value": "<location>"
     },
-    "name": {
+    "solutionName": {
       "value": "scwydswaf001"
     }
   }
@@ -207,7 +207,7 @@ module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-
 using 'br/public:avm/ptn/sa/chat-with-your-data-solution-accelerator:<version>'
 
 param location = '<location>'
-param name = 'scwydswaf001'
+param solutionName = 'scwydswaf001'
 ```
 
 </details>
