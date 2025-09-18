@@ -28,6 +28,7 @@ on:
       - main
       - Dkm-Dev
       - dkm_local
+      - "avm/ptn/sa/document-knowledge-mining-solution"
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
