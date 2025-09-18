@@ -32,7 +32,6 @@ param vmSize string
 //     Standard_D2s_v3 (2 vCPU, 8 GiB RAM, Premium SSD) //  next most common
 //     Standard_D2s_v4 (2 vCPU, 8 GiB RAM, Premium SSD)  // Newest, so fewer regions availabl
 
-
 // Subnet Classless Inter-Doman Routing (CIDR)  Sizing Reference Table (Best Practices)
 // | CIDR      | # of Addresses | # of /24s | Notes                                 |
 // |-----------|---------------|-----------|----------------------------------------|
@@ -62,7 +61,7 @@ param vmSize string
 // - Document subnet usage and purpose in code comments.
 // - For AVM modules, ensure only one delegation per subnet and leave delegations empty if not required.
 
-module network 'network/main.bicep' = {
+module network 'main.bicep' = {
   name: take('network-${resourcesName}-create', 64)
   params: {
     resourcesName: resourcesName
