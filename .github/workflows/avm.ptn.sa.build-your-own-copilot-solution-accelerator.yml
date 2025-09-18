@@ -1,5 +1,4 @@
-# >>> UPDATE to for example "avm.res.key-vault.vault" and remove this comment
-name: "avm.ptn.sa.build-your-own-copilot-solution"
+name: "avm.ptn.sa.build-your-own-copilot-solution-accelerator"
 
 on:
   workflow_dispatch:
@@ -25,24 +24,21 @@ on:
         required: false
   push:
     branches:
-      - main
-      - Byoc-Dev
+      - "main"
+      - "byoc-local"
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-        # >>> UPDATE to for example ".github/workflows/avm.res.key-vault.vault.yml" and remove this comment
-      - ".github/workflows/avm.ptn.sa.build-your-own-copilot-solution.yml"
-        # >>> UPDATE to for example "avm/res/key-vault/vault/**" and remove this comment
-      - "avm/ptn/sa/build-your-own-copilot-solution/**"
+      - ".github/workflows/avm.ptn.sa.build-your-own-copilot-solution-accelerator.yml"
+      - "avm/ptn/sa/build-your-own-copilot-solution-accelerator/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
+      - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:
-  # >>> UPDATE to for example "avm/res/key-vault/vault" and remove this comment
-  modulePath: "avm/ptn/sa/build-your-own-copilot-solution"
-  # >>> Update to for example ".github/workflows/avm.res.key-vault.vault.yml" and remove this comment
-  workflowPath: ".github/workflows/avm.ptn.sa.build-your-own-copilot-solution.yml"
+  modulePath: "avm/ptn/sa/build-your-own-copilot-solution-accelerator"
+  workflowPath: ".github/workflows/avm.ptn.sa.build-your-own-copilot-solution-accelerator.yml"
 
 concurrency:
   group: ${{ github.workflow }}
