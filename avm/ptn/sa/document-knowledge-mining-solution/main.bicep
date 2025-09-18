@@ -138,7 +138,7 @@ var replicaRegionPairs = {
   uksouth: 'westeurope'
   westeurope: 'northeurope'
 }
-var replicaLocation = replicaRegionPairs[solutionLocation]
+var replicaLocation = replicaRegionPairs[resourceGroup().location]
 
 // Region pairs list based on article in [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions) for supported high availability regions for CosmosDB.
 var cosmosDbZoneRedundantHaRegionPairs = {
@@ -437,8 +437,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
     disableLocalAuth: false
     replicaLocations: [
       {
-        replicaLocation: solutionLocation == 'eastus' ? 'westus2' : 'eastus'
-        name: solutionLocation == 'eastus' ? 'westus2-replica' : 'eastus-replica'
+        replicaLocation: replicaLocation
       }
     ]
     roleAssignments: [
@@ -564,8 +563,7 @@ module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-st
     disableLocalAuth: true
     replicaLocations: [
       {
-        replicaLocation: solutionLocation == 'eastus' ? 'westus2' : 'eastus'
-        name: solutionLocation == 'eastus' ? 'westus2-replica' : 'eastus-replica'
+        replicaLocation: replicaLocation
       }
     ]
 

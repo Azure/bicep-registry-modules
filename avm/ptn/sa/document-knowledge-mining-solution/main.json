@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "8455348877016914775"
+      "templateHash": "1463768459920978385"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-knowledge-mining-solution) for both Sandbox environments and enterprise-grade environments."
@@ -198,7 +198,7 @@
       "uksouth": "westeurope",
       "westeurope": "northeurope"
     },
-    "replicaLocation": "[variables('replicaRegionPairs')[variables('solutionLocation')]]",
+    "replicaLocation": "[variables('replicaRegionPairs')[resourceGroup().location]]",
     "cosmosDbZoneRedundantHaRegionPairs": {
       "australiaeast": "uksouth",
       "centralus": "eastus2",
@@ -30848,8 +30848,7 @@
           "replicaLocations": {
             "value": [
               {
-                "replicaLocation": "[if(equals(variables('solutionLocation'), 'eastus'), 'westus2', 'eastus')]",
-                "name": "[if(equals(variables('solutionLocation'), 'eastus'), 'westus2-replica', 'eastus-replica')]"
+                "replicaLocation": "[variables('replicaLocation')]"
               }
             ]
           },
@@ -32985,8 +32984,7 @@
           "replicaLocations": {
             "value": [
               {
-                "replicaLocation": "[if(equals(variables('solutionLocation'), 'eastus'), 'westus2', 'eastus')]",
-                "name": "[if(equals(variables('solutionLocation'), 'eastus'), 'westus2-replica', 'eastus-replica')]"
+                "replicaLocation": "[variables('replicaLocation')]"
               }
             ]
           },
