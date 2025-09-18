@@ -222,7 +222,7 @@ param vmAdminUsername = 'adminuser'
 
 ### Example 2: _Document Knowledge Mining Solution - Defaults Test_
 
-This test deploys the Document Knowledge Mining Solution with default/minimal parameters to validate basic functionality.
+This test deploys the Document Knowledge Mining Solution with sandbox parameters to validate basic functionality.
 
 
 <details>
