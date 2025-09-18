@@ -1594,13 +1594,13 @@
             "namespaceName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the parent event hub namespace. Required if the template is used in a standalone deployment."
+                "description": "Conditional. The name of the parent Event Hub namespace. Required if the template is used in a standalone deployment."
               }
             },
             "name": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the event hub."
+                "description": "Required. The name of the Event Hub."
               }
             },
             "authorizationRules": {
@@ -1619,7 +1619,7 @@
                 }
               ],
               "metadata": {
-                "description": "Optional. Authorization Rules for the event hub."
+                "description": "Optional. Authorization Rules for the Event Hub."
               }
             },
             "messageRetentionInDays": {
@@ -1669,7 +1669,7 @@
                 }
               ],
               "metadata": {
-                "description": "Optional. The consumer groups to create in this event hub instance."
+                "description": "Optional. The consumer groups to create in this Event Hub instance."
               }
             },
             "lock": {
@@ -2136,21 +2136,21 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "The name of the event hub."
+                "description": "The name of the Event Hub."
               },
               "value": "[parameters('name')]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
-                "description": "The resource ID of the event hub."
+                "description": "The resource ID of the Event Hub."
               },
               "value": "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaceName'), parameters('name'))]"
             },
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The resource group the event hub was deployed into."
+                "description": "The resource group the Event Hub was deployed into."
               },
               "value": "[resourceGroup().name]"
             }
