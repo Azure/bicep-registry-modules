@@ -1,4 +1,4 @@
-# Document Knowledge Mining Solution `[Sa/DocumentKnowledgeMiningSolution]`
+# Document Knowledge Mining Solution `[Sa/DocumentKnowledgeMining]`
 
 This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-knowledge-mining-solution) for both Sandbox environments and enterprise-grade environments.
 
@@ -115,12 +115,112 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/document-knowledge-mining-solution:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/document-knowledge-mining:<version>`.
 
-- [Document Knowledge Mining Solution - Defaults Test](#example-1-document-knowledge-mining-solution---defaults-test)
-- [Document Knowledge Mining Solution - WAF Aligned Test](#example-2-document-knowledge-mining-solution---waf-aligned-test)
+- [Document Knowledge Mining Solution - WAF Aligned Test](#example-1-document-knowledge-mining-solution---waf-aligned-test)
+- [Document Knowledge Mining Solution - Defaults Test](#example-2-document-knowledge-mining-solution---defaults-test)
+- [Document Knowledge Mining Solution - WAF Aligned Test](#example-3-document-knowledge-mining-solution---waf-aligned-test)
 
-### Example 1: _Document Knowledge Mining Solution - Defaults Test_
+### Example 1: _Document Knowledge Mining Solution - WAF Aligned Test_
+
+This test deploys the Document Knowledge Mining Solution with Well-Architected Framework aligned parameters to validate enhanced security, reliability, and scalability features.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<version>' = {
+  name: 'documentKnowledgeMiningDeployment'
+  params: {
+    // Required parameters
+    aiDeploymentsLocation: '<aiDeploymentsLocation>'
+    enableMonitoring: true
+    enablePrivateNetworking: true
+    enableRedundancy: false
+    enableScalability: false
+    // Non-required parameters
+    enableTelemetry: true
+    location: '<location>'
+    vmAdminPassword: '<vmAdminPassword>'
+    vmAdminUsername: 'adminuser'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "aiDeploymentsLocation": {
+      "value": "<aiDeploymentsLocation>"
+    },
+    "enableMonitoring": {
+      "value": true
+    },
+    "enablePrivateNetworking": {
+      "value": true
+    },
+    "enableRedundancy": {
+      "value": false
+    },
+    "enableScalability": {
+      "value": false
+    },
+    // Non-required parameters
+    "enableTelemetry": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "vmAdminPassword": {
+      "value": "<vmAdminPassword>"
+    },
+    "vmAdminUsername": {
+      "value": "adminuser"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/document-knowledge-mining:<version>'
+
+// Required parameters
+param aiDeploymentsLocation = '<aiDeploymentsLocation>'
+param enableMonitoring = true
+param enablePrivateNetworking = true
+param enableRedundancy = false
+param enableScalability = false
+// Non-required parameters
+param enableTelemetry = true
+param location = '<location>'
+param vmAdminPassword = '<vmAdminPassword>'
+param vmAdminUsername = 'adminuser'
+```
+
+</details>
+<p>
+
+### Example 2: _Document Knowledge Mining Solution - Defaults Test_
 
 This test deploys the Document Knowledge Mining Solution with default/minimal parameters to validate basic functionality.
 
@@ -130,8 +230,8 @@ This test deploys the Document Knowledge Mining Solution with default/minimal pa
 <summary>via Bicep module</summary>
 
 ```bicep
-module documentKnowledgeMiningSolution 'br/public:avm/ptn/sa/document-knowledge-mining-solution:<version>' = {
-  name: 'documentKnowledgeMiningSolutionDeployment'
+module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<version>' = {
+  name: 'documentKnowledgeMiningDeployment'
   params: {
     // Required parameters
     aiDeploymentsLocation: '<aiDeploymentsLocation>'
@@ -193,7 +293,7 @@ module documentKnowledgeMiningSolution 'br/public:avm/ptn/sa/document-knowledge-
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/ptn/sa/document-knowledge-mining-solution:<version>'
+using 'br/public:avm/ptn/sa/document-knowledge-mining:<version>'
 
 // Required parameters
 param aiDeploymentsLocation = '<aiDeploymentsLocation>'
@@ -209,7 +309,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Document Knowledge Mining Solution - WAF Aligned Test_
+### Example 3: _Document Knowledge Mining Solution - WAF Aligned Test_
 
 This test deploys the Document Knowledge Mining Solution with Well-Architected Framework aligned parameters to validate enhanced security, reliability, and scalability features.
 
@@ -219,8 +319,8 @@ This test deploys the Document Knowledge Mining Solution with Well-Architected F
 <summary>via Bicep module</summary>
 
 ```bicep
-module documentKnowledgeMiningSolution 'br/public:avm/ptn/sa/document-knowledge-mining-solution:<version>' = {
-  name: 'documentKnowledgeMiningSolutionDeployment'
+module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<version>' = {
+  name: 'documentKnowledgeMiningDeployment'
   params: {
     // Required parameters
     aiDeploymentsLocation: '<aiDeploymentsLocation>'
@@ -290,7 +390,7 @@ module documentKnowledgeMiningSolution 'br/public:avm/ptn/sa/document-knowledge-
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/ptn/sa/document-knowledge-mining-solution:<version>'
+using 'br/public:avm/ptn/sa/document-knowledge-mining:<version>'
 
 // Required parameters
 param aiDeploymentsLocation = '<aiDeploymentsLocation>'

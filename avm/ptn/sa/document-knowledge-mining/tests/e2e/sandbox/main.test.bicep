@@ -1,5 +1,5 @@
-metadata name = 'Document Knowledge Mining Solution - WAF Aligned Test'
-metadata description = 'This test deploys the Document Knowledge Mining Solution with Well-Architected Framework aligned parameters to validate enhanced security, reliability, and scalability features.'
+metadata name = 'Document Knowledge Mining Solution - Defaults Test'
+metadata description = 'This test deploys the Document Knowledge Mining Solution with default/minimal parameters to validate basic functionality.'
 
 targetScope = 'subscription'
 
@@ -18,14 +18,10 @@ param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 // e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
-param serviceShort string = 'sdkmsdef'
+param serviceShort string = 'sdkmsmin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
-
-@description('Optional. The password used for VM authentication.')
-@secure()
-param vmAdminPassword string = newGuid()
 
 // ============ //
 // Dependencies //
@@ -51,15 +47,15 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
+      // You parameters go here
+      // name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
       aiDeploymentsLocation: enforcedLocation
-      enablePrivateNetworking: true
+      enablePrivateNetworking: false
       enableMonitoring: true
       enableRedundancy: false
       enableScalability: false
       enableTelemetry: true
-      vmAdminUsername: 'adminuser'
-      vmAdminPassword: vmAdminPassword
     }
   }
 ]
