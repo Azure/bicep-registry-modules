@@ -28,7 +28,7 @@ function Get-ModifiedFileList {
         $currentCommit, $previousCommit = ((git log -2 --format=%H).Substring(0, 7) -split '\n')
 
         Write-Verbose ('Fetching changes of current commit [{0}] against the previous commit [{1}].' -f $currentCommit, $previousCommit) -Verbose
-        $diff = git diff --name-only --diff-filter=AM $currentCommit $previousCommit
+        $diff = git diff --name-only --diff-filter=AM $previousCommit, $currentCommit
     } else {
         Write-Verbose ("{0} branch [$currentBranch]" -f ($inUpstream ? 'Currently in the upstream' : 'Currently in the fork')) -Verbose
 
