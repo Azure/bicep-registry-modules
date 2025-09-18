@@ -91,6 +91,10 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
         storageAccountType: 'Premium_LRS' // Required for PSRule.Rules.Azure compliance: Azure.VM.Standalone
       }
     }
+    // Patch management configuration - required for maintenance configuration compatibility
+    patchMode: 'AutomaticByPlatform'
+    bypassPlatformSafetyChecksOnUserSchedule: true
+    enableAutomaticUpdates: true
     encryptionAtHost: false // Some Azure subscriptions do not support encryption at host
     nicConfigurations: [
       {

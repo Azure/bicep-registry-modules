@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "7652192598919442188"
+      "templateHash": "12579264971365883649"
     },
     "name": "Secure Virtual Network Module",
     "description": "This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring."
@@ -6041,7 +6041,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "8908136515864111248"
+              "templateHash": "5011726681677192654"
             }
           },
           "definitions": {
@@ -7401,6 +7401,15 @@
                         "storageAccountType": "Premium_LRS"
                       }
                     }
+                  },
+                  "patchMode": {
+                    "value": "AutomaticByPlatform"
+                  },
+                  "bypassPlatformSafetyChecksOnUserSchedule": {
+                    "value": true
+                  },
+                  "enableAutomaticUpdates": {
+                    "value": true
                   },
                   "encryptionAtHost": {
                     "value": false

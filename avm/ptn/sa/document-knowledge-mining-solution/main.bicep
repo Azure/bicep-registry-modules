@@ -138,7 +138,24 @@ var replicaRegionPairs = {
   uksouth: 'westeurope'
   westeurope: 'northeurope'
 }
-var replicaLocation = replicaRegionPairs[resourceGroup().location]
+var replicaLocation = replicaRegionPairs[?solutionLocation]
+
+// Region abbreviations for creating shorter replica names
+var regionAbbreviations = {
+  australiaeast: 'aue'
+  australiasoutheast: 'ause'
+  centralus: 'cus'
+  eastasia: 'ea'
+  eastus: 'eus'
+  eastus2: 'eus2'
+  japaneast: 'jpe'
+  northeurope: 'neu'
+  southeastasia: 'sea'
+  uksouth: 'uks'
+  westeurope: 'weu'
+  westus: 'wus'
+}
+var replicaAbbreviation = regionAbbreviations[?replicaLocation] ?? 'rep'
 
 // Region pairs list based on article in [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions) for supported high availability regions for CosmosDB.
 var cosmosDbZoneRedundantHaRegionPairs = {
@@ -425,7 +442,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.15.0' = {
 
 // ========== App Configuration store ========== //
 var appConfigName = 'appcs-${solutionSuffix}'
-module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6.3' = {
+module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9.2' = {
   name: take('avm.res.app-configuration.configuration-store.${appConfigName}', 64)
   params: {
     name: appConfigName
@@ -438,6 +455,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
     replicaLocations: [
       {
         replicaLocation: replicaLocation
+        name: replicaAbbreviation
       }
     ]
     roleAssignments: [
@@ -551,7 +569,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
   }
 }
 
-module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-store:0.6.3' = if (enablePrivateNetworking) {
+module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-store:0.9.2' = if (enablePrivateNetworking) {
   name: take('avm.res.app-configuration.configuration-store-update.${appConfigName}', 64)
   params: {
     name: appConfigName
@@ -564,6 +582,7 @@ module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-st
     replicaLocations: [
       {
         replicaLocation: replicaLocation
+        name: replicaAbbreviation
       }
     ]
 
