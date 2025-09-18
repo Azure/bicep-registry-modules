@@ -530,7 +530,6 @@ param roleDefinitionIds = [
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Specifies the name of the policy assignment. Maximum length is 64 characters for subscription scope. |
 | [`policyDefinitionId`](#parameter-policydefinitionid) | string | Specifies the ID of the policy definition or policy set definition being assigned. |
-| [`roleDefinitionIds`](#parameter-roledefinitionids) | array | The IDs Of the Azure Role Definition that are used to assign permissions to the policy's identity. You need to provide the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition. |
 
 **Optional parameters**
 
@@ -552,6 +551,7 @@ param roleDefinitionIds = [
 | [`overrides`](#parameter-overrides) | array | The policy property value override. Allows changing the effect of a policy definition without modifying the underlying policy definition or using a parameterized effect in the policy definition. |
 | [`parameters`](#parameter-parameters) | object | Parameters for the policy assignment if needed. |
 | [`resourceSelectors`](#parameter-resourceselectors) | array | The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location. |
+| [`roleDefinitionIds`](#parameter-roledefinitionids) | array | The IDs Of the Azure Role Definition that are used to assign permissions to the policy's identity. You need to provide the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition. |
 
 ### Parameter: `name`
 
@@ -566,13 +566,6 @@ Specifies the ID of the policy definition or policy set definition being assigne
 
 - Required: Yes
 - Type: string
-
-### Parameter: `roleDefinitionIds`
-
-The IDs Of the Azure Role Definition that are used to assign permissions to the policy's identity. You need to provide the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition.
-
-- Required: No
-- Type: array
 
 ### Parameter: `additionalManagementGroupsIDsToAssignRbacTo`
 
@@ -719,6 +712,13 @@ Parameters for the policy assignment if needed.
 ### Parameter: `resourceSelectors`
 
 The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location.
+
+- Required: No
+- Type: array
+
+### Parameter: `roleDefinitionIds`
+
+The IDs Of the Azure Role Definition that are used to assign permissions to the policy's identity. You need to provide the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition.
 
 - Required: No
 - Type: array
