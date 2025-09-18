@@ -51,7 +51,7 @@ function Get-ModifiedFileList {
         Write-Verbose 'Plain diff files found via `git diff`.' -Verbose
     }
 
-    $modifiedFiles = $diff | Get-Item -Force
+    $modifiedFiles = $diff | Get-Item -Force -ErrorAction 'SilentlyContinue' # Silently continue to ignore files that were removed
 
     if ($modifiedFiles.Count -gt 0) {
         Write-Verbose ("[{0}] Modified files found `git diff`:`n[{1}]" -f $modifiedFiles.Count, ($modifiedFiles.FullName | ConvertTo-Json | Out-String)) -Verbose
@@ -132,10 +132,17 @@ function Get-TemplateFileToPublish {
         [switch] $SkipNotVersionedModules
     )
 
-    $ModuleRelativeFolderPath = (($ModuleFolderPath -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
+    $ModuleFolderPath = $ModuleFolderPath -replace '\\', '/'
+
+    $ModuleRelativeFolderPath = (($ModuleFolderPath -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/')
     $ModifiedFiles = Get-ModifiedFileList -Verbose
     Write-Verbose "Looking for modified files under: [$ModuleRelativeFolderPath]" -Verbose
-    $modifiedModuleFiles = $ModifiedFiles.FullName | Where-Object { $_ -like "*$ModuleFolderPath*" }
+
+    # Adding a `/` at the end of the path (if not present) to avoid that e.g. a filter like `cache/redis` also matches `cache/redis-enterprise`
+    if ($ModuleFolderPath -notmatch '^.+\/$') {
+        $ModuleFolderPath += '/'
+    }
+    $modifiedModuleFiles = $ModifiedFiles.FullName | Where-Object { ($_ -replace '\\', '/') -like "*$ModuleFolderPath*" }
 
     if ($modifiedModuleFiles.Count -gt 0) {
         Write-Verbose ("[{0}] Path-filtered files found:`n[{1}]" -f $modifiedModuleFiles.Count, ($modifiedModuleFiles | ConvertTo-Json | Out-String)) -Verbose

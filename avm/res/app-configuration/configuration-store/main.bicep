@@ -76,7 +76,7 @@ param dataPlaneProxy dataPlaneProxyType?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -196,7 +196,7 @@ resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2025
   properties: {
     createMode: createMode
     disableLocalAuth: disableLocalAuth
-    enablePurgeProtection: sku == 'Free' ? false : enablePurgeProtection
+    enablePurgeProtection: sku == 'Free' || sku == 'Developer' ? false : enablePurgeProtection
     encryption: !empty(customerManagedKey)
       ? {
           keyVaultProperties: {
@@ -214,7 +214,7 @@ resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2025
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? any(publicNetworkAccess)
       : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
-    softDeleteRetentionInDays: sku == 'Free' ? 0 : softDeleteRetentionInDays
+    softDeleteRetentionInDays: sku == 'Free' || sku == 'Developer' ? 0 : softDeleteRetentionInDays
     dataPlaneProxy: !empty(dataPlaneProxy)
       ? {
           authenticationMode: dataPlaneProxy.?authenticationMode ?? 'Pass-through'

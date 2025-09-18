@@ -2,10 +2,12 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/insights/action-group/CHANGELOG.md).
 
-## 0.7.1
+## 0.8.0
 
 ### Changes
 
+- `callbackUrl` for logic apps is now a secure string
+- `IncidentReceiver` field added
 - Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
 
 ### Breaking Changes

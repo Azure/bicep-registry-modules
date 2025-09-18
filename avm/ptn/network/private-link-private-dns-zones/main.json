@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "10953856955588541006"
+      "templateHash": "11217937818637058576"
     },
     "name": "avm/ptn/network/private-link-private-dns-zones",
     "description": "Private Link Private DNS Zones"
@@ -155,10 +155,10 @@
         "privatelink.wvd.microsoft.com",
         "privatelink.{regionName}.azmk8s.io",
         "privatelink.azurecr.io",
-        "{regionName}.data.privatelink.azurecr.io",
         "privatelink.database.windows.net",
         "privatelink.documents.azure.com",
         "privatelink.mongo.cosmos.azure.com",
+        "privatelink.mongocluster.cosmos.azure.com",
         "privatelink.cassandra.cosmos.azure.com",
         "privatelink.gremlin.cosmos.azure.com",
         "privatelink.table.cosmos.azure.com",
@@ -188,6 +188,7 @@
         "privatelink.{regionCode}.backup.windowsazure.com",
         "privatelink.siterecovery.windowsazure.com",
         "privatelink.monitor.azure.com",
+        "privatelink.{regionName}.prometheus.monitor.azure.com",
         "privatelink.oms.opinsights.azure.com",
         "privatelink.ods.opinsights.azure.com",
         "privatelink.agentsvc.azure-automation.net",
@@ -417,7 +418,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.ptn.network-privatelinkprivatednszones.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",

@@ -21,15 +21,15 @@ This module deploys a Virtual Machine with one or multiple NICs and optionally o
 | `Microsoft.Automanage/configurationProfileAssignments` | 2022-05-04 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automanage_configurationprofileassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automanage/2022-05-04/configurationProfileAssignments)</li></ul> |
 | `Microsoft.Compute/disks` | 2024-03-02 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_disks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-02/disks)</li></ul> |
 | `Microsoft.Compute/virtualMachines` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachines)</li></ul> |
-| `Microsoft.Compute/virtualMachines/extensions` | 2022-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines/extensions)</li></ul> |
+| `Microsoft.Compute/virtualMachines/extensions` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-11-01/virtualMachines/extensions)</li></ul> |
 | `Microsoft.DevTestLab/schedules` | 2018-09-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_schedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules)</li></ul> |
-| `Microsoft.GuestConfiguration/guestConfigurationAssignments` | 2020-06-25 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.guestconfiguration_guestconfigurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments)</li></ul> |
+| `Microsoft.GuestConfiguration/guestConfigurationAssignments` | 2024-04-05 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.guestconfiguration_guestconfigurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2024-04-05/guestConfigurationAssignments)</li></ul> |
 | `Microsoft.Insights/dataCollectionRuleAssociations` | 2023-03-11 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_datacollectionruleassociations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionRuleAssociations)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.Maintenance/configurationAssignments` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_configurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments)</li></ul> |
 | `Microsoft.Network/networkInterfaces` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkinterfaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkInterfaces)</li></ul> |
 | `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
-| `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | 2023-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupfabrics_protectioncontainers_protecteditems.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers/protectedItems)</li></ul> |
+| `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupfabrics_protectioncontainers_protecteditems.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-02-01/vaults/backupFabrics/protectionContainers/protectedItems)</li></ul> |
 
 ## Usage examples
 
@@ -521,6 +521,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             ]
             name: 'ipconfig01'
             pipConfiguration: {
+              availabilityZones: [
+                1
+                2
+                3
+              ]
               diagnosticSettings: [
                 {
                   workspaceResourceId: '<workspaceResourceId>'
@@ -544,11 +549,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                   principalType: 'ServicePrincipal'
                   roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
                 }
-              ]
-              zones: [
-                1
-                2
-                3
               ]
             }
             subnetResourceId: '<subnetResourceId>'
@@ -645,22 +645,21 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     extensionCustomScriptConfig: {
-      enabled: true
-      fileData: [
-        {
-          storageAccountId: '<storageAccountId>'
-          uri: '<uri>'
-        }
-      ]
       name: 'myCustomScript'
+      protectedSettings: {
+        fileUris: [
+          '<storageAccountCSEFileUrl>'
+        ]
+        managedIdentityResourceId: '<managedIdentityResourceId>'
+      }
+      settings: {
+        commandToExecute: '<commandToExecute>'
+      }
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
         Role: 'DeploymentValidation'
       }
-    }
-    extensionCustomScriptProtectedSetting: {
-      commandToExecute: '<commandToExecute>'
     }
     extensionDependencyAgentConfig: {
       enableAMA: true
@@ -828,6 +827,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               ],
               "name": "ipconfig01",
               "pipConfiguration": {
+                "availabilityZones": [
+                  1,
+                  2,
+                  3
+                ],
                 "diagnosticSettings": [
                   {
                     "workspaceResourceId": "<workspaceResourceId>"
@@ -851,11 +855,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                     "principalType": "ServicePrincipal",
                     "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
                   }
-                ],
-                "zones": [
-                  1,
-                  2,
-                  3
                 ]
               },
               "subnetResourceId": "<subnetResourceId>"
@@ -980,24 +979,21 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "extensionCustomScriptConfig": {
       "value": {
-        "enabled": true,
-        "fileData": [
-          {
-            "storageAccountId": "<storageAccountId>",
-            "uri": "<uri>"
-          }
-        ],
         "name": "myCustomScript",
+        "protectedSettings": {
+          "fileUris": [
+            "<storageAccountCSEFileUrl>"
+          ],
+          "managedIdentityResourceId": "<managedIdentityResourceId>"
+        },
+        "settings": {
+          "commandToExecute": "<commandToExecute>"
+        },
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
           "Role": "DeploymentValidation"
         }
-      }
-    },
-    "extensionCustomScriptProtectedSetting": {
-      "value": {
-        "commandToExecute": "<commandToExecute>"
       }
     },
     "extensionDependencyAgentConfig": {
@@ -1179,6 +1175,11 @@ param nicConfigurations = [
         ]
         name: 'ipconfig01'
         pipConfiguration: {
+          availabilityZones: [
+            1
+            2
+            3
+          ]
           diagnosticSettings: [
             {
               workspaceResourceId: '<workspaceResourceId>'
@@ -1202,11 +1203,6 @@ param nicConfigurations = [
               principalType: 'ServicePrincipal'
               roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
             }
-          ]
-          zones: [
-            1
-            2
-            3
           ]
         }
         subnetResourceId: '<subnetResourceId>'
@@ -1303,22 +1299,21 @@ param extensionAzureDiskEncryptionConfig = {
   }
 }
 param extensionCustomScriptConfig = {
-  enabled: true
-  fileData: [
-    {
-      storageAccountId: '<storageAccountId>'
-      uri: '<uri>'
-    }
-  ]
   name: 'myCustomScript'
+  protectedSettings: {
+    fileUris: [
+      '<storageAccountCSEFileUrl>'
+    ]
+    managedIdentityResourceId: '<managedIdentityResourceId>'
+  }
+  settings: {
+    commandToExecute: '<commandToExecute>'
+  }
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
     Role: 'DeploymentValidation'
   }
-}
-param extensionCustomScriptProtectedSetting = {
-  commandToExecute: '<commandToExecute>'
 }
 param extensionDependencyAgentConfig = {
   enableAMA: true
@@ -1479,6 +1474,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             ]
             name: 'ipconfig01'
             pipConfiguration: {
+              availabilityZones: [
+                1
+                2
+                3
+              ]
               publicIpNameSuffix: '-pip-01'
               roleAssignments: [
                 {
@@ -1486,11 +1486,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                   principalType: 'ServicePrincipal'
                   roleDefinitionIdOrName: 'Reader'
                 }
-              ]
-              zones: [
-                1
-                2
-                3
               ]
             }
             subnetResourceId: '<subnetResourceId>'
@@ -1523,7 +1518,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     backupVaultName: '<backupVaultName>'
     backupVaultResourceGroup: '<backupVaultResourceGroup>'
     bypassPlatformSafetyChecksOnUserSchedule: true
-    computerName: 'winvm1'
+    computerName: '<computerName>'
     dataDisks: [
       {
         caching: 'ReadOnly'
@@ -1548,6 +1543,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     encryptionAtHost: false
     extensionAadJoinConfig: {
       enabled: true
+      settings: {
+        mdmId: ''
+      }
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -1596,21 +1594,21 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     extensionCustomScriptConfig: {
-      enabled: true
-      fileData: [
-        {
-          storageAccountId: '<storageAccountId>'
-          uri: '<uri>'
-        }
-      ]
+      name: 'myCustomScript'
+      protectedSettings: {
+        fileUris: [
+          '<storageAccountCSEFileUrl>'
+        ]
+        managedIdentityResourceId: '<managedIdentityResourceId>'
+      }
+      settings: {
+        commandToExecute: '<commandToExecute>'
+      }
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
         Role: 'DeploymentValidation'
       }
-    }
-    extensionCustomScriptProtectedSetting: {
-      commandToExecute: '<commandToExecute>'
     }
     extensionDependencyAgentConfig: {
       enableAMA: true
@@ -1763,6 +1761,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               ],
               "name": "ipconfig01",
               "pipConfiguration": {
+                "availabilityZones": [
+                  1,
+                  2,
+                  3
+                ],
                 "publicIpNameSuffix": "-pip-01",
                 "roleAssignments": [
                   {
@@ -1770,11 +1773,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                     "principalType": "ServicePrincipal",
                     "roleDefinitionIdOrName": "Reader"
                   }
-                ],
-                "zones": [
-                  1,
-                  2,
-                  3
                 ]
               },
               "subnetResourceId": "<subnetResourceId>"
@@ -1825,7 +1823,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": true
     },
     "computerName": {
-      "value": "winvm1"
+      "value": "<computerName>"
     },
     "dataDisks": {
       "value": [
@@ -1858,6 +1856,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionAadJoinConfig": {
       "value": {
         "enabled": true,
+        "settings": {
+          "mdmId": ""
+        },
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -1912,23 +1913,21 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "extensionCustomScriptConfig": {
       "value": {
-        "enabled": true,
-        "fileData": [
-          {
-            "storageAccountId": "<storageAccountId>",
-            "uri": "<uri>"
-          }
-        ],
+        "name": "myCustomScript",
+        "protectedSettings": {
+          "fileUris": [
+            "<storageAccountCSEFileUrl>"
+          ],
+          "managedIdentityResourceId": "<managedIdentityResourceId>"
+        },
+        "settings": {
+          "commandToExecute": "<commandToExecute>"
+        },
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
           "Role": "DeploymentValidation"
         }
-      }
-    },
-    "extensionCustomScriptProtectedSetting": {
-      "value": {
-        "commandToExecute": "<commandToExecute>"
       }
     },
     "extensionDependencyAgentConfig": {
@@ -2093,6 +2092,11 @@ param nicConfigurations = [
         ]
         name: 'ipconfig01'
         pipConfiguration: {
+          availabilityZones: [
+            1
+            2
+            3
+          ]
           publicIpNameSuffix: '-pip-01'
           roleAssignments: [
             {
@@ -2100,11 +2104,6 @@ param nicConfigurations = [
               principalType: 'ServicePrincipal'
               roleDefinitionIdOrName: 'Reader'
             }
-          ]
-          zones: [
-            1
-            2
-            3
           ]
         }
         subnetResourceId: '<subnetResourceId>'
@@ -2137,7 +2136,7 @@ param backupPolicyName = '<backupPolicyName>'
 param backupVaultName = '<backupVaultName>'
 param backupVaultResourceGroup = '<backupVaultResourceGroup>'
 param bypassPlatformSafetyChecksOnUserSchedule = true
-param computerName = 'winvm1'
+param computerName = '<computerName>'
 param dataDisks = [
   {
     caching: 'ReadOnly'
@@ -2162,6 +2161,9 @@ param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
   enabled: true
+  settings: {
+    mdmId: ''
+  }
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -2210,21 +2212,21 @@ param extensionAzureDiskEncryptionConfig = {
   }
 }
 param extensionCustomScriptConfig = {
-  enabled: true
-  fileData: [
-    {
-      storageAccountId: '<storageAccountId>'
-      uri: '<uri>'
-    }
-  ]
+  name: 'myCustomScript'
+  protectedSettings: {
+    fileUris: [
+      '<storageAccountCSEFileUrl>'
+    ]
+    managedIdentityResourceId: '<managedIdentityResourceId>'
+  }
+  settings: {
+    commandToExecute: '<commandToExecute>'
+  }
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
     Role: 'DeploymentValidation'
   }
-}
-param extensionCustomScriptProtectedSetting = {
-  commandToExecute: '<commandToExecute>'
 }
 param extensionDependencyAgentConfig = {
   enableAMA: true
@@ -2997,7 +2999,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
-    name: 'cvmwinhp'
+    name: '<name>'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -3022,6 +3024,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     adminPassword: '<adminPassword>'
     extensionAadJoinConfig: {
       enabled: true
+      settings: {
+        mdmId: ''
+      }
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -3076,7 +3081,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwinhp"
+      "value": "<name>"
     },
     "nicConfigurations": {
       "value": [
@@ -3113,6 +3118,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionAadJoinConfig": {
       "value": {
         "enabled": true,
+        "settings": {
+          "mdmId": ""
+        },
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -3165,7 +3173,7 @@ param imageReference = {
   sku: '2022-datacenter-azure-edition'
   version: 'latest'
 }
-param name = 'cvmwinhp'
+param name = '<name>'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -3190,6 +3198,9 @@ param vmSize = 'Standard_D2s_v3'
 param adminPassword = '<adminPassword>'
 param extensionAadJoinConfig = {
   enabled: true
+  settings: {
+    mdmId: ''
+  }
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -3369,7 +3380,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     backupPolicyName: '<backupPolicyName>'
     backupVaultName: '<backupVaultName>'
     backupVaultResourceGroup: '<backupVaultResourceGroup>'
-    computerName: 'winvm1'
+    computerName: '<computerName>'
     dataDisks: [
       {
         caching: 'None'
@@ -3405,6 +3416,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     extensionAadJoinConfig: {
       enabled: true
       name: 'myAADLogin'
+      settings: {
+        mdmId: ''
+      }
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -3455,22 +3469,20 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     extensionCustomScriptConfig: {
-      enabled: true
-      fileData: [
-        {
-          storageAccountId: '<storageAccountId>'
-          uri: '<uri>'
-        }
-      ]
       name: 'myCustomScript'
+      protectedSettings: {
+        fileUris: [
+          '<value>'
+        ]
+      }
+      settings: {
+        commandToExecute: '<commandToExecute>'
+      }
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
         Role: 'DeploymentValidation'
       }
-    }
-    extensionCustomScriptProtectedSetting: {
-      commandToExecute: '<commandToExecute>'
     }
     extensionDependencyAgentConfig: {
       enableAMA: true
@@ -3737,7 +3749,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "<backupVaultResourceGroup>"
     },
     "computerName": {
-      "value": "winvm1"
+      "value": "<computerName>"
     },
     "dataDisks": {
       "value": [
@@ -3781,6 +3793,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": {
         "enabled": true,
         "name": "myAADLogin",
+        "settings": {
+          "mdmId": ""
+        },
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -3837,24 +3852,20 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "extensionCustomScriptConfig": {
       "value": {
-        "enabled": true,
-        "fileData": [
-          {
-            "storageAccountId": "<storageAccountId>",
-            "uri": "<uri>"
-          }
-        ],
         "name": "myCustomScript",
+        "protectedSettings": {
+          "fileUris": [
+            "<value>"
+          ]
+        },
+        "settings": {
+          "commandToExecute": "<commandToExecute>"
+        },
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
           "Role": "DeploymentValidation"
         }
-      }
-    },
-    "extensionCustomScriptProtectedSetting": {
-      "value": {
-        "commandToExecute": "<commandToExecute>"
       }
     },
     "extensionDependencyAgentConfig": {
@@ -4115,7 +4126,7 @@ param autoShutdownConfig = {
 param backupPolicyName = '<backupPolicyName>'
 param backupVaultName = '<backupVaultName>'
 param backupVaultResourceGroup = '<backupVaultResourceGroup>'
-param computerName = 'winvm1'
+param computerName = '<computerName>'
 param dataDisks = [
   {
     caching: 'None'
@@ -4151,6 +4162,9 @@ param encryptionAtHost = false
 param extensionAadJoinConfig = {
   enabled: true
   name: 'myAADLogin'
+  settings: {
+    mdmId: ''
+  }
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -4201,22 +4215,20 @@ param extensionAzureDiskEncryptionConfig = {
   }
 }
 param extensionCustomScriptConfig = {
-  enabled: true
-  fileData: [
-    {
-      storageAccountId: '<storageAccountId>'
-      uri: '<uri>'
-    }
-  ]
   name: 'myCustomScript'
+  protectedSettings: {
+    fileUris: [
+      '<value>'
+    ]
+  }
+  settings: {
+    commandToExecute: '<commandToExecute>'
+  }
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
     Role: 'DeploymentValidation'
   }
-}
-param extensionCustomScriptProtectedSetting = {
-  commandToExecute: '<commandToExecute>'
 }
 param extensionDependencyAgentConfig = {
   enableAMA: true
@@ -5098,8 +5110,7 @@ param location = '<location>'
 | [`extensionAadJoinConfig`](#parameter-extensionaadjoinconfig) | object | The configuration for the [AAD Join] extension. Must at least contain the ["enabled": true] property to be executed. To enroll in Intune, add the setting mdmId: "0000000a-0000-0000-c000-000000000000". |
 | [`extensionAntiMalwareConfig`](#parameter-extensionantimalwareconfig) | object | The configuration for the [Anti Malware] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionAzureDiskEncryptionConfig`](#parameter-extensionazurediskencryptionconfig) | object | The configuration for the [Azure Disk Encryption] extension. Must at least contain the ["enabled": true] property to be executed. Restrictions: Cannot be enabled on disks that have encryption at host enabled. Managed disks encrypted using Azure Disk Encryption cannot be encrypted using customer-managed keys. |
-| [`extensionCustomScriptConfig`](#parameter-extensioncustomscriptconfig) | object | The configuration for the [Custom Script] extension. Must at least contain the ["enabled": true] property to be executed. |
-| [`extensionCustomScriptProtectedSetting`](#parameter-extensioncustomscriptprotectedsetting) | secureObject | An object that contains the extension specific protected settings. |
+| [`extensionCustomScriptConfig`](#parameter-extensioncustomscriptconfig) | object | The configuration for the [Custom Script] extension. |
 | [`extensionDependencyAgentConfig`](#parameter-extensiondependencyagentconfig) | object | The configuration for the [Dependency Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionDomainJoinConfig`](#parameter-extensiondomainjoinconfig) | secureObject | The configuration for the [Domain Join] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionDomainJoinPassword`](#parameter-extensiondomainjoinpassword) | securestring | Required if name is specified. Password of the user specified in user parameter. |
@@ -5130,7 +5141,6 @@ param location = '<location>'
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Policy for controlling export on the disk. |
 | [`rebootSetting`](#parameter-rebootsetting) | string | Specifies the reboot setting for all AutomaticByPlatform patch installation operations. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`sasTokenValidityLength`](#parameter-sastokenvaliditylength) | string | SAS token validity length to use to download files from storage accounts. Usage: 'PT8H' - valid for 8 hours; 'P5D' - valid for 5 days; 'P1Y' - valid for 1 year. When not provided, the SAS token will be valid for 8 hours. |
 | [`secureBootEnabled`](#parameter-securebootenabled) | bool | Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings. |
 | [`securityType`](#parameter-securitytype) | string | Specifies the SecurityType of the virtual machine. It has to be set to any specified value to enable UefiSettings. The default behavior is: UefiSettings will not be enabled unless this property is set. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -5140,12 +5150,6 @@ param location = '<location>'
 | [`virtualMachineScaleSetResourceId`](#parameter-virtualmachinescalesetresourceid) | string | Resource ID of a virtual machine scale set, where the VM should be added. |
 | [`vTpmEnabled`](#parameter-vtpmenabled) | bool | Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  SecurityType should be set to TrustedLaunch to enable UefiSettings. |
 | [`winRMListeners`](#parameter-winrmlisteners) | array | Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. |
-
-**Generated parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`baseTime`](#parameter-basetime) | string | Do not provide a value! This date value is used to generate a registration token. |
 
 ### Parameter: `adminUsername`
 
@@ -5802,11 +5806,13 @@ The public IP address configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZones`](#parameter-nicconfigurationsipconfigurationspipconfigurationavailabilityzones) | array | The zones of the public IP address. |
 | [`ddosSettings`](#parameter-nicconfigurationsipconfigurationspipconfigurationddossettings) | object | The DDoS protection plan configuration associated with the public IP address. |
 | [`diagnosticSettings`](#parameter-nicconfigurationsipconfigurationspipconfigurationdiagnosticsettings) | array | Diagnostic settings for the public IP address. |
 | [`dnsSettings`](#parameter-nicconfigurationsipconfigurationspipconfigurationdnssettings) | object | The DNS settings of the public IP address. |
 | [`enableTelemetry`](#parameter-nicconfigurationsipconfigurationspipconfigurationenabletelemetry) | bool | Enable/Disable usage telemetry for the module. |
 | [`idleTimeoutInMinutes`](#parameter-nicconfigurationsipconfigurationspipconfigurationidletimeoutinminutes) | int | The idle timeout of the public IP address. |
+| [`ipTags`](#parameter-nicconfigurationsipconfigurationspipconfigurationiptags) | array | The list of tags associated with the public IP address. |
 | [`location`](#parameter-nicconfigurationsipconfigurationspipconfigurationlocation) | string | The idle timeout in minutes. |
 | [`lock`](#parameter-nicconfigurationsipconfigurationspipconfigurationlock) | object | The lock settings of the public IP address. |
 | [`name`](#parameter-nicconfigurationsipconfigurationspipconfigurationname) | string | The name of the Public IP Address. |
@@ -5819,7 +5825,21 @@ The public IP address configuration.
 | [`skuName`](#parameter-nicconfigurationsipconfigurationspipconfigurationskuname) | string | The SKU name of the public IP address. |
 | [`skuTier`](#parameter-nicconfigurationsipconfigurationspipconfigurationskutier) | string | The SKU tier of the public IP address. |
 | [`tags`](#parameter-nicconfigurationsipconfigurationspipconfigurationtags) | object | The tags of the public IP address. |
-| [`zones`](#parameter-nicconfigurationsipconfigurationspipconfigurationzones) | array | The zones of the public IP address. |
+
+### Parameter: `nicConfigurations.ipConfigurations.pipConfiguration.availabilityZones`
+
+The zones of the public IP address.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `nicConfigurations.ipConfigurations.pipConfiguration.ddosSettings`
 
@@ -6091,6 +6111,34 @@ The idle timeout of the public IP address.
 - Required: No
 - Type: int
 
+### Parameter: `nicConfigurations.ipConfigurations.pipConfiguration.ipTags`
+
+The list of tags associated with the public IP address.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipTagType`](#parameter-nicconfigurationsipconfigurationspipconfigurationiptagsiptagtype) | string | The IP tag type. |
+| [`tag`](#parameter-nicconfigurationsipconfigurationspipconfigurationiptagstag) | string | The IP tag. |
+
+### Parameter: `nicConfigurations.ipConfigurations.pipConfiguration.ipTags.ipTagType`
+
+The IP tag type.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `nicConfigurations.ipConfigurations.pipConfiguration.ipTags.tag`
+
+The IP tag.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `nicConfigurations.ipConfigurations.pipConfiguration.location`
 
 The idle timeout in minutes.
@@ -6329,21 +6377,6 @@ The tags of the public IP address.
 
 - Required: No
 - Type: object
-
-### Parameter: `nicConfigurations.ipConfigurations.pipConfiguration.zones`
-
-The zones of the public IP address.
-
-- Required: No
-- Type: array
-- Allowed:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
 
 ### Parameter: `nicConfigurations.ipConfigurations.privateIPAddress`
 
@@ -7479,7 +7512,7 @@ This property can be used by user in the request to enable or disable the Host E
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 ### Parameter: `evictionPolicy`
 
@@ -7532,25 +7565,129 @@ The configuration for the [Azure Disk Encryption] extension. Must at least conta
 
 ### Parameter: `extensionCustomScriptConfig`
 
-The configuration for the [Custom Script] extension. Must at least contain the ["enabled": true] property to be executed.
+The configuration for the [Custom Script] extension.
 
 - Required: No
 - Type: object
-- Default:
-  ```Bicep
-  {
-      enabled: false
-      fileData: []
-  }
-  ```
 
-### Parameter: `extensionCustomScriptProtectedSetting`
+**Optional parameters**
 
-An object that contains the extension specific protected settings.
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoUpgradeMinorVersion`](#parameter-extensioncustomscriptconfigautoupgrademinorversion) | bool | Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true. Defaults to `true`. |
+| [`enableAutomaticUpgrade`](#parameter-extensioncustomscriptconfigenableautomaticupgrade) | bool | Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `false`. |
+| [`forceUpdateTag`](#parameter-extensioncustomscriptconfigforceupdatetag) | string | How the extension handler should be forced to update even if the extension configuration has not changed. |
+| [`name`](#parameter-extensioncustomscriptconfigname) | string | The name of the virtual machine extension. Defaults to `CustomScriptExtension`. |
+| [`protectedSettings`](#parameter-extensioncustomscriptconfigprotectedsettings) | secureObject | The configuration of the custom script extension. Note: You can provide any property either in the `settings` or `protectedSettings` but not both. If your property contains secrets, use `protectedSettings`. |
+| [`protectedSettingsFromKeyVault`](#parameter-extensioncustomscriptconfigprotectedsettingsfromkeyvault) | object | The extensions protected settings that are passed by reference, and consumed from key vault. |
+| [`provisionAfterExtensions`](#parameter-extensioncustomscriptconfigprovisionafterextensions) | array | Collection of extension names after which this extension needs to be provisioned. |
+| [`settings`](#parameter-extensioncustomscriptconfigsettings) | object | The configuration of the custom script extension. Note: You can provide any property either in the `settings` or `protectedSettings` but not both. If your property contains secrets, use `protectedSettings`. |
+| [`supressFailures`](#parameter-extensioncustomscriptconfigsupressfailures) | bool | Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). Defaults to `false`. |
+| [`tags`](#parameter-extensioncustomscriptconfigtags) | object | Tags of the resource. |
+| [`typeHandlerVersion`](#parameter-extensioncustomscriptconfigtypehandlerversion) | string | Specifies the version of the script handler. Defaults to `1.10` for Windows and `2.1` for Linux. |
+
+### Parameter: `extensionCustomScriptConfig.autoUpgradeMinorVersion`
+
+Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true. Defaults to `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `extensionCustomScriptConfig.enableAutomaticUpgrade`
+
+Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `false`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `extensionCustomScriptConfig.forceUpdateTag`
+
+How the extension handler should be forced to update even if the extension configuration has not changed.
+
+- Required: No
+- Type: string
+
+### Parameter: `extensionCustomScriptConfig.name`
+
+The name of the virtual machine extension. Defaults to `CustomScriptExtension`.
+
+- Required: No
+- Type: string
+
+### Parameter: `extensionCustomScriptConfig.protectedSettings`
+
+The configuration of the custom script extension. Note: You can provide any property either in the `settings` or `protectedSettings` but not both. If your property contains secrets, use `protectedSettings`.
 
 - Required: No
 - Type: secureObject
-- Default: `{}`
+
+### Parameter: `extensionCustomScriptConfig.protectedSettingsFromKeyVault`
+
+The extensions protected settings that are passed by reference, and consumed from key vault.
+
+- Required: No
+- Type: object
+
+### Parameter: `extensionCustomScriptConfig.provisionAfterExtensions`
+
+Collection of extension names after which this extension needs to be provisioned.
+
+- Required: No
+- Type: array
+
+### Parameter: `extensionCustomScriptConfig.settings`
+
+The configuration of the custom script extension. Note: You can provide any property either in the `settings` or `protectedSettings` but not both. If your property contains secrets, use `protectedSettings`.
+
+- Required: No
+- Type: object
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`commandToExecute`](#parameter-extensioncustomscriptconfigsettingscommandtoexecute) | string | The entry point script to run. If the command contains any credentials, use the same property of the `protectedSettings` instead. Required if `protectedSettings.commandToExecute` is not provided. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fileUris`](#parameter-extensioncustomscriptconfigsettingsfileuris) | array | URLs for files to be downloaded. If URLs are sensitive, for example, if they contain keys, this field should be specified in `protectedSettings`. |
+
+### Parameter: `extensionCustomScriptConfig.settings.commandToExecute`
+
+The entry point script to run. If the command contains any credentials, use the same property of the `protectedSettings` instead. Required if `protectedSettings.commandToExecute` is not provided.
+
+- Required: No
+- Type: string
+
+### Parameter: `extensionCustomScriptConfig.settings.fileUris`
+
+URLs for files to be downloaded. If URLs are sensitive, for example, if they contain keys, this field should be specified in `protectedSettings`.
+
+- Required: No
+- Type: array
+
+### Parameter: `extensionCustomScriptConfig.supressFailures`
+
+Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). Defaults to `false`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `extensionCustomScriptConfig.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `extensionCustomScriptConfig.typeHandlerVersion`
+
+Specifies the version of the script handler. Defaults to `1.10` for Windows and `2.1` for Linux.
+
+- Required: No
+- Type: string
 
 ### Parameter: `extensionDependencyAgentConfig`
 
@@ -8162,14 +8299,6 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `sasTokenValidityLength`
-
-SAS token validity length to use to download files from storage accounts. Usage: 'PT8H' - valid for 8 hours; 'P5D' - valid for 5 days; 'P1Y' - valid for 1 year. When not provided, the SAS token will be valid for 8 hours.
-
-- Required: No
-- Type: string
-- Default: `'PT8H'`
-
 ### Parameter: `secureBootEnabled`
 
 Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings.
@@ -8276,14 +8405,6 @@ Specifies the protocol of WinRM listener.
   ]
   ```
 
-### Parameter: `baseTime`
-
-Do not provide a value! This date value is used to generate a registration token.
-
-- Required: No
-- Type: string
-- Default: `[utcNow('u')]`
-
 ## Outputs
 
 | Output | Type | Description |
@@ -8302,7 +8423,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/network-interface:0.5.1` | Remote reference |
+| `br/public:avm/res/network/network-interface:0.5.2` | Remote reference |
 | `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.9.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
