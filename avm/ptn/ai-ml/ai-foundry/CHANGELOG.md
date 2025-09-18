@@ -8,6 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Added support for Cognitive Services `disableLocalAuth`
 - Added input parameter `aiFoundryConfiguration.disableLocalAuth`
+- Updated Project logic to only provision the `deploymentScript` "wait" scripts if creating Connections for the Project
 - Updated interior module versions
 
 ### Breaking Changes
