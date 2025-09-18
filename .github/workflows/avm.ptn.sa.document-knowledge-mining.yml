@@ -27,6 +27,7 @@ on:
     branches:
       - main
       - Dkm-Dev
+      - dkm_local
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
@@ -36,6 +37,7 @@ on:
       - "avm/ptn/sa/document-knowledge-mining/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
+      - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:
