@@ -61,7 +61,7 @@ param vmSize string
 // - Document subnet usage and purpose in code comments.
 // - For AVM modules, ensure only one delegation per subnet and leave delegations empty if not required.
 
-module network 'main.bicep' = {
+module network 'netowrkmain.bicep' = {
   name: take('network-${resourcesName}-create', 64)
   params: {
     resourcesName: resourcesName
