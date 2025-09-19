@@ -1,6 +1,6 @@
 # Changelog
 
-The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/build-your-own-copilot-solution-accelerator/CHANGELOG.md).
+The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/build-your-own-copilot-solution/CHANGELOG.md).
 
 ## 0.1.0
 
