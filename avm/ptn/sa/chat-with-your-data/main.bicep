@@ -1581,7 +1581,7 @@ module storage './modules/storage/storage-account/main.bicep' = {
       }
     ]
     allowSharedKeyAccess: true
-    allowBlobPublicAccess: enablePrivateNetworking ? true : false
+    allowBlobPublicAccess: false
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     networkAcls: { bypass: 'AzureServices', defaultAction: enablePrivateNetworking ? 'Deny' : 'Allow' }
     privateEndpoints: enablePrivateNetworking
