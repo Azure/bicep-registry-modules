@@ -1,3 +1,6 @@
+metadata name = 'Chat with your data Solution Accelerator - WAF Aligned Test'
+metadata description = 'This test deploys the Chat with your data Solution Accelerator with Well-Architected Framework aligned parameters to validate enhanced security, reliability, and scalability features.'
+
 targetScope = 'subscription'
 
 // ========== //
@@ -43,6 +46,7 @@ module testDeployment '../../../main.bicep' = [
       // You parameters go here
       solutionName: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      enableScalability: true
     }
   }
 ]

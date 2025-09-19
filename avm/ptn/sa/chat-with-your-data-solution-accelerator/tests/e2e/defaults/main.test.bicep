@@ -1,3 +1,6 @@
+metadata name = 'Chat with your data Solution Accelerator - Defaults Test'
+metadata description = 'This test deploys the Chat with your data Solution Accelerator with default parameters.'
+
 targetScope = 'subscription'
 
 // ========== //
@@ -43,6 +46,11 @@ module testDeployment '../../../main.bicep' = [
       // You parameters go here
       solutionName: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      enableScalability: true
+      enableTelemetry: true
+      enableMonitoring: true
+      enablePrivateNetworking: true
+      enableRedundancy: true
     }
   }
 ]

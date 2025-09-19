@@ -12,7 +12,7 @@ param solutionName string = 'cwyd'
 @description('Optional. A unique text value for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name.')
 param solutionUniqueText string = take(uniqueString(subscription().id, resourceGroup().name, solutionName), 5)
 
-@description('Required. Location for all resources, if you are using existing resource group provide the location of the resorce group.')
+@description('Optional. Location for all resources, if you are using existing resource group provide the location of the resorce group.')
 @metadata({
   azd: {
     type: 'location'
@@ -81,97 +81,97 @@ var applicationInsightsName string = 'appi-${solutionSuffix}'
 @description('Name of the Workbook')
 var workbookDisplayName string = 'workbook-${solutionSuffix}'
 
-@description('Required. Use semantic search')
+@description('Optional. Use semantic search')
 param azureSearchUseSemanticSearch bool = false
 
-@description('Required. Semantic search config')
+@description('Optional. Semantic search config')
 param azureSearchSemanticSearchConfig string = 'default'
 
-@description('Required. Is the index prechunked')
+@description('Optional. Is the index prechunked')
 param azureSearchIndexIsPrechunked string = 'false'
 
-@description('Required. Top K results')
+@description('Optional. Top K results')
 param azureSearchTopK string = '5'
 
-@description('Required. Enable in domain')
+@description('Optional. Enable in domain')
 param azureSearchEnableInDomain string = 'true'
 
-@description('Required. Id columns')
+@description('Optional. Id columns')
 param azureSearchFieldId string = 'id'
 
-@description('Required. Content columns')
+@description('Optional. Content columns')
 param azureSearchContentColumn string = 'content'
 
-@description('Required. Vector columns')
+@description('Optional. Vector columns')
 param azureSearchVectorColumn string = 'content_vector'
 
-@description('Required. Filename column')
+@description('Optional. Filename column')
 param azureSearchFilenameColumn string = 'filename'
 
-@description('Required. Search filter')
+@description('Optional. Search filter')
 param azureSearchFilter string = ''
 
-@description('Required. Title column')
+@description('Optional. Title column')
 param azureSearchTitleColumn string = 'title'
 
-@description('Required. Metadata column')
+@description('Optional. Metadata column')
 param azureSearchFieldsMetadata string = 'metadata'
 
-@description('Required. Source column')
+@description('Optional. Source column')
 param azureSearchSourceColumn string = 'source'
 
 @description('Optional. Text column')
 param azureSearchTextColumn string = 'text'
 
-@description('Required. Layout Text column')
+@description('Optional. Layout Text column')
 param azureSearchLayoutTextColumn string = 'layoutText'
 
-@description('Required. Chunk column')
+@description('Optional. Chunk column')
 param azureSearchChunkColumn string = 'chunk'
 
-@description('Required. Offset column')
+@description('Optional. Offset column')
 param azureSearchOffsetColumn string = 'offset'
 
-@description('Required. Url column')
+@description('Optional. Url column')
 param azureSearchUrlColumn string = 'url'
 
-@description('Required. Whether to use Azure Search Integrated Vectorization. If the database type is PostgreSQL, set this to false.')
+@description('Optional. Whether to use Azure Search Integrated Vectorization. If the database type is PostgreSQL, set this to false.')
 param azureSearchUseIntegratedVectorization bool = false
 
-@description('Required. Name of Azure OpenAI Resource')
+@description('Optional. Name of Azure OpenAI Resource')
 var azureOpenAIResourceName string = 'oai-${solutionSuffix}'
 
 @description('Optional. Name of Azure OpenAI Resource SKU')
 param azureOpenAISkuName string = 'S0'
 
-@description('Required. Azure OpenAI Model Deployment Name')
+@description('Optional. Azure OpenAI Model Deployment Name')
 param azureOpenAIModel string = 'gpt-4.1'
 
-@description('Required. Azure OpenAI Model Name')
+@description('Optional. Azure OpenAI Model Name')
 param azureOpenAIModelName string = 'gpt-4.1'
 
-@description('Required. Azure OpenAI Model Version')
+@description('Optional. Azure OpenAI Model Version')
 param azureOpenAIModelVersion string = '2025-04-14'
 
-@description('Required. Azure OpenAI Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota')
+@description('Optional. Azure OpenAI Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota')
 param azureOpenAIModelCapacity int = 30
 
-@description('Required. Whether to enable the use of a vision LLM and Computer Vision for embedding images. If the database type is PostgreSQL, set this to false.')
+@description('Optional. Whether to enable the use of a vision LLM and Computer Vision for embedding images. If the database type is PostgreSQL, set this to false.')
 param useAdvancedImageProcessing bool = false
 
-@description('Required. The maximum number of images to pass to the vision model in a single request')
+@description('Optional. The maximum number of images to pass to the vision model in a single request')
 param advancedImageProcessingMaxImages int = 1
 
-@description('Required. Azure OpenAI Vision Model Deployment Name')
+@description('Optional. Azure OpenAI Vision Model Deployment Name')
 param azureOpenAIVisionModel string = 'gpt-4'
 
-@description('Required. Azure OpenAI Vision Model Name')
+@description('Optional. Azure OpenAI Vision Model Name')
 param azureOpenAIVisionModelName string = 'gpt-4'
 
-@description('Required. Azure OpenAI Vision Model Version')
+@description('Optional. Azure OpenAI Vision Model Version')
 param azureOpenAIVisionModelVersion string = 'turbo-2024-04-09'
 
-@description('Required. Azure OpenAI Vision Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota')
+@description('Optional. Azure OpenAI Vision Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota')
 param azureOpenAIVisionModelCapacity int = 10
 
 @description('Optional. Orchestration strategy: openai_function or semantic_kernel or langchain str. If you use a old version of turbo (0301), please select langchain. If the database type is PostgreSQL, set this to sementic_kernel.')
@@ -190,37 +190,37 @@ param orchestrationStrategy string = 'semantic_kernel'
 ])
 param conversationFlow string = 'custom'
 
-@description('Required. Azure OpenAI Temperature')
+@description('Optional. Azure OpenAI Temperature')
 param azureOpenAITemperature string = '0'
 
-@description('Required. Azure OpenAI Top P')
+@description('Optional. Azure OpenAI Top P')
 param azureOpenAITopP string = '1'
 
-@description('Required. Azure OpenAI Max Tokens')
+@description('Optional. Azure OpenAI Max Tokens')
 param azureOpenAIMaxTokens string = '1000'
 
-@description('Required. Azure OpenAI Stop Sequence')
+@description('Optional. Azure OpenAI Stop Sequence')
 param azureOpenAIStopSequence string = ''
 
-@description('Required. Azure OpenAI System Message')
+@description('Optional. Azure OpenAI System Message')
 param azureOpenAISystemMessage string = 'You are an AI assistant that helps people find information.'
 
-@description('Required. Azure OpenAI Api Version')
+@description('Optional. Azure OpenAI Api Version')
 param azureOpenAIApiVersion string = '2024-02-01'
 
-@description('Required. Whether or not to stream responses from Azure OpenAI')
+@description('Optional. Whether or not to stream responses from Azure OpenAI')
 param azureOpenAIStream string = 'true'
 
-@description('Required. Azure OpenAI Embedding Model Deployment Name')
+@description('Optional. Azure OpenAI Embedding Model Deployment Name')
 param azureOpenAIEmbeddingModel string = 'text-embedding-ada-002'
 
-@description('Required. Azure OpenAI Embedding Model Name')
+@description('Optional. Azure OpenAI Embedding Model Name')
 param azureOpenAIEmbeddingModelName string = 'text-embedding-ada-002'
 
-@description('Required. Azure OpenAI Embedding Model Version')
+@description('Optional. Azure OpenAI Embedding Model Version')
 param azureOpenAIEmbeddingModelVersion string = '2'
 
-@description('Required. Azure OpenAI Embedding Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota')
+@description('Optional. Azure OpenAI Embedding Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota')
 param azureOpenAIEmbeddingModelCapacity int = 30
 
 @description('Optional. Name of Computer Vision Resource (if useAdvancedImageProcessing=true)')
@@ -302,10 +302,10 @@ param newGuidString string = newGuid()
 @description('Optional. Id of the user or app to assign application roles')
 param principalId string = ''
 
-@description('Required. Application Environment')
+@description('Optional. Application Environment')
 param appEnvironment string = 'Prod'
 
-@description('Required. Hosting model for the web apps. This value is fixed as "container", which uses prebuilt containers for faster deployment.')
+@description('Optional. Hosting model for the web apps. This value is fixed as "container", which uses prebuilt containers for faster deployment.')
 param hostingModel string = 'container'
 
 @description('Optional. The log level for application logging. This setting controls the verbosity of logs emitted by the application. Allowed values are CRITICAL, ERROR, WARN, INFO, and DEBUG. The default value is INFO.')
@@ -641,8 +641,8 @@ module postgresDBModule 'br/public:avm/res/db-for-postgre-sql/flexible-server:0.
     storageSizeGB: 32
     version: '16'
     availabilityZone: 1
-    highAvailability: 'Disabled'
-
+    highAvailability: enableRedundancy ? 'ZoneRedundant' : 'Disabled'
+    highAvailabilityZone: enableRedundancy ? 1 : -1
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     //delegatedSubnetResourceId: enablePrivateNetworking ? network!.outputs.subnetPrivateEndpointsResourceId : null
     privateEndpoints: enablePrivateNetworking

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "10187538549001730216"
+      "templateHash": "4633044887264926164"
     },
     "name": "Chat-with-your-data-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -36,7 +36,7 @@
         "azd": {
           "type": "location"
         },
-        "description": "Required. Location for all resources, if you are using existing resource group provide the location of the resorce group."
+        "description": "Optional. Location for all resources, if you are using existing resource group provide the location of the resorce group."
       }
     },
     "existingLogAnalyticsWorkspaceId": {
@@ -82,91 +82,91 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Required. Use semantic search"
+        "description": "Optional. Use semantic search"
       }
     },
     "azureSearchSemanticSearchConfig": {
       "type": "string",
       "defaultValue": "default",
       "metadata": {
-        "description": "Required. Semantic search config"
+        "description": "Optional. Semantic search config"
       }
     },
     "azureSearchIndexIsPrechunked": {
       "type": "string",
       "defaultValue": "false",
       "metadata": {
-        "description": "Required. Is the index prechunked"
+        "description": "Optional. Is the index prechunked"
       }
     },
     "azureSearchTopK": {
       "type": "string",
       "defaultValue": "5",
       "metadata": {
-        "description": "Required. Top K results"
+        "description": "Optional. Top K results"
       }
     },
     "azureSearchEnableInDomain": {
       "type": "string",
       "defaultValue": "true",
       "metadata": {
-        "description": "Required. Enable in domain"
+        "description": "Optional. Enable in domain"
       }
     },
     "azureSearchFieldId": {
       "type": "string",
       "defaultValue": "id",
       "metadata": {
-        "description": "Required. Id columns"
+        "description": "Optional. Id columns"
       }
     },
     "azureSearchContentColumn": {
       "type": "string",
       "defaultValue": "content",
       "metadata": {
-        "description": "Required. Content columns"
+        "description": "Optional. Content columns"
       }
     },
     "azureSearchVectorColumn": {
       "type": "string",
       "defaultValue": "content_vector",
       "metadata": {
-        "description": "Required. Vector columns"
+        "description": "Optional. Vector columns"
       }
     },
     "azureSearchFilenameColumn": {
       "type": "string",
       "defaultValue": "filename",
       "metadata": {
-        "description": "Required. Filename column"
+        "description": "Optional. Filename column"
       }
     },
     "azureSearchFilter": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Required. Search filter"
+        "description": "Optional. Search filter"
       }
     },
     "azureSearchTitleColumn": {
       "type": "string",
       "defaultValue": "title",
       "metadata": {
-        "description": "Required. Title column"
+        "description": "Optional. Title column"
       }
     },
     "azureSearchFieldsMetadata": {
       "type": "string",
       "defaultValue": "metadata",
       "metadata": {
-        "description": "Required. Metadata column"
+        "description": "Optional. Metadata column"
       }
     },
     "azureSearchSourceColumn": {
       "type": "string",
       "defaultValue": "source",
       "metadata": {
-        "description": "Required. Source column"
+        "description": "Optional. Source column"
       }
     },
     "azureSearchTextColumn": {
@@ -180,35 +180,35 @@
       "type": "string",
       "defaultValue": "layoutText",
       "metadata": {
-        "description": "Required. Layout Text column"
+        "description": "Optional. Layout Text column"
       }
     },
     "azureSearchChunkColumn": {
       "type": "string",
       "defaultValue": "chunk",
       "metadata": {
-        "description": "Required. Chunk column"
+        "description": "Optional. Chunk column"
       }
     },
     "azureSearchOffsetColumn": {
       "type": "string",
       "defaultValue": "offset",
       "metadata": {
-        "description": "Required. Offset column"
+        "description": "Optional. Offset column"
       }
     },
     "azureSearchUrlColumn": {
       "type": "string",
       "defaultValue": "url",
       "metadata": {
-        "description": "Required. Url column"
+        "description": "Optional. Url column"
       }
     },
     "azureSearchUseIntegratedVectorization": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Required. Whether to use Azure Search Integrated Vectorization. If the database type is PostgreSQL, set this to false."
+        "description": "Optional. Whether to use Azure Search Integrated Vectorization. If the database type is PostgreSQL, set this to false."
       }
     },
     "azureOpenAISkuName": {
@@ -222,70 +222,70 @@
       "type": "string",
       "defaultValue": "gpt-4.1",
       "metadata": {
-        "description": "Required. Azure OpenAI Model Deployment Name"
+        "description": "Optional. Azure OpenAI Model Deployment Name"
       }
     },
     "azureOpenAIModelName": {
       "type": "string",
       "defaultValue": "gpt-4.1",
       "metadata": {
-        "description": "Required. Azure OpenAI Model Name"
+        "description": "Optional. Azure OpenAI Model Name"
       }
     },
     "azureOpenAIModelVersion": {
       "type": "string",
       "defaultValue": "2025-04-14",
       "metadata": {
-        "description": "Required. Azure OpenAI Model Version"
+        "description": "Optional. Azure OpenAI Model Version"
       }
     },
     "azureOpenAIModelCapacity": {
       "type": "int",
       "defaultValue": 30,
       "metadata": {
-        "description": "Required. Azure OpenAI Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota"
+        "description": "Optional. Azure OpenAI Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota"
       }
     },
     "useAdvancedImageProcessing": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Required. Whether to enable the use of a vision LLM and Computer Vision for embedding images. If the database type is PostgreSQL, set this to false."
+        "description": "Optional. Whether to enable the use of a vision LLM and Computer Vision for embedding images. If the database type is PostgreSQL, set this to false."
       }
     },
     "advancedImageProcessingMaxImages": {
       "type": "int",
       "defaultValue": 1,
       "metadata": {
-        "description": "Required. The maximum number of images to pass to the vision model in a single request"
+        "description": "Optional. The maximum number of images to pass to the vision model in a single request"
       }
     },
     "azureOpenAIVisionModel": {
       "type": "string",
       "defaultValue": "gpt-4",
       "metadata": {
-        "description": "Required. Azure OpenAI Vision Model Deployment Name"
+        "description": "Optional. Azure OpenAI Vision Model Deployment Name"
       }
     },
     "azureOpenAIVisionModelName": {
       "type": "string",
       "defaultValue": "gpt-4",
       "metadata": {
-        "description": "Required. Azure OpenAI Vision Model Name"
+        "description": "Optional. Azure OpenAI Vision Model Name"
       }
     },
     "azureOpenAIVisionModelVersion": {
       "type": "string",
       "defaultValue": "turbo-2024-04-09",
       "metadata": {
-        "description": "Required. Azure OpenAI Vision Model Version"
+        "description": "Optional. Azure OpenAI Vision Model Version"
       }
     },
     "azureOpenAIVisionModelCapacity": {
       "type": "int",
       "defaultValue": 10,
       "metadata": {
-        "description": "Required. Azure OpenAI Vision Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota"
+        "description": "Optional. Azure OpenAI Vision Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota"
       }
     },
     "orchestrationStrategy": {
@@ -316,77 +316,77 @@
       "type": "string",
       "defaultValue": "0",
       "metadata": {
-        "description": "Required. Azure OpenAI Temperature"
+        "description": "Optional. Azure OpenAI Temperature"
       }
     },
     "azureOpenAITopP": {
       "type": "string",
       "defaultValue": "1",
       "metadata": {
-        "description": "Required. Azure OpenAI Top P"
+        "description": "Optional. Azure OpenAI Top P"
       }
     },
     "azureOpenAIMaxTokens": {
       "type": "string",
       "defaultValue": "1000",
       "metadata": {
-        "description": "Required. Azure OpenAI Max Tokens"
+        "description": "Optional. Azure OpenAI Max Tokens"
       }
     },
     "azureOpenAIStopSequence": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Required. Azure OpenAI Stop Sequence"
+        "description": "Optional. Azure OpenAI Stop Sequence"
       }
     },
     "azureOpenAISystemMessage": {
       "type": "string",
       "defaultValue": "You are an AI assistant that helps people find information.",
       "metadata": {
-        "description": "Required. Azure OpenAI System Message"
+        "description": "Optional. Azure OpenAI System Message"
       }
     },
     "azureOpenAIApiVersion": {
       "type": "string",
       "defaultValue": "2024-02-01",
       "metadata": {
-        "description": "Required. Azure OpenAI Api Version"
+        "description": "Optional. Azure OpenAI Api Version"
       }
     },
     "azureOpenAIStream": {
       "type": "string",
       "defaultValue": "true",
       "metadata": {
-        "description": "Required. Whether or not to stream responses from Azure OpenAI"
+        "description": "Optional. Whether or not to stream responses from Azure OpenAI"
       }
     },
     "azureOpenAIEmbeddingModel": {
       "type": "string",
       "defaultValue": "text-embedding-ada-002",
       "metadata": {
-        "description": "Required. Azure OpenAI Embedding Model Deployment Name"
+        "description": "Optional. Azure OpenAI Embedding Model Deployment Name"
       }
     },
     "azureOpenAIEmbeddingModelName": {
       "type": "string",
       "defaultValue": "text-embedding-ada-002",
       "metadata": {
-        "description": "Required. Azure OpenAI Embedding Model Name"
+        "description": "Optional. Azure OpenAI Embedding Model Name"
       }
     },
     "azureOpenAIEmbeddingModelVersion": {
       "type": "string",
       "defaultValue": "2",
       "metadata": {
-        "description": "Required. Azure OpenAI Embedding Model Version"
+        "description": "Optional. Azure OpenAI Embedding Model Version"
       }
     },
     "azureOpenAIEmbeddingModelCapacity": {
       "type": "int",
       "defaultValue": 30,
       "metadata": {
-        "description": "Required. Azure OpenAI Embedding Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota"
+        "description": "Optional. Azure OpenAI Embedding Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota"
       }
     },
     "computerVisionSkuName": {
@@ -470,14 +470,14 @@
       "type": "string",
       "defaultValue": "Prod",
       "metadata": {
-        "description": "Required. Application Environment"
+        "description": "Optional. Application Environment"
       }
     },
     "hostingModel": {
       "type": "string",
       "defaultValue": "container",
       "metadata": {
-        "description": "Required. Hosting model for the web apps. This value is fixed as \"container\", which uses prebuilt containers for faster deployment."
+        "description": "Optional. Hosting model for the web apps. This value is fixed as \"container\", which uses prebuilt containers for faster deployment."
       }
     },
     "logLevel": {
@@ -17723,9 +17723,8 @@
           "availabilityZone": {
             "value": 1
           },
-          "highAvailability": {
-            "value": "Disabled"
-          },
+          "highAvailability": "[if(parameters('enableRedundancy'), createObject('value', 'ZoneRedundant'), createObject('value', 'Disabled'))]",
+          "highAvailabilityZone": "[if(parameters('enableRedundancy'), createObject('value', 1), createObject('value', -1))]",
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-{0}', variables('postgresResourceName')), 'customNetworkInterfaceName', format('nic-{0}', variables('postgresResourceName')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').postgresDB)).outputs.resourceId.value))), 'service', 'postgresqlServer', 'subnetResourceId', reference('network').outputs.subnetPrivateEndpointsResourceId.value))), createObject('value', createArray()))]",
           "administrators": "[if(not(equals(reference('managedIdentityModule').outputs.principalId.value, '')), createObject('value', createArray(createObject('objectId', reference('managedIdentityModule').outputs.principalId.value, 'principalName', reference('managedIdentityModule').outputs.name.value, 'principalType', 'ServicePrincipal'))), createObject('value', null()))]",
@@ -58329,9 +58328,9 @@
         }
       },
       "dependsOn": [
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "managedIdentityModule",
         "network"
       ]
