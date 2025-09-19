@@ -4,7 +4,13 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ## 0.7.2
 
+### Changes
+
 - Export peeringType and subnetType to enable intellisense formatting
+
+### Breaking Changes
+
+- None
 
 ## 0.7.1
 
