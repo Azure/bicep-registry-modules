@@ -1,4 +1,4 @@
-# Private DNS Zone Virtual Network Link `[Sa/ChatWithYourDataSolutionAcceleratorModulesNetworkPrivateDnsZoneVirtualNetworkLink]`
+# Private DNS Zone Virtual Network Link `[Sa/ChatWithYourDataSolutionAcceleratorModulesPrivateDnsZoneVirtualNetworkLink]`
 
 This module deploys a Private DNS Zone Virtual Network Link.
 

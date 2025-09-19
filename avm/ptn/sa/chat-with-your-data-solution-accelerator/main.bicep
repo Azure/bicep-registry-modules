@@ -18,7 +18,7 @@ param solutionUniqueText string = take(uniqueString(subscription().id, resourceG
     type: 'location'
   }
 })
-param location string
+param location string = resourceGroup().location
 
 @description('Optional. Existing Log Analytics Workspace Resource ID')
 param existingLogAnalyticsWorkspaceId string = ''
@@ -56,7 +56,7 @@ var hostingPlanName string = 'asp-${solutionSuffix}'
 ])
 param hostingPlanSku string = 'B3'
 
-@description('Required. The type of database to deploy (cosmos or postgres)')
+@description('Optional. The type of database to deploy (cosmos or postgres)')
 @allowed([
   'PostgreSQL'
   'CosmosDB'
@@ -174,7 +174,7 @@ param azureOpenAIVisionModelVersion string = 'turbo-2024-04-09'
 @description('Optional. Azure OpenAI Vision Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota')
 param azureOpenAIVisionModelCapacity int = 10
 
-@description('Required. Orchestration strategy: openai_function or semantic_kernel or langchain str. If you use a old version of turbo (0301), please select langchain. If the database type is PostgreSQL, set this to sementic_kernel.')
+@description('Optional. Orchestration strategy: openai_function or semantic_kernel or langchain str. If you use a old version of turbo (0301), please select langchain. If the database type is PostgreSQL, set this to sementic_kernel.')
 @allowed([
   'openai_function'
   'semantic_kernel'
@@ -183,7 +183,7 @@ param azureOpenAIVisionModelCapacity int = 10
 ])
 param orchestrationStrategy string = 'semantic_kernel'
 
-@description('Required. Chat conversation type: custom or byod. If the database type is PostgreSQL, set this to custom.')
+@description('Optional. Chat conversation type: custom or byod. If the database type is PostgreSQL, set this to custom.')
 @allowed([
   'custom'
   'byod'
@@ -305,7 +305,7 @@ param principalId string = ''
 @description('Optional. Application Environment')
 param appEnvironment string = 'Prod'
 
-@description('Required. Hosting model for the web apps. This value is fixed as "container", which uses prebuilt containers for faster deployment.')
+@description('Optional. Hosting model for the web apps. This value is fixed as "container", which uses prebuilt containers for faster deployment.')
 param hostingModel string = 'container'
 
 @description('Optional. The log level for application logging. This setting controls the verbosity of logs emitted by the application. Allowed values are CRITICAL, ERROR, WARN, INFO, and DEBUG. The default value is INFO.')

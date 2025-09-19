@@ -113,9 +113,7 @@ The following section provides usage examples for the module, which were used to
 module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-data-solution-accelerator:<version>' = {
   name: 'chatWithYourDataSolutionAcceleratorDeployment'
   params: {
-    // Required parameters
     location: '<location>'
-    // Non-required parameters
     solutionName: 'scwydsmin001'
   }
 }
@@ -133,11 +131,9 @@ module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "location": {
       "value": "<location>"
     },
-    // Non-required parameters
     "solutionName": {
       "value": "scwydsmin001"
     }
@@ -155,9 +151,7 @@ module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-
 ```bicep-params
 using 'br/public:avm/ptn/sa/chat-with-your-data-solution-accelerator:<version>'
 
-// Required parameters
 param location = '<location>'
-// Non-required parameters
 param solutionName = 'scwydsmin001'
 ```
 
@@ -174,9 +168,7 @@ param solutionName = 'scwydsmin001'
 module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-data-solution-accelerator:<version>' = {
   name: 'chatWithYourDataSolutionAcceleratorDeployment'
   params: {
-    // Required parameters
     location: '<location>'
-    // Non-required parameters
     solutionName: 'scwydswaf001'
   }
 }
@@ -194,11 +186,9 @@ module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "location": {
       "value": "<location>"
     },
-    // Non-required parameters
     "solutionName": {
       "value": "scwydswaf001"
     }
@@ -216,9 +206,7 @@ module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-
 ```bicep-params
 using 'br/public:avm/ptn/sa/chat-with-your-data-solution-accelerator:<version>'
 
-// Required parameters
 param location = '<location>'
-// Non-required parameters
 param solutionName = 'scwydswaf001'
 ```
 
@@ -231,11 +219,7 @@ param solutionName = 'scwydswaf001'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`conversationFlow`](#parameter-conversationflow) | string | Chat conversation type: custom or byod. If the database type is PostgreSQL, set this to custom. |
-| [`databaseType`](#parameter-databasetype) | string | The type of database to deploy (cosmos or postgres) |
-| [`hostingModel`](#parameter-hostingmodel) | string | Hosting model for the web apps. This value is fixed as "container", which uses prebuilt containers for faster deployment. |
 | [`location`](#parameter-location) | string | Location for all resources, if you are using existing resource group provide the location of the resorce group. |
-| [`orchestrationStrategy`](#parameter-orchestrationstrategy) | string | Orchestration strategy: openai_function or semantic_kernel or langchain str. If you use a old version of turbo (0301), please select langchain. If the database type is PostgreSQL, set this to sementic_kernel. |
 
 **Optional parameters**
 
@@ -288,7 +272,9 @@ param solutionName = 'scwydswaf001'
 | [`computerVisionSkuName`](#parameter-computervisionskuname) | string | Name of Computer Vision Resource SKU (if useAdvancedImageProcessing=true) |
 | [`computerVisionVectorizeImageApiVersion`](#parameter-computervisionvectorizeimageapiversion) | string | Azure Computer Vision Vectorize Image API Version |
 | [`computerVisionVectorizeImageModelVersion`](#parameter-computervisionvectorizeimagemodelversion) | string | Azure Computer Vision Vectorize Image Model Version |
+| [`conversationFlow`](#parameter-conversationflow) | string | Chat conversation type: custom or byod. If the database type is PostgreSQL, set this to custom. |
 | [`createdBy`](#parameter-createdby) | string | created by user name |
+| [`databaseType`](#parameter-databasetype) | string | The type of database to deploy (cosmos or postgres) |
 | [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Enable purge protection for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
@@ -296,8 +282,10 @@ param solutionName = 'scwydswaf001'
 | [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`existingLogAnalyticsWorkspaceId`](#parameter-existingloganalyticsworkspaceid) | string | Existing Log Analytics Workspace Resource ID |
+| [`hostingModel`](#parameter-hostingmodel) | string | Hosting model for the web apps. This value is fixed as "container", which uses prebuilt containers for faster deployment. |
 | [`logLevel`](#parameter-loglevel) | string | The log level for application logging. This setting controls the verbosity of logs emitted by the application. Allowed values are CRITICAL, ERROR, WARN, INFO, and DEBUG. The default value is INFO. |
 | [`newGuidString`](#parameter-newguidstring) | string | A new GUID string generated for this deployment. This can be used for unique naming if needed. |
+| [`orchestrationStrategy`](#parameter-orchestrationstrategy) | string | Orchestration strategy: openai_function or semantic_kernel or langchain str. If you use a old version of turbo (0301), please select langchain. If the database type is PostgreSQL, set this to sementic_kernel. |
 | [`principalId`](#parameter-principalid) | string | Id of the user or app to assign application roles |
 | [`recognizedLanguages`](#parameter-recognizedlanguages) | string | List of comma-separated languages to recognize from the speech input. Supported languages are listed here: https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=stt#supported-languages |
 | [`solutionName`](#parameter-solutionname) | string | A unique application/solution name for all resources in this deployment. This should be 3-16 characters long. |
@@ -308,67 +296,13 @@ param solutionName = 'scwydswaf001'
 | [`virtualMachineAdminUsername`](#parameter-virtualmachineadminusername) | securestring | The user name for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true. |
 | [`vmSize`](#parameter-vmsize) | string | Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true. |
 
-### Parameter: `conversationFlow`
-
-Chat conversation type: custom or byod. If the database type is PostgreSQL, set this to custom.
-
-- Required: No
-- Type: string
-- Default: `'custom'`
-- Allowed:
-  ```Bicep
-  [
-    'byod'
-    'custom'
-  ]
-  ```
-
-### Parameter: `databaseType`
-
-The type of database to deploy (cosmos or postgres)
-
-- Required: No
-- Type: string
-- Default: `'PostgreSQL'`
-- Allowed:
-  ```Bicep
-  [
-    'CosmosDB'
-    'PostgreSQL'
-  ]
-  ```
-
-### Parameter: `hostingModel`
-
-Hosting model for the web apps. This value is fixed as "container", which uses prebuilt containers for faster deployment.
-
-- Required: No
-- Type: string
-- Default: `'container'`
-
 ### Parameter: `location`
 
 Location for all resources, if you are using existing resource group provide the location of the resorce group.
 
-- Required: Yes
-- Type: string
-
-### Parameter: `orchestrationStrategy`
-
-Orchestration strategy: openai_function or semantic_kernel or langchain str. If you use a old version of turbo (0301), please select langchain. If the database type is PostgreSQL, set this to sementic_kernel.
-
 - Required: No
 - Type: string
-- Default: `'semantic_kernel'`
-- Allowed:
-  ```Bicep
-  [
-    'langchain'
-    'openai_function'
-    'prompt_flow'
-    'semantic_kernel'
-  ]
-  ```
+- Default: `[resourceGroup().location]`
 
 ### Parameter: `advancedImageProcessingMaxImages`
 
@@ -776,6 +710,21 @@ Azure Computer Vision Vectorize Image Model Version
 - Type: string
 - Default: `'2023-04-15'`
 
+### Parameter: `conversationFlow`
+
+Chat conversation type: custom or byod. If the database type is PostgreSQL, set this to custom.
+
+- Required: No
+- Type: string
+- Default: `'custom'`
+- Allowed:
+  ```Bicep
+  [
+    'byod'
+    'custom'
+  ]
+  ```
+
 ### Parameter: `createdBy`
 
 created by user name
@@ -783,6 +732,21 @@ created by user name
 - Required: No
 - Type: string
 - Default: `[if(empty(deployer().userPrincipalName), '', split(deployer().userPrincipalName, '@')[0])]`
+
+### Parameter: `databaseType`
+
+The type of database to deploy (cosmos or postgres)
+
+- Required: No
+- Type: string
+- Default: `'PostgreSQL'`
+- Allowed:
+  ```Bicep
+  [
+    'CosmosDB'
+    'PostgreSQL'
+  ]
+  ```
 
 ### Parameter: `enableMonitoring`
 
@@ -840,6 +804,14 @@ Existing Log Analytics Workspace Resource ID
 - Type: string
 - Default: `''`
 
+### Parameter: `hostingModel`
+
+Hosting model for the web apps. This value is fixed as "container", which uses prebuilt containers for faster deployment.
+
+- Required: No
+- Type: string
+- Default: `'container'`
+
 ### Parameter: `logLevel`
 
 The log level for application logging. This setting controls the verbosity of logs emitted by the application. Allowed values are CRITICAL, ERROR, WARN, INFO, and DEBUG. The default value is INFO.
@@ -865,6 +837,23 @@ A new GUID string generated for this deployment. This can be used for unique nam
 - Required: No
 - Type: string
 - Default: `[newGuid()]`
+
+### Parameter: `orchestrationStrategy`
+
+Orchestration strategy: openai_function or semantic_kernel or langchain str. If you use a old version of turbo (0301), please select langchain. If the database type is PostgreSQL, set this to sementic_kernel.
+
+- Required: No
+- Type: string
+- Default: `'semantic_kernel'`
+- Allowed:
+  ```Bicep
+  [
+    'langchain'
+    'openai_function'
+    'prompt_flow'
+    'semantic_kernel'
+  ]
+  ```
 
 ### Parameter: `principalId`
 
