@@ -2,11 +2,21 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/event-hub/namespace/CHANGELOG.md).
 
+## 0.12.5
+
+### Changes
+
+- Minor updates to child module eventhub parameter descriptions
+
+### Breaking Changes
+
+- None
+
 ## 0.12.4
 
 ### Changes
 
-- Introduced [`access-policy`](/Azure/bicep-registry-modules/blob/main/avm/res/event-hub/namespace/eventhub) as child module
+- Introduced [`eventhub`](/Azure/bicep-registry-modules/blob/main/avm/res/event-hub/namespace/eventhub) as child module
 - Unify `avm-common-type` version to 0.6.1
 
 ### Breaking Changes
