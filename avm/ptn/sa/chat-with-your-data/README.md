@@ -114,6 +114,7 @@ This test deploys the Chat with your data Solution Accelerator with default para
 module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   name: 'chatWithYourDataDeployment'
   params: {
+    createdBy: 'AVM_Pipeline'
     enableMonitoring: false
     enablePrivateNetworking: true
     enableRedundancy: false
@@ -137,6 +138,9 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "createdBy": {
+      "value": "AVM_Pipeline"
+    },
     "enableMonitoring": {
       "value": false
     },
@@ -172,6 +176,7 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
 
+param createdBy = 'AVM_Pipeline'
 param enableMonitoring = false
 param enablePrivateNetworking = true
 param enableRedundancy = false
@@ -197,6 +202,7 @@ This test deploys the Chat with your data Solution Accelerator with Well-Archite
 module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   name: 'chatWithYourDataDeployment'
   params: {
+    createdBy: 'AVM_Pipeline'
     enableMonitoring: true
     enablePrivateNetworking: true
     enableRedundancy: true
@@ -220,6 +226,9 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "createdBy": {
+      "value": "AVM_Pipeline"
+    },
     "enableMonitoring": {
       "value": true
     },
@@ -255,6 +264,7 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
 
+param createdBy = 'AVM_Pipeline'
 param enableMonitoring = true
 param enablePrivateNetworking = true
 param enableRedundancy = true
