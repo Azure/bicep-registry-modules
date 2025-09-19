@@ -77,6 +77,7 @@ module vm '../compute/virtual-machine/main.bicep' = {
     adminPassword: password
     tags: tags
     zone: 0
+    maintenanceConfigurationResourceId: maintenanceConfiguration.outputs.resourceId
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -87,9 +88,12 @@ module vm '../compute/virtual-machine/main.bicep' = {
     osDisk: {
       name: 'osdisk-${vmName}'
       managedDisk: {
-        storageAccountType: 'Standard_LRS'
+        storageAccountType: 'Premium_LRS'
       }
     }
+    patchMode: 'AutomaticByPlatform'
+    bypassPlatformSafetyChecksOnUserSchedule: true
+    enableAutomaticUpdates: true
     encryptionAtHost: false // Some Azure subscriptions do not support encryption at host
     nicConfigurations: [
       {
@@ -122,6 +126,47 @@ module vm '../compute/virtual-machine/main.bicep' = {
       }
     ]
     enableTelemetry: enableTelemetry
+  }
+}
+
+// 4. Create Maintenance Configuration for VM
+// Required for PSRule.Rules.Azure compliance: Azure.VM.MaintenanceConfig
+// using AVM Virtual Machine module
+// https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/compute/virtual-machine
+
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.1' = {
+  name: take('${vmName}-jumpbox-maintenance-config', 64)
+  params: {
+    name: 'mc-${vmName}'
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    extensionProperties: {
+      InGuestPatchMode: 'User'
+    }
+    maintenanceScope: 'InGuestPatch'
+    maintenanceWindow: {
+      startDateTime: '2024-06-16 00:00'
+      duration: '03:55'
+      timeZone: 'W. Europe Standard Time'
+      recurEvery: '1Day'
+    }
+    visibility: 'Custom'
+    installPatches: {
+      rebootSetting: 'IfRequired'
+      windowsParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+      linuxParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+    }
   }
 }
 

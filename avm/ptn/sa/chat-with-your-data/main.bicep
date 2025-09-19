@@ -641,8 +641,8 @@ module postgresDBModule 'br/public:avm/res/db-for-postgre-sql/flexible-server:0.
     storageSizeGB: 32
     version: '16'
     availabilityZone: 1
-    highAvailability: enableRedundancy ? 'ZoneRedundant' : 'Disabled'
-    highAvailabilityZone: enableRedundancy ? 1 : -1
+    highAvailability: 'ZoneRedundant'
+    highAvailabilityZone: 2
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     //delegatedSubnetResourceId: enablePrivateNetworking ? network!.outputs.subnetPrivateEndpointsResourceId : null
     privateEndpoints: enablePrivateNetworking
@@ -1092,7 +1092,7 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.5.0' = {
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: monitoring!.outputs.logAnalyticsWorkspaceId }] : null
     // WAF aligned configuration for Scalability
     skuName: enableScalability || enableRedundancy ? 'P1v3' : hostingPlanSku
-    skuCapacity: enableScalability ? 3 : 1
+    skuCapacity: enableScalability ? 3 : 2
     // WAF aligned configuration for Redundancy
     zoneRedundant: enableRedundancy ? true : false
   }
@@ -1536,6 +1536,10 @@ module storage './modules/storage/storage-account/main.bicep' = {
     skuName: 'Standard_GRS'
     kind: 'StorageV2'
     blobServices: {
+      deleteRetentionPolicyEnabled: true
+      containerDeleteRetentionPolicyEnabled: true
+      containerDeleteRetentionPolicyDays: 7
+      deleteRetentionPolicyDays: 6
       containers: [
         {
           name: blobContainerName
