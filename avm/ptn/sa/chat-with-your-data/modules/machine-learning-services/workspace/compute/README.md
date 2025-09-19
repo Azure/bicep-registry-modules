@@ -1,4 +1,4 @@
-# Machine Learning Services Workspaces Computes `[Sa/ChatWithYourDataSolutionAcceleratorModulesMachineLearningServicesWorkspaceCompute]`
+# Machine Learning Services Workspaces Computes `[Sa/ChatWithYourDataModulesMachineLearningServicesWorkspaceCompute]`
 
 This module deploys a Machine Learning Services Workspaces Compute.
 

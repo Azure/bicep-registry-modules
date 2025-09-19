@@ -1,4 +1,4 @@
-# DocumentDB Database Account SQL Role Definitions. `[Sa/ChatWithYourDataSolutionAcceleratorModulesDocumentDbDatabaseAccountSqlRoleDefinition]`
+# DocumentDB Database Account SQL Role Definitions. `[Sa/ChatWithYourDataModulesDocumentDbDatabaseAccountSqlRoleDefinition]`
 
 This module deploys a SQL Role Definision in a CosmosDB Account.
 
@@ -123,4 +123,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `avm/ptn/sa/chat-with-your-data-solution-accelerator/modules/document-db/database-account/sql-role-assignment` | Local reference |
+| `avm/ptn/sa/chat-with-your-data/modules/document-db/database-account/sql-role-assignment` | Local reference |

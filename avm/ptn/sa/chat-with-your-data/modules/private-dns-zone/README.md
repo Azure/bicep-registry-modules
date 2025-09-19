@@ -1,4 +1,4 @@
-# Private DNS Zones `[Sa/ChatWithYourDataSolutionAcceleratorModulesPrivateDnsZone]`
+# Private DNS Zones `[Sa/ChatWithYourDataModulesPrivateDnsZone]`
 
 This module deploys a Private DNS zone.
 

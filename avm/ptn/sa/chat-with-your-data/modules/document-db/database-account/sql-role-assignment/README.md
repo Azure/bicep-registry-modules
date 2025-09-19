@@ -1,4 +1,4 @@
-# DocumentDB Database Account SQL Role Assignments. `[Sa/ChatWithYourDataSolutionAcceleratorModulesDocumentDbDatabaseAccountSqlRoleAssignment]`
+# DocumentDB Database Account SQL Role Assignments. `[Sa/ChatWithYourDataModulesDocumentDbDatabaseAccountSqlRoleAssignment]`
 
 This module deploys a SQL Role Assignment in a CosmosDB Account.
 

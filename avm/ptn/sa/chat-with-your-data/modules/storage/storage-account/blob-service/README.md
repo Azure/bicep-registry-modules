@@ -1,4 +1,4 @@
-# Storage Account blob Services `[Sa/ChatWithYourDataSolutionAcceleratorModulesStorageStorageAccountBlobService]`
+# Storage Account blob Services `[Sa/ChatWithYourDataModulesStorageStorageAccountBlobService]`
 
 This module deploys a Storage Account Blob Service.
 

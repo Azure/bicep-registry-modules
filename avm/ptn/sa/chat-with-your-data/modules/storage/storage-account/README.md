@@ -1,4 +1,4 @@
-# Storage Accounts `[Sa/ChatWithYourDataSolutionAcceleratorModulesStorageStorageAccount]`
+# Storage Accounts `[Sa/ChatWithYourDataModulesStorageStorageAccount]`
 
 This module deploys a Storage Account.
 

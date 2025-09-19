@@ -1,4 +1,4 @@
-# DocumentDB Database Account SQL Database Containers `[Sa/ChatWithYourDataSolutionAcceleratorModulesDocumentDbDatabaseAccountSqlDatabaseContainer]`
+# DocumentDB Database Account SQL Database Containers `[Sa/ChatWithYourDataModulesDocumentDbDatabaseAccountSqlDatabaseContainer]`
 
 This module deploys a SQL Database Container in a CosmosDB Account.
 

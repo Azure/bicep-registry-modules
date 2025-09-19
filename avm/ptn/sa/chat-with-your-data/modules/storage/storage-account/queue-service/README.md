@@ -1,4 +1,4 @@
-# Storage Account Queue Services `[Sa/ChatWithYourDataSolutionAcceleratorModulesStorageStorageAccountQueueService]`
+# Storage Account Queue Services `[Sa/ChatWithYourDataModulesStorageStorageAccountQueueService]`
 
 This module deploys a Storage Account Queue Service.
 

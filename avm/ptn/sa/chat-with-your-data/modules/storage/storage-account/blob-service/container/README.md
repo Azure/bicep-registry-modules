@@ -1,4 +1,4 @@
-# Storage Account Blob Containers `[Sa/ChatWithYourDataSolutionAcceleratorModulesStorageStorageAccountBlobServiceContainer]`
+# Storage Account Blob Containers `[Sa/ChatWithYourDataModulesStorageStorageAccountBlobServiceContainer]`
 
 This module deploys a Storage Account Blob Container.
 

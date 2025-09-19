@@ -1,4 +1,4 @@
-# Chat-with-your-data-Solution-Accelerator `[Sa/ChatWithYourDataSolutionAccelerator]`
+# Chat-with-your-data-Solution-Accelerator `[Sa/ChatWithYourData]`
 
 This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.
 > **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
@@ -98,7 +98,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/chat-with-your-data-solution-accelerator:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/chat-with-your-data:<version>`.
 
 - [Chat with your data Solution Accelerator - Defaults Test](#example-1-chat-with-your-data-solution-accelerator---defaults-test)
 - [Chat with your data Solution Accelerator - WAF Aligned Test](#example-2-chat-with-your-data-solution-accelerator---waf-aligned-test)
@@ -113,8 +113,8 @@ This test deploys the Chat with your data Solution Accelerator with default para
 <summary>via Bicep module</summary>
 
 ```bicep
-module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-data-solution-accelerator:<version>' = {
-  name: 'chatWithYourDataSolutionAcceleratorDeployment'
+module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
+  name: 'chatWithYourDataDeployment'
   params: {
     enableMonitoring: false
     enablePrivateNetworking: true
@@ -172,7 +172,7 @@ module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/ptn/sa/chat-with-your-data-solution-accelerator:<version>'
+using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
 
 param enableMonitoring = false
 param enablePrivateNetworking = true
@@ -196,8 +196,8 @@ This test deploys the Chat with your data Solution Accelerator with Well-Archite
 <summary>via Bicep module</summary>
 
 ```bicep
-module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-data-solution-accelerator:<version>' = {
-  name: 'chatWithYourDataSolutionAcceleratorDeployment'
+module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
+  name: 'chatWithYourDataDeployment'
   params: {
     enableMonitoring: true
     enablePrivateNetworking: true
@@ -255,7 +255,7 @@ module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/ptn/sa/chat-with-your-data-solution-accelerator:<version>'
+using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
 
 param enableMonitoring = true
 param enablePrivateNetworking = true

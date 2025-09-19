@@ -1,4 +1,4 @@
-# Azure Cosmos DB account `[Sa/ChatWithYourDataSolutionAcceleratorModulesDocumentDbDatabaseAccount]`
+# Azure Cosmos DB account `[Sa/ChatWithYourDataModulesDocumentDbDatabaseAccount]`
 
 This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed.
 

@@ -1,4 +1,4 @@
-# Virtual Machine Extensions `[Sa/ChatWithYourDataSolutionAcceleratorModulesComputeVirtualMachineExtension]`
+# Virtual Machine Extensions `[Sa/ChatWithYourDataModulesComputeVirtualMachineExtension]`
 
 This module deploys a Virtual Machine Extension.
 

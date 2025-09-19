@@ -1,4 +1,4 @@
-# DocumentDB Database Account SQL Databases `[Sa/ChatWithYourDataSolutionAcceleratorModulesDocumentDbDatabaseAccountSqlDatabase]`
+# DocumentDB Database Account SQL Databases `[Sa/ChatWithYourDataModulesDocumentDbDatabaseAccountSqlDatabase]`
 
 This module deploys a SQL Database in a CosmosDB Account.
 

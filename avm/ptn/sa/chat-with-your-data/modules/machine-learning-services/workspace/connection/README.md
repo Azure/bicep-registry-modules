@@ -1,4 +1,4 @@
-# Machine Learning Services Workspaces Connections `[Sa/ChatWithYourDataSolutionAcceleratorModulesMachineLearningServicesWorkspaceConnection]`
+# Machine Learning Services Workspaces Connections `[Sa/ChatWithYourDataModulesMachineLearningServicesWorkspaceConnection]`
 
 This module creates a connection in a Machine Learning Services workspace.
 

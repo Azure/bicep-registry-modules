@@ -1,4 +1,4 @@
-# Key Vault Secrets `[Sa/ChatWithYourDataSolutionAcceleratorModulesKeyVaultVaultSecret]`
+# Key Vault Secrets `[Sa/ChatWithYourDataModulesKeyVaultVaultSecret]`
 
 This module deploys a Key Vault Secret.
 

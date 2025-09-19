@@ -1,4 +1,4 @@
-# Storage Account File Share Services `[Sa/ChatWithYourDataSolutionAcceleratorModulesStorageStorageAccountFileService]`
+# Storage Account File Share Services `[Sa/ChatWithYourDataModulesStorageStorageAccountFileService]`
 
 This module deploys a Storage Account File Share Service.
 
