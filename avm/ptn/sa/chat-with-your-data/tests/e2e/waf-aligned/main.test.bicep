@@ -51,6 +51,7 @@ module testDeployment '../../../main.bicep' = [
       enableMonitoring: true
       enablePrivateNetworking: true
       enableRedundancy: true
+      createdBy: 'AVM_Pipeline'
     }
   }
 ]
