@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "7026101437997794576"
+      "templateHash": "2677676105740733373"
     },
     "name": "Chat-with-your-data-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -15750,7 +15750,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "9020118330644733811"
+              "templateHash": "12621492773295817966"
             },
             "name": "Azure Cosmos DB account",
             "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -16667,7 +16667,7 @@
               "metadata": {
                 "description": "The type for the SQL Role Assignments.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "sql-role-definition/main.bicep"
+                  "sourceTemplate": "sql-role-definition/sql-role-definition.bicep"
                 }
               }
             }
@@ -21971,236 +21971,85 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "17553975707245390963"
+              "version": "0.37.4.10188",
+              "templateHash": "13073656606893955183"
             },
             "name": "Key Vaults",
             "description": "This module deploys a Key Vault."
           },
           "definitions": {
-            "privateEndpointOutputType": {
+            "networkAclsType": {
               "type": "object",
               "properties": {
-                "name": {
+                "bypass": {
                   "type": "string",
-                  "metadata": {
-                    "description": "The name of the private endpoint."
-                  }
-                },
-                "resourceId": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "The resource ID of the private endpoint."
-                  }
-                },
-                "groupId": {
-                  "type": "string",
+                  "allowedValues": [
+                    "AzureServices",
+                    "None"
+                  ],
                   "nullable": true,
                   "metadata": {
-                    "description": "The group Id for the private endpoint Group."
+                    "description": "Optional. The bypass options for traffic for the network ACLs."
                   }
                 },
-                "customDnsConfigs": {
+                "defaultAction": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Allow",
+                    "Deny"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The default action for the network ACLs, when no rule matches."
+                  }
+                },
+                "ipRules": {
                   "type": "array",
                   "items": {
                     "type": "object",
                     "properties": {
-                      "fqdn": {
+                      "value": {
                         "type": "string",
-                        "nullable": true,
                         "metadata": {
-                          "description": "FQDN that resolves to private endpoint IP address."
-                        }
-                      },
-                      "ipAddresses": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        },
-                        "metadata": {
-                          "description": "A list of private IP addresses of the private endpoint."
+                          "description": "Required. An IPv4 address range in CIDR notation, such as \"124.56.78.91\" (simple IP address) or \"124.56.78.0/24\"."
                         }
                       }
                     }
                   },
+                  "nullable": true,
                   "metadata": {
-                    "description": "The custom DNS configurations of the private endpoint."
+                    "description": "Optional. A list of IP rules."
                   }
                 },
-                "networkInterfaceResourceIds": {
+                "virtualNetworkRules": {
                   "type": "array",
                   "items": {
-                    "type": "string"
-                  },
-                  "metadata": {
-                    "description": "The IDs of the network interfaces associated with the private endpoint."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "credentialOutputType": {
-              "type": "object",
-              "properties": {
-                "resourceId": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "The item's resourceId."
-                  }
-                },
-                "uri": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "The item's uri."
-                  }
-                },
-                "uriWithVersion": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "The item's uri with version."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for a credential output."
-              }
-            },
-            "accessPolicyType": {
-              "type": "object",
-              "properties": {
-                "tenantId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The tenant ID that is used for authenticating requests to the key vault."
-                  }
-                },
-                "objectId": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The object ID of a user, service principal or security group in the tenant for the vault."
-                  }
-                },
-                "applicationId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Application ID of the client making request on behalf of a principal."
-                  }
-                },
-                "permissions": {
-                  "type": "object",
-                  "properties": {
-                    "keys": {
-                      "type": "array",
-                      "allowedValues": [
-                        "all",
-                        "backup",
-                        "create",
-                        "decrypt",
-                        "delete",
-                        "encrypt",
-                        "get",
-                        "getrotationpolicy",
-                        "import",
-                        "list",
-                        "purge",
-                        "recover",
-                        "release",
-                        "restore",
-                        "rotate",
-                        "setrotationpolicy",
-                        "sign",
-                        "unwrapKey",
-                        "update",
-                        "verify",
-                        "wrapKey"
-                      ],
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Permissions to keys."
-                      }
-                    },
-                    "secrets": {
-                      "type": "array",
-                      "allowedValues": [
-                        "all",
-                        "backup",
-                        "delete",
-                        "get",
-                        "list",
-                        "purge",
-                        "recover",
-                        "restore",
-                        "set"
-                      ],
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Permissions to secrets."
-                      }
-                    },
-                    "certificates": {
-                      "type": "array",
-                      "allowedValues": [
-                        "all",
-                        "backup",
-                        "create",
-                        "delete",
-                        "deleteissuers",
-                        "get",
-                        "getissuers",
-                        "import",
-                        "list",
-                        "listissuers",
-                        "managecontacts",
-                        "manageissuers",
-                        "purge",
-                        "recover",
-                        "restore",
-                        "setissuers",
-                        "update"
-                      ],
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Permissions to certificates."
-                      }
-                    },
-                    "storage": {
-                      "type": "array",
-                      "allowedValues": [
-                        "all",
-                        "backup",
-                        "delete",
-                        "deletesas",
-                        "get",
-                        "getsas",
-                        "list",
-                        "listsas",
-                        "purge",
-                        "recover",
-                        "regeneratekey",
-                        "restore",
-                        "set",
-                        "setsas",
-                        "update"
-                      ],
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Permissions to storage accounts."
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The resource ID of the virtual network subnet."
+                        }
+                      },
+                      "ignoreMissingVnetServiceEndpoint": {
+                        "type": "bool",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Whether NRP will ignore the check if parent subnet has serviceEndpoints configured."
+                        }
                       }
                     }
                   },
+                  "nullable": true,
                   "metadata": {
-                    "description": "Required. Permissions the identity has for keys, secrets and certificates."
+                    "description": "Optional. A list of virtual network rules."
                   }
                 }
               },
               "metadata": {
                 "__bicep_export!": true,
-                "description": "The type for an access policy."
+                "description": "The type for rules governing the accessibility of the key vault from specific network locations."
               }
             },
             "secretType": {
@@ -22278,232 +22127,6 @@
                 "description": "The type for a secret output."
               }
             },
-            "keyType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the key."
-                  }
-                },
-                "tags": {
-                  "type": "object",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Resource tags."
-                  }
-                },
-                "attributes": {
-                  "type": "object",
-                  "properties": {
-                    "enabled": {
-                      "type": "bool",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Defines whether the key is enabled or disabled."
-                      }
-                    },
-                    "exp": {
-                      "type": "int",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Defines when the key will become invalid. Defined in seconds since 1970-01-01T00:00:00Z."
-                      }
-                    },
-                    "nbf": {
-                      "type": "int",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. If set, defines the date from which onwards the key becomes valid. Defined in seconds since 1970-01-01T00:00:00Z."
-                      }
-                    }
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Contains attributes of the key."
-                  }
-                },
-                "curveName": {
-                  "type": "string",
-                  "allowedValues": [
-                    "P-256",
-                    "P-256K",
-                    "P-384",
-                    "P-521"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The elliptic curve name. Only works if \"keySize\" equals \"EC\" or \"EC-HSM\". Default is \"P-256\"."
-                  }
-                },
-                "keyOps": {
-                  "type": "array",
-                  "allowedValues": [
-                    "decrypt",
-                    "encrypt",
-                    "import",
-                    "release",
-                    "sign",
-                    "unwrapKey",
-                    "verify",
-                    "wrapKey"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The allowed operations on this key."
-                  }
-                },
-                "keySize": {
-                  "type": "int",
-                  "allowedValues": [
-                    2048,
-                    3072,
-                    4096
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The key size in bits. Only works if \"keySize\" equals \"RSA\" or \"RSA-HSM\". Default is \"4096\"."
-                  }
-                },
-                "kty": {
-                  "type": "string",
-                  "allowedValues": [
-                    "EC",
-                    "EC-HSM",
-                    "RSA",
-                    "RSA-HSM"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The type of the key. Default is \"EC\"."
-                  }
-                },
-                "releasePolicy": {
-                  "type": "object",
-                  "properties": {
-                    "contentType": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Content type and version of key release policy."
-                      }
-                    },
-                    "data": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Blob encoding the policy rules under which the key can be released."
-                      }
-                    }
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Key release policy."
-                  }
-                },
-                "rotationPolicy": {
-                  "$ref": "#/definitions/rotationPolicyType",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Key rotation policy."
-                  }
-                },
-                "roleAssignments": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/roleAssignmentType"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Array of role assignments to create."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for a key."
-              }
-            },
-            "rotationPolicyType": {
-              "type": "object",
-              "properties": {
-                "attributes": {
-                  "type": "object",
-                  "properties": {
-                    "expiryTime": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The expiration time for the new key version. It should be in ISO8601 format. Eg: \"P90D\", \"P1Y\"."
-                      }
-                    }
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The attributes of key rotation policy."
-                  }
-                },
-                "lifetimeActions": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "action": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "allowedValues": [
-                              "Notify",
-                              "Rotate"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The type of action."
-                            }
-                          }
-                        },
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. The action of key rotation policy lifetimeAction."
-                        }
-                      },
-                      "trigger": {
-                        "type": "object",
-                        "properties": {
-                          "timeAfterCreate": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The time duration after key creation to rotate the key. It only applies to rotate. It will be in ISO 8601 duration format. Eg: \"P90D\", \"P1Y\"."
-                            }
-                          },
-                          "timeBeforeExpiry": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The time duration before key expiring to rotate or notify. It will be in ISO 8601 duration format. Eg: \"P90D\", \"P1Y\"."
-                            }
-                          }
-                        },
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. The trigger of key rotation policy lifetimeAction."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The lifetimeActions for key rotation action."
-                  }
-                }
-              },
-              "metadata": {
-                "description": "The type for a rotation policy."
-              }
-            },
             "_1.privateEndpointCustomDnsConfigType": {
               "type": "object",
               "properties": {
@@ -22526,7 +22149,7 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -22568,7 +22191,7 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -22609,7 +22232,7 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -22731,7 +22354,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -22756,12 +22379,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -22889,6 +22519,9 @@
                   "type": "object",
                   "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+                    },
                     "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
                   }
                 },
@@ -22903,7 +22536,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -22978,7 +22611,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -22998,16 +22631,6 @@
                 "description": "Optional. Location for all resources."
               }
             },
-            "accessPolicies": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/accessPolicyType"
-              },
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. All access policies to create."
-              }
-            },
             "secrets": {
               "type": "array",
               "items": {
@@ -23016,16 +22639,6 @@
               "nullable": true,
               "metadata": {
                 "description": "Optional. All secrets to create."
-              }
-            },
-            "keys": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/keyType"
-              },
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. All keys to create."
               }
             },
             "enableVaultForDeployment": {
@@ -23073,8 +22686,12 @@
             "createMode": {
               "type": "string",
               "defaultValue": "default",
+              "allowedValues": [
+                "default",
+                "recover"
+              ],
               "metadata": {
-                "description": "Optional. The vault's create mode to indicate whether the vault need to be recovered or not. - recover or default."
+                "description": "Optional. The vault's create mode to indicate whether the vault need to be recovered or not."
               }
             },
             "enablePurgeProtection": {
@@ -23096,7 +22713,7 @@
               }
             },
             "networkAcls": {
-              "type": "object",
+              "$ref": "#/definitions/networkAclsType",
               "nullable": true,
               "metadata": {
                 "description": "Optional. Rules governing the accessibility of the resource from specific network locations."
@@ -23143,10 +22760,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.KeyVault/vaults@2024-11-01#properties/tags"
+                },
                 "description": "Optional. Resource tags."
-              }
+              },
+              "nullable": true
             },
             "diagnosticSettings": {
               "type": "array",
@@ -23172,19 +22792,8 @@
                 "name": "formattedRoleAssignments",
                 "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
                 "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
-              },
-              {
-                "name": "formattedAccessPolicies",
-                "count": "[length(coalesce(parameters('accessPolicies'), createArray()))]",
-                "input": {
-                  "applicationId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'applicationId'), '')]",
-                  "objectId": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].objectId]",
-                  "permissions": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].permissions]",
-                  "tenantId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'tenantId'), tenant().tenantId)]"
-                }
               }
             ],
-            "enableReferencedModulesTelemetry": false,
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Key Vault Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
@@ -23208,7 +22817,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.keyvault-vault.{0}.{1}', replace('0.12.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.keyvault-vault.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -23226,7 +22835,7 @@
             },
             "keyVault": {
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2022-07-01",
+              "apiVersion": "2024-11-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -23240,7 +22849,6 @@
                 "createMode": "[parameters('createMode')]",
                 "enablePurgeProtection": "[if(parameters('enablePurgeProtection'), parameters('enablePurgeProtection'), null())]",
                 "tenantId": "[subscription().tenantId]",
-                "accessPolicies": "[variables('formattedAccessPolicies')]",
                 "sku": {
                   "name": "[parameters('sku')]",
                   "family": "A"
@@ -23257,7 +22865,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "keyVault"
@@ -23326,248 +22934,6 @@
                 "keyVault"
               ]
             },
-            "keyVault_accessPolicies": {
-              "condition": "[not(empty(parameters('accessPolicies')))]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-KeyVault-AccessPolicies', uniqueString(deployment().name, parameters('location')))]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "keyVaultName": {
-                    "value": "[parameters('name')]"
-                  },
-                  "accessPolicies": {
-                    "value": "[parameters('accessPolicies')]"
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "languageVersion": "2.0",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "6321524620984159084"
-                    },
-                    "name": "Key Vault Access Policies",
-                    "description": "This module deploys a Key Vault Access Policy."
-                  },
-                  "definitions": {
-                    "accessPoliciesType": {
-                      "type": "object",
-                      "properties": {
-                        "tenantId": {
-                          "type": "string",
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. The tenant ID that is used for authenticating requests to the key vault."
-                          }
-                        },
-                        "objectId": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "Required. The object ID of a user, service principal or security group in the tenant for the vault."
-                          }
-                        },
-                        "applicationId": {
-                          "type": "string",
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. Application ID of the client making request on behalf of a principal."
-                          }
-                        },
-                        "permissions": {
-                          "type": "object",
-                          "properties": {
-                            "keys": {
-                              "type": "array",
-                              "allowedValues": [
-                                "all",
-                                "backup",
-                                "create",
-                                "decrypt",
-                                "delete",
-                                "encrypt",
-                                "get",
-                                "getrotationpolicy",
-                                "import",
-                                "list",
-                                "purge",
-                                "recover",
-                                "release",
-                                "restore",
-                                "rotate",
-                                "setrotationpolicy",
-                                "sign",
-                                "unwrapKey",
-                                "update",
-                                "verify",
-                                "wrapKey"
-                              ],
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. Permissions to keys."
-                              }
-                            },
-                            "secrets": {
-                              "type": "array",
-                              "allowedValues": [
-                                "all",
-                                "backup",
-                                "delete",
-                                "get",
-                                "list",
-                                "purge",
-                                "recover",
-                                "restore",
-                                "set"
-                              ],
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. Permissions to secrets."
-                              }
-                            },
-                            "certificates": {
-                              "type": "array",
-                              "allowedValues": [
-                                "all",
-                                "backup",
-                                "create",
-                                "delete",
-                                "deleteissuers",
-                                "get",
-                                "getissuers",
-                                "import",
-                                "list",
-                                "listissuers",
-                                "managecontacts",
-                                "manageissuers",
-                                "purge",
-                                "recover",
-                                "restore",
-                                "setissuers",
-                                "update"
-                              ],
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. Permissions to certificates."
-                              }
-                            },
-                            "storage": {
-                              "type": "array",
-                              "allowedValues": [
-                                "all",
-                                "backup",
-                                "delete",
-                                "deletesas",
-                                "get",
-                                "getsas",
-                                "list",
-                                "listsas",
-                                "purge",
-                                "recover",
-                                "regeneratekey",
-                                "restore",
-                                "set",
-                                "setsas",
-                                "update"
-                              ],
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. Permissions to storage accounts."
-                              }
-                            }
-                          },
-                          "metadata": {
-                            "description": "Required. Permissions the identity has for keys, secrets and certificates."
-                          }
-                        }
-                      },
-                      "metadata": {
-                        "__bicep_export!": true,
-                        "description": "The type for an access policy."
-                      }
-                    }
-                  },
-                  "parameters": {
-                    "keyVaultName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Conditional. The name of the parent key vault. Required if the template is used in a standalone deployment."
-                      }
-                    },
-                    "accessPolicies": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/definitions/accessPoliciesType"
-                      },
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault's tenant ID."
-                      }
-                    }
-                  },
-                  "resources": {
-                    "keyVault": {
-                      "existing": true,
-                      "type": "Microsoft.KeyVault/vaults",
-                      "apiVersion": "2022-07-01",
-                      "name": "[parameters('keyVaultName')]"
-                    },
-                    "policies": {
-                      "type": "Microsoft.KeyVault/vaults/accessPolicies",
-                      "apiVersion": "2023-07-01",
-                      "name": "[format('{0}/{1}', parameters('keyVaultName'), 'add')]",
-                      "properties": {
-                        "copy": [
-                          {
-                            "name": "accessPolicies",
-                            "count": "[length(coalesce(parameters('accessPolicies'), createArray()))]",
-                            "input": {
-                              "applicationId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('accessPolicies')], 'applicationId'), '')]",
-                              "objectId": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('accessPolicies')].objectId]",
-                              "permissions": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('accessPolicies')].permissions]",
-                              "tenantId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('accessPolicies')], 'tenantId'), tenant().tenantId)]"
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  },
-                  "outputs": {
-                    "resourceGroupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The name of the resource group the access policies assignment was created in."
-                      },
-                      "value": "[resourceGroup().name]"
-                    },
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The name of the access policies assignment."
-                      },
-                      "value": "add"
-                    },
-                    "resourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The resource ID of the access policies assignment."
-                      },
-                      "value": "[resourceId('Microsoft.KeyVault/vaults/accessPolicies', parameters('keyVaultName'), 'add')]"
-                    }
-                  }
-                }
-              },
-              "dependsOn": [
-                "keyVault"
-              ]
-            },
             "keyVault_secrets": {
               "copy": {
                 "name": "keyVault_secrets",
@@ -23608,6 +22974,9 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('secrets'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -23617,8 +22986,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "4741547827723795923"
+                      "version": "0.37.4.10188",
+                      "templateHash": "8701309639990049090"
                     },
                     "name": "Key Vault Secrets",
                     "description": "This module deploys a Key Vault Secret."
@@ -23695,7 +23064,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     }
@@ -23709,16 +23078,21 @@
                     },
                     "name": {
                       "type": "string",
+                      "minLength": 1,
+                      "maxLength": 127,
                       "metadata": {
-                        "description": "Required. The name of the secret."
+                        "description": "Required. The name of the secret (letters (upper and lower case), numbers, -)."
                       }
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.KeyVault/vaults/secrets@2024-11-01#properties/tags"
+                        },
                         "description": "Optional. Resource tags."
-                      }
+                      },
+                      "nullable": true
                     },
                     "attributesEnabled": {
                       "type": "bool",
@@ -23763,6 +23137,13 @@
                       "metadata": {
                         "description": "Optional. Array of role assignments to create."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "variables": {
@@ -23787,15 +23168,35 @@
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.keyvault-secret.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "keyVault": {
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults",
-                      "apiVersion": "2022-07-01",
+                      "apiVersion": "2024-11-01",
                       "name": "[parameters('keyVaultName')]"
                     },
                     "secret": {
                       "type": "Microsoft.KeyVault/vaults/secrets",
-                      "apiVersion": "2022-07-01",
+                      "apiVersion": "2024-11-01",
                       "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -23874,363 +23275,6 @@
                 "keyVault"
               ]
             },
-            "keyVault_keys": {
-              "copy": {
-                "name": "keyVault_keys",
-                "count": "[length(coalesce(parameters('keys'), createArray()))]"
-              },
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-KeyVault-Key-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "name": {
-                    "value": "[coalesce(parameters('keys'), createArray())[copyIndex()].name]"
-                  },
-                  "keyVaultName": {
-                    "value": "[parameters('name')]"
-                  },
-                  "attributesEnabled": {
-                    "value": "[tryGet(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributes'), 'enabled')]"
-                  },
-                  "attributesExp": {
-                    "value": "[tryGet(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributes'), 'exp')]"
-                  },
-                  "attributesNbf": {
-                    "value": "[tryGet(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributes'), 'nbf')]"
-                  },
-                  "curveName": "[if(and(not(equals(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'kty'), 'RSA')), not(equals(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'kty'), 'RSA-HSM'))), createObject('value', coalesce(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'curveName'), 'P-256')), createObject('value', null()))]",
-                  "keyOps": {
-                    "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'keyOps')]"
-                  },
-                  "keySize": "[if(or(equals(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'kty'), 'RSA'), equals(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'kty'), 'RSA-HSM')), createObject('value', coalesce(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'keySize'), 4096)), createObject('value', null()))]",
-                  "releasePolicy": {
-                    "value": "[coalesce(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'releasePolicy'), createObject())]"
-                  },
-                  "kty": {
-                    "value": "[coalesce(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'kty'), 'EC')]"
-                  },
-                  "tags": {
-                    "value": "[coalesce(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
-                  },
-                  "roleAssignments": {
-                    "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'roleAssignments')]"
-                  },
-                  "rotationPolicy": {
-                    "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'rotationPolicy')]"
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "languageVersion": "2.0",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "12000970886778046699"
-                    },
-                    "name": "Key Vault Keys",
-                    "description": "This module deploys a Key Vault Key."
-                  },
-                  "definitions": {
-                    "roleAssignmentType": {
-                      "type": "object",
-                      "properties": {
-                        "name": {
-                          "type": "string",
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                          }
-                        },
-                        "roleDefinitionIdOrName": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                          }
-                        },
-                        "principalId": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                          }
-                        },
-                        "principalType": {
-                          "type": "string",
-                          "allowedValues": [
-                            "Device",
-                            "ForeignGroup",
-                            "Group",
-                            "ServicePrincipal",
-                            "User"
-                          ],
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. The principal type of the assigned principal ID."
-                          }
-                        },
-                        "description": {
-                          "type": "string",
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. The description of the role assignment."
-                          }
-                        },
-                        "condition": {
-                          "type": "string",
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                          }
-                        },
-                        "conditionVersion": {
-                          "type": "string",
-                          "allowedValues": [
-                            "2.0"
-                          ],
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. Version of the condition."
-                          }
-                        },
-                        "delegatedManagedIdentityResourceId": {
-                          "type": "string",
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. The Resource Id of the delegated managed identity resource."
-                          }
-                        }
-                      },
-                      "metadata": {
-                        "description": "An AVM-aligned type for a role assignment.",
-                        "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
-                        }
-                      }
-                    }
-                  },
-                  "parameters": {
-                    "keyVaultName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Conditional. The name of the parent key vault. Required if the template is used in a standalone deployment."
-                      }
-                    },
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The name of the key."
-                      }
-                    },
-                    "tags": {
-                      "type": "object",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Resource tags."
-                      }
-                    },
-                    "attributesEnabled": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Determines whether the object is enabled."
-                      }
-                    },
-                    "attributesExp": {
-                      "type": "int",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible."
-                      }
-                    },
-                    "attributesNbf": {
-                      "type": "int",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Not before date in seconds since 1970-01-01T00:00:00Z."
-                      }
-                    },
-                    "curveName": {
-                      "type": "string",
-                      "defaultValue": "P-256",
-                      "allowedValues": [
-                        "P-256",
-                        "P-256K",
-                        "P-384",
-                        "P-521"
-                      ],
-                      "metadata": {
-                        "description": "Optional. The elliptic curve name."
-                      }
-                    },
-                    "keyOps": {
-                      "type": "array",
-                      "nullable": true,
-                      "allowedValues": [
-                        "decrypt",
-                        "encrypt",
-                        "import",
-                        "sign",
-                        "unwrapKey",
-                        "verify",
-                        "wrapKey"
-                      ],
-                      "metadata": {
-                        "description": "Optional. Array of JsonWebKeyOperation."
-                      }
-                    },
-                    "keySize": {
-                      "type": "int",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The key size in bits. For example: 2048, 3072, or 4096 for RSA."
-                      }
-                    },
-                    "kty": {
-                      "type": "string",
-                      "defaultValue": "EC",
-                      "allowedValues": [
-                        "EC",
-                        "EC-HSM",
-                        "RSA",
-                        "RSA-HSM"
-                      ],
-                      "metadata": {
-                        "description": "Optional. The type of the key."
-                      }
-                    },
-                    "releasePolicy": {
-                      "type": "object",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Key release policy."
-                      }
-                    },
-                    "roleAssignments": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/definitions/roleAssignmentType"
-                      },
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Array of role assignments to create."
-                      }
-                    },
-                    "rotationPolicy": {
-                      "type": "object",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Key rotation policy properties object."
-                      }
-                    }
-                  },
-                  "variables": {
-                    "copy": [
-                      {
-                        "name": "formattedRoleAssignments",
-                        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
-                        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
-                      }
-                    ],
-                    "builtInRoleNames": {
-                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-                      "Key Vault Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
-                      "Key Vault Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f25e0fa2-a7c8-4377-a976-54943a77a395')]",
-                      "Key Vault Crypto Officer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '14b46e9e-c2b7-41b4-b07b-48a6ebf60603')]",
-                      "Key Vault Crypto Service Encryption User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e147488a-f6f5-4113-8e2d-b22465e65bf6')]",
-                      "Key Vault Crypto User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424')]",
-                      "Key Vault Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '21090545-7ca7-4776-b22c-e363652d74d2')]",
-                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
-                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
-                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-                    }
-                  },
-                  "resources": {
-                    "keyVault": {
-                      "existing": true,
-                      "type": "Microsoft.KeyVault/vaults",
-                      "apiVersion": "2022-07-01",
-                      "name": "[parameters('keyVaultName')]"
-                    },
-                    "key": {
-                      "type": "Microsoft.KeyVault/vaults/keys",
-                      "apiVersion": "2022-07-01",
-                      "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
-                      "tags": "[parameters('tags')]",
-                      "properties": "[shallowMerge(createArray(createObject('attributes', createObject('enabled', parameters('attributesEnabled'), 'exp', parameters('attributesExp'), 'nbf', parameters('attributesNbf')), 'curveName', parameters('curveName'), 'keyOps', parameters('keyOps'), 'keySize', parameters('keySize'), 'kty', parameters('kty'), 'release_policy', coalesce(parameters('releasePolicy'), createObject())), if(not(empty(parameters('rotationPolicy'))), createObject('rotationPolicy', parameters('rotationPolicy')), createObject())))]"
-                    },
-                    "key_roleAssignments": {
-                      "copy": {
-                        "name": "key_roleAssignments",
-                        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
-                      },
-                      "type": "Microsoft.Authorization/roleAssignments",
-                      "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.KeyVault/vaults/{0}/keys/{1}', parameters('keyVaultName'), parameters('name'))]",
-                      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.KeyVault/vaults/keys', parameters('keyVaultName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
-                      "properties": {
-                        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
-                        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
-                        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
-                        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
-                        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
-                      },
-                      "dependsOn": [
-                        "key"
-                      ]
-                    }
-                  },
-                  "outputs": {
-                    "keyUri": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The uri of the key."
-                      },
-                      "value": "[reference('key').keyUri]"
-                    },
-                    "keyUriWithVersion": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The uri with version of the key."
-                      },
-                      "value": "[reference('key').keyUriWithVersion]"
-                    },
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The name of the key."
-                      },
-                      "value": "[parameters('name')]"
-                    },
-                    "resourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The resource ID of the key."
-                      },
-                      "value": "[resourceId('Microsoft.KeyVault/vaults/keys', parameters('keyVaultName'), parameters('name'))]"
-                    },
-                    "resourceGroupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The name of the resource group the key was created in."
-                      },
-                      "value": "[resourceGroup().name]"
-                    }
-                  }
-                }
-              },
-              "dependsOn": [
-                "keyVault"
-              ]
-            },
             "keyVault_privateEndpoints": {
               "copy": {
                 "name": "keyVault_privateEndpoints",
@@ -24256,7 +23300,7 @@
                     "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
                   },
                   "enableTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "location": {
                     "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
@@ -24293,8 +23337,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "15954548978129725136"
+                      "version": "0.34.44.8038",
+                      "templateHash": "12389807800450456797"
                     },
                     "name": "Private Endpoints",
                     "description": "This module deploys a Private Endpoint."
@@ -24703,7 +23747,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -24721,7 +23765,7 @@
                     },
                     "privateEndpoint": {
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -24809,8 +23853,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "5440815542537978381"
+                              "version": "0.34.44.8038",
+                              "templateHash": "13997305779829540948"
                             },
                             "name": "Private Endpoint Private DNS Zone Groups",
                             "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -24882,12 +23926,12 @@
                             "privateEndpoint": {
                               "existing": true,
                               "type": "Microsoft.Network/privateEndpoints",
-                              "apiVersion": "2023-11-01",
+                              "apiVersion": "2024-05-01",
                               "name": "[parameters('privateEndpointName')]"
                             },
                             "privateDnsZoneGroup": {
                               "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                              "apiVersion": "2023-11-01",
+                              "apiVersion": "2024-05-01",
                               "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                               "properties": {
                                 "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
@@ -24951,7 +23995,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
+                      "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
                     },
                     "customDnsConfigs": {
                       "type": "array",
@@ -25023,60 +24067,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('keyVault', '2022-07-01', 'full').location]"
-            },
-            "privateEndpoints": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/privateEndpointOutputType"
-              },
-              "metadata": {
-                "description": "The private endpoints of the key vault."
-              },
-              "copy": {
-                "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
-                "input": {
-                  "name": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
-                  "resourceId": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
-                  "groupId": "[tryGet(tryGet(reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs, 'groupId'), 'value')]",
-                  "customDnsConfigs": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfigs.value]",
-                  "networkInterfaceResourceIds": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
-                }
-              }
-            },
-            "secrets": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/credentialOutputType"
-              },
-              "metadata": {
-                "description": "The properties of the created secrets."
-              },
-              "copy": {
-                "count": "[length(range(0, length(coalesce(parameters('secrets'), createArray()))))]",
-                "input": {
-                  "resourceId": "[reference(format('keyVault_secrets[{0}]', range(0, length(coalesce(parameters('secrets'), createArray())))[copyIndex()])).outputs.resourceId.value]",
-                  "uri": "[reference(format('keyVault_secrets[{0}]', range(0, length(coalesce(parameters('secrets'), createArray())))[copyIndex()])).outputs.secretUri.value]",
-                  "uriWithVersion": "[reference(format('keyVault_secrets[{0}]', range(0, length(coalesce(parameters('secrets'), createArray())))[copyIndex()])).outputs.secretUriWithVersion.value]"
-                }
-              }
-            },
-            "keys": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/credentialOutputType"
-              },
-              "metadata": {
-                "description": "The properties of the created keys."
-              },
-              "copy": {
-                "count": "[length(range(0, length(coalesce(parameters('keys'), createArray()))))]",
-                "input": {
-                  "resourceId": "[reference(format('keyVault_keys[{0}]', range(0, length(coalesce(parameters('keys'), createArray())))[copyIndex()])).outputs.resourceId.value]",
-                  "uri": "[reference(format('keyVault_keys[{0}]', range(0, length(coalesce(parameters('keys'), createArray())))[copyIndex()])).outputs.keyUri.value]",
-                  "uriWithVersion": "[reference(format('keyVault_keys[{0}]', range(0, length(coalesce(parameters('keys'), createArray())))[copyIndex()])).outputs.keyUriWithVersion.value]"
-                }
-              }
+              "value": "[reference('keyVault', '2024-11-01', 'full').location]"
             }
           }
         }
@@ -50023,7 +49014,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "68114798306146084"
+              "templateHash": "15145535415197431472"
             }
           },
           "parameters": {
@@ -50062,7 +49053,7 @@
             }
           },
           "variables": {
-            "wookbookContents": "{\"version\":\"Notebook/1.0\",\"items\":[{\"type\":1,\"content\":\"@{json=# Chat With Your Data Monitoring}\",\"name\":\"Heading\"},{\"type\":9,\"content\":\"@{version=KqlParameterItem/1.0; crossComponentResources=System.Object[]; parameters=System.Object[]; style=pills; queryType=1; resourceType=microsoft.resourcegraph/resources}\",\"conditionalVisibility\":\"@{parameterName=never; comparison=isEqualTo; value=show}\",\"name\":\"Resource Parameters\"},{\"type\":9,\"content\":\"@{version=KqlParameterItem/1.0; crossComponentResources=System.Object[]; parameters=System.Object[]; style=pills; queryType=1; resourceType=microsoft.resourcegraph/resources}\",\"name\":\"Time Picker\"},{\"type\":11,\"content\":\"@{version=LinkItem/1.0; style=tabs; links=System.Object[]}\",\"name\":\"links - 4\"},{\"type\":12,\"content\":\"@{version=NotebookGroup/1.0; groupType=editable; items=System.Object[]}\",\"conditionalVisibility\":\"@{parameterName=selTab; comparison=isEqualTo; value=Operations}\",\"name\":\"Operations Group\"},{\"type\":12,\"content\":\"@{version=NotebookGroup/1.0; groupType=editable; items=System.Object[]}\",\"conditionalVisibility\":\"@{parameterName=selTab; comparison=isEqualTo; value=Resources}\",\"name\":\"Resources Group\"},{\"type\":12,\"content\":\"@{version=NotebookGroup/1.0; groupType=editable; items=System.Object[]}\",\"conditionalVisibility\":\"@{parameterName=selTab; comparison=isEqualTo; value=Open AI}\",\"name\":\"Open AI Group\"},{\"type\":12,\"content\":\"@{version=NotebookGroup/1.0; groupType=editable; items=System.Object[]}\",\"conditionalVisibility\":\"@{parameterName=selTab; comparison=isEqualTo; value=AI Search}\",\"name\":\"Search Group\"},{\"type\":12,\"content\":\"@{version=NotebookGroup/1.0; groupType=editable; items=System.Object[]}\",\"conditionalVisibility\":\"@{parameterName=selTab; comparison=isEqualTo; value=Storage}\",\"name\":\"Storage Group\"}],\"fallbackResourceIds\":[\"azure monitor\"],\"styleSettings\":{\"paddingStyle\":\"narrow\",\"spacingStyle\":\"narrow\"},\"$schema\":\"https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json\"}\r\n",
+            "wookbookContents": "{\"version\":\"Notebook/1.0\",\"items\":[{\"type\":1,\"content\":\"@{json=# Chat With Your Data Monitoring}\",\"name\":\"Heading\"},{\"type\":9,\"content\":\"@{version=KqlParameterItem/1.0; crossComponentResources=System.Object[]; parameters=System.Object[]; style=pills; queryType=1; resourceType=microsoft.resourcegraph/resources}\",\"conditionalVisibility\":\"@{parameterName=never; comparison=isEqualTo; value=show}\",\"name\":\"Resource Parameters\"},{\"type\":9,\"content\":\"@{version=KqlParameterItem/1.0; crossComponentResources=System.Object[]; parameters=System.Object[]; style=pills; queryType=1; resourceType=microsoft.resourcegraph/resources}\",\"name\":\"Time Picker\"},{\"type\":11,\"content\":\"@{version=LinkItem/1.0; style=tabs; links=System.Object[]}\",\"name\":\"links - 4\"},{\"type\":12,\"content\":\"@{version=NotebookGroup/1.0; groupType=editable; items=System.Object[]}\",\"conditionalVisibility\":\"@{parameterName=selTab; comparison=isEqualTo; value=Operations}\",\"name\":\"Operations Group\"},{\"type\":12,\"content\":\"@{version=NotebookGroup/1.0; groupType=editable; items=System.Object[]}\",\"conditionalVisibility\":\"@{parameterName=selTab; comparison=isEqualTo; value=Resources}\",\"name\":\"Resources Group\"},{\"type\":12,\"content\":\"@{version=NotebookGroup/1.0; groupType=editable; items=System.Object[]}\",\"conditionalVisibility\":\"@{parameterName=selTab; comparison=isEqualTo; value=Open AI}\",\"name\":\"Open AI Group\"},{\"type\":12,\"content\":\"@{version=NotebookGroup/1.0; groupType=editable; items=System.Object[]}\",\"conditionalVisibility\":\"@{parameterName=selTab; comparison=isEqualTo; value=AI Search}\",\"name\":\"Search Group\"},{\"type\":12,\"content\":\"@{version=NotebookGroup/1.0; groupType=editable; items=System.Object[]}\",\"conditionalVisibility\":\"@{parameterName=selTab; comparison=isEqualTo; value=Storage}\",\"name\":\"Storage Group\"}],\"fallbackResourceIds\":[\"azure monitor\"],\"styleSettings\":{\"paddingStyle\":\"narrow\",\"spacingStyle\":\"narrow\"},\"$schema\":\"https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json\"}\n",
             "wookbookContentsSubReplaced": "[replace(variables('wookbookContents'), '{subscription-id}', subscription().id)]",
             "wookbookContentsRGReplaced": "[replace(variables('wookbookContentsSubReplaced'), '{resource-group}', resourceGroup().name)]",
             "wookbookContentsAppServicePlanReplaced": "[replace(variables('wookbookContentsRGReplaced'), '{app-service-plan}', parameters('hostingPlanName'))]",
@@ -59159,9 +58150,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "managedIdentityModule",
         "network"
       ]

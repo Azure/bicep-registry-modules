@@ -1524,7 +1524,7 @@ module contentsafety 'modules/core/ai/cognitiveservices.bicep' = {
   dependsOn: enablePrivateNetworking ? avmPrivateDnsZones : []
 }
 
-module storage './modules/storage/storage-account/main.bicep' = {
+module storage './modules/storage/storage-account/storage-account.bicep' = {
   name: take('avm.res.storage.storage-account.${storageAccountName}', 64)
   params: {
     name: storageAccountName
