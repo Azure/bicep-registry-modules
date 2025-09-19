@@ -1,4 +1,4 @@
-# Build-your-own-copilot-Solution-Accelerator `[Sa/BuildYourOwnCopilotSolutionAccelerator]`
+# Build-your-own-copilot-Solution-Accelerator `[Sa/BuildYourOwnCopilotSolution]`
 
 This module contains the resources required to deploy the [Build-your-own-copilot-Solution-Accelerator](https://github.com/microsoft/Build-your-own-copilot-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.
 > **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
@@ -121,7 +121,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/build-your-own-copilot-solution-accelerator:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/build-your-own-copilot-solution:<version>`.
 
 - [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
 - [Waf-aligned configuration with default parameter values](#example-2-waf-aligned-configuration-with-default-parameter-values)
@@ -136,8 +136,8 @@ This instance deploys the Build Your Own Copilot Solution Accelerator using only
 <summary>via Bicep module</summary>
 
 ```bicep
-module buildYourOwnCopilotSolutionAccelerator 'br/public:avm/ptn/sa/build-your-own-copilot-solution-accelerator:<version>' = {
-  name: 'buildYourOwnCopilotSolutionAcceleratorDeployment'
+module buildYourOwnCopilotSolution 'br/public:avm/ptn/sa/build-your-own-copilot-solution:<version>' = {
+  name: 'buildYourOwnCopilotSolutionDeployment'
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
@@ -199,7 +199,7 @@ module buildYourOwnCopilotSolutionAccelerator 'br/public:avm/ptn/sa/build-your-o
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/ptn/sa/build-your-own-copilot-solution-accelerator:<version>'
+using 'br/public:avm/ptn/sa/build-your-own-copilot-solution:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
@@ -225,8 +225,8 @@ This instance deploys the Build Your Own Copilot Solution Accelerator
 <summary>via Bicep module</summary>
 
 ```bicep
-module buildYourOwnCopilotSolutionAccelerator 'br/public:avm/ptn/sa/build-your-own-copilot-solution-accelerator:<version>' = {
-  name: 'buildYourOwnCopilotSolutionAcceleratorDeployment'
+module buildYourOwnCopilotSolution 'br/public:avm/ptn/sa/build-your-own-copilot-solution:<version>' = {
+  name: 'buildYourOwnCopilotSolutionDeployment'
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
@@ -296,7 +296,7 @@ module buildYourOwnCopilotSolutionAccelerator 'br/public:avm/ptn/sa/build-your-o
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/ptn/sa/build-your-own-copilot-solution-accelerator:<version>'
+using 'br/public:avm/ptn/sa/build-your-own-copilot-solution:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'

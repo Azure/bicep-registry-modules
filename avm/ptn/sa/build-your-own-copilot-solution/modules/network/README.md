@@ -1,4 +1,4 @@
-# Secure Virtual Network Module `[Sa/BuildYourOwnCopilotSolutionAcceleratorModulesNetwork]`
+# Secure Virtual Network Module `[Sa/BuildYourOwnCopilotSolutionModulesNetwork]`
 
 This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring.
 
