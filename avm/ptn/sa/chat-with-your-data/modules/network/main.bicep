@@ -91,18 +91,36 @@ module jumpbox 'jumpbox.bicep' = if (!empty(jumpboxConfiguration)) {
   }
 }
 
+@description('Name of the virtual network created by the virtualNetwork module.')
 output vnetName string = virtualNetwork.outputs.name
+
+@description('Resource id of the virtual network created by the virtualNetwork module.')
 output vnetResourceId string = virtualNetwork.outputs.resourceId
 
 import { subnetOutputType } from 'virtualNetwork.bicep'
+@description('Array of subnet outputs from the virtualNetwork module. Each element includes subnet id, name, address prefix(es), and associated NSG/route table information.')
 output subnets subnetOutputType[] = virtualNetwork.outputs.subnets // This one holds critical info for subnets, including NSGs
 
+@description('Resource id of the subnet used by the Azure Bastion Host, if Bastion is deployed.')
 output bastionSubnetId string = bastionHost!.outputs.subnetId
+
+@description('Name of the subnet used by the Azure Bastion Host, if Bastion is deployed.')
 output bastionSubnetName string = bastionHost!.outputs.subnetName
+
+@description('Resource id of the Azure Bastion Host deployment, if Bastion is deployed.')
 output bastionHostId string = bastionHost!.outputs.resourceId
+
+@description('Name of the Azure Bastion Host deployment, if Bastion is deployed.')
 output bastionHostName string = bastionHost!.outputs.name
 
+@description('Name of the subnet used by the Jumpbox VM, if Jumpbox is deployed.')
 output jumpboxSubnetName string = jumpbox!.outputs.subnetName
+
+@description('Resource id of the subnet used by the Jumpbox VM, if Jumpbox is deployed.')
 output jumpboxSubnetId string = jumpbox!.outputs.subnetId
+
+@description('Name of the Jumpbox virtual machine, if Jumpbox is deployed.')
 output jumpboxName string = jumpbox!.outputs.name
+
+@description('Resource id of the Jumpbox virtual machine, if Jumpbox is deployed.')
 output jumpboxResourceId string = jumpbox!.outputs.resourceId

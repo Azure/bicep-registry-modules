@@ -170,13 +170,25 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
   }
 }
 
+@description('Resource ID of the Jumpbox virtual machine.')
 output resourceId string = vm.outputs.resourceId
+
+@description('Name of the Jumpbox virtual machine.')
 output name string = vm.outputs.name
+
+@description('Azure region where the Jumpbox virtual machine is deployed.')
 output location string = vm.outputs.location
 
+@description('Resource ID of the subnet used by the Jumpbox VM, if created.')
 output subnetId string = subnetResource!.outputs.resourceId
+
+@description('Name of the subnet used by the Jumpbox VM, if created.')
 output subnetName string = subnetResource!.outputs.name
+
+@description('Resource ID of the Network Security Group associated with the Jumpbox subnet, if created.')
 output nsgId string = nsg!.outputs.resourceId
+
+@description('Name of the Network Security Group associated with the Jumpbox subnet, if created.')
 output nsgName string = nsg!.outputs.name
 
 @export()

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "2677676105740733373"
+      "templateHash": "7860554752311242636"
     },
     "name": "Chat-with-your-data-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -780,7 +780,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "2358949259051004978"
+              "templateHash": "6104164503714595921"
             }
           },
           "parameters": {
@@ -1072,7 +1072,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "9832326062642056666"
+                      "templateHash": "18278699382413382263"
                     },
                     "name": "Chat-with-your-data-solution-accelerator - Network Module",
                     "description": "This module contains the network resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -4036,7 +4036,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.37.4.10188",
-                              "templateHash": "17967924768792591252"
+                              "templateHash": "11775819515696659277"
                             }
                           },
                           "definitions": {
@@ -7036,18 +7036,30 @@
                           "outputs": {
                             "resourceId": {
                               "type": "string",
+                              "metadata": {
+                                "description": "Resource ID of the Azure Bastion Host deployment."
+                              },
                               "value": "[reference('bastionHost').outputs.resourceId.value]"
                             },
                             "name": {
                               "type": "string",
+                              "metadata": {
+                                "description": "Name of the Azure Bastion Host deployment."
+                              },
                               "value": "[reference('bastionHost').outputs.name.value]"
                             },
                             "subnetId": {
                               "type": "string",
+                              "metadata": {
+                                "description": "Resource ID of the AzureBastionSubnet created for the Bastion Host, if created."
+                              },
                               "value": "[reference('bastionSubnet').outputs.resourceId.value]"
                             },
                             "subnetName": {
                               "type": "string",
+                              "metadata": {
+                                "description": "Name of the AzureBastionSubnet created for the Bastion Host, if created."
+                              },
                               "value": "[reference('bastionSubnet').outputs.name.value]"
                             }
                           }
@@ -7107,7 +7119,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.37.4.10188",
-                              "templateHash": "232120416229033441"
+                              "templateHash": "17936022282529854475"
                             }
                           },
                           "definitions": {
@@ -14648,30 +14660,51 @@
                           "outputs": {
                             "resourceId": {
                               "type": "string",
+                              "metadata": {
+                                "description": "Resource ID of the Jumpbox virtual machine."
+                              },
                               "value": "[reference('vm').outputs.resourceId.value]"
                             },
                             "name": {
                               "type": "string",
+                              "metadata": {
+                                "description": "Name of the Jumpbox virtual machine."
+                              },
                               "value": "[reference('vm').outputs.name.value]"
                             },
                             "location": {
                               "type": "string",
+                              "metadata": {
+                                "description": "Azure region where the Jumpbox virtual machine is deployed."
+                              },
                               "value": "[reference('vm').outputs.location.value]"
                             },
                             "subnetId": {
                               "type": "string",
+                              "metadata": {
+                                "description": "Resource ID of the subnet used by the Jumpbox VM, if created."
+                              },
                               "value": "[reference('subnetResource').outputs.resourceId.value]"
                             },
                             "subnetName": {
                               "type": "string",
+                              "metadata": {
+                                "description": "Name of the subnet used by the Jumpbox VM, if created."
+                              },
                               "value": "[reference('subnetResource').outputs.name.value]"
                             },
                             "nsgId": {
                               "type": "string",
+                              "metadata": {
+                                "description": "Resource ID of the Network Security Group associated with the Jumpbox subnet, if created."
+                              },
                               "value": "[reference('nsg').outputs.resourceId.value]"
                             },
                             "nsgName": {
                               "type": "string",
+                              "metadata": {
+                                "description": "Name of the Network Security Group associated with the Jumpbox subnet, if created."
+                              },
                               "value": "[reference('nsg').outputs.name.value]"
                             }
                           }
@@ -14685,10 +14718,16 @@
                   "outputs": {
                     "vnetName": {
                       "type": "string",
+                      "metadata": {
+                        "description": "Name of the virtual network created by the virtualNetwork module."
+                      },
                       "value": "[reference('virtualNetwork').outputs.name.value]"
                     },
                     "vnetResourceId": {
                       "type": "string",
+                      "metadata": {
+                        "description": "Resource id of the virtual network created by the virtualNetwork module."
+                      },
                       "value": "[reference('virtualNetwork').outputs.resourceId.value]"
                     },
                     "subnets": {
@@ -14696,38 +14735,65 @@
                       "items": {
                         "$ref": "#/definitions/subnetOutputType"
                       },
+                      "metadata": {
+                        "description": "Array of subnet outputs from the virtualNetwork module. Each element includes subnet id, name, address prefix(es), and associated NSG/route table information."
+                      },
                       "value": "[reference('virtualNetwork').outputs.subnets.value]"
                     },
                     "bastionSubnetId": {
                       "type": "string",
+                      "metadata": {
+                        "description": "Resource id of the subnet used by the Azure Bastion Host, if Bastion is deployed."
+                      },
                       "value": "[reference('bastionHost').outputs.subnetId.value]"
                     },
                     "bastionSubnetName": {
                       "type": "string",
+                      "metadata": {
+                        "description": "Name of the subnet used by the Azure Bastion Host, if Bastion is deployed."
+                      },
                       "value": "[reference('bastionHost').outputs.subnetName.value]"
                     },
                     "bastionHostId": {
                       "type": "string",
+                      "metadata": {
+                        "description": "Resource id of the Azure Bastion Host deployment, if Bastion is deployed."
+                      },
                       "value": "[reference('bastionHost').outputs.resourceId.value]"
                     },
                     "bastionHostName": {
                       "type": "string",
+                      "metadata": {
+                        "description": "Name of the Azure Bastion Host deployment, if Bastion is deployed."
+                      },
                       "value": "[reference('bastionHost').outputs.name.value]"
                     },
                     "jumpboxSubnetName": {
                       "type": "string",
+                      "metadata": {
+                        "description": "Name of the subnet used by the Jumpbox VM, if Jumpbox is deployed."
+                      },
                       "value": "[reference('jumpbox').outputs.subnetName.value]"
                     },
                     "jumpboxSubnetId": {
                       "type": "string",
+                      "metadata": {
+                        "description": "Resource id of the subnet used by the Jumpbox VM, if Jumpbox is deployed."
+                      },
                       "value": "[reference('jumpbox').outputs.subnetId.value]"
                     },
                     "jumpboxName": {
                       "type": "string",
+                      "metadata": {
+                        "description": "Name of the Jumpbox virtual machine, if Jumpbox is deployed."
+                      },
                       "value": "[reference('jumpbox').outputs.name.value]"
                     },
                     "jumpboxResourceId": {
                       "type": "string",
+                      "metadata": {
+                        "description": "Resource id of the Jumpbox virtual machine, if Jumpbox is deployed."
+                      },
                       "value": "[reference('jumpbox').outputs.resourceId.value]"
                     }
                   }
@@ -63284,231 +63350,231 @@
     "APPLICATIONINSIGHTS_CONNECTION_STRING": {
       "type": "string",
       "metadata": {
-        "description": "Connection string for the Application Insights instance"
+        "description": "Connection string for the Application Insights instance."
       },
       "value": "[if(parameters('enableMonitoring'), reference('monitoring').outputs.applicationInsightsConnectionString.value, '')]"
     },
     "AZURE_APP_SERVICE_HOSTING_MODEL": {
       "type": "string",
       "metadata": {
-        "description": "App Service hosting model used (code or container)"
+        "description": "App Service hosting model used (code or container)."
       },
       "value": "[parameters('hostingModel')]"
     },
     "APP_ENV": {
       "type": "string",
       "metadata": {
-        "description": "Application environment (e.g., Prod, Dev)"
+        "description": "Application environment (e.g., Prod, Dev)."
       },
       "value": "[parameters('appEnvironment')]"
     },
     "AZURE_BLOB_STORAGE_INFO": {
       "type": "string",
       "metadata": {
-        "description": "Blob storage info (container and account)"
+        "description": "Blob storage info (container and account)."
       },
       "value": "[variables('azureBlobStorageInfo')]"
     },
     "AZURE_COMPUTER_VISION_INFO": {
       "type": "string",
       "metadata": {
-        "description": "Computer Vision service information"
+        "description": "Computer Vision service information."
       },
       "value": "[string(createObject('service_name', variables('computerVisionName'), 'endpoint', if(parameters('useAdvancedImageProcessing'), reference('computerVision').outputs.endpoint.value, ''), 'location', if(parameters('useAdvancedImageProcessing'), reference('computerVision').outputs.location.value, ''), 'vectorize_image_api_version', parameters('computerVisionVectorizeImageApiVersion'), 'vectorize_image_model_version', parameters('computerVisionVectorizeImageModelVersion')))]"
     },
     "AZURE_CONTENT_SAFETY_INFO": {
       "type": "string",
       "metadata": {
-        "description": "Content Safety service endpoint information"
+        "description": "Content Safety service endpoint information."
       },
       "value": "[string(createObject('endpoint', reference('contentsafety').outputs.endpoint.value))]"
     },
     "AZURE_FORM_RECOGNIZER_INFO": {
       "type": "string",
       "metadata": {
-        "description": "Form Recognizer service endpoint information"
+        "description": "Form Recognizer service endpoint information."
       },
       "value": "[string(createObject('endpoint', reference('formrecognizer').outputs.endpoint.value))]"
     },
     "AZURE_LOCATION": {
       "type": "string",
       "metadata": {
-        "description": "Primary deployment location"
+        "description": "Primary deployment location."
       },
       "value": "[parameters('location')]"
     },
     "AZURE_OPENAI_MODEL_INFO": {
       "type": "string",
       "metadata": {
-        "description": "Azure OpenAI model information"
+        "description": "Azure OpenAI model information."
       },
       "value": "[variables('azureOpenAIModelInfo')]"
     },
     "AZURE_OPENAI_CONFIGURATION_INFO": {
       "type": "string",
       "metadata": {
-        "description": "Azure OpenAI configuration details"
+        "description": "Azure OpenAI configuration details."
       },
       "value": "[variables('azureOpenaiConfigurationInfo')]"
     },
     "AZURE_OPENAI_EMBEDDING_MODEL_INFO": {
       "type": "string",
       "metadata": {
-        "description": "Azure OpenAI embedding model information"
+        "description": "Azure OpenAI embedding model information."
       },
       "value": "[variables('azureOpenAIEmbeddingModelInfo')]"
     },
     "AZURE_RESOURCE_GROUP": {
       "type": "string",
       "metadata": {
-        "description": "Name of the resource group"
+        "description": "Name of the resource group."
       },
       "value": "[resourceGroup().name]"
     },
     "AZURE_SEARCH_SERVICE_INFO": {
       "type": "string",
       "metadata": {
-        "description": "Azure Cognitive Search service information (if deployed)"
+        "description": "Azure Cognitive Search service information (if deployed)."
       },
       "value": "[if(equals(parameters('databaseType'), 'CosmosDB'), string(createObject('service_name', variables('azureAISearchName'), 'service', reference('search').outputs.searchEndpoint.value, 'use_semantic_search', parameters('azureSearchUseSemanticSearch'), 'semantic_search_config', parameters('azureSearchSemanticSearchConfig'), 'index_is_prechunked', parameters('azureSearchIndexIsPrechunked'), 'top_k', parameters('azureSearchTopK'), 'enable_in_domain', parameters('azureSearchEnableInDomain'), 'content_column', parameters('azureSearchContentColumn'), 'content_vector_column', parameters('azureSearchVectorColumn'), 'filename_column', parameters('azureSearchFilenameColumn'), 'filter', parameters('azureSearchFilter'), 'title_column', parameters('azureSearchTitleColumn'), 'fields_metadata', parameters('azureSearchFieldsMetadata'), 'source_column', parameters('azureSearchSourceColumn'), 'text_column', parameters('azureSearchTextColumn'), 'layout_column', parameters('azureSearchLayoutTextColumn'), 'url_column', parameters('azureSearchUrlColumn'), 'use_integrated_vectorization', parameters('azureSearchUseIntegratedVectorization'), 'index', variables('azureSearchIndex'), 'indexer_name', variables('azureSearchIndexer'), 'datasource_name', variables('azureSearchDatasource'))), '')]"
     },
     "AZURE_SPEECH_SERVICE_INFO": {
       "type": "string",
       "metadata": {
-        "description": "Azure Speech service information"
+        "description": "Azure Speech service information."
       },
       "value": "[variables('azureSpeechServiceInfo')]"
     },
     "AZURE_TENANT_ID": {
       "type": "string",
       "metadata": {
-        "description": "Azure tenant identifier"
+        "description": "Azure tenant identifier."
       },
       "value": "[tenant().tenantId]"
     },
     "DOCUMENT_PROCESSING_QUEUE_NAME": {
       "type": "string",
       "metadata": {
-        "description": "Name of the document processing queue"
+        "description": "Name of the document processing queue."
       },
       "value": "[variables('queueName')]"
     },
     "ORCHESTRATION_STRATEGY": {
       "type": "string",
       "metadata": {
-        "description": "Orchestration strategy selected (openai_function, semantic_kernel, etc.)"
+        "description": "Orchestration strategy selected (openai_function, semantic_kernel, etc.)."
       },
       "value": "[parameters('orchestrationStrategy')]"
     },
     "BACKEND_URL": {
       "type": "string",
       "metadata": {
-        "description": "Backend URL for the function app"
+        "description": "Backend URL for the function app."
       },
       "value": "[variables('backendUrl')]"
     },
     "AzureWebJobsStorage": {
       "type": "string",
       "metadata": {
-        "description": "Azure WebJobs Storage connection string for the Functions app"
+        "description": "Azure WebJobs Storage connection string for the Functions app."
       },
       "value": "[reference('function').outputs.AzureWebJobsStorage.value]"
     },
     "FRONTEND_WEBSITE_NAME": {
       "type": "string",
       "metadata": {
-        "description": "Frontend web application URI"
+        "description": "Frontend web application URI."
       },
       "value": "[reference('web').outputs.FRONTEND_API_URI.value]"
     },
     "ADMIN_WEBSITE_NAME": {
       "type": "string",
       "metadata": {
-        "description": "Admin web application URI"
+        "description": "Admin web application URI."
       },
       "value": "[reference('adminweb').outputs.WEBSITE_ADMIN_URI.value]"
     },
     "LOGLEVEL": {
       "type": "string",
       "metadata": {
-        "description": "Configured log level for applications"
+        "description": "Configured log level for applications."
       },
       "value": "[parameters('logLevel')]"
     },
     "CONVERSATION_FLOW": {
       "type": "string",
       "metadata": {
-        "description": "Conversation flow type in use (custom or byod)"
+        "description": "Conversation flow type in use (custom or byod)."
       },
       "value": "[parameters('conversationFlow')]"
     },
     "USE_ADVANCED_IMAGE_PROCESSING": {
       "type": "bool",
       "metadata": {
-        "description": "Whether advanced image processing is enabled"
+        "description": "Whether advanced image processing is enabled."
       },
       "value": "[parameters('useAdvancedImageProcessing')]"
     },
     "AZURE_SEARCH_USE_INTEGRATED_VECTORIZATION": {
       "type": "bool",
       "metadata": {
-        "description": "Whether Azure Search is using integrated vectorization"
+        "description": "Whether Azure Search is using integrated vectorization."
       },
       "value": "[parameters('azureSearchUseIntegratedVectorization')]"
     },
     "ADVANCED_IMAGE_PROCESSING_MAX_IMAGES": {
       "type": "int",
       "metadata": {
-        "description": "Maximum number of images sent per advanced image processing request"
+        "description": "Maximum number of images sent per advanced image processing request."
       },
       "value": "[parameters('advancedImageProcessingMaxImages')]"
     },
     "AZURE_ML_WORKSPACE_NAME": {
       "type": "string",
       "metadata": {
-        "description": "Azure Machine Learning workspace name when using prompt_flow orchestration"
+        "description": "Azure Machine Learning workspace name when using prompt_flow orchestration."
       },
       "value": "[if(equals(parameters('orchestrationStrategy'), 'prompt_flow'), reference('machineLearning').outputs.workspaceName.value, '')]"
     },
     "RESOURCE_TOKEN": {
       "type": "string",
       "metadata": {
-        "description": "Unique token for this solution deployment (short suffix)"
+        "description": "Unique token for this solution deployment (short suffix)."
       },
       "value": "[variables('solutionSuffix')]"
     },
     "AZURE_COSMOSDB_INFO": {
       "type": "string",
       "metadata": {
-        "description": "Cosmos DB related information (account/database/container)"
+        "description": "Cosmos DB related information (account/database/container)."
       },
       "value": "[string(createObject('account_name', if(equals(parameters('databaseType'), 'CosmosDB'), reference('cosmosDBModule').outputs.name.value, ''), 'database_name', if(equals(parameters('databaseType'), 'CosmosDB'), variables('cosmosDbName'), ''), 'conversations_container_name', if(equals(parameters('databaseType'), 'CosmosDB'), variables('cosmosDbContainerName'), '')))]"
     },
     "AZURE_POSTGRESQL_INFO": {
       "type": "string",
       "metadata": {
-        "description": "PostgreSQL related information (host/database/user)"
+        "description": "PostgreSQL related information (host/database/user)."
       },
       "value": "[string(createObject('host_name', if(equals(parameters('databaseType'), 'PostgreSQL'), reference('postgresDBModule').outputs.fqdn.value, ''), 'database_name', if(equals(parameters('databaseType'), 'PostgreSQL'), variables('postgresDBName'), ''), 'user', ''))]"
     },
     "DATABASE_TYPE": {
       "type": "string",
       "metadata": {
-        "description": "Selected database type for this deployment"
+        "description": "Selected database type for this deployment."
       },
       "value": "[parameters('databaseType')]"
     },
     "OPEN_AI_FUNCTIONS_SYSTEM_PROMPT": {
       "type": "string",
       "metadata": {
-        "description": "System prompt for OpenAI functions"
+        "description": "System prompt for OpenAI functions."
       },
       "value": "[variables('openAIFunctionsSystemPrompt')]"
     },
     "SEMANTIC_KERNEL_SYSTEM_PROMPT": {
       "type": "string",
       "metadata": {
-        "description": "System prompt used by the Semantic Kernel orchestration"
+        "description": "System prompt used by the Semantic Kernel orchestration."
       },
       "value": "[variables('semanticKernelSystemPrompt')]"
     }

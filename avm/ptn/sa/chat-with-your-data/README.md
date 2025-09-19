@@ -978,39 +978,39 @@ Size of the Jumpbox Virtual Machine when created. Set to custom value if enableP
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `ADMIN_WEBSITE_NAME` | string | Admin web application URI |
-| `ADVANCED_IMAGE_PROCESSING_MAX_IMAGES` | int | Maximum number of images sent per advanced image processing request |
-| `APP_ENV` | string | Application environment (e.g., Prod, Dev) |
-| `APPLICATIONINSIGHTS_CONNECTION_STRING` | string | Connection string for the Application Insights instance |
-| `AZURE_APP_SERVICE_HOSTING_MODEL` | string | App Service hosting model used (code or container) |
-| `AZURE_BLOB_STORAGE_INFO` | string | Blob storage info (container and account) |
-| `AZURE_COMPUTER_VISION_INFO` | string | Computer Vision service information |
-| `AZURE_CONTENT_SAFETY_INFO` | string | Content Safety service endpoint information |
-| `AZURE_COSMOSDB_INFO` | string | Cosmos DB related information (account/database/container) |
-| `AZURE_FORM_RECOGNIZER_INFO` | string | Form Recognizer service endpoint information |
-| `AZURE_LOCATION` | string | Primary deployment location |
-| `AZURE_ML_WORKSPACE_NAME` | string | Azure Machine Learning workspace name when using prompt_flow orchestration |
-| `AZURE_OPENAI_CONFIGURATION_INFO` | string | Azure OpenAI configuration details |
-| `AZURE_OPENAI_EMBEDDING_MODEL_INFO` | string | Azure OpenAI embedding model information |
-| `AZURE_OPENAI_MODEL_INFO` | string | Azure OpenAI model information |
-| `AZURE_POSTGRESQL_INFO` | string | PostgreSQL related information (host/database/user) |
-| `AZURE_RESOURCE_GROUP` | string | Name of the resource group |
-| `AZURE_SEARCH_SERVICE_INFO` | string | Azure Cognitive Search service information (if deployed) |
-| `AZURE_SEARCH_USE_INTEGRATED_VECTORIZATION` | bool | Whether Azure Search is using integrated vectorization |
-| `AZURE_SPEECH_SERVICE_INFO` | string | Azure Speech service information |
-| `AZURE_TENANT_ID` | string | Azure tenant identifier |
-| `AzureWebJobsStorage` | string | Azure WebJobs Storage connection string for the Functions app |
-| `BACKEND_URL` | string | Backend URL for the function app |
-| `CONVERSATION_FLOW` | string | Conversation flow type in use (custom or byod) |
-| `DATABASE_TYPE` | string | Selected database type for this deployment |
-| `DOCUMENT_PROCESSING_QUEUE_NAME` | string | Name of the document processing queue |
-| `FRONTEND_WEBSITE_NAME` | string | Frontend web application URI |
-| `LOGLEVEL` | string | Configured log level for applications |
-| `OPEN_AI_FUNCTIONS_SYSTEM_PROMPT` | string | System prompt for OpenAI functions |
-| `ORCHESTRATION_STRATEGY` | string | Orchestration strategy selected (openai_function, semantic_kernel, etc.) |
-| `RESOURCE_TOKEN` | string | Unique token for this solution deployment (short suffix) |
-| `SEMANTIC_KERNEL_SYSTEM_PROMPT` | string | System prompt used by the Semantic Kernel orchestration |
-| `USE_ADVANCED_IMAGE_PROCESSING` | bool | Whether advanced image processing is enabled |
+| `ADMIN_WEBSITE_NAME` | string | Admin web application URI. |
+| `ADVANCED_IMAGE_PROCESSING_MAX_IMAGES` | int | Maximum number of images sent per advanced image processing request. |
+| `APP_ENV` | string | Application environment (e.g., Prod, Dev). |
+| `APPLICATIONINSIGHTS_CONNECTION_STRING` | string | Connection string for the Application Insights instance. |
+| `AZURE_APP_SERVICE_HOSTING_MODEL` | string | App Service hosting model used (code or container). |
+| `AZURE_BLOB_STORAGE_INFO` | string | Blob storage info (container and account). |
+| `AZURE_COMPUTER_VISION_INFO` | string | Computer Vision service information. |
+| `AZURE_CONTENT_SAFETY_INFO` | string | Content Safety service endpoint information. |
+| `AZURE_COSMOSDB_INFO` | string | Cosmos DB related information (account/database/container). |
+| `AZURE_FORM_RECOGNIZER_INFO` | string | Form Recognizer service endpoint information. |
+| `AZURE_LOCATION` | string | Primary deployment location. |
+| `AZURE_ML_WORKSPACE_NAME` | string | Azure Machine Learning workspace name when using prompt_flow orchestration. |
+| `AZURE_OPENAI_CONFIGURATION_INFO` | string | Azure OpenAI configuration details. |
+| `AZURE_OPENAI_EMBEDDING_MODEL_INFO` | string | Azure OpenAI embedding model information. |
+| `AZURE_OPENAI_MODEL_INFO` | string | Azure OpenAI model information. |
+| `AZURE_POSTGRESQL_INFO` | string | PostgreSQL related information (host/database/user). |
+| `AZURE_RESOURCE_GROUP` | string | Name of the resource group. |
+| `AZURE_SEARCH_SERVICE_INFO` | string | Azure Cognitive Search service information (if deployed). |
+| `AZURE_SEARCH_USE_INTEGRATED_VECTORIZATION` | bool | Whether Azure Search is using integrated vectorization. |
+| `AZURE_SPEECH_SERVICE_INFO` | string | Azure Speech service information. |
+| `AZURE_TENANT_ID` | string | Azure tenant identifier. |
+| `AzureWebJobsStorage` | string | Azure WebJobs Storage connection string for the Functions app. |
+| `BACKEND_URL` | string | Backend URL for the function app. |
+| `CONVERSATION_FLOW` | string | Conversation flow type in use (custom or byod). |
+| `DATABASE_TYPE` | string | Selected database type for this deployment. |
+| `DOCUMENT_PROCESSING_QUEUE_NAME` | string | Name of the document processing queue. |
+| `FRONTEND_WEBSITE_NAME` | string | Frontend web application URI. |
+| `LOGLEVEL` | string | Configured log level for applications. |
+| `OPEN_AI_FUNCTIONS_SYSTEM_PROMPT` | string | System prompt for OpenAI functions. |
+| `ORCHESTRATION_STRATEGY` | string | Orchestration strategy selected (openai_function, semantic_kernel, etc.). |
+| `RESOURCE_TOKEN` | string | Unique token for this solution deployment (short suffix). |
+| `SEMANTIC_KERNEL_SYSTEM_PROMPT` | string | System prompt used by the Semantic Kernel orchestration. |
+| `USE_ADVANCED_IMAGE_PROCESSING` | bool | Whether advanced image processing is enabled. |
 
 ## Cross-referenced modules
 
