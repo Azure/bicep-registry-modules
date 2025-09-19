@@ -636,8 +636,8 @@ module postgresDBModule 'br/public:avm/res/db-for-postgre-sql/flexible-server:0.
 
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: monitoring!.outputs.logAnalyticsWorkspaceId }] : null
 
-    skuName: 'Standard_B1ms'
-    tier: 'Burstable'
+    skuName: 'Standard_D16as'
+    tier: 'GeneralPurpose'
     storageSizeGB: 32
     version: '16'
     availabilityZone: 1
@@ -1581,7 +1581,7 @@ module storage './modules/storage/storage-account/main.bicep' = {
       }
     ]
     allowSharedKeyAccess: true
-    allowBlobPublicAccess: enablePrivateNetworking ? true : false
+    allowBlobPublicAccess: false
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     networkAcls: { bypass: 'AzureServices', defaultAction: enablePrivateNetworking ? 'Deny' : 'Allow' }
     privateEndpoints: enablePrivateNetworking
