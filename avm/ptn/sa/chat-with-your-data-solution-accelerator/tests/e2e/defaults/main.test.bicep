@@ -46,11 +46,11 @@ module testDeployment '../../../main.bicep' = [
       // You parameters go here
       solutionName: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      enableScalability: true
-      enableTelemetry: true
-      enableMonitoring: true
+      enableScalability: false
+      enableTelemetry: false
+      enableMonitoring: false
       enablePrivateNetworking: true
-      enableRedundancy: true
+      enableRedundancy: false
     }
   }
 ]

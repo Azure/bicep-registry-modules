@@ -39,7 +39,6 @@ This module contains the network resources required to deploy the [Chat-with-you
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`addressPrefixes`](#parameter-addressprefixes) | array | Networking address prefix for the VNET. |
-| [`location`](#parameter-location) | string | Azure region for all services. |
 | [`logAnalyticsWorkSpaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | Resource ID of the Log Analytics Workspace for monitoring and diagnostics. |
 | [`resourcesName`](#parameter-resourcesname) | string | Name used for naming all network resources. |
 | [`subnets`](#parameter-subnets) | array | Array of subnets to be created within the VNET. |
@@ -51,6 +50,7 @@ This module contains the network resources required to deploy the [Chat-with-you
 | [`bastionConfiguration`](#parameter-bastionconfiguration) | object | Configuration for the Azure Bastion Host. Leave null to omit Bastion creation. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`jumpboxConfiguration`](#parameter-jumpboxconfiguration) | object | Configuration for the Jumpbox VM. Leave null to omit Jumpbox creation. |
+| [`location`](#parameter-location) | string | Azure region for all services. |
 | [`tags`](#parameter-tags) | object | Tags to be applied to the resources. |
 
 ### Parameter: `addressPrefixes`
@@ -59,14 +59,6 @@ Networking address prefix for the VNET.
 
 - Required: Yes
 - Type: array
-
-### Parameter: `location`
-
-Azure region for all services.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
 
 ### Parameter: `logAnalyticsWorkSpaceResourceId`
 
@@ -567,6 +559,14 @@ The service endpoints to enable on the subnet.
 
 - Required: No
 - Type: array
+
+### Parameter: `location`
+
+Azure region for all services.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
 
 ### Parameter: `tags`
 

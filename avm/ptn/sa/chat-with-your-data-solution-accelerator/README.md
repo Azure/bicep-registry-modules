@@ -100,10 +100,96 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/chat-with-your-data-solution-accelerator:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Waf-Aligned](#example-2-waf-aligned)
+- [Chat with your data Solution Accelerator - Defaults Test](#example-1-chat-with-your-data-solution-accelerator---defaults-test)
+- [Chat with your data Solution Accelerator - WAF Aligned Test](#example-2-chat-with-your-data-solution-accelerator---waf-aligned-test)
 
-### Example 1: _Defaults_
+### Example 1: _Chat with your data Solution Accelerator - Defaults Test_
+
+This test deploys the Chat with your data Solution Accelerator with default parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-data-solution-accelerator:<version>' = {
+  name: 'chatWithYourDataSolutionAcceleratorDeployment'
+  params: {
+    enableMonitoring: false
+    enablePrivateNetworking: true
+    enableRedundancy: false
+    enableScalability: false
+    enableTelemetry: false
+    location: '<location>'
+    solutionName: 'scwydsmin001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "enableMonitoring": {
+      "value": false
+    },
+    "enablePrivateNetworking": {
+      "value": true
+    },
+    "enableRedundancy": {
+      "value": false
+    },
+    "enableScalability": {
+      "value": false
+    },
+    "enableTelemetry": {
+      "value": false
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "solutionName": {
+      "value": "scwydsmin001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/chat-with-your-data-solution-accelerator:<version>'
+
+param enableMonitoring = false
+param enablePrivateNetworking = true
+param enableRedundancy = false
+param enableScalability = false
+param enableTelemetry = false
+param location = '<location>'
+param solutionName = 'scwydsmin001'
+```
+
+</details>
+<p>
+
+### Example 2: _Chat with your data Solution Accelerator - WAF Aligned Test_
+
+This test deploys the Chat with your data Solution Accelerator with Well-Architected Framework aligned parameters to validate enhanced security, reliability, and scalability features.
+
 
 <details>
 
@@ -119,7 +205,7 @@ module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-
     enableScalability: true
     enableTelemetry: true
     location: '<location>'
-    solutionName: 'scwydsmin001'
+    solutionName: 'scwydswaf001'
   }
 }
 ```
@@ -155,7 +241,7 @@ module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-
       "value": "<location>"
     },
     "solutionName": {
-      "value": "scwydsmin001"
+      "value": "scwydswaf001"
     }
   }
 }
@@ -176,66 +262,6 @@ param enablePrivateNetworking = true
 param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
-param location = '<location>'
-param solutionName = 'scwydsmin001'
-```
-
-</details>
-<p>
-
-### Example 2: _Waf-Aligned_
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module chatWithYourDataSolutionAccelerator 'br/public:avm/ptn/sa/chat-with-your-data-solution-accelerator:<version>' = {
-  name: 'chatWithYourDataSolutionAcceleratorDeployment'
-  params: {
-    enableScalability: true
-    location: '<location>'
-    solutionName: 'scwydswaf001'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "enableScalability": {
-      "value": true
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "solutionName": {
-      "value": "scwydswaf001"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/sa/chat-with-your-data-solution-accelerator:<version>'
-
-param enableScalability = true
 param location = '<location>'
 param solutionName = 'scwydswaf001'
 ```

@@ -9,7 +9,7 @@ metadata description = '''This module contains the network resources required to
 param resourcesName string
 
 @minLength(3)
-@description('Required. Azure region for all services.')
+@description('Optional. Azure region for all services.')
 param location string = resourceGroup().location
 
 @description('Required. Resource ID of the Log Analytics Workspace for monitoring and diagnostics.')
