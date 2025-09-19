@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "4960057997414961767"
+      "templateHash": "486113145732957580"
     },
     "name": "Microsoft Entra Domain Services",
     "description": "This module deploys an Microsoft Entra Domain Services (Azure AD DS) instance."
@@ -152,7 +152,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -189,7 +189,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -264,7 +264,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -303,12 +303,12 @@
     },
     "sku": {
       "type": "string",
-      "defaultValue": "Enterprise",
       "allowedValues": [
-        "Standard",
         "Enterprise",
-        "Premium"
+        "Premium",
+        "Standard"
       ],
+      "defaultValue": "Enterprise",
       "metadata": {
         "description": "Optional. The name of the SKU specific to Azure AD DS Services. For replica set support, this defaults to Enterprise."
       }
@@ -347,143 +347,142 @@
     },
     "domainConfigurationType": {
       "type": "string",
-      "defaultValue": "FullySynced",
       "allowedValues": [
         "FullySynced",
         "ResourceTrusting"
       ],
+      "defaultValue": "FullySynced",
       "metadata": {
         "description": "Optional. The value is to provide domain configuration type."
       }
     },
     "filteredSync": {
       "type": "string",
-      "defaultValue": "Enabled",
       "allowedValues": [
         "Disabled",
         "Enabled"
       ],
+      "defaultValue": "Enabled",
       "metadata": {
         "description": "Optional. The value is to synchronize scoped users and groups."
       }
     },
     "tlsV1": {
       "type": "string",
-      "defaultValue": "Disabled",
       "allowedValues": [
-        "Enabled",
         "Disabled"
       ],
+      "defaultValue": "Disabled",
       "metadata": {
-        "description": "Optional. The value is to enable clients making request using TLSv1."
+        "description": "Optional. TLS 1.0 / 1.1 for Azure Domain Services has been deprecated on August 31, 2025."
       }
     },
     "ntlmV1": {
       "type": "string",
-      "defaultValue": "Disabled",
       "allowedValues": [
-        "Enabled",
-        "Disabled"
+        "Disabled",
+        "Enabled"
       ],
+      "defaultValue": "Disabled",
       "metadata": {
         "description": "Optional. The value is to enable clients making request using NTLM v1."
       }
     },
     "syncNtlmPasswords": {
       "type": "string",
-      "defaultValue": "Enabled",
       "allowedValues": [
-        "Enabled",
-        "Disabled"
+        "Disabled",
+        "Enabled"
       ],
+      "defaultValue": "Enabled",
       "metadata": {
         "description": "Optional. The value is to enable synchronized users to use NTLM authentication."
       }
     },
     "syncOnPremPasswords": {
       "type": "string",
-      "defaultValue": "Enabled",
       "allowedValues": [
-        "Enabled",
-        "Disabled"
+        "Disabled",
+        "Enabled"
       ],
+      "defaultValue": "Enabled",
       "metadata": {
         "description": "Optional. The value is to enable on-premises users to authenticate against managed domain."
       }
     },
     "kerberosRc4Encryption": {
       "type": "string",
-      "defaultValue": "Disabled",
       "allowedValues": [
-        "Enabled",
-        "Disabled"
+        "Disabled",
+        "Enabled"
       ],
+      "defaultValue": "Disabled",
       "metadata": {
         "description": "Optional. The value is to enable Kerberos requests that use RC4 encryption."
       }
     },
     "kerberosArmoring": {
       "type": "string",
-      "defaultValue": "Enabled",
       "allowedValues": [
-        "Enabled",
-        "Disabled"
+        "Disabled",
+        "Enabled"
       ],
+      "defaultValue": "Enabled",
       "metadata": {
         "description": "Optional. The value is to enable to provide a protected channel between the Kerberos client and the KDC."
       }
     },
     "notifyDcAdmins": {
       "type": "string",
-      "defaultValue": "Enabled",
       "allowedValues": [
-        "Enabled",
-        "Disabled"
+        "Disabled",
+        "Enabled"
       ],
+      "defaultValue": "Enabled",
       "metadata": {
         "description": "Optional. The value is to notify the DC Admins."
       }
     },
     "notifyGlobalAdmins": {
       "type": "string",
-      "defaultValue": "Enabled",
       "allowedValues": [
-        "Enabled",
-        "Disabled"
+        "Disabled",
+        "Enabled"
       ],
+      "defaultValue": "Enabled",
       "metadata": {
         "description": "Optional. The value is to notify the Global Admins."
       }
     },
     "externalAccess": {
       "type": "string",
-      "defaultValue": "Enabled",
       "allowedValues": [
-        "Enabled",
-        "Disabled"
+        "Disabled",
+        "Enabled"
       ],
+      "defaultValue": "Enabled",
       "metadata": {
         "description": "Optional. The value is to enable the Secure LDAP for external services of Azure AD DS Services."
       }
     },
     "ldaps": {
       "type": "string",
-      "defaultValue": "Enabled",
       "allowedValues": [
-        "Enabled",
-        "Disabled"
+        "Disabled",
+        "Enabled"
       ],
+      "defaultValue": "Enabled",
       "metadata": {
         "description": "Optional. A flag to determine whether or not Secure LDAP is enabled or disabled."
       }
     },
     "syncScope": {
       "type": "string",
-      "defaultValue": "All",
       "allowedValues": [
         "All",
         "CloudOnly"
       ],
+      "defaultValue": "All",
       "metadata": {
         "description": "Optional. All users in AAD are synced to AAD DS domain or only users actively syncing in the cloud. Defaults to All."
       }

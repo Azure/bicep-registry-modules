@@ -40,7 +40,7 @@ param backupManagementServiceApplicationObjectId string
 @description('Required. Resource ID of the log analytics worspace to stream logs from Azure monitoring agent.')
 param logAnalyticsWorkspaceResourceId string
 
-var storageAccountCSEFileName = 'scriptExtensionMasterInstaller.ps1'
+var storageAccountCSEFileName = 'scriptExtensionMasterInstaller.sh'
 var addressPrefix = '10.0.0.0/16'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
@@ -118,7 +118,9 @@ resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2025-02-01' = 
     name: 'RS0'
     tier: 'Standard'
   }
-  properties: {}
+  properties: {
+    publicNetworkAccess: 'Enabled'
+  }
 
   resource backupPolicy 'backupPolicies@2025-02-01' = {
     name: 'backupPolicy'
@@ -203,7 +205,7 @@ resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2025-02-01' = 
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' = {
   name: keyVaultName
   location: location
   properties: {
@@ -220,7 +222,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2024-11-01' = {
+  resource key 'keys@2024-12-01-preview' = {
     name: 'encryptionKey'
     properties: {
       kty: 'RSA'
@@ -290,6 +292,19 @@ resource storageUpload 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   dependsOn: [
     msiRGContrRoleAssignment
   ]
+}
+
+resource msiStorageReaderRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(resourceGroup().id, 'Storage Blob Data Reader', managedIdentity.id)
+  scope: storageAccount::blobService::container
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
+    ) // Storage Blob Data Reader
+    principalType: 'ServicePrincipal'
+  }
 }
 
 resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {

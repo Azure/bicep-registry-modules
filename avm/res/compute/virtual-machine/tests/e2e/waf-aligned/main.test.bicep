@@ -87,7 +87,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: enforcedLocation
       name: '${namePrefix}${serviceShort}'
-      computerName: '${namePrefix}winvm1'
+      computerName: take('w${namePrefix}${serviceShort}', 15)
       adminUsername: 'VMAdmin'
       imageReference: {
         publisher: 'MicrosoftWindowsServer'
@@ -232,21 +232,22 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       extensionCustomScriptConfig: {
-        enabled: true
-        fileData: [
-          {
-            storageAccountId: nestedDependencies.outputs.storageAccountResourceId
-            uri: nestedDependencies.outputs.storageAccountCSEFileUrl
-          }
-        ]
+        name: 'myCustomScript'
+        settings: {
+          commandToExecute: 'powershell -ExecutionPolicy Unrestricted -Command "& ./${nestedDependencies.outputs.storageAccountCSEFileName}"'
+        }
+        protectedSettings: {
+          // Needs 'Storage Blob Data Reader' role on the storage account
+          managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+          fileUris: [
+            nestedDependencies.outputs.storageAccountCSEFileUrl
+          ]
+        }
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
-      }
-      extensionCustomScriptProtectedSetting: {
-        commandToExecute: 'powershell -ExecutionPolicy Unrestricted -Command "& ./${nestedDependencies.outputs.storageAccountCSEFileName}"'
       }
       extensionDependencyAgentConfig: {
         enabled: true
@@ -277,6 +278,9 @@ module testDeployment '../../../main.bicep' = [
       }
       extensionAadJoinConfig: {
         enabled: true
+        settings: {
+          mdmId: '' // '0000000a-0000-0000-c000-000000000000'
+        }
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'

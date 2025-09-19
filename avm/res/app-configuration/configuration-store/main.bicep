@@ -196,7 +196,7 @@ resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2025
   properties: {
     createMode: createMode
     disableLocalAuth: disableLocalAuth
-    enablePurgeProtection: sku == 'Free' ? false : enablePurgeProtection
+    enablePurgeProtection: sku == 'Free' || sku == 'Developer' ? false : enablePurgeProtection
     encryption: !empty(customerManagedKey)
       ? {
           keyVaultProperties: {
@@ -214,7 +214,7 @@ resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2025
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? any(publicNetworkAccess)
       : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
-    softDeleteRetentionInDays: sku == 'Free' ? 0 : softDeleteRetentionInDays
+    softDeleteRetentionInDays: sku == 'Free' || sku == 'Developer' ? 0 : softDeleteRetentionInDays
     dataPlaneProxy: !empty(dataPlaneProxy)
       ? {
           authenticationMode: dataPlaneProxy.?authenticationMode ?? 'Pass-through'

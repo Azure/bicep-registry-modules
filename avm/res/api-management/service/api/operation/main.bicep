@@ -34,10 +34,10 @@ param responses resourceInput<'Microsoft.ApiManagement/service/apis/operations@2
 @sys.description('Optional. Collection of URL template parameters.')
 param templateParameters resourceInput<'Microsoft.ApiManagement/service/apis/operations@2024-05-01'>.properties.templateParameters?
 
-resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
+resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 
-  resource api 'apis@2022-08-01' existing = {
+  resource api 'apis@2024-05-01' existing = {
     name: apiName
   }
 }

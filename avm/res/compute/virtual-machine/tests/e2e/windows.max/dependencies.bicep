@@ -43,8 +43,22 @@ param logAnalyticsWorkspaceResourceId string
 @description('Required. The name of the disk to create.')
 param preCreatedDiskName string
 
+@description('Generated. Do not provide a value! This date value is used to generate a registration token.')
+param baseTime string = utcNow('u')
+
+@description('Optional. SAS token validity length to use to download files from storage accounts. Usage: \'PT8H\' - valid for 8 hours; \'P5D\' - valid for 5 days; \'P1Y\' - valid for 1 year. When not provided, the SAS token will be valid for 8 hours.')
+param sasTokenValidityLength string = 'PT8H'
+
 var storageAccountCSEFileName = 'scriptExtensionMasterInstaller.ps1'
 var addressPrefix = '10.0.0.0/16'
+
+var accountSasProperties = {
+  signedServices: 'b'
+  signedPermission: 'r'
+  signedExpiry: dateTimeAdd(baseTime, sasTokenValidityLength)
+  signedResourceTypes: 'o'
+  signedProtocol: 'https'
+}
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   name: virtualNetworkName
@@ -132,7 +146,9 @@ resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2025-02-01' = 
     name: 'RS0'
     tier: 'Standard'
   }
-  properties: {}
+  properties: {
+    publicNetworkAccess: 'Enabled'
+  }
 
   resource backupPolicy 'backupPolicies@2025-02-01' = {
     name: 'backupPolicy'
@@ -306,7 +322,7 @@ resource storageUpload 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   ]
 }
 
-resource proximityPlacementGroup 'Microsoft.Compute/proximityPlacementGroups@2022-03-01' = {
+resource proximityPlacementGroup 'Microsoft.Compute/proximityPlacementGroups@2024-11-01' = {
   name: proximityPlacementGroupName
   location: location
 }
@@ -460,6 +476,10 @@ output storageAccountCSEFileName string = storageAccountCSEFileName
 
 @description('The URL of the Custom Script Extension in the created Storage Account')
 output storageAccountCSEFileUrl string = '${storageAccount.properties.primaryEndpoints.blob}${storageAccount::blobService::container.name}/${storageAccountCSEFileName}'
+
+@secure()
+@description('The SAS token of the created Storage Account that holds the Custom Script Extension File.')
+output storageAccountContainerCSFileSasToken string = storageAccount.listAccountSas('2025-01-01', accountSasProperties).accountSasToken
 
 @description('The resource ID of the created Proximity Placement Group.')
 output proximityPlacementGroupResourceId string = proximityPlacementGroup.id

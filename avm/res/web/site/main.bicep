@@ -265,11 +265,11 @@ resource app 'Microsoft.Web/sites@2024-11-01' = {
   tags: tags
   identity: identity
   properties: {
-    managedEnvironmentId: !empty(managedEnvironmentResourceId) ? managedEnvironmentResourceId : null
+    managedEnvironmentId: managedEnvironmentResourceId
     serverFarmId: contains(managedEnvironmentSupportedKinds, kind) && !empty(managedEnvironmentResourceId)
       ? null
       : serverFarmResourceId
-    clientAffinityEnabled: clientAffinityEnabled
+    clientAffinityEnabled: !empty(serverFarmResourceId) ? clientAffinityEnabled : null
     clientAffinityProxyEnabled: clientAffinityProxyEnabled
     clientAffinityPartitioningEnabled: clientAffinityPartitioningEnabled
     httpsOnly: httpsOnly
@@ -285,7 +285,7 @@ resource app 'Microsoft.Web/sites@2024-11-01' = {
     functionAppConfig: functionAppConfig
     clientCertEnabled: clientCertEnabled
     clientCertExclusionPaths: clientCertExclusionPaths
-    clientCertMode: clientCertMode
+    clientCertMode: !empty(serverFarmResourceId) ? clientCertMode : null
     cloningInfo: cloningInfo
     containerSize: containerSize
     dailyMemoryTimeQuota: dailyMemoryTimeQuota
@@ -293,9 +293,9 @@ resource app 'Microsoft.Web/sites@2024-11-01' = {
     hostNameSslStates: hostNameSslStates
     hyperV: hyperV
     redundancyMode: redundancyMode
-    publicNetworkAccess: !empty(publicNetworkAccess)
-      ? any(publicNetworkAccess)
-      : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
+    publicNetworkAccess: !empty(serverFarmResourceId)
+      ? (!empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled'))
+      : null
     scmSiteAlsoStopped: scmSiteAlsoStopped
     endToEndEncryptionEnabled: e2eEncryptionEnabled
     dnsConfiguration: dnsConfiguration
@@ -538,7 +538,7 @@ output location string = app.location
 output defaultHostname string = app.properties.defaultHostName
 
 @description('Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification.')
-output customDomainVerificationId string = app.properties.customDomainVerificationId
+output customDomainVerificationId string? = app.properties.customDomainVerificationId
 
 @description('The outbound IP addresses of the app.')
 output outboundIpAddresses string = app.properties.outboundIpAddresses

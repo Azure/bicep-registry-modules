@@ -50,6 +50,7 @@ module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-a
       tags: ipConfiguration.?tags ?? tags
       availabilityZones: ipConfiguration.?pipConfiguration.?availabilityZones
       enableTelemetry: ipConfiguration.?pipConfiguration.?enableTelemetry ?? ipConfiguration.?enableTelemetry ?? enableTelemetry
+      ipTags: ipConfiguration.?pipConfiguration.?ipTags
     }
   }
 ]
@@ -107,7 +108,7 @@ output ipConfigurations networkInterfaceIPConfigurationOutputType[] = networkInt
 //   Definitions   //
 // =============== //
 
-import { dnsSettingsType, ddosSettingsType } from 'br/public:avm/res/network/public-ip-address:0.8.0'
+import { dnsSettingsType, ddosSettingsType, ipTagType } from 'br/public:avm/res/network/public-ip-address:0.8.0'
 
 @export()
 @description('The type for the public IP address configuration.')
@@ -158,10 +159,13 @@ type publicIPConfigurationType = {
   skuTier: ('Regional' | 'Global')?
 
   @description('Optional. The tags of the public IP address.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Network/publicIPAddresses@2024-07-01'>.tags?
 
   @description('Optional. The zones of the public IP address.')
   availabilityZones: (1 | 2 | 3)[]?
+
+  @description('Optional. The list of tags associated with the public IP address.')
+  ipTags: ipTagType[]?
 
   @description('Optional. Enable/Disable usage telemetry for the module.')
   enableTelemetry: bool?
@@ -220,7 +224,7 @@ type ipConfigurationType = {
   diagnosticSettings: diagnosticSettingFullType[]?
 
   @description('Optional. The tags of the public IP address.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Network/networkInterfaces@2024-07-01'>.tags?
 
   @description('Optional. Enable/Disable usage telemetry for the module.')
   enableTelemetry: bool?

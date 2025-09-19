@@ -4,13 +4,19 @@ param location string = resourceGroup().location
 @description('Required. The name of the managed identity to create.')
 param managedIdentityName string
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+@description('Required. The name of the managed identity to create.')
+param logAnalyticsWorkspaceName string
+
+@description('Required. The name of the Application insights instance to create.')
+param applicationInsightsName string
+
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
-  name: 'logAnalyticsWorkspace'
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
+  name: logAnalyticsWorkspaceName
   location: location
   tags: {
     Environment: 'Non-Prod'
@@ -27,7 +33,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10
 }
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
-  name: 'applicationInsights'
+  name: applicationInsightsName
   location: location
   kind: 'web'
   properties: {
