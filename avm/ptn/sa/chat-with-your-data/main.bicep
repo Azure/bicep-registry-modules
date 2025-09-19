@@ -521,7 +521,7 @@ var dnsZoneIndex = {
 // - Excludes AI-related zones when using with an existing Foundry project
 // ===================================================
 @batchSize(5)
-module avmPrivateDnsZones './modules/private-dns-zone/main.bicep' = [
+module avmPrivateDnsZones './modules/private-dns-zone/private-dns-zone.bicep' = [
   for (zone, i) in privateDnsZones: if (enablePrivateNetworking) {
     name: 'avm.res.network.private-dns-zone.${contains(zone, 'azurecontainerapps.io') ? 'containerappenv' : split(zone, '.')[1]}'
     params: {
@@ -726,7 +726,7 @@ module pgSqlDelayScript 'br/public:avm/res/resources/deployment-script:0.5.1' = 
 
 // Store secrets in a keyvault
 var keyVaultName = 'kv-${solutionSuffix}'
-module keyvault 'br/public:avm/res/key-vault/vault:0.12.1' = {
+module keyvault './modules/key-vault/vault/vault.bicep' = {
   name: take('avm.res.key-vault.vault.${keyVaultName}', 64)
   params: {
     name: keyVaultName

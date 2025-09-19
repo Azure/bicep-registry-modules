@@ -256,7 +256,7 @@ resource keyVault_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021
   }
 ]
 
-module keyVault_secrets 'secret/main.bicep' = [
+module keyVault_secrets 'secret/secret.bicep' = [
   for (secret, index) in (secrets ?? []): {
     name: '${uniqueString(deployment().name, location)}-KeyVault-Secret-${index}'
     params: {
