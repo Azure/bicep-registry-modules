@@ -1805,6 +1805,9 @@ output APPLICATIONINSIGHTS_CONNECTION_STRING string = enableMonitoring
 @description('App Service hosting model used (code or container).')
 output AZURE_APP_SERVICE_HOSTING_MODEL string = hostingModel
 
+@description('Name of the resource group.')
+output AZURE_RESOURCE_GROUP_NAME string = resourceGroup().name
+
 @description('Application environment (e.g., Prod, Dev).')
 output APP_ENV string = appEnvironment
 

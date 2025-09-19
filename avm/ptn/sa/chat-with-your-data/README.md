@@ -995,6 +995,7 @@ Size of the Jumpbox Virtual Machine when created. Set to custom value if enableP
 | `AZURE_OPENAI_MODEL_INFO` | string | Azure OpenAI model information. |
 | `AZURE_POSTGRESQL_INFO` | string | PostgreSQL related information (host/database/user). |
 | `AZURE_RESOURCE_GROUP` | string | Name of the resource group. |
+| `AZURE_RESOURCE_GROUP_NAME` | string | Name of the resource group. |
 | `AZURE_SEARCH_SERVICE_INFO` | string | Azure Cognitive Search service information (if deployed). |
 | `AZURE_SEARCH_USE_INTEGRATED_VECTORIZATION` | bool | Whether Azure Search is using integrated vectorization. |
 | `AZURE_SPEECH_SERVICE_INFO` | string | Azure Speech service information. |
