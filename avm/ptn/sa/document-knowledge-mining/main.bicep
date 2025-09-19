@@ -106,8 +106,8 @@ param enableScalability bool
 @description('Required. Location for AI Foundry deployment. This is the location where the AI Foundry resources will be deployed.')
 param aiDeploymentsLocation string
 
-//@description('Optional. Created by user name.')
-//param createdBy string = empty(deployer().userPrincipalName) ? '' : split(deployer().userPrincipalName, '@')[0]
+@description('Optional. Created by user name.')
+param createdBy string = empty(deployer().userPrincipalName) ? '' : split(deployer().userPrincipalName, '@')[0]
 
 // ========== Resource Group Tag ========== //
 resource resourceGroupTags 'Microsoft.Resources/tags@2021-04-01' = {
@@ -116,7 +116,7 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2021-04-01' = {
     tags: {
       ...tags
       TemplateName: 'DKM'
-      //CreatedBy: createdBy
+      CreatedBy: createdBy
     }
   }
 }

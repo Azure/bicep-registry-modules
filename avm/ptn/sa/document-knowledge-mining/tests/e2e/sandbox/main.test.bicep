@@ -56,6 +56,7 @@ module testDeployment '../../../main.bicep' = [
       enableRedundancy: false
       enableScalability: false
       enableTelemetry: true
+      createdBy: 'AVM_Pipeline'
     }
   }
 ]

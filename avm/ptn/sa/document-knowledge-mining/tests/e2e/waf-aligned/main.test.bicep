@@ -60,6 +60,7 @@ module testDeployment '../../../main.bicep' = [
       enableTelemetry: true
       vmAdminUsername: 'adminuser'
       vmAdminPassword: vmAdminPassword
+      createdBy: 'AVM_Pipeline'
     }
   }
 ]
