@@ -4,7 +4,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ## 0.20.1
 
-### Fix
+### Changes
 
 - added encryption to Data disks
 
