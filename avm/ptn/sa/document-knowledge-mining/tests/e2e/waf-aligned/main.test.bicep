@@ -10,7 +10,7 @@ targetScope = 'subscription'
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 // e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
-param resourceGroupName string = 'dep-${namePrefix}-<provider>-<resourceType>-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-sa-dkm-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 #disable-next-line no-unused-params // overridden below to avoid the allowed location list validation
@@ -37,8 +37,8 @@ var enforcedLocation = 'australiaeast'
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: resourceGroupName
-  location: enforcedLocation
+name: resourceGroupName
+location: enforcedLocation
 }
 
 // ============== //
@@ -47,19 +47,19 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    scope: resourceGroup
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
-    params: {
-      location: enforcedLocation
-      aiDeploymentsLocation: enforcedLocation
-      enablePrivateNetworking: true
-      enableMonitoring: true
-      enableRedundancy: true
-      enableScalability: true
-      enableTelemetry: true
-      vmAdminUsername: 'adminuser'
-      vmAdminPassword: vmAdminPassword
-    }
-  }
+for iteration in ['init', 'idem']: {
+scope: resourceGroup
+name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+params: {
+location: enforcedLocation
+aiDeploymentsLocation: enforcedLocation
+enablePrivateNetworking: true
+enableMonitoring: true
+enableRedundancy: true
+enableScalability: true
+enableTelemetry: true
+vmAdminUsername: 'adminuser'
+vmAdminPassword: vmAdminPassword
+}
+}
 ]
