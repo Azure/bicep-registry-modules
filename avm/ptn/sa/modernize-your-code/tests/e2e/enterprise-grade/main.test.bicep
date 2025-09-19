@@ -35,8 +35,8 @@ var enforcedLocation = 'australiaeast'
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
-name: resourceGroupName
-location: enforcedLocation
+  name: resourceGroupName
+  location: enforcedLocation
 }
 
 // ============== //
@@ -45,19 +45,19 @@ location: enforcedLocation
 
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
-for iteration in ['init', 'idem']: {
-scope: resourceGroup
-name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
-params: {
-solutionName: '${namePrefix}${serviceShort}001'
-location: enforcedLocation
-enableMonitoring: true
-enableRedundancy: true
-enableScaling: true
-enablePrivateNetworking: true
-azureAiServiceLocation: enforcedLocation
-vmAdminUsername: 'adminuser'
-vmAdminPassword: vmAdminPassword
-}
-}
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      solutionName: '${namePrefix}${serviceShort}001'
+      location: enforcedLocation
+      enableMonitoring: true
+      enableRedundancy: true
+      enableScaling: true
+      enablePrivateNetworking: true
+      azureAiServiceLocation: enforcedLocation
+      vmAdminUsername: 'adminuser'
+      vmAdminPassword: vmAdminPassword
+    }
+  }
 ]
