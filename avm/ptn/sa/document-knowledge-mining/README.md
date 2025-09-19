@@ -141,6 +141,7 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
     enableRedundancy: false
     enableScalability: false
     // Non-required parameters
+    createdBy: 'AVM_Pipeline'
     enableTelemetry: true
     location: '<location>'
     vmAdminPassword: '<vmAdminPassword>'
@@ -178,6 +179,9 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
       "value": false
     },
     // Non-required parameters
+    "createdBy": {
+      "value": "AVM_Pipeline"
+    },
     "enableTelemetry": {
       "value": true
     },
@@ -211,6 +215,7 @@ param enablePrivateNetworking = true
 param enableRedundancy = false
 param enableScalability = false
 // Non-required parameters
+param createdBy = 'AVM_Pipeline'
 param enableTelemetry = true
 param location = '<location>'
 param vmAdminPassword = '<vmAdminPassword>'
@@ -240,6 +245,7 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
     enableRedundancy: false
     enableScalability: false
     // Non-required parameters
+    createdBy: 'AVM_Pipeline'
     enableTelemetry: true
     location: '<location>'
   }
@@ -275,6 +281,9 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
       "value": false
     },
     // Non-required parameters
+    "createdBy": {
+      "value": "AVM_Pipeline"
+    },
     "enableTelemetry": {
       "value": true
     },
@@ -302,6 +311,7 @@ param enablePrivateNetworking = false
 param enableRedundancy = false
 param enableScalability = false
 // Non-required parameters
+param createdBy = 'AVM_Pipeline'
 param enableTelemetry = true
 param location = '<location>'
 ```
@@ -329,6 +339,7 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
     enableRedundancy: true
     enableScalability: true
     // Non-required parameters
+    createdBy: 'AVM_Pipeline'
     enableTelemetry: true
     location: '<location>'
     vmAdminPassword: '<vmAdminPassword>'
@@ -366,6 +377,9 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
       "value": true
     },
     // Non-required parameters
+    "createdBy": {
+      "value": "AVM_Pipeline"
+    },
     "enableTelemetry": {
       "value": true
     },
@@ -399,6 +413,7 @@ param enablePrivateNetworking = true
 param enableRedundancy = true
 param enableScalability = true
 // Non-required parameters
+param createdBy = 'AVM_Pipeline'
 param enableTelemetry = true
 param location = '<location>'
 param vmAdminPassword = '<vmAdminPassword>'
