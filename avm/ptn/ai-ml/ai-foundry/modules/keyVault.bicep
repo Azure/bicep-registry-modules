@@ -38,7 +38,7 @@ resource existingKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (
 
 var privateNetworkingEnabled = !empty(privateDnsZoneResourceId) && !empty(privateEndpointSubnetResourceId)
 
-module keyVault 'br/public:avm/res/key-vault/vault:0.13.1' = if (empty(existingResourceId)) {
+module keyVault 'br/public:avm/res/key-vault/vault:0.13.3' = if (empty(existingResourceId)) {
   name: take('avm.res.key-vault.vault.${name}', 64)
   params: {
     name: name

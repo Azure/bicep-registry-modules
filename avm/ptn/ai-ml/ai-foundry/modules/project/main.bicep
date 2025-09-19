@@ -59,6 +59,8 @@ resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = 
   scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
 }
 
+var hasConnection = !empty(cosmosDbConnection) || !empty(aiSearchConnection) || !empty(storageAccountConnection)
+
 // only create capability hosts if all the connection info is provided
 var createProjectCapabilityHostInternal = createProjectCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
 var createAccountCapabilityHostInternal = createAccountCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
@@ -79,7 +81,7 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-previ
 }
 
 // NOTE: using a wait script to ensure the project is fully deployed before proceeding with role assignments and connections
-module waitForProjectScript 'waitDeploymentScript.bicep' = {
+module waitForProjectScript 'waitDeploymentScript.bicep' = if (hasConnection) {
   name: take('module.project.waitDeploymentScript.waitForProject.${name}', 64)
   dependsOn: [project]
   params: {
@@ -176,7 +178,7 @@ resource aiSearchConnectionResource 'Microsoft.CognitiveServices/accounts/projec
 }
 
 // NOTE: using a wait script to ensure all connections are established before creating the capability host
-module waitForConnectionsScript 'waitDeploymentScript.bicep' = {
+module waitForConnectionsScript 'waitDeploymentScript.bicep' = if (hasConnection && (createAccountCapabilityHostInternal || createProjectCapabilityHostInternal)) {
   name: take('module.project.waitDeploymentScript.waitForConn.${name}', 64)
   dependsOn: [
     project
