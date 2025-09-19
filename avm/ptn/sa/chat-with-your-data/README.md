@@ -282,7 +282,7 @@ param solutionName = 'scwydswaf001'
 | [`azureOpenAIEmbeddingModelVersion`](#parameter-azureopenaiembeddingmodelversion) | string | Azure OpenAI Embedding Model Version. |
 | [`azureOpenAIMaxTokens`](#parameter-azureopenaimaxtokens) | string | Azure OpenAI Max Tokens. |
 | [`azureOpenAIModel`](#parameter-azureopenaimodel) | string | Azure OpenAI Model Deployment Name. |
-| [`azureOpenAIModelCapacity`](#parameter-azureopenaimodelcapacity) | int | Azure OpenAI Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota |
+| [`azureOpenAIModelCapacity`](#parameter-azureopenaimodelcapacity) | int | Azure OpenAI Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota. |
 | [`azureOpenAIModelName`](#parameter-azureopenaimodelname) | string | Azure OpenAI Model Name. |
 | [`azureOpenAIModelVersion`](#parameter-azureopenaimodelversion) | string | Azure OpenAI Model Version. |
 | [`azureOpenAISkuName`](#parameter-azureopenaiskuname) | string | Name of Azure OpenAI Resource SKU. |
@@ -292,7 +292,7 @@ param solutionName = 'scwydswaf001'
 | [`azureOpenAITemperature`](#parameter-azureopenaitemperature) | string | Azure OpenAI Temperature. |
 | [`azureOpenAITopP`](#parameter-azureopenaitopp) | string | Azure OpenAI Top P. |
 | [`azureOpenAIVisionModel`](#parameter-azureopenaivisionmodel) | string | Azure OpenAI Vision Model Deployment Name. |
-| [`azureOpenAIVisionModelCapacity`](#parameter-azureopenaivisionmodelcapacity) | int | Azure OpenAI Vision Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota |
+| [`azureOpenAIVisionModelCapacity`](#parameter-azureopenaivisionmodelcapacity) | int | Azure OpenAI Vision Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota. |
 | [`azureOpenAIVisionModelName`](#parameter-azureopenaivisionmodelname) | string | Azure OpenAI Vision Model Name. |
 | [`azureOpenAIVisionModelVersion`](#parameter-azureopenaivisionmodelversion) | string | Azure OpenAI Vision Model Version. |
 | [`azureSearchChunkColumn`](#parameter-azuresearchchunkcolumn) | string | Chunk column. |
@@ -321,7 +321,7 @@ param solutionName = 'scwydswaf001'
 | [`computerVisionVectorizeImageApiVersion`](#parameter-computervisionvectorizeimageapiversion) | string | Azure Computer Vision Vectorize Image API Version. |
 | [`computerVisionVectorizeImageModelVersion`](#parameter-computervisionvectorizeimagemodelversion) | string | Azure Computer Vision Vectorize Image Model Version. |
 | [`conversationFlow`](#parameter-conversationflow) | string | Chat conversation type: custom or byod. If the database type is PostgreSQL, set this to custom. |
-| [`createdBy`](#parameter-createdby) | string | created by user name |
+| [`createdBy`](#parameter-createdby) | string | The name of user who is creating this deployment. |
 | [`databaseType`](#parameter-databasetype) | string | The type of database to deploy (cosmos or postgres). |
 | [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
@@ -331,6 +331,7 @@ param solutionName = 'scwydswaf001'
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`existingLogAnalyticsWorkspaceId`](#parameter-existingloganalyticsworkspaceid) | string | Existing Log Analytics Workspace Resource ID. |
 | [`hostingModel`](#parameter-hostingmodel) | string | Hosting model for the web apps. This value is fixed as "container", which uses prebuilt containers for faster deployment. |
+| [`hostingPlanSku`](#parameter-hostingplansku) | string | The pricing tier for the App Service plan. |
 | [`location`](#parameter-location) | string | Location for all resources, if you are using existing resource group provide the location of the resorce group. |
 | [`logLevel`](#parameter-loglevel) | string | The log level for application logging. This setting controls the verbosity of logs emitted by the application. Allowed values are CRITICAL, ERROR, WARN, INFO, and DEBUG. The default value is INFO. |
 | [`newGuidString`](#parameter-newguidstring) | string | A new GUID string generated for this deployment. This can be used for unique naming if needed. |
@@ -419,7 +420,7 @@ Azure OpenAI Model Deployment Name.
 
 ### Parameter: `azureOpenAIModelCapacity`
 
-Azure OpenAI Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota
+Azure OpenAI Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota.
 
 - Required: No
 - Type: int
@@ -499,7 +500,7 @@ Azure OpenAI Vision Model Deployment Name.
 
 ### Parameter: `azureOpenAIVisionModelCapacity`
 
-Azure OpenAI Vision Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota
+Azure OpenAI Vision Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota.
 
 - Required: No
 - Type: int
@@ -768,7 +769,7 @@ Chat conversation type: custom or byod. If the database type is PostgreSQL, set 
 
 ### Parameter: `createdBy`
 
-created by user name
+The name of user who is creating this deployment.
 
 - Required: No
 - Type: string
@@ -852,6 +853,31 @@ Hosting model for the web apps. This value is fixed as "container", which uses p
 - Required: No
 - Type: string
 - Default: `'container'`
+
+### Parameter: `hostingPlanSku`
+
+The pricing tier for the App Service plan.
+
+- Required: No
+- Type: string
+- Default: `'B3'`
+- Allowed:
+  ```Bicep
+  [
+    'B1'
+    'B2'
+    'B3'
+    'D1'
+    'F1'
+    'P1'
+    'P2'
+    'P3'
+    'P4'
+    'S1'
+    'S2'
+    'S3'
+  ]
+  ```
 
 ### Parameter: `location`
 
@@ -995,7 +1021,6 @@ Size of the Jumpbox Virtual Machine when created. Set to custom value if enableP
 | `AZURE_OPENAI_MODEL_INFO` | string | Azure OpenAI model information. |
 | `AZURE_POSTGRESQL_INFO` | string | PostgreSQL related information (host/database/user). |
 | `AZURE_RESOURCE_GROUP` | string | Name of the resource group. |
-| `AZURE_RESOURCE_GROUP_NAME` | string | Name of the resource group. |
 | `AZURE_SEARCH_SERVICE_INFO` | string | Azure Cognitive Search service information (if deployed). |
 | `AZURE_SEARCH_USE_INTEGRATED_VECTORIZATION` | bool | Whether Azure Search is using integrated vectorization. |
 | `AZURE_SPEECH_SERVICE_INFO` | string | Azure Speech service information. |
@@ -1010,6 +1035,7 @@ Size of the Jumpbox Virtual Machine when created. Set to custom value if enableP
 | `OPEN_AI_FUNCTIONS_SYSTEM_PROMPT` | string | System prompt for OpenAI functions. |
 | `ORCHESTRATION_STRATEGY` | string | Orchestration strategy selected (openai_function, semantic_kernel, etc.). |
 | `RESOURCE_TOKEN` | string | Unique token for this solution deployment (short suffix). |
+| `resourceGroupName` | string | Name of the resource group. |
 | `SEMANTIC_KERNEL_SYSTEM_PROMPT` | string | System prompt used by the Semantic Kernel orchestration. |
 | `USE_ADVANCED_IMAGE_PROCESSING` | bool | Whether advanced image processing is enabled. |
 

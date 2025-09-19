@@ -39,7 +39,7 @@ var solutionSuffix = toLower(trim(replace(
 @description('Optional. Name of App Service plan.')
 var hostingPlanName string = 'asp-${solutionSuffix}'
 
-@description('Optional.The pricing tier for the App Service plan')
+@description('Optional. The pricing tier for the App Service plan.')
 @allowed([
   'F1'
   'D1'
@@ -153,7 +153,7 @@ param azureOpenAIModelName string = 'gpt-4.1'
 @description('Optional. Azure OpenAI Model Version.')
 param azureOpenAIModelVersion string = '2025-04-14'
 
-@description('Optional. Azure OpenAI Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota')
+@description('Optional. Azure OpenAI Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota.')
 param azureOpenAIModelCapacity int = 30
 
 @description('Optional. Whether to enable the use of a vision LLM and Computer Vision for embedding images. If the database type is PostgreSQL, set this to false.')
@@ -171,7 +171,7 @@ param azureOpenAIVisionModelName string = 'gpt-4'
 @description('Optional. Azure OpenAI Vision Model Version.')
 param azureOpenAIVisionModelVersion string = 'turbo-2024-04-09'
 
-@description('Optional. Azure OpenAI Vision Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota')
+@description('Optional. Azure OpenAI Vision Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota.')
 param azureOpenAIVisionModelCapacity int = 10
 
 @description('Optional. Orchestration strategy: openai_function or semantic_kernel or langchain str. If you use a old version of turbo (0301), please select langchain. If the database type is PostgreSQL, set this to sementic_kernel.')
@@ -389,7 +389,7 @@ var allTags = union(
   },
   tags
 )
-@description('Optional. created by user name')
+@description('Optional. The name of user who is creating this deployment.')
 param createdBy string = empty(deployer().userPrincipalName) ? '' : split(deployer().userPrincipalName, '@')[0]
 
 resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
@@ -1807,7 +1807,7 @@ output APPLICATIONINSIGHTS_CONNECTION_STRING string = enableMonitoring
 output AZURE_APP_SERVICE_HOSTING_MODEL string = hostingModel
 
 @description('Name of the resource group.')
-output AZURE_RESOURCE_GROUP_NAME string = resourceGroup().name
+output resourceGroupName string = resourceGroup().name
 
 @description('Application environment (e.g., Prod, Dev).')
 output APP_ENV string = appEnvironment
