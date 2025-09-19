@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "3746146591166938391"
+      "version": "0.37.4.10188",
+      "templateHash": "3221756177051822792"
     },
     "name": "Virtual Machine Extensions",
     "description": "This module deploys a Virtual Machine Extension."
@@ -101,12 +101,12 @@
     "virtualMachine": {
       "existing": true,
       "type": "Microsoft.Compute/virtualMachines",
-      "apiVersion": "2022-11-01",
+      "apiVersion": "2024-11-01",
       "name": "[parameters('virtualMachineName')]"
     },
     "extension": {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "apiVersion": "2022-11-01",
+      "apiVersion": "2024-11-01",
       "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -150,7 +150,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('extension', '2022-11-01', 'full').location]"
+      "value": "[reference('extension', '2024-11-01', 'full').location]"
     }
   }
 }
