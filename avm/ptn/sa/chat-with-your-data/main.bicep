@@ -636,7 +636,7 @@ module postgresDBModule 'br/public:avm/res/db-for-postgre-sql/flexible-server:0.
 
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: monitoring!.outputs.logAnalyticsWorkspaceId }] : null
 
-    skuName: 'Standard_B1ms'
+    skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     storageSizeGB: 32
     version: '16'
