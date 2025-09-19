@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/storage/storage-account/CHANGELOG.md).
 
+## 0.26.3
+
+### Changes
+
+Added support to specify SecuredByPerimeter for PublicNetworkAccess
+Added support to specify TLS1.3
+
+### Breaking Changes
+
+- None
+
+
 ## 0.26.2
 
 ### Changes
