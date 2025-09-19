@@ -219,12 +219,6 @@ param solutionName = 'scwydswaf001'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`location`](#parameter-location) | string | Location for all resources, if you are using existing resource group provide the location of the resorce group. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`advancedImageProcessingMaxImages`](#parameter-advancedimageprocessingmaximages) | int | The maximum number of images to pass to the vision model in a single request |
 | [`appEnvironment`](#parameter-appenvironment) | string | Application Environment |
 | [`azureOpenAIApiVersion`](#parameter-azureopenaiapiversion) | string | Azure OpenAI Api Version |
@@ -237,7 +231,6 @@ param solutionName = 'scwydswaf001'
 | [`azureOpenAIModelCapacity`](#parameter-azureopenaimodelcapacity) | int | Azure OpenAI Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota |
 | [`azureOpenAIModelName`](#parameter-azureopenaimodelname) | string | Azure OpenAI Model Name |
 | [`azureOpenAIModelVersion`](#parameter-azureopenaimodelversion) | string | Azure OpenAI Model Version |
-| [`azureOpenAISkuName`](#parameter-azureopenaiskuname) | string | Name of Azure OpenAI Resource SKU |
 | [`azureOpenAIStopSequence`](#parameter-azureopenaistopsequence) | string | Azure OpenAI Stop Sequence |
 | [`azureOpenAIStream`](#parameter-azureopenaistream) | string | Whether or not to stream responses from Azure OpenAI |
 | [`azureOpenAISystemMessage`](#parameter-azureopenaisystemmessage) | string | Azure OpenAI System Message |
@@ -249,7 +242,6 @@ param solutionName = 'scwydswaf001'
 | [`azureOpenAIVisionModelVersion`](#parameter-azureopenaivisionmodelversion) | string | Azure OpenAI Vision Model Version |
 | [`azureSearchChunkColumn`](#parameter-azuresearchchunkcolumn) | string | Chunk column |
 | [`azureSearchContentColumn`](#parameter-azuresearchcontentcolumn) | string | Content columns |
-| [`azureSearchConversationLogIndex`](#parameter-azuresearchconversationlogindex) | string | Azure AI Search Conversation Log Index |
 | [`azureSearchEnableInDomain`](#parameter-azuresearchenableindomain) | string | Enable in domain |
 | [`azureSearchFieldId`](#parameter-azuresearchfieldid) | string | Id columns |
 | [`azureSearchFieldsMetadata`](#parameter-azuresearchfieldsmetadata) | string | Metadata column |
@@ -259,15 +251,25 @@ param solutionName = 'scwydswaf001'
 | [`azureSearchLayoutTextColumn`](#parameter-azuresearchlayouttextcolumn) | string | Layout Text column |
 | [`azureSearchOffsetColumn`](#parameter-azuresearchoffsetcolumn) | string | Offset column |
 | [`azureSearchSemanticSearchConfig`](#parameter-azuresearchsemanticsearchconfig) | string | Semantic search config |
-| [`azureSearchSku`](#parameter-azuresearchsku) | string | The SKU of the search service you want to create. E.g. free or standard |
 | [`azureSearchSourceColumn`](#parameter-azuresearchsourcecolumn) | string | Source column |
-| [`azureSearchTextColumn`](#parameter-azuresearchtextcolumn) | string | Text column |
 | [`azureSearchTitleColumn`](#parameter-azuresearchtitlecolumn) | string | Title column |
 | [`azureSearchTopK`](#parameter-azuresearchtopk) | string | Top K results |
 | [`azureSearchUrlColumn`](#parameter-azuresearchurlcolumn) | string | Url column |
 | [`azureSearchUseIntegratedVectorization`](#parameter-azuresearchuseintegratedvectorization) | bool | Whether to use Azure Search Integrated Vectorization. If the database type is PostgreSQL, set this to false. |
 | [`azureSearchUseSemanticSearch`](#parameter-azuresearchusesemanticsearch) | bool | Use semantic search |
 | [`azureSearchVectorColumn`](#parameter-azuresearchvectorcolumn) | string | Vector columns |
+| [`hostingModel`](#parameter-hostingmodel) | string | Hosting model for the web apps. This value is fixed as "container", which uses prebuilt containers for faster deployment. |
+| [`location`](#parameter-location) | string | Location for all resources, if you are using existing resource group provide the location of the resorce group. |
+| [`useAdvancedImageProcessing`](#parameter-useadvancedimageprocessing) | bool | Whether to enable the use of a vision LLM and Computer Vision for embedding images. If the database type is PostgreSQL, set this to false. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`azureOpenAISkuName`](#parameter-azureopenaiskuname) | string | Name of Azure OpenAI Resource SKU |
+| [`azureSearchConversationLogIndex`](#parameter-azuresearchconversationlogindex) | string | Azure AI Search Conversation Log Index |
+| [`azureSearchSku`](#parameter-azuresearchsku) | string | The SKU of the search service you want to create. E.g. free or standard |
+| [`azureSearchTextColumn`](#parameter-azuresearchtextcolumn) | string | Text column |
 | [`computerVisionLocation`](#parameter-computervisionlocation) | string | Location of Computer Vision Resource (if useAdvancedImageProcessing=true) |
 | [`computerVisionSkuName`](#parameter-computervisionskuname) | string | Name of Computer Vision Resource SKU (if useAdvancedImageProcessing=true) |
 | [`computerVisionVectorizeImageApiVersion`](#parameter-computervisionvectorizeimageapiversion) | string | Azure Computer Vision Vectorize Image API Version |
@@ -282,7 +284,6 @@ param solutionName = 'scwydswaf001'
 | [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`existingLogAnalyticsWorkspaceId`](#parameter-existingloganalyticsworkspaceid) | string | Existing Log Analytics Workspace Resource ID |
-| [`hostingModel`](#parameter-hostingmodel) | string | Hosting model for the web apps. This value is fixed as "container", which uses prebuilt containers for faster deployment. |
 | [`logLevel`](#parameter-loglevel) | string | The log level for application logging. This setting controls the verbosity of logs emitted by the application. Allowed values are CRITICAL, ERROR, WARN, INFO, and DEBUG. The default value is INFO. |
 | [`newGuidString`](#parameter-newguidstring) | string | A new GUID string generated for this deployment. This can be used for unique naming if needed. |
 | [`orchestrationStrategy`](#parameter-orchestrationstrategy) | string | Orchestration strategy: openai_function or semantic_kernel or langchain str. If you use a old version of turbo (0301), please select langchain. If the database type is PostgreSQL, set this to sementic_kernel. |
@@ -291,18 +292,9 @@ param solutionName = 'scwydswaf001'
 | [`solutionName`](#parameter-solutionname) | string | A unique application/solution name for all resources in this deployment. This should be 3-16 characters long. |
 | [`solutionUniqueText`](#parameter-solutionuniquetext) | string | A unique text value for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
 | [`tags`](#parameter-tags) | object | The tags to apply to all deployed Azure resources. |
-| [`useAdvancedImageProcessing`](#parameter-useadvancedimageprocessing) | bool | Whether to enable the use of a vision LLM and Computer Vision for embedding images. If the database type is PostgreSQL, set this to false. |
 | [`virtualMachineAdminPassword`](#parameter-virtualmachineadminpassword) | securestring | The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true. |
 | [`virtualMachineAdminUsername`](#parameter-virtualmachineadminusername) | securestring | The user name for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true. |
 | [`vmSize`](#parameter-vmsize) | string | Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true. |
-
-### Parameter: `location`
-
-Location for all resources, if you are using existing resource group provide the location of the resorce group.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
 
 ### Parameter: `advancedImageProcessingMaxImages`
 
@@ -400,14 +392,6 @@ Azure OpenAI Model Version
 - Type: string
 - Default: `'2025-04-14'`
 
-### Parameter: `azureOpenAISkuName`
-
-Name of Azure OpenAI Resource SKU
-
-- Required: No
-- Type: string
-- Default: `'S0'`
-
 ### Parameter: `azureOpenAIStopSequence`
 
 Azure OpenAI Stop Sequence
@@ -496,14 +480,6 @@ Content columns
 - Type: string
 - Default: `'content'`
 
-### Parameter: `azureSearchConversationLogIndex`
-
-Azure AI Search Conversation Log Index
-
-- Required: No
-- Type: string
-- Default: `'conversations'`
-
 ### Parameter: `azureSearchEnableInDomain`
 
 Enable in domain
@@ -576,24 +552,6 @@ Semantic search config
 - Type: string
 - Default: `'default'`
 
-### Parameter: `azureSearchSku`
-
-The SKU of the search service you want to create. E.g. free or standard
-
-- Required: No
-- Type: string
-- Default: `'standard'`
-- Allowed:
-  ```Bicep
-  [
-    'basic'
-    'free'
-    'standard'
-    'standard2'
-    'standard3'
-  ]
-  ```
-
 ### Parameter: `azureSearchSourceColumn`
 
 Source column
@@ -601,14 +559,6 @@ Source column
 - Required: No
 - Type: string
 - Default: `'source'`
-
-### Parameter: `azureSearchTextColumn`
-
-Text column
-
-- Required: No
-- Type: string
-- Default: `'text'`
 
 ### Parameter: `azureSearchTitleColumn`
 
@@ -657,6 +607,72 @@ Vector columns
 - Required: No
 - Type: string
 - Default: `'content_vector'`
+
+### Parameter: `hostingModel`
+
+Hosting model for the web apps. This value is fixed as "container", which uses prebuilt containers for faster deployment.
+
+- Required: No
+- Type: string
+- Default: `'container'`
+
+### Parameter: `location`
+
+Location for all resources, if you are using existing resource group provide the location of the resorce group.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
+
+### Parameter: `useAdvancedImageProcessing`
+
+Whether to enable the use of a vision LLM and Computer Vision for embedding images. If the database type is PostgreSQL, set this to false.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `azureOpenAISkuName`
+
+Name of Azure OpenAI Resource SKU
+
+- Required: No
+- Type: string
+- Default: `'S0'`
+
+### Parameter: `azureSearchConversationLogIndex`
+
+Azure AI Search Conversation Log Index
+
+- Required: No
+- Type: string
+- Default: `'conversations'`
+
+### Parameter: `azureSearchSku`
+
+The SKU of the search service you want to create. E.g. free or standard
+
+- Required: No
+- Type: string
+- Default: `'standard'`
+- Allowed:
+  ```Bicep
+  [
+    'basic'
+    'free'
+    'standard'
+    'standard2'
+    'standard3'
+  ]
+  ```
+
+### Parameter: `azureSearchTextColumn`
+
+Text column
+
+- Required: No
+- Type: string
+- Default: `'text'`
 
 ### Parameter: `computerVisionLocation`
 
@@ -804,14 +820,6 @@ Existing Log Analytics Workspace Resource ID
 - Type: string
 - Default: `''`
 
-### Parameter: `hostingModel`
-
-Hosting model for the web apps. This value is fixed as "container", which uses prebuilt containers for faster deployment.
-
-- Required: No
-- Type: string
-- Default: `'container'`
-
 ### Parameter: `logLevel`
 
 The log level for application logging. This setting controls the verbosity of logs emitted by the application. Allowed values are CRITICAL, ERROR, WARN, INFO, and DEBUG. The default value is INFO.
@@ -894,14 +902,6 @@ The tags to apply to all deployed Azure resources.
 - Required: No
 - Type: object
 - Default: `{}`
-
-### Parameter: `useAdvancedImageProcessing`
-
-Whether to enable the use of a vision LLM and Computer Vision for embedding images. If the database type is PostgreSQL, set this to false.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `virtualMachineAdminPassword`
 

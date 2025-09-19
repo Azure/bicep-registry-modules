@@ -208,7 +208,7 @@ param azureOpenAISystemMessage string = 'You are an AI assistant that helps peop
 @description('Required. Azure OpenAI Api Version')
 param azureOpenAIApiVersion string = '2024-02-01'
 
-@description('Required. Whether or not to stream responses from Azure OpenAI'))
+@description('Required. Whether or not to stream responses from Azure OpenAI')
 param azureOpenAIStream string = 'true'
 
 @description('Required. Azure OpenAI Embedding Model Deployment Name')
