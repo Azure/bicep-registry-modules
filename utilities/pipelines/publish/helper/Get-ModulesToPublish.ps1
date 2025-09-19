@@ -28,8 +28,8 @@ function Get-ModifiedFileList {
         $currentCommit, $previousCommit = ((git log -2 --format=%H).Substring(0, 7) -split '\n')
 
         Write-Verbose ('Fetching changes of current commit [{0}] against the previous commit [{1}].' -f $currentCommit, $previousCommit) -Verbose
-        git diff --diff-filter=AM $previousCommit, $currentCommit --stat
-        $diff = git diff --name-only --diff-filter=AM $previousCommit, $currentCommit
+        $stat = git diff --diff-filter=AM $previousCommit $currentCommit --stat
+        $diff = git diff --name-only --diff-filter=AM $previousCommit $currentCommit
     } else {
         Write-Verbose ("{0} branch [$currentBranch]" -f ($inUpstream ? 'Currently in the upstream' : 'Currently in the fork')) -Verbose
 
@@ -43,12 +43,12 @@ function Get-ModifiedFileList {
         $currentUpstreamCommit = git rev-parse --short=7 'upstream/main' # Get main's commit in upstream
 
         Write-Verbose ('Fetching changes of current commit [{0}] against upstream [main] [{1}]' -f $currentCommit, $currentUpstreamCommit) -Verbose
-        git diff --diff-filter=AM $currentCommit $currentUpstreamCommit --stat
+        $stat = git diff --diff-filter=AM $currentCommit $currentUpstreamCommit --stat
         $diff = git diff --name-only --diff-filter=AM $currentCommit $currentUpstreamCommit
     }
 
-    if ($diff.Count -gt 0) {
-        Write-Verbose ("[{0}] Plain diff files found `git diff`:`n[{1}]" -f $diff.Count, ($diff | ConvertTo-Json | Out-String)) -Verbose
+    if ($stat.Count -gt 0) {
+        Write-Verbose ("[{0}] Plain diff files found `git diff`:`n[{1}]" -f $stat.Count, ($stat | ConvertTo-Json | Out-String)) -Verbose
     } else {
         Write-Verbose 'Plain diff files found via `git diff`.' -Verbose
     }
