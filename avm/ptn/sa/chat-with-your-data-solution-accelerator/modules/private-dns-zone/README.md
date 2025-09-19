@@ -1,4 +1,4 @@
-# Private DNS Zones `[Sa/ChatWithYourDataSolutionAcceleratorModulesNetworkPrivateDnsZone]`
+# Private DNS Zones `[Sa/ChatWithYourDataSolutionAcceleratorModulesPrivateDnsZone]`
 
 This module deploys a Private DNS zone.
 
@@ -7,6 +7,7 @@ This module deploys a Private DNS zone.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -186,6 +187,14 @@ Resource tags.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `resourceId` | string | The resource ID of the private DNS zone. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

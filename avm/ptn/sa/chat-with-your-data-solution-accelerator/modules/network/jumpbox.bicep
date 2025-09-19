@@ -137,17 +137,17 @@ output nsgName string = nsg!.outputs.name
 @export()
 @description('Custom type definition for establishing Jumpbox Virtual Machine and its associated resources.')
 type jumpBoxConfigurationType = {
-  @description('The name of the Virtual Machine.')
+  @description('Required. The name of the Virtual Machine.')
   name: string
 
-  @description('The size of the VM.')
+  @description('Optional. The size of the VM.')
   size: string?
 
-  @description('Username to access VM.')
+  @description('Required. The Username to access VM.')
   username: string
 
   @secure()
-  @description('Password to access VM.')
+  @description('Required. The Password to access VM.')
   password: string
 
   @description('Optional. Subnet configuration for the Jumpbox VM.')

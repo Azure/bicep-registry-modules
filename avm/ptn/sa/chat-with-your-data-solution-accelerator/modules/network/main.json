@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "2130863134452172392"
+      "templateHash": "8695061952443408188"
     }
   },
   "definitions": {
@@ -42,7 +42,7 @@
         "name": {
           "type": "string",
           "metadata": {
-            "description": "The name of the Bastion Host resource."
+            "description": "Required. The name of the Bastion Host resource."
           }
         },
         "subnet": {
@@ -66,26 +66,26 @@
         "name": {
           "type": "string",
           "metadata": {
-            "description": "The name of the Virtual Machine."
+            "description": "Required. The name of the Virtual Machine."
           }
         },
         "size": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "The size of the VM."
+            "description": "Optional. The size of the VM."
           }
         },
         "username": {
           "type": "string",
           "metadata": {
-            "description": "Username to access VM."
+            "description": "Required. The Username to access VM."
           }
         },
         "password": {
           "type": "securestring",
           "metadata": {
-            "description": "Password to access VM."
+            "description": "Required. The Password to access VM."
           }
         },
         "subnet": {
@@ -2967,7 +2967,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "17612518988298370025"
+              "templateHash": "9205602728138204710"
             }
           },
           "definitions": {
@@ -2977,7 +2977,7 @@
                 "name": {
                   "type": "string",
                   "metadata": {
-                    "description": "The name of the Bastion Host resource."
+                    "description": "Required. The name of the Bastion Host resource."
                   }
                 },
                 "subnet": {
@@ -5633,7 +5633,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "4891104305801721272"
+              "templateHash": "10682624883068303224"
             }
           },
           "definitions": {
@@ -5643,26 +5643,26 @@
                 "name": {
                   "type": "string",
                   "metadata": {
-                    "description": "The name of the Virtual Machine."
+                    "description": "Required. The name of the Virtual Machine."
                   }
                 },
                 "size": {
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "The size of the VM."
+                    "description": "Optional. The size of the VM."
                   }
                 },
                 "username": {
                   "type": "string",
                   "metadata": {
-                    "description": "Username to access VM."
+                    "description": "Required. The Username to access VM."
                   }
                 },
                 "password": {
                   "type": "securestring",
                   "metadata": {
-                    "description": "Password to access VM."
+                    "description": "Required. The Password to access VM."
                   }
                 },
                 "subnet": {

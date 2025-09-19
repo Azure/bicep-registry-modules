@@ -85,6 +85,159 @@ Configuration for the Azure Bastion Host. Leave null to omit Bastion creation.
 - Required: No
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-bastionconfigurationname) | string | The name of the Bastion Host resource. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`subnet`](#parameter-bastionconfigurationsubnet) | object | Subnet configuration for the Jumpbox VM. |
+
+### Parameter: `bastionConfiguration.name`
+
+The name of the Bastion Host resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `bastionConfiguration.subnet`
+
+Subnet configuration for the Jumpbox VM.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefixes`](#parameter-bastionconfigurationsubnetaddressprefixes) | array | Prefixes for the subnet. |
+| [`name`](#parameter-bastionconfigurationsubnetname) | string | The Name of the subnet resource. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`defaultOutboundAccess`](#parameter-bastionconfigurationsubnetdefaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
+| [`delegation`](#parameter-bastionconfigurationsubnetdelegation) | string | The delegation to enable on the subnet. |
+| [`networkSecurityGroup`](#parameter-bastionconfigurationsubnetnetworksecuritygroup) | object | Network Security Group configuration for the subnet. |
+| [`privateEndpointNetworkPolicies`](#parameter-bastionconfigurationsubnetprivateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
+| [`privateLinkServiceNetworkPolicies`](#parameter-bastionconfigurationsubnetprivatelinkservicenetworkpolicies) | string | Enable or disable apply network policies on private link service in the subnet. |
+| [`routeTableResourceId`](#parameter-bastionconfigurationsubnetroutetableresourceid) | string | The resource ID of the route table to assign to the subnet. |
+| [`serviceEndpointPolicies`](#parameter-bastionconfigurationsubnetserviceendpointpolicies) | array | An array of service endpoint policies. |
+| [`serviceEndpoints`](#parameter-bastionconfigurationsubnetserviceendpoints) | array | The service endpoints to enable on the subnet. |
+
+### Parameter: `bastionConfiguration.subnet.addressPrefixes`
+
+Prefixes for the subnet.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `bastionConfiguration.subnet.name`
+
+The Name of the subnet resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `bastionConfiguration.subnet.defaultOutboundAccess`
+
+Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet.
+
+- Required: No
+- Type: bool
+
+### Parameter: `bastionConfiguration.subnet.delegation`
+
+The delegation to enable on the subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `bastionConfiguration.subnet.networkSecurityGroup`
+
+Network Security Group configuration for the subnet.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-bastionconfigurationsubnetnetworksecuritygroupname) | string | The name of the network security group. |
+| [`securityRules`](#parameter-bastionconfigurationsubnetnetworksecuritygroupsecurityrules) | array | The security rules for the network security group. |
+
+### Parameter: `bastionConfiguration.subnet.networkSecurityGroup.name`
+
+The name of the network security group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `bastionConfiguration.subnet.networkSecurityGroup.securityRules`
+
+The security rules for the network security group.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `bastionConfiguration.subnet.privateEndpointNetworkPolicies`
+
+enable or disable apply network policies on private endpoint in the subnet.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+    'NetworkSecurityGroupEnabled'
+    'RouteTableEnabled'
+  ]
+  ```
+
+### Parameter: `bastionConfiguration.subnet.privateLinkServiceNetworkPolicies`
+
+Enable or disable apply network policies on private link service in the subnet.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `bastionConfiguration.subnet.routeTableResourceId`
+
+The resource ID of the route table to assign to the subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `bastionConfiguration.subnet.serviceEndpointPolicies`
+
+An array of service endpoint policies.
+
+- Required: No
+- Type: array
+
+### Parameter: `bastionConfiguration.subnet.serviceEndpoints`
+
+The service endpoints to enable on the subnet.
+
+- Required: No
+- Type: array
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -99,6 +252,183 @@ Configuration for the Jumpbox VM. Leave null to omit Jumpbox creation.
 
 - Required: No
 - Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-jumpboxconfigurationname) | string | The name of the Virtual Machine. |
+| [`password`](#parameter-jumpboxconfigurationpassword) | securestring | The Password to access VM. |
+| [`username`](#parameter-jumpboxconfigurationusername) | string | The Username to access VM. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`size`](#parameter-jumpboxconfigurationsize) | string | The size of the VM. |
+| [`subnet`](#parameter-jumpboxconfigurationsubnet) | object | Subnet configuration for the Jumpbox VM. |
+
+### Parameter: `jumpboxConfiguration.name`
+
+The name of the Virtual Machine.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `jumpboxConfiguration.password`
+
+The Password to access VM.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `jumpboxConfiguration.username`
+
+The Username to access VM.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `jumpboxConfiguration.size`
+
+The size of the VM.
+
+- Required: No
+- Type: string
+
+### Parameter: `jumpboxConfiguration.subnet`
+
+Subnet configuration for the Jumpbox VM.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefixes`](#parameter-jumpboxconfigurationsubnetaddressprefixes) | array | Prefixes for the subnet. |
+| [`name`](#parameter-jumpboxconfigurationsubnetname) | string | The Name of the subnet resource. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`defaultOutboundAccess`](#parameter-jumpboxconfigurationsubnetdefaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
+| [`delegation`](#parameter-jumpboxconfigurationsubnetdelegation) | string | The delegation to enable on the subnet. |
+| [`networkSecurityGroup`](#parameter-jumpboxconfigurationsubnetnetworksecuritygroup) | object | Network Security Group configuration for the subnet. |
+| [`privateEndpointNetworkPolicies`](#parameter-jumpboxconfigurationsubnetprivateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
+| [`privateLinkServiceNetworkPolicies`](#parameter-jumpboxconfigurationsubnetprivatelinkservicenetworkpolicies) | string | Enable or disable apply network policies on private link service in the subnet. |
+| [`routeTableResourceId`](#parameter-jumpboxconfigurationsubnetroutetableresourceid) | string | The resource ID of the route table to assign to the subnet. |
+| [`serviceEndpointPolicies`](#parameter-jumpboxconfigurationsubnetserviceendpointpolicies) | array | An array of service endpoint policies. |
+| [`serviceEndpoints`](#parameter-jumpboxconfigurationsubnetserviceendpoints) | array | The service endpoints to enable on the subnet. |
+
+### Parameter: `jumpboxConfiguration.subnet.addressPrefixes`
+
+Prefixes for the subnet.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `jumpboxConfiguration.subnet.name`
+
+The Name of the subnet resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `jumpboxConfiguration.subnet.defaultOutboundAccess`
+
+Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet.
+
+- Required: No
+- Type: bool
+
+### Parameter: `jumpboxConfiguration.subnet.delegation`
+
+The delegation to enable on the subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `jumpboxConfiguration.subnet.networkSecurityGroup`
+
+Network Security Group configuration for the subnet.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-jumpboxconfigurationsubnetnetworksecuritygroupname) | string | The name of the network security group. |
+| [`securityRules`](#parameter-jumpboxconfigurationsubnetnetworksecuritygroupsecurityrules) | array | The security rules for the network security group. |
+
+### Parameter: `jumpboxConfiguration.subnet.networkSecurityGroup.name`
+
+The name of the network security group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `jumpboxConfiguration.subnet.networkSecurityGroup.securityRules`
+
+The security rules for the network security group.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `jumpboxConfiguration.subnet.privateEndpointNetworkPolicies`
+
+enable or disable apply network policies on private endpoint in the subnet.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+    'NetworkSecurityGroupEnabled'
+    'RouteTableEnabled'
+  ]
+  ```
+
+### Parameter: `jumpboxConfiguration.subnet.privateLinkServiceNetworkPolicies`
+
+Enable or disable apply network policies on private link service in the subnet.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `jumpboxConfiguration.subnet.routeTableResourceId`
+
+The resource ID of the route table to assign to the subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `jumpboxConfiguration.subnet.serviceEndpointPolicies`
+
+An array of service endpoint policies.
+
+- Required: No
+- Type: array
+
+### Parameter: `jumpboxConfiguration.subnet.serviceEndpoints`
+
+The service endpoints to enable on the subnet.
+
+- Required: No
+- Type: array
 
 ### Parameter: `subnets`
 

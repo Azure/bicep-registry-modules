@@ -10,6 +10,7 @@ This module contains the resources required to deploy the [Chat-with-your-data-s
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -972,6 +973,36 @@ Size of the Jumpbox Virtual Machine when created. Set to custom value if enableP
 | `RESOURCE_TOKEN` | string | Unique token for this solution deployment (short suffix) |
 | `SEMANTIC_KERNEL_SYSTEM_PROMPT` | string | System prompt used by the Semantic Kernel orchestration |
 | `USE_ADVANCED_IMAGE_PROCESSING` | bool | Whether advanced image processing is enabled |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
+| `br/public:avm/res/cognitive-services/account:0.10.2` | Remote reference |
+| `br/public:avm/res/db-for-postgre-sql/flexible-server:0.13.1` | Remote reference |
+| `br/public:avm/res/event-grid/system-topic:0.6.3` | Remote reference |
+| `br/public:avm/res/insights/component:0.6.0` | Remote reference |
+| `br/public:avm/res/key-vault/vault:0.12.1` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.1` | Remote reference |
+| `br/public:avm/res/network/bastion-host:0.6.1` | Remote reference |
+| `br/public:avm/res/network/network-interface:0.5.1` | Remote reference |
+| `br/public:avm/res/network/network-security-group:0.5.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network/subnet:0.1.2` | Remote reference |
+| `br/public:avm/res/operational-insights/workspace:0.12.0` | Remote reference |
+| `br/public:avm/res/portal/dashboard:0.3.1` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
+| `br/public:avm/res/search/search-service:0.11.1` | Remote reference |
+| `br/public:avm/res/web/serverfarm:0.5.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "8105650486650198937"
+      "templateHash": "2167004466437705995"
     },
     "name": "Chat-with-your-data-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -779,7 +779,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "2286943710341159145"
+              "templateHash": "5292216653117991160"
             }
           },
           "parameters": {
@@ -1071,7 +1071,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "2130863134452172392"
+                      "templateHash": "8695061952443408188"
                     }
                   },
                   "definitions": {
@@ -1107,7 +1107,7 @@
                         "name": {
                           "type": "string",
                           "metadata": {
-                            "description": "The name of the Bastion Host resource."
+                            "description": "Required. The name of the Bastion Host resource."
                           }
                         },
                         "subnet": {
@@ -1131,26 +1131,26 @@
                         "name": {
                           "type": "string",
                           "metadata": {
-                            "description": "The name of the Virtual Machine."
+                            "description": "Required. The name of the Virtual Machine."
                           }
                         },
                         "size": {
                           "type": "string",
                           "nullable": true,
                           "metadata": {
-                            "description": "The size of the VM."
+                            "description": "Optional. The size of the VM."
                           }
                         },
                         "username": {
                           "type": "string",
                           "metadata": {
-                            "description": "Username to access VM."
+                            "description": "Required. The Username to access VM."
                           }
                         },
                         "password": {
                           "type": "securestring",
                           "metadata": {
-                            "description": "Password to access VM."
+                            "description": "Required. The Password to access VM."
                           }
                         },
                         "subnet": {
@@ -4032,7 +4032,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.37.4.10188",
-                              "templateHash": "17612518988298370025"
+                              "templateHash": "9205602728138204710"
                             }
                           },
                           "definitions": {
@@ -4042,7 +4042,7 @@
                                 "name": {
                                   "type": "string",
                                   "metadata": {
-                                    "description": "The name of the Bastion Host resource."
+                                    "description": "Required. The name of the Bastion Host resource."
                                   }
                                 },
                                 "subnet": {
@@ -6698,7 +6698,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.37.4.10188",
-                              "templateHash": "4891104305801721272"
+                              "templateHash": "10682624883068303224"
                             }
                           },
                           "definitions": {
@@ -6708,26 +6708,26 @@
                                 "name": {
                                   "type": "string",
                                   "metadata": {
-                                    "description": "The name of the Virtual Machine."
+                                    "description": "Required. The name of the Virtual Machine."
                                   }
                                 },
                                 "size": {
                                   "type": "string",
                                   "nullable": true,
                                   "metadata": {
-                                    "description": "The size of the VM."
+                                    "description": "Optional. The size of the VM."
                                   }
                                 },
                                 "username": {
                                   "type": "string",
                                   "metadata": {
-                                    "description": "Username to access VM."
+                                    "description": "Required. The Username to access VM."
                                   }
                                 },
                                 "password": {
                                   "type": "securestring",
                                   "metadata": {
-                                    "description": "Password to access VM."
+                                    "description": "Required. The Password to access VM."
                                   }
                                 },
                                 "subnet": {
@@ -49177,7 +49177,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "68114798306146084"
+              "templateHash": "15145535415197431472"
             }
           },
           "parameters": {
@@ -49216,7 +49216,7 @@
             }
           },
           "variables": {
-            "wookbookContents": "{\"version\":\"Notebook/1.0\",\"items\":[{\"type\":1,\"content\":\"@{json=# Chat With Your Data Monitoring}\",\"name\":\"Heading\"},{\"type\":9,\"content\":\"@{version=KqlParameterItem/1.0; crossComponentResources=System.Object[]; parameters=System.Object[]; style=pills; queryType=1; resourceType=microsoft.resourcegraph/resources}\",\"conditionalVisibility\":\"@{parameterName=never; comparison=isEqualTo; value=show}\",\"name\":\"Resource Parameters\"},{\"type\":9,\"content\":\"@{version=KqlParameterItem/1.0; crossComponentResources=System.Object[]; parameters=System.Object[]; style=pills; queryType=1; resourceType=microsoft.resourcegraph/resources}\",\"name\":\"Time Picker\"},{\"type\":11,\"content\":\"@{version=LinkItem/1.0; style=tabs; links=System.Object[]}\",\"name\":\"links - 4\"},{\"type\":12,\"content\":\"@{version=NotebookGroup/1.0; groupType=editable; items=System.Object[]}\",\"conditionalVisibility\":\"@{parameterName=selTab; comparison=isEqualTo; value=Operations}\",\"name\":\"Operations Group\"},{\"type\":12,\"content\":\"@{version=NotebookGroup/1.0; groupType=editable; items=System.Object[]}\",\"conditionalVisibility\":\"@{parameterName=selTab; comparison=isEqualTo; value=Resources}\",\"name\":\"Resources Group\"},{\"type\":12,\"content\":\"@{version=NotebookGroup/1.0; groupType=editable; items=System.Object[]}\",\"conditionalVisibility\":\"@{parameterName=selTab; comparison=isEqualTo; value=Open AI}\",\"name\":\"Open AI Group\"},{\"type\":12,\"content\":\"@{version=NotebookGroup/1.0; groupType=editable; items=System.Object[]}\",\"conditionalVisibility\":\"@{parameterName=selTab; comparison=isEqualTo; value=AI Search}\",\"name\":\"Search Group\"},{\"type\":12,\"content\":\"@{version=NotebookGroup/1.0; groupType=editable; items=System.Object[]}\",\"conditionalVisibility\":\"@{parameterName=selTab; comparison=isEqualTo; value=Storage}\",\"name\":\"Storage Group\"}],\"fallbackResourceIds\":[\"azure monitor\"],\"styleSettings\":{\"paddingStyle\":\"narrow\",\"spacingStyle\":\"narrow\"},\"$schema\":\"https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json\"}\r\n",
+            "wookbookContents": "{\"version\":\"Notebook/1.0\",\"items\":[{\"type\":1,\"content\":\"@{json=# Chat With Your Data Monitoring}\",\"name\":\"Heading\"},{\"type\":9,\"content\":\"@{version=KqlParameterItem/1.0; crossComponentResources=System.Object[]; parameters=System.Object[]; style=pills; queryType=1; resourceType=microsoft.resourcegraph/resources}\",\"conditionalVisibility\":\"@{parameterName=never; comparison=isEqualTo; value=show}\",\"name\":\"Resource Parameters\"},{\"type\":9,\"content\":\"@{version=KqlParameterItem/1.0; crossComponentResources=System.Object[]; parameters=System.Object[]; style=pills; queryType=1; resourceType=microsoft.resourcegraph/resources}\",\"name\":\"Time Picker\"},{\"type\":11,\"content\":\"@{version=LinkItem/1.0; style=tabs; links=System.Object[]}\",\"name\":\"links - 4\"},{\"type\":12,\"content\":\"@{version=NotebookGroup/1.0; groupType=editable; items=System.Object[]}\",\"conditionalVisibility\":\"@{parameterName=selTab; comparison=isEqualTo; value=Operations}\",\"name\":\"Operations Group\"},{\"type\":12,\"content\":\"@{version=NotebookGroup/1.0; groupType=editable; items=System.Object[]}\",\"conditionalVisibility\":\"@{parameterName=selTab; comparison=isEqualTo; value=Resources}\",\"name\":\"Resources Group\"},{\"type\":12,\"content\":\"@{version=NotebookGroup/1.0; groupType=editable; items=System.Object[]}\",\"conditionalVisibility\":\"@{parameterName=selTab; comparison=isEqualTo; value=Open AI}\",\"name\":\"Open AI Group\"},{\"type\":12,\"content\":\"@{version=NotebookGroup/1.0; groupType=editable; items=System.Object[]}\",\"conditionalVisibility\":\"@{parameterName=selTab; comparison=isEqualTo; value=AI Search}\",\"name\":\"Search Group\"},{\"type\":12,\"content\":\"@{version=NotebookGroup/1.0; groupType=editable; items=System.Object[]}\",\"conditionalVisibility\":\"@{parameterName=selTab; comparison=isEqualTo; value=Storage}\",\"name\":\"Storage Group\"}],\"fallbackResourceIds\":[\"azure monitor\"],\"styleSettings\":{\"paddingStyle\":\"narrow\",\"spacingStyle\":\"narrow\"},\"$schema\":\"https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json\"}\n",
             "wookbookContentsSubReplaced": "[replace(variables('wookbookContents'), '{subscription-id}', subscription().id)]",
             "wookbookContentsRGReplaced": "[replace(variables('wookbookContentsSubReplaced'), '{resource-group}', resourceGroup().name)]",
             "wookbookContentsAppServicePlanReplaced": "[replace(variables('wookbookContentsRGReplaced'), '{app-service-plan}', parameters('hostingPlanName'))]",

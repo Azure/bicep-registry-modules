@@ -96,7 +96,7 @@ output subnetName string = bastionSubnet!.outputs.name
 @export()
 @description('Custom type definition for establishing Bastion Host for remote connection.')
 type bastionHostConfigurationType = {
-  @description('The name of the Bastion Host resource.')
+  @description('Required. The name of the Bastion Host resource.')
   name: string
 
   @description('Optional. Subnet configuration for the Jumpbox VM.')
