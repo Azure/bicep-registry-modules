@@ -416,7 +416,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module vm_nic 'modules/nic-configuration.bicep' = [
+module vm_nic 'nic-configuration/nic-configuration.bicep' = [
   for (nicConfiguration, index) in nicConfigurations: {
     name: '${uniqueString(deployment().name, location)}-VM-Nic-${index}'
     params: {
@@ -800,7 +800,7 @@ type publicKeyType = {
   path: string
 }
 
-import { ipConfigurationType } from 'modules/nic-configuration.bicep'
+import { ipConfigurationType } from 'nic-configuration/nic-configuration.bicep'
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 import { subResourceType } from 'br/public:avm/res/network/network-interface:0.5.1'
 

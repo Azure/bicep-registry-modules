@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "17411898755777994308"
+      "templateHash": "17749570126956642897"
     },
     "name": "Chat-with-your-data-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -43,7 +43,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Existing Log Analytics Workspace Resource ID"
+        "description": "Optional. Existing Log Analytics Workspace Resource ID."
       }
     },
     "hostingPlanSku": {
@@ -75,133 +75,133 @@
         "CosmosDB"
       ],
       "metadata": {
-        "description": "Optional. The type of database to deploy (cosmos or postgres)"
+        "description": "Optional. The type of database to deploy (cosmos or postgres)."
       }
     },
     "azureSearchUseSemanticSearch": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Use semantic search"
+        "description": "Optional. Use semantic search."
       }
     },
     "azureSearchSemanticSearchConfig": {
       "type": "string",
       "defaultValue": "default",
       "metadata": {
-        "description": "Optional. Semantic search config"
+        "description": "Optional. Semantic search config."
       }
     },
     "azureSearchIndexIsPrechunked": {
       "type": "string",
       "defaultValue": "false",
       "metadata": {
-        "description": "Optional. Is the index prechunked"
+        "description": "Optional. Is the index prechunked."
       }
     },
     "azureSearchTopK": {
       "type": "string",
       "defaultValue": "5",
       "metadata": {
-        "description": "Optional. Top K results"
+        "description": "Optional. Top K results."
       }
     },
     "azureSearchEnableInDomain": {
       "type": "string",
       "defaultValue": "true",
       "metadata": {
-        "description": "Optional. Enable in domain"
+        "description": "Optional. Enable in domain."
       }
     },
     "azureSearchFieldId": {
       "type": "string",
       "defaultValue": "id",
       "metadata": {
-        "description": "Optional. Id columns"
+        "description": "Optional. Id columns."
       }
     },
     "azureSearchContentColumn": {
       "type": "string",
       "defaultValue": "content",
       "metadata": {
-        "description": "Optional. Content columns"
+        "description": "Optional. Content columns."
       }
     },
     "azureSearchVectorColumn": {
       "type": "string",
       "defaultValue": "content_vector",
       "metadata": {
-        "description": "Optional. Vector columns"
+        "description": "Optional. Vector columns."
       }
     },
     "azureSearchFilenameColumn": {
       "type": "string",
       "defaultValue": "filename",
       "metadata": {
-        "description": "Optional. Filename column"
+        "description": "Optional. Filename column."
       }
     },
     "azureSearchFilter": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Search filter"
+        "description": "Optional. Search filter."
       }
     },
     "azureSearchTitleColumn": {
       "type": "string",
       "defaultValue": "title",
       "metadata": {
-        "description": "Optional. Title column"
+        "description": "Optional. Title column."
       }
     },
     "azureSearchFieldsMetadata": {
       "type": "string",
       "defaultValue": "metadata",
       "metadata": {
-        "description": "Optional. Metadata column"
+        "description": "Optional. Metadata column."
       }
     },
     "azureSearchSourceColumn": {
       "type": "string",
       "defaultValue": "source",
       "metadata": {
-        "description": "Optional. Source column"
+        "description": "Optional. Source column."
       }
     },
     "azureSearchTextColumn": {
       "type": "string",
       "defaultValue": "text",
       "metadata": {
-        "description": "Optional. Text column"
+        "description": "Optional. Text column."
       }
     },
     "azureSearchLayoutTextColumn": {
       "type": "string",
       "defaultValue": "layoutText",
       "metadata": {
-        "description": "Optional. Layout Text column"
+        "description": "Optional. Layout Text column."
       }
     },
     "azureSearchChunkColumn": {
       "type": "string",
       "defaultValue": "chunk",
       "metadata": {
-        "description": "Optional. Chunk column"
+        "description": "Optional. Chunk column."
       }
     },
     "azureSearchOffsetColumn": {
       "type": "string",
       "defaultValue": "offset",
       "metadata": {
-        "description": "Optional. Offset column"
+        "description": "Optional. Offset column."
       }
     },
     "azureSearchUrlColumn": {
       "type": "string",
       "defaultValue": "url",
       "metadata": {
-        "description": "Optional. Url column"
+        "description": "Optional. Url column."
       }
     },
     "azureSearchUseIntegratedVectorization": {
@@ -215,28 +215,28 @@
       "type": "string",
       "defaultValue": "S0",
       "metadata": {
-        "description": "Optional. Name of Azure OpenAI Resource SKU"
+        "description": "Optional. Name of Azure OpenAI Resource SKU."
       }
     },
     "azureOpenAIModel": {
       "type": "string",
       "defaultValue": "gpt-4.1",
       "metadata": {
-        "description": "Optional. Azure OpenAI Model Deployment Name"
+        "description": "Optional. Azure OpenAI Model Deployment Name."
       }
     },
     "azureOpenAIModelName": {
       "type": "string",
       "defaultValue": "gpt-4.1",
       "metadata": {
-        "description": "Optional. Azure OpenAI Model Name"
+        "description": "Optional. Azure OpenAI Model Name."
       }
     },
     "azureOpenAIModelVersion": {
       "type": "string",
       "defaultValue": "2025-04-14",
       "metadata": {
-        "description": "Optional. Azure OpenAI Model Version"
+        "description": "Optional. Azure OpenAI Model Version."
       }
     },
     "azureOpenAIModelCapacity": {
@@ -257,28 +257,28 @@
       "type": "int",
       "defaultValue": 1,
       "metadata": {
-        "description": "Optional. The maximum number of images to pass to the vision model in a single request"
+        "description": "Optional. The maximum number of images to pass to the vision model in a single request."
       }
     },
     "azureOpenAIVisionModel": {
       "type": "string",
       "defaultValue": "gpt-4",
       "metadata": {
-        "description": "Optional. Azure OpenAI Vision Model Deployment Name"
+        "description": "Optional. Azure OpenAI Vision Model Deployment Name."
       }
     },
     "azureOpenAIVisionModelName": {
       "type": "string",
       "defaultValue": "gpt-4",
       "metadata": {
-        "description": "Optional. Azure OpenAI Vision Model Name"
+        "description": "Optional. Azure OpenAI Vision Model Name."
       }
     },
     "azureOpenAIVisionModelVersion": {
       "type": "string",
       "defaultValue": "turbo-2024-04-09",
       "metadata": {
-        "description": "Optional. Azure OpenAI Vision Model Version"
+        "description": "Optional. Azure OpenAI Vision Model Version."
       }
     },
     "azureOpenAIVisionModelCapacity": {
@@ -316,77 +316,77 @@
       "type": "string",
       "defaultValue": "0",
       "metadata": {
-        "description": "Optional. Azure OpenAI Temperature"
+        "description": "Optional. Azure OpenAI Temperature."
       }
     },
     "azureOpenAITopP": {
       "type": "string",
       "defaultValue": "1",
       "metadata": {
-        "description": "Optional. Azure OpenAI Top P"
+        "description": "Optional. Azure OpenAI Top P."
       }
     },
     "azureOpenAIMaxTokens": {
       "type": "string",
       "defaultValue": "1000",
       "metadata": {
-        "description": "Optional. Azure OpenAI Max Tokens"
+        "description": "Optional. Azure OpenAI Max Tokens."
       }
     },
     "azureOpenAIStopSequence": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Azure OpenAI Stop Sequence"
+        "description": "Optional. Azure OpenAI Stop Sequence."
       }
     },
     "azureOpenAISystemMessage": {
       "type": "string",
       "defaultValue": "You are an AI assistant that helps people find information.",
       "metadata": {
-        "description": "Optional. Azure OpenAI System Message"
+        "description": "Optional. Azure OpenAI System Message."
       }
     },
     "azureOpenAIApiVersion": {
       "type": "string",
       "defaultValue": "2024-02-01",
       "metadata": {
-        "description": "Optional. Azure OpenAI Api Version"
+        "description": "Optional. Azure OpenAI Api Version."
       }
     },
     "azureOpenAIStream": {
       "type": "string",
       "defaultValue": "true",
       "metadata": {
-        "description": "Optional. Whether or not to stream responses from Azure OpenAI"
+        "description": "Optional. Whether or not to stream responses from Azure OpenAI."
       }
     },
     "azureOpenAIEmbeddingModel": {
       "type": "string",
       "defaultValue": "text-embedding-ada-002",
       "metadata": {
-        "description": "Optional. Azure OpenAI Embedding Model Deployment Name"
+        "description": "Optional. Azure OpenAI Embedding Model Deployment Name."
       }
     },
     "azureOpenAIEmbeddingModelName": {
       "type": "string",
       "defaultValue": "text-embedding-ada-002",
       "metadata": {
-        "description": "Optional. Azure OpenAI Embedding Model Name"
+        "description": "Optional. Azure OpenAI Embedding Model Name."
       }
     },
     "azureOpenAIEmbeddingModelVersion": {
       "type": "string",
       "defaultValue": "2",
       "metadata": {
-        "description": "Optional. Azure OpenAI Embedding Model Version"
+        "description": "Optional. Azure OpenAI Embedding Model Version."
       }
     },
     "azureOpenAIEmbeddingModelCapacity": {
       "type": "int",
       "defaultValue": 30,
       "metadata": {
-        "description": "Optional. Azure OpenAI Embedding Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota"
+        "description": "Optional. Azure OpenAI Embedding Model Capacity - See here for more info https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota ."
       }
     },
     "computerVisionSkuName": {
@@ -397,7 +397,7 @@
         "S1"
       ],
       "metadata": {
-        "description": "Optional. Name of Computer Vision Resource SKU (if useAdvancedImageProcessing=true)"
+        "description": "Optional. Name of Computer Vision Resource SKU (if useAdvancedImageProcessing=true)."
       }
     },
     "computerVisionLocation": {
@@ -414,21 +414,21 @@
         ""
       ],
       "metadata": {
-        "description": "Optional. Location of Computer Vision Resource (if useAdvancedImageProcessing=true)"
+        "description": "Optional. Location of Computer Vision Resource (if useAdvancedImageProcessing=true)."
       }
     },
     "computerVisionVectorizeImageApiVersion": {
       "type": "string",
       "defaultValue": "2024-02-01",
       "metadata": {
-        "description": "Optional. Azure Computer Vision Vectorize Image API Version"
+        "description": "Optional. Azure Computer Vision Vectorize Image API Version."
       }
     },
     "computerVisionVectorizeImageModelVersion": {
       "type": "string",
       "defaultValue": "2023-04-15",
       "metadata": {
-        "description": "Optional. Azure Computer Vision Vectorize Image Model Version"
+        "description": "Optional. Azure Computer Vision Vectorize Image Model Version."
       }
     },
     "azureSearchSku": {
@@ -442,14 +442,14 @@
         "standard3"
       ],
       "metadata": {
-        "description": "Optional. The SKU of the search service you want to create. E.g. free or standard"
+        "description": "Optional. The SKU of the search service you want to create. E.g. free or standard."
       }
     },
     "azureSearchConversationLogIndex": {
       "type": "string",
       "defaultValue": "conversations",
       "metadata": {
-        "description": "Optional. Azure AI Search Conversation Log Index"
+        "description": "Optional. Azure AI Search Conversation Log Index."
       }
     },
     "newGuidString": {
@@ -463,14 +463,14 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Id of the user or app to assign application roles"
+        "description": "Optional. Id of the user or app to assign application roles."
       }
     },
     "appEnvironment": {
       "type": "string",
       "defaultValue": "Prod",
       "metadata": {
-        "description": "Optional. Application Environment"
+        "description": "Optional. Application Environment."
       }
     },
     "hostingModel": {
@@ -498,7 +498,7 @@
       "type": "string",
       "defaultValue": "en-US,fr-FR,de-DE,it-IT",
       "metadata": {
-        "description": "Optional. List of comma-separated languages to recognize from the speech input. Supported languages are listed here: https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=stt#supported-languages"
+        "description": "Optional. List of comma-separated languages to recognize from the speech input. Supported languages are listed here: https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=stt#supported-languages."
       }
     },
     "tags": {
@@ -723,7 +723,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.ptn.sa-multiagentcustauteng.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.ptn.sa-chatwithyourdata.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -780,7 +780,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "6104164503714595921"
+              "templateHash": "2715154347300160269"
             }
           },
           "parameters": {
@@ -1072,7 +1072,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "18278699382413382263"
+                      "templateHash": "13471916790042928853"
                     },
                     "name": "Chat-with-your-data-solution-accelerator - Network Module",
                     "description": "This module contains the network resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -7119,7 +7119,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.37.4.10188",
-                              "templateHash": "17936022282529854475"
+                              "templateHash": "14642568281315464951"
                             }
                           },
                           "definitions": {
@@ -8536,7 +8536,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.37.4.10188",
-                                      "templateHash": "13003257172181005948"
+                                      "templateHash": "4301214457807494930"
                                     },
                                     "name": "Virtual Machines",
                                     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -9718,7 +9718,7 @@
                                       "metadata": {
                                         "description": "The type for the public IP address configuration.",
                                         "__bicep_imported_from!": {
-                                          "sourceTemplate": "modules/nic-configuration.bicep"
+                                          "sourceTemplate": "nic-configuration/nic-configuration.bicep"
                                         }
                                       }
                                     },
@@ -9981,7 +9981,7 @@
                                       "metadata": {
                                         "description": "The type for the IP configuration.",
                                         "__bicep_imported_from!": {
-                                          "sourceTemplate": "modules/nic-configuration.bicep"
+                                          "sourceTemplate": "nic-configuration/nic-configuration.bicep"
                                         }
                                       }
                                     },
@@ -62781,6 +62781,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "managedIdentities": {
             "value": {
