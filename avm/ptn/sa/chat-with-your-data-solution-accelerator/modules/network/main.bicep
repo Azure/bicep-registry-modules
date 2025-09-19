@@ -19,7 +19,7 @@ param logAnalyticsWorkSpaceResourceId string
 param addressPrefixes array
 
 import { subnetType } from 'virtualNetwork.bicep'
-@description('Optional. Array of subnets to be created within the VNET.')
+@description('Required. Array of subnets to be created within the VNET.')
 param subnets subnetType[]
 
 import { jumpBoxConfigurationType } from 'jumpbox.bicep'

@@ -42,6 +42,7 @@ This module contains the network resources required to deploy the [Chat-with-you
 | [`location`](#parameter-location) | string | Azure region for all services. |
 | [`logAnalyticsWorkSpaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | Resource ID of the Log Analytics Workspace for monitoring and diagnostics. |
 | [`resourcesName`](#parameter-resourcesname) | string | Name used for naming all network resources. |
+| [`subnets`](#parameter-subnets) | array | Array of subnets to be created within the VNET. |
 
 **Optional parameters**
 
@@ -50,7 +51,6 @@ This module contains the network resources required to deploy the [Chat-with-you
 | [`bastionConfiguration`](#parameter-bastionconfiguration) | object | Configuration for the Azure Bastion Host. Leave null to omit Bastion creation. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`jumpboxConfiguration`](#parameter-jumpboxconfiguration) | object | Configuration for the Jumpbox VM. Leave null to omit Jumpbox creation. |
-| [`subnets`](#parameter-subnets) | array | Array of subnets to be created within the VNET. |
 | [`tags`](#parameter-tags) | object | Tags to be applied to the resources. |
 
 ### Parameter: `addressPrefixes`
@@ -81,6 +81,140 @@ Name used for naming all network resources.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `subnets`
+
+Array of subnets to be created within the VNET.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefixes`](#parameter-subnetsaddressprefixes) | array | Prefixes for the subnet. |
+| [`name`](#parameter-subnetsname) | string | The Name of the subnet resource. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`defaultOutboundAccess`](#parameter-subnetsdefaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
+| [`delegation`](#parameter-subnetsdelegation) | string | The delegation to enable on the subnet. |
+| [`networkSecurityGroup`](#parameter-subnetsnetworksecuritygroup) | object | Network Security Group configuration for the subnet. |
+| [`privateEndpointNetworkPolicies`](#parameter-subnetsprivateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
+| [`privateLinkServiceNetworkPolicies`](#parameter-subnetsprivatelinkservicenetworkpolicies) | string | Enable or disable apply network policies on private link service in the subnet. |
+| [`routeTableResourceId`](#parameter-subnetsroutetableresourceid) | string | The resource ID of the route table to assign to the subnet. |
+| [`serviceEndpointPolicies`](#parameter-subnetsserviceendpointpolicies) | array | An array of service endpoint policies. |
+| [`serviceEndpoints`](#parameter-subnetsserviceendpoints) | array | The service endpoints to enable on the subnet. |
+
+### Parameter: `subnets.addressPrefixes`
+
+Prefixes for the subnet.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `subnets.name`
+
+The Name of the subnet resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `subnets.defaultOutboundAccess`
+
+Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet.
+
+- Required: No
+- Type: bool
+
+### Parameter: `subnets.delegation`
+
+The delegation to enable on the subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.networkSecurityGroup`
+
+Network Security Group configuration for the subnet.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-subnetsnetworksecuritygroupname) | string | The name of the network security group. |
+| [`securityRules`](#parameter-subnetsnetworksecuritygroupsecurityrules) | array | The security rules for the network security group. |
+
+### Parameter: `subnets.networkSecurityGroup.name`
+
+The name of the network security group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `subnets.networkSecurityGroup.securityRules`
+
+The security rules for the network security group.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `subnets.privateEndpointNetworkPolicies`
+
+enable or disable apply network policies on private endpoint in the subnet.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+    'NetworkSecurityGroupEnabled'
+    'RouteTableEnabled'
+  ]
+  ```
+
+### Parameter: `subnets.privateLinkServiceNetworkPolicies`
+
+Enable or disable apply network policies on private link service in the subnet.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `subnets.routeTableResourceId`
+
+The resource ID of the route table to assign to the subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.serviceEndpointPolicies`
+
+An array of service endpoint policies.
+
+- Required: No
+- Type: array
+
+### Parameter: `subnets.serviceEndpoints`
+
+The service endpoints to enable on the subnet.
+
+- Required: No
+- Type: array
 
 ### Parameter: `bastionConfiguration`
 
@@ -428,140 +562,6 @@ An array of service endpoint policies.
 - Type: array
 
 ### Parameter: `jumpboxConfiguration.subnet.serviceEndpoints`
-
-The service endpoints to enable on the subnet.
-
-- Required: No
-- Type: array
-
-### Parameter: `subnets`
-
-Array of subnets to be created within the VNET.
-
-- Required: Yes
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`addressPrefixes`](#parameter-subnetsaddressprefixes) | array | Prefixes for the subnet. |
-| [`name`](#parameter-subnetsname) | string | The Name of the subnet resource. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`defaultOutboundAccess`](#parameter-subnetsdefaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
-| [`delegation`](#parameter-subnetsdelegation) | string | The delegation to enable on the subnet. |
-| [`networkSecurityGroup`](#parameter-subnetsnetworksecuritygroup) | object | Network Security Group configuration for the subnet. |
-| [`privateEndpointNetworkPolicies`](#parameter-subnetsprivateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
-| [`privateLinkServiceNetworkPolicies`](#parameter-subnetsprivatelinkservicenetworkpolicies) | string | Enable or disable apply network policies on private link service in the subnet. |
-| [`routeTableResourceId`](#parameter-subnetsroutetableresourceid) | string | The resource ID of the route table to assign to the subnet. |
-| [`serviceEndpointPolicies`](#parameter-subnetsserviceendpointpolicies) | array | An array of service endpoint policies. |
-| [`serviceEndpoints`](#parameter-subnetsserviceendpoints) | array | The service endpoints to enable on the subnet. |
-
-### Parameter: `subnets.addressPrefixes`
-
-Prefixes for the subnet.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `subnets.name`
-
-The Name of the subnet resource.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `subnets.defaultOutboundAccess`
-
-Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet.
-
-- Required: No
-- Type: bool
-
-### Parameter: `subnets.delegation`
-
-The delegation to enable on the subnet.
-
-- Required: No
-- Type: string
-
-### Parameter: `subnets.networkSecurityGroup`
-
-Network Security Group configuration for the subnet.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-subnetsnetworksecuritygroupname) | string | The name of the network security group. |
-| [`securityRules`](#parameter-subnetsnetworksecuritygroupsecurityrules) | array | The security rules for the network security group. |
-
-### Parameter: `subnets.networkSecurityGroup.name`
-
-The name of the network security group.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `subnets.networkSecurityGroup.securityRules`
-
-The security rules for the network security group.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `subnets.privateEndpointNetworkPolicies`
-
-enable or disable apply network policies on private endpoint in the subnet.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-    'NetworkSecurityGroupEnabled'
-    'RouteTableEnabled'
-  ]
-  ```
-
-### Parameter: `subnets.privateLinkServiceNetworkPolicies`
-
-Enable or disable apply network policies on private link service in the subnet.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-  ]
-  ```
-
-### Parameter: `subnets.routeTableResourceId`
-
-The resource ID of the route table to assign to the subnet.
-
-- Required: No
-- Type: string
-
-### Parameter: `subnets.serviceEndpointPolicies`
-
-An array of service endpoint policies.
-
-- Required: No
-- Type: array
-
-### Parameter: `subnets.serviceEndpoints`
 
 The service endpoints to enable on the subnet.
 

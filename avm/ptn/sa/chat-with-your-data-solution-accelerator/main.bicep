@@ -81,97 +81,97 @@ var applicationInsightsName string = 'appi-${solutionSuffix}'
 @description('Name of the Workbook')
 var workbookDisplayName string = 'workbook-${solutionSuffix}'
 
-@description('Optional. Use semantic search')
+@description('Required. Use semantic search')
 param azureSearchUseSemanticSearch bool = false
 
-@description('Optional. Semantic search config')
+@description('Required. Semantic search config')
 param azureSearchSemanticSearchConfig string = 'default'
 
-@description('Optional. Is the index prechunked')
+@description('Required. Is the index prechunked')
 param azureSearchIndexIsPrechunked string = 'false'
 
-@description('Optional. Top K results')
+@description('Required. Top K results')
 param azureSearchTopK string = '5'
 
-@description('Optional. Enable in domain')
+@description('Required. Enable in domain')
 param azureSearchEnableInDomain string = 'true'
 
-@description('Optional. Id columns')
+@description('Required. Id columns')
 param azureSearchFieldId string = 'id'
 
-@description('Optional. Content columns')
+@description('Required. Content columns')
 param azureSearchContentColumn string = 'content'
 
-@description('Optional. Vector columns')
+@description('Required. Vector columns')
 param azureSearchVectorColumn string = 'content_vector'
 
-@description('Optional. Filename column')
+@description('Required. Filename column')
 param azureSearchFilenameColumn string = 'filename'
 
-@description('Optional. Search filter')
+@description('Required. Search filter')
 param azureSearchFilter string = ''
 
-@description('Optional. Title column')
+@description('Required. Title column')
 param azureSearchTitleColumn string = 'title'
 
-@description('Optional. Metadata column')
+@description('Required. Metadata column')
 param azureSearchFieldsMetadata string = 'metadata'
 
-@description('Optional. Source column')
+@description('Required. Source column')
 param azureSearchSourceColumn string = 'source'
 
 @description('Optional. Text column')
 param azureSearchTextColumn string = 'text'
 
-@description('Optional. Layout Text column')
+@description('Required. Layout Text column')
 param azureSearchLayoutTextColumn string = 'layoutText'
 
-@description('Optional. Chunk column')
+@description('Required. Chunk column')
 param azureSearchChunkColumn string = 'chunk'
 
-@description('Optional. Offset column')
+@description('Required. Offset column')
 param azureSearchOffsetColumn string = 'offset'
 
-@description('Optional. Url column')
+@description('Required. Url column')
 param azureSearchUrlColumn string = 'url'
 
-@description('Optional. Whether to use Azure Search Integrated Vectorization. If the database type is PostgreSQL, set this to false.')
+@description('Required. Whether to use Azure Search Integrated Vectorization. If the database type is PostgreSQL, set this to false.')
 param azureSearchUseIntegratedVectorization bool = false
 
-@description('Optional. Name of Azure OpenAI Resource')
+@description('Required. Name of Azure OpenAI Resource')
 var azureOpenAIResourceName string = 'oai-${solutionSuffix}'
 
 @description('Optional. Name of Azure OpenAI Resource SKU')
 param azureOpenAISkuName string = 'S0'
 
-@description('Optional. Azure OpenAI Model Deployment Name')
+@description('Required. Azure OpenAI Model Deployment Name')
 param azureOpenAIModel string = 'gpt-4.1'
 
-@description('Optional. Azure OpenAI Model Name')
+@description('Required. Azure OpenAI Model Name')
 param azureOpenAIModelName string = 'gpt-4.1'
 
-@description('Optional. Azure OpenAI Model Version')
+@description('Required. Azure OpenAI Model Version')
 param azureOpenAIModelVersion string = '2025-04-14'
 
-@description('Optional. Azure OpenAI Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota')
+@description('Required. Azure OpenAI Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota')
 param azureOpenAIModelCapacity int = 30
 
-@description('Optional. Whether to enable the use of a vision LLM and Computer Vision for embedding images. If the database type is PostgreSQL, set this to false.')
+@description('Required. Whether to enable the use of a vision LLM and Computer Vision for embedding images. If the database type is PostgreSQL, set this to false.')
 param useAdvancedImageProcessing bool = false
 
-@description('Optional. The maximum number of images to pass to the vision model in a single request')
+@description('Required. The maximum number of images to pass to the vision model in a single request')
 param advancedImageProcessingMaxImages int = 1
 
-@description('Optional. Azure OpenAI Vision Model Deployment Name')
+@description('Required. Azure OpenAI Vision Model Deployment Name')
 param azureOpenAIVisionModel string = 'gpt-4'
 
-@description('Optional. Azure OpenAI Vision Model Name')
+@description('Required. Azure OpenAI Vision Model Name')
 param azureOpenAIVisionModelName string = 'gpt-4'
 
-@description('Optional. Azure OpenAI Vision Model Version')
+@description('Required. Azure OpenAI Vision Model Version')
 param azureOpenAIVisionModelVersion string = 'turbo-2024-04-09'
 
-@description('Optional. Azure OpenAI Vision Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota')
+@description('Required. Azure OpenAI Vision Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota')
 param azureOpenAIVisionModelCapacity int = 10
 
 @description('Optional. Orchestration strategy: openai_function or semantic_kernel or langchain str. If you use a old version of turbo (0301), please select langchain. If the database type is PostgreSQL, set this to sementic_kernel.')
@@ -190,37 +190,37 @@ param orchestrationStrategy string = 'semantic_kernel'
 ])
 param conversationFlow string = 'custom'
 
-@description('Optional. Azure OpenAI Temperature')
+@description('Required. Azure OpenAI Temperature')
 param azureOpenAITemperature string = '0'
 
-@description('Optional. Azure OpenAI Top P')
+@description('Required. Azure OpenAI Top P')
 param azureOpenAITopP string = '1'
 
-@description('Optional. Azure OpenAI Max Tokens')
+@description('Required. Azure OpenAI Max Tokens')
 param azureOpenAIMaxTokens string = '1000'
 
-@description('Optional. Azure OpenAI Stop Sequence')
+@description('Required. Azure OpenAI Stop Sequence')
 param azureOpenAIStopSequence string = ''
 
-@description('Optional. Azure OpenAI System Message')
+@description('Required. Azure OpenAI System Message')
 param azureOpenAISystemMessage string = 'You are an AI assistant that helps people find information.'
 
-@description('Optional. Azure OpenAI Api Version')
+@description('Required. Azure OpenAI Api Version')
 param azureOpenAIApiVersion string = '2024-02-01'
 
-@description('Optional. Whether or not to stream responses from Azure OpenAI')
+@description('Required. Whether or not to stream responses from Azure OpenAI'))
 param azureOpenAIStream string = 'true'
 
-@description('Optional. Azure OpenAI Embedding Model Deployment Name')
+@description('Required. Azure OpenAI Embedding Model Deployment Name')
 param azureOpenAIEmbeddingModel string = 'text-embedding-ada-002'
 
-@description('Optional. Azure OpenAI Embedding Model Name')
+@description('Required. Azure OpenAI Embedding Model Name')
 param azureOpenAIEmbeddingModelName string = 'text-embedding-ada-002'
 
-@description('Optional. Azure OpenAI Embedding Model Version')
+@description('Required. Azure OpenAI Embedding Model Version')
 param azureOpenAIEmbeddingModelVersion string = '2'
 
-@description('Optional. Azure OpenAI Embedding Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota')
+@description('Required. Azure OpenAI Embedding Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota')
 param azureOpenAIEmbeddingModelCapacity int = 30
 
 @description('Optional. Name of Computer Vision Resource (if useAdvancedImageProcessing=true)')
@@ -302,10 +302,10 @@ param newGuidString string = newGuid()
 @description('Optional. Id of the user or app to assign application roles')
 param principalId string = ''
 
-@description('Optional. Application Environment')
+@description('Required. Application Environment')
 param appEnvironment string = 'Prod'
 
-@description('Optional. Hosting model for the web apps. This value is fixed as "container", which uses prebuilt containers for faster deployment.')
+@description('Required. Hosting model for the web apps. This value is fixed as "container", which uses prebuilt containers for faster deployment.')
 param hostingModel string = 'container'
 
 @description('Optional. The log level for application logging. This setting controls the verbosity of logs emitted by the application. Allowed values are CRITICAL, ERROR, WARN, INFO, and DEBUG. The default value is INFO.')
@@ -856,6 +856,8 @@ module openai 'modules/core/ai/cognitiveservices.bicep' = {
       '${storageAccountName}.queue.${environment().suffixes.storage}'
     ]
     enablePrivateNetworking: enablePrivateNetworking
+    enableMonitoring: enableMonitoring
+    enableTelemetry: enableTelemetry
     subnetResourceId: enablePrivateNetworking ? network!.outputs.subnetPrivateEndpointsResourceId : null
 
     logAnalyticsWorkspaceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : null
@@ -905,6 +907,8 @@ module computerVision 'modules/core/ai/cognitiveservices.bicep' = if (useAdvance
     sku: computerVisionSkuName
 
     enablePrivateNetworking: enablePrivateNetworking
+    enableMonitoring: enableMonitoring
+    enableTelemetry: enableTelemetry
     subnetResourceId: enablePrivateNetworking ? network!.outputs.subnetPrivateEndpointsResourceId : null
 
     logAnalyticsWorkspaceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : null
@@ -944,6 +948,8 @@ module speechService 'modules/core/ai/cognitiveservices.bicep' = {
     sku: 'S0'
 
     enablePrivateNetworking: enablePrivateNetworking
+    enableMonitoring: enableMonitoring
+    enableTelemetry: enableTelemetry
     subnetResourceId: enablePrivateNetworking ? network!.outputs.subnetPrivateEndpointsResourceId : null
 
     logAnalyticsWorkspaceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : null
@@ -1427,6 +1433,8 @@ module formrecognizer 'modules/core/ai/cognitiveservices.bicep' = {
     kind: 'FormRecognizer'
 
     enablePrivateNetworking: enablePrivateNetworking
+    enableMonitoring: enableMonitoring
+    enableTelemetry: enableTelemetry
     subnetResourceId: enablePrivateNetworking ? network!.outputs.subnetPrivateEndpointsResourceId : null
 
     logAnalyticsWorkspaceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : null
@@ -1485,6 +1493,8 @@ module contentsafety 'modules/core/ai/cognitiveservices.bicep' = {
     kind: 'ContentSafety'
 
     enablePrivateNetworking: enablePrivateNetworking
+    enableMonitoring: enableMonitoring
+    enableTelemetry: enableTelemetry
     subnetResourceId: enablePrivateNetworking ? network!.outputs.subnetPrivateEndpointsResourceId : null
 
     logAnalyticsWorkspaceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : null
