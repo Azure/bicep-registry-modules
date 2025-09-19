@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "5626158199534722675"
+      "templateHash": "13239692483716196396"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -3672,6 +3672,28 @@
                 "description": "The type for the inbound NAT rule.",
                 "__bicep_imported_from!": {
                   "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+                }
+              }
+            },
+            "ipTagType": {
+              "type": "object",
+              "properties": {
+                "ipTagType": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The IP tag type."
+                  }
+                },
+                "tag": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The IP tag."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.8.0"
                 }
               }
             },
