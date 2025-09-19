@@ -641,8 +641,8 @@ module postgresDBModule 'br/public:avm/res/db-for-postgre-sql/flexible-server:0.
     storageSizeGB: 32
     version: '16'
     availabilityZone: 1
-    highAvailability: 'ZoneRedundant'
-    highAvailabilityZone: 2
+    highAvailability: enableRedundancy ? 'ZoneRedundant' : 'Disabled'
+    highAvailabilityZone: enableRedundancy ? 2 : -1
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     //delegatedSubnetResourceId: enablePrivateNetworking ? network!.outputs.subnetPrivateEndpointsResourceId : null
     privateEndpoints: enablePrivateNetworking
