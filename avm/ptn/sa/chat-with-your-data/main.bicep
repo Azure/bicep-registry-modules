@@ -540,7 +540,7 @@ module avmPrivateDnsZones './modules/private-dns-zone/main.bicep' = [
 
 var cosmosDbName = 'db_conversation_history'
 var cosmosDbContainerName = 'conversations'
-module cosmosDBModule './modules/document-db/database-account/main.bicep' = if (databaseType == 'CosmosDB') {
+module cosmosDBModule './modules/document-db/database-account/database-account.bicep' = if (databaseType == 'CosmosDB') {
   name: take('avm.res.document-db.database-account.${azureCosmosDBAccountName}', 64)
   params: {
     name: azureCosmosDBAccountName
