@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "16885732550912041610"
+      "templateHash": "7026101437997794576"
     },
     "name": "Chat-with-your-data-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -18544,8 +18544,12 @@
           "availabilityZone": {
             "value": 1
           },
-          "highAvailability": "[if(parameters('enableRedundancy'), createObject('value', 'ZoneRedundant'), createObject('value', 'Disabled'))]",
-          "highAvailabilityZone": "[if(parameters('enableRedundancy'), createObject('value', 2), createObject('value', -1))]",
+          "highAvailability": {
+            "value": "ZoneRedundant"
+          },
+          "highAvailabilityZone": {
+            "value": 2
+          },
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-{0}', variables('postgresResourceName')), 'customNetworkInterfaceName', format('nic-{0}', variables('postgresResourceName')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').postgresDB)).outputs.resourceId.value))), 'service', 'postgresqlServer', 'subnetResourceId', reference('network').outputs.subnetPrivateEndpointsResourceId.value))), createObject('value', createArray()))]",
           "administrators": "[if(not(equals(reference('managedIdentityModule').outputs.principalId.value, '')), createObject('value', createArray(createObject('objectId', reference('managedIdentityModule').outputs.principalId.value, 'principalName', reference('managedIdentityModule').outputs.name.value, 'principalType', 'ServicePrincipal'))), createObject('value', null()))]",
@@ -59155,9 +59159,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "managedIdentityModule",
         "network"
       ]
