@@ -611,7 +611,7 @@ resource vm_configurationAssignment 'Microsoft.Maintenance/configurationAssignme
   scope: vm
 }
 
-module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAntiMalwareConfig.enabled) {
+module vm_microsoftAntiMalwareExtension 'extension/extension.bicep' = if (extensionAntiMalwareConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-MicrosoftAntiMalware'
   params: {
     virtualMachineName: vm.name
@@ -638,7 +638,7 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAn
   }
 }
 
-module vm_azureGuestConfigurationExtension 'extension/main.bicep' = if (extensionGuestConfigurationExtension.enabled) {
+module vm_azureGuestConfigurationExtension 'extension/extension.bicep' = if (extensionGuestConfigurationExtension.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-GuestConfiguration'
   params: {
     virtualMachineName: vm.name
