@@ -1799,107 +1799,107 @@ var azureContentSafetyInfo = string({
 var backendUrl = 'https://${functionName}.azurewebsites.net'
 
 @description('Connection string for the Application Insights instance.')
-output APPLICATIONINSIGHTS_CONNECTION_STRING string = enableMonitoring
+output applicationInsightsConnectionString string = enableMonitoring
   ? monitoring!.outputs.applicationInsightsConnectionString
   : ''
 
 @description('App Service hosting model used (code or container).')
-output AZURE_APP_SERVICE_HOSTING_MODEL string = hostingModel
+output azureAppServiceHostingModel string = hostingModel
 
 @description('Name of the resource group.')
 output resourceGroupName string = resourceGroup().name
 
 @description('Application environment (e.g., Prod, Dev).')
-output APP_ENV string = appEnvironment
+output appEnv string = appEnvironment
 
 @description('Blob storage info (container and account).')
-output AZURE_BLOB_STORAGE_INFO string = azureBlobStorageInfo
+output azureBlobStorageInfoOutput string = azureBlobStorageInfo
 
 @description('Computer Vision service information.')
-output AZURE_COMPUTER_VISION_INFO string = azureComputerVisionInfo
+output azureComputerVisionInfoOutput string = azureComputerVisionInfo
 
 @description('Content Safety service endpoint information.')
-output AZURE_CONTENT_SAFETY_INFO string = azureContentSafetyInfo
+output azureContentSafetyInfoOutput string = azureContentSafetyInfo
 
 @description('Form Recognizer service endpoint information.')
-output AZURE_FORM_RECOGNIZER_INFO string = azureFormRecognizerInfo
+output azureFormRecognizerInfoOutput string = azureFormRecognizerInfo
 
 @description('Primary deployment location.')
-output AZURE_LOCATION string = location
+output azureLocation string = location
 
 @description('Azure OpenAI model information.')
-output AZURE_OPENAI_MODEL_INFO string = azureOpenAIModelInfo
+output azureOpenAiModelInfoOutput string = azureOpenAIModelInfo
 
 @description('Azure OpenAI configuration details.')
-output AZURE_OPENAI_CONFIGURATION_INFO string = azureOpenaiConfigurationInfo
+output azureOpenAiConfigurationInfoOutput string = azureOpenaiConfigurationInfo
 
 @description('Azure OpenAI embedding model information.')
-output AZURE_OPENAI_EMBEDDING_MODEL_INFO string = azureOpenAIEmbeddingModelInfo
+output azureOpenAiEmbeddingModelInfoOutput string = azureOpenAIEmbeddingModelInfo
 
 @description('Name of the resource group.')
-output AZURE_RESOURCE_GROUP string = resourceGroup().name
+output azureResourceGroup string = resourceGroup().name
 
 @description('Azure Cognitive Search service information (if deployed).')
-output AZURE_SEARCH_SERVICE_INFO string = azureSearchServiceInfo
+output azureSearchServiceInfoOutput string = azureSearchServiceInfo
 
 @description('Azure Speech service information.')
-output AZURE_SPEECH_SERVICE_INFO string = azureSpeechServiceInfo
+output azureSpeechServiceInfoOutput string = azureSpeechServiceInfo
 
 @description('Azure tenant identifier.')
-output AZURE_TENANT_ID string = tenant().tenantId
+output azureTenantId string = tenant().tenantId
 
 @description('Name of the document processing queue.')
-output DOCUMENT_PROCESSING_QUEUE_NAME string = queueName
+output documentProcessingQueueName string = queueName
 
 @description('Orchestration strategy selected (openai_function, semantic_kernel, etc.).')
-output ORCHESTRATION_STRATEGY string = orchestrationStrategy
+output orchestrationStrategyOutput string = orchestrationStrategy
 
 @description('Backend URL for the function app.')
-output BACKEND_URL string = backendUrl
+output backendUrlOutput string = backendUrl
 
 @description('Azure WebJobs Storage connection string for the Functions app.')
-output AzureWebJobsStorage string = function.outputs.AzureWebJobsStorage
+output azureWebJobsStorage string = function.outputs.AzureWebJobsStorage
 
 @description('Frontend web application URI.')
-output FRONTEND_WEBSITE_NAME string = web.outputs.FRONTEND_API_URI
+output frontendWebsiteUri string = web.outputs.FRONTEND_API_URI
 
 @description('Admin web application URI.')
-output ADMIN_WEBSITE_NAME string = adminweb.outputs.WEBSITE_ADMIN_URI
+output adminWebsiteUri string = adminweb.outputs.WEBSITE_ADMIN_URI
 
 @description('Configured log level for applications.')
-output LOGLEVEL string = logLevel
+output configuredLogLevel string = logLevel
 
 @description('Conversation flow type in use (custom or byod).')
-output CONVERSATION_FLOW string = conversationFlow
+output conversationFlowType string = conversationFlow
 
 @description('Whether advanced image processing is enabled.')
-output USE_ADVANCED_IMAGE_PROCESSING bool = useAdvancedImageProcessing
+output useAdvancedImageProcessingEnabled bool = useAdvancedImageProcessing
 
 @description('Whether Azure Search is using integrated vectorization.')
-output AZURE_SEARCH_USE_INTEGRATED_VECTORIZATION bool = azureSearchUseIntegratedVectorization
+output azureSearchUseIntegratedVectorizationEnabled bool = azureSearchUseIntegratedVectorization
 
 @description('Maximum number of images sent per advanced image processing request.')
-output ADVANCED_IMAGE_PROCESSING_MAX_IMAGES int = advancedImageProcessingMaxImages
+output advancedImageProcessingMaxImagesOutput int = advancedImageProcessingMaxImages
 
 @description('Azure Machine Learning workspace name when using prompt_flow orchestration.')
-output AZURE_ML_WORKSPACE_NAME string = orchestrationStrategy == 'prompt_flow'
+output azureMlWorkspaceName string = orchestrationStrategy == 'prompt_flow'
   ? machineLearning!.outputs.workspaceName
   : ''
 
 @description('Unique token for this solution deployment (short suffix).')
-output RESOURCE_TOKEN string = solutionSuffix
+output resourceToken string = solutionSuffix
 
 @description('Cosmos DB related information (account/database/container).')
-output AZURE_COSMOSDB_INFO string = azureCosmosDBInfo
+output azureCosmosDbInfoOutput string = azureCosmosDBInfo
 
 @description('PostgreSQL related information (host/database/user).')
-output AZURE_POSTGRESQL_INFO string = azurePostgresDBInfo
+output azurePostgresDbInfoOutput string = azurePostgresDBInfo
 
 @description('Selected database type for this deployment.')
-output DATABASE_TYPE string = databaseType
+output databaseTypeSelected string = databaseType
 
 @description('System prompt for OpenAI functions.')
-output OPEN_AI_FUNCTIONS_SYSTEM_PROMPT string = openAIFunctionsSystemPrompt
+output openAiFunctionsSystemPromptOutput string = openAIFunctionsSystemPrompt
 
 @description('System prompt used by the Semantic Kernel orchestration.')
-output SEMANTIC_KERNEL_SYSTEM_PROMPT string = semanticKernelSystemPrompt
+output semanticKernelSystemPromptOutput string = semanticKernelSystemPrompt
