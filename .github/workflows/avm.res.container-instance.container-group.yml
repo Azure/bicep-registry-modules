@@ -32,6 +32,7 @@ on:
       - "avm/res/container-instance/container-group/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
+      - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:

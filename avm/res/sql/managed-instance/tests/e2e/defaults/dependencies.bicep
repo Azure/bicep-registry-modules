@@ -19,61 +19,6 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-0
   properties: {
     securityRules: [
       {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-sqlmgmt-in-${addressPrefixString}-v10'
-        properties: {
-          description: 'Allow MI provisioning Control Plane Deployment and Authentication Service'
-          protocol: 'Tcp'
-          sourcePortRange: '*'
-          sourceAddressPrefix: 'SqlManagement'
-          destinationAddressPrefix: addressPrefix
-          access: 'Allow'
-          priority: 100
-          direction: 'Inbound'
-          destinationPortRanges: [
-            '9000'
-            '9003'
-            '1438'
-            '1440'
-            '1452'
-          ]
-        }
-      }
-      {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-corpsaw-in-${addressPrefixString}-v10'
-        properties: {
-          description: 'Allow MI Supportability'
-          protocol: 'Tcp'
-          sourcePortRange: '*'
-          sourceAddressPrefix: 'CorpNetSaw'
-          destinationAddressPrefix: addressPrefix
-          access: 'Allow'
-          priority: 101
-          direction: 'Inbound'
-          destinationPortRanges: [
-            '9000'
-            '9003'
-            '1440'
-          ]
-        }
-      }
-      {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-corppublic-in-${addressPrefixString}-v10'
-        properties: {
-          description: 'Allow MI Supportability through Corpnet ranges'
-          protocol: 'Tcp'
-          sourcePortRange: '*'
-          sourceAddressPrefix: 'CorpNetPublic'
-          destinationAddressPrefix: addressPrefix
-          access: 'Allow'
-          priority: 102
-          direction: 'Inbound'
-          destinationPortRanges: [
-            '9000'
-            '9003'
-          ]
-        }
-      }
-      {
         name: 'Microsoft.Sql-managedInstances_UseOnly_mi-healthprobe-in-${addressPrefixString}-v10'
         properties: {
           description: 'Allow Azure Load Balancer inbound traffic'
@@ -99,23 +44,6 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-0
           access: 'Allow'
           priority: 104
           direction: 'Inbound'
-        }
-      }
-      {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-services-out-${addressPrefixString}-v10'
-        properties: {
-          description: 'Allow MI services outbound traffic over https'
-          protocol: 'Tcp'
-          sourcePortRange: '*'
-          sourceAddressPrefix: addressPrefix
-          destinationAddressPrefix: 'AzureCloud'
-          access: 'Allow'
-          priority: 100
-          direction: 'Outbound'
-          destinationPortRanges: [
-            '443'
-            '12000'
-          ]
         }
       }
       {
@@ -147,103 +75,6 @@ resource routeTable 'Microsoft.Network/routeTables@2023-04-01' = {
         properties: {
           addressPrefix: addressPrefix
           nextHopType: 'VnetLocal'
-          hasBgpOverride: false
-        }
-      }
-      {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-Storage'
-        properties: {
-          addressPrefix: 'Storage'
-          nextHopType: 'Internet'
-          hasBgpOverride: false
-        }
-      }
-      {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-SqlManagement'
-        properties: {
-          addressPrefix: 'SqlManagement'
-          nextHopType: 'Internet'
-          hasBgpOverride: false
-        }
-      }
-      {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-AzureMonitor'
-        properties: {
-          addressPrefix: 'AzureMonitor'
-          nextHopType: 'Internet'
-          hasBgpOverride: false
-        }
-      }
-      {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-CorpNetSaw'
-        properties: {
-          addressPrefix: 'CorpNetSaw'
-          nextHopType: 'Internet'
-          hasBgpOverride: false
-        }
-      }
-      {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-CorpNetPublic'
-        properties: {
-          addressPrefix: 'CorpNetPublic'
-          nextHopType: 'Internet'
-          hasBgpOverride: false
-        }
-      }
-      {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-AzureActiveDirectory'
-        properties: {
-          addressPrefix: 'AzureActiveDirectory'
-          nextHopType: 'Internet'
-          hasBgpOverride: false
-        }
-      }
-      {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-AzureCloud.westeurope'
-        properties: {
-          addressPrefix: 'AzureCloud.westeurope'
-          nextHopType: 'Internet'
-          hasBgpOverride: false
-        }
-      }
-      {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-AzureCloud.northeurope'
-        properties: {
-          addressPrefix: 'AzureCloud.northeurope'
-          nextHopType: 'Internet'
-          hasBgpOverride: false
-        }
-      }
-      {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-Storage.westeurope'
-        properties: {
-          addressPrefix: 'Storage.westeurope'
-          nextHopType: 'Internet'
-          hasBgpOverride: false
-        }
-      }
-      {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-Storage.northeurope'
-        properties: {
-          addressPrefix: 'Storage.northeurope'
-          nextHopType: 'Internet'
-          hasBgpOverride: false
-        }
-      }
-      {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-EventHub.westeurope'
-        properties: {
-          addressPrefix: 'EventHub.westeurope'
-          nextHopType: 'Internet'
-          hasBgpOverride: false
-        }
-      }
-      {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-EventHub.northeurope'
-        properties: {
-          addressPrefix: 'EventHub.northeurope'
-          nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
     ]

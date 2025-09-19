@@ -5,13 +5,61 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "3890887436119201915"
+      "version": "0.37.4.10188",
+      "templateHash": "17167481729800422327"
     },
     "name": "Event Hub Namespace Event Hubs",
     "description": "This module deploys an Event Hub Namespace Event Hub."
   },
   "definitions": {
+    "eventHubAuthorizationRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Event Hub authorization rule."
+          }
+        },
+        "rights": {
+          "type": "array",
+          "allowedValues": [
+            "Listen",
+            "Manage",
+            "Send"
+          ],
+          "metadata": {
+            "description": "Required. The allowed rights for an Event Hub authorization rule."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for an Event Hub authorization rule."
+      }
+    },
+    "consumerGroupType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the consumer group."
+          }
+        },
+        "userMetadata": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. User Metadata is a placeholder to store user-defined string data with maximum length 1024. e.g. it can be used to store descriptive data, such as list of teams and their contact information also user-defined configuration settings can be stored."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for an Event Hub consumer group."
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -33,12 +81,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -113,7 +168,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -122,17 +177,20 @@
     "namespaceName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the parent event hub namespace. Required if the template is used in a standalone deployment."
+        "description": "Conditional. The name of the parent Event Hub namespace. Required if the template is used in a standalone deployment."
       }
     },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the event hub."
+        "description": "Required. The name of the Event Hub."
       }
     },
     "authorizationRules": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/eventHubAuthorizationRuleType"
+      },
       "defaultValue": [
         {
           "name": "RootManageSharedAccessKey",
@@ -144,14 +202,14 @@
         }
       ],
       "metadata": {
-        "description": "Optional. Authorization Rules for the event hub."
+        "description": "Optional. Authorization Rules for the Event Hub."
       }
     },
     "messageRetentionInDays": {
       "type": "int",
       "defaultValue": 1,
       "minValue": 1,
-      "maxValue": 7,
+      "maxValue": 90,
       "metadata": {
         "description": "Optional. Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Will be automatically set to infinite retention if cleanup policy is set to \"Compact\"."
       }
@@ -185,13 +243,16 @@
     },
     "consumergroups": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/consumerGroupType"
+      },
       "defaultValue": [
         {
           "name": "$Default"
         }
       ],
       "metadata": {
-        "description": "Optional. The consumer groups to create in this event hub instance."
+        "description": "Optional. The consumer groups to create in this Event Hub instance."
       }
     },
     "lock": {
@@ -282,6 +343,13 @@
         "description": "Optional. A value that indicates whether to Skip Empty Archives."
       }
     },
+    "retentionDescriptionEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. A value that indicates whether to enable retention description properties. If it is set to true the messageRetentionInDays property is ignored."
+      }
+    },
     "retentionDescriptionCleanupPolicy": {
       "type": "string",
       "defaultValue": "Delete",
@@ -297,18 +365,25 @@
       "type": "int",
       "defaultValue": 1,
       "minValue": 1,
-      "maxValue": 168,
+      "maxValue": 2160,
       "metadata": {
-        "description": "Optional. Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue."
+        "description": "Optional. Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageRetentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue."
       }
     },
     "retentionDescriptionTombstoneRetentionTimeInHours": {
       "type": "int",
       "defaultValue": 1,
       "minValue": 1,
-      "maxValue": 168,
+      "maxValue": 2160,
       "metadata": {
         "description": "Optional. Retention cleanup policy. Number of hours to retain the tombstone markers of a compacted Event Hub. This value is only used when cleanupPolicy is Compact. Consumer must complete reading the tombstone marker within this specified amount of time if consumer begins from starting offset to ensure they get a valid snapshot for the specific key described by the tombstone marker within the compacted Event Hub."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     }
   },
@@ -321,14 +396,10 @@
       }
     ],
     "eventHubProperties": {
-      "messageRetentionInDays": "[parameters('messageRetentionInDays')]",
+      "messageRetentionInDays": "[if(parameters('retentionDescriptionEnabled'), null(), parameters('messageRetentionInDays'))]",
       "partitionCount": "[parameters('partitionCount')]",
       "status": "[parameters('status')]",
-      "retentionDescription": {
-        "cleanupPolicy": "[parameters('retentionDescriptionCleanupPolicy')]",
-        "retentionTimeInHours": "[if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Delete'), parameters('retentionDescriptionRetentionTimeInHours'), null())]",
-        "tombstoneRetentionTimeInHours": "[if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Compact'), parameters('retentionDescriptionTombstoneRetentionTimeInHours'), null())]"
-      }
+      "retentionDescription": "[if(parameters('retentionDescriptionEnabled'), createObject('cleanupPolicy', parameters('retentionDescriptionCleanupPolicy'), 'retentionTimeInHours', if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Delete'), parameters('retentionDescriptionRetentionTimeInHours'), null()), 'tombstoneRetentionTimeInHours', if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Compact'), parameters('retentionDescriptionTombstoneRetentionTimeInHours'), null())), null())]"
     },
     "eventHubPropertiesCapture": {
       "captureDescription": {
@@ -359,6 +430,26 @@
     }
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.eventhub-nseventhub.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "namespace": {
       "existing": true,
       "type": "Microsoft.EventHub/namespaces",
@@ -367,7 +458,7 @@
     },
     "eventHub": {
       "type": "Microsoft.EventHub/namespaces/eventhubs",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
       "properties": "[if(parameters('captureDescriptionEnabled'), union(variables('eventHubProperties'), variables('eventHubPropertiesCapture')), variables('eventHubProperties'))]"
     },
@@ -379,7 +470,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "eventHub"
@@ -440,8 +531,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "6600585942129882296"
+              "version": "0.37.4.10188",
+              "templateHash": "17561713370721644464"
             },
             "name": "Event Hub Namespace Event Hub Consumer Groups",
             "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group."
@@ -468,6 +559,7 @@
             "userMetadata": {
               "type": "string",
               "defaultValue": "",
+              "maxLength": 1024,
               "metadata": {
                 "description": "Optional. User Metadata is a placeholder to store user-defined string data with maximum length 1024. e.g. it can be used to store descriptive data, such as list of teams and their contact information also user-defined configuration settings can be stored."
               }
@@ -545,8 +637,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "5591325767835614815"
+              "version": "0.37.4.10188",
+              "templateHash": "71535215115158592"
             },
             "name": "Event Hub Namespace Event Hub Authorization Rules",
             "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule."
@@ -627,21 +719,21 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the event hub."
+        "description": "The name of the Event Hub."
       },
       "value": "[parameters('name')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the event hub."
+        "description": "The resource ID of the Event Hub."
       },
       "value": "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaceName'), parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group the event hub was deployed into."
+        "description": "The resource group the Event Hub was deployed into."
       },
       "value": "[resourceGroup().name]"
     }

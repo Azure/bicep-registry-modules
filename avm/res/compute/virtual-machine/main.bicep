@@ -11,7 +11,7 @@ param computerName string = name
 param vmSize string
 
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
-param encryptionAtHost bool = true
+param encryptionAtHost bool = false
 
 @description('Optional. Specifies the SecurityType of the virtual machine. It has to be set to any specified value to enable UefiSettings. The default behavior is: UefiSettings will not be enabled unless this property is set.')
 @allowed([
@@ -28,19 +28,22 @@ param secureBootEnabled bool = false
 param vTpmEnabled bool = false
 
 @description('Required. OS image reference. In case of marketplace images, it\'s the combination of the publisher, offer, sku, version attributes. In case of custom images it\'s the resource ID of the custom image.')
-param imageReference object
+param imageReference imageReferenceType
 
 @description('Optional. Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use.')
-param plan object = {}
+param plan planType?
 
 @description('Required. Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object.  Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param osDisk osDiskType
 
 @description('Optional. Specifies the data disks. For security reasons, it is recommended to specify DiskEncryptionSet into the dataDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
-param dataDisks dataDisksType
+param dataDisks dataDiskType[]?
 
 @description('Optional. The flag that enables or disables a capability to have one or more managed data disks with UltraSSD_LRS storage account type on the VM or VMSS. Managed disks with storage account type UltraSSD_LRS can be added to a virtual machine or virtual machine scale set only if this property is enabled.')
 param ultraSSDEnabled bool = false
+
+@description('Optional. The flag that enables or disables hibernation capability on the VM.')
+param hibernationEnabled bool = false
 
 @description('Required. Administrator username.')
 @secure()
@@ -57,7 +60,7 @@ param userData string = ''
 param customData string = ''
 
 @description('Optional. Specifies set of certificates that should be installed onto the virtual machine.')
-param certificatesToBeInstalled array = []
+param certificatesToBeInstalled vaultSecretGroupType[]?
 
 @description('Optional. Specifies the priority for the virtual machine.')
 @allowed([
@@ -65,16 +68,20 @@ param certificatesToBeInstalled array = []
   'Low'
   'Spot'
 ])
-param priority string = 'Regular'
+param priority string?
 
-@description('Optional. Specifies the eviction policy for the low priority virtual machine. Will result in \'Deallocate\' eviction policy.')
-param enableEvictionPolicy bool = false
+@description('Optional. Specifies the eviction policy for the low priority virtual machine.')
+@allowed([
+  'Deallocate'
+  'Delete'
+])
+param evictionPolicy string = 'Deallocate'
 
 @description('Optional. Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars.')
 param maxPriceForLowPriorityVm string = ''
 
 @description('Optional. Specifies resource ID about the dedicated host that the virtual machine resides in.')
-param dedicatedHostId string = ''
+param dedicatedHostResourceId string = ''
 
 @description('Optional. Specifies that the image or disk that is being used was licensed on-premises.')
 @allowed([
@@ -82,15 +89,15 @@ param dedicatedHostId string = ''
   'SLES_BYOS'
   'Windows_Client'
   'Windows_Server'
-  ''
 ])
-param licenseType string = ''
+param licenseType string?
 
 @description('Optional. The list of SSH public keys used to authenticate with linux based VMs.')
-param publicKeys array = []
+param publicKeys publicKeyType[] = []
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource. The system-assigned managed identity will automatically be enabled if extensionAadJoinConfig.enabled = "True".')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityAllType?
 
 @description('Optional. Whether boot diagnostics should be enabled on the Virtual Machine. Boot diagnostics will be enabled with a managed storage account if no bootDiagnosticsStorageAccountName value is provided. If bootDiagnostics and bootDiagnosticsStorageAccountName values are not provided, boot diagnostics will be disabled.')
 param bootDiagnostics bool = false
@@ -111,20 +118,20 @@ param virtualMachineScaleSetResourceId string = ''
 param availabilitySetResourceId string = ''
 
 @description('Optional. Specifies the gallery applications that should be made available to the VM/VMSS.')
-param galleryApplications array = []
+param galleryApplications vmGalleryApplicationType[]?
 
-@description('Required. If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.')
+@description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).')
 @allowed([
-  0
+  -1
   1
   2
   3
 ])
-param zone int
+param availabilityZone int
 
 // External resources
 @description('Required. Configures NICs and PIPs.')
-param nicConfigurations array
+param nicConfigurations nicConfigurationType[]
 
 @description('Optional. Recovery service vault name to add VMs to backup.')
 param backupVaultName string = ''
@@ -136,7 +143,7 @@ param backupVaultResourceGroup string = resourceGroup().name
 param backupPolicyName string = 'DefaultPolicy'
 
 @description('Optional. The configuration for auto-shutdown.')
-param autoShutdownConfig object = {}
+param autoShutdownConfig autoShutDownConfigType = {}
 
 @description('Optional. The resource Id of a maintenance configuration for this VM.')
 param maintenanceConfigurationResourceId string = ''
@@ -191,23 +198,22 @@ param extensionDSCConfig object = {
   enabled: false
 }
 
-@description('Optional. The configuration for the [Custom Script] extension. Must at least contain the ["enabled": true] property to be executed.')
-param extensionCustomScriptConfig object = {
-  enabled: false
-  fileData: []
-}
+@description('Optional. The configuration for the [Custom Script] extension.')
+param extensionCustomScriptConfig extensionCustomScriptConfigType?
 
 @description('Optional. The configuration for the [Nvidia Gpu Driver Windows] extension. Must at least contain the ["enabled": true] property to be executed.')
 param extensionNvidiaGpuDriverWindows object = {
   enabled: false
 }
 
-@description('Optional. The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.')
+@description('Optional. The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identity.')
+@secure()
+#disable-next-line secure-parameter-default
 param extensionHostPoolRegistration object = {
   enabled: false
 }
 
-@description('Optional. The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.')
+@description('Optional. The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identity.')
 param extensionGuestConfigurationExtension object = {
   enabled: false
 }
@@ -217,33 +223,25 @@ param guestConfiguration object = {}
 
 @description('Optional. An object that contains the extension specific protected settings.')
 @secure()
-param extensionCustomScriptProtectedSetting object = {}
-
-@description('Optional. An object that contains the extension specific protected settings.')
-@secure()
 param extensionGuestConfigurationExtensionProtectedSettings object = {}
 
 // Shared parameters
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Compute/virtualMachines@2024-11-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
-
-@description('Generated. Do not provide a value! This date value is used to generate a registration token.')
-param baseTime string = utcNow('u')
-
-@description('Optional. SAS token validity length to use to download files from storage accounts. Usage: \'PT8H\' - valid for 8 hours; \'P5D\' - valid for 5 days; \'P1Y\' - valid for 1 year. When not provided, the SAS token will be valid for 8 hours.')
-param sasTokenValidityLength string = 'PT8H'
 
 @description('Required. The chosen OS type.')
 @allowed([
@@ -298,13 +296,31 @@ param enableHotpatching bool = false
 param timeZone string = ''
 
 @description('Optional. Specifies additional XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup. Contents are defined by setting name, component name, and the pass in which the content is applied.')
-param additionalUnattendContent array = []
+param additionalUnattendContent additionalUnattendContentType[]?
 
-@description('Optional. Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. - WinRMConfiguration object.')
-param winRM array = []
+@description('Optional. Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell.')
+param winRMListeners winRMListenerType[]?
 
 @description('Optional. The configuration profile of automanage. Either \'/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction\', \'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest\' or the resource Id of custom profile.')
 param configurationProfile string = ''
+
+@description('Optional. Capacity reservation group resource id that should be used for allocating the virtual machine vm instances provided enough capacity has been reserved.')
+param capacityReservationGroupResourceId string = ''
+
+@allowed([
+  'AllowAll'
+  'AllowPrivate'
+  'DenyAll'
+])
+@description('Optional. Policy for accessing the disk via network.')
+param networkAccessPolicy string = 'DenyAll'
+
+@allowed([
+  'Disabled'
+  'Enabled'
+])
+@description('Optional. Policy for controlling export on the disk.')
+param publicNetworkAccess string = 'Disabled'
 
 var enableReferencedModulesTelemetry = false
 
@@ -335,6 +351,15 @@ var linuxConfiguration = {
     : null
 }
 
+var additionalUnattendContentFormatted = [
+  for (unattendContent, index) in additionalUnattendContent ?? []: {
+    settingName: unattendContent.settingName
+    content: unattendContent.content
+    componentName: 'Microsoft-Windows-Shell-Setup'
+    passName: 'OobeSystem'
+  }
+]
+
 var windowsConfiguration = {
   provisionVMAgent: provisionVMAgent
   enableAutomaticUpdates: enableAutomaticUpdates
@@ -352,20 +377,12 @@ var windowsConfiguration = {
       }
     : null
   timeZone: empty(timeZone) ? null : timeZone
-  additionalUnattendContent: empty(additionalUnattendContent) ? null : additionalUnattendContent
-  winRM: !empty(winRM)
+  additionalUnattendContent: empty(additionalUnattendContent) ? null : additionalUnattendContentFormatted
+  winRM: !empty(winRMListeners)
     ? {
-        listeners: winRM
+        listeners: winRMListeners
       }
     : null
-}
-
-var accountSasProperties = {
-  signedServices: 'b'
-  signedPermission: 'r'
-  signedExpiry: dateTimeAdd(baseTime, sasTokenValidityLength)
-  signedResourceTypes: 'o'
-  signedProtocol: 'https'
 }
 
 var formattedUserAssignedIdentities = reduce(
@@ -490,7 +507,7 @@ module vm_nic 'modules/nic-configuration.bicep' = [
       enableIPForwarding: nicConfiguration.?enableIPForwarding ?? false
       enableAcceleratedNetworking: nicConfiguration.?enableAcceleratedNetworking ?? true
       dnsServers: contains(nicConfiguration, 'dnsServers')
-        ? (!empty(nicConfiguration.dnsServers) ? nicConfiguration.dnsServers : [])
+        ? (!empty(nicConfiguration.?dnsServers) ? nicConfiguration.?dnsServers : [])
         : []
       networkSecurityGroupResourceId: nicConfiguration.?networkSecurityGroupResourceId ?? ''
       ipConfigurations: nicConfiguration.ipConfigurations
@@ -504,11 +521,11 @@ module vm_nic 'modules/nic-configuration.bicep' = [
 ]
 
 resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
-  for (dataDisk, index) in dataDisks ?? []: {
+  for (dataDisk, index) in dataDisks ?? []: if (empty(dataDisk.managedDisk.?id)) {
     location: location
     name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
     sku: {
-      name: dataDisk.managedDisk.storageAccountType
+      name: dataDisk.managedDisk.?storageAccountType
     }
     properties: {
       diskSizeGB: dataDisk.diskSizeGB
@@ -517,8 +534,13 @@ resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
       }
       diskIOPSReadWrite: dataDisk.?diskIOPSReadWrite
       diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite
+      publicNetworkAccess: publicNetworkAccess
+      networkAccessPolicy: networkAccessPolicy
     }
-    zones: zone != 0 && !contains(dataDisk.managedDisk.storageAccountType, 'ZRS') ? array(string(zone)) : null
+    zones: availabilityZone != -1 && !contains(dataDisk.managedDisk.?storageAccountType, 'ZRS')
+      ? array(string(availabilityZone))
+      : null
+    tags: dataDisk.?tags ?? tags
   }
 ]
 
@@ -527,14 +549,14 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
   location: location
   identity: identity
   tags: tags
-  zones: zone != 0 ? array(string(zone)) : null
-  plan: !empty(plan) ? plan : null
+  zones: availabilityZone != -1 ? array(string(availabilityZone)) : null
+  plan: plan
   properties: {
     hardwareProfile: {
       vmSize: vmSize
     }
     securityProfile: {
-      encryptionAtHost: encryptionAtHost ? encryptionAtHost : null
+      ...(encryptionAtHost ? { encryptionAtHost: encryptionAtHost } : {}) // Using shallow merge as even providing the property with `false` requires the feature to be registered
       securityType: securityType
       uefiSettings: securityType == 'TrustedLaunch'
         ? {
@@ -549,10 +571,16 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         name: osDisk.?name ?? '${name}-disk-os-01'
         createOption: osDisk.?createOption ?? 'FromImage'
         deleteOption: osDisk.?deleteOption ?? 'Delete'
-        diskSizeGB: osDisk.diskSizeGB
+        diffDiskSettings: empty(osDisk.?diffDiskSettings ?? {})
+          ? null
+          : {
+              option: 'Local'
+              placement: osDisk.diffDiskSettings!.placement
+            }
+        diskSizeGB: osDisk.?diskSizeGB
         caching: osDisk.?caching ?? 'ReadOnly'
         managedDisk: {
-          storageAccountType: osDisk.managedDisk.storageAccountType
+          storageAccountType: osDisk.managedDisk.?storageAccountType
           diskEncryptionSet: {
             id: osDisk.managedDisk.?diskEncryptionSetResourceId
           }
@@ -561,23 +589,28 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       dataDisks: [
         for (dataDisk, index) in dataDisks ?? []: {
           lun: dataDisk.?lun ?? index
-          name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
-          diskSizeGB: dataDisk.diskSizeGB
-          createOption: (managedDataDisks[index].?id != null) ? 'Attach' : dataDisk.?createoption ?? 'Empty'
-          deleteOption: dataDisk.?deleteOption ?? 'Delete'
-          caching: dataDisk.?caching ?? 'ReadOnly'
+          name: !empty(dataDisk.managedDisk.?id)
+            ? last(split(dataDisk.managedDisk.id ?? '', '/'))
+            : dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
+          createOption: (managedDataDisks[index].?id != null || !empty(dataDisk.managedDisk.?id))
+            ? 'Attach'
+            : dataDisk.?createoption ?? 'Empty'
+          deleteOption: !empty(dataDisk.managedDisk.?id) ? 'Detach' : dataDisk.?deleteOption ?? 'Delete'
+          caching: !empty(dataDisk.managedDisk.?id) ? 'None' : dataDisk.?caching ?? 'ReadOnly'
           managedDisk: {
-            storageAccountType: dataDisk.managedDisk.storageAccountType
-            id: managedDataDisks[index].?id
-            diskEncryptionSet: {
-              id: dataDisk.managedDisk.?diskEncryptionSetResourceId
-            }
+            id: dataDisk.managedDisk.?id ?? managedDataDisks[index].?id
+            diskEncryptionSet: contains(dataDisk.managedDisk, 'diskEncryptionSet')
+              ? {
+                  id: dataDisk.managedDisk.diskEncryptionSet.id
+                }
+              : null
           }
         }
       ]
     }
     additionalCapabilities: {
       ultraSSDEnabled: ultraSSDEnabled
+      hibernationEnabled: hibernationEnabled
     }
     osProfile: {
       computerName: computerName
@@ -604,6 +637,13 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         }
       ]
     }
+    capacityReservation: !empty(capacityReservationGroupResourceId)
+      ? {
+          capacityReservationGroup: {
+            id: capacityReservationGroupResourceId
+          }
+        }
+      : null
     diagnosticsProfile: {
       bootDiagnostics: {
         enabled: !empty(bootDiagnosticStorageAccountName) ? true : bootDiagnostics
@@ -633,19 +673,19 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         }
       : null
     priority: priority
-    evictionPolicy: enableEvictionPolicy ? 'Deallocate' : null
+    evictionPolicy: !empty(priority) && priority != 'Regular' ? evictionPolicy : null
     #disable-next-line BCP036
     billingProfile: !empty(priority) && !empty(maxPriceForLowPriorityVm)
       ? {
           maxPrice: json(maxPriceForLowPriorityVm)
         }
       : null
-    host: !empty(dedicatedHostId)
+    host: !empty(dedicatedHostResourceId)
       ? {
-          id: dedicatedHostId
+          id: dedicatedHostResourceId
         }
       : null
-    licenseType: !empty(licenseType) ? licenseType : null
+    licenseType: licenseType
     userData: !empty(userData) ? base64(userData) : null
   }
   dependsOn: [
@@ -682,32 +722,15 @@ resource vm_autoShutdownConfiguration 'Microsoft.DevTestLab/schedules@2018-09-15
       time: autoShutdownConfig.?dailyRecurrenceTime ?? '19:00'
     }
     timeZoneId: autoShutdownConfig.?timeZone ?? 'UTC'
-    notificationSettings: contains(autoShutdownConfig, 'notificationStatus')
+    notificationSettings: contains(autoShutdownConfig, 'notificationSettings')
       ? {
-          status: autoShutdownConfig.?notificationStatus ?? 'Disabled'
-          emailRecipient: autoShutdownConfig.?notificationEmail ?? ''
-          notificationLocale: autoShutdownConfig.?notificationLocale ?? 'en'
-          webhookUrl: autoShutdownConfig.?notificationWebhookUrl ?? ''
-          timeInMinutes: autoShutdownConfig.?notificationTimeInMinutes ?? 30
+          status: autoShutdownConfig.?status ?? 'Disabled'
+          emailRecipient: autoShutdownConfig.?notificationSettings.?emailRecipient ?? ''
+          notificationLocale: autoShutdownConfig.?notificationSettings.?notificationLocale ?? 'en'
+          webhookUrl: autoShutdownConfig.?notificationSettings.?webhookUrl ?? ''
+          timeInMinutes: autoShutdownConfig.?notificationSettings.?timeInMinutes ?? 30
         }
       : null
-  }
-}
-
-module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VM-AADLogin'
-  params: {
-    virtualMachineName: vm.name
-    name: 'AADLogin'
-    location: location
-    publisher: 'Microsoft.Azure.ActiveDirectory'
-    type: osType == 'Windows' ? 'AADLoginForWindows' : 'AADSSHLoginforLinux'
-    typeHandlerVersion: extensionAadJoinConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '2.0' : '1.0')
-    autoUpgradeMinorVersion: extensionAadJoinConfig.?autoUpgradeMinorVersion ?? true
-    enableAutomaticUpgrade: extensionAadJoinConfig.?enableAutomaticUpgrade ?? false
-    settings: extensionAadJoinConfig.?settings ?? {}
-    supressFailures: extensionAadJoinConfig.?supressFailures ?? false
-    tags: extensionAadJoinConfig.?tags ?? tags
   }
 }
 
@@ -715,7 +738,7 @@ module vm_domainJoinExtension 'extension/main.bicep' = if (contains(extensionDom
   name: '${uniqueString(deployment().name, location)}-VM-DomainJoin'
   params: {
     virtualMachineName: vm.name
-    name: 'DomainJoin'
+    name: extensionDomainJoinConfig.?name ?? 'DomainJoin'
     location: location
     publisher: 'Microsoft.Compute'
     type: 'JsonADDomainExtension'
@@ -729,8 +752,25 @@ module vm_domainJoinExtension 'extension/main.bicep' = if (contains(extensionDom
       Password: extensionDomainJoinPassword
     }
   }
+}
+
+module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-AADLogin'
+  params: {
+    virtualMachineName: vm.name
+    name: extensionAadJoinConfig.?name ?? 'AADLogin'
+    location: location
+    publisher: 'Microsoft.Azure.ActiveDirectory'
+    type: osType == 'Windows' ? 'AADLoginForWindows' : 'AADSSHLoginforLinux'
+    typeHandlerVersion: extensionAadJoinConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '2.0' : '1.0')
+    autoUpgradeMinorVersion: extensionAadJoinConfig.?autoUpgradeMinorVersion ?? true
+    enableAutomaticUpgrade: extensionAadJoinConfig.?enableAutomaticUpgrade ?? false
+    settings: extensionAadJoinConfig.?settings ?? {}
+    supressFailures: extensionAadJoinConfig.?supressFailures ?? false
+    tags: extensionAadJoinConfig.?tags ?? tags
+  }
   dependsOn: [
-    vm_aadJoinExtension
+    vm_domainJoinExtension
   ]
 }
 
@@ -738,7 +778,7 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAn
   name: '${uniqueString(deployment().name, location)}-VM-MicrosoftAntiMalware'
   params: {
     virtualMachineName: vm.name
-    name: 'MicrosoftAntiMalware'
+    name: extensionAntiMalwareConfig.?name ?? 'MicrosoftAntiMalware'
     location: location
     publisher: 'Microsoft.Azure.Security'
     type: 'IaaSAntimalware'
@@ -760,7 +800,7 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAn
     tags: extensionAntiMalwareConfig.?tags ?? tags
   }
   dependsOn: [
-    vm_domainJoinExtension
+    vm_aadJoinExtension
   ]
 }
 
@@ -768,7 +808,7 @@ module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonit
   name: '${uniqueString(deployment().name, location)}-VM-AzureMonitorAgent'
   params: {
     virtualMachineName: vm.name
-    name: 'AzureMonitorAgent'
+    name: extensionMonitoringAgentConfig.?name ?? 'AzureMonitorAgent'
     location: location
     publisher: 'Microsoft.Azure.Monitor'
     type: osType == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
@@ -800,7 +840,7 @@ module vm_dependencyAgentExtension 'extension/main.bicep' = if (extensionDepende
   name: '${uniqueString(deployment().name, location)}-VM-DependencyAgent'
   params: {
     virtualMachineName: vm.name
-    name: 'DependencyAgent'
+    name: extensionDependencyAgentConfig.?name ?? 'DependencyAgent'
     location: location
     publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
     type: osType == 'Windows' ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
@@ -822,7 +862,7 @@ module vm_networkWatcherAgentExtension 'extension/main.bicep' = if (extensionNet
   name: '${uniqueString(deployment().name, location)}-VM-NetworkWatcherAgent'
   params: {
     virtualMachineName: vm.name
-    name: 'NetworkWatcherAgent'
+    name: extensionNetworkWatcherAgentConfig.?name ?? 'NetworkWatcherAgent'
     location: location
     publisher: 'Microsoft.Azure.NetworkWatcher'
     type: osType == 'Windows' ? 'NetworkWatcherAgentWindows' : 'NetworkWatcherAgentLinux'
@@ -841,7 +881,7 @@ module vm_desiredStateConfigurationExtension 'extension/main.bicep' = if (extens
   name: '${uniqueString(deployment().name, location)}-VM-DesiredStateConfiguration'
   params: {
     virtualMachineName: vm.name
-    name: 'DesiredStateConfiguration'
+    name: extensionDSCConfig.?name ?? 'DesiredStateConfiguration'
     location: location
     publisher: 'Microsoft.Powershell'
     type: 'DSC'
@@ -858,27 +898,61 @@ module vm_desiredStateConfigurationExtension 'extension/main.bicep' = if (extens
   ]
 }
 
-module vm_customScriptExtension 'extension/main.bicep' = if (extensionCustomScriptConfig.enabled) {
+resource cseIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(extensionCustomScriptConfig.?protectedSettings.?managedIdentityResourceId)) {
+  name: last(split(extensionCustomScriptConfig!.protectedSettings!.managedIdentityResourceId!, '/'))
+  scope: resourceGroup(
+    split(extensionCustomScriptConfig!.protectedSettings!.managedIdentityResourceId!, '/')[2],
+    split(extensionCustomScriptConfig!.protectedSettings!.managedIdentityResourceId!, '/')[4]
+  )
+}
+
+module vm_customScriptExtension 'extension/main.bicep' = if (!empty(extensionCustomScriptConfig)) {
   name: '${uniqueString(deployment().name, location)}-VM-CustomScriptExtension'
   params: {
     virtualMachineName: vm.name
-    name: 'CustomScriptExtension'
+    name: extensionCustomScriptConfig.?name ?? 'CustomScriptExtension'
     location: location
     publisher: osType == 'Windows' ? 'Microsoft.Compute' : 'Microsoft.Azure.Extensions'
     type: osType == 'Windows' ? 'CustomScriptExtension' : 'CustomScript'
     typeHandlerVersion: extensionCustomScriptConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '1.10' : '2.1')
     autoUpgradeMinorVersion: extensionCustomScriptConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionCustomScriptConfig.?enableAutomaticUpgrade ?? false
-    settings: {
-      fileUris: [
-        for fileData in extensionCustomScriptConfig.fileData: contains(fileData, 'storageAccountId')
-          ? '${fileData.uri}?${listAccountSas(fileData.storageAccountId, '2019-04-01', accountSasProperties).accountSasToken}'
-          : fileData.uri
-      ]
-    }
+    forceUpdateTag: extensionCustomScriptConfig.?forceUpdateTag
+    provisionAfterExtensions: extensionCustomScriptConfig.?provisionAfterExtensions
     supressFailures: extensionCustomScriptConfig.?supressFailures ?? false
     tags: extensionCustomScriptConfig.?tags ?? tags
-    protectedSettings: extensionCustomScriptProtectedSetting
+    protectedSettingsFromKeyVault: extensionCustomScriptConfig.?protectedSettingsFromKeyVault
+    settings: {
+      ...(!empty(extensionCustomScriptConfig!.?settings.?commandToExecute)
+        ? { commandToExecute: extensionCustomScriptConfig!.?settings.?commandToExecute }
+        : {})
+      ...(!empty(extensionCustomScriptConfig!.?settings.?fileUris)
+        ? { fileUris: extensionCustomScriptConfig!.?settings.fileUris }
+        : {})
+    }
+    protectedSettings: {
+      ...(!empty(extensionCustomScriptConfig!.?protectedSettings.?commandToExecute)
+        ? { commandToExecute: extensionCustomScriptConfig!.protectedSettings!.?commandToExecute }
+        : {})
+      ...(!empty(extensionCustomScriptConfig!.?protectedSettings.?storageAccountName)
+        ? { storageAccountName: extensionCustomScriptConfig!.protectedSettings!.storageAccountName! }
+        : {})
+      ...(!empty(extensionCustomScriptConfig!.?protectedSettings.?storageAccountKey)
+        ? { storageAccountKey: extensionCustomScriptConfig!.protectedSettings!.storageAccountKey! }
+        : {})
+      ...(!empty(extensionCustomScriptConfig!.?protectedSettings.?fileUris)
+        ? { fileUris: extensionCustomScriptConfig!.protectedSettings!.fileUris! }
+        : {})
+      ...(extensionCustomScriptConfig!.?protectedSettings.?managedIdentityResourceId != null
+        ? {
+            managedIdentity: !empty(extensionCustomScriptConfig!.protectedSettings!.?managedIdentityResourceId)
+              ? {
+                  clientId: cseIdentity!.properties.clientId // Uses user-assigned
+                }
+              : {} // Uses system-assigned
+          }
+        : {})
+    }
   }
   dependsOn: [
     vm_desiredStateConfigurationExtension
@@ -889,7 +963,7 @@ module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzu
   name: '${uniqueString(deployment().name, location)}-VM-AzureDiskEncryption'
   params: {
     virtualMachineName: vm.name
-    name: 'AzureDiskEncryption'
+    name: extensionAzureDiskEncryptionConfig.?name ?? 'AzureDiskEncryption'
     location: location
     publisher: 'Microsoft.Azure.Security'
     type: osType == 'Windows' ? 'AzureDiskEncryption' : 'AzureDiskEncryptionForLinux'
@@ -910,7 +984,7 @@ module vm_nvidiaGpuDriverWindowsExtension 'extension/main.bicep' = if (extension
   name: '${uniqueString(deployment().name, location)}-VM-NvidiaGpuDriverWindows'
   params: {
     virtualMachineName: vm.name
-    name: 'NvidiaGpuDriverWindows'
+    name: extensionNvidiaGpuDriverWindows.?name ?? 'NvidiaGpuDriverWindows'
     location: location
     publisher: 'Microsoft.HpcCompute'
     type: 'NvidiaGpuDriverWindows'
@@ -929,7 +1003,7 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHo
   name: '${uniqueString(deployment().name, location)}-VM-HostPoolRegistration'
   params: {
     virtualMachineName: vm.name
-    name: 'HostPoolRegistration'
+    name: extensionHostPoolRegistration.?name ?? 'HostPoolRegistration'
     location: location
     publisher: 'Microsoft.PowerShell'
     type: 'DSC'
@@ -957,7 +1031,9 @@ module vm_azureGuestConfigurationExtension 'extension/main.bicep' = if (extensio
   name: '${uniqueString(deployment().name, location)}-VM-GuestConfiguration'
   params: {
     virtualMachineName: vm.name
-    name: osType == 'Windows' ? 'AzurePolicyforWindows' : 'AzurePolicyforLinux'
+    name: extensionGuestConfigurationExtension.?name ?? osType == 'Windows'
+      ? 'AzurePolicyforWindows'
+      : 'AzurePolicyforLinux'
     location: location
     publisher: 'Microsoft.GuestConfiguration'
     type: osType == 'Windows' ? 'ConfigurationforWindows' : 'ConfigurationForLinux'
@@ -975,8 +1051,8 @@ module vm_azureGuestConfigurationExtension 'extension/main.bicep' = if (extensio
   ]
 }
 
-resource AzureWindowsBaseline 'Microsoft.GuestConfiguration/guestConfigurationAssignments@2020-06-25' = if (!empty(guestConfiguration)) {
-  name: 'AzureWindowsBaseline'
+resource AzureWindowsBaseline 'Microsoft.GuestConfiguration/guestConfigurationAssignments@2024-04-05' = if (!empty(guestConfiguration)) {
+  name: guestConfiguration.?name ?? 'AzureWindowsBaseline'
   scope: vm
   dependsOn: [
     vm_azureGuestConfigurationExtension
@@ -992,7 +1068,12 @@ module vm_backup 'modules/protected-item.bicep' = if (!empty(backupVaultName)) {
   params: {
     name: 'vm;iaasvmcontainerv2;${resourceGroup().name};${vm.name}'
     location: location
-    policyId: az.resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', backupVaultName, backupPolicyName)
+    policyId: az.resourceId(
+      backupVaultResourceGroup,
+      'Microsoft.RecoveryServices/vaults/backupPolicies',
+      backupVaultName,
+      backupPolicyName
+    )
     protectedItemType: 'Microsoft.Compute/virtualMachines'
     protectionContainerName: 'iaasvmcontainer;iaasvmcontainerv2;${resourceGroup().name};${vm.name}'
     recoveryVaultName: backupVaultName
@@ -1008,9 +1089,9 @@ resource vm_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ??
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: vm
 }
@@ -1046,52 +1127,21 @@ output systemAssignedMIPrincipalId string? = vm.?identity.?principalId
 @description('The location the resource was deployed into.')
 output location string = vm.location
 
+import { networkInterfaceIPConfigurationOutputType } from 'br/public:avm/res/network/network-interface:0.5.1'
+@description('The list of NIC configurations of the virtual machine.')
+output nicConfigurations nicConfigurationOutputType[] = [
+  for (nicConfiguration, index) in nicConfigurations: {
+    name: vm_nic[index].outputs.name
+    ipConfigurations: vm_nic[index].outputs.ipConfigurations
+  }
+]
+
 // =============== //
 //   Definitions   //
 // =============== //
 
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]?
-}?
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
+@export()
+@description('The type describing an OS disk.')
 type osDiskType = {
   @description('Optional. The disk name.')
   name: string?
@@ -1107,6 +1157,12 @@ type osDiskType = {
 
   @description('Optional. Specifies the caching requirements.')
   caching: 'None' | 'ReadOnly' | 'ReadWrite'?
+
+  @description('Optional. Specifies the ephemeral Disk Settings for the operating system disk.')
+  diffDiskSettings: {
+    @description('Required. Specifies the ephemeral disk placement for the operating system disk.')
+    placement: ('CacheDisk' | 'NvmeDisk' | 'ResourceDisk')
+  }?
 
   @description('Required. The managed disk parameters.')
   managedDisk: {
@@ -1125,34 +1181,36 @@ type osDiskType = {
   }
 }
 
-type dataDisksType = {
-  @description('Optional. The disk name.')
+@export()
+@description('The type describing a data disk.')
+type dataDiskType = {
+  @description('Optional. The disk name. When attaching a pre-existing disk, this name is ignored and the name of the existing disk is used.')
   name: string?
 
   @description('Optional. Specifies the logical unit number of the data disk.')
   lun: int?
 
-  @description('Required. Specifies the size of an empty data disk in gigabytes.')
-  diskSizeGB: int
+  @description('Optional. Specifies the size of an empty data disk in gigabytes. This property is ignored when attaching a pre-existing disk.')
+  diskSizeGB: int?
 
-  @description('Optional. Specifies how the virtual machine should be created.')
+  @description('Optional. Specifies how the virtual machine should be created. This property is automatically set to \'Attach\' when attaching a pre-existing disk.')
   createOption: 'Attach' | 'Empty' | 'FromImage'?
 
-  @description('Optional. Specifies whether data disk should be deleted or detached upon VM deletion.')
+  @description('Optional. Specifies whether data disk should be deleted or detached upon VM deletion. This property is automatically set to \'Detach\' when attaching a pre-existing disk.')
   deleteOption: 'Delete' | 'Detach'?
 
-  @description('Optional. Specifies the caching requirements.')
+  @description('Optional. Specifies the caching requirements. This property is automatically set to \'None\' when attaching a pre-existing disk.')
   caching: 'None' | 'ReadOnly' | 'ReadWrite'?
 
-  @description('Optional. The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes.')
+  @description('Optional. The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes. Ignored when attaching a pre-existing disk.')
   diskIOPSReadWrite: int?
 
-  @description('Optional. The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10.')
+  @description('Optional. The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. Ignored when attaching a pre-existing disk.')
   diskMBpsReadWrite: int?
 
   @description('Required. The managed disk parameters.')
   managedDisk: {
-    @description('Required. Specifies the storage account type for the managed disk.')
+    @description('Optional. Specifies the storage account type for the managed disk. Ignored when attaching a pre-existing disk.')
     storageAccountType:
       | 'PremiumV2_LRS'
       | 'Premium_LRS'
@@ -1160,12 +1218,269 @@ type dataDisksType = {
       | 'StandardSSD_LRS'
       | 'StandardSSD_ZRS'
       | 'Standard_LRS'
-      | 'UltraSSD_LRS'
+      | 'UltraSSD_LRS'?
 
     @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
     diskEncryptionSetResourceId: string?
 
-    @description('Optional. Specifies the customer managed disk id for the managed disk.')
+    @description('Optional. Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty.')
     id: string?
   }
-}[]?
+
+  @description('Optional. The tags of the public IP address. Valid only when creating a new managed disk.')
+  tags: object?
+}
+
+type publicKeyType = {
+  @description('Required. Specifies the SSH public key data used to authenticate through ssh.')
+  keyData: string
+
+  @description('Required. Specifies the full path on the created VM where ssh public key is stored. If the file already exists, the specified key is appended to the file.')
+  path: string
+}
+
+import { ipConfigurationType } from 'modules/nic-configuration.bicep'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { subResourceType } from 'br/public:avm/res/network/network-interface:0.5.1'
+
+@export()
+@description('The type for the NIC configuration.')
+type nicConfigurationType = {
+  @description('Optional. The name of the NIC configuration.')
+  name: string?
+
+  @description('Optional. The suffix to append to the NIC name.')
+  nicSuffix: string?
+
+  @description('Optional. Indicates whether IP forwarding is enabled on this network interface.')
+  enableIPForwarding: bool?
+
+  @description('Optional. If the network interface is accelerated networking enabled.')
+  enableAcceleratedNetworking: bool?
+
+  @description('Optional. Specify what happens to the network interface when the VM is deleted.')
+  deleteOption: 'Delete' | 'Detach'?
+
+  @description('Optional. List of DNS servers IP addresses. Use \'AzureProvidedDNS\' to switch to azure provided DNS resolution. \'AzureProvidedDNS\' value cannot be combined with other IPs, it must be the only value in dnsServers collection.')
+  dnsServers: string[]?
+
+  @description('Optional. The network security group (NSG) to attach to the network interface.')
+  networkSecurityGroupResourceId: string?
+
+  @description('Required. The IP configurations of the network interface.')
+  ipConfigurations: ipConfigurationType[]
+
+  @description('Optional. The lock settings of the service.')
+  lock: lockType?
+
+  @description('Optional. The tags of the public IP address.')
+  tags: object?
+
+  @description('Optional. Enable/Disable usage telemetry for the module.')
+  enableTelemetry: bool?
+
+  @description('Optional. The diagnostic settings of the IP configuration.')
+  diagnosticSettings: diagnosticSettingFullType[]?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+}
+
+@export()
+@description('The type describing the image reference.')
+type imageReferenceType = {
+  @description('Optional. Specified the community gallery image unique id for vm deployment. This can be fetched from community gallery image GET call.')
+  communityGalleryImageId: string?
+
+  @description('Optional. The resource Id of the image reference.')
+  id: string?
+
+  @description('Optional. Specifies the offer of the platform image or marketplace image used to create the virtual machine.')
+  offer: string?
+
+  @description('Optional. The image publisher.')
+  publisher: string?
+
+  @description('Optional. The SKU of the image.')
+  sku: string?
+
+  @description('Optional. Specifies the version of the platform image or marketplace image used to create the virtual machine. The allowed formats are Major.Minor.Build or \'latest\'. Even if you use \'latest\', the VM image will not automatically update after deploy time even if a new version becomes available.')
+  version: string?
+
+  @description('Optional. Specified the shared gallery image unique id for vm deployment. This can be fetched from shared gallery image GET call.')
+  sharedGalleryImageId: string?
+}
+
+@export()
+@description('Specifies information about the marketplace image used to create the virtual machine.')
+type planType = {
+  @description('Optional. The name of the plan.')
+  name: string?
+
+  @description('Optional. Specifies the product of the image from the marketplace.')
+  product: string?
+
+  @description('Optional. The publisher ID.')
+  publisher: string?
+
+  @description('Optional. The promotion code.')
+  promotionCode: string?
+}
+
+@export()
+@description('The type describing the configuration profile.')
+type autoShutDownConfigType = {
+  @description('Optional. The status of the auto shutdown configuration.')
+  status: 'Enabled' | 'Disabled'?
+
+  @description('Optional. The time zone ID (e.g. China Standard Time, Greenland Standard Time, Pacific Standard time, etc.).')
+  timeZone: string?
+
+  @description('Optional. The time of day the schedule will occur.')
+  dailyRecurrenceTime: string?
+
+  @description('Optional. The resource ID of the schedule.')
+  notificationSettings: {
+    @description('Optional. The status of the notification settings.')
+    status: 'Enabled' | 'Disabled'?
+
+    @description('Optional. The email address to send notifications to (can be a list of semi-colon separated email addresses).')
+    emailRecipient: string?
+
+    @description('Optional. The locale to use when sending a notification (fallback for unsupported languages is EN).')
+    notificationLocale: string?
+
+    @description('Optional. The webhook URL to which the notification will be sent.')
+    webhookUrl: string?
+
+    @description('Optional. The time in minutes before shutdown to send notifications.')
+    timeInMinutes: int?
+  }?
+}
+
+@export()
+@description('The type describing the set of certificates that should be installed onto the virtual machine.')
+type vaultSecretGroupType = {
+  @description('Optional. The relative URL of the Key Vault containing all of the certificates in VaultCertificates.')
+  sourceVault: subResourceType?
+
+  @description('Optional. The list of key vault references in SourceVault which contain certificates.')
+  vaultCertificates: {
+    @description('Optional. For Windows VMs, specifies the certificate store on the Virtual Machine to which the certificate should be added. The specified certificate store is implicitly in the LocalMachine account. For Linux VMs, the certificate file is placed under the /var/lib/waagent directory, with the file name <UppercaseThumbprint>.crt for the X509 certificate file and <UppercaseThumbprint>.prv for private key. Both of these files are .pem formatted.')
+    certificateStore: string?
+
+    @description('Optional. This is the URL of a certificate that has been uploaded to Key Vault as a secret.')
+    certificateUrl: string?
+  }[]?
+}
+
+@export()
+@description('The type describing the gallery application that should be made available to the VM/VMSS.')
+type vmGalleryApplicationType = {
+  @description('Required. Specifies the GalleryApplicationVersion resource id on the form of /subscriptions/{SubscriptionId}/resourceGroups/{ResourceGroupName}/providers/Microsoft.Compute/galleries/{galleryName}/applications/{application}/versions/{version}.')
+  packageReferenceId: string
+
+  @description('Optional. Specifies the uri to an azure blob that will replace the default configuration for the package if provided.')
+  configurationReference: string?
+
+  @description('Optional. If set to true, when a new Gallery Application version is available in PIR/SIG, it will be automatically updated for the VM/VMSS.')
+  enableAutomaticUpgrade: bool?
+
+  @description('Optional. Specifies the order in which the packages have to be installed.')
+  order: int?
+
+  @description('Optional. Specifies a passthrough value for more generic context.')
+  tags: string?
+
+  @description('Optional. If true, any failure for any operation in the VmApplication will fail the deployment.')
+  treatFailureAsDeploymentFailure: bool?
+}
+
+@export()
+@description('The type describing additional base-64 encoded XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup.')
+type additionalUnattendContentType = {
+  @description('Optional. Specifies the name of the setting to which the content applies.')
+  settingName: 'FirstLogonCommands' | 'AutoLogon'?
+
+  @description('Optional. Specifies the XML formatted content that is added to the unattend.xml file for the specified path and component. The XML must be less than 4KB and must include the root element for the setting or feature that is being inserted.')
+  content: string?
+}
+
+@export()
+@description('The type describing a Windows Remote Management listener.')
+type winRMListenerType = {
+  @description('Optional. The URL of a certificate that has been uploaded to Key Vault as a secret.')
+  certificateUrl: string?
+
+  @description('Optional. Specifies the protocol of WinRM listener.')
+  protocol: 'Http' | 'Https'?
+}
+
+@export()
+@description('The type describing the network interface configuration output.')
+type nicConfigurationOutputType = {
+  @description('Required. The name of the NIC configuration.')
+  name: string
+
+  @description('Required. List of IP configurations of the NIC configuration.')
+  ipConfigurations: networkInterfaceIPConfigurationOutputType[]
+}
+
+@export()
+@description('The type of a \'CustomScriptExtension\' extension.')
+type extensionCustomScriptConfigType = {
+  @description('Optional. The name of the virtual machine extension. Defaults to `CustomScriptExtension`.')
+  name: string?
+
+  @description('Optional. Specifies the version of the script handler. Defaults to `1.10` for Windows and `2.1` for Linux.')
+  typeHandlerVersion: string?
+
+  @description('Optional. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true. Defaults to `true`.')
+  autoUpgradeMinorVersion: bool?
+
+  @description('Optional. How the extension handler should be forced to update even if the extension configuration has not changed.')
+  forceUpdateTag: string?
+
+  @description('Optional. The configuration of the custom script extension. Note: You can provide any property either in the `settings` or `protectedSettings` but not both. If your property contains secrets, use `protectedSettings`.')
+  settings: {
+    @description('Conditional. The entry point script to run. If the command contains any credentials, use the same property of the `protectedSettings` instead. Required if `protectedSettings.commandToExecute` is not provided.')
+    commandToExecute: string?
+
+    @description('Optional. URLs for files to be downloaded. If URLs are sensitive, for example, if they contain keys, this field should be specified in `protectedSettings`.')
+    fileUris: string[]?
+  }?
+
+  @description('Optional. The configuration of the custom script extension. Note: You can provide any property either in the `settings` or `protectedSettings` but not both. If your property contains secrets, use `protectedSettings`.')
+  @secure()
+  protectedSettings: {
+    @description('Conditional. The entry point script to run. Use this property if your command contains secrets such as passwords or if your file URIs are sensitive. Required if `settings.commandToExecute` is not provided.')
+    commandToExecute: string?
+
+    @description('Optional. The name of storage account. If you specify storage credentials, all fileUris values must be URLs for Azure blobs..')
+    storageAccountName: string?
+
+    @description('Optional. The access key of the storage account.')
+    storageAccountKey: string?
+
+    @description('Optional. The managed identity for downloading files. Must not be used in conjunction with the `storageAccountName` or `storageAccountKey` property. If you want to use the VM\'s system assigned identity, set the `value` to an empty string.')
+    managedIdentityResourceId: string?
+
+    @description('Optional. URLs for files to be downloaded.')
+    fileUris: string[]?
+  }?
+
+  @description('Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). Defaults to `false`.')
+  supressFailures: bool?
+
+  @description('Optional. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `false`.')
+  enableAutomaticUpgrade: bool?
+
+  @description('Optional. Tags of the resource.')
+  tags: resourceInput<'Microsoft.Compute/virtualMachines/extensions@2024-11-01'>.tags?
+
+  @description('Optional. The extensions protected settings that are passed by reference, and consumed from key vault.')
+  protectedSettingsFromKeyVault: resourceInput<'Microsoft.Compute/virtualMachines/extensions@2024-11-01'>.properties.protectedSettingsFromKeyVault?
+
+  @description('Optional. Collection of extension names after which this extension needs to be provisioned.')
+  provisionAfterExtensions: resourceInput<'Microsoft.Compute/virtualMachines/extensions@2024-11-01'>.properties.provisionAfterExtensions?
+}

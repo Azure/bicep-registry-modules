@@ -56,7 +56,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: nestedDependencies.outputs.sqlInstancePoolName
     location: enforcedLocation
-    skuName: 'GP_Gen8IM'
+    skuName: 'GP_Gen5'
     subnetResourceId: nestedDependencies.outputs.subnetId
   }
 }

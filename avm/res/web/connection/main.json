@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "9186378967323499549"
+      "version": "0.37.4.10188",
+      "templateHash": "18360499576738428421"
     },
     "name": "API Connections",
     "description": "This module deploys an Azure API Connection."
@@ -33,12 +33,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -141,18 +148,24 @@
     },
     "api": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/connections@2016-06-01#properties/properties/properties/api"
+        },
         "example": "  // for a Service Bus connection\n  {\n    type: 'Microsoft.Web/locations/managedApis'\n    id: subscriptionResourceId('Microsoft.Web/locations/managedApis', '${resourceLocation}', 'servicebus')\n  }\n",
         "description": "Optional. Specific values for some API connections."
-      }
+      },
+      "nullable": true
     },
     "customParameterValues": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/connections@2016-06-01#properties/properties/properties/customParameterValues"
+        },
         "description": "Optional. Dictionary of custom parameter values for specific connections."
-      }
+      },
+      "nullable": true
     },
     "displayName": {
       "type": "string",
@@ -162,18 +175,24 @@
     },
     "nonSecretParameterValues": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/connections@2016-06-01#properties/properties/properties/nonSecretParameterValues"
+        },
         "description": "Optional. Dictionary of nonsecret parameter values."
-      }
+      },
+      "nullable": true
     },
     "parameterValues": {
       "type": "secureObject",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/connections@2016-06-01#properties/properties/properties/parameterValues"
+        },
         "example": "    {\n      connectionString: 'listKeys('/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/Microsoft.ServiceBus/namespaces/AuthorizationRules/<serviceBusName>/RootManagedSharedAccessKey', '2023-01-01').primaryConnectionString'\n    }\n    {\n      rootfolder: fileshareConnection.rootfolder\n      authType: fileshareConnection.authType\n      // to add an object, use the any() function\n      gateway: any({\n        name: fileshareConnection.odgw.name\n        id: resourceId(fileshareConnection.odgw.resourceGroup, 'Microsoft.Web/connectionGateways', fileshareConnection.odgw.name)\n        type: 'Microsoft.Web/connectionGateways'\n      })\n      username: username\n      password: password\n    }\n  ",
         "description": "Optional. Connection strings or access keys for connection. Example: `accountName` and `accessKey` when using blobs. It can change depending on the resource."
-      }
+      },
+      "nullable": true
     },
     "parameterValueSet": {
       "type": "object",
@@ -212,21 +231,24 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/connections@2016-06-01#properties/tags"
+        },
         "example": "  {\n      key1: 'value1'\n      key2: 'value2'\n  }\n  ",
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "testLinks": {
       "type": "array",
-      "items": {
-        "type": "object"
-      },
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/connections@2016-06-01#properties/properties/properties/testLinks"
+        },
         "description": "Optional. Links to test the API connection."
-      }
+      },
+      "nullable": true
     }
   },
   "variables": {
@@ -291,7 +313,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "connection"

@@ -13,12 +13,19 @@ param clusterName string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
+@allowed([
+  'managedCluster'
+  'connectedCluster'
+])
+@description('Optional. The type of cluster to configure. Choose between AKS managed cluster or Arc-enabled connected cluster.')
+param clusterType string = 'managedCluster'
+
 @description('Optional. Configuration settings that are sensitive, as name-value pairs for configuring this extension.')
 @secure()
-param configurationProtectedSettings object?
+param configurationProtectedSettings resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.configurationProtectedSettings?
 
 @description('Optional. Configuration settings, as name-value pairs for configuring this extension.')
-param configurationSettings object?
+param configurationSettings resourceInput<'Microsoft.KubernetesConfiguration/extensions@2024-11-01'>.properties.configurationSettings?
 
 @description('Required. Type of the extension, of which this resource is an instance of. It must be one of the Extension Types registered with Microsoft.KubernetesConfiguration by the extension publisher.')
 param extensionType string
@@ -36,7 +43,7 @@ param targetNamespace string?
 param version string?
 
 @description('Optional. A list of flux configuraitons.')
-param fluxConfigurations array?
+param fluxConfigurations resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties[]?
 
 var enableReferencedModulesTelemetry = false
 
@@ -59,45 +66,59 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2022-07-01' existing = {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-05-01' existing = if (clusterType == 'managedCluster') {
   name: clusterName
 }
 
-resource extension 'Microsoft.KubernetesConfiguration/extensions@2022-03-01' = {
-  name: name
-  scope: managedCluster
-  properties: {
-    autoUpgradeMinorVersion: !empty(version) ? false : true
-    configurationProtectedSettings: configurationProtectedSettings
-    configurationSettings: configurationSettings
-    extensionType: extensionType
-    releaseTrain: releaseTrain
-    scope: {
-      cluster: !empty(releaseNamespace ?? '')
-        ? {
-            releaseNamespace: releaseNamespace
-          }
-        : null
-      namespace: !empty(targetNamespace ?? '')
-        ? {
-            targetNamespace: targetNamespace
-          }
-        : null
-    }
-    version: version
-  }
+// Arc-enabled Connected Cluster resource reference
+resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2024-01-01' existing = if (clusterType == 'connectedCluster') {
+  name: clusterName
 }
 
-module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:0.3.1' = [
+var extensionProperties = {
+  autoUpgradeMinorVersion: !empty(version) ? false : true
+  configurationProtectedSettings: configurationProtectedSettings
+  configurationSettings: configurationSettings
+  extensionType: extensionType
+  releaseTrain: releaseTrain
+  scope: {
+    cluster: !empty(releaseNamespace)
+      ? {
+          releaseNamespace: releaseNamespace
+        }
+      : null
+    namespace: !empty(targetNamespace)
+      ? {
+          targetNamespace: targetNamespace
+        }
+      : null
+  }
+  version: version
+}
+
+resource managedExtension 'Microsoft.KubernetesConfiguration/extensions@2024-11-01' = if (clusterType == 'managedCluster') {
+  name: name
+  scope: managedCluster
+  properties: extensionProperties
+}
+
+resource connectedExtension 'Microsoft.KubernetesConfiguration/extensions@2024-11-01' = if (clusterType == 'connectedCluster') {
+  name: name
+  scope: connectedCluster
+  properties: extensionProperties
+}
+
+module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:0.3.7' = [
   for (fluxConfiguration, index) in (fluxConfigurations ?? []): {
-    name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxConfiguration${index}'
+    name: '${uniqueString(deployment().name, location)}-Cluster-FluxConfiguration${index}'
     params: {
       enableTelemetry: enableReferencedModulesTelemetry
-      clusterName: managedCluster.name
+      clusterName: clusterName
       scope: fluxConfiguration.scope
       namespace: fluxConfiguration.namespace
+      clusterType: clusterType
       sourceKind: contains(fluxConfiguration, 'gitRepository') ? 'GitRepository' : 'Bucket'
-      name: fluxConfiguration.?name ?? toLower('${managedCluster.name}-fluxconfiguration${index}')
+      name: fluxConfiguration.?name ?? toLower('${clusterName}-fluxconfiguration${index}')
       bucket: fluxConfiguration.?bucket
       configurationProtectedSettings: fluxConfiguration.?configurationProtectedSettings
       gitRepository: fluxConfiguration.?gitRepository
@@ -105,16 +126,17 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
       suspend: fluxConfiguration.?suspend
     }
     dependsOn: [
-      extension
+      managedExtension
+      connectedExtension
     ]
   }
 ]
 
 @description('The name of the extension.')
-output name string = extension.name
+output name string = clusterType == 'managedCluster' ? managedExtension.name : connectedExtension.name
 
 @description('The resource ID of the extension.')
-output resourceId string = extension.id
+output resourceId string = clusterType == 'managedCluster' ? managedExtension.id : connectedExtension.id
 
 @description('The name of the resource group the extension was deployed into.')
 output resourceGroupName string = resourceGroup().name

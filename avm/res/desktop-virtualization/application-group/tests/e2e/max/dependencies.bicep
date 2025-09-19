@@ -7,12 +7,14 @@ param hostPoolName string
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+#disable-next-line use-recent-api-versions
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' = {
   name: managedIdentityName
   location: location
 }
 
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2022-09-09' = {
+#disable-next-line use-recent-api-versions
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview' = {
   name: hostPoolName
   location: location
   properties: {

@@ -12,9 +12,9 @@ This module deploys a Policy Insights Remediation.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.PolicyInsights/remediations` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.PolicyInsights/2024-10-01/remediations) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.PolicyInsights/remediations` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.policyinsights_remediations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.PolicyInsights/2024-10-01/remediations)</li></ul> |
 
 ## Usage examples
 
@@ -695,8 +695,6 @@ The policy definition reference ID of the individual definition that should be r
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 1
-- MaxValue: 30
 
 ### Parameter: `resourceCount`
 
@@ -722,8 +720,6 @@ The way resources to remediate are discovered. Defaults to ExistingNonCompliant 
     'ReEvaluateCompliance'
   ]
   ```
-- MinValue: 1
-- MaxValue: 50000
 
 ### Parameter: `resourceGroupName`
 
@@ -732,8 +728,6 @@ The target scope for the remediation. The name of the resource group for the pol
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 1
-- MaxValue: 50000
 
 ### Parameter: `subscriptionId`
 
@@ -742,8 +736,6 @@ The target scope for the remediation. The subscription ID of the subscription fo
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 1
-- MaxValue: 50000
 
 ## Outputs
 

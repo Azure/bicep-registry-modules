@@ -122,6 +122,9 @@ param deploySampleApplication bool = false
 @description('Optional. DDoS protection mode. see https://learn.microsoft.com/azure/ddos-protection/ddos-protection-sku-comparison#skus. Default is "false".')
 param enableDdosProtection bool = false
 
+@description('Optional. Deploy the agent pool for the container registry. Default value is true.')
+param deployAgentPool bool = true
+
 // ------------------
 // VARIABLES
 // ------------------
@@ -194,6 +197,7 @@ module supportingServices 'modules/supporting-services/deploy.supporting-service
     spokeVNetResourceId: spoke.outputs.spokeVNetId
     hubVNetResourceId: hubVirtualNetworkResourceId
     logAnalyticsWorkspaceId: spoke.outputs.logAnalyticsWorkspaceId
+    deployAgentPool: deployAgentPool
   }
 }
 

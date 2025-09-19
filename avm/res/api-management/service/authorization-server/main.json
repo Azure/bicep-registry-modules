@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "6804762094873651550"
+      "version": "0.37.4.10188",
+      "templateHash": "3719777024451822510"
     },
     "name": "API Management Service Authorization Servers",
     "description": "This module deploys an API Management Service Authorization Server."
@@ -38,30 +39,39 @@
     },
     "authorizationMethods": {
       "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/authorizationServers@2024-05-01#properties/properties/properties/authorizationMethods"
+        },
+        "description": "Optional. HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE."
+      },
       "defaultValue": [
         "GET"
-      ],
-      "metadata": {
-        "description": "Optional. HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE."
-      }
+      ]
     },
     "bearerTokenSendingMethods": {
       "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/authorizationServers@2024-05-01#properties/properties/properties/bearerTokenSendingMethods"
+        },
+        "description": "Optional. Specifies the mechanism by which access token is passed to the API. - authorizationHeader or query."
+      },
       "defaultValue": [
         "authorizationHeader"
-      ],
-      "metadata": {
-        "description": "Optional. Specifies the mechanism by which access token is passed to the API. - authorizationHeader or query."
-      }
+      ]
     },
     "clientAuthenticationMethod": {
       "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/authorizationServers@2024-05-01#properties/properties/properties/clientAuthenticationMethod"
+        },
+        "description": "Optional. Method of authentication supported by the token endpoint of this authorization server. Possible values are Basic and/or Body. When Body is specified, client credentials and other parameters are passed within the request body in the application/x-www-form-urlencoded format. - Basic or Body."
+      },
       "defaultValue": [
         "Basic"
-      ],
-      "metadata": {
-        "description": "Optional. Method of authentication supported by the token endpoint of this authorization server. Possible values are Basic and/or Body. When Body is specified, client credentials and other parameters are passed within the request body in the application/x-www-form-urlencoded format. - Basic or Body."
-      }
+      ]
     },
     "clientId": {
       "type": "securestring",
@@ -98,12 +108,21 @@
     },
     "grantTypes": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "allowedValues": [
+        "authorizationCode",
+        "clientCredentials",
+        "implicit",
+        "resourceOwnerPassword"
+      ],
       "metadata": {
         "description": "Required. Form of an authorization grant, which the client uses to request the access token. - authorizationCode, implicit, resourceOwnerPassword, clientCredentials."
       }
     },
     "resourceOwnerPassword": {
-      "type": "string",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Optional. Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner password."
@@ -125,16 +144,26 @@
     },
     "tokenBodyParameters": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
-        "description": "Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {\"name\" : \"name value\", \"value\": \"a value\"}. - TokenBodyParameterContract object."
-      }
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/authorizationServers@2024-05-01#properties/properties/properties/tokenBodyParameters"
+        },
+        "description": "Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties."
+      },
+      "defaultValue": []
     },
     "tokenEndpoint": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
         "description": "Optional. OAuth token endpoint. Contains absolute URI to entity being referenced."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     }
   },
@@ -144,10 +173,36 @@
     ],
     "setAuthorizationMethods": "[union(parameters('authorizationMethods'), variables('defaultAuthorizationMethods'))]"
   },
-  "resources": [
-    {
+  "resources": {
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2024-05-01",
+      "name": "[parameters('apiManagementServiceName')]"
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.apimgmt-authzserver.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "authorizationServer": {
       "type": "Microsoft.ApiManagement/service/authorizationServers",
-      "apiVersion": "2022-08-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "description": "[parameters('serverDescription')]",
@@ -168,7 +223,7 @@
         "clientSecret": "[parameters('clientSecret')]"
       }
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

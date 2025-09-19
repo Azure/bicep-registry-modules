@@ -33,7 +33,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -45,10 +45,10 @@ module nestedDependencies 'dependencies.bicep' = {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep${namePrefix}kv${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -62,7 +62,6 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -84,10 +83,10 @@ module testDeployment '../../../main.bicep' = [
       collation: 'SQL_Latin1_General_CP1_CI_AS'
       databases: [
         {
-          backupLongTermRetentionPolicies: {
+          backupLongTermRetentionPolicy: {
             name: 'default'
           }
-          backupShortTermRetentionPolicies: {
+          backupShortTermRetentionPolicy: {
             name: 'default'
           }
           name: '${namePrefix}-${serviceShort}-db-001'
@@ -116,8 +115,8 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      dnsZonePartner: ''
-      encryptionProtectorObj: {
+      dnsZonePartnerResourceId: ''
+      encryptionProtector: {
         serverKeyName: '${nestedDependencies.outputs.keyVaultName}_${nestedDependencies.outputs.keyVaultKeyName}_${last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))}'
         serverKeyType: 'AzureKeyVault'
       }
@@ -134,16 +133,18 @@ module testDeployment '../../../main.bicep' = [
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
-      primaryUserAssignedIdentityId: nestedDependencies.outputs.managedIdentityResourceId
+      primaryUserAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       proxyOverride: 'Proxy'
       publicDataEndpointEnabled: false
       roleAssignments: [
         {
+          name: '4de0cbb1-1f3d-4eb3-ac11-5797f548199b'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -157,10 +158,19 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
-      securityAlertPoliciesObj: {
+      securityAlertPolicy: {
         emailAccountAdmins: true
         name: 'default'
         state: 'Enabled'
+        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+        emailAddresses: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+        disabledAlerts: [
+          'Unsafe_Action'
+        ]
+        retentionDays: 7
       }
       servicePrincipal: 'SystemAssigned'
       skuName: 'GP_Gen5'
@@ -172,22 +182,25 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
+      maintenanceWindow: 'Custom1'
       timezoneId: 'UTC'
       vCores: 4
-      vulnerabilityAssessmentsObj: {
-        emailSubscriptionAdmins: true
+      vulnerabilityAssessment: {
         name: 'default'
-        recurringScansEmails: [
-          'test1@contoso.com'
-          'test2@contoso.com'
-        ]
-        recurringScansIsEnabled: true
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
+        recurringScans: {
+          isEnabled: true
+          emailSubscriptionAdmins: true
+          emails: [
+            'test1@contoso.com'
+            'test2@contoso.com'
+          ]
         }
+        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+      }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
     }
   }

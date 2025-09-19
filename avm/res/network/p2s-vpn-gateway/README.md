@@ -8,14 +8,15 @@ This module deploys a Virtual Hub P2S Gateway.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Network/p2svpnGateways` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/p2svpnGateways) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Network/p2svpnGateways` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_p2svpngateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/p2svpnGateways)</li></ul> |
 
 ## Usage examples
 
@@ -292,7 +293,6 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     associatedRouteTableName: 'defaultRouteTable'
     enableInternetSecurity: true
     isRoutingPreferenceInternet: false
-    location: '<location>'
     p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
     tags: {
       Environment: 'Non-Prod'
@@ -335,9 +335,6 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     "isRoutingPreferenceInternet": {
       "value": false
     },
-    "location": {
-      "value": "<location>"
-    },
     "p2SConnectionConfigurationsName": {
       "value": "p2sConnectionConfig1"
     },
@@ -376,7 +373,6 @@ param virtualHubResourceId = '<virtualHubResourceId>'
 param associatedRouteTableName = 'defaultRouteTable'
 param enableInternetSecurity = true
 param isRoutingPreferenceInternet = false
-param location = '<location>'
 p2SConnectionConfigurationsName: 'p2sConnectionConfig1'
 param tags = {
   Environment: 'Non-Prod'
@@ -513,6 +509,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -532,6 +529,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -673,6 +677,14 @@ The resource ID of the VPN Server Configuration.
 | `name` | string | The name of the user VPN configuration. |
 | `resourceGroupName` | string | The name of the resource group the user VPN configuration was deployed into. |
 | `resourceId` | string | The resource ID of the user VPN configuration. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

@@ -14,14 +14,14 @@ This module deploys a Virtual Network (vNet).
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets) |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Network/virtualNetworks` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks)</li></ul> |
+| `Microsoft.Network/virtualNetworks/subnets` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets)</li></ul> |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
 
 ## Usage examples
 
@@ -32,10 +32,11 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/virtual-network:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using an IPv6 address space](#example-2-using-an-ipv6-address-space)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [Deploying a bi-directional peering](#example-4-deploying-a-bi-directional-peering)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using IPAM Pool Prefix Allocations](#example-2-using-ipam-pool-prefix-allocations)
+- [Using an IPv6 address space](#example-3-using-an-ipv6-address-space)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Deploying a bi-directional peering](#example-5-deploying-a-bi-directional-peering)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -112,7 +113,194 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Using an IPv6 address space_
+### Example 2: _Using IPAM Pool Prefix Allocations_
+
+This instance deploys the module with IP Addresses allocated from the IPAM Pool
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
+  name: 'virtualNetworkDeployment'
+  params: {
+    // Required parameters
+    addressPrefixes: [
+      '<networkManagerIpamPoolId>'
+    ]
+    name: 'nvnipam001'
+    // Non-required parameters
+    ipamPoolNumberOfIpAddresses: '254'
+    location: '<location>'
+    subnets: [
+      {
+        ipamPoolPrefixAllocations: [
+          {
+            numberOfIpAddresses: '64'
+            pool: {
+              id: '<id>'
+            }
+          }
+        ]
+        name: 'subnet-1'
+      }
+      {
+        ipamPoolPrefixAllocations: [
+          {
+            numberOfIpAddresses: '16'
+            pool: {
+              id: '<id>'
+            }
+          }
+        ]
+        name: 'subnet-2'
+      }
+      {
+        ipamPoolPrefixAllocations: [
+          {
+            numberOfIpAddresses: '8'
+            pool: {
+              id: '<id>'
+            }
+          }
+        ]
+        name: 'subnet-3'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "addressPrefixes": {
+      "value": [
+        "<networkManagerIpamPoolId>"
+      ]
+    },
+    "name": {
+      "value": "nvnipam001"
+    },
+    // Non-required parameters
+    "ipamPoolNumberOfIpAddresses": {
+      "value": "254"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "subnets": {
+      "value": [
+        {
+          "ipamPoolPrefixAllocations": [
+            {
+              "numberOfIpAddresses": "64",
+              "pool": {
+                "id": "<id>"
+              }
+            }
+          ],
+          "name": "subnet-1"
+        },
+        {
+          "ipamPoolPrefixAllocations": [
+            {
+              "numberOfIpAddresses": "16",
+              "pool": {
+                "id": "<id>"
+              }
+            }
+          ],
+          "name": "subnet-2"
+        },
+        {
+          "ipamPoolPrefixAllocations": [
+            {
+              "numberOfIpAddresses": "8",
+              "pool": {
+                "id": "<id>"
+              }
+            }
+          ],
+          "name": "subnet-3"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network:<version>'
+
+// Required parameters
+param addressPrefixes = [
+  '<networkManagerIpamPoolId>'
+]
+param name = 'nvnipam001'
+// Non-required parameters
+param ipamPoolNumberOfIpAddresses = '254'
+param location = '<location>'
+param subnets = [
+  {
+    ipamPoolPrefixAllocations: [
+      {
+        numberOfIpAddresses: '64'
+        pool: {
+          id: '<id>'
+        }
+      }
+    ]
+    name: 'subnet-1'
+  }
+  {
+    ipamPoolPrefixAllocations: [
+      {
+        numberOfIpAddresses: '16'
+        pool: {
+          id: '<id>'
+        }
+      }
+    ]
+    name: 'subnet-2'
+  }
+  {
+    ipamPoolPrefixAllocations: [
+      {
+        numberOfIpAddresses: '8'
+        pool: {
+          id: '<id>'
+        }
+      }
+    ]
+    name: 'subnet-3'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 3: _Using an IPv6 address space_
 
 This instance deploys the module using an IPv6 address space.
 
@@ -219,7 +407,7 @@ param subnets = [
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -635,7 +823,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _Deploying a bi-directional peering_
+### Example 5: _Deploying a bi-directional peering_
 
 This instance deploys the module with both an inbound and outbound peering.
 
@@ -815,7 +1003,7 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
@@ -1113,7 +1301,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefixes`](#parameter-addressprefixes) | array | An Array of 1 or more IP Address Prefixes for the Virtual Network. |
+| [`addressPrefixes`](#parameter-addressprefixes) | array | An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`. |
 | [`name`](#parameter-name) | string | The name of the Virtual Network (vNet). |
 
 **Optional parameters**
@@ -1126,6 +1314,7 @@ param tags = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`enableVmProtection`](#parameter-enablevmprotection) | bool | Indicates if VM protection is enabled for all the subnets in the virtual network. |
 | [`flowTimeoutInMinutes`](#parameter-flowtimeoutinminutes) | int | The flow timeout in minutes for the Virtual Network, which is used to enable connection tracking for intra-VM flows. Possible values are between 4 and 30 minutes. Default value 0 will set the property to null. |
+| [`ipamPoolNumberOfIpAddresses`](#parameter-ipampoolnumberofipaddresses) | string | Number of IP addresses allocated from the pool. To be used only when the addressPrefix param is defined with a resource ID of an IPAM pool. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`peerings`](#parameter-peerings) | array | Virtual Network Peering configurations. |
@@ -1138,7 +1327,7 @@ param tags = {
 
 ### Parameter: `addressPrefixes`
 
-An Array of 1 or more IP Address Prefixes for the Virtual Network.
+An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`.
 
 - Required: Yes
 - Type: array
@@ -1334,6 +1523,13 @@ The flow timeout in minutes for the Virtual Network, which is used to enable con
 - Default: `0`
 - MaxValue: 30
 
+### Parameter: `ipamPoolNumberOfIpAddresses`
+
+Number of IP addresses allocated from the pool. To be used only when the addressPrefix param is defined with a resource ID of an IPAM pool.
+
+- Required: No
+- Type: string
+
 ### Parameter: `location`
 
 Location for all resources.
@@ -1341,7 +1537,6 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-- MaxValue: 30
 
 ### Parameter: `lock`
 
@@ -1349,7 +1544,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- MaxValue: 30
 
 **Optional parameters**
 
@@ -1357,6 +1551,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -1372,7 +1567,6 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
-- MaxValue: 30
 
 ### Parameter: `lock.name`
 
@@ -1380,7 +1574,13 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- MaxValue: 30
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
 
 ### Parameter: `peerings`
 
@@ -1388,7 +1588,6 @@ Virtual Network Peering configurations.
 
 - Required: No
 - Type: array
-- MaxValue: 30
 
 **Required parameters**
 
@@ -1420,7 +1619,6 @@ The Resource ID of the VNet that is this Local VNet is being peered to. Should b
 
 - Required: Yes
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `peerings.allowForwardedTraffic`
 
@@ -1428,7 +1626,6 @@ Whether the forwarded traffic from the VMs in the local virtual network will be 
 
 - Required: No
 - Type: bool
-- MaxValue: 30
 
 ### Parameter: `peerings.allowGatewayTransit`
 
@@ -1436,7 +1633,6 @@ If gateway links can be used in remote virtual networking to link to this virtua
 
 - Required: No
 - Type: bool
-- MaxValue: 30
 
 ### Parameter: `peerings.allowVirtualNetworkAccess`
 
@@ -1444,7 +1640,6 @@ Whether the VMs in the local virtual network space would be able to access the V
 
 - Required: No
 - Type: bool
-- MaxValue: 30
 
 ### Parameter: `peerings.doNotVerifyRemoteGateways`
 
@@ -1452,7 +1647,6 @@ Do not verify the provisioning state of the remote gateway. Default is true.
 
 - Required: No
 - Type: bool
-- MaxValue: 30
 
 ### Parameter: `peerings.name`
 
@@ -1460,7 +1654,6 @@ The Name of VNET Peering resource. If not provided, default value will be peer-l
 
 - Required: No
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `peerings.remotePeeringAllowForwardedTraffic`
 
@@ -1468,7 +1661,6 @@ Whether the forwarded traffic from the VMs in the local virtual network will be 
 
 - Required: No
 - Type: bool
-- MaxValue: 30
 
 ### Parameter: `peerings.remotePeeringAllowGatewayTransit`
 
@@ -1476,7 +1668,6 @@ If gateway links can be used in remote virtual networking to link to this virtua
 
 - Required: No
 - Type: bool
-- MaxValue: 30
 
 ### Parameter: `peerings.remotePeeringAllowVirtualNetworkAccess`
 
@@ -1484,7 +1675,6 @@ Whether the VMs in the local virtual network space would be able to access the V
 
 - Required: No
 - Type: bool
-- MaxValue: 30
 
 ### Parameter: `peerings.remotePeeringDoNotVerifyRemoteGateways`
 
@@ -1492,7 +1682,6 @@ Do not verify the provisioning state of the remote gateway. Default is true.
 
 - Required: No
 - Type: bool
-- MaxValue: 30
 
 ### Parameter: `peerings.remotePeeringEnabled`
 
@@ -1500,7 +1689,6 @@ Deploy the outbound and the inbound peering.
 
 - Required: No
 - Type: bool
-- MaxValue: 30
 
 ### Parameter: `peerings.remotePeeringName`
 
@@ -1508,7 +1696,6 @@ The name of the VNET Peering resource in the remove Virtual Network. If not prov
 
 - Required: No
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `peerings.remotePeeringUseRemoteGateways`
 
@@ -1516,7 +1703,6 @@ If remote gateways can be used on this virtual network. If the flag is set to tr
 
 - Required: No
 - Type: bool
-- MaxValue: 30
 
 ### Parameter: `peerings.useRemoteGateways`
 
@@ -1524,7 +1710,6 @@ If remote gateways can be used on this virtual network. If the flag is set to tr
 
 - Required: No
 - Type: bool
-- MaxValue: 30
 
 ### Parameter: `roleAssignments`
 
@@ -1532,7 +1717,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- MaxValue: 30
 - Roles configurable by name:
   - `'Contributor'`
   - `'Network Contributor'`
@@ -1565,7 +1749,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1573,7 +1756,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1581,7 +1763,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1595,7 +1776,6 @@ Version of the condition.
     '2.0'
   ]
   ```
-- MaxValue: 30
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -1603,7 +1783,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `roleAssignments.description`
 
@@ -1611,7 +1790,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `roleAssignments.name`
 
@@ -1619,7 +1797,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1637,7 +1814,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-- MaxValue: 30
 
 ### Parameter: `subnets`
 
@@ -1645,7 +1821,6 @@ An Array of subnets to deploy to the Virtual Network.
 
 - Required: No
 - Type: array
-- MaxValue: 30
 
 **Required parameters**
 
@@ -1659,6 +1834,7 @@ An Array of subnets to deploy to the Virtual Network.
 | :-- | :-- | :-- |
 | [`addressPrefix`](#parameter-subnetsaddressprefix) | string | The address prefix for the subnet. Required if `addressPrefixes` is empty. |
 | [`addressPrefixes`](#parameter-subnetsaddressprefixes) | array | List of address prefixes for the subnet. Required if `addressPrefix` is empty. |
+| [`ipamPoolPrefixAllocations`](#parameter-subnetsipampoolprefixallocations) | array | The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty and the VNet address space configured to use IPAM Pool. |
 
 **Optional parameters**
 
@@ -1683,7 +1859,6 @@ The Name of the subnet resource.
 
 - Required: Yes
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `subnets.addressPrefix`
 
@@ -1691,7 +1866,6 @@ The address prefix for the subnet. Required if `addressPrefixes` is empty.
 
 - Required: No
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `subnets.addressPrefixes`
 
@@ -1699,7 +1873,13 @@ List of address prefixes for the subnet. Required if `addressPrefix` is empty.
 
 - Required: No
 - Type: array
-- MaxValue: 30
+
+### Parameter: `subnets.ipamPoolPrefixAllocations`
+
+The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty and the VNet address space configured to use IPAM Pool.
+
+- Required: No
+- Type: array
 
 ### Parameter: `subnets.applicationGatewayIPConfigurations`
 
@@ -1707,7 +1887,6 @@ Application gateway IP configurations of virtual network resource.
 
 - Required: No
 - Type: array
-- MaxValue: 30
 
 ### Parameter: `subnets.defaultOutboundAccess`
 
@@ -1715,7 +1894,6 @@ Set this property to false to disable default outbound connectivity for all VMs 
 
 - Required: No
 - Type: bool
-- MaxValue: 30
 
 ### Parameter: `subnets.delegation`
 
@@ -1723,7 +1901,6 @@ The delegation to enable on the subnet.
 
 - Required: No
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `subnets.natGatewayResourceId`
 
@@ -1731,7 +1908,6 @@ The resource ID of the NAT Gateway to use for the subnet.
 
 - Required: No
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `subnets.networkSecurityGroupResourceId`
 
@@ -1739,7 +1915,6 @@ The resource ID of the network security group to assign to the subnet.
 
 - Required: No
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `subnets.privateEndpointNetworkPolicies`
 
@@ -1756,7 +1931,6 @@ enable or disable apply network policies on private endpoint in the subnet.
     'RouteTableEnabled'
   ]
   ```
-- MaxValue: 30
 
 ### Parameter: `subnets.privateLinkServiceNetworkPolicies`
 
@@ -1771,7 +1945,6 @@ enable or disable apply network policies on private link service in the subnet.
     'Enabled'
   ]
   ```
-- MaxValue: 30
 
 ### Parameter: `subnets.roleAssignments`
 
@@ -1779,7 +1952,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- MaxValue: 30
 - Roles configurable by name:
   - `'Contributor'`
   - `'Network Contributor'`
@@ -1812,7 +1984,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `subnets.roleAssignments.roleDefinitionIdOrName`
 
@@ -1820,7 +1991,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `subnets.roleAssignments.condition`
 
@@ -1828,7 +1998,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `subnets.roleAssignments.conditionVersion`
 
@@ -1842,7 +2011,6 @@ Version of the condition.
     '2.0'
   ]
   ```
-- MaxValue: 30
 
 ### Parameter: `subnets.roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -1850,7 +2018,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `subnets.roleAssignments.description`
 
@@ -1858,7 +2025,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `subnets.roleAssignments.name`
 
@@ -1866,7 +2032,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `subnets.roleAssignments.principalType`
 
@@ -1884,7 +2049,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-- MaxValue: 30
 
 ### Parameter: `subnets.routeTableResourceId`
 
@@ -1892,7 +2056,6 @@ The resource ID of the route table to assign to the subnet.
 
 - Required: No
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `subnets.serviceEndpointPolicies`
 
@@ -1900,7 +2063,6 @@ An array of service endpoint policies.
 
 - Required: No
 - Type: array
-- MaxValue: 30
 
 ### Parameter: `subnets.serviceEndpoints`
 
@@ -1908,7 +2070,6 @@ The service endpoints to enable on the subnet.
 
 - Required: No
 - Type: array
-- MaxValue: 30
 
 ### Parameter: `subnets.sharingScope`
 
@@ -1923,7 +2084,6 @@ Set this property to Tenant to allow sharing subnet with other subscriptions in 
     'Tenant'
   ]
   ```
-- MaxValue: 30
 
 ### Parameter: `tags`
 
@@ -1931,7 +2091,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- MaxValue: 30
 
 ### Parameter: `virtualNetworkBgpCommunity`
 
@@ -1939,7 +2098,6 @@ The BGP community associated with the virtual network.
 
 - Required: No
 - Type: string
-- MaxValue: 30
 
 ### Parameter: `vnetEncryption`
 
@@ -1948,7 +2106,6 @@ Indicates if encryption is enabled on virtual network and if VM without encrypti
 - Required: No
 - Type: bool
 - Default: `False`
-- MaxValue: 30
 
 ### Parameter: `vnetEncryptionEnforcement`
 
@@ -1964,7 +2121,6 @@ If the encrypted VNet allows VM that does not support encryption. Can only be us
     'DropUnencrypted'
   ]
   ```
-- MaxValue: 30
 
 ## Outputs
 
@@ -1984,6 +2140,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Notes
 

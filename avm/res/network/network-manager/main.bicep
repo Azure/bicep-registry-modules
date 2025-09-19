@@ -9,7 +9,7 @@ param name string
 @sys.description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -134,7 +134,7 @@ module networkManager_networkGroups 'network-group/main.bicep' = [
 
 module networkManager_connectivityConfigurations 'connectivity-configuration/main.bicep' = [
   for (connectivityConfiguration, index) in connectivityConfigurations ?? []: {
-    name: '${uniqueString(deployment().name, location)}-NetworkManager-ConnectivityConfigurations-${index}'
+    name: '${uniqueString(deployment().name, location)}-NetworkManager-ConnConfig-${index}'
     params: {
       name: connectivityConfiguration.name
       networkManagerName: networkManager.name
@@ -151,7 +151,7 @@ module networkManager_connectivityConfigurations 'connectivity-configuration/mai
 
 module networkManager_scopeConnections 'scope-connection/main.bicep' = [
   for (scopeConnection, index) in scopeConnections ?? []: {
-    name: '${uniqueString(deployment().name, location)}-NetworkManager-ScopeConnections-${index}'
+    name: '${uniqueString(deployment().name, location)}-NetworkManager-ScopeConn-${index}'
     params: {
       name: scopeConnection.name
       networkManagerName: networkManager.name
@@ -164,7 +164,7 @@ module networkManager_scopeConnections 'scope-connection/main.bicep' = [
 
 module networkManager_securityAdminConfigurations 'security-admin-configuration/main.bicep' = [
   for (securityAdminConfiguration, index) in securityAdminConfigurations ?? []: {
-    name: '${uniqueString(deployment().name, location)}-NetworkManager-SecurityAdminConfigurations-${index}'
+    name: '${uniqueString(deployment().name, location)}-NetworkManager-SecAdmConfig-${index}'
     params: {
       name: securityAdminConfiguration.name
       networkManagerName: networkManager.name
@@ -178,7 +178,7 @@ module networkManager_securityAdminConfigurations 'security-admin-configuration/
 
 module networkManager_routingConfigurations 'routing-configuration/main.bicep' = [
   for (routingConfiguration, index) in routingConfigurations ?? []: {
-    name: '${uniqueString(deployment().name, location)}-NetworkManager-RoutingConfigurations-${index}'
+    name: '${uniqueString(deployment().name, location)}-NetworkManager-RoutingConfig-${index}'
     params: {
       name: routingConfiguration.name
       networkManagerName: networkManager.name
@@ -193,9 +193,9 @@ resource networkManager_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!e
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: networkManager
 }

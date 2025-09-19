@@ -68,16 +68,13 @@ module testDeployment '../../../main.bicep' = [
         sku: '22_04-lts-gen2'
         version: 'latest'
       }
-      zone: 0
+      availabilityZone: -1
       nicConfigurations: [
         {
           ipConfigurations: [
             {
               name: 'ipconfig01'
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
-              pipConfiguration: {
-                name: 'pip-01'
-              }
             }
           ]
           nicSuffix: '-nic-01'
@@ -100,8 +97,5 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
     }
-    dependsOn: [
-      nestedDependencies // Required to leverage `existing` SSH key reference
-    ]
   }
 ]

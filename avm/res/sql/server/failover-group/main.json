@@ -5,14 +5,14 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "16832516411852699458"
+      "version": "0.37.4.10188",
+      "templateHash": "12623039249930333884"
     },
     "name": "Azure SQL Server failover group",
     "description": "This module deploys Azure SQL Server failover group."
   },
   "definitions": {
-    "failoverGroupReadOnlyEndpointType": {
+    "readOnlyEndpointType": {
       "type": "object",
       "properties": {
         "failoverPolicy": {
@@ -33,10 +33,11 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a read-only endpoint."
       }
     },
-    "failoverGroupReadWriteEndpointType": {
+    "readWriteEndpointType": {
       "type": "object",
       "properties": {
         "failoverPolicy": {
@@ -58,7 +59,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a read-write endpoint."
       }
     }
   },
@@ -84,24 +86,24 @@
         "description": "Required. List of databases in the failover group."
       }
     },
-    "partnerServers": {
+    "partnerServerResourceIds": {
       "type": "array",
       "items": {
         "type": "string"
       },
       "metadata": {
-        "description": "Required. List of the partner servers for the failover group."
+        "description": "Required. List of the partner server Resource Ids for the failover group."
       }
     },
     "readOnlyEndpoint": {
-      "$ref": "#/definitions/failoverGroupReadOnlyEndpointType",
+      "$ref": "#/definitions/readOnlyEndpointType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Read-only endpoint of the failover group instance."
       }
     },
     "readWriteEndpoint": {
-      "$ref": "#/definitions/failoverGroupReadWriteEndpointType",
+      "$ref": "#/definitions/readWriteEndpointType",
       "metadata": {
         "description": "Required. Read-write endpoint of the failover group instance."
       }
@@ -118,17 +120,20 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Sql/servers/failoverGroups@2023-08-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     }
   },
   "resources": {
     "server": {
       "existing": true,
       "type": "Microsoft.Sql/servers",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2023-08-01",
       "name": "[parameters('serverName')]"
     },
     "failoverGroup": {
@@ -145,9 +150,9 @@
           },
           {
             "name": "partnerServers",
-            "count": "[length(parameters('partnerServers'))]",
+            "count": "[length(parameters('partnerServerResourceIds'))]",
             "input": {
-              "id": "[resourceId(resourceGroup().name, 'Microsoft.Sql/servers', parameters('partnerServers')[copyIndex('partnerServers')])]"
+              "id": "[parameters('partnerServerResourceIds')[copyIndex('partnerServers')]]"
             }
           }
         ],

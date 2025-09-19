@@ -30,8 +30,9 @@ on:
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.ptn.app.container-job-toolkit.yml"
       - "avm/ptn/app/container-job-toolkit/**"
-      - "utilities/utilities/pipelines/**"
-      - "!utilities/utilities/pipelines/platform/**"
+      - "utilities/pipelines/**"
+      - "!utilities/pipelines/platform/**"
+      - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:

@@ -13,21 +13,21 @@ This module deploys an Event Grid Namespace.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.EventGrid/namespaces` | [2023-12-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/namespaces) |
-| `Microsoft.EventGrid/namespaces/caCertificates` | [2023-12-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/namespaces/caCertificates) |
-| `Microsoft.EventGrid/namespaces/clientGroups` | [2023-12-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/namespaces/clientGroups) |
-| `Microsoft.EventGrid/namespaces/clients` | [2023-12-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/namespaces/clients) |
-| `Microsoft.EventGrid/namespaces/permissionBindings` | [2023-12-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/namespaces/permissionBindings) |
-| `Microsoft.EventGrid/namespaces/topics` | [2023-12-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/namespaces/topics) |
-| `Microsoft.EventGrid/namespaces/topics/eventSubscriptions` | [2023-12-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/namespaces/topics/eventSubscriptions) |
-| `Microsoft.EventGrid/namespaces/topicSpaces` | [2023-12-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/namespaces/topicSpaces) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.EventGrid/namespaces` | 2023-12-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.eventgrid_namespaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/namespaces)</li></ul> |
+| `Microsoft.EventGrid/namespaces/caCertificates` | 2023-12-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.eventgrid_namespaces_cacertificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/namespaces/caCertificates)</li></ul> |
+| `Microsoft.EventGrid/namespaces/clientGroups` | 2023-12-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.eventgrid_namespaces_clientgroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/namespaces/clientGroups)</li></ul> |
+| `Microsoft.EventGrid/namespaces/clients` | 2023-12-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.eventgrid_namespaces_clients.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/namespaces/clients)</li></ul> |
+| `Microsoft.EventGrid/namespaces/permissionBindings` | 2023-12-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.eventgrid_namespaces_permissionbindings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/namespaces/permissionBindings)</li></ul> |
+| `Microsoft.EventGrid/namespaces/topics` | 2023-12-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.eventgrid_namespaces_topics.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/namespaces/topics)</li></ul> |
+| `Microsoft.EventGrid/namespaces/topics/eventSubscriptions` | 2023-12-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.eventgrid_namespaces_topics_eventsubscriptions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/namespaces/topics/eventSubscriptions)</li></ul> |
+| `Microsoft.EventGrid/namespaces/topicSpaces` | 2023-12-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.eventgrid_namespaces_topicspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/namespaces/topicSpaces)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -821,7 +821,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
       dynamic: [
         {
           key: 'dynamic1'
-          value: '<value>'
+          value: '\${client.authenticationName}'
         }
       ]
       static: [
@@ -993,7 +993,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
         "dynamic": [
           {
             "key": "dynamic1",
-            "value": "<value>"
+            "value": "\\${client.authenticationName}"
           }
         ],
         "static": [
@@ -1151,7 +1151,7 @@ param routingEnrichments = {
   dynamic: [
     {
       key: 'dynamic1'
-      value: '<value>'
+      value: '\${client.authenticationName}'
     }
   ]
   static: [
@@ -1304,7 +1304,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
       dynamic: [
         {
           key: 'dynamic1'
-          value: '<value>'
+          value: '\${client.authenticationName}'
         }
       ]
       static: [
@@ -1476,7 +1476,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
         "dynamic": [
           {
             "key": "dynamic1",
-            "value": "<value>"
+            "value": "\\${client.authenticationName}"
           }
         ],
         "static": [
@@ -1634,7 +1634,7 @@ param routingEnrichments = {
   dynamic: [
     {
       key: 'dynamic1'
-      value: '<value>'
+      value: '\${client.authenticationName}'
     }
   ]
   static: [
@@ -2223,6 +2223,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -2242,6 +2243,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2300,8 +2308,6 @@ All namespace Permission Bindings to create. Used only when MQTT broker is enabl
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints`
 
@@ -2309,8 +2315,6 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 8
 
 **Required parameters**
 
@@ -2345,8 +2349,6 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
 
@@ -2354,8 +2356,6 @@ Application security groups in which the Private Endpoint IP configuration is in
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.customDnsConfigs`
 
@@ -2363,8 +2363,6 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 8
 
 **Required parameters**
 
@@ -2384,8 +2382,6 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
 
@@ -2393,8 +2389,6 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -2402,8 +2396,6 @@ The custom name of the network interface attached to the Private Endpoint.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.enableTelemetry`
 
@@ -2411,8 +2403,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.ipConfigurations`
 
@@ -2420,8 +2410,6 @@ A list of IP configurations of the Private Endpoint. This will be used to map to
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 8
 
 **Required parameters**
 
@@ -2436,8 +2424,6 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties`
 
@@ -2445,8 +2431,6 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
-- MinValue: 1
-- MaxValue: 8
 
 **Required parameters**
 
@@ -2462,8 +2446,6 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
 
@@ -2471,8 +2453,6 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
@@ -2480,8 +2460,6 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.isManualConnection`
 
@@ -2489,8 +2467,6 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.location`
 
@@ -2498,8 +2474,6 @@ The location to deploy the Private Endpoint to.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.lock`
 
@@ -2507,8 +2481,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 8
 
 **Optional parameters**
 
@@ -2516,6 +2488,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -2531,8 +2504,6 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.lock.name`
 
@@ -2540,8 +2511,13 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 8
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
@@ -2549,8 +2525,6 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.name`
 
@@ -2558,8 +2532,6 @@ The name of the Private Endpoint.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
@@ -2567,8 +2539,6 @@ The private DNS Zone Group to configure for the Private Endpoint.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 8
 
 **Required parameters**
 
@@ -2588,8 +2558,6 @@ The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group 
 
 - Required: Yes
 - Type: array
-- MinValue: 1
-- MaxValue: 8
 
 **Required parameters**
 
@@ -2609,8 +2577,6 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
@@ -2618,8 +2584,6 @@ The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
@@ -2627,8 +2591,6 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -2636,8 +2598,6 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.resourceGroupResourceId`
 
@@ -2645,8 +2605,6 @@ The resource ID of the Resource Group the Private Endpoint will be created in. I
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
@@ -2654,8 +2612,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 8
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -2692,8 +2648,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
@@ -2701,8 +2655,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.roleAssignments.condition`
 
@@ -2710,8 +2662,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.roleAssignments.conditionVersion`
 
@@ -2725,8 +2675,6 @@ Version of the condition.
     '2.0'
   ]
   ```
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -2734,8 +2682,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
@@ -2743,8 +2689,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.roleAssignments.name`
 
@@ -2752,8 +2696,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.roleAssignments.principalType`
 
@@ -2771,8 +2713,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.service`
 
@@ -2780,8 +2720,6 @@ The subresource to deploy the Private Endpoint for. For example "vault" for a Ke
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `privateEndpoints.tags`
 
@@ -2789,8 +2727,6 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `publicNetworkAccess`
 
@@ -2806,8 +2742,6 @@ This determines if traffic is allowed over public network. By default it is enab
     'SecuredByPerimeter'
   ]
   ```
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `roleAssignments`
 
@@ -2815,8 +2749,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 8
 - Roles configurable by name:
   - `'Azure Resource Notifications System Topics Subscriber'`
   - `'Contributor'`
@@ -2856,8 +2788,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -2865,8 +2795,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `roleAssignments.condition`
 
@@ -2874,8 +2802,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -2889,8 +2815,6 @@ Version of the condition.
     '2.0'
   ]
   ```
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -2898,8 +2822,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `roleAssignments.description`
 
@@ -2907,8 +2829,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `roleAssignments.name`
 
@@ -2916,8 +2836,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -2935,8 +2853,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `routeTopicResourceId`
 
@@ -2944,8 +2860,6 @@ Resource Id for the Event Grid Topic to which events will be routed to from Topi
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `routingEnrichments`
 
@@ -2953,8 +2867,6 @@ Routing enrichments for topic spaces configuration.  Used only when MQTT broker 
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `tags`
 
@@ -2962,8 +2874,6 @@ Resource tags.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `topics`
 
@@ -2971,8 +2881,6 @@ All namespace Topics to create.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `topicSpaces`
 
@@ -2980,8 +2888,6 @@ All namespace Topic Spaces to create. Used only when MQTT broker is enabled ('to
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 8
 
 ### Parameter: `topicSpacesState`
 
@@ -2997,8 +2903,6 @@ Indicates if Topic Spaces Configuration is enabled for the namespace. This enabl
     'Enabled'
   ]
   ```
-- MinValue: 1
-- MaxValue: 8
 
 ## Outputs
 
@@ -3020,6 +2924,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 

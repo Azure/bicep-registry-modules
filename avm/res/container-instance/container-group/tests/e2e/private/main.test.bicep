@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -51,12 +51,8 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
+      availabilityZone: -1
       containers: [
         {
           name: '${namePrefix}-az-aci-x-001'
@@ -103,22 +99,28 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      ipAddressType: 'Private'
-      ipAddressPorts: [
+      ipAddress: {
+        type: 'Private'
+        ports: [
+          {
+            protocol: 'Tcp'
+            port: 80
+          }
+          {
+            protocol: 'Tcp'
+            port: 443
+          }
+          {
+            protocol: 'Tcp'
+            port: 8080
+          }
+        ]
+      }
+      subnets: [
         {
-          protocol: 'Tcp'
-          port: 80
-        }
-        {
-          protocol: 'Tcp'
-          port: 443
-        }
-        {
-          protocol: 'Tcp'
-          port: 8080
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
-      subnetResourceId: nestedDependencies.outputs.subnetResourceId
     }
   }
 ]

@@ -8,13 +8,13 @@ param apiManagementServiceName string
 param displayName string
 
 @description('Optional. KeyVault location details of the namedValue.')
-param keyVault object = {}
+param keyVault resourceInput<'Microsoft.ApiManagement/service/namedValues@2024-05-01'>.properties.keyVault?
 
 @description('Required. Named value Name.')
 param name string
 
 @description('Optional. Tags that when provided can be used to filter the NamedValue list. - string.')
-param tags array?
+param tags resourceInput<'Microsoft.ApiManagement/service/namedValues@2024-05-01'>.properties.tags?
 
 @description('Optional. Determines whether the value is a secret and should be encrypted or not. Default value is false.')
 #disable-next-line secure-secrets-in-params // Not a secret
@@ -23,21 +23,41 @@ param secret bool = false
 @description('Optional. Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on \'GET\' operations! Use \'/listSecrets\' POST request to get the value.')
 param value string = newGuid()
 
-var keyVaultEmpty = empty(keyVault)
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
-resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
+resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
-resource namedValue 'Microsoft.ApiManagement/service/namedValues@2022-08-01' = {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.apimgmt-namedvalue.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource namedValue 'Microsoft.ApiManagement/service/namedValues@2024-05-01' = {
   name: name
   parent: service
   properties: {
     tags: tags
     secret: secret
     displayName: displayName
-    value: keyVaultEmpty ? value : null
-    keyVault: !keyVaultEmpty ? keyVault : null
+    value: empty(keyVault) ? value : null
+    keyVault: keyVault
   }
 }
 

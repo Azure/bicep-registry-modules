@@ -50,8 +50,11 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      virtualNetworkResourceIdsToLinkTo: [
-        nestedDependencies.outputs.vnetResourceId
+      virtualNetworkLinks: [
+        {
+          virtualNetworkResourceId: nestedDependencies.outputs.vnetResourceId
+          registrationEnabled: false
+        }
       ]
     }
   }

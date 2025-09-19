@@ -13,21 +13,21 @@ This module deploys a Log Analytics Workspace.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.OperationalInsights/workspaces` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces) |
-| `Microsoft.OperationalInsights/workspaces/dataExports` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/dataExports) |
-| `Microsoft.OperationalInsights/workspaces/dataSources` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/dataSources) |
-| `Microsoft.OperationalInsights/workspaces/linkedServices` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/linkedServices) |
-| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/linkedStorageAccounts) |
-| `Microsoft.OperationalInsights/workspaces/savedSearches` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/savedSearches) |
-| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/storageInsightConfigs) |
-| `Microsoft.OperationalInsights/workspaces/tables` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/tables) |
-| `Microsoft.OperationsManagement/solutions` | [2015-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions) |
-| `Microsoft.SecurityInsights/onboardingStates` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2024-03-01/onboardingStates) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/dataExports` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_dataexports.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/dataExports)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/dataSources` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_datasources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/dataSources)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/linkedServices` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_linkedservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/linkedServices)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_linkedstorageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/linkedStorageAccounts)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/savedSearches` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_savedsearches.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/savedSearches)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_storageinsightconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/storageInsightConfigs)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/tables` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/tables)</li></ul> |
+| `Microsoft.OperationsManagement/solutions` | 2015-11-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationsmanagement_solutions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions)</li></ul> |
+| `Microsoft.SecurityInsights/onboardingStates` | 2024-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.securityinsights_onboardingstates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2024-03-01/onboardingStates)</li></ul> |
 
 ## Usage examples
 
@@ -230,7 +230,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       ]
     }
     publicNetworkAccessForIngestion: 'Disabled'
-    publicNetworkAccessForQuery: 'Disabled'
+    publicNetworkAccessForQuery: 'Enabled'
     savedSearches: [
       {
         category: 'VDC Saved Searches'
@@ -557,7 +557,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       "value": "Disabled"
     },
     "publicNetworkAccessForQuery": {
-      "value": "Disabled"
+      "value": "Enabled"
     },
     "savedSearches": {
       "value": [
@@ -866,7 +866,7 @@ param managedIdentities = {
   ]
 }
 param publicNetworkAccessForIngestion = 'Disabled'
-param publicNetworkAccessForQuery = 'Disabled'
+param publicNetworkAccessForQuery = 'Enabled'
 param savedSearches = [
   {
     category: 'VDC Saved Searches'
@@ -1221,6 +1221,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     onboardWorkspaceToSentinel: true
     publicNetworkAccessForIngestion: 'Disabled'
     publicNetworkAccessForQuery: 'Disabled'
+    replication: {
+      enabled: true
+      location: '<location>'
+    }
     roleAssignments: [
       {
         name: 'c3d53092-840c-4025-9c02-9bcb7895789c'
@@ -1566,6 +1570,12 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     "publicNetworkAccessForQuery": {
       "value": "Disabled"
     },
+    "replication": {
+      "value": {
+        "enabled": true,
+        "location": "<location>"
+      }
+    },
     "roleAssignments": {
       "value": [
         {
@@ -1891,6 +1901,10 @@ param managedIdentities = {
 param onboardWorkspaceToSentinel = true
 param publicNetworkAccessForIngestion = 'Disabled'
 param publicNetworkAccessForQuery = 'Disabled'
+param replication = {
+  enabled: true
+  location: '<location>'
+}
 param roleAssignments = [
   {
     name: 'c3d53092-840c-4025-9c02-9bcb7895789c'
@@ -2181,6 +2195,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     }
     publicNetworkAccessForIngestion: 'Disabled'
     publicNetworkAccessForQuery: 'Disabled'
+    replication: {
+      enabled: true
+      location: '<location>'
+    }
     storageInsightsConfigs: [
       {
         storageAccountResourceId: '<storageAccountResourceId>'
@@ -2370,6 +2388,12 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     "publicNetworkAccessForQuery": {
       "value": "Disabled"
     },
+    "replication": {
+      "value": {
+        "enabled": true,
+        "location": "<location>"
+      }
+    },
     "storageInsightsConfigs": {
       "value": [
         {
@@ -2537,6 +2561,10 @@ param managedIdentities = {
 }
 param publicNetworkAccessForIngestion = 'Disabled'
 param publicNetworkAccessForQuery = 'Disabled'
+param replication = {
+  enabled: true
+  location: '<location>'
+}
 param storageInsightsConfigs = [
   {
     storageAccountResourceId: '<storageAccountResourceId>'
@@ -2592,6 +2620,7 @@ param tags = {
 | [`onboardWorkspaceToSentinel`](#parameter-onboardworkspacetosentinel) | bool | Onboard the Log Analytics Workspace to Sentinel. Requires 'SecurityInsights' solution to be in gallerySolutions. |
 | [`publicNetworkAccessForIngestion`](#parameter-publicnetworkaccessforingestion) | string | The network access type for accessing Log Analytics ingestion. |
 | [`publicNetworkAccessForQuery`](#parameter-publicnetworkaccessforquery) | string | The network access type for accessing Log Analytics query. |
+| [`replication`](#parameter-replication) | object | The workspace replication properties. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`savedSearches`](#parameter-savedsearches) | array | Kusto Query Language searches to save. |
 | [`skuCapacityReservationLevel`](#parameter-skucapacityreservationlevel) | int | The capacity reservation level in GB for this workspace, when CapacityReservation sku is selected. Must be in increments of 100 between 100 and 5000. |
@@ -2650,7 +2679,6 @@ LAW data export instances to be deployed.
 
 - Required: No
 - Type: array
-- MinValue: -1
 
 **Required parameters**
 
@@ -2672,7 +2700,6 @@ Name of the data export.
 
 - Required: Yes
 - Type: string
-- MinValue: -1
 
 ### Parameter: `dataExports.tableNames`
 
@@ -2680,7 +2707,6 @@ The list of table names to export.
 
 - Required: Yes
 - Type: array
-- MinValue: -1
 
 ### Parameter: `dataExports.destination`
 
@@ -2688,7 +2714,6 @@ The destination of the data export.
 
 - Required: No
 - Type: object
-- MinValue: -1
 
 **Required parameters**
 
@@ -2708,7 +2733,6 @@ The destination resource ID.
 
 - Required: Yes
 - Type: string
-- MinValue: -1
 
 ### Parameter: `dataExports.destination.metaData`
 
@@ -2716,7 +2740,6 @@ The destination metadata.
 
 - Required: No
 - Type: object
-- MinValue: -1
 
 **Optional parameters**
 
@@ -2730,7 +2753,6 @@ Allows to define an Event Hub name. Not applicable when destination is Storage A
 
 - Required: No
 - Type: string
-- MinValue: -1
 
 ### Parameter: `dataExports.enable`
 
@@ -2738,7 +2760,6 @@ Enable or disable the data export.
 
 - Required: No
 - Type: bool
-- MinValue: -1
 
 ### Parameter: `dataRetention`
 
@@ -2756,8 +2777,6 @@ LAW data sources to configure.
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 730
 
 **Required parameters**
 
@@ -2789,8 +2808,6 @@ The kind of data source.
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `dataSources.name`
 
@@ -2798,8 +2815,6 @@ Name of the data source.
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `dataSources.counterName`
 
@@ -2807,8 +2822,6 @@ Counter name to configure when kind is WindowsPerformanceCounter.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `dataSources.eventLogName`
 
@@ -2816,8 +2829,6 @@ The name of the event log to configure when kind is WindowsEvent.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `dataSources.eventTypes`
 
@@ -2825,8 +2836,6 @@ The event types to configure when kind is WindowsEvent.
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `dataSources.instanceName`
 
@@ -2834,8 +2843,6 @@ Name of the instance to configure when kind is WindowsPerformanceCounter or Linu
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `dataSources.intervalSeconds`
 
@@ -2843,8 +2850,6 @@ Interval in seconds to configure when kind is WindowsPerformanceCounter or Linux
 
 - Required: No
 - Type: int
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `dataSources.linkedResourceId`
 
@@ -2852,8 +2857,6 @@ The resource id of the resource that will be linked to the workspace.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `dataSources.objectName`
 
@@ -2861,8 +2864,6 @@ Name of the object to configure when kind is WindowsPerformanceCounter or LinuxP
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `dataSources.performanceCounters`
 
@@ -2870,8 +2871,6 @@ List of counters to configure when the kind is LinuxPerformanceObject.
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `dataSources.state`
 
@@ -2879,8 +2878,6 @@ State to configure when kind is IISLogs or LinuxSyslogCollection or LinuxPerform
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `dataSources.syslogName`
 
@@ -2888,8 +2885,6 @@ System log to configure when kind is LinuxSyslog.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `dataSources.syslogSeverities`
 
@@ -2897,8 +2892,6 @@ Severities to configure when kind is LinuxSyslog.
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `dataSources.tags`
 
@@ -2906,8 +2899,6 @@ Tags to configure in the resource.
 
 - Required: No
 - Type: object
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `diagnosticSettings`
 
@@ -2915,8 +2906,6 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 730
 
 **Optional parameters**
 
@@ -2939,8 +2928,6 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -2948,8 +2935,6 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -2964,8 +2949,6 @@ A string indicating whether the export to Log Analytics should use the default d
     'Dedicated'
   ]
   ```
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups`
 
@@ -2973,8 +2956,6 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 730
 
 **Optional parameters**
 
@@ -2990,8 +2971,6 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -2999,8 +2978,6 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -3008,8 +2985,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -3017,8 +2992,6 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -3026,8 +2999,6 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 730
 
 **Required parameters**
 
@@ -3047,8 +3018,6 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -3056,8 +3025,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -3065,8 +3032,6 @@ The name of diagnostic setting.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -3074,8 +3039,6 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.useThisWorkspace`
 
@@ -3083,8 +3046,6 @@ Instead of using an external reference, use the deployed instance as the target 
 
 - Required: No
 - Type: bool
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -3092,8 +3053,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `enableTelemetry`
 
@@ -3102,8 +3061,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `features`
 
@@ -3111,8 +3068,6 @@ The workspace features.
 
 - Required: No
 - Type: object
-- MinValue: 0
-- MaxValue: 730
 
 **Optional parameters**
 
@@ -3129,8 +3084,6 @@ Disable Non-EntraID based Auth. Default is true.
 
 - Required: No
 - Type: bool
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `features.enableDataExport`
 
@@ -3138,8 +3091,6 @@ Flag that indicate if data should be exported.
 
 - Required: No
 - Type: bool
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `features.enableLogAccessUsingOnlyResourcePermissions`
 
@@ -3147,8 +3098,6 @@ Enable log access using only resource permissions. Default is false.
 
 - Required: No
 - Type: bool
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `features.immediatePurgeDataOn30Days`
 
@@ -3156,8 +3105,6 @@ Flag that describes if we want to remove the data after 30 days.
 
 - Required: No
 - Type: bool
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `forceCmkForQuery`
 
@@ -3166,8 +3113,6 @@ Indicates whether customer managed storage is mandatory for query management.
 - Required: No
 - Type: bool
 - Default: `True`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `gallerySolutions`
 
@@ -3175,8 +3120,6 @@ List of gallerySolutions to be created in the log analytics workspace.
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 730
 
 **Required parameters**
 
@@ -3191,8 +3134,6 @@ Name of the solution.<p>For solutions authored by Microsoft, the name must be in
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `gallerySolutions.plan`
 
@@ -3200,8 +3141,6 @@ Plan for solution object supported by the OperationsManagement resource provider
 
 - Required: Yes
 - Type: object
-- MinValue: 0
-- MaxValue: 730
 
 **Required parameters**
 
@@ -3222,8 +3161,6 @@ The product name of the deployed solution.<p>For Microsoft published gallery sol
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `gallerySolutions.plan.name`
 
@@ -3231,8 +3168,6 @@ Name of the solution to be created.<p>For solutions authored by Microsoft, the n
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `gallerySolutions.plan.publisher`
 
@@ -3240,8 +3175,6 @@ The publisher name of the deployed solution. For Microsoft published gallery sol
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `linkedServices`
 
@@ -3249,8 +3182,6 @@ List of services to be linked.
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 730
 
 **Required parameters**
 
@@ -3271,8 +3202,6 @@ Name of the linked service.
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `linkedServices.resourceId`
 
@@ -3280,8 +3209,6 @@ The resource id of the resource that will be linked to the workspace. This shoul
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `linkedServices.writeAccessResourceId`
 
@@ -3289,8 +3216,6 @@ The resource id of the resource that will be linked to the workspace. This shoul
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `location`
 
@@ -3299,8 +3224,6 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `lock`
 
@@ -3308,8 +3231,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- MinValue: 0
-- MaxValue: 730
 
 **Optional parameters**
 
@@ -3317,6 +3238,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -3332,8 +3254,6 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `lock.name`
 
@@ -3341,8 +3261,13 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
 
 ### Parameter: `managedIdentities`
 
@@ -3350,8 +3275,6 @@ The managed identity definition for this resource. Only one type of identity is 
 
 - Required: No
 - Type: object
-- MinValue: 0
-- MaxValue: 730
 
 **Optional parameters**
 
@@ -3366,8 +3289,6 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -3375,8 +3296,6 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `onboardWorkspaceToSentinel`
 
@@ -3385,8 +3304,6 @@ Onboard the Log Analytics Workspace to Sentinel. Requires 'SecurityInsights' sol
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `publicNetworkAccessForIngestion`
 
@@ -3402,8 +3319,6 @@ The network access type for accessing Log Analytics ingestion.
     'Enabled'
   ]
   ```
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `publicNetworkAccessForQuery`
 
@@ -3419,8 +3334,39 @@ The network access type for accessing Log Analytics query.
     'Enabled'
   ]
   ```
-- MinValue: 0
-- MaxValue: 730
+
+### Parameter: `replication`
+
+The workspace replication properties.
+
+- Required: No
+- Type: object
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-replicationlocation) | string | The location to which the workspace is replicated. Required if replication is enabled. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-replicationenabled) | bool | Specifies whether the replication is enabled or not. When true, workspace configuration and data is replicated to the specified location. |
+
+### Parameter: `replication.location`
+
+The location to which the workspace is replicated. Required if replication is enabled.
+
+- Required: No
+- Type: string
+
+### Parameter: `replication.enabled`
+
+Specifies whether the replication is enabled or not. When true, workspace configuration and data is replicated to the specified location.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `roleAssignments`
 
@@ -3428,8 +3374,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 730
 - Roles configurable by name:
   - `'Contributor'`
   - `'Log Analytics Contributor'`
@@ -3467,8 +3411,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -3476,8 +3418,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `roleAssignments.condition`
 
@@ -3485,8 +3425,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -3500,8 +3438,6 @@ Version of the condition.
     '2.0'
   ]
   ```
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -3509,8 +3445,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `roleAssignments.description`
 
@@ -3518,8 +3452,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `roleAssignments.name`
 
@@ -3527,8 +3459,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -3546,8 +3476,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `savedSearches`
 
@@ -3555,8 +3483,6 @@ Kusto Query Language searches to save.
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 730
 
 **Required parameters**
 
@@ -3583,8 +3509,6 @@ The category of the saved search. This helps the user to find a saved search fas
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `savedSearches.displayName`
 
@@ -3592,8 +3516,6 @@ Display name for the search.
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `savedSearches.name`
 
@@ -3601,8 +3523,6 @@ Name of the saved search.
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `savedSearches.query`
 
@@ -3610,8 +3530,6 @@ The query expression for the saved search.
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `savedSearches.etag`
 
@@ -3619,8 +3537,6 @@ The ETag of the saved search. To override an existing saved search, use "*" or s
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `savedSearches.functionAlias`
 
@@ -3628,8 +3544,6 @@ The function alias if query serves as a function.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `savedSearches.functionParameters`
 
@@ -3637,8 +3551,6 @@ The optional function parameters if query serves as a function. Value should be 
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `savedSearches.tags`
 
@@ -3646,8 +3558,6 @@ The tags attached to the saved search.
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `savedSearches.version`
 
@@ -3655,8 +3565,6 @@ The version number of the query language. The current version is 2 and is the de
 
 - Required: No
 - Type: int
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `skuCapacityReservationLevel`
 
@@ -3688,8 +3596,6 @@ The name of the SKU.
     'Standard'
   ]
   ```
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `storageInsightsConfigs`
 
@@ -3697,8 +3603,6 @@ List of storage accounts to be read by the workspace.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 5000
 
 **Required parameters**
 
@@ -3719,8 +3623,6 @@ Resource ID of the storage account to be linked.
 
 - Required: Yes
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `storageInsightsConfigs.containers`
 
@@ -3728,8 +3630,6 @@ The names of the blob containers that the workspace should read.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `storageInsightsConfigs.tables`
 
@@ -3737,8 +3637,6 @@ List of tables to be read by the workspace.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables`
 
@@ -3746,8 +3644,6 @@ LAW custom tables to be deployed.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 5000
 
 **Required parameters**
 
@@ -3773,8 +3669,6 @@ The name of the table.
 
 - Required: Yes
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.plan`
 
@@ -3782,8 +3676,6 @@ The plan for the table.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.restoredLogs`
 
@@ -3791,8 +3683,6 @@ The restored logs for the table.
 
 - Required: No
 - Type: object
-- MinValue: 100
-- MaxValue: 5000
 
 **Optional parameters**
 
@@ -3808,8 +3698,6 @@ The timestamp to end the restore by (UTC).
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.restoredLogs.sourceTable`
 
@@ -3817,8 +3705,6 @@ The table to restore data from.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.restoredLogs.startRestoreTime`
 
@@ -3826,8 +3712,6 @@ The timestamp to start the restore from (UTC).
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.retentionInDays`
 
@@ -3835,8 +3719,6 @@ The retention in days for the table.
 
 - Required: No
 - Type: int
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.roleAssignments`
 
@@ -3844,8 +3726,6 @@ The role assignments for the table.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 5000
 - Roles configurable by name:
   - `'Contributor'`
   - `'Log Analytics Contributor'`
@@ -3881,8 +3761,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.roleAssignments.roleDefinitionIdOrName`
 
@@ -3890,8 +3768,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.roleAssignments.condition`
 
@@ -3899,8 +3775,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.roleAssignments.conditionVersion`
 
@@ -3914,8 +3788,6 @@ Version of the condition.
     '2.0'
   ]
   ```
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -3923,8 +3795,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.roleAssignments.description`
 
@@ -3932,8 +3802,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.roleAssignments.name`
 
@@ -3941,8 +3809,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.roleAssignments.principalType`
 
@@ -3960,8 +3826,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.schema`
 
@@ -3969,8 +3833,6 @@ The schema for the table.
 
 - Required: No
 - Type: object
-- MinValue: 100
-- MaxValue: 5000
 
 **Required parameters**
 
@@ -3992,8 +3854,6 @@ A list of table custom columns.
 
 - Required: Yes
 - Type: array
-- MinValue: 100
-- MaxValue: 5000
 
 **Required parameters**
 
@@ -4016,8 +3876,6 @@ The column name.
 
 - Required: Yes
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.schema.columns.type`
 
@@ -4038,8 +3896,6 @@ The column type.
     'string'
   ]
   ```
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.schema.columns.dataTypeHint`
 
@@ -4056,8 +3912,6 @@ The column data type logical hint.
     'uri'
   ]
   ```
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.schema.columns.description`
 
@@ -4065,8 +3919,6 @@ The column description.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.schema.columns.displayName`
 
@@ -4074,8 +3926,6 @@ Column display name.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.schema.name`
 
@@ -4083,8 +3933,6 @@ The table name.
 
 - Required: Yes
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.schema.description`
 
@@ -4092,8 +3940,6 @@ The table description.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.schema.displayName`
 
@@ -4101,8 +3947,6 @@ The table display name.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.searchResults`
 
@@ -4110,8 +3954,6 @@ The search results for the table.
 
 - Required: No
 - Type: object
-- MinValue: 100
-- MaxValue: 5000
 
 **Required parameters**
 
@@ -4134,8 +3976,6 @@ The search job query.
 
 - Required: Yes
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.searchResults.description`
 
@@ -4143,8 +3983,6 @@ The search description.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.searchResults.endSearchTime`
 
@@ -4152,8 +3990,6 @@ The timestamp to end the search by (UTC).
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.searchResults.limit`
 
@@ -4161,8 +3997,6 @@ Limit the search job to return up to specified number of rows.
 
 - Required: No
 - Type: int
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.searchResults.startSearchTime`
 
@@ -4170,8 +4004,6 @@ The timestamp to start the search from (UTC).
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tables.totalRetentionInDays`
 
@@ -4179,8 +4011,6 @@ The total retention in days for the table.
 
 - Required: No
 - Type: int
-- MinValue: 100
-- MaxValue: 5000
 
 ### Parameter: `tags`
 
@@ -4188,8 +4018,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- MinValue: 100
-- MaxValue: 5000
 
 ## Outputs
 
@@ -4198,8 +4026,10 @@ Tags of the resource.
 | `location` | string | The location the resource was deployed into. |
 | `logAnalyticsWorkspaceId` | string | The ID associated with the workspace. |
 | `name` | string | The name of the deployed log analytics workspace. |
+| `primarySharedKey` | securestring | The primary shared key of the log analytics workspace. |
 | `resourceGroupName` | string | The resource group of the deployed log analytics workspace. |
 | `resourceId` | string | The resource ID of the deployed log analytics workspace. |
+| `secondarySharedKey` | securestring | The secondary shared key of the log analytics workspace. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
@@ -4208,8 +4038,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/operations-management/solution:0.3.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/res/operations-management/solution:0.3.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -103,6 +103,7 @@ module testDeployment '../../../main.bicep' = [
       eventhubs: [
         {
           name: '${namePrefix}-az-evh-x-001'
+          messageRetentionInDays: 3
           roleAssignments: [
             {
               roleDefinitionIdOrName: 'Reader'
@@ -145,7 +146,6 @@ module testDeployment '../../../main.bicep' = [
               userMetadata: 'customMetadata'
             }
           ]
-          messageRetentionInDays: 1
           partitionCount: 2
           roleAssignments: [
             {
@@ -155,11 +155,13 @@ module testDeployment '../../../main.bicep' = [
             }
           ]
           status: 'Active'
+          retentionDescriptionEnabled: true
           retentionDescriptionCleanupPolicy: 'Delete'
           retentionDescriptionRetentionTimeInHours: 3
         }
         {
           name: '${namePrefix}-az-evh-x-003'
+          retentionDescriptionEnabled: true
           retentionDescriptionCleanupPolicy: 'Compact'
           retentionDescriptionTombstoneRetentionTimeInHours: 24
         }
@@ -167,6 +169,7 @@ module testDeployment '../../../main.bicep' = [
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
+        notes: 'This is a custom lock note.'
       }
       networkRuleSets: {
         defaultAction: 'Deny'

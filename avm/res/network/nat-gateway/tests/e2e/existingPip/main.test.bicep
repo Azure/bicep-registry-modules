@@ -37,10 +37,8 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     existingPipName: '${namePrefix}${serviceShort}001-existingpip1'
-    
   }
 }
-
 
 // ============== //
 // Test Execution //
@@ -52,9 +50,8 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
-      zone: 1
+      availabilityZone: -1
       publicIpResourceIds: [nestedDependencies.outputs.existingPipResourceId]
     }
   }

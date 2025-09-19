@@ -23,11 +23,11 @@ param resourceRegion string?
 //   Deployments   //
 // =============== //
 
-resource searchService 'Microsoft.Search/searchServices@2023-11-01' existing = {
+resource searchService 'Microsoft.Search/searchServices@2025-02-01-preview' existing = {
   name: searchServiceName
 }
 
-resource sharedPrivateLinkResource 'Microsoft.Search/searchServices/sharedPrivateLinkResources@2023-11-01' = {
+resource sharedPrivateLinkResource 'Microsoft.Search/searchServices/sharedPrivateLinkResources@2025-02-01-preview' = {
   parent: searchService
   name: name
   properties: {

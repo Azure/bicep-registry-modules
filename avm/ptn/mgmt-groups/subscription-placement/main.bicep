@@ -37,7 +37,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 module customSubscriptionPlacement './modules/helper.bicep' = [
-  for (subscriptionPlacement, index) in parSubscriptionPlacement: {
+  for (subscriptionPlacement, index) in parSubscriptionPlacement: if (subscriptionPlacement.?disableSubscriptionPlacement == true) {
     name: 'subPlacment-${uniqueString(subscriptionPlacement.managementGroupId)}${index}'
     params: {
       managementGroupId: subscriptionPlacement.managementGroupId
@@ -62,6 +62,10 @@ output subscriptionPlacementSummary string = 'Subscription placements have been 
 type subscriptionPlacementType = {
   @description('Required. The ID of the management group.')
   managementGroupId: string
+
   @description('Required. The list of subscription IDs to be placed underneath the management group.')
   subscriptionIds: string[]
+
+  @description('Optional. Provides ability to disable the subscription placement for a specific management group.')
+  disableSubscriptionPlacement: bool?
 }

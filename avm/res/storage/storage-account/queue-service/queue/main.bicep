@@ -9,9 +9,9 @@ param storageAccountName string
 param name string
 
 @description('Optional. A name-value pair that represents queue metadata.')
-param metadata object = {}
+param metadata resourceInput<'Microsoft.Storage/storageAccounts/queueServices/queues@2024-01-01'>.properties.metadata = {}
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -72,15 +72,15 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
   name: storageAccountName
 
-  resource queueServices 'queueServices@2023-04-01' existing = {
+  resource queueServices 'queueServices@2024-01-01' existing = {
     name: 'default'
   }
 }
 
-resource queue 'Microsoft.Storage/storageAccounts/queueServices/queues@2023-04-01' = {
+resource queue 'Microsoft.Storage/storageAccounts/queueServices/queues@2024-01-01' = {
   name: name
   parent: storageAccount::queueServices
   properties: {

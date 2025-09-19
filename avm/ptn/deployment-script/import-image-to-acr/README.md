@@ -14,12 +14,12 @@ This modules deployes an image to an Azure Container Registry.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
-| `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
+| `Microsoft.Resources/deploymentScripts` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_deploymentscripts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts)</li></ul> |
 
 ## Usage examples
 
@@ -136,6 +136,8 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     managedIdentities: '<managedIdentities>'
     newImageName: 'application/your-image-name:tag'
     overwriteExistingImage: true
+    sourceRegistryPassword: '<sourceRegistryPassword>'
+    sourceRegistryUsername: 'username'
     storageAccountResourceId: '<storageAccountResourceId>'
     subnetResourceIds: '<subnetResourceIds>'
     tags: {
@@ -187,6 +189,12 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     "overwriteExistingImage": {
       "value": true
     },
+    "sourceRegistryPassword": {
+      "value": "<sourceRegistryPassword>"
+    },
+    "sourceRegistryUsername": {
+      "value": "username"
+    },
     "storageAccountResourceId": {
       "value": "<storageAccountResourceId>"
     },
@@ -224,6 +232,8 @@ param location = '<location>'
 param managedIdentities = '<managedIdentities>'
 param newImageName = 'application/your-image-name:tag'
 param overwriteExistingImage = true
+param sourceRegistryPassword = '<sourceRegistryPassword>'
+param sourceRegistryUsername = 'username'
 param storageAccountResourceId = '<storageAccountResourceId>'
 param subnetResourceIds = '<subnetResourceIds>'
 param tags = {
@@ -550,7 +560,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/resources/deployment-script:0.5.0` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Notes

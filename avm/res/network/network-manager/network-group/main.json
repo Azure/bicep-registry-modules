@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "11342877423398402081"
+      "version": "0.34.44.8038",
+      "templateHash": "17746491023421349976"
     },
     "name": "Network Manager Network Groups",
     "description": "This module deploys a Network Manager Network Group.\nA network group is a collection of same-type network resources that you can associate with network manager configurations. You can add same-type network resources after you create the network group."
@@ -127,8 +127,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "17520354652811358915"
+              "version": "0.34.44.8038",
+              "templateHash": "3061280615977593618"
             },
             "name": "Network Manager Network Group Static Members",
             "description": "This module deploys a Network Manager Network Group Static Member.\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks."

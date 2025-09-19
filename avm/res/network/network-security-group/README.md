@@ -13,12 +13,12 @@ This module deploys a Network security Group (NSG).
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/networkSecurityGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Network/networkSecurityGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networksecuritygroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups)</li></ul> |
 
 ## Usage examples
 
@@ -846,6 +846,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -865,6 +866,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -1080,8 +1088,6 @@ Network protocol this rule applies to.
     'Udp'
   ]
   ```
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.description`
 
@@ -1089,8 +1095,6 @@ The description of the security rule.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.destinationAddressPrefix`
 
@@ -1098,8 +1102,6 @@ Optional. The destination address prefix. CIDR or destination IP range. Asterisk
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.destinationAddressPrefixes`
 
@@ -1107,8 +1109,6 @@ The destination address prefixes. CIDR or destination IP ranges.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.destinationApplicationSecurityGroupResourceIds`
 
@@ -1116,8 +1116,6 @@ The resource IDs of the application security groups specified as destination.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.destinationPortRange`
 
@@ -1125,8 +1123,6 @@ The destination port or range. Integer or range between 0 and 65535. Asterisk "*
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.destinationPortRanges`
 
@@ -1134,8 +1130,6 @@ The destination port ranges.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.sourceAddressPrefix`
 
@@ -1143,8 +1137,6 @@ The CIDR or source IP range. Asterisk "*" can also be used to match all source I
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.sourceAddressPrefixes`
 
@@ -1152,8 +1144,6 @@ The CIDR or source IP ranges.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.sourceApplicationSecurityGroupResourceIds`
 
@@ -1161,8 +1151,6 @@ The resource IDs of the application security groups specified as source.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.sourcePortRange`
 
@@ -1170,8 +1158,6 @@ The source port or range. Integer or range between 0 and 65535. Asterisk "*" can
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.sourcePortRanges`
 
@@ -1179,8 +1165,6 @@ The source port ranges.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `tags`
 
@@ -1205,6 +1189,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

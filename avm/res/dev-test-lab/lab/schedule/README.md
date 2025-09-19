@@ -12,9 +12,9 @@ Lab schedules are used to modify the settings for auto-shutdown, auto-start for 
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.DevTestLab/labs/schedules` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/labs/schedules) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.DevTestLab/labs/schedules` | 2018-09-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_labs_schedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/labs/schedules)</li></ul> |
 
 ## Parameters
 
@@ -130,8 +130,8 @@ The notification settings for the schedule.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`emailRecipient`](#parameter-notificationsettingsemailrecipient) | string | The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webHookUrl" is empty. |
-| [`webHookUrl`](#parameter-notificationsettingswebhookurl) | string | The webhook URL to which the notification will be sent. Required if "emailRecipient" is empty. |
+| [`emailRecipient`](#parameter-notificationsettingsemailrecipient) | string | The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webhookUrl" is empty. |
+| [`webhookUrl`](#parameter-notificationsettingswebhookurl) | string | The webhook URL to which the notification will be sent. Required if "emailRecipient" is empty. |
 
 **Optional parameters**
 
@@ -143,12 +143,12 @@ The notification settings for the schedule.
 
 ### Parameter: `notificationSettings.emailRecipient`
 
-The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webHookUrl" is empty.
+The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webhookUrl" is empty.
 
 - Required: No
 - Type: string
 
-### Parameter: `notificationSettings.webHookUrl`
+### Parameter: `notificationSettings.webhookUrl`
 
 The webhook URL to which the notification will be sent. Required if "emailRecipient" is empty.
 

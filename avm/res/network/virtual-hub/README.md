@@ -14,13 +14,13 @@ If you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integ
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Network/virtualHubs` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualHubs) |
-| `Microsoft.Network/virtualHubs/hubRouteTables` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/virtualHubs/hubRouteTables) |
-| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualHubs/hubVirtualNetworkConnections) |
-| `Microsoft.Network/virtualHubs/routingIntent` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualHubs/routingIntent) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Network/virtualHubs` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualHubs)</li></ul> |
+| `Microsoft.Network/virtualHubs/hubRouteTables` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubroutetables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualHubs/hubRouteTables)</li></ul> |
+| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubvirtualnetworkconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualHubs/hubVirtualNetworkConnections)</li></ul> |
+| `Microsoft.Network/virtualHubs/routingIntent` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_routingintent.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualHubs/routingIntent)</li></ul> |
 
 ## Usage examples
 
@@ -122,6 +122,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
     hubRouteTables: [
       {
         name: 'routeTable1'
+        routes: []
       }
     ]
     hubVirtualNetworkConnections: [
@@ -138,9 +139,21 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
                 id: '<id>'
               }
             ]
-            labels: [
-              'none'
+            labels: []
+          }
+          vnetRoutes: {
+            staticRoutes: [
+              {
+                addressPrefixes: [
+                  '10.150.0.0/24'
+                ]
+                name: 'route1'
+                nextHopIpAddress: '10.150.0.5'
+              }
             ]
+            staticRoutesConfig: {
+              vnetLocalRouteOverrideCriteria: 'Contains'
+            }
           }
         }
       }
@@ -150,10 +163,14 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    sku: 'Standard'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
+    }
+    virtualRouterAutoScaleConfiguration: {
+      minCount: 2
     }
   }
 }
@@ -185,7 +202,8 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
     "hubRouteTables": {
       "value": [
         {
-          "name": "routeTable1"
+          "name": "routeTable1",
+          "routes": []
         }
       ]
     },
@@ -204,9 +222,21 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
                   "id": "<id>"
                 }
               ],
-              "labels": [
-                "none"
-              ]
+              "labels": []
+            },
+            "vnetRoutes": {
+              "staticRoutes": [
+                {
+                  "addressPrefixes": [
+                    "10.150.0.0/24"
+                  ],
+                  "name": "route1",
+                  "nextHopIpAddress": "10.150.0.5"
+                }
+              ],
+              "staticRoutesConfig": {
+                "vnetLocalRouteOverrideCriteria": "Contains"
+              }
             }
           }
         }
@@ -221,11 +251,19 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         "name": "myCustomLockName"
       }
     },
+    "sku": {
+      "value": "Standard"
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
+      }
+    },
+    "virtualRouterAutoScaleConfiguration": {
+      "value": {
+        "minCount": 2
       }
     }
   }
@@ -250,6 +288,7 @@ param virtualWanResourceId = '<virtualWanResourceId>'
 param hubRouteTables = [
   {
     name: 'routeTable1'
+    routes: []
   }
 ]
 param hubVirtualNetworkConnections = [
@@ -266,9 +305,21 @@ param hubVirtualNetworkConnections = [
             id: '<id>'
           }
         ]
-        labels: [
-          'none'
+        labels: []
+      }
+      vnetRoutes: {
+        staticRoutes: [
+          {
+            addressPrefixes: [
+              '10.150.0.0/24'
+            ]
+            name: 'route1'
+            nextHopIpAddress: '10.150.0.5'
+          }
         ]
+        staticRoutesConfig: {
+          vnetLocalRouteOverrideCriteria: 'Contains'
+        }
       }
     }
   }
@@ -278,10 +329,14 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param sku = 'Standard'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
+}
+param virtualRouterAutoScaleConfiguration = {
+  minCount: 2
 }
 ```
 
@@ -602,6 +657,7 @@ param tags = {
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualHubRouteTableV2s`](#parameter-virtualhubroutetablev2s) | array | List of all virtual hub route table v2s associated with this VirtualHub. |
 | [`virtualRouterAsn`](#parameter-virtualrouterasn) | int | VirtualRouter ASN. |
+| [`virtualRouterAutoScaleConfiguration`](#parameter-virtualrouterautoscaleconfiguration) | object | The auto scale configuration for the virtual router. |
 | [`virtualRouterIps`](#parameter-virtualrouterips) | array | VirtualRouter IPs. |
 | [`vpnGatewayResourceId`](#parameter-vpngatewayresourceid) | string | Resource ID of the VPN Gateway to link to. |
 
@@ -697,6 +753,63 @@ List of all routes.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destinations`](#parameter-hubroutetablesroutesdestinations) | array | The address prefix for the route. |
+| [`destinationType`](#parameter-hubroutetablesroutesdestinationtype) | string | The destination type for the route. |
+| [`name`](#parameter-hubroutetablesroutesname) | string | The name of the route. |
+| [`nextHop`](#parameter-hubroutetablesroutesnexthop) | string | The next hop IP address for the route. |
+| [`nextHopType`](#parameter-hubroutetablesroutesnexthoptype) | string | The next hop type for the route. |
+
+### Parameter: `hubRouteTables.routes.destinations`
+
+The address prefix for the route.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `hubRouteTables.routes.destinationType`
+
+The destination type for the route.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CIDR'
+  ]
+  ```
+
+### Parameter: `hubRouteTables.routes.name`
+
+The name of the route.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `hubRouteTables.routes.nextHop`
+
+The next hop IP address for the route.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `hubRouteTables.routes.nextHopType`
+
+The next hop type for the route.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ResourceId'
+  ]
+  ```
+
 ### Parameter: `hubRoutingPreference`
 
 The preferred routing preference for this virtual hub.
@@ -782,6 +895,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -801,6 +915,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -915,6 +1036,26 @@ VirtualRouter ASN.
 - Required: No
 - Type: int
 
+### Parameter: `virtualRouterAutoScaleConfiguration`
+
+The auto scale configuration for the virtual router.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`minCount`](#parameter-virtualrouterautoscaleconfigurationmincount) | int | The minimum number of virtual routers in the scale set. |
+
+### Parameter: `virtualRouterAutoScaleConfiguration.minCount`
+
+The minimum number of virtual routers in the scale set.
+
+- Required: Yes
+- Type: int
+
 ### Parameter: `virtualRouterIps`
 
 VirtualRouter IPs.
@@ -944,7 +1085,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

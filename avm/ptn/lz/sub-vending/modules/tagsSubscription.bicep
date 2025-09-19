@@ -13,9 +13,9 @@ module readTags 'readTagsSubscription.bicep' = if (onlyUpdate) {
   name: '${deployment().name}-ReadTags'
 }
 
-var newTags = (onlyUpdate) ? union(readTags.outputs.existingTags, tags) : tags
+var newTags = (onlyUpdate) ? union(readTags.?outputs.existingTags ?? {}, tags) : tags
 
-resource tag 'Microsoft.Resources/tags@2019-10-01' = {
+resource tag 'Microsoft.Resources/tags@2025-04-01' = {
   name: name
   properties: {
     tags: newTags

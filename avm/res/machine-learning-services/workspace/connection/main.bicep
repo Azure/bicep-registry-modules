@@ -81,12 +81,14 @@ output resourceGroupName string = resourceGroup().name
 // Definitions      //
 // ================ //
 
+@description('The tpe for the metadata.')
 type metadataType = {
   @description('Required. The metadata key-value pairs.')
   *: string
 }
 
 @export()
+@description('The type of the connection category.')
 type categoryType =
   | 'ADLSGen2'
   | 'AIServices'
@@ -194,11 +196,13 @@ type categoryType =
   | 'Xero'
   | 'Zoho'
 
+@description('The connection properties when the auth type is AAD.')
 type aadAuthTypeWorkspaceConnectionPropertyType = {
   @description('Required. The authentication type of the connection target.')
   authType: 'AAD'
 }
 
+@description('The connection properties when the auth type is AccessKey.')
 type accessKeyAuthTypeWorkspaceConnectionPropertyType = {
   @description('Required. The authentication type of the connection target.')
   authType: 'AccessKey'
@@ -207,6 +211,7 @@ type accessKeyAuthTypeWorkspaceConnectionPropertyType = {
   credentials: workspaceConnectionAccessKeyType
 }
 
+@description('The connection properties when the auth type is AccountKey.')
 type accountKeyAuthTypeWorkspaceConnectionPropertyType = {
   @description('Required. The authentication type of the connection target.')
   authType: 'AccountKey'
@@ -215,6 +220,7 @@ type accountKeyAuthTypeWorkspaceConnectionPropertyType = {
   credentials: workspaceConnectionAccountKeyType
 }
 
+@description('The connection properties when the auth type is ApiKey.')
 type apiKeyAuthWorkspaceConnectionPropertyType = {
   @description('Required. The authentication type of the connection target.')
   authType: 'ApiKey'
@@ -223,6 +229,7 @@ type apiKeyAuthWorkspaceConnectionPropertyType = {
   credentials: workspaceConnectionApiKeyType
 }
 
+@description('The connection properties when the auth type are CustomKeys.')
 type customKeysWorkspaceConnectionPropertyType = {
   @description('Required. The authentication type of the connection target.')
   authType: 'CustomKeys'
@@ -231,6 +238,7 @@ type customKeysWorkspaceConnectionPropertyType = {
   credentials: customKeysType
 }
 
+@description('The connection properties when the auth type is ManagedIdentity.')
 type managedIdentityAuthTypeWorkspaceConnectionPropertyType = {
   @description('Required. The authentication type of the connection target.')
   authType: 'ManagedIdentity'
@@ -239,11 +247,13 @@ type managedIdentityAuthTypeWorkspaceConnectionPropertyType = {
   credentials: workspaceConnectionManagedIdentityType
 }
 
+@description('The connection properties when the auth type is None.')
 type noneAuthTypeWorkspaceConnectionPropertyType = {
   @description('Required. The authentication type of the connection target.')
   authType: 'None'
 }
 
+@description('The connection properties when the auth type is OAuth2.')
 type oauth2AuthTypeWorkspaceConnectionPropertyType = {
   @description('Required. The authentication type of the connection target.')
   authType: 'OAuth2'
@@ -252,6 +262,7 @@ type oauth2AuthTypeWorkspaceConnectionPropertyType = {
   credentials: workspaceConnectionOAuth2Type
 }
 
+@description('The connection properties when the auth type is PAT.')
 type patAuthTypeWorkspaceConnectionPropertyType = {
   @description('Required. The authentication type of the connection target.')
   authType: 'PAT'
@@ -260,6 +271,7 @@ type patAuthTypeWorkspaceConnectionPropertyType = {
   credentials: workspaceConnectionPersonalAccessTokenType
 }
 
+@description('The connection properties when the auth type is SAS.')
 type sasAuthTypeWorkspaceConnectionPropertyType = {
   @description('Required. The authentication type of the connection target.')
   authType: 'SAS'
@@ -268,6 +280,7 @@ type sasAuthTypeWorkspaceConnectionPropertyType = {
   credentials: workspaceConnectionSharedAccessSignatureType
 }
 
+@description('The connection properties when the auth type is ServicePrincipal.')
 type servicePrincipalAuthTypeWorkspaceConnectionPropertyType = {
   @description('Required. The authentication type of the connection target.')
   authType: 'ServicePrincipal'
@@ -276,6 +289,7 @@ type servicePrincipalAuthTypeWorkspaceConnectionPropertyType = {
   credentials: workspaceConnectionServicePrincipalType
 }
 
+@description('The connection properties when the auth type is UsernamePassword.')
 type usernamePasswordAuthTypeWorkspaceConnectionPropertyType = {
   @description('Required. The authentication type of the connection target.')
   authType: 'UsernamePassword'
@@ -284,6 +298,7 @@ type usernamePasswordAuthTypeWorkspaceConnectionPropertyType = {
   credentials: workspaceConnectionUsernamePasswordType
 }
 
+@description('The type fot the custom keys.')
 type customKeysType = {
   @description('Required. The custom keys for the connection.')
   keys: {
@@ -292,6 +307,7 @@ type customKeysType = {
   }
 }
 
+@description('The type for the workspace connection access key.')
 type workspaceConnectionAccessKeyType = {
   @description('Required. The connection access key ID.')
   accessKeyId: string
@@ -300,16 +316,19 @@ type workspaceConnectionAccessKeyType = {
   secretAccessKey: string
 }
 
+@description('The type for the workspace connection account key.')
 type workspaceConnectionAccountKeyType = {
   @description('Required. The connection key.')
   key: string
 }
 
+@description('The type for the workspace connection API key.')
 type workspaceConnectionApiKeyType = {
   @description('Required. The connection API key.')
   key: string
 }
 
+@description('The type for the workspace connection managed identity.')
 type workspaceConnectionManagedIdentityType = {
   @description('Required. The connection managed identity ID.')
   clientId: string
@@ -319,7 +338,7 @@ type workspaceConnectionManagedIdentityType = {
 }
 
 type workspaceConnectionOAuth2Type = {
-  @description('Conditional. The connection auth URL. Required by Concur connection category.')
+  @description('Conditional. The connection auth URL. Required if connection category is Concur.')
   authUrl: string?
 
   @minLength(36)
@@ -330,32 +349,35 @@ type workspaceConnectionOAuth2Type = {
   @description('Required. The connection client secret.')
   clientSecret: string
 
-  @description('Conditional. The connection developer token. Required by GoogleAdWords connection category.')
+  @description('Conditional. The connection developer token. Required if connection category is GoogleAdWords.')
   developerToken: string?
 
-  @description('Conditional. The connection password. Required by Concur and ServiceNow connection categories where AccessToken grant type is \'Password\'.')
+  @description('Conditional. The connection password. Required if connection category is Concur or ServiceNow where AccessToken grant type is \'Password\'.')
   password: string?
 
-  @description('Conditional. The connection refresh token. Required by GoogleBigQuery, GoogleAdWords, Hubspot, QuickBooks, Square, Xero and Zoho connection categories.')
+  @description('Conditional. The connection refresh token. Required if connection category is GoogleBigQuery, GoogleAdWords, Hubspot, QuickBooks, Square, Xero or Zoho.')
   refreshToken: string?
 
-  @description('Required. The connection tenant ID. Required by QuickBooks and Xero connection categories.')
+  @description('Conditional. The connection tenant ID. Required if connection category is QuickBooks or Xero.')
   tenantId: string?
 
-  @description('Conditional. The connection username. Required by Concur and ServiceNow connection categories where AccessToken grant type is \'Password\'.')
+  @description('Conditional. The connection username. Required if connection category is Concur or ServiceNow where AccessToken grant type is \'Password\'.')
   username: string?
 }
 
+@description('The type for the workspace connection personal access token.')
 type workspaceConnectionPersonalAccessTokenType = {
   @description('Required. The connection personal access token.')
   pat: string
 }
 
+@description('The type for the workspace connection shared access signature.')
 type workspaceConnectionSharedAccessSignatureType = {
   @description('Required. The connection SAS token.')
   sas: string
 }
 
+@description('The type for the workspace connection service principal.')
 type workspaceConnectionServicePrincipalType = {
   @description('Required. The connection client ID.')
   clientId: string
@@ -367,11 +389,12 @@ type workspaceConnectionServicePrincipalType = {
   tenantId: string
 }
 
+@description('The type for the workspace connection username and password.')
 type workspaceConnectionUsernamePasswordType = {
   @description('Required. The connection password.')
   password: string
 
-  @description('Conditional. The connection security token. Required by connections like SalesForce for extra security in addition to \'UsernamePassword\'.')
+  @description('Conditional. The connection security token. Required if connection is like SalesForce for extra security in addition to \'UsernamePassword\'.')
   securityToken: string?
 
   @description('Required. The connection username.')
@@ -380,6 +403,7 @@ type workspaceConnectionUsernamePasswordType = {
 
 @secure()
 @export()
+@description('The type of the connection properties.')
 @discriminator('authType')
 type connectionPropertyType =
   | aadAuthTypeWorkspaceConnectionPropertyType

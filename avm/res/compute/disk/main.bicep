@@ -20,18 +20,16 @@ param sku string
 
 @allowed([
   'EdgeZone'
-  ''
 ])
 @description('Optional. Specifies the Edge Zone within the Azure Region where this Managed Disk should exist. Changing this forces a new Managed Disk to be created.')
-param edgeZone string = ''
+param edgeZone string?
 
 @allowed([
   'x64'
   'Arm64'
-  ''
 ])
 @description('Optional. CPU architecture supported by an OS disk.')
-param architecture string = ''
+param architecture string?
 
 @description('Optional. Set to true to enable bursting beyond the provisioned performance target of the disk.')
 param burstingEnabled bool = false
@@ -108,10 +106,9 @@ param optimizedForFrequentAttach bool = false
 @allowed([
   'Windows'
   'Linux'
-  ''
 ])
 @description('Optional. Sources of a disk creation.')
-param osType string = ''
+param osType string?
 
 @allowed([
   'Disabled'
@@ -123,23 +120,25 @@ param publicNetworkAccess string = 'Disabled'
 @description('Optional. True if the image from which the OS disk is created supports accelerated networking.')
 param acceleratedNetwork bool = false
 
-@description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone.To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones).')
+@description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).')
 @allowed([
-  0
+  -1
   1
   2
   3
 ])
 param availabilityZone int
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the availability set resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Compute/disks@2025-01-02'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -245,25 +244,25 @@ resource disk 'Microsoft.Compute/disks@2023-10-02' = {
     maxShares: maxShares
     networkAccessPolicy: networkAccessPolicy
     optimizedForFrequentAttach: optimizedForFrequentAttach
-    osType: !empty(osType) ? osType : any(null)
+    osType: osType
     publicNetworkAccess: publicNetworkAccess
     supportedCapabilities: !empty(osType)
       ? {
           acceleratedNetwork: acceleratedNetwork
-          architecture: !empty(architecture) ? architecture : null
+          architecture: architecture
         }
       : {}
   }
-  zones: availabilityZone != 0 ? array(string(availabilityZone)) : null
+  zones: availabilityZone != -1 ? array(string(availabilityZone)) : null
 }
 
 resource disk_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: disk
 }
@@ -295,41 +294,3 @@ output name string = disk.name
 
 @description('The location the resource was deployed into.')
 output location string = disk.location
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?

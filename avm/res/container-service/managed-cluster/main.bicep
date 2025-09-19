@@ -61,6 +61,18 @@ param loadBalancerSku string = 'standard'
 @description('Optional. Outbound IP Count for the Load balancer.')
 param managedOutboundIPCount int = 0
 
+@description('Optional. The desired number of allocated SNAT ports per VM. Default is 0, which results in Azure dynamically allocating ports.')
+param allocatedOutboundPorts int = 0
+
+@description('Optional. Desired outbound flow idle timeout in minutes.')
+param idleTimeoutInMinutes int = 30
+
+@description('Optional. A list of the resource IDs of the public IP addresses to use for the load balancer outbound rules.')
+param outboundPublicIPResourceIds string[]?
+
+@description('Optional. A list of the resource IDs of the public IP prefixes to use for the load balancer outbound rules.')
+param outboundPublicIPPrefixResourceIds string[]?
+
 @description('Optional. The type of the managed inbound Load Balancer BackendPool.')
 @allowed([
   'NodeIP'
@@ -357,12 +369,12 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-01'>.tags?
 
 @description('Optional. The resource ID of the disc encryption set to apply to the cluster. For security reasons, this value should be provided.')
 param diskEncryptionSetResourceId string?
@@ -371,10 +383,10 @@ param diskEncryptionSetResourceId string?
 param fluxExtension extensionType?
 
 @description('Optional. Configurations for provisioning the cluster with HTTP proxy servers.')
-param httpProxyConfig object?
+param httpProxyConfig resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-01'>.properties.httpProxyConfig?
 
 @description('Optional. Identities associated with the cluster.')
-param identityProfile object?
+param identityProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-01'>.properties.identityProfile?
 
 @description('Optional. Enables Kubernetes Event-driven Autoscaling (KEDA).')
 param kedaAddon bool = false
@@ -499,7 +511,7 @@ var builtInRoleNames = {
   )
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -559,12 +571,12 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
   properties: {
     agentPoolProfiles: map(primaryAgentPoolProfiles, profile => {
       name: profile.name
-      count: profile.count ?? 1
+      count: profile.?count ?? 1
       availabilityZones: map(profile.?availabilityZones ?? [1, 2, 3], zone => '${zone}')
       creationData: !empty(profile.?sourceResourceId)
         ? {
             #disable-next-line use-resource-id-functions // Not possible to reference as nested
-            sourceResourceId: profile.sourceResourceId
+            sourceResourceId: profile.?sourceResourceId
           }
         : null
       enableAutoScaling: profile.?enableAutoScaling ?? false
@@ -736,6 +748,8 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
       outboundType: outboundType
       loadBalancerSku: loadBalancerSku
       loadBalancerProfile: {
+        allocatedOutboundPorts: allocatedOutboundPorts
+        idleTimeoutInMinutes: idleTimeoutInMinutes
         managedOutboundIPs: managedOutboundIPCount != 0
           ? {
               count: managedOutboundIPCount
@@ -743,6 +757,21 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
           : null
         effectiveOutboundIPs: []
         backendPoolType: backendPoolType
+        outboundIPPrefixes: !empty(outboundPublicIPPrefixResourceIds)
+          ? {
+              publicIPPrefixes: map(outboundPublicIPPrefixResourceIds ?? [], id => {
+                id: id
+              })
+            }
+          : null
+
+        outboundIPs: !empty(outboundPublicIPResourceIds)
+          ? {
+              publicIPs: map(outboundPublicIPResourceIds ?? [], id => {
+                id: id
+              })
+            }
+          : null
       }
     }
     publicNetworkAccess: publicNetworkAccess
@@ -887,7 +916,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
 
 module managedCluster_maintenanceConfigurations 'maintenance-configurations/main.bicep' = [
   for (maintenanceConfiguration, index) in (maintenanceConfigurations ?? []): {
-    name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceConfiguration-${index}'
+    name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceCfg-${index}'
     params: {
       name: maintenanceConfiguration!.name
       maintenanceWindow: maintenanceConfiguration!.maintenanceWindow
@@ -940,7 +969,7 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
   }
 ]
 
-module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.3.5' = if (!empty(fluxExtension)) {
+module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.3.6' = if (!empty(fluxExtension)) {
   name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxExtension'
   params: {
     clusterName: managedCluster.name
@@ -954,6 +983,7 @@ module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/exte
     releaseNamespace: fluxExtension.?releaseNamespace ?? 'flux-system'
     releaseTrain: fluxExtension.?releaseTrain ?? 'Stable'
     version: fluxExtension.?version
+    targetNamespace: fluxExtension.?targetNamespace
   }
 }
 
@@ -961,9 +991,9 @@ resource managedCluster_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!e
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: managedCluster
 }
