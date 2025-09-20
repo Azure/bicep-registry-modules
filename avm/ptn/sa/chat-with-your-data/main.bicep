@@ -33,9 +33,6 @@ var solutionSuffix = toLower(trim(replace(
   ''
 )))
 
-// @description('Name of App Service plan')
-// param hostingPlanName string = 'asp-${solutionSuffix}'
-
 @description('Optional. Name of App Service plan.')
 var hostingPlanName string = 'asp-${solutionSuffix}'
 
@@ -360,7 +357,6 @@ var blobContainerName = 'documents'
 var queueName = 'doc-processing'
 var clientKey = '${uniqueString(guid(subscription().id, deployment().name))}${newGuidString}'
 var eventGridSystemTopicName = 'doc-processing'
-// var tags = { 'azd-env-name': solutionName }
 var baseUrl = 'https://raw.githubusercontent.com/Azure-Samples/chat-with-your-data-solution-accelerator/waf-avm/'
 var appversion = 'latest' // Update GIT deployment branch
 var registryName = 'cwydcontainerregpk' // Update Registry name
@@ -496,7 +492,6 @@ var privateDnsZones = [
   'privatelink.openai.azure.com'
   'privatelink.vaultcore.azure.net'
   'privatelink.api.azureml.ms'
-  'privatelink.azurewebsites.net'
 ]
 
 // DNS Zone Index Constants
@@ -511,8 +506,6 @@ var dnsZoneIndex = {
   openAI: 7
   keyVault: 8
   machinelearning: 9
-  appService: 10
-  // The indexes for 'storageFile' and 'containerRegistry' have been removed as they were unused
 }
 
 // ===================================================
@@ -1702,7 +1695,7 @@ module createIndex 'br/public:avm/res/resources/deployment-script:0.5.1' = if (d
         ]
       : null
     tags: tags
-    timeout: 'PT5M'
+    timeout: 'PT30M'
   }
   dependsOn: [pgSqlDelayScript]
 }
