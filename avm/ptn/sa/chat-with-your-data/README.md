@@ -994,6 +994,7 @@ The password for the administrator account of the virtual machine. Allows to cus
 
 - Required: No
 - Type: securestring
+- Default: `''`
 
 ### Parameter: `virtualMachineAdminUsername`
 
@@ -1001,6 +1002,7 @@ The user name for the administrator account of the virtual machine. Allows to cu
 
 - Required: No
 - Type: securestring
+- Default: `''`
 
 ### Parameter: `vmSize`
 

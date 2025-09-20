@@ -344,11 +344,11 @@ param vmSize string = 'Standard_DS2_v2'
 
 @description('Optional. The user name for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.')
 @secure()
-param virtualMachineAdminUsername string?
+param virtualMachineAdminUsername string = ''
 
 @description('Optional. The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.')
 @secure()
-param virtualMachineAdminPassword string?
+param virtualMachineAdminPassword string = ''
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -357,6 +357,7 @@ var blobContainerName = 'documents'
 var queueName = 'doc-processing'
 var clientKey = '${uniqueString(guid(subscription().id, deployment().name))}${newGuidString}'
 var eventGridSystemTopicName = 'doc-processing'
+// var tags = { 'azd-env-name': solutionName }
 var baseUrl = 'https://raw.githubusercontent.com/Azure-Samples/chat-with-your-data-solution-accelerator/waf-avm/'
 var appversion = 'latest' // Update GIT deployment branch
 var registryName = 'cwydcontainerregpk' // Update Registry name
@@ -506,6 +507,7 @@ var dnsZoneIndex = {
   openAI: 7
   keyVault: 8
   machinelearning: 9
+  // The indexes for 'storageFile' and 'containerRegistry' have been removed as they were unused
 }
 
 // ===================================================
@@ -931,6 +933,7 @@ module computerVision 'modules/core/ai/cognitiveservices.bicep' = if (useAdvance
   dependsOn: enablePrivateNetworking ? avmPrivateDnsZones : []
 }
 
+var enablePrivateNetworkingSpeech = false // Speech service does not work with private endpoints in all regions, so default to false
 module speechService 'modules/core/ai/cognitiveservices.bicep' = {
   name: speechServiceName
   scope: resourceGroup()
@@ -940,15 +943,15 @@ module speechService 'modules/core/ai/cognitiveservices.bicep' = {
     kind: 'SpeechServices'
     sku: 'S0'
 
-    enablePrivateNetworking: enablePrivateNetworking
+    enablePrivateNetworking: enablePrivateNetworkingSpeech
     enableMonitoring: enableMonitoring
     enableTelemetry: enableTelemetry
-    subnetResourceId: enablePrivateNetworking ? network!.outputs.subnetPrivateEndpointsResourceId : null
+    subnetResourceId: enablePrivateNetworkingSpeech ? network!.outputs.subnetPrivateEndpointsResourceId : null
 
     logAnalyticsWorkspaceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : null
     disableLocalAuth: false
     userAssignedResourceId: managedIdentityModule.outputs.resourceId
-    privateDnsZoneResourceId: enablePrivateNetworking
+    privateDnsZoneResourceId: enablePrivateNetworkingSpeech
       ? avmPrivateDnsZones[dnsZoneIndex.cognitiveServices]!.outputs.resourceId
       : ''
     roleAssignments: concat(
@@ -1092,6 +1095,7 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.5.0' = {
   // scope: resourceGroup()
 }
 
+var postgresDBFqdn = '${postgresResourceName}.postgres.database.azure.com'
 module web 'modules/app/web.bicep' = {
   name: take('module.web.site.${websiteName}${hostingModel == 'container' ? '-docker' : ''}', 64)
   scope: resourceGroup()
@@ -1144,6 +1148,7 @@ module web 'modules/app/web.bicep' = {
         AZURE_SPEECH_SERVICE_NAME: speechServiceName
         AZURE_SPEECH_SERVICE_REGION: location
         AZURE_SPEECH_RECOGNIZER_LANGUAGES: recognizedLanguages
+        AZURE_SPEECH_REGION_ENDPOINT: speechService.outputs.endpoint
         USE_ADVANCED_IMAGE_PROCESSING: useAdvancedImageProcessing ? 'true' : 'false'
         ADVANCED_IMAGE_PROCESSING_MAX_IMAGES: string(advancedImageProcessingMaxImages)
         ORCHESTRATION_STRATEGY: orchestrationStrategy
@@ -1159,7 +1164,7 @@ module web 'modules/app/web.bicep' = {
       },
       databaseType == 'CosmosDB'
         ? {
-            AZURE_COSMOSDB_ACCOUNT_NAME: cosmosDBModule!.outputs.name
+            AZURE_COSMOSDB_ACCOUNT_NAME: azureCosmosDBAccountName
             AZURE_COSMOSDB_DATABASE_NAME: cosmosDbName
             AZURE_COSMOSDB_CONVERSATIONS_CONTAINER_NAME: cosmosDbContainerName
             AZURE_COSMOSDB_ENABLE_FEEDBACK: 'true'
@@ -1188,7 +1193,7 @@ module web 'modules/app/web.bicep' = {
           }
         : databaseType == 'PostgreSQL'
             ? {
-                AZURE_POSTGRESQL_HOST_NAME: postgresDBModule!.outputs.fqdn
+                AZURE_POSTGRESQL_HOST_NAME: postgresDBFqdn
                 AZURE_POSTGRESQL_DATABASE_NAME: postgresDBName
                 AZURE_POSTGRESQL_USER: managedIdentityModule.outputs.name
               }
@@ -1281,7 +1286,7 @@ module adminweb 'modules/app/adminweb.bicep' = {
           }
         : databaseType == 'PostgreSQL'
             ? {
-                AZURE_POSTGRESQL_HOST_NAME: postgresDBModule!.outputs.fqdn
+                AZURE_POSTGRESQL_HOST_NAME: postgresDBFqdn
                 AZURE_POSTGRESQL_DATABASE_NAME: postgresDBName
                 AZURE_POSTGRESQL_USER: managedIdentityModule.outputs.name
               }
@@ -1369,7 +1374,7 @@ module function 'modules/app/function.bicep' = {
           }
         : databaseType == 'PostgreSQL'
             ? {
-                AZURE_POSTGRESQL_HOST_NAME: postgresDBModule!.outputs.fqdn
+                AZURE_POSTGRESQL_HOST_NAME: postgresDBFqdn
                 AZURE_POSTGRESQL_DATABASE_NAME: postgresDBName
                 AZURE_POSTGRESQL_USER: managedIdentityModule.outputs.name
               }
@@ -1713,7 +1718,7 @@ var azureOpenAIEmbeddingModelInfo = string({
 })
 
 var azureCosmosDBInfo = string({
-  account_name: databaseType == 'CosmosDB' ? cosmosDBModule!.outputs.name : ''
+  account_name: databaseType == 'CosmosDB' ? azureCosmosDBAccountName : ''
   database_name: databaseType == 'CosmosDB' ? cosmosDbName : ''
   conversations_container_name: databaseType == 'CosmosDB' ? cosmosDbContainerName : ''
 })
