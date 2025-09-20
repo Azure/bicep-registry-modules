@@ -26,11 +26,8 @@ param enableNfsV3RootSquash bool = false
 @description('Optional. This is an immutable property, when set to true it enables object level immutability at the container level. The property is immutable and can only be set to true at the container creation time. Existing containers must undergo a migration process.')
 param immutableStorageWithVersioningEnabled bool = false
 
-@description('Optional. Name of the immutable policy.')
-param immutabilityPolicyName string = 'default'
-
 @description('Optional. Configure immutability policy.')
-param immutabilityPolicyProperties object?
+param immutabilityPolicy immutabilityPolicyType?
 
 @description('Optional. A name-value pair to associate with the container as metadata.')
 param metadata resourceInput<'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01'>.properties.metadata = {}
@@ -126,15 +123,15 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
   name: storageAccountName
 
-  resource blobServices 'blobServices@2024-01-01' existing = {
+  resource blobServices 'blobServices@2025-01-01' existing = {
     name: blobServiceName
   }
 }
 
-resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
+resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2025-01-01' = {
   name: name
   parent: storageAccount::blobServices
   properties: {
@@ -142,7 +139,7 @@ resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@20
     denyEncryptionScopeOverride: denyEncryptionScopeOverride
     enableNfsV3AllSquash: enableNfsV3AllSquash == true ? enableNfsV3AllSquash : null
     enableNfsV3RootSquash: enableNfsV3RootSquash == true ? enableNfsV3RootSquash : null
-    immutableStorageWithVersioning: immutableStorageWithVersioningEnabled == true
+    immutableStorageWithVersioning: immutableStorageWithVersioningEnabled
       ? {
           enabled: immutableStorageWithVersioningEnabled
         }
@@ -152,14 +149,14 @@ resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@20
   }
 }
 
-module immutabilityPolicy 'immutability-policy/main.bicep' = if (!empty((immutabilityPolicyProperties ?? {}))) {
-  name: '${name}-${immutabilityPolicyName}'
+module container_immutabilityPolicy 'immutability-policy/main.bicep' = if (!empty((immutabilityPolicy ?? {}))) {
+  name: take('${deployment().name}-ImmutPol', 64)
   params: {
     storageAccountName: storageAccount.name
     containerName: container.name
-    immutabilityPeriodSinceCreationInDays: immutabilityPolicyProperties.?immutabilityPeriodSinceCreationInDays
-    allowProtectedAppendWrites: immutabilityPolicyProperties.?allowProtectedAppendWrites
-    allowProtectedAppendWritesAll: immutabilityPolicyProperties.?allowProtectedAppendWritesAll
+    immutabilityPeriodSinceCreationInDays: immutabilityPolicy.?immutabilityPeriodSinceCreationInDays
+    allowProtectedAppendWrites: immutabilityPolicy.?allowProtectedAppendWrites
+    allowProtectedAppendWritesAll: immutabilityPolicy.?allowProtectedAppendWritesAll
   }
 }
 
@@ -187,3 +184,16 @@ output resourceId string = container.id
 
 @description('The resource group of the deployed container.')
 output resourceGroupName string = resourceGroup().name
+
+@export()
+@description('The type for an immutability policy.')
+type immutabilityPolicyType = {
+  @description('Optional. The immutability period for the blobs in the container since the policy creation, in days.')
+  immutabilityPeriodSinceCreationInDays: int?
+
+  @description('Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API.')
+  allowProtectedAppendWrites: bool?
+
+  @description('Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive.')
+  allowProtectedAppendWritesAll: bool?
+}
