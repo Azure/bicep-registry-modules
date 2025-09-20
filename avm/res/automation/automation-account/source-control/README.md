@@ -1,6 +1,6 @@
-# Automation Account Schedules `[Microsoft.Automation/automationAccounts/schedules]`
+# Automation Account Source Controls `[Microsoft.Automation/automationAccounts/sourceControls]`
 
-This module deploys an Azure Automation Account Schedule.
+This module deploys an Azure Automation Account Source Control.
 
 ## Navigation
 
@@ -12,7 +12,7 @@ This module deploys an Azure Automation Account Schedule.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Automation/automationAccounts/schedules` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_schedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/schedules)</li></ul> |
+| `Microsoft.Automation/automationAccounts/sourceControls` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_sourcecontrols.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/sourceControls)</li></ul> |
 
 ## Parameters
 
@@ -20,7 +20,12 @@ This module deploys an Azure Automation Account Schedule.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the Automation Account schedule. |
+| [`branch`](#parameter-branch) | string | The repo branch of the source control. Include branch as empty string for VsoTfvc. |
+| [`description`](#parameter-description) | string | The user description of the source control. |
+| [`folderPath`](#parameter-folderpath) | string | The folder path of the source control. Path must be relative. |
+| [`name`](#parameter-name) | string | A friendly name for the source control. This name must contain only letters and numbers. |
+| [`repoUrl`](#parameter-repourl) | string | The repo url of the source control. |
+| [`sourceType`](#parameter-sourcetype) | string | Type of source control mechanism. |
 
 **Conditional parameters**
 
@@ -32,26 +37,59 @@ This module deploys an Azure Automation Account Schedule.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`advancedSchedule`](#parameter-advancedschedule) | object | The properties of the create Advanced Schedule. |
-| [`description`](#parameter-description) | string | The description of the schedule. |
-| [`expiryTime`](#parameter-expirytime) | string | The end time of the schedule. |
-| [`frequency`](#parameter-frequency) | string | The frequency of the schedule. |
-| [`interval`](#parameter-interval) | int | Anything. |
-| [`startTime`](#parameter-starttime) | string | The start time of the schedule. |
-| [`timeZone`](#parameter-timezone) | string | The time zone of the schedule. |
+| [`autoSync`](#parameter-autosync) | bool | Setting that turns on or off automatic synchronization when a commit is made in the source control repository or GitHub repo. Defaults to `false`. |
+| [`publishRunbook`](#parameter-publishrunbook) | bool | The auto publish of the source control. Defaults to `true`. |
+| [`securityToken`](#parameter-securitytoken) | object | The authorization token for the repo of the source control. |
 
-**Generated parameters**
+### Parameter: `branch`
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`baseTime`](#parameter-basetime) | string | Time used as a basis for e.g. the schedule start date. |
-
-### Parameter: `name`
-
-Name of the Automation Account schedule.
+The repo branch of the source control. Include branch as empty string for VsoTfvc.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `description`
+
+The user description of the source control.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `folderPath`
+
+The folder path of the source control. Path must be relative.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `name`
+
+A friendly name for the source control. This name must contain only letters and numbers.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `repoUrl`
+
+The repo url of the source control.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sourceType`
+
+Type of source control mechanism.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'GitHub'
+    'VsoGit'
+    'VsoTfvc'
+  ]
+  ```
 
 ### Parameter: `automationAccountName`
 
@@ -60,85 +98,33 @@ The name of the parent Automation Account. Required if the template is used in a
 - Required: Yes
 - Type: string
 
-### Parameter: `advancedSchedule`
+### Parameter: `autoSync`
 
-The properties of the create Advanced Schedule.
+Setting that turns on or off automatic synchronization when a commit is made in the source control repository or GitHub repo. Defaults to `false`.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `publishRunbook`
+
+The auto publish of the source control. Defaults to `true`.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `securityToken`
+
+The authorization token for the repo of the source control.
 
 - Required: No
 - Type: object
-- Default: `{}`
-
-### Parameter: `description`
-
-The description of the schedule.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `expiryTime`
-
-The end time of the schedule.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `frequency`
-
-The frequency of the schedule.
-
-- Required: No
-- Type: string
-- Default: `'OneTime'`
-- Allowed:
-  ```Bicep
-  [
-    'Day'
-    'Hour'
-    'Minute'
-    'Month'
-    'OneTime'
-    'Week'
-  ]
-  ```
-
-### Parameter: `interval`
-
-Anything.
-
-- Required: No
-- Type: int
-- Default: `0`
-
-### Parameter: `startTime`
-
-The start time of the schedule.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `timeZone`
-
-The time zone of the schedule.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `baseTime`
-
-Time used as a basis for e.g. the schedule start date.
-
-- Required: No
-- Type: string
-- Default: `[utcNow('u')]`
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the deployed schedule. |
-| `resourceGroupName` | string | The resource group of the deployed schedule. |
-| `resourceId` | string | The resource ID of the deployed schedule. |
+| `name` | string | The name of the deployed source control. |
+| `resourceGroupName` | string | The resource group of the deployed source control. |
+| `resourceId` | string | The resource ID of the deployed source control. |

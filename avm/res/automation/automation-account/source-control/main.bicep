@@ -35,9 +35,6 @@ param description string
 @sys.description('Optional. The authorization token for the repo of the source control.')
 param securityToken resourceInput<'Microsoft.Automation/automationAccounts/sourceControls@2024-10-23'>.properties.securityToken?
 
-@sys.description('Optional. Configuration for a source control sync job to create after the source control is created.')
-param sourceControlSyncJob sourceControlSyncJobType?
-
 resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' existing = {
   name: automationAccountName
 }
@@ -57,16 +54,6 @@ resource sourceControl 'Microsoft.Automation/automationAccounts/sourceControls@2
   }
 }
 
-module sourceControl_syncJob 'source-control-sync-job/main.bicep' = if (!empty(sourceControlSyncJob)) {
-  name: '${uniqueString(deployment().name)}-SourceControlSyncJob'
-  params: {
-    automationAccountName: automationAccount.name
-    sourceControlName: name
-    name: sourceControlSyncJob.?name
-    commitId: sourceControlSyncJob!.commitId
-  }
-}
-
 @sys.description('The name of the deployed source control.')
 output name string = sourceControl.name
 
@@ -75,17 +62,3 @@ output resourceId string = sourceControl.id
 
 @sys.description('The resource group of the deployed source control.')
 output resourceGroupName string = resourceGroup().name
-
-// =============== //
-//   Definitions   //
-// =============== //
-@export()
-type sourceControlSyncJobType = {
-  @sys.description('Optional. The source control sync job id. Must match the pattern `^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$`.')
-  @maxLength(36)
-  @minLength(36)
-  name: string?
-
-  @sys.description('Required. The commit id of the source control sync job. If not syncing to a commitId, enter an empty string.')
-  commitId: string
-}

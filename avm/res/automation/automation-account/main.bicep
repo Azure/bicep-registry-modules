@@ -381,7 +381,6 @@ module automationAccount_sourceControlConfigurations 'source-control/main.bicep'
       name: configuration.name
       repoUrl: configuration.repoUrl
       sourceType: configuration.sourceType
-      sourceControlSyncJob: configuration.?sourceControlSyncJob
       securityToken: configuration.?securityToken
       autoSync: configuration.?autoSync
       publishRunbook: configuration.?publishRunbook
@@ -668,8 +667,6 @@ type python23PackageType = {
   version: string?
 }
 
-import { sourceControlSyncJobType } from 'source-control/main.bicep'
-
 @export()
 @description('The type of a source control configuration.')
 type sourceControlConfigurationType = {
@@ -700,7 +697,4 @@ type sourceControlConfigurationType = {
 
   @description('Optional. The authorization token for the repo of the source control.')
   securityToken: resourceInput<'Microsoft.Automation/automationAccounts/sourceControls@2024-10-23'>.properties.securityToken?
-
-  @description('Optional. Configuration for a source control sync job to create after the source control is created.')
-  sourceControlSyncJob: sourceControlSyncJobType?
 }
