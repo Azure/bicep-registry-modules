@@ -2615,9 +2615,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableHierarchicalNamespace: false
     enableNfsV3: true
-    enableSftp: true
     fileServices: {
       diagnosticSettings: [
         {
@@ -2879,13 +2877,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         }
       ]
     },
-    "enableHierarchicalNamespace": {
-      "value": false
-    },
     "enableNfsV3": {
-      "value": true
-    },
-    "enableSftp": {
       "value": true
     },
     "fileServices": {
@@ -3165,9 +3157,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param enableHierarchicalNamespace = false
 enableNfsV3: true
-param enableSftp = true
 param fileServices = {
   diagnosticSettings: [
     {
