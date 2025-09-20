@@ -139,8 +139,6 @@ module testDeployment '../../../main.bicep' = [
         containers: [
           {
             name: 'avdscripts'
-            enableNfsV3AllSquash: true
-            enableNfsV3RootSquash: true
             publicAccess: 'None'
           }
           {

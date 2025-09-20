@@ -2567,8 +2567,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       containerDeleteRetentionPolicyEnabled: true
       containers: [
         {
-          enableNfsV3AllSquash: true
-          enableNfsV3RootSquash: true
           name: 'avdscripts'
           publicAccess: 'None'
         }
@@ -2825,8 +2823,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         "containerDeleteRetentionPolicyEnabled": true,
         "containers": [
           {
-            "enableNfsV3AllSquash": true,
-            "enableNfsV3RootSquash": true,
             "name": "avdscripts",
             "publicAccess": "None"
           },
@@ -3105,8 +3101,6 @@ param blobServices = {
   containerDeleteRetentionPolicyEnabled: true
   containers: [
     {
-      enableNfsV3AllSquash: true
-      enableNfsV3RootSquash: true
       name: 'avdscripts'
       publicAccess: 'None'
     }
