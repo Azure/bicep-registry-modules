@@ -8,6 +8,9 @@ param storageAccountName string
 @description('Conditional. The name of the parent container to apply the policy to. Required if the template is used in a standalone deployment.')
 param containerName string
 
+@description('Optional. The name of the immutability policy.')
+param name string = 'default'
+
 @description('Optional. The immutability period for the blobs in the container since the policy creation, in days.')
 param immutabilityPeriodSinceCreationInDays int = 365
 
@@ -17,20 +20,20 @@ param allowProtectedAppendWrites bool = true
 @description('Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive.')
 param allowProtectedAppendWritesAll bool = true
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
   name: storageAccountName
 
-  resource blobServices 'blobServices@2024-01-01' existing = {
+  resource blobServices 'blobServices@2025-01-01' existing = {
     name: 'default'
 
-    resource container 'containers@2024-01-01' existing = {
+    resource container 'containers@2025-01-01' existing = {
       name: containerName
     }
   }
 }
 
-resource immutabilityPolicy 'Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies@2024-01-01' = {
-  name: 'default'
+resource immutabilityPolicy 'Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies@2025-01-01' = {
+  name: name
   parent: storageAccount::blobServices::container
   properties: {
     immutabilityPeriodSinceCreationInDays: immutabilityPeriodSinceCreationInDays

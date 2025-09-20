@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/storage/storage-account/CHANGELOG.md).
 
+## 0.27.0
+
+### Changes
+
+- Added type for `blobServices` parameter and its children
+
+### Breaking Changes
+
+- Renamed `blobServices.container.immutabilityPolicyProperties` parameter to `immutabilityPolicy`
+- Moved `blobServices.container.immutabilityPolicyName` parameter into `blobServices.container.immutabilityPolicy` parameter and implemented its pass thru
+
 ## 0.26.2
 
 ### Changes
