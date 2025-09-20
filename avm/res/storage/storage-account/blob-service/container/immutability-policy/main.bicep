@@ -8,7 +8,7 @@ param storageAccountName string
 @description('Conditional. The name of the parent container to apply the policy to. Required if the template is used in a standalone deployment.')
 param containerName string
 
-@description('Optional. The name of the immutability policy.')
+@description('Optional. The name of the immutability policy. Defaults to `default`.')
 param name string = 'default'
 
 @description('Optional. The immutability period for the blobs in the container since the policy creation, in days.')
