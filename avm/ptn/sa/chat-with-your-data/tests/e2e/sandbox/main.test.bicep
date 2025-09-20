@@ -1,5 +1,5 @@
-metadata name = 'Chat with your data Solution Accelerator - WAF Aligned Test'
-metadata description = 'This test deploys the Chat with your data Solution Accelerator with Well-Architected Framework aligned parameters to validate enhanced security, reliability, and scalability features.'
+metadata name = 'Sandbox configuration with default parameter values'
+metadata description = 'This test deploys the sandbox configuration for Chat with your data Solution Accelerator with default parameters.'
 
 targetScope = 'subscription'
 
@@ -18,7 +18,7 @@ param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 // e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
-param serviceShort string = 'scwydswaf'
+param serviceShort string = 'scwydsmin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -50,11 +50,6 @@ module testDeployment '../../../main.bicep' = [
       // You parameters go here
       solutionName: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
-      enableScalability: true
-      enableTelemetry: true
-      enableMonitoring: true
-      enablePrivateNetworking: true
-      enableRedundancy: true
       createdBy: 'AVM_Pipeline'
     }
   }

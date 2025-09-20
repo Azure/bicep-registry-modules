@@ -98,100 +98,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/chat-with-your-data:<version>`.
 
-- [Chat with your data Solution Accelerator - Defaults Test](#example-1-chat-with-your-data-solution-accelerator---defaults-test)
-- [Chat with your data Solution Accelerator - WAF Aligned Test](#example-2-chat-with-your-data-solution-accelerator---waf-aligned-test)
+- [Default configuration with enterprise-grade parameter values](#example-1-default-configuration-with-enterprise-grade-parameter-values)
+- [Sandbox configuration with default parameter values](#example-2-sandbox-configuration-with-default-parameter-values)
 
-### Example 1: _Chat with your data Solution Accelerator - Defaults Test_
+### Example 1: _Default configuration with enterprise-grade parameter values_
 
-This test deploys the Chat with your data Solution Accelerator with default parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
-  name: 'chatWithYourDataDeployment'
-  params: {
-    createdBy: 'AVM_Pipeline'
-    enableMonitoring: false
-    enablePrivateNetworking: true
-    enableRedundancy: false
-    enableScalability: false
-    enableTelemetry: false
-    location: '<location>'
-    solutionName: 'scwydsmin001'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "createdBy": {
-      "value": "AVM_Pipeline"
-    },
-    "enableMonitoring": {
-      "value": false
-    },
-    "enablePrivateNetworking": {
-      "value": true
-    },
-    "enableRedundancy": {
-      "value": false
-    },
-    "enableScalability": {
-      "value": false
-    },
-    "enableTelemetry": {
-      "value": false
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "solutionName": {
-      "value": "scwydsmin001"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
-
-param createdBy = 'AVM_Pipeline'
-param enableMonitoring = false
-param enablePrivateNetworking = true
-param enableRedundancy = false
-param enableScalability = false
-param enableTelemetry = false
-param location = '<location>'
-param solutionName = 'scwydsmin001'
-```
-
-</details>
-<p>
-
-### Example 2: _Chat with your data Solution Accelerator - WAF Aligned Test_
-
-This test deploys the Chat with your data Solution Accelerator with Well-Architected Framework aligned parameters to validate enhanced security, reliability, and scalability features.
+This test deploys the Chat with your data Solution Accelerator using parameters that deploy the enterprise-grade configuration.
 
 
 <details>
@@ -272,6 +184,69 @@ param enableScalability = true
 param enableTelemetry = true
 param location = '<location>'
 param solutionName = 'scwydswaf001'
+```
+
+</details>
+<p>
+
+### Example 2: _Sandbox configuration with default parameter values_
+
+This test deploys the sandbox configuration for Chat with your data Solution Accelerator with default parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
+  name: 'chatWithYourDataDeployment'
+  params: {
+    createdBy: 'AVM_Pipeline'
+    location: '<location>'
+    solutionName: 'scwydsmin001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "createdBy": {
+      "value": "AVM_Pipeline"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "solutionName": {
+      "value": "scwydsmin001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
+
+param createdBy = 'AVM_Pipeline'
+param location = '<location>'
+param solutionName = 'scwydsmin001'
 ```
 
 </details>
