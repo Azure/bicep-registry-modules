@@ -3615,6 +3615,7 @@ Named values.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`displayName`](#parameter-namedvaluesdisplayname) | string | Unique name of NamedValue. It may contain only letters, digits, period, dash, and underscore characters. |
+| [`name`](#parameter-namedvaluesname) | string | The name of the named value. |
 
 **Optional parameters**
 
@@ -3628,6 +3629,13 @@ Named values.
 ### Parameter: `namedValues.displayName`
 
 Unique name of NamedValue. It may contain only letters, digits, period, dash, and underscore characters.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `namedValues.name`
+
+The name of the named value.
 
 - Required: Yes
 - Type: string

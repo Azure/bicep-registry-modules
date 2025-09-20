@@ -1090,6 +1090,9 @@ type loggerType = {
 @export()
 @description('The type of a named-value.')
 type namedValueType = {
+  @description('Required. The name of the named value.')
+  name: string
+
   @description('Required. Unique name of NamedValue. It may contain only letters, digits, period, dash, and underscore characters.')
   displayName: string
 
@@ -1217,8 +1220,10 @@ type signUpPropertiesType = {
     termsOfService: {
       @description('Otional. Ask user for consent to the terms of service.')
       consentRequired: bool?
+
       @description('Otional. Display terms of service during a sign-up process.')
       enabled: bool?
+
       @description('Otional. A terms of service text.')
       text: string?
     }?
