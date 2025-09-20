@@ -91,6 +91,9 @@ param tags resourceInput<'Microsoft.Automation/automationAccounts@2024-10-23'>.t
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. The source control configurations.')
+param sourceControlConfigurations sourceControlConfigurationType[]?
+
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
@@ -367,6 +370,25 @@ module automationAccount_webhook 'webhook/main.bicep' = [
   }
 ]
 
+module automationAccount_sourceControlConfigurations 'source-control/main.bicep' = [
+  for (configuration, index) in (sourceControlConfigurations ?? []): {
+    name: '${uniqueString(deployment().name, location)}-AutoAccount-Variable-${index}'
+    params: {
+      automationAccountName: automationAccount.name
+      branch: configuration.branch
+      description: configuration.description
+      folderPath: configuration.folderPath
+      name: configuration.name
+      repoUrl: configuration.repoUrl
+      sourceType: configuration.sourceType
+      sourceControlSyncJob: configuration.?sourceControlSyncJob
+      securityToken: configuration.?securityToken
+      autoSync: configuration.?autoSync
+      publishRunbook: configuration.?publishRunbook
+    }
+  }
+]
+
 module automationAccount_linkedService 'modules/linked-service.bicep' = if (!empty(linkedWorkspaceResourceId)) {
   name: '${uniqueString(deployment().name, location)}-AutoAccount-LinkedService'
   params: {
@@ -583,17 +605,17 @@ type privateEndpointOutputType = {
 
 @export()
 type credentialType = {
-  @sys.description('Required. Name of the Automation Account credential.')
+  @description('Required. Name of the Automation Account credential.')
   name: string
 
-  @sys.description('Required. The user name associated to the credential.')
+  @description('Required. The user name associated to the credential.')
   userName: string
 
-  @sys.description('Required. Password of the credential.')
+  @description('Required. Password of the credential.')
   @secure()
   password: string
 
-  @sys.description('Optional. Description of the credential.')
+  @description('Optional. Description of the credential.')
   description: string?
 }
 
@@ -644,4 +666,41 @@ type python23PackageType = {
 
   @description('Optional. Module version or specify latest to get the latest version.')
   version: string?
+}
+
+import { sourceControlSyncJobType } from 'source-control/main.bicep'
+
+@export()
+@description('The type of a source control configuration.')
+type sourceControlConfigurationType = {
+  @description('Required. Type of source control mechanism.')
+  sourceType: ('GitHub' | 'VsoGit' | 'VsoTfvc')
+
+  @description('Optional. Setting that turns on or off automatic synchronization when a commit is made in the source control repository or GitHub repo. Defaults to `false`.')
+  autoSync: bool?
+
+  @description('Required. The repo url of the source control.')
+  @maxLength(2000)
+  repoUrl: string
+
+  @description('Required. The repo branch of the source control. Include branch as empty string for VsoTfvc.')
+  @maxLength(255)
+  branch: string
+
+  @description('Required. The folder path of the source control. Path must be relative.')
+  @maxLength(255)
+  folderPath: string
+
+  @description('Optional. The auto publish of the source control. Defaults to `true`.')
+  publishRunbook: bool?
+
+  @description('Required. The user description of the source control.')
+  @maxLength(512)
+  description: string
+
+  @description('Optional. The authorization token for the repo of the source control.')
+  securityToken: resourceInput<'Microsoft.Automation/automationAccounts/sourceControls@2024-10-23'>.properties.securityToken?
+
+  @description('Optional. Configuration for a source control sync job to create after the source control is created.')
+  sourceControlSyncJob: sourceControlSyncJobType?
 }

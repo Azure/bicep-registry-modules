@@ -1,0 +1,133 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.37.4.10188",
+      "templateHash": "4389837751138730963"
+    },
+    "name": "Automation Account Schedules",
+    "description": "This module deploys an Azure Automation Account Schedule."
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the Automation Account schedule."
+      }
+    },
+    "automationAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Automation Account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "advancedSchedule": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "monthDays": "Days of the month that the job should execute on. Must be between 1 and 31.",
+        "monthlyOccurrences": "Occurrences of days within a month.",
+        "weekDays": "Days of the week that the job should execute on.",
+        "description": "Optional. The properties of the create Advanced Schedule."
+      }
+    },
+    "description": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The description of the schedule."
+      }
+    },
+    "expiryTime": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The end time of the schedule."
+      }
+    },
+    "frequency": {
+      "type": "string",
+      "defaultValue": "OneTime",
+      "allowedValues": [
+        "Day",
+        "Hour",
+        "Minute",
+        "Month",
+        "OneTime",
+        "Week"
+      ],
+      "metadata": {
+        "description": "Optional. The frequency of the schedule."
+      }
+    },
+    "interval": {
+      "type": "int",
+      "defaultValue": 0,
+      "metadata": {
+        "description": "Optional. Anything."
+      }
+    },
+    "startTime": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The start time of the schedule."
+      }
+    },
+    "timeZone": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The time zone of the schedule."
+      }
+    },
+    "baseTime": {
+      "type": "string",
+      "defaultValue": "[utcNow('u')]",
+      "metadata": {
+        "description": "Generated. Time used as a basis for e.g. the schedule start date."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Automation/automationAccounts/schedules",
+      "apiVersion": "2024-10-23",
+      "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
+      "properties": {
+        "advancedSchedule": "[if(not(empty(parameters('advancedSchedule'))), parameters('advancedSchedule'), null())]",
+        "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
+        "expiryTime": "[if(not(empty(parameters('expiryTime'))), parameters('expiryTime'), null())]",
+        "frequency": "[if(not(empty(parameters('frequency'))), parameters('frequency'), 'OneTime')]",
+        "interval": "[if(not(equals(parameters('interval'), 0)), parameters('interval'), null())]",
+        "startTime": "[if(not(empty(parameters('startTime'))), parameters('startTime'), dateTimeAdd(parameters('baseTime'), 'PT15M'))]",
+        "timeZone": "[if(not(empty(parameters('timeZone'))), parameters('timeZone'), null())]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed schedule."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed schedule."
+      },
+      "value": "[resourceId('Microsoft.Automation/automationAccounts/schedules', parameters('automationAccountName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed schedule."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
