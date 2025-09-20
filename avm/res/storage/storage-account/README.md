@@ -473,9 +473,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           ]
         }
         {
-          immutabilityPolicy: {
-            allowProtectedAppendWrites: false
-          }
           metadata: {
             testKey: 'testValue'
           }
@@ -1010,9 +1007,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             ]
           },
           {
-            "immutabilityPolicy": {
-              "allowProtectedAppendWrites": false
-            },
             "metadata": {
               "testKey": "testValue"
             },
@@ -1581,9 +1575,6 @@ param blobServices = {
       ]
     }
     {
-      immutabilityPolicy: {
-        allowProtectedAppendWrites: false
-      }
       metadata: {
         testKey: 'testValue'
       }
@@ -2624,7 +2615,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableHierarchicalNamespace: true
+    enableHierarchicalNamespace: false
     enableNfsV3: true
     enableSftp: true
     fileServices: {
@@ -2889,7 +2880,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       ]
     },
     "enableHierarchicalNamespace": {
-      "value": true
+      "value": false
     },
     "enableNfsV3": {
       "value": true
@@ -3174,7 +3165,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param enableHierarchicalNamespace = true
+param enableHierarchicalNamespace = false
 enableNfsV3: true
 param enableSftp = true
 param fileServices = {
