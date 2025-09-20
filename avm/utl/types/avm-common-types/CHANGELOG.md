@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/utl/types/avm-common-types/CHANGELOG.md).
 
+## 0.6.1
+
+### Changes
+
+- Added user-defined type to the `tags` property of each private endpoint interface
+
+### Breaking Changes
+
+- None
+
 ## 0.6.0
 
 ### Changes

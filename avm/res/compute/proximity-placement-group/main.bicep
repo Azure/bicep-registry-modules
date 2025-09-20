@@ -14,7 +14,7 @@ param type string = 'Standard'
 @description('Optional. Resource location.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -23,7 +23,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the proximity placement group resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Compute/proximityPlacementGroups@2024-11-01'>.tags?
 
 @description('Required. Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).')
 @allowed([
@@ -35,13 +35,13 @@ param tags object?
 param availabilityZone int
 
 @description('Optional. Describes colocation status of the Proximity Placement Group.')
-param colocationStatus object?
+param colocationStatus resourceInput<'Microsoft.Compute/proximityPlacementGroups@2024-11-01'>.properties.colocationStatus?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. Specifies the user intent of the proximity placement group.')
-param intent object?
+param intent resourceInput<'Microsoft.Compute/proximityPlacementGroups@2024-11-01'>.properties.intent?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -91,7 +91,7 @@ resource proximityPlacementGroup 'Microsoft.Compute/proximityPlacementGroups@202
   name: name
   location: location
   tags: tags
-  zones: availabilityZone != -1 ? array(string(availabilityZone)) : null // If expecting an array
+  zones: availabilityZone != -1 ? array(string(availabilityZone)) : null // Is expecting an array
   properties: {
     proximityPlacementGroupType: type
     colocationStatus: colocationStatus
@@ -103,9 +103,9 @@ resource proximityPlacementGroup_lock 'Microsoft.Authorization/locks@2020-05-01'
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: proximityPlacementGroup
 }

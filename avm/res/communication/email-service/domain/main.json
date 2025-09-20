@@ -5,13 +5,41 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "9591898878512210653"
+      "version": "0.36.177.2456",
+      "templateHash": "2220210057247980613"
     },
     "name": "Email Services Domains",
     "description": "This module deploys an Email Service Domain"
   },
   "definitions": {
+    "senderUsernameType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the sender username resource to create."
+          }
+        },
+        "username": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. A sender username to be used when sending emails."
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The display name for the senderUsername."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of sender username to create."
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -33,12 +61,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -113,7 +148,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     }
@@ -142,10 +177,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Communication/emailServices/domains@2023-04-01#properties/tags"
+        },
         "description": "Optional. Endpoint tags."
-      }
+      },
+      "nullable": true
     },
     "domainManagement": {
       "type": "string",
@@ -172,6 +210,9 @@
     },
     "senderUsernames": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/senderUsernameType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. The domains to deploy into this namespace."
@@ -237,7 +278,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "domain"
@@ -301,8 +342,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "11263449815118948387"
+              "version": "0.36.177.2456",
+              "templateHash": "6263459494167295460"
             },
             "name": "Sender Usernames",
             "description": "This module deploys an Sender"

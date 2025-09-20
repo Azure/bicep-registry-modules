@@ -10,9 +10,9 @@ This module deploys a Dev Center Environment Type.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.DevCenter/devcenters/environmentTypes` | [2025-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/devcenters/environmentTypes) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.DevCenter/devcenters/environmentTypes` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devcenter_devcenters_environmenttypes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevCenter/2025-02-01/devcenters/environmentTypes)</li></ul> |
 
 ## Parameters
 

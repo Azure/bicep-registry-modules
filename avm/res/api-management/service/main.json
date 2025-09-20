@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "11452812603678687630"
+      "version": "0.37.4.10188",
+      "templateHash": "5938547546162852750"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -132,13 +132,13 @@
         },
         "tokenBodyParameters": {
           "type": "array",
-          "items": {
-            "$ref": "#/definitions/tokenBodyParameterType"
-          },
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/authorizationServers@2024-05-01#properties/properties/properties/tokenBodyParameters"
+            },
             "description": "Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {\"name\" : \"name value\", \"value\": \"a value\"}. - TokenBodyParameterContract object."
-          }
+          },
+          "nullable": true
         },
         "tokenEndpoint": {
           "type": "string",
@@ -165,7 +165,7 @@
         "policies": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/policyType"
+            "$ref": "#/definitions/_1.policyType"
           },
           "nullable": true,
           "metadata": {
@@ -175,7 +175,7 @@
         "diagnostics": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/diagnosticType"
+            "$ref": "#/definitions/_1.diagnosticType"
           },
           "nullable": true,
           "metadata": {
@@ -185,7 +185,7 @@
         "operations": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/operationType"
+            "$ref": "#/definitions/_1.operationType"
           },
           "nullable": true,
           "metadata": {
@@ -520,78 +520,419 @@
         "description": "The type of an API Management service additional location."
       }
     },
-    "privateEndpointOutputType": {
+    "backendType": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
           "metadata": {
-            "description": "The name of the private endpoint."
+            "description": "Required. Backend Name."
           }
         },
-        "resourceId": {
-          "type": "string",
+        "credentials": {
+          "type": "object",
           "metadata": {
-            "description": "The resource ID of the private endpoint."
-          }
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/credentials"
+            },
+            "description": "Optional. Backend Credentials Contract Properties."
+          },
+          "nullable": true
         },
-        "groupId": {
+        "description": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "The group Id for the private endpoint Group."
+            "description": "Optional. Backend Description."
           }
         },
-        "customDnsConfigs": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "fqdn": {
-                "type": "string",
-                "nullable": true,
-                "metadata": {
-                  "description": "FQDN that resolves to private endpoint IP address."
-                }
-              },
-              "ipAddresses": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "metadata": {
-                  "description": "A list of private IP addresses of the private endpoint."
-                }
-              }
-            }
-          },
+        "protocol": {
+          "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "The custom DNS configurations of the private endpoint."
+            "description": "Optional. Backend communication protocol. - http or soap."
           }
         },
-        "networkInterfaceResourceIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
+        "proxy": {
+          "type": "object",
           "metadata": {
-            "description": "The IDs of the network interfaces associated with the private endpoint."
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/proxy"
+            },
+            "description": "Optional. Backend Proxy Contract Properties."
+          },
+          "nullable": true
+        },
+        "resourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps."
+          }
+        },
+        "serviceFabricCluster": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/properties/properties/serviceFabricCluster"
+            },
+            "description": "Optional. Backend Service Fabric Cluster Properties."
+          },
+          "nullable": true
+        },
+        "title": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Backend Title."
+          }
+        },
+        "tls": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/tls"
+            },
+            "description": "Optional. Backend TLS Properties."
+          },
+          "nullable": true
+        },
+        "url": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Runtime URL of the Backend."
           }
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of a backend configuration."
+      }
+    },
+    "cacheType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Identifier of the Cache entity. Cache identifier (should be either 'default' or valid Azure region identifier)."
+          }
+        },
+        "connectionString": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Runtime connection string to cache. Can be referenced by a named value like so, {{<named-value>}}."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Cache description."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Original uri of entity in external system cache points to."
+          }
+        },
+        "useFromLocation": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Location identifier to use cache from (should be either 'default' or valid Azure region identifier)."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a cache."
+      }
+    },
+    "apiDiagnosticType": {
+      "type": "object",
+      "properties": {
+        "apiName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the parent API."
+          }
+        },
+        "loggerName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the logger."
+          }
+        },
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "applicationinsights",
+            "azuremonitor",
+            "local"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Type of diagnostic resource."
+          }
+        },
+        "alwaysLog": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies for what type of messages sampling settings should not apply."
+          }
+        },
+        "backend": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/apis/diagnostics@2024-05-01#properties/properties/properties/backend"
+            },
+            "description": "Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Backend."
+          },
+          "nullable": true
+        },
+        "frontend": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/apis/diagnostics@2024-05-01#properties/properties/properties/frontend"
+            },
+            "description": "Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Gateway."
+          },
+          "nullable": true
+        },
+        "httpCorrelationProtocol": {
+          "type": "string",
+          "allowedValues": [
+            "Legacy",
+            "None",
+            "W3C"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights."
+          }
+        },
+        "logClientIp": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Log the ClientIP."
+          }
+        },
+        "metrics": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. Emit custom metrics via emit-metric policy. Required if using Application Insights."
+          }
+        },
+        "operationNameFormat": {
+          "type": "string",
+          "allowedValues": [
+            "Name",
+            "URI"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights."
+          }
+        },
+        "samplingPercentage": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged."
+          }
+        },
+        "verbosity": {
+          "type": "string",
+          "allowedValues": [
+            "error",
+            "information",
+            "verbose"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The verbosity level applied to traces emitted by trace policies."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of an API diagnostic setting."
+      }
+    },
+    "identityProviderType": {
+      "type": "object",
+      "properties": {
+        "allowedTenants": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/identityProviders@2024-05-01#properties/properties/properties/allowedTenants"
+            },
+            "description": "Optional. List of Allowed Tenants when configuring Azure Active Directory login. - string."
+          },
+          "nullable": true
+        },
+        "authority": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. OpenID Connect discovery endpoint hostname for AAD or AAD B2C."
+          }
+        },
+        "clientId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. Client ID of the Application in the external Identity Provider. Required if identity provider is used."
+          }
+        },
+        "clientLibrary": {
+          "type": "string",
+          "allowedValues": [
+            "ADAL",
+            "MSAL-2"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The client library to be used in the developer portal. Only applies to AAD and AAD B2C Identity Provider."
+          }
+        },
+        "clientSecret": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. Client secret of the Application in external Identity Provider, used to authenticate login request. Required if identity provider is used."
+          }
+        },
+        "passwordResetPolicyName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Password Reset Policy Name. Only applies to AAD B2C Identity Provider."
+          }
+        },
+        "profileEditingPolicyName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Profile Editing Policy Name. Only applies to AAD B2C Identity Provider."
+          }
+        },
+        "signInPolicyName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Signin Policy Name. Only applies to AAD B2C Identity Provider."
+          }
+        },
+        "signInTenant": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The TenantId to use instead of Common when logging into Active Directory."
+          }
+        },
+        "signUpPolicyName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Signup Policy Name. Only applies to AAD B2C Identity Provider."
+          }
+        },
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "aad",
+            "aadB2C",
+            "facebook",
+            "google",
+            "microsoft",
+            "twitter"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Identity Provider Type identifier."
+          }
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Identity provider name."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of an identity provider."
+      }
+    },
+    "loggerType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Resource Name."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Logger description."
+          }
+        },
+        "isBuffered": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether records are buffered in the logger before publishing."
+          }
+        },
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "applicationInsights",
+            "azureEventHub",
+            "azureMonitor"
+          ],
+          "metadata": {
+            "description": "Required. Logger type."
+          }
+        },
+        "targetResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub."
+          }
+        },
+        "credentials": {
+          "type": "secureObject",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/loggers@2024-05-01#properties/properties/properties/credentials"
+            },
+            "description": "Conditional. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a logger."
       }
     },
     "namedValueType": {
       "type": "object",
       "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Named value Name."
-          }
-        },
         "displayName": {
           "type": "string",
           "metadata": {
@@ -607,6 +948,12 @@
             "description": "Optional. KeyVault location details of the namedValue."
           },
           "nullable": true
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Named value Name."
+          }
         },
         "tags": {
           "type": "array",
@@ -635,10 +982,610 @@
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "The type of a named value in API Management service."
+        "description": "The type of a named-value."
+      }
+    },
+    "policyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the policy."
+          }
+        },
+        "format": {
+          "type": "string",
+          "allowedValues": [
+            "rawxml",
+            "rawxml-link",
+            "xml",
+            "xml-link"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Format of the policyContent."
+          }
+        },
+        "value": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Contents of the Policy as defined by the format."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a policy."
+      }
+    },
+    "subscriptionType": {
+      "type": "object",
+      "properties": {
+        "allowTracing": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Determines whether tracing can be enabled."
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "maxLength": 100,
+          "metadata": {
+            "description": "Required. API Management Service Subscriptions name. Must be 1 to 100 characters long."
+          }
+        },
+        "ownerId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. User (user ID path) for whom subscription is being created in form /users/{userId}."
+          }
+        },
+        "primaryKey": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Primary subscription key. If not specified during request key will be generated automatically."
+          }
+        },
+        "scope": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Scope type to choose between a product, \"allAPIs\" or a specific API. Scope like \"/products/{productId}\" or \"/apis\" or \"/apis/{apiId}\"."
+          }
+        },
+        "secondaryKey": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Secondary subscription key. If not specified during request key will be generated automatically."
+          }
+        },
+        "state": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are \"*\" active \"?\" the subscription is active, \"*\" suspended \"?\" the subscription is blocked, and the subscriber cannot call any APIs of the product, * submitted ? the subscription request has been made by the developer, but has not yet been approved or rejected, * rejected ? the subscription request has been denied by an administrator, * cancelled ? the subscription has been cancelled by the developer or administrator, * expired ? the subscription reached its expiration date and was deactivated. - suspended, active, expired, submitted, rejected, cancelled."
+          }
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Subscription name."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a subscription."
+      }
+    },
+    "productType": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "maxLength": 300,
+          "metadata": {
+            "description": "Required. API Management Service Products name. Must be 1 to 300 characters long."
+          }
+        },
+        "approvalRequired": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the products APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the products APIs. Can be present only if subscriptionRequired property is present and has a value of false."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Product description. May include HTML formatting tags."
+          }
+        },
+        "apis": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Names of Product APIs."
+          }
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Names of Product Groups."
+          }
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Product Name."
+          }
+        },
+        "state": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. Default state of Product is notPublished. - notPublished or published."
+          }
+        },
+        "subscriptionRequired": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether a product subscription is required for accessing APIs included in this product. If true, the product is referred to as \"protected\" and a valid subscription key is required for a request to an API included in the product to succeed. If false, the product is referred to as \"open\" and requests to an API included in the product can be made without a subscription key. If property is omitted when creating a new product it's value is assumed to be true."
+          }
+        },
+        "subscriptionsLimit": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether the number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false."
+          }
+        },
+        "terms": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Product terms of use. Developers trying to subscribe to the product will be presented and required to accept these terms before they can complete the subscription process."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a product."
+      }
+    },
+    "portalSettingsType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "name",
+        "mapping": {
+          "signin": {
+            "$ref": "#/definitions/signInPropertiesType"
+          },
+          "signup": {
+            "$ref": "#/definitions/signUpPropertiesType"
+          },
+          "delegation": {
+            "$ref": "#/definitions/delegationPropertiesType"
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the portal settings properties."
+      }
+    },
+    "signInPropertiesType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "signin"
+          ],
+          "metadata": {
+            "description": "Required. The name of the portal-setting."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Redirect Anonymous users to the Sign-In page."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The portal-settings contract properties."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for sign-in portal settings."
+      }
+    },
+    "signUpPropertiesType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "signup"
+          ],
+          "metadata": {
+            "description": "Required. The name of the portal-setting."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Allow users to sign up on a developer portal."
+              }
+            },
+            "termsOfService": {
+              "type": "object",
+              "properties": {
+                "consentRequired": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Otional. Ask user for consent to the terms of service."
+                  }
+                },
+                "enabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Otional. Display terms of service during a sign-up process."
+                  }
+                },
+                "text": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Otional. A terms of service text."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Terms of service contract properties."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The portal-settings contract properties."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for sign-up portal settings."
+      }
+    },
+    "delegationPropertiesType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "delegation"
+          ],
+          "metadata": {
+            "description": "Required. The name of the portal-setting."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "subscriptions": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "bool",
+                  "metadata": {
+                    "description": "Required. Enable or disable delegation for subscriptions."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Subscriptions delegation settings."
+              }
+            },
+            "url": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. A delegation Url."
+              }
+            },
+            "userRegistration": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "bool",
+                  "metadata": {
+                    "description": "Required. Enable or disable delegation for user registration."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. User registration delegation settings."
+              }
+            },
+            "validationKey": {
+              "type": "securestring",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. A base64-encoded validation key to validate, that a request is coming from Azure API Management."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The portal-settings contract properties."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for delegation portal settings."
+      }
+    },
+    "_1.diagnosticType": {
+      "type": "object",
+      "properties": {
+        "loggerName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the logger."
+          }
+        },
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "applicationinsights",
+            "azuremonitor",
+            "local"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Type of diagnostic resource."
+          }
+        },
+        "alwaysLog": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies for what type of messages sampling settings should not apply."
+          }
+        },
+        "backend": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/apis/diagnostics@2024-05-01#properties/properties/properties/backend"
+            },
+            "description": "Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Backend."
+          },
+          "nullable": true
+        },
+        "frontend": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/apis/diagnostics@2024-05-01#properties/properties/properties/frontend"
+            },
+            "description": "Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Gateway."
+          },
+          "nullable": true
+        },
+        "httpCorrelationProtocol": {
+          "type": "string",
+          "allowedValues": [
+            "Legacy",
+            "None",
+            "W3C"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights."
+          }
+        },
+        "logClientIp": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Log the ClientIP."
+          }
+        },
+        "metrics": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. Emit custom metrics via emit-metric policy. Required if using Application Insights."
+          }
+        },
+        "operationNameFormat": {
+          "type": "string",
+          "allowedValues": [
+            "Name",
+            "URI"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights."
+          }
+        },
+        "samplingPercentage": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged."
+          }
+        },
+        "verbosity": {
+          "type": "string",
+          "allowedValues": [
+            "error",
+            "information",
+            "verbose"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The verbosity level applied to traces emitted by trace policies."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type of a diagnostic configuration.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "api/main.bicep"
+        }
+      }
+    },
+    "_1.operationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the policy."
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The display name of the operation."
+          }
+        },
+        "policies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_2.policyType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The policies to apply to the operation."
+          }
+        },
+        "method": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them."
+          }
+        },
+        "urlTemplate": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters."
+          }
+        },
+        "request": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/apis/operations@2024-05-01#properties/properties/properties/request"
+            },
+            "description": "Optional. An entity containing request details."
+          },
+          "nullable": true
+        },
+        "responses": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/apis/operations@2024-05-01#properties/properties/properties/responses"
+            },
+            "description": "Optional. An entity containing request details."
+          },
+          "nullable": true
+        },
+        "templateParameters": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/apis/operations@2024-05-01#properties/properties/properties/templateParameters"
+            },
+            "description": "Optional. Collection of URL template parameters."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "description": "The type of an operation.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "api/main.bicep"
+        }
       }
     },
     "_1.policyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the policy."
+          }
+        },
+        "format": {
+          "type": "string",
+          "allowedValues": [
+            "rawxml",
+            "rawxml-link",
+            "xml",
+            "xml-link"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Format of the policyContent."
+          }
+        },
+        "value": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Contents of the Policy as defined by the format."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type of a policy.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "api/main.bicep"
+        }
+      }
+    },
+    "_2.policyType": {
       "type": "object",
       "properties": {
         "name": {
@@ -1009,118 +1956,6 @@
         }
       }
     },
-    "diagnosticType": {
-      "type": "object",
-      "properties": {
-        "loggerName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the logger."
-          }
-        },
-        "name": {
-          "type": "string",
-          "allowedValues": [
-            "applicationinsights",
-            "azuremonitor",
-            "local"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Type of diagnostic resource."
-          }
-        },
-        "alwaysLog": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specifies for what type of messages sampling settings should not apply."
-          }
-        },
-        "backend": {
-          "type": "object",
-          "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.ApiManagement/service/apis/diagnostics@2024-05-01#properties/properties/properties/backend"
-            },
-            "description": "Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Backend."
-          },
-          "nullable": true
-        },
-        "frontend": {
-          "type": "object",
-          "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.ApiManagement/service/apis/diagnostics@2024-05-01#properties/properties/properties/frontend"
-            },
-            "description": "Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Gateway."
-          },
-          "nullable": true
-        },
-        "httpCorrelationProtocol": {
-          "type": "string",
-          "allowedValues": [
-            "Legacy",
-            "None",
-            "W3C"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Conditional. Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights."
-          }
-        },
-        "logClientIp": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Log the ClientIP."
-          }
-        },
-        "metrics": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Conditional. Emit custom metrics via emit-metric policy. Required if using Application Insights."
-          }
-        },
-        "operationNameFormat": {
-          "type": "string",
-          "allowedValues": [
-            "Name",
-            "URI"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights."
-          }
-        },
-        "samplingPercentage": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged."
-          }
-        },
-        "verbosity": {
-          "type": "string",
-          "allowedValues": [
-            "error",
-            "information",
-            "verbose"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The verbosity level applied to traces emitted by trace policies."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type of a diagnostic configuration.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "api/main.bicep"
-        }
-      }
-    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -1183,267 +2018,6 @@
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
-        }
-      }
-    },
-    "operationType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the policy."
-          }
-        },
-        "displayName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The display name of the operation."
-          }
-        },
-        "policies": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/_1.policyType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The policies to apply to the operation."
-          }
-        },
-        "method": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them."
-          }
-        },
-        "urlTemplate": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}."
-          }
-        },
-        "description": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters."
-          }
-        },
-        "request": {
-          "type": "object",
-          "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.ApiManagement/service/apis/operations@2024-05-01#properties/properties/properties/request"
-            },
-            "description": "Optional. An entity containing request details."
-          },
-          "nullable": true
-        },
-        "responses": {
-          "type": "array",
-          "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.ApiManagement/service/apis/operations@2024-05-01#properties/properties/properties/responses"
-            },
-            "description": "Optional. An entity containing request details."
-          },
-          "nullable": true
-        },
-        "templateParameters": {
-          "type": "array",
-          "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.ApiManagement/service/apis/operations@2024-05-01#properties/properties/properties/templateParameters"
-            },
-            "description": "Optional. Collection of URL template parameters."
-          },
-          "nullable": true
-        }
-      },
-      "metadata": {
-        "description": "The type of an operation.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "api/main.bicep"
-        }
-      }
-    },
-    "policyType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of the policy."
-          }
-        },
-        "format": {
-          "type": "string",
-          "allowedValues": [
-            "rawxml",
-            "rawxml-link",
-            "xml",
-            "xml-link"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Format of the policyContent."
-          }
-        },
-        "value": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Contents of the Policy as defined by the format."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type of a policy.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "api/main.bicep"
-        }
-      }
-    },
-    "privateEndpointSingleServiceType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of the Private Endpoint."
-          }
-        },
-        "location": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The location to deploy the Private Endpoint to."
-          }
-        },
-        "privateLinkServiceConnectionName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of the private link connection to create."
-          }
-        },
-        "service": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The subresource to deploy the Private Endpoint for. For example \"vault\" for a Key Vault Private Endpoint."
-          }
-        },
-        "subnetResourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
-          }
-        },
-        "resourceGroupResourceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used."
-          }
-        },
-        "privateDnsZoneGroup": {
-          "$ref": "#/definitions/_2.privateEndpointPrivateDnsZoneGroupType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The private DNS Zone Group to configure for the Private Endpoint."
-          }
-        },
-        "isManualConnection": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. If Manual Private Link Connection is required."
-          }
-        },
-        "manualConnectionRequestMessage": {
-          "type": "string",
-          "nullable": true,
-          "maxLength": 140,
-          "metadata": {
-            "description": "Optional. A message passed to the owner of the remote resource with the manual connection request."
-          }
-        },
-        "customDnsConfigs": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/_2.privateEndpointCustomDnsConfigType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Custom DNS configurations."
-          }
-        },
-        "ipConfigurations": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/_2.privateEndpointIpConfigurationType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. A list of IP configurations of the Private Endpoint. This will be used to map to the first-party Service endpoints."
-          }
-        },
-        "applicationSecurityGroupResourceIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Application security groups in which the Private Endpoint IP configuration is included."
-          }
-        },
-        "customNetworkInterfaceName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The custom name of the network interface attached to the Private Endpoint."
-          }
-        },
-        "lock": {
-          "$ref": "#/definitions/_2.lockType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the type of lock."
-          }
-        },
-        "roleAssignments": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/_2.roleAssignmentType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Array of role assignments to create."
-          }
-        },
-        "tags": {
-          "type": "object",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
-          }
-        },
-        "enableTelemetry": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable/Disable usage telemetry for module."
-          }
-        }
-      },
-      "metadata": {
-        "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -1521,29 +2095,6 @@
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
-    },
-    "tokenBodyParameterType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Body parameter name."
-          }
-        },
-        "value": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Body parameter value."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for a token body parameter.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "authorization-server/main.bicep"
-        }
-      }
     }
   },
   "parameters": {
@@ -1565,11 +2116,14 @@
     },
     "certificates": {
       "type": "array",
-      "nullable": true,
-      "maxLength": 10,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service@2024-05-01#properties/properties/properties/certificates"
+        },
         "description": "Optional. List of Certificates that need to be installed in the API Management service. Max supported certificates that can be installed is 10."
-      }
+      },
+      "nullable": true,
+      "maxLength": 10
     },
     "enableTelemetry": {
       "type": "bool",
@@ -1719,7 +2273,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.ApiManagement/service@2024-05-01#properties/tags"
+          "source": "Microsoft.ApiManagement/service@2025-05-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -1815,6 +2369,9 @@
     },
     "backends": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/backendType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. Backends."
@@ -1822,6 +2379,9 @@
     },
     "caches": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/cacheType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. Caches."
@@ -1829,6 +2389,9 @@
     },
     "apiDiagnostics": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/apiDiagnosticType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. API Diagnostics."
@@ -1836,6 +2399,9 @@
     },
     "identityProviders": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/identityProviderType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. Identity providers."
@@ -1843,6 +2409,9 @@
     },
     "loggers": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/loggerType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. Loggers."
@@ -1860,6 +2429,9 @@
     },
     "policies": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/policyType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. Policies."
@@ -1867,6 +2439,9 @@
     },
     "portalsettings": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/portalSettingsType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. Portal settings."
@@ -1874,6 +2449,9 @@
     },
     "products": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/productType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. Products."
@@ -1881,6 +2459,9 @@
     },
     "subscriptions": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/subscriptionType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. Subscriptions."
@@ -2145,6 +2726,15 @@
           },
           "wsdlSelector": {
             "value": "[tryGet(coalesce(parameters('apis'), createArray())[copyIndex()], 'wsdlSelector')]"
+          },
+          "diagnostics": {
+            "value": "[tryGet(coalesce(parameters('apis'), createArray())[copyIndex()], 'diagnostics')]"
+          },
+          "operations": {
+            "value": "[tryGet(coalesce(parameters('apis'), createArray())[copyIndex()], 'operations')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2154,8 +2744,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "15710462596300800135"
+              "version": "0.37.4.10188",
+              "templateHash": "18116979725417472212"
             },
             "name": "API Management Service APIs",
             "description": "This module deploys an API Management Service API."
@@ -2642,7 +3232,17 @@
                 "description": "Optional. Criteria to limit import of WSDL to a subset of the document."
               },
               "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
+          },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
           },
           "resources": {
             "service::apiVersionSet": {
@@ -2657,6 +3257,26 @@
               "type": "Microsoft.ApiManagement/service",
               "apiVersion": "2024-05-01",
               "name": "[parameters('apiManagementServiceName')]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.apimgmt-api.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "api": {
               "type": "Microsoft.ApiManagement/service/apis",
@@ -2710,6 +3330,9 @@
                   },
                   "value": {
                     "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].value]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -2718,8 +3341,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "10004095548350122268"
+                      "version": "0.37.4.10188",
+                      "templateHash": "6713053293232206479"
                     },
                     "name": "API Management Service APIs Policies",
                     "description": "This module deploys an API Management Service API Policy."
@@ -2762,9 +3385,36 @@
                       "metadata": {
                         "description": "Required. Contents of the Policy as defined by the format."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": [
+                    {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.apimgmt-apipolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     {
                       "type": "Microsoft.ApiManagement/service/apis/policies",
                       "apiVersion": "2024-05-01",
@@ -2856,6 +3506,9 @@
                   },
                   "verbosity": {
                     "value": "[tryGet(coalesce(parameters('diagnostics'), createArray())[copyIndex()], 'verbosity')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -2865,8 +3518,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "10691091858678957501"
+                      "version": "0.37.4.10188",
+                      "templateHash": "18295485777200437093"
                     },
                     "name": "API Management Service APIs Diagnostics.",
                     "description": "This module deploys an API Management Service API Diagnostics."
@@ -2984,6 +3637,13 @@
                       "metadata": {
                         "description": "Optional. The verbosity level applied to traces emitted by trace policies."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
@@ -3004,6 +3664,26 @@
                       "type": "Microsoft.ApiManagement/service",
                       "apiVersion": "2024-05-01",
                       "name": "[parameters('apiManagementServiceName')]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.apimgm-apidiagnostics.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "diagnostic": {
                       "type": "Microsoft.ApiManagement/service/apis/diagnostics",
@@ -3110,8 +3790,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "5122065578272480369"
+                      "version": "0.37.4.10188",
+                      "templateHash": "2321178038283517825"
                     },
                     "name": "API Management Service APIs Operations",
                     "description": "This module deploys an API Management Service API Operation."
@@ -3240,13 +3920,13 @@
                     "service::api": {
                       "existing": true,
                       "type": "Microsoft.ApiManagement/service/apis",
-                      "apiVersion": "2022-08-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('apiName'))]"
                     },
                     "service": {
                       "existing": true,
                       "type": "Microsoft.ApiManagement/service",
-                      "apiVersion": "2023-05-01-preview",
+                      "apiVersion": "2024-05-01",
                       "name": "[parameters('apiManagementServiceName')]"
                     },
                     "operation": {
@@ -3302,8 +3982,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.177.2456",
-                              "templateHash": "14358201147768517726"
+                              "version": "0.37.4.10188",
+                              "templateHash": "17700550507187528779"
                             },
                             "name": "API Management Service API Operation Policies",
                             "description": "This module deploys an API Management Service API Operation Policy."
@@ -3355,7 +4035,7 @@
                           "resources": [
                             {
                               "type": "Microsoft.ApiManagement/service/apis/operations/policies",
-                              "apiVersion": "2022-08-01",
+                              "apiVersion": "2024-05-01",
                               "name": "[format('{0}/{1}/{2}/{3}', parameters('apiManagementServiceName'), parameters('apiName'), parameters('operationName'), parameters('name'))]",
                               "properties": {
                                 "value": "[parameters('value')]",
@@ -3487,6 +4167,9 @@
           },
           "versionQueryName": {
             "value": "[tryGet(coalesce(parameters('apiVersionSets'), createArray())[copyIndex()], 'versionQueryName')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -3496,8 +4179,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "11865411916707102487"
+              "version": "0.37.4.10188",
+              "templateHash": "8432939163648433289"
             },
             "name": "API Management Service API Version Sets",
             "description": "This module deploys an API Management Service API Version Set."
@@ -3559,6 +4242,13 @@
               "metadata": {
                 "description": "Optional. Name of query parameter that indicates the API Version if versioningScheme is set to query."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
@@ -3567,6 +4257,26 @@
               "type": "Microsoft.ApiManagement/service",
               "apiVersion": "2024-05-01",
               "name": "[parameters('apiManagementServiceName')]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.apimgmt-apiversionset.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "apiVersionSet": {
               "type": "Microsoft.ApiManagement/service/apiVersionSets",
@@ -3677,6 +4387,9 @@
           },
           "tokenEndpoint": {
             "value": "[coalesce(tryGet(coalesce(parameters('authorizationServers'), createArray())[copyIndex()], 'tokenEndpoint'), '')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -3686,34 +4399,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "9990973449320087970"
+              "version": "0.37.4.10188",
+              "templateHash": "3719777024451822510"
             },
             "name": "API Management Service Authorization Servers",
             "description": "This module deploys an API Management Service Authorization Server."
-          },
-          "definitions": {
-            "tokenBodyParameterType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Body parameter name."
-                  }
-                },
-                "value": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Body parameter value."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for a token body parameter."
-              }
-            }
           },
           "parameters": {
             "name": {
@@ -3743,30 +4433,39 @@
             },
             "authorizationMethods": {
               "type": "array",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ApiManagement/service/authorizationServers@2024-05-01#properties/properties/properties/authorizationMethods"
+                },
+                "description": "Optional. HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE."
+              },
               "defaultValue": [
                 "GET"
-              ],
-              "metadata": {
-                "description": "Optional. HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE."
-              }
+              ]
             },
             "bearerTokenSendingMethods": {
               "type": "array",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ApiManagement/service/authorizationServers@2024-05-01#properties/properties/properties/bearerTokenSendingMethods"
+                },
+                "description": "Optional. Specifies the mechanism by which access token is passed to the API. - authorizationHeader or query."
+              },
               "defaultValue": [
                 "authorizationHeader"
-              ],
-              "metadata": {
-                "description": "Optional. Specifies the mechanism by which access token is passed to the API. - authorizationHeader or query."
-              }
+              ]
             },
             "clientAuthenticationMethod": {
               "type": "array",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ApiManagement/service/authorizationServers@2024-05-01#properties/properties/properties/clientAuthenticationMethod"
+                },
+                "description": "Optional. Method of authentication supported by the token endpoint of this authorization server. Possible values are Basic and/or Body. When Body is specified, client credentials and other parameters are passed within the request body in the application/x-www-form-urlencoded format. - Basic or Body."
+              },
               "defaultValue": [
                 "Basic"
-              ],
-              "metadata": {
-                "description": "Optional. Method of authentication supported by the token endpoint of this authorization server. Possible values are Basic and/or Body. When Body is specified, client credentials and other parameters are passed within the request body in the application/x-www-form-urlencoded format. - Basic or Body."
-              }
+              ]
             },
             "clientId": {
               "type": "securestring",
@@ -3839,19 +4538,26 @@
             },
             "tokenBodyParameters": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/tokenBodyParameterType"
-              },
-              "defaultValue": [],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ApiManagement/service/authorizationServers@2024-05-01#properties/properties/properties/tokenBodyParameters"
+                },
                 "description": "Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties."
-              }
+              },
+              "defaultValue": []
             },
             "tokenEndpoint": {
               "type": "string",
               "defaultValue": "",
               "metadata": {
                 "description": "Optional. OAuth token endpoint. Contains absolute URI to entity being referenced."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
               }
             }
           },
@@ -3865,12 +4571,32 @@
             "service": {
               "existing": true,
               "type": "Microsoft.ApiManagement/service",
-              "apiVersion": "2023-05-01-preview",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('apiManagementServiceName')]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.apimgmt-authzserver.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "authorizationServer": {
               "type": "Microsoft.ApiManagement/service/authorizationServers",
-              "apiVersion": "2022-08-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "description": "[parameters('serverDescription')]",
@@ -3967,6 +4693,9 @@
           },
           "tls": {
             "value": "[coalesce(tryGet(coalesce(parameters('backends'), createArray())[copyIndex()], 'tls'), createObject('validateCertificateChain', true(), 'validateCertificateName', true()))]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -3976,8 +4705,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "16408861159020892087"
+              "version": "0.37.4.10188",
+              "templateHash": "702614170296865172"
             },
             "name": "API Management Service Backends",
             "description": "This module deploys an API Management Service Backend."
@@ -3997,10 +4726,13 @@
             },
             "credentials": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/credentials"
+                },
                 "description": "Optional. Backend Credentials Contract Properties."
-              }
+              },
+              "nullable": true
             },
             "description": {
               "type": "string",
@@ -4018,10 +4750,13 @@
             },
             "proxy": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/proxy"
+                },
                 "description": "Optional. Backend Proxy Contract Properties."
-              }
+              },
+              "nullable": true
             },
             "resourceId": {
               "type": "string",
@@ -4032,10 +4767,13 @@
             },
             "serviceFabricCluster": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/properties/properties/serviceFabricCluster"
+                },
                 "description": "Optional. Backend Service Fabric Cluster Properties."
-              }
+              },
+              "nullable": true
             },
             "title": {
               "type": "string",
@@ -4046,12 +4784,15 @@
             },
             "tls": {
               "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/tls"
+                },
+                "description": "Optional. Backend TLS Properties."
+              },
               "defaultValue": {
                 "validateCertificateChain": false,
                 "validateCertificateName": false
-              },
-              "metadata": {
-                "description": "Optional. Backend TLS Properties."
               }
             },
             "url": {
@@ -4059,18 +4800,45 @@
               "metadata": {
                 "description": "Required. Runtime URL of the Backend."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
             "service": {
               "existing": true,
               "type": "Microsoft.ApiManagement/service",
-              "apiVersion": "2023-05-01-preview",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('apiManagementServiceName')]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.apimgmt-backend.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "backend": {
               "type": "Microsoft.ApiManagement/service/backends",
-              "apiVersion": "2022-08-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "title": "[parameters('title')]",
@@ -4147,6 +4915,9 @@
           },
           "useFromLocation": {
             "value": "[coalesce(parameters('caches'), createArray())[copyIndex()].useFromLocation]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -4156,8 +4927,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "3947945384129182162"
+              "version": "0.37.4.10188",
+              "templateHash": "18421200341941067261"
             },
             "name": "API Management Service Caches",
             "description": "This module deploys an API Management Service Cache."
@@ -4200,18 +4971,45 @@
               "metadata": {
                 "description": "Required. Location identifier to use cache from (should be either 'default' or valid Azure region identifier)."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
             "service": {
               "existing": true,
               "type": "Microsoft.ApiManagement/service",
-              "apiVersion": "2023-05-01-preview",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('apiManagementServiceName')]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.apimgmt-cache.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "cache": {
               "type": "Microsoft.ApiManagement/service/caches",
-              "apiVersion": "2022-08-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "description": "[parameters('description')]",
@@ -4302,6 +5100,9 @@
           },
           "verbosity": {
             "value": "[tryGet(coalesce(parameters('apiDiagnostics'), createArray())[copyIndex()], 'verbosity')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -4311,8 +5112,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "10691091858678957501"
+              "version": "0.37.4.10188",
+              "templateHash": "18295485777200437093"
             },
             "name": "API Management Service APIs Diagnostics.",
             "description": "This module deploys an API Management Service API Diagnostics."
@@ -4430,6 +5231,13 @@
               "metadata": {
                 "description": "Optional. The verbosity level applied to traces emitted by trace policies."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
@@ -4450,6 +5258,26 @@
               "type": "Microsoft.ApiManagement/service",
               "apiVersion": "2024-05-01",
               "name": "[parameters('apiManagementServiceName')]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.apimgm-apidiagnostics.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "diagnostic": {
               "type": "Microsoft.ApiManagement/service/apis/diagnostics",
@@ -4524,37 +5352,40 @@
             "value": "[coalesce(parameters('identityProviders'), createArray())[copyIndex()].name]"
           },
           "allowedTenants": {
-            "value": "[coalesce(tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'allowedTenants'), createArray())]"
+            "value": "[tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'allowedTenants')]"
           },
           "authority": {
-            "value": "[coalesce(tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'authority'), '')]"
+            "value": "[tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'authority')]"
           },
           "clientId": {
-            "value": "[coalesce(tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'clientId'), '')]"
+            "value": "[tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'clientId')]"
           },
           "clientLibrary": {
-            "value": "[coalesce(tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'clientLibrary'), '')]"
+            "value": "[tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'clientLibrary')]"
           },
           "clientSecret": {
-            "value": "[coalesce(tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'clientSecret'), '')]"
+            "value": "[tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'clientSecret')]"
           },
           "passwordResetPolicyName": {
-            "value": "[coalesce(tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'passwordResetPolicyName'), '')]"
+            "value": "[tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'passwordResetPolicyName')]"
           },
           "profileEditingPolicyName": {
-            "value": "[coalesce(tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'profileEditingPolicyName'), '')]"
+            "value": "[tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'profileEditingPolicyName')]"
           },
           "signInPolicyName": {
-            "value": "[coalesce(tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'signInPolicyName'), '')]"
+            "value": "[tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'signInPolicyName')]"
           },
           "signInTenant": {
-            "value": "[coalesce(tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'signInTenant'), '')]"
+            "value": "[tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'signInTenant')]"
           },
           "signUpPolicyName": {
-            "value": "[coalesce(tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'signUpPolicyName'), '')]"
+            "value": "[tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'signUpPolicyName')]"
           },
           "type": {
-            "value": "[coalesce(tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'type'), 'aad')]"
+            "value": "[tryGet(coalesce(parameters('identityProviders'), createArray())[copyIndex()], 'type')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -4564,8 +5395,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "9679300958919592959"
+              "version": "0.37.4.10188",
+              "templateHash": "488153495468500989"
             },
             "name": "API Management Service Identity Providers",
             "description": "This module deploys an API Management Service Identity Provider."
@@ -4579,10 +5410,13 @@
             },
             "allowedTenants": {
               "type": "array",
-              "defaultValue": [],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ApiManagement/service/identityProviders@2024-05-01#properties/properties/properties/allowedTenants"
+                },
                 "description": "Optional. List of Allowed Tenants when configuring Azure Active Directory login. - string."
-              }
+              },
+              "defaultValue": []
             },
             "authority": {
               "type": "string",
@@ -4671,6 +5505,13 @@
               "metadata": {
                 "description": "Required. Identity provider name."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -4680,12 +5521,32 @@
             "service": {
               "existing": true,
               "type": "Microsoft.ApiManagement/service",
-              "apiVersion": "2023-05-01-preview",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('apiManagementServiceName')]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.apimgmt-identityprovider.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "identityProvider": {
               "type": "Microsoft.ApiManagement/service/identityProviders",
-              "apiVersion": "2022-08-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "type": "[parameters('type')]",
@@ -4752,7 +5613,7 @@
             "value": "[parameters('name')]"
           },
           "credentials": {
-            "value": "[coalesce(tryGet(coalesce(parameters('loggers'), createArray())[copyIndex()], 'credentials'), createObject())]"
+            "value": "[tryGet(coalesce(parameters('loggers'), createArray())[copyIndex()], 'credentials')]"
           },
           "isBuffered": {
             "value": "[tryGet(coalesce(parameters('loggers'), createArray())[copyIndex()], 'isBuffered')]"
@@ -4761,20 +5622,24 @@
             "value": "[tryGet(coalesce(parameters('loggers'), createArray())[copyIndex()], 'loggerDescription')]"
           },
           "type": {
-            "value": "[coalesce(tryGet(coalesce(parameters('loggers'), createArray())[copyIndex()], 'loggerType'), 'azureMonitor')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('loggers'), createArray())[copyIndex()], 'type'), 'azureMonitor')]"
           },
           "targetResourceId": {
-            "value": "[coalesce(tryGet(coalesce(parameters('loggers'), createArray())[copyIndex()], 'targetResourceId'), '')]"
+            "value": "[tryGet(coalesce(parameters('loggers'), createArray())[copyIndex()], 'targetResourceId')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "3884037248458454036"
+              "version": "0.37.4.10188",
+              "templateHash": "4781753017990092454"
             },
             "name": "API Management Service Loggers",
             "description": "This module deploys an API Management Service Logger."
@@ -4819,21 +5684,59 @@
             },
             "targetResourceId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
-                "description": "Conditional. Required if loggerType = applicationInsights or azureEventHub. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource)."
+                "description": "Conditional. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub."
               }
             },
             "credentials": {
               "type": "secureObject",
               "metadata": {
-                "description": "Conditional. Required if loggerType = applicationInsights or azureEventHub. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger."
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ApiManagement/service/loggers@2024-05-01#properties/properties/properties/credentials"
+                },
+                "description": "Conditional. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub."
+              },
+              "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "service": {
+              "existing": true,
+              "type": "Microsoft.ApiManagement/service",
+              "apiVersion": "2024-05-01",
+              "name": "[parameters('apiManagementServiceName')]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.apimgmt-logger.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "loggers": {
               "type": "Microsoft.ApiManagement/service/loggers",
-              "apiVersion": "2022-08-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "credentials": "[parameters('credentials')]",
@@ -4843,7 +5746,7 @@
                 "resourceId": "[parameters('targetResourceId')]"
               }
             }
-          ],
+          },
           "outputs": {
             "resourceId": {
               "type": "string",
@@ -4904,10 +5807,13 @@
             "value": "[tryGet(coalesce(parameters('namedValues'), createArray())[copyIndex()], 'tags')]"
           },
           "secret": {
-            "value": "[coalesce(tryGet(coalesce(parameters('namedValues'), createArray())[copyIndex()], 'secret'), false())]"
+            "value": "[tryGet(coalesce(parameters('namedValues'), createArray())[copyIndex()], 'secret')]"
           },
           "value": {
             "value": "[coalesce(tryGet(coalesce(parameters('namedValues'), createArray())[copyIndex()], 'value'), parameters('newGuidValue'))]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -4917,8 +5823,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "16434898948279118859"
+              "version": "0.37.4.10188",
+              "templateHash": "15327805619306331997"
             },
             "name": "API Management Service Named Values",
             "description": "This module deploys an API Management Service Named Value."
@@ -4975,6 +5881,13 @@
               "metadata": {
                 "description": "Optional. Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
@@ -4983,6 +5896,26 @@
               "type": "Microsoft.ApiManagement/service",
               "apiVersion": "2024-05-01",
               "name": "[parameters('apiManagementServiceName')]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.apimgmt-namedvalue.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "namedValue": {
               "type": "Microsoft.ApiManagement/service/namedValues",
@@ -5031,7 +5964,6 @@
         "name": "service_portalsettings",
         "count": "[length(coalesce(parameters('portalsettings'), createArray()))]"
       },
-      "condition": "[not(empty(coalesce(parameters('portalsettings'), createArray())[copyIndex()].properties))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Apim-PortalSetting-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
@@ -5049,6 +5981,9 @@
           },
           "properties": {
             "value": "[coalesce(parameters('portalsettings'), createArray())[copyIndex()].properties]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -5057,8 +5992,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "8077369743181159717"
+              "version": "0.37.4.10188",
+              "templateHash": "507546033383811759"
             },
             "name": "API Management Service Portal Settings",
             "description": "This module deploys an API Management Service Portal Setting."
@@ -5084,14 +6019,44 @@
             "properties": {
               "type": "object",
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ApiManagement/service/portalsettings@2024-05-01#properties/properties"
+                },
                 "description": "Required. Portal setting properties."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
               }
             }
           },
           "resources": [
             {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.apimgmt-portalsetting.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            {
               "type": "Microsoft.ApiManagement/service/portalsettings",
-              "apiVersion": "2022-08-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": "[parameters('properties')]"
             }
@@ -5146,7 +6111,10 @@
             "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].value]"
           },
           "format": {
-            "value": "[coalesce(tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'format'), 'xml')]"
+            "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'format')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -5155,8 +6123,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "15872620129103300786"
+              "version": "0.37.4.10188",
+              "templateHash": "1890042083326760913"
             },
             "name": "API Management Service Policies",
             "description": "This module deploys an API Management Service Policy."
@@ -5193,12 +6161,39 @@
               "metadata": {
                 "description": "Required. Contents of the Policy as defined by the format."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
             {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.apimgmt-policy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            {
               "type": "Microsoft.ApiManagement/service/policies",
-              "apiVersion": "2022-08-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "format": "[parameters('format')]",
@@ -5256,41 +6251,45 @@
             "value": "[parameters('name')]"
           },
           "apis": {
-            "value": "[coalesce(tryGet(coalesce(parameters('products'), createArray())[copyIndex()], 'apis'), createArray())]"
+            "value": "[tryGet(coalesce(parameters('products'), createArray())[copyIndex()], 'apis')]"
           },
           "approvalRequired": {
-            "value": "[coalesce(tryGet(coalesce(parameters('products'), createArray())[copyIndex()], 'approvalRequired'), false())]"
+            "value": "[tryGet(coalesce(parameters('products'), createArray())[copyIndex()], 'approvalRequired')]"
           },
           "groups": {
-            "value": "[coalesce(tryGet(coalesce(parameters('products'), createArray())[copyIndex()], 'groups'), createArray())]"
+            "value": "[tryGet(coalesce(parameters('products'), createArray())[copyIndex()], 'groups')]"
           },
           "name": {
             "value": "[coalesce(parameters('products'), createArray())[copyIndex()].name]"
           },
           "description": {
-            "value": "[coalesce(tryGet(coalesce(parameters('products'), createArray())[copyIndex()], 'description'), '')]"
+            "value": "[tryGet(coalesce(parameters('products'), createArray())[copyIndex()], 'description')]"
           },
           "state": {
-            "value": "[coalesce(tryGet(coalesce(parameters('products'), createArray())[copyIndex()], 'state'), 'published')]"
+            "value": "[tryGet(coalesce(parameters('products'), createArray())[copyIndex()], 'state')]"
           },
           "subscriptionRequired": {
-            "value": "[coalesce(tryGet(coalesce(parameters('products'), createArray())[copyIndex()], 'subscriptionRequired'), false())]"
+            "value": "[tryGet(coalesce(parameters('products'), createArray())[copyIndex()], 'subscriptionRequired')]"
           },
           "subscriptionsLimit": {
-            "value": "[coalesce(tryGet(coalesce(parameters('products'), createArray())[copyIndex()], 'subscriptionsLimit'), 1)]"
+            "value": "[tryGet(coalesce(parameters('products'), createArray())[copyIndex()], 'subscriptionsLimit')]"
           },
           "terms": {
-            "value": "[coalesce(tryGet(coalesce(parameters('products'), createArray())[copyIndex()], 'terms'), '')]"
+            "value": "[tryGet(coalesce(parameters('products'), createArray())[copyIndex()], 'terms')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "8540519905427843387"
+              "version": "0.37.4.10188",
+              "templateHash": "16064108269009620660"
             },
             "name": "API Management Service Products",
             "description": "This module deploys an API Management Service Product."
@@ -5325,16 +6324,22 @@
             },
             "apis": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
               "metadata": {
-                "description": "Optional. Array of Product APIs."
+                "description": "Optional. Names of Product APIs."
               }
             },
             "groups": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
               "metadata": {
-                "description": "Optional. Array of Product Groups."
+                "description": "Optional. Names of Product Groups."
               }
             },
             "name": {
@@ -5370,12 +6375,48 @@
               "metadata": {
                 "description": "Optional. Product terms of use. Developers trying to subscribe to the product will be presented and required to accept these terms before they can complete the subscription process."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
-          "resources": [
-            {
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
+          "resources": {
+            "service": {
+              "existing": true,
+              "type": "Microsoft.ApiManagement/service",
+              "apiVersion": "2024-05-01",
+              "name": "[parameters('apiManagementServiceName')]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.apimgmt-product.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "product": {
               "type": "Microsoft.ApiManagement/service/products",
-              "apiVersion": "2022-08-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "description": "[parameters('description')]",
@@ -5387,10 +6428,10 @@
                 "state": "[parameters('state')]"
               }
             },
-            {
+            "product_apis": {
               "copy": {
                 "name": "product_apis",
-                "count": "[length(parameters('apis'))]"
+                "count": "[length(coalesce(parameters('apis'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -5405,10 +6446,13 @@
                     "value": "[parameters('apiManagementServiceName')]"
                   },
                   "name": {
-                    "value": "[parameters('apis')[copyIndex()].name]"
+                    "value": "[coalesce(parameters('apis'), createArray())[copyIndex()]]"
                   },
                   "productName": {
                     "value": "[parameters('name')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -5417,8 +6461,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "15995769643288756005"
+                      "version": "0.37.4.10188",
+                      "templateHash": "5465704654489665391"
                     },
                     "name": "API Management Service Products APIs",
                     "description": "This module deploys an API Management Service Product API."
@@ -5441,12 +6485,39 @@
                       "metadata": {
                         "description": "Required. Name of the product API."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": [
                     {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.apimgmt-productapi.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
                       "type": "Microsoft.ApiManagement/service/products/apis",
-                      "apiVersion": "2022-08-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
                     }
                   ],
@@ -5476,10 +6547,10 @@
                 }
               }
             },
-            {
+            "product_groups": {
               "copy": {
                 "name": "product_groups",
-                "count": "[length(parameters('groups'))]"
+                "count": "[length(coalesce(parameters('groups'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -5494,10 +6565,13 @@
                     "value": "[parameters('apiManagementServiceName')]"
                   },
                   "name": {
-                    "value": "[parameters('groups')[copyIndex()].name]"
+                    "value": "[coalesce(parameters('groups'), createArray())[copyIndex()]]"
                   },
                   "productName": {
                     "value": "[parameters('name')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -5506,8 +6580,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "11391778559645204336"
+                      "version": "0.37.4.10188",
+                      "templateHash": "13523839423669576454"
                     },
                     "name": "API Management Service Products Groups",
                     "description": "This module deploys an API Management Service Product Group."
@@ -5530,12 +6604,39 @@
                       "metadata": {
                         "description": "Required. Name of the product group."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": [
                     {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.apimgmt-productgroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
                       "type": "Microsoft.ApiManagement/service/products/groups",
-                      "apiVersion": "2022-08-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
                     }
                   ],
@@ -5565,7 +6666,7 @@
                 }
               }
             }
-          ],
+          },
           "outputs": {
             "resourceId": {
               "type": "string",
@@ -5594,8 +6695,8 @@
                 "description": "The Resources IDs of the API management service product APIs."
               },
               "copy": {
-                "count": "[length(range(0, length(parameters('apis'))))]",
-                "input": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-Api-{1}', deployment().name, range(0, length(parameters('apis')))[copyIndex()])), '2022-09-01').outputs.resourceId.value]"
+                "count": "[length(range(0, length(coalesce(parameters('apis'), createArray()))))]",
+                "input": "[reference(format('product_apis[{0}]', range(0, length(coalesce(parameters('apis'), createArray())))[copyIndex()])).outputs.resourceId.value]"
               }
             },
             "groupResourceIds": {
@@ -5604,8 +6705,8 @@
                 "description": "The Resources IDs of the API management service product groups."
               },
               "copy": {
-                "count": "[length(range(0, length(parameters('groups'))))]",
-                "input": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-Group-{1}', deployment().name, range(0, length(parameters('groups')))[copyIndex()])), '2022-09-01').outputs.resourceId.value]"
+                "count": "[length(range(0, length(coalesce(parameters('groups'), createArray()))))]",
+                "input": "[reference(format('product_groups[{0}]', range(0, length(coalesce(parameters('groups'), createArray())))[copyIndex()])).outputs.resourceId.value]"
               }
             }
           }
@@ -5656,6 +6757,9 @@
           },
           "state": {
             "value": "[tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'state')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -5665,8 +6769,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "15397588162246076936"
+              "version": "0.37.4.10188",
+              "templateHash": "8450474183617387575"
             },
             "name": "API Management Service Subscriptions",
             "description": "This module deploys an API Management Service Subscription."
@@ -5732,18 +6836,45 @@
               "metadata": {
                 "description": "Required. Subscription name."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.apimgmt-subscription.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "service": {
               "existing": true,
               "type": "Microsoft.ApiManagement/service",
-              "apiVersion": "2023-05-01-preview",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('apiManagementServiceName')]"
             },
             "subscription": {
               "type": "Microsoft.ApiManagement/service/subscriptions",
-              "apiVersion": "2022-08-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "scope": "[parameters('scope')]",

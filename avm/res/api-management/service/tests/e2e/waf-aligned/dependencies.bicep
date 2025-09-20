@@ -10,6 +10,9 @@ param logAnalyticsWorkspaceName string
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
 
+@description('Required. The name of the Application insights instance to create.')
+param applicationInsightsName string
+
 var addressPrefix = '10.0.0.0/16'
 
 #disable-next-line use-recent-api-versions
@@ -52,7 +55,7 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
 }
 
 #disable-next-line use-recent-api-versions
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
@@ -76,7 +79,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02
 }
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
-  name: 'applicationInsights'
+  name: applicationInsightsName
   location: location
   kind: 'web'
   properties: {
@@ -103,5 +106,6 @@ output appInsightsResourceId string = applicationInsights.id
 
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
+
 @description('The resource ID of the created Private DNS Zone.')
 output privateDNSZoneResourceId string = privateDNSZone.id

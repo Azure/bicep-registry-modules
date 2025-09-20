@@ -25,13 +25,18 @@ param networkSecurityGroupNamePrefix string
 @description('Required. The name prefix of the Route Table to create.')
 param routeTableNamePrefix string
 
-var addressPrefix = '10.0.0.0/16'
-
 @description('Required. The name of the managed identity to create.')
 param logAnalyticsWorkspaceName string
 
 #disable-next-line use-recent-api-versions
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' = {
+
+@description('Required. The name of the managed identity to create.')
+param logAnalyticsWorkspaceName string
+
+var addressPrefix = '10.0.0.0/16'
+
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: locationRegion1
 }
