@@ -146,14 +146,19 @@ resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@20
       : null
     metadata: metadata
     publicAccess: publicAccess
-    legalHold: {
-      allowProtectedAppendWritesAll: true
-      tags: [
-        {
-          tag: 'mytag'
-        }
-      ]
-    }
+  }
+}
+
+#disable-next-line BCP081
+resource legalHold 'Microsoft.Storage/storageAccounts/blobServices/containers/legalHold@2023-05-01' = {
+  name: '${storageAccount.name}/default/${container.name}/default'
+  properties: {
+    allowProtectedAppendWritesAll: true
+    tags: [
+      {
+        tag: 'mytag'
+      }
+    ]
   }
 }
 
