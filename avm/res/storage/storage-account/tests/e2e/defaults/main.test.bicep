@@ -52,10 +52,9 @@ module testDeployment '../../../main.bicep' = [
           {
             name: 'mycontainer'
             immutabilityPolicy: {
-              allowProtectedAppendWrites: true
+              allowProtectedAppendWrites: false
               allowProtectedAppendWritesAll: true
               immutabilityPeriodSinceCreationInDays: 7
-              name: 'default'
             }
           }
         ]
