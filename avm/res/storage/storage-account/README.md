@@ -2615,7 +2615,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableNfsV3: true
     fileServices: {
       diagnosticSettings: [
         {
@@ -2876,9 +2875,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "enableNfsV3": {
-      "value": true
     },
     "fileServices": {
       "value": {
@@ -3157,7 +3153,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-enableNfsV3: true
 param fileServices = {
   diagnosticSettings: [
     {

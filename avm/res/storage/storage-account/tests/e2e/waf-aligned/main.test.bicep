@@ -70,7 +70,6 @@ module testDeployment '../../../main.bicep' = [
       allowBlobPublicAccess: false
       requireInfrastructureEncryption: true
       largeFileSharesState: 'Enabled'
-      enableNfsV3: true
       privateEndpoints: [
         {
           service: 'blob'
