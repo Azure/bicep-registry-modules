@@ -150,7 +150,7 @@ resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@20
 }
 
 module container_immutabilityPolicy 'immutability-policy/main.bicep' = if (!empty((immutabilityPolicy ?? {}))) {
-  name: '${deployment().name}-ImmutabilityPolicy'
+  name: take('${deployment().name}-ImmutPol', 64)
   params: {
     storageAccountName: storageAccount.name
     containerName: container.name
