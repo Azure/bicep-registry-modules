@@ -7,12 +7,15 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Required. The username used to establish jumpbox VMs.')
-param administratorLogin string
+@description('Conditional. The administrator username for the server. Required if no `administrators` object for AAD authentication is provided.')
+param administratorLogin string?
 
-@description('Required. The password given to the admin user.')
+@description('Conditional. The administrator login password. Required if no `administrators` object for AAD authentication is provided.')
 @secure()
-param administratorLoginPassword string
+param administratorLoginPassword string?
+
+@description('Conditional. The Azure Active Directory (AAD) administrator authentication. Required if no `administratorLogin` & `administratorLoginPassword` is provided.')
+param administrators serverExternalAdministratorType?
 
 @description('Required. The fully qualified resource ID of the subnet on which the SQL managed instance will be placed.')
 param subnetResourceId string
@@ -23,11 +26,13 @@ param skuName string = 'GP_Gen5'
 @description('Optional. The tier or edition of the particular SKU, e.g. Basic, Premium.')
 param skuTier string = 'GeneralPurpose'
 
-@description('Optional. Storage size in GB. Minimum value: 32. Maximum value: 8192. Increments of 32 GB allowed only.')
+@description('Optional. Storage size in GB. Increments of 32 GB allowed only.')
+@minValue(32)
+@maxValue(8192)
 param storageSizeInGB int = 32
 
-@description('Optional. The number of vCores. Allowed values: 8, 16, 24, 32, 40, 64, 80.')
-param vCores int = 4
+@description('Optional. The number of vCores.')
+param vCores resourceInput<'Microsoft.Sql/managedInstances@2023-08-01'>.properties.vCores = 4
 
 @description('Optional. The license type. Possible values are \'LicenseIncluded\' (regular price inclusive of a new SQL license) and \'BasePrice\' (discounted AHB price for bringing your own SQL licenses).')
 @allowed([
@@ -85,48 +90,45 @@ param restorePointInTime string?
 @description('Optional. The resource identifier of the source managed instance associated with create operation of this instance.')
 param sourceManagedInstanceResourceId string?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Sql/managedInstances@2023-08-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-@description('Conditional. The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty.')
+@description('Conditional. The resource ID of a user assigned identity to be used by default. Required if `userAssignedIdentities` is not empty.')
 param primaryUserAssignedIdentityResourceId string?
 
 @description('Optional. Databases to create in this server.')
-param databases array = []
+param databases databaseType[]?
 
 @description('Optional. The vulnerability assessment configuration.')
-param vulnerabilityAssessmentsObj object = {}
+param vulnerabilityAssessment vulnerabilityAssessmentType?
 
 @description('Optional. The security alert policy configuration.')
-param securityAlertPoliciesObj object = {}
+param securityAlertPolicy securityAlertPolicyType?
 
 @description('Optional. The keys to configure.')
-param keys array = []
+param keys keysType[]?
 
 @description('Optional. The encryption protection configuration.')
-param encryptionProtectorObj object = {}
-
-@description('Optional. The administrator configuration.')
-param administratorsObj object = {}
+param encryptionProtector encryptionProtectorType?
 
 @allowed([
   'SystemManaged'
@@ -268,6 +270,7 @@ resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' = {
     managedInstanceCreateMode: managedInstanceCreateMode
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
+    administrators: union({ administratorType: 'ActiveDirectory' }, administrators ?? {})
     subnetId: subnetResourceId
     licenseType: licenseType
     vCores: vCores
@@ -341,7 +344,7 @@ resource managedInstance_roleAssignments 'Microsoft.Authorization/roleAssignment
 ]
 
 module managedInstance_databases 'database/main.bicep' = [
-  for (database, index) in databases: {
+  for (database, index) in (databases ?? []): {
     name: '${uniqueString(deployment().name, location)}-SqlMi-DB-${index}'
     params: {
       name: database.name
@@ -366,27 +369,29 @@ module managedInstance_databases 'database/main.bicep' = [
   }
 ]
 
-module managedInstance_securityAlertPolicy 'security-alert-policy/main.bicep' = if (!empty(securityAlertPoliciesObj)) {
+module managedInstance_securityAlertPolicy 'security-alert-policy/main.bicep' = if (!empty(securityAlertPolicy)) {
   name: '${uniqueString(deployment().name, location)}-SqlMi-SecAlertPol'
   params: {
     managedInstanceName: managedInstance.name
-    name: securityAlertPoliciesObj.name
-    emailAccountAdmins: securityAlertPoliciesObj.?emailAccountAdmins
-    state: securityAlertPoliciesObj.?state
+    name: securityAlertPolicy!.name
+    emailAccountAdmins: securityAlertPolicy.?emailAccountAdmins
+    state: securityAlertPolicy.?state
+    disabledAlerts: securityAlertPolicy!.?disabledAlerts
+    emailAddresses: securityAlertPolicy!.?emailAddresses
+    retentionDays: securityAlertPolicy!.?retentionDays
+    storageAccountResourceId: securityAlertPolicy!.?storageAccountResourceId
   }
 }
 
-module managedInstance_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' = if (!empty(vulnerabilityAssessmentsObj) && (managedIdentities.?systemAssigned ?? false)) {
+module managedInstance_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' = if (!empty(vulnerabilityAssessment) && (managedIdentities.?systemAssigned ?? false)) {
   name: '${uniqueString(deployment().name, location)}-SqlMi-VulnAssessm'
   params: {
     managedInstanceName: managedInstance.name
-    name: vulnerabilityAssessmentsObj.name
-    recurringScansEmails: vulnerabilityAssessmentsObj.?recurringScansEmails
-    recurringScansEmailSubscriptionAdmins: vulnerabilityAssessmentsObj.?recurringScansEmailSubscriptionAdmins
-    recurringScansIsEnabled: vulnerabilityAssessmentsObj.?recurringScansIsEnabled
-    storageAccountResourceId: vulnerabilityAssessmentsObj.storageAccountResourceId
-    useStorageAccountAccessKey: vulnerabilityAssessmentsObj.?useStorageAccountAccessKey
-    createStorageRoleAssignment: vulnerabilityAssessmentsObj.?createStorageRoleAssignment
+    name: vulnerabilityAssessment!.name
+    recurringScans: vulnerabilityAssessment.?recurringScans
+    storageAccountResourceId: vulnerabilityAssessment!.storageAccountResourceId
+    useStorageAccountAccessKey: vulnerabilityAssessment!.?useStorageAccountAccessKey
+    createStorageRoleAssignment: vulnerabilityAssessment!.?createStorageRoleAssignment
   }
   dependsOn: [
     managedInstance_securityAlertPolicy
@@ -394,7 +399,7 @@ module managedInstance_vulnerabilityAssessment 'vulnerability-assessment/main.bi
 }
 
 module managedInstance_keys 'key/main.bicep' = [
-  for (key, index) in keys: {
+  for (key, index) in (keys ?? []): {
     name: '${uniqueString(deployment().name, location)}-SqlMi-Key-${index}'
     params: {
       name: key.name
@@ -405,27 +410,17 @@ module managedInstance_keys 'key/main.bicep' = [
   }
 ]
 
-module managedInstance_encryptionProtector 'encryption-protector/main.bicep' = if (!empty(encryptionProtectorObj)) {
+module managedInstance_encryptionProtector 'encryption-protector/main.bicep' = if (!empty(encryptionProtector)) {
   name: '${uniqueString(deployment().name, location)}-SqlMi-EncryProtector'
   params: {
     managedInstanceName: managedInstance.name
-    serverKeyName: encryptionProtectorObj.serverKeyName
-    serverKeyType: encryptionProtectorObj.?serverKeyType ?? 'ServiceManaged'
-    autoRotationEnabled: encryptionProtectorObj.?autoRotationEnabled ?? true
+    serverKeyName: encryptionProtector!.serverKeyName
+    serverKeyType: encryptionProtector.?serverKeyType
+    autoRotationEnabled: encryptionProtector.?autoRotationEnabled ?? true
   }
   dependsOn: [
     managedInstance_keys
   ]
-}
-
-module managedInstance_administrator 'administrator/main.bicep' = if (!empty(administratorsObj)) {
-  name: '${uniqueString(deployment().name, location)}-SqlMi-Admin'
-  params: {
-    managedInstanceName: managedInstance.name
-    login: administratorsObj.name
-    sid: administratorsObj.sid
-    tenantId: administratorsObj.?tenantId
-  }
 }
 
 @description('The name of the deployed managed instance.')
@@ -442,3 +437,166 @@ output systemAssignedMIPrincipalId string? = managedInstance.?identity.?principa
 
 @description('The location the resource was deployed into.')
 output location string = managedInstance.location
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { managedInstanceShortTermRetentionPolicyType, managedInstanceLongTermRetentionPolicyType } from 'database/main.bicep'
+
+@export()
+@description('The type for a sever-external administrator.')
+type serverExternalAdministratorType = {
+  @description('Required. Azure Active Directory only Authentication enabled.')
+  azureADOnlyAuthentication: bool
+
+  @description('Required. Login name of the server administrator.')
+  login: string
+
+  @description('Required. Principal Type of the sever administrator.')
+  principalType: 'Application' | 'Group' | 'User'
+
+  @description('Required. SID (object ID) of the server administrator.')
+  sid: string
+
+  @description('Optional. Tenant ID of the administrator.')
+  tenantId: string?
+}
+
+@export()
+@description('The type for the vulnerability assessment configuration.')
+type vulnerabilityAssessmentType = {
+  @description('Required. The name of the vulnerability assessment.')
+  name: string
+
+  @description('Optional. The recurring scans configuration.')
+  recurringScans: resourceInput<'Microsoft.Sql/managedInstances/vulnerabilityAssessments@2023-08-01'>.properties.recurringScans?
+
+  @description('Required. A blob storage to hold the scan results.')
+  storageAccountResourceId: string
+
+  @description('Optional. Use Access Key to access the storage account. The storage account cannot be behind a firewall or virtual network. If an access key is not used, the SQL MI system assigned managed identity must be assigned the Storage Blob Data Contributor role on the storage account.')
+  useStorageAccountAccessKey: bool?
+
+  @description('Optional. Create the Storage Blob Data Contributor role assignment on the storage account. Note, the role assignment must not already exist on the storage account.')
+  createStorageRoleAssignment: bool?
+}
+
+@export()
+@description('The type for the security alert policy configuration.')
+type securityAlertPolicyType = {
+  @description('Required. The name of the security alert policy.')
+  name: string
+
+  @description('Optional. Enables advanced data security features, like recuring vulnerability assesment scans and ATP. If enabled, storage account must be provided.')
+  state: ('Enabled' | 'Disabled')?
+
+  @description('Optional. Specifies that the schedule scan notification will be is sent to the subscription administrators.')
+  emailAccountAdmins: bool?
+
+  @description('Optional. Specifies an array of e-mail addresses to which the alert is sent.')
+  emailAddresses: string[]?
+
+  @description('Optional. Specifies the number of days to keep in the Threat Detection audit logs.')
+  retentionDays: int?
+
+  @description('Optional. Specifies an array of alerts that are disabled.')
+  disabledAlerts: (
+    | 'Sql_Injection'
+    | 'Sql_Injection_Vulnerability'
+    | 'Access_Anomaly'
+    | 'Data_Exfiltration'
+    | 'Unsafe_Action'
+    | 'Brute_Force')[]?
+
+  @description('Conditional. A blob storage to  hold all Threat Detection audit logs. Required if state is \'Enabled\'.')
+  storageAccountResourceId: string?
+}
+
+@export()
+@description('The type for the keys configuration.')
+type keysType = {
+  @description('Required. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern.')
+  name: string
+
+  @description('Optional. The encryption protector type like "ServiceManaged", "AzureKeyVault".')
+  serverKeyType: ('AzureKeyVault' | 'ServiceManaged')?
+
+  @description('Optional. The URI of the key. If the ServerKeyType is AzureKeyVault, then either the URI or the keyVaultName/keyName combination is required.')
+  uri: string?
+}
+
+@export()
+@description('The type for the encryption protector configuration.')
+type encryptionProtectorType = {
+  @description('Required. The name of the SQL managed instance key.')
+  serverKeyName: string
+
+  @description('Optional. The encryption protector type like "ServiceManaged", "AzureKeyVault".')
+  serverKeyType: ('AzureKeyVault' | 'ServiceManaged')?
+
+  @description('Optional. Key auto rotation opt-in flag.')
+  autoRotationEnabled: bool?
+}
+
+@export()
+@description('The type for a database.')
+type databaseType = {
+  @description('Required. The name of the SQL managed instance database.')
+  name: string
+
+  @description('Optional. Location for all resources.')
+  location: string?
+
+  @description('Optional. Collation of the managed instance database.')
+  collation: string?
+
+  @description('Optional. Collation of the managed instance.')
+  catalogCollation: string?
+
+  @description('Optional. Managed database create mode. PointInTimeRestore: Create a database by restoring a point in time backup of an existing database. SourceDatabaseName, SourceManagedInstanceName and PointInTime must be specified. RestoreExternalBackup: Create a database by restoring from external backup files. Collation, StorageContainerUri and StorageContainerSasToken must be specified. Recovery: Creates a database by restoring a geo-replicated backup. RecoverableDatabaseId must be specified as the recoverable database resource ID to restore. RestoreLongTermRetentionBackup: Create a database by restoring from a long term retention backup (longTermRetentionBackupResourceId required).')
+  createMode: (
+    | 'Default'
+    | 'RestoreExternalBackup'
+    | 'PointInTimeRestore'
+    | 'Recovery'
+    | 'RestoreLongTermRetentionBackup')?
+
+  @description('Conditional. The resource identifier of the source database associated with create operation of this database. Required if createMode is PointInTimeRestore.')
+  sourceDatabaseId: string?
+
+  @description('Conditional. Specifies the point in time (ISO8601 format) of the source database that will be restored to create the new database. Required if createMode is PointInTimeRestore.')
+  restorePointInTime: string?
+
+  @description('Optional. The restorable dropped database resource ID to restore when creating this database.')
+  restorableDroppedDatabaseId: string?
+
+  @description('Conditional. Specifies the uri of the storage container where backups for this restore are stored. Required if createMode is RestoreExternalBackup.')
+  storageContainerUri: string?
+
+  @description('Conditional. Specifies the storage container sas token. Required if createMode is RestoreExternalBackup.')
+  @secure()
+  storageContainerSasToken: string?
+
+  @description('Conditional. The resource identifier of the recoverable database associated with create operation of this database. Required if createMode is Recovery.')
+  recoverableDatabaseId: string?
+
+  @description('Conditional. The resource ID of the Long Term Retention backup to be used for restore of this managed database. Required if createMode is RestoreLongTermRetentionBackup.')
+  longTermRetentionBackupResourceId: string?
+
+  @description('Optional. The database-level diagnostic settings of the service.')
+  diagnosticSettings: diagnosticSettingLogsOnlyType[]?
+
+  @description('Optional. The lock settings of the service.')
+  lock: lockType?
+
+  @description('Optional. The configuration for the backup short term retention policy definition.')
+  backupShortTermRetentionPolicy: managedInstanceShortTermRetentionPolicyType?
+
+  @description('Optional. The configuration for the backup long term retention policy definition.')
+  backupLongTermRetentionPolicy: managedInstanceLongTermRetentionPolicyType?
+
+  @description('Optional. Tags of the resource.')
+  tags: resourceInput<'Microsoft.Sql/managedInstances/databases@2023-08-01'>.tags?
+}
