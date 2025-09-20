@@ -149,19 +149,6 @@ resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@20
   }
 }
 
-#disable-next-line BCP081
-resource legalHold 'Microsoft.Storage/storageAccounts/blobServices/containers/legalHold@2023-05-01' = {
-  name: '${storageAccount.name}/default/${container.name}/default'
-  properties: {
-    allowProtectedAppendWritesAll: true
-    tags: [
-      {
-        tag: 'mytag'
-      }
-    ]
-  }
-}
-
 module container_immutabilityPolicy 'immutability-policy/main.bicep' = if (!empty((immutabilityPolicy ?? {}))) {
   name: take('${deployment().name}-ImmutPol', 64)
   params: {

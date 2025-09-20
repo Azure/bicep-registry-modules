@@ -22,9 +22,9 @@ This module deploys a Storage Account.
 | `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Storage/storageAccounts` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts)</li></ul> |
-| `Microsoft.Storage/storageAccounts/blobServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices)</li></ul> |
-| `Microsoft.Storage/storageAccounts/blobServices/containers` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices/containers)</li></ul> |
-| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers_immutabilitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices/containers/immutabilityPolicies)</li></ul> |
+| `Microsoft.Storage/storageAccounts/blobServices` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/blobServices/containers` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers)</li></ul> |
+| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers_immutabilitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers/immutabilityPolicies)</li></ul> |
 | `Microsoft.Storage/storageAccounts/fileServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices)</li></ul> |
 | `Microsoft.Storage/storageAccounts/fileServices/shares` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices_shares.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices/shares)</li></ul> |
 | `Microsoft.Storage/storageAccounts/localUsers` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_localusers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/localUsers)</li></ul> |
@@ -473,7 +473,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           ]
         }
         {
-          allowProtectedAppendWrites: false
+          immutabilityPolicy: {
+            allowProtectedAppendWrites: false
+          }
           metadata: {
             testKey: 'testValue'
           }
@@ -1008,7 +1010,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             ]
           },
           {
-            "allowProtectedAppendWrites": false,
+            "immutabilityPolicy": {
+              "allowProtectedAppendWrites": false
+            },
             "metadata": {
               "testKey": "testValue"
             },
@@ -1577,7 +1581,9 @@ param blobServices = {
       ]
     }
     {
-      allowProtectedAppendWrites: false
+      immutabilityPolicy: {
+        allowProtectedAppendWrites: false
+      }
       metadata: {
         testKey: 'testValue'
       }
@@ -2576,7 +2582,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           publicAccess: 'None'
         }
         {
-          allowProtectedAppendWrites: false
+          immutabilityPolicy: {
+            allowProtectedAppendWrites: false
+          }
           metadata: {
             testKey: 'testValue'
           }
@@ -2835,7 +2843,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             "publicAccess": "None"
           },
           {
-            "allowProtectedAppendWrites": false,
+            "immutabilityPolicy": {
+              "allowProtectedAppendWrites": false
+            },
             "metadata": {
               "testKey": "testValue"
             },
@@ -3122,7 +3132,9 @@ param blobServices = {
       publicAccess: 'None'
     }
     {
-      allowProtectedAppendWrites: false
+      immutabilityPolicy: {
+        allowProtectedAppendWrites: false
+      }
       metadata: {
         testKey: 'testValue'
       }
@@ -3491,6 +3503,570 @@ Blob service and containers to deploy.
 - Required: No
 - Type: object
 - Default: `[if(not(equals(parameters('kind'), 'FileStorage')), createObject('containerDeleteRetentionPolicyEnabled', true(), 'containerDeleteRetentionPolicyDays', 7, 'deleteRetentionPolicyEnabled', true(), 'deleteRetentionPolicyDays', 6), createObject())]`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`automaticSnapshotPolicyEnabled`](#parameter-blobservicesautomaticsnapshotpolicyenabled) | bool | Automatic Snapshot is enabled if set to true. |
+| [`changeFeedEnabled`](#parameter-blobserviceschangefeedenabled) | bool | The blob service properties for change feed events. Indicates whether change feed event logging is enabled for the Blob service. |
+| [`changeFeedRetentionInDays`](#parameter-blobserviceschangefeedretentionindays) | int | Indicates whether change feed event logging is enabled for the Blob service. Indicates the duration of changeFeed retention in days. If left blank, it indicates an infinite retention of the change feed. |
+| [`containerDeleteRetentionPolicyAllowPermanentDelete`](#parameter-blobservicescontainerdeleteretentionpolicyallowpermanentdelete) | bool | This property when set to true allows deletion of the soft deleted blob versions and snapshots. This property cannot be used with blob restore policy. This property only applies to blob service and does not apply to containers or file share. |
+| [`containerDeleteRetentionPolicyDays`](#parameter-blobservicescontainerdeleteretentionpolicydays) | int | Indicates the number of days that the deleted item should be retained. |
+| [`containerDeleteRetentionPolicyEnabled`](#parameter-blobservicescontainerdeleteretentionpolicyenabled) | bool | The blob service properties for container soft delete. Indicates whether DeleteRetentionPolicy is enabled. |
+| [`containers`](#parameter-blobservicescontainers) | array | Blob containers to create. |
+| [`corsRules`](#parameter-blobservicescorsrules) | array | The List of CORS rules. You can include up to five CorsRule elements in the request. |
+| [`defaultServiceVersion`](#parameter-blobservicesdefaultserviceversion) | string | Indicates the default version to use for requests to the Blob service if an incoming request's version is not specified. Possible values include version 2008-10-27 and all more recent versions. |
+| [`deleteRetentionPolicyAllowPermanentDelete`](#parameter-blobservicesdeleteretentionpolicyallowpermanentdelete) | bool | This property when set to true allows deletion of the soft deleted blob versions and snapshots. This property cannot be used with blob restore policy. This property only applies to blob service and does not apply to containers or file share. |
+| [`deleteRetentionPolicyDays`](#parameter-blobservicesdeleteretentionpolicydays) | int | Indicates the number of days that the deleted blob should be retained. |
+| [`deleteRetentionPolicyEnabled`](#parameter-blobservicesdeleteretentionpolicyenabled) | bool | The blob service properties for blob soft delete. |
+| [`diagnosticSettings`](#parameter-blobservicesdiagnosticsettings) | array | The diagnostic settings of the service. |
+| [`isVersioningEnabled`](#parameter-blobservicesisversioningenabled) | bool | Use versioning to automatically maintain previous versions of your blobs. |
+| [`lastAccessTimeTrackingPolicyEnabled`](#parameter-blobserviceslastaccesstimetrackingpolicyenabled) | bool | The blob service property to configure last access time based tracking policy. When set to true last access time based tracking is enabled. |
+| [`restorePolicyDays`](#parameter-blobservicesrestorepolicydays) | int | How long this blob can be restored. It should be less than DeleteRetentionPolicy days. |
+| [`restorePolicyEnabled`](#parameter-blobservicesrestorepolicyenabled) | bool | The blob service properties for blob restore policy. If point-in-time restore is enabled, then versioning, change feed, and blob soft delete must also be enabled. |
+
+### Parameter: `blobServices.automaticSnapshotPolicyEnabled`
+
+Automatic Snapshot is enabled if set to true.
+
+- Required: No
+- Type: bool
+
+### Parameter: `blobServices.changeFeedEnabled`
+
+The blob service properties for change feed events. Indicates whether change feed event logging is enabled for the Blob service.
+
+- Required: No
+- Type: bool
+
+### Parameter: `blobServices.changeFeedRetentionInDays`
+
+Indicates whether change feed event logging is enabled for the Blob service. Indicates the duration of changeFeed retention in days. If left blank, it indicates an infinite retention of the change feed.
+
+- Required: No
+- Type: int
+- MinValue: 1
+- MaxValue: 146000
+
+### Parameter: `blobServices.containerDeleteRetentionPolicyAllowPermanentDelete`
+
+This property when set to true allows deletion of the soft deleted blob versions and snapshots. This property cannot be used with blob restore policy. This property only applies to blob service and does not apply to containers or file share.
+
+- Required: No
+- Type: bool
+
+### Parameter: `blobServices.containerDeleteRetentionPolicyDays`
+
+Indicates the number of days that the deleted item should be retained.
+
+- Required: No
+- Type: int
+- MinValue: 1
+- MaxValue: 365
+
+### Parameter: `blobServices.containerDeleteRetentionPolicyEnabled`
+
+The blob service properties for container soft delete. Indicates whether DeleteRetentionPolicy is enabled.
+
+- Required: No
+- Type: bool
+
+### Parameter: `blobServices.containers`
+
+Blob containers to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-blobservicescontainersname) | string | The name of the Storage Container to deploy. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`defaultEncryptionScope`](#parameter-blobservicescontainersdefaultencryptionscope) | string | Default the container to use specified encryption scope for all writes. |
+| [`denyEncryptionScopeOverride`](#parameter-blobservicescontainersdenyencryptionscopeoverride) | bool | Block override of encryption scope from the container default. |
+| [`enableNfsV3AllSquash`](#parameter-blobservicescontainersenablenfsv3allsquash) | bool | Enable NFSv3 all squash on blob container. |
+| [`enableNfsV3RootSquash`](#parameter-blobservicescontainersenablenfsv3rootsquash) | bool | Enable NFSv3 root squash on blob container. |
+| [`immutabilityPolicy`](#parameter-blobservicescontainersimmutabilitypolicy) | object | Configure immutability policy. |
+| [`immutableStorageWithVersioningEnabled`](#parameter-blobservicescontainersimmutablestoragewithversioningenabled) | bool | This is an immutable property, when set to true it enables object level immutability at the container level. The property is immutable and can only be set to true at the container creation time. Existing containers must undergo a migration process. |
+| [`metadata`](#parameter-blobservicescontainersmetadata) | object | A name-value pair to associate with the container as metadata. |
+| [`publicAccess`](#parameter-blobservicescontainerspublicaccess) | string | Specifies whether data in the container may be accessed publicly and the level of access. |
+| [`roleAssignments`](#parameter-blobservicescontainersroleassignments) | array | Array of role assignments to create. |
+
+### Parameter: `blobServices.containers.name`
+
+The name of the Storage Container to deploy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `blobServices.containers.defaultEncryptionScope`
+
+Default the container to use specified encryption scope for all writes.
+
+- Required: No
+- Type: string
+
+### Parameter: `blobServices.containers.denyEncryptionScopeOverride`
+
+Block override of encryption scope from the container default.
+
+- Required: No
+- Type: bool
+
+### Parameter: `blobServices.containers.enableNfsV3AllSquash`
+
+Enable NFSv3 all squash on blob container.
+
+- Required: No
+- Type: bool
+
+### Parameter: `blobServices.containers.enableNfsV3RootSquash`
+
+Enable NFSv3 root squash on blob container.
+
+- Required: No
+- Type: bool
+
+### Parameter: `blobServices.containers.immutabilityPolicy`
+
+Configure immutability policy.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowProtectedAppendWrites`](#parameter-blobservicescontainersimmutabilitypolicyallowprotectedappendwrites) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. |
+| [`allowProtectedAppendWritesAll`](#parameter-blobservicescontainersimmutabilitypolicyallowprotectedappendwritesall) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive. |
+| [`immutabilityPeriodSinceCreationInDays`](#parameter-blobservicescontainersimmutabilitypolicyimmutabilityperiodsincecreationindays) | int | The immutability period for the blobs in the container since the policy creation, in days. |
+
+### Parameter: `blobServices.containers.immutabilityPolicy.allowProtectedAppendWrites`
+
+This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API.
+
+- Required: No
+- Type: bool
+
+### Parameter: `blobServices.containers.immutabilityPolicy.allowProtectedAppendWritesAll`
+
+This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive.
+
+- Required: No
+- Type: bool
+
+### Parameter: `blobServices.containers.immutabilityPolicy.immutabilityPeriodSinceCreationInDays`
+
+The immutability period for the blobs in the container since the policy creation, in days.
+
+- Required: No
+- Type: int
+
+### Parameter: `blobServices.containers.immutableStorageWithVersioningEnabled`
+
+This is an immutable property, when set to true it enables object level immutability at the container level. The property is immutable and can only be set to true at the container creation time. Existing containers must undergo a migration process.
+
+- Required: No
+- Type: bool
+
+### Parameter: `blobServices.containers.metadata`
+
+A name-value pair to associate with the container as metadata.
+
+- Required: No
+- Type: object
+
+### Parameter: `blobServices.containers.publicAccess`
+
+Specifies whether data in the container may be accessed publicly and the level of access.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Blob'
+    'Container'
+    'None'
+  ]
+  ```
+
+### Parameter: `blobServices.containers.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-blobservicescontainersroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-blobservicescontainersroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-blobservicescontainersroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-blobservicescontainersroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-blobservicescontainersroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-blobservicescontainersroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-blobservicescontainersroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-blobservicescontainersroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `blobServices.containers.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `blobServices.containers.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `blobServices.containers.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `blobServices.containers.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `blobServices.containers.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `blobServices.containers.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `blobServices.containers.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `blobServices.containers.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `blobServices.corsRules`
+
+The List of CORS rules. You can include up to five CorsRule elements in the request.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowedHeaders`](#parameter-blobservicescorsrulesallowedheaders) | array | A list of headers allowed to be part of the cross-origin request. |
+| [`allowedMethods`](#parameter-blobservicescorsrulesallowedmethods) | array | A list of HTTP methods that are allowed to be executed by the origin. |
+| [`allowedOrigins`](#parameter-blobservicescorsrulesallowedorigins) | array | A list of origin domains that will be allowed via CORS, or "*" to allow all domains. |
+| [`exposedHeaders`](#parameter-blobservicescorsrulesexposedheaders) | array | A list of response headers to expose to CORS clients. |
+| [`maxAgeInSeconds`](#parameter-blobservicescorsrulesmaxageinseconds) | int | The number of seconds that the client/browser should cache a preflight response. |
+
+### Parameter: `blobServices.corsRules.allowedHeaders`
+
+A list of headers allowed to be part of the cross-origin request.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `blobServices.corsRules.allowedMethods`
+
+A list of HTTP methods that are allowed to be executed by the origin.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'CONNECT'
+    'DELETE'
+    'GET'
+    'HEAD'
+    'MERGE'
+    'OPTIONS'
+    'PATCH'
+    'POST'
+    'PUT'
+    'TRACE'
+  ]
+  ```
+
+### Parameter: `blobServices.corsRules.allowedOrigins`
+
+A list of origin domains that will be allowed via CORS, or "*" to allow all domains.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `blobServices.corsRules.exposedHeaders`
+
+A list of response headers to expose to CORS clients.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `blobServices.corsRules.maxAgeInSeconds`
+
+The number of seconds that the client/browser should cache a preflight response.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `blobServices.defaultServiceVersion`
+
+Indicates the default version to use for requests to the Blob service if an incoming request's version is not specified. Possible values include version 2008-10-27 and all more recent versions.
+
+- Required: No
+- Type: string
+
+### Parameter: `blobServices.deleteRetentionPolicyAllowPermanentDelete`
+
+This property when set to true allows deletion of the soft deleted blob versions and snapshots. This property cannot be used with blob restore policy. This property only applies to blob service and does not apply to containers or file share.
+
+- Required: No
+- Type: bool
+
+### Parameter: `blobServices.deleteRetentionPolicyDays`
+
+Indicates the number of days that the deleted blob should be retained.
+
+- Required: No
+- Type: int
+- MinValue: 1
+- MaxValue: 365
+
+### Parameter: `blobServices.deleteRetentionPolicyEnabled`
+
+The blob service properties for blob soft delete.
+
+- Required: No
+- Type: bool
+
+### Parameter: `blobServices.diagnosticSettings`
+
+The diagnostic settings of the service.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-blobservicesdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-blobservicesdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-blobservicesdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-blobservicesdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-blobservicesdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-blobservicesdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-blobservicesdiagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-blobservicesdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-blobservicesdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `blobServices.diagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+
+### Parameter: `blobServices.diagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `blobServices.diagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `blobServices.diagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-blobservicesdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-blobservicesdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-blobservicesdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `blobServices.diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `blobServices.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `blobServices.diagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `blobServices.diagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `blobServices.diagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-blobservicesdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-blobservicesdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `blobServices.diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `blobServices.diagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `blobServices.diagnosticSettings.name`
+
+The name of the diagnostic setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `blobServices.diagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `blobServices.diagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `blobServices.isVersioningEnabled`
+
+Use versioning to automatically maintain previous versions of your blobs.
+
+- Required: No
+- Type: bool
+
+### Parameter: `blobServices.lastAccessTimeTrackingPolicyEnabled`
+
+The blob service property to configure last access time based tracking policy. When set to true last access time based tracking is enabled.
+
+- Required: No
+- Type: bool
+
+### Parameter: `blobServices.restorePolicyDays`
+
+How long this blob can be restored. It should be less than DeleteRetentionPolicy days.
+
+- Required: No
+- Type: int
+- MinValue: 1
+
+### Parameter: `blobServices.restorePolicyEnabled`
+
+The blob service properties for blob restore policy. If point-in-time restore is enabled, then versioning, change feed, and blob soft delete must also be enabled.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `customDomainName`
 

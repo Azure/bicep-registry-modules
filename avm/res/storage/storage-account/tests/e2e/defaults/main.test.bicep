@@ -47,18 +47,6 @@ module testDeployment '../../../main.bicep' = [
         defaultAction: 'Deny'
         bypass: 'AzureServices'
       }
-      blobServices: {
-        containers: [
-          {
-            name: 'mycontainer'
-            immutabilityPolicy: {
-              allowProtectedAppendWrites: false
-              allowProtectedAppendWritesAll: true
-              immutabilityPeriodSinceCreationInDays: 7
-            }
-          }
-        ]
-      }
     }
   }
 ]
