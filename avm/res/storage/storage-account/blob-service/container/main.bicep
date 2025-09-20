@@ -146,6 +146,14 @@ resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@20
       : null
     metadata: metadata
     publicAccess: publicAccess
+    legalHold: {
+      allowProtectedAppendWritesAll: true
+      tags: [
+        {
+          tag: 'mytag'
+        }
+      ]
+    }
   }
 }
 
