@@ -854,4 +854,5 @@ type defaultIdentityUserAssignedType = {
   resourceId: string
 }
 
+@description('temp - to be removed')
 output temp string? = !empty(customerManagedKey) ? cMKKeyVault::cMKKey!.properties.keyUri : null

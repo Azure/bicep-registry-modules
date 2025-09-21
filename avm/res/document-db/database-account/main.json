@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "12114158444287519204"
+      "templateHash": "16061712870958938882"
     },
     "name": "Azure Cosmos DB account",
     "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -423,6 +423,96 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for the network restriction."
+      }
+    },
+    "customerManagedKeyType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+          }
+        },
+        "keyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the customer managed key to use for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a customer-managed key configuration."
+      }
+    },
+    "defaultIdentityType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "name",
+        "mapping": {
+          "FirstPartyIdentity": {
+            "$ref": "#/definitions/defaultIdentityFirstPartyType"
+          },
+          "SystemAssignedIdentity": {
+            "$ref": "#/definitions/defaultIdentitySystemAssignedType"
+          },
+          "UserAssignedIdentity": {
+            "$ref": "#/definitions/defaultIdentityUserAssignedType"
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the default identity."
+      }
+    },
+    "defaultIdentityFirstPartyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "FirstPartyIdentity"
+          ],
+          "metadata": {
+            "description": "Required. The type of default identity to use."
+          }
+        }
+      }
+    },
+    "defaultIdentitySystemAssignedType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "SystemAssignedIdentity"
+          ],
+          "metadata": {
+            "description": "Required. The type of default identity to use."
+          }
+        }
+      }
+    },
+    "defaultIdentityUserAssignedType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "UserAssignedIdentity"
+          ],
+          "metadata": {
+            "description": "Required. The type of default identity to use."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the user assigned identity to use as the default identity."
+          }
+        }
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -3949,6 +4039,14 @@
         "description": "The secondary read-only connection string."
       },
       "value": "[listConnectionStrings('databaseAccount', '2025-04-15').connectionStrings[3].connectionString]"
+    },
+    "temp": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "temp - to be removed"
+      },
+      "value": "[if(not(empty(parameters('customerManagedKey'))), reference('cMKKeyVault::cMKKey').keyUri, null())]"
     }
   }
 }

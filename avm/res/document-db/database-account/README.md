@@ -4818,6 +4818,7 @@ Indicates whether the single-region account is zone redundant. Defaults to true.
 | `secondaryReadWriteConnectionString` | securestring | The secondary read-write connection string. |
 | `secondaryReadWriteKey` | securestring | The secondary read-write key. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+| `temp` | string | temp - to be removed |
 
 ## Cross-referenced modules
 
