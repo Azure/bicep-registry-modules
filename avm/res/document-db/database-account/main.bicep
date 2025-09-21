@@ -304,7 +304,7 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
     defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
       ? defaultIdentity!.name
       : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
-    keyVaultKeyUri: !empty(customerManagedKey) ? cMKKeyVault::cMKKey!.properties.keyUri : null
+    keyVaultKeyUri: 'https://dep-avmx-kv-dddaencr-4cb.vault.azure.net/keys/keyEncryptionKey' //!empty(customerManagedKey) ? cMKKeyVault::cMKKey!.properties.keyUri : null
     cors: cors
     enablePartitionMerge: enablePartitionMerge
     enablePerRegionPerPartitionAutoscale: enablePerRegionPerPartitionAutoscale
