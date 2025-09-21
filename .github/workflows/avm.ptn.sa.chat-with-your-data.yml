@@ -25,7 +25,6 @@ on:
   push:
     branches:
       - main
-      - Cwyd-Dev
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
@@ -33,6 +32,7 @@ on:
       - "avm/ptn/sa/chat-with-your-data/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
+      - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:
