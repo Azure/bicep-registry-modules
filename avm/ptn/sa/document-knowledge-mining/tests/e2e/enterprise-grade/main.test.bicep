@@ -1,5 +1,5 @@
-metadata name = 'Document Knowledge Mining Solution - WAF Aligned Test'
-metadata description = 'This test deploys the Document Knowledge Mining Solution with Well-Architected Framework aligned parameters to validate enhanced security, reliability, and scalability features.'
+metadata name = 'Default configuration with enterprise-grade parameter values'
+metadata description = 'This test deploys the Document Knowledge Mining Solution Accelerator using parameters that deploy the enterprise-grade configuration.'
 
 targetScope = 'subscription'
 
@@ -18,7 +18,7 @@ param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 // e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
-param serviceShort string = 'sdkmsmin'
+param serviceShort string = 'sdkmswaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -55,8 +55,8 @@ module testDeployment '../../../main.bicep' = [
       aiDeploymentsLocation: enforcedLocation
       enablePrivateNetworking: true
       enableMonitoring: true
-      enableRedundancy: false
-      enableScalability: false
+      enableRedundancy: true
+      enableScalability: true
       enableTelemetry: true
       vmAdminUsername: 'adminuser'
       vmAdminPassword: vmAdminPassword

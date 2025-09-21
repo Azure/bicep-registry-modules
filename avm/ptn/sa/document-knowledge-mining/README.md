@@ -119,7 +119,6 @@ The following section provides usage examples for the module, which were used to
 
 - [Document Knowledge Mining Solution - WAF Aligned Test](#example-1-document-knowledge-mining-solution---waf-aligned-test)
 - [Document Knowledge Mining Solution - Defaults Test](#example-2-document-knowledge-mining-solution---defaults-test)
-- [Document Knowledge Mining Solution - WAF Aligned Test](#example-3-document-knowledge-mining-solution---waf-aligned-test)
 
 ### Example 1: _Document Knowledge Mining Solution - WAF Aligned Test_
 
@@ -138,8 +137,8 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
     aiDeploymentsLocation: '<aiDeploymentsLocation>'
     enableMonitoring: true
     enablePrivateNetworking: true
-    enableRedundancy: false
-    enableScalability: false
+    enableRedundancy: true
+    enableScalability: true
     // Non-required parameters
     createdBy: 'AVM_Pipeline'
     enableTelemetry: true
@@ -173,10 +172,10 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
       "value": true
     },
     "enableRedundancy": {
-      "value": false
+      "value": true
     },
     "enableScalability": {
-      "value": false
+      "value": true
     },
     // Non-required parameters
     "createdBy": {
@@ -212,8 +211,8 @@ using 'br/public:avm/ptn/sa/document-knowledge-mining:<version>'
 param aiDeploymentsLocation = '<aiDeploymentsLocation>'
 param enableMonitoring = true
 param enablePrivateNetworking = true
-param enableRedundancy = false
-param enableScalability = false
+param enableRedundancy = true
+param enableScalability = true
 // Non-required parameters
 param createdBy = 'AVM_Pipeline'
 param enableTelemetry = true
@@ -314,110 +313,6 @@ param enableScalability = false
 param createdBy = 'AVM_Pipeline'
 param enableTelemetry = true
 param location = '<location>'
-```
-
-</details>
-<p>
-
-### Example 3: _Document Knowledge Mining Solution - WAF Aligned Test_
-
-This test deploys the Document Knowledge Mining Solution with Well-Architected Framework aligned parameters to validate enhanced security, reliability, and scalability features.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<version>' = {
-  name: 'documentKnowledgeMiningDeployment'
-  params: {
-    // Required parameters
-    aiDeploymentsLocation: '<aiDeploymentsLocation>'
-    enableMonitoring: true
-    enablePrivateNetworking: true
-    enableRedundancy: true
-    enableScalability: true
-    // Non-required parameters
-    createdBy: 'AVM_Pipeline'
-    enableTelemetry: true
-    location: '<location>'
-    vmAdminPassword: '<vmAdminPassword>'
-    vmAdminUsername: 'adminuser'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "aiDeploymentsLocation": {
-      "value": "<aiDeploymentsLocation>"
-    },
-    "enableMonitoring": {
-      "value": true
-    },
-    "enablePrivateNetworking": {
-      "value": true
-    },
-    "enableRedundancy": {
-      "value": true
-    },
-    "enableScalability": {
-      "value": true
-    },
-    // Non-required parameters
-    "createdBy": {
-      "value": "AVM_Pipeline"
-    },
-    "enableTelemetry": {
-      "value": true
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "vmAdminPassword": {
-      "value": "<vmAdminPassword>"
-    },
-    "vmAdminUsername": {
-      "value": "adminuser"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/sa/document-knowledge-mining:<version>'
-
-// Required parameters
-param aiDeploymentsLocation = '<aiDeploymentsLocation>'
-param enableMonitoring = true
-param enablePrivateNetworking = true
-param enableRedundancy = true
-param enableScalability = true
-// Non-required parameters
-param createdBy = 'AVM_Pipeline'
-param enableTelemetry = true
-param location = '<location>'
-param vmAdminPassword = '<vmAdminPassword>'
-param vmAdminUsername = 'adminuser'
 ```
 
 </details>
