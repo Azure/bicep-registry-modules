@@ -117,12 +117,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/document-knowledge-mining:<version>`.
 
-- [Document Knowledge Mining Solution - WAF Aligned Test](#example-1-document-knowledge-mining-solution---waf-aligned-test)
-- [Document Knowledge Mining Solution - Defaults Test](#example-2-document-knowledge-mining-solution---defaults-test)
+- [Default configuration with enterprise-grade parameter values](#example-1-default-configuration-with-enterprise-grade-parameter-values)
+- [Sandbox configuration with default parameter values](#example-2-sandbox-configuration-with-default-parameter-values)
 
-### Example 1: _Document Knowledge Mining Solution - WAF Aligned Test_
+### Example 1: _Default configuration with enterprise-grade parameter values_
 
-This test deploys the Document Knowledge Mining Solution with Well-Architected Framework aligned parameters to validate enhanced security, reliability, and scalability features.
+This test deploys the Document Knowledge Mining Solution Accelerator using parameters that deploy the enterprise-grade configuration.
 
 
 <details>
@@ -224,9 +224,9 @@ param vmAdminUsername = 'adminuser'
 </details>
 <p>
 
-### Example 2: _Document Knowledge Mining Solution - Defaults Test_
+### Example 2: _Sandbox configuration with default parameter values_
 
-This test deploys the Document Knowledge Mining Solution with sandbox parameters to validate basic functionality.
+This test deploys the sandbox configuration for Document Knowledge Mining Solution Accelerator with default parameters.
 
 
 <details>
