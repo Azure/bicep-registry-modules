@@ -1,0 +1,364 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.37.4.10188",
+      "templateHash": "17191524542746790454"
+    },
+    "name": "Policy Assignments (Resource Group scope)",
+    "description": "This module deploys a Policy Assignment at a Resource Group scope. Optionally, it further assigns permissions to the policy's identity (if configured) to various scopes. Note, if you provide any role definition ids and or define additional scopes to assign permissions to, set permissions are deployled as a permutation of the provided parameters. In other words, each role would be provided to each scope for the assignment's identity."
+  },
+  "definitions": {
+    "managedIdentityType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the user-assigned identity to assign to the resource.."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "An AVM-aligned type for a managed identity configuration."
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "maxLength": 64,
+      "metadata": {
+        "description": "Required. Specifies the name of the policy assignment. Maximum length is 64 characters for subscription scope."
+      }
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. This message will be part of response in case of policy violation."
+      }
+    },
+    "displayName": {
+      "type": "string",
+      "nullable": true,
+      "maxLength": 128,
+      "metadata": {
+        "description": "Optional. The display name of the policy assignment. Maximum length is 128 characters."
+      }
+    },
+    "policyDefinitionId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Specifies the ID of the policy definition or policy set definition being assigned."
+      }
+    },
+    "parameters": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Authorization/policyAssignments@2025-03-01#properties/properties/properties/parameters"
+        },
+        "description": "Optional. Parameters for the policy assignment if needed."
+      },
+      "nullable": true
+    },
+    "roleDefinitionIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The IDs Of the Azure Role Definition that are used to assign permissions to the policy's identity. You need to provide the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition."
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The policy assignment metadata. Metadata is an open ended object and is typically a collection of key-value pairs."
+      }
+    },
+    "nonComplianceMessages": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Authorization/policyAssignments@2025-03-01#properties/properties/properties/nonComplianceMessages"
+        },
+        "description": "Optional. The messages that describe why a resource is non-compliant with the policy."
+      },
+      "nullable": true
+    },
+    "enforcementMode": {
+      "type": "string",
+      "defaultValue": "Default",
+      "allowedValues": [
+        "Default",
+        "DoNotEnforce"
+      ],
+      "metadata": {
+        "description": "Optional. The policy assignment enforcement mode. Possible values are Default and DoNotEnforce. - Default or DoNotEnforce."
+      }
+    },
+    "notScopes": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Authorization/policyAssignments@2025-03-01#properties/properties/properties/notScopes"
+        },
+        "description": "Optional. The policy excluded scopes."
+      },
+      "nullable": true
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "overrides": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Authorization/policyAssignments@2025-03-01#properties/properties/properties/overrides"
+        },
+        "description": "Optional. The policy property value override. Allows changing the effect of a policy definition without modifying the underlying policy definition or using a parameterized effect in the policy definition."
+      },
+      "nullable": true
+    },
+    "resourceSelectors": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Authorization/policyAssignments@2025-03-01#properties/properties/properties/resourceSelectors"
+        },
+        "description": "Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location."
+      },
+      "nullable": true
+    },
+    "definitionVersion": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "additionalResourceGroupResourceIDsToAssignRbacTo": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity."
+      }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentityType",
+      "defaultValue": {
+        "systemAssigned": true
+      },
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource."
+      }
+    }
+  },
+  "variables": {
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'))), createObject(format('{0}', parameters('managedIdentities').userAssignedResourceId), createObject()), null())), null())]",
+    "expandedRgRoleAssignments": "[reduce(union(coalesce(parameters('additionalResourceGroupResourceIDsToAssignRbacTo'), createArray()), createArray(resourceGroup().id)), createArray(), lambda('currResourceGroupId', 'nextResourceGroupId', concat(lambdaVariables('currResourceGroupId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('roleDefinitionId', createObject('resourceGroupId', lambdaVariables('nextResourceGroupId'), 'roleDefinitionId', lambdaVariables('roleDefinitionId')))))))]"
+  },
+  "resources": {
+    "userAssignedIdentity": {
+      "condition": "[not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2024-11-30",
+      "subscriptionId": "[split(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'), '/'))]"
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.authz-policyassignment_rgscope.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "policyAssignment": {
+      "type": "Microsoft.Authorization/policyAssignments",
+      "apiVersion": "2025-03-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "displayName": "[parameters('displayName')]",
+        "metadata": "[parameters('metadata')]",
+        "description": "[parameters('description')]",
+        "policyDefinitionId": "[parameters('policyDefinitionId')]",
+        "parameters": "[parameters('parameters')]",
+        "nonComplianceMessages": "[parameters('nonComplianceMessages')]",
+        "enforcementMode": "[parameters('enforcementMode')]",
+        "notScopes": "[parameters('notScopes')]",
+        "overrides": "[parameters('overrides')]",
+        "resourceSelectors": "[parameters('resourceSelectors')]",
+        "definitionVersion": "[parameters('definitionVersion')]"
+      },
+      "identity": "[variables('identity')]"
+    },
+    "additionalResourceGroupResourceIDsRoleAssignmentsPerSub": {
+      "copy": {
+        "name": "additionalResourceGroupResourceIDsRoleAssignmentsPerSub",
+        "count": "[length(variables('expandedRgRoleAssignments'))]"
+      },
+      "condition": "[not(empty(parameters('managedIdentities')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-PolicyAssignment-MG-Module-RBAC-RG-Sub-{1}', uniqueString(deployment().name, parameters('location'), variables('expandedRgRoleAssignments')[copyIndex()].roleDefinitionId, parameters('name'), variables('expandedRgRoleAssignments')[copyIndex()].resourceGroupId), substring(split(variables('expandedRgRoleAssignments')[copyIndex()].resourceGroupId, '/')[2], 0, 8))]",
+      "subscriptionId": "[split(variables('expandedRgRoleAssignments')[copyIndex()].resourceGroupId, '/')[2]]",
+      "resourceGroup": "[split(variables('expandedRgRoleAssignments')[copyIndex()].resourceGroupId, '/')[4]]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('name')]"
+          },
+          "principalId": {
+            "value": "[coalesce(tryGet(reference('policyAssignment', '2025-03-01', 'full').identity, 'principalId'), tryGet(if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'))), reference('userAssignedIdentity', '2024-11-30', 'full'), null()), 'properties', 'principalId'))]"
+          },
+          "roleDefinitionId": {
+            "value": "[variables('expandedRgRoleAssignments')[copyIndex()].roleDefinitionId]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.37.4.10188",
+              "templateHash": "17042098734231137435"
+            }
+          },
+          "parameters": {
+            "roleDefinitionId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The ID Of the Azure Role Definition that is used to assign permissions to the identity. You need to provide the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "name": {
+              "type": "string",
+              "maxLength": 64,
+              "metadata": {
+                "description": "Required. Specifies the name of the policy assignment. Maximum length is 64 characters for subscription scope."
+              }
+            },
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The managed identity principal ID associated with the policy assignment."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(resourceGroup().id, parameters('roleDefinitionId'), parameters('location'), parameters('name'))]",
+              "properties": {
+                "roleDefinitionId": "[parameters('roleDefinitionId')]",
+                "principalId": "[parameters('principalId')]",
+                "principalType": "ServicePrincipal"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "policyAssignment",
+        "userAssignedIdentity"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Policy Assignment Name."
+      },
+      "value": "[parameters('name')]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[tryGet(tryGet(reference('policyAssignment', '2025-03-01', 'full'), 'identity'), 'principalId')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Policy Assignment resource ID."
+      },
+      "value": "[resourceId('Microsoft.Authorization/policyAssignments', parameters('name'))]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('policyAssignment', '2025-03-01', 'full').location]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the module was deployed to."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
