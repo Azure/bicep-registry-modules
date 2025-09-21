@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "2118759886077279938"
+      "templateHash": "1498391249337110129"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-knowledge-mining-solution) for both Sandbox environments and enterprise-grade environments."
@@ -3584,12 +3584,7 @@
             ]
           },
           "dailyQuotaGb": "[if(parameters('enableRedundancy'), createObject('value', 10), createObject('value', null()))]",
-          "replication": {
-            "value": {
-              "enabled": true,
-              "location": "[variables('replicaLocation')]"
-            }
-          },
+          "replication": "[if(parameters('enableRedundancy'), createObject('value', createObject('enabled', true(), 'location', variables('replicaLocation'))), createObject('value', null()))]",
           "publicNetworkAccessForIngestion": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "publicNetworkAccessForQuery": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "dataSources": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('tags', parameters('tags'), 'eventLogName', 'Application', 'eventTypes', createArray(createObject('eventType', 'Error'), createObject('eventType', 'Warning'), createObject('eventType', 'Information')), 'kind', 'WindowsEvent', 'name', 'applicationEvent'), createObject('counterName', '% Processor Time', 'instanceName', '*', 'intervalSeconds', 60, 'kind', 'WindowsPerformanceCounter', 'name', 'windowsPerfCounter1', 'objectName', 'Processor'), createObject('kind', 'IISLogs', 'name', 'sampleIISLog1', 'state', 'OnPremiseEnabled'))), createObject('value', null()))]"

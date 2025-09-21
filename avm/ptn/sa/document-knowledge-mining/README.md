@@ -239,7 +239,7 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
   params: {
     // Required parameters
     aiDeploymentsLocation: '<aiDeploymentsLocation>'
-    enableMonitoring: true
+    enableMonitoring: false
     enablePrivateNetworking: false
     enableRedundancy: false
     enableScalability: false
@@ -268,7 +268,7 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
       "value": "<aiDeploymentsLocation>"
     },
     "enableMonitoring": {
-      "value": true
+      "value": false
     },
     "enablePrivateNetworking": {
       "value": false
@@ -305,7 +305,7 @@ using 'br/public:avm/ptn/sa/document-knowledge-mining:<version>'
 
 // Required parameters
 param aiDeploymentsLocation = '<aiDeploymentsLocation>'
-param enableMonitoring = true
+param enableMonitoring = false
 param enablePrivateNetworking = false
 param enableRedundancy = false
 param enableScalability = false

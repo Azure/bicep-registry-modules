@@ -272,11 +272,12 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
     diagnosticSettings: [{ useThisWorkspace: true }]
     // WAF aligned configuration for Redundancy
     dailyQuotaGb: enableRedundancy ? 10 : null //WAF recommendation: 10 GB per day is a good starting point for most workloads
-    // Always enable replication for improved service availability (PSRule Azure.Log.Replication)
-    replication: {
-      enabled: true
-      location: replicaLocation
-    }
+    replication: enableRedundancy
+      ? {
+          enabled: true
+          location: replicaLocation
+        }
+      : null
     // WAF aligned configuration for Private Networking
     publicNetworkAccessForIngestion: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     publicNetworkAccessForQuery: enablePrivateNetworking ? 'Disabled' : 'Enabled'
