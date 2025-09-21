@@ -98,6 +98,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         "`nTotals`n------"                 = $null
         'Total issues'                     = $issues.Count
         'Updated issues'                   = 0
+        'Issues to review by core team'    = 0
 
         "`nCategories`n----------"         = $null
         '📦 Module issues'                 = 0
@@ -128,7 +129,12 @@ function Set-AvmGitHubIssueOwnerConfig {
 
         if (-not $issue.title.StartsWith('[AVM Module Issue]')) {
             # Not a module issue. Skipping
-            Write-Verbose ('    ℹ️  Issue [{0}] {1}: Not a module issue but [{2}]. Skipping' -f $issue.number, $shortTitle, $issueCategory) -Verbose
+            if ([String]::IsNullOrEmpty($issueCategory)) {
+                Write-Verbose ('    ⚠️  Issue [{0}] {1}: Not a module issue and unknown category. Is skipped and should be reviewed & updated by the core team.' -f $issue.number, $shortTitle) -Verbose
+                $statistics.'Issues to review by core team'++
+            } else {
+                Write-Verbose ('    ℹ️  Issue [{0}] {1}: Not a module issue but [{2}]. Skipping' -f $issue.number, $shortTitle, $issueCategory) -Verbose
+            }
             $processedCount++
             continue
         }
@@ -148,6 +154,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 
         if ([string]::IsNullOrEmpty($moduleName)) {
             Write-Warning ('    ⚠️  Issue [{0}] {1}: No valid module name was found in the issue. Skipping' -f $issue.number, $shortTitle)
+            $statistics.'Issues to review by core team'++
             $processedCount++
             continue
         }
@@ -171,6 +178,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         # new/unknown module
         if ($null -eq $moduleCsvData) {
             Write-Warning ('    ⚠️  Issue [{0}] {1}: Module [{2}] not found in CSV. Skipping assignment.' -f $issue.number, $shortTitle, $moduleName)
+            $statistics.'Issues to review by core team'++
             $reply = @"
 **@$($issue.user.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
@@ -190,14 +198,18 @@ function Set-AvmGitHubIssueOwnerConfig {
         # existing module
         else {
             $ownerTeamMembers = [array](Get-GithubTeamMembersLogin -OrgName $RepositoryOwner -TeamName $moduleCsvData.ModuleOwnersGHTeam)
-            $reply = @"
+            if ($ownerTeamMembers) {
+                $reply = @"
 **@$($issue.user.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
 > [!IMPORTANT]
 > A member of the @Azure/$($moduleCsvData.ModuleOwnersGHTeam) team will review it soon!
 "@
+            } else {
+                Write-Warning ('    ⚠️  Issue [{0}] {1}: No members found in owner team [{2}] or team itself does not exist (e.g., because module was deprecated). Skipping comments & assignment.' -f $issue.number, $shortTitle, $moduleCsvData.ModuleOwnersGHTeam)
+                $statistics.'Issues to review by core team'++
+            }
         }
-
         # Existing assignees
         # ------------------
         $existingAssignees = $issue.assignees.login
@@ -213,6 +225,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         if ($moduleCsvData.ModuleStatus -eq 'Orphaned' -and $existingLabels -notcontains 'Status: Module Orphaned :yellow_circle:') {
             # Added as I found several incorrectly labeled issues
             Write-Warning ('    ⚠️  Issue [{0}] {1}: Module [{2}] is orphaned but not assigned the required label. Please check.' -f $issue.number, $shortTitle, $moduleName)
+            $statistics.'Issues to review by core team'++
         }
 
         # ============= #
@@ -368,7 +381,7 @@ function Set-AvmGitHubIssueOwnerConfig {
     Write-Verbose ($moduleDistributionData | ForEach-Object {
             [PSCustomObject]@{
                 Name = $_.ModuleName
-                Type = ('{0} {1}' -f $_.ModuleType, ($_.ModuleType -eq 'res' ? '📄' : $_.ModuleType -eq 'ptn' ? '📁' :  $_.ModuleType -eq 'utl' ? '🔨' : '👀'))
+                Type = ('{0} {1}' -f $_.ModuleType, ($_.ModuleType -eq 'res' ? '📄' : $_.ModuleType -eq 'ptn' ? '📁' :  $_.ModuleType -eq 'utl' ? '🔨' : '⚠️'))
                 '#'  = $_.References.Count
             }
         } | Sort-Object -Property { $_.'#' } -Descending | Format-Table | Out-String) -Verbose
