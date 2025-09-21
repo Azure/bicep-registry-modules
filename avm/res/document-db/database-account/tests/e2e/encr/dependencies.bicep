@@ -34,6 +34,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'
+      keySize: 3072
     }
   }
 }
