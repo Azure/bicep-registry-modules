@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "11941443499827753966"
+      "version": "0.37.4.10188",
+      "templateHash": "10102303164433641479"
     },
     "name": "DocumentDB Database Account SQL Role Assignments.",
     "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -36,9 +36,36 @@
       "metadata": {
         "description": "Required. The unique identifier of the associated SQL Role Definition."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.doctdb-dbacct-sqlroleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",

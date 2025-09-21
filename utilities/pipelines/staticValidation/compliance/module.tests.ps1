@@ -1988,7 +1988,7 @@ Describe 'Module tests' -Tag 'Module' {
                 }
             }
 
-            $incorrectVersions | Should -BeNullOrEmpty -Because ('all versions should exist as published version in https://mcr.microsoft.com/v2/bicep/avm/{0}/{1}/tags/list' -f $ModuleType, $moduleFolderName)
+            $incorrectVersions | Should -BeNullOrEmpty -Because ('the list of changelog entries that are not present as published versions at https://mcr.microsoft.com/v2/bicep/avm/{0}/{1}/tags/list should be empty.' -f $ModuleType, $moduleFolderName)
         }
     }
 
