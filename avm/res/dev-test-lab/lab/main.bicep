@@ -113,6 +113,9 @@ param artifactsources artifactsourceType[]?
 @description('Optional. Costs to create for the lab.')
 param costs costType?
 
+@description('Optional. Secrets to create for the lab. With Lab Secrets, you can store sensitive data once at the lab level and make it available wherever it\'s needed.')
+param secrets secretType[]?
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -337,6 +340,19 @@ module lab_costs 'cost/main.bicep' = if (!empty(costs)) {
     thresholdValue125SendNotificationWhenExceeded: costs.?thresholdValue125SendNotificationWhenExceeded ?? 'Disabled'
   }
 }
+
+module lab_secrets 'secret/main.bicep' = [
+  for (secret, index) in (secrets ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Lab-Secrets-${index}'
+    params: {
+      labName: lab.name
+      name: secret.name
+      value: secret.value
+      enabledForArtifacts: secret.?enabledForArtifacts ?? false
+      enabledForVmCreation: secret.?enabledForVmCreation ?? false
+    }
+  }
+]
 
 resource lab_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
@@ -581,4 +597,21 @@ type scheduleType = {
 
   @description('Optional. The notification settings for the schedule.')
   notificationSettings: notificationSettingType?
+}
+
+@export()
+@description('The type for the secret.')
+type secretType = {
+  @description('Required. The name of the secret.')
+  name: string
+
+  @description('Required. The value of the secret.')
+  @secure()
+  value: string
+
+  @sys.description('Optional. Set a secret for your artifacts (e.g., a personal access token to clone your Git repository via an artifact). At least one of the following must be true: enabledForArtifacts, enabledForVmCreation.')
+  enabledForArtifacts: bool?
+
+  @sys.description('Optional. Set a user password or provide an SSH public key to access your Windows or Linux virtual machines. At least one of the following must be true: enabledForArtifacts, enabledForVmCreation.')
+  enabledForVmCreation: bool?
 }
