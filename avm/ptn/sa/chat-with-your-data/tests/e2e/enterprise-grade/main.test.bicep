@@ -23,6 +23,9 @@ param serviceShort string = 'scwydswaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. The password used for VM authentication.')
+@secure()
+param vmAdminPassword string = newGuid()
 // ============ //
 // Dependencies //
 // ============ //
@@ -35,6 +38,9 @@ var enforcedLocation = 'australiaeast'
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
+  tags: {
+    SecurityControl: 'Ignore'
+  }
 }
 
 // ============== //
@@ -56,6 +62,8 @@ module testDeployment '../../../main.bicep' = [
       enablePrivateNetworking: true
       enableRedundancy: true
       createdBy: 'AVM_Pipeline'
+      virtualMachineAdminUsername: 'adminuser'
+      virtualMachineAdminPassword: vmAdminPassword
     }
   }
 ]
