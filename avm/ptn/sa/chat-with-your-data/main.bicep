@@ -1629,7 +1629,7 @@ var systemAssignedRoleAssignments = union(
   [
     {
       principalId: formrecognizer.outputs.systemAssignedMIPrincipalId
-      resourceId: formrecognizer.outputs.resourceId
+      resourceId: storage.outputs.resourceId
       roleName: 'Storage Blob Data Contributor'
       roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
       principalType: 'ServicePrincipal'
