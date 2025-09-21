@@ -27,7 +27,7 @@ param enableTelemetry bool = true
 // https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/network/network-security-group
 
 @batchSize(1)
-module nsgs 'br/public:avm/res/network/network-security-group:0.5.1' = [
+module nsgs '../network-security-group/network-security-group.bicep' = [
   for (subnet, i) in subnets: if (!empty(subnet.?networkSecurityGroup)) {
     name: take('${name}-${subnet.?networkSecurityGroup.name}-networksecuritygroup', 64)
     params: {

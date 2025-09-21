@@ -75,9 +75,6 @@ var adminWebsiteName string = '${websiteName}-admin'
 @description('Name of Application Insights.')
 var applicationInsightsName string = 'appi-${solutionSuffix}'
 
-@description('Name of the Workbook.')
-var workbookDisplayName string = 'workbook-${solutionSuffix}'
-
 @description('Optional. Use semantic search.')
 param azureSearchUseSemanticSearch bool = false
 
@@ -316,9 +313,6 @@ param logLevel string = 'INFO'
 
 @description('Optional. List of comma-separated languages to recognize from the speech input. Supported languages are listed here: https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=stt#supported-languages.')
 param recognizedLanguages string = 'en-US,fr-FR,de-DE,it-IT'
-
-@description('Optional. Azure Machine Learning Name.')
-var azureMachineLearningName string = 'mlw-${solutionSuffix}'
 
 @description('Optional. The tags to apply to all deployed Azure resources.')
 param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
