@@ -466,6 +466,27 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9
       }
     ]
 
+    publicNetworkAccess: 'Enabled'
+  }
+}
+
+module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-store:0.9.2' = if (enablePrivateNetworking) {
+  name: take('avm.res.app-configuration.configuration-store-update.${appConfigName}', 64)
+  params: {
+    name: appConfigName
+    location: solutionLocation
+    managedIdentities: { systemAssigned: true }
+    sku: 'Standard'
+    enableTelemetry: enableTelemetry
+    tags: tags
+    disableLocalAuth: true
+    replicaLocations: [
+      {
+        replicaLocation: replicaLocation
+        name: replicaAbbreviation
+      }
+    ]
+
     keyValues: [
       {
         name: 'Application:AIServices:GPT-4o-mini:Endpoint'
@@ -562,27 +583,6 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9
       {
         name: 'KernelMemory:Services:AzureQueues:Auth'
         value: 'AzureIdentity'
-      }
-    ]
-
-    publicNetworkAccess: 'Enabled'
-  }
-}
-
-module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-store:0.9.2' = if (enablePrivateNetworking) {
-  name: take('avm.res.app-configuration.configuration-store-update.${appConfigName}', 64)
-  params: {
-    name: appConfigName
-    location: solutionLocation
-    managedIdentities: { systemAssigned: true }
-    sku: 'Standard'
-    enableTelemetry: enableTelemetry
-    tags: tags
-    disableLocalAuth: true
-    replicaLocations: [
-      {
-        replicaLocation: replicaLocation
-        name: replicaAbbreviation
       }
     ]
 

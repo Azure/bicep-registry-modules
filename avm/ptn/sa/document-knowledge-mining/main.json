@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "3121801357322244985"
+      "templateHash": "2118759886077279938"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-knowledge-mining-solution) for both Sandbox environments and enterprise-grade environments."
@@ -30886,106 +30886,6 @@
               }
             ]
           },
-          "keyValues": {
-            "value": [
-              {
-                "name": "Application:AIServices:GPT-4o-mini:Endpoint",
-                "value": "[reference('avmOpenAi').outputs.endpoint.value]"
-              },
-              {
-                "name": "Application:AIServices:GPT-4o-mini:ModelName",
-                "value": "[variables('gptModelDeployment').modelName]"
-              },
-              {
-                "name": "Application:Services:KernelMemory:Endpoint",
-                "value": "http://kernelmemory-service"
-              },
-              {
-                "name": "Application:Services:PersistentStorage:CosmosMongo:Collections:ChatHistory:Collection",
-                "value": "ChatHistory"
-              },
-              {
-                "name": "Application:Services:PersistentStorage:CosmosMongo:Collections:ChatHistory:Database",
-                "value": "DPS"
-              },
-              {
-                "name": "Application:Services:PersistentStorage:CosmosMongo:Collections:DocumentManager:Collection",
-                "value": "Documents"
-              },
-              {
-                "name": "Application:Services:PersistentStorage:CosmosMongo:Collections:DocumentManager:Database",
-                "value": "DPS"
-              },
-              {
-                "name": "Application:Services:PersistentStorage:CosmosMongo:ConnectionString",
-                "value": "[listOutputsWithSecureValues('avmCosmosDB', '2022-09-01').primaryReadWriteConnectionString]"
-              },
-              {
-                "name": "Application:Services:AzureAISearch:Endpoint",
-                "value": "[format('https://{0}.search.windows.net', reference('avmSearchSearchServices').outputs.name.value)]"
-              },
-              {
-                "name": "KernelMemory:Services:AzureAIDocIntel:Auth",
-                "value": "AzureIdentity"
-              },
-              {
-                "name": "KernelMemory:Services:AzureAIDocIntel:Endpoint",
-                "value": "[reference('documentIntelligence').outputs.endpoint.value]"
-              },
-              {
-                "name": "KernelMemory:Services:AzureAISearch:Auth",
-                "value": "AzureIdentity"
-              },
-              {
-                "name": "KernelMemory:Services:AzureAISearch:Endpoint",
-                "value": "[format('https://{0}.search.windows.net', reference('avmSearchSearchServices').outputs.name.value)]"
-              },
-              {
-                "name": "KernelMemory:Services:AzureBlobs:Account",
-                "value": "[reference('avmStorageAccount').outputs.name.value]"
-              },
-              {
-                "name": "KernelMemory:Services:AzureBlobs:Auth",
-                "value": "AzureIdentity"
-              },
-              {
-                "name": "KernelMemory:Services:AzureBlobs:Container",
-                "value": "smemory"
-              },
-              {
-                "name": "KernelMemory:Services:AzureOpenAIEmbedding:Auth",
-                "value": "AzureIdentity"
-              },
-              {
-                "name": "KernelMemory:Services:AzureOpenAIEmbedding:Deployment",
-                "value": "[variables('embeddingModelDeployment').deploymentName]"
-              },
-              {
-                "name": "KernelMemory:Services:AzureOpenAIEmbedding:Endpoint",
-                "value": "[reference('avmOpenAi').outputs.endpoint.value]"
-              },
-              {
-                "name": "KernelMemory:Services:AzureOpenAIText:Auth",
-                "value": "AzureIdentity"
-              },
-              {
-                "name": "KernelMemory:Services:AzureOpenAIText:Deployment",
-                "value": "[variables('gptModelDeployment').deploymentName]"
-              },
-              {
-                "name": "KernelMemory:Services:AzureOpenAIText:Endpoint",
-                "value": "[reference('avmOpenAi').outputs.endpoint.value]"
-              },
-              {
-                "name": "KernelMemory:Services:AzureQueues:Account",
-                "value": "[reference('avmStorageAccount').outputs.name.value]"
-              },
-              {
-                "name": "KernelMemory:Services:AzureQueues:Auth",
-                "value": "AzureIdentity"
-              }
-            ]
-          },
           "publicNetworkAccess": {
             "value": "Enabled"
           }
@@ -33178,11 +33078,6 @@
         }
       },
       "dependsOn": [
-        "avmCosmosDB",
-        "avmOpenAi",
-        "avmSearchSearchServices",
-        "avmStorageAccount",
-        "documentIntelligence",
         "userAssignedIdentity"
       ]
     },
@@ -33225,6 +33120,106 @@
               {
                 "replicaLocation": "[variables('replicaLocation')]",
                 "name": "[variables('replicaAbbreviation')]"
+              }
+            ]
+          },
+          "keyValues": {
+            "value": [
+              {
+                "name": "Application:AIServices:GPT-4o-mini:Endpoint",
+                "value": "[reference('avmOpenAi').outputs.endpoint.value]"
+              },
+              {
+                "name": "Application:AIServices:GPT-4o-mini:ModelName",
+                "value": "[variables('gptModelDeployment').modelName]"
+              },
+              {
+                "name": "Application:Services:KernelMemory:Endpoint",
+                "value": "http://kernelmemory-service"
+              },
+              {
+                "name": "Application:Services:PersistentStorage:CosmosMongo:Collections:ChatHistory:Collection",
+                "value": "ChatHistory"
+              },
+              {
+                "name": "Application:Services:PersistentStorage:CosmosMongo:Collections:ChatHistory:Database",
+                "value": "DPS"
+              },
+              {
+                "name": "Application:Services:PersistentStorage:CosmosMongo:Collections:DocumentManager:Collection",
+                "value": "Documents"
+              },
+              {
+                "name": "Application:Services:PersistentStorage:CosmosMongo:Collections:DocumentManager:Database",
+                "value": "DPS"
+              },
+              {
+                "name": "Application:Services:PersistentStorage:CosmosMongo:ConnectionString",
+                "value": "[listOutputsWithSecureValues('avmCosmosDB', '2022-09-01').primaryReadWriteConnectionString]"
+              },
+              {
+                "name": "Application:Services:AzureAISearch:Endpoint",
+                "value": "[format('https://{0}.search.windows.net', reference('avmSearchSearchServices').outputs.name.value)]"
+              },
+              {
+                "name": "KernelMemory:Services:AzureAIDocIntel:Auth",
+                "value": "AzureIdentity"
+              },
+              {
+                "name": "KernelMemory:Services:AzureAIDocIntel:Endpoint",
+                "value": "[reference('documentIntelligence').outputs.endpoint.value]"
+              },
+              {
+                "name": "KernelMemory:Services:AzureAISearch:Auth",
+                "value": "AzureIdentity"
+              },
+              {
+                "name": "KernelMemory:Services:AzureAISearch:Endpoint",
+                "value": "[format('https://{0}.search.windows.net', reference('avmSearchSearchServices').outputs.name.value)]"
+              },
+              {
+                "name": "KernelMemory:Services:AzureBlobs:Account",
+                "value": "[reference('avmStorageAccount').outputs.name.value]"
+              },
+              {
+                "name": "KernelMemory:Services:AzureBlobs:Auth",
+                "value": "AzureIdentity"
+              },
+              {
+                "name": "KernelMemory:Services:AzureBlobs:Container",
+                "value": "smemory"
+              },
+              {
+                "name": "KernelMemory:Services:AzureOpenAIEmbedding:Auth",
+                "value": "AzureIdentity"
+              },
+              {
+                "name": "KernelMemory:Services:AzureOpenAIEmbedding:Deployment",
+                "value": "[variables('embeddingModelDeployment').deploymentName]"
+              },
+              {
+                "name": "KernelMemory:Services:AzureOpenAIEmbedding:Endpoint",
+                "value": "[reference('avmOpenAi').outputs.endpoint.value]"
+              },
+              {
+                "name": "KernelMemory:Services:AzureOpenAIText:Auth",
+                "value": "AzureIdentity"
+              },
+              {
+                "name": "KernelMemory:Services:AzureOpenAIText:Deployment",
+                "value": "[variables('gptModelDeployment').deploymentName]"
+              },
+              {
+                "name": "KernelMemory:Services:AzureOpenAIText:Endpoint",
+                "value": "[reference('avmOpenAi').outputs.endpoint.value]"
+              },
+              {
+                "name": "KernelMemory:Services:AzureQueues:Account",
+                "value": "[reference('avmStorageAccount').outputs.name.value]"
+              },
+              {
+                "name": "KernelMemory:Services:AzureQueues:Auth",
+                "value": "AzureIdentity"
               }
             ]
           },
@@ -35420,7 +35415,12 @@
       },
       "dependsOn": [
         "avmAppConfig",
+        "avmCosmosDB",
+        "avmOpenAi",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').appConfig)]",
+        "avmSearchSearchServices",
+        "avmStorageAccount",
+        "documentIntelligence",
         "network"
       ]
     },
