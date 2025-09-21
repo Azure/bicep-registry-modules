@@ -460,9 +460,9 @@ module network 'modules/network.bicep' = if (enablePrivateNetworking) {
   params: {
     resourcesName: networkResourceName
     logAnalyticsWorkSpaceResourceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : ''
-    vmAdminUsername: virtualMachineAdminUsername ?? 'JumpboxAdminUser'
-    vmAdminPassword: virtualMachineAdminPassword ?? 'JumpboxAdminP@ssw0rd1234!'
-    vmSize: vmSize ?? 'Standard_DS2_v2' // Default VM size
+    vmAdminUsername: empty(virtualMachineAdminUsername) ? 'JumpboxAdminUser' : virtualMachineAdminUsername
+    vmAdminPassword: empty(virtualMachineAdminPassword) ? 'JumpboxAdminP@ssw0rd1234!' : virtualMachineAdminPassword
+    vmSize: empty(vmSize) ? 'Standard_DS2_v2' : vmSize
     location: location
     tags: allTags
     enableTelemetry: enableTelemetry

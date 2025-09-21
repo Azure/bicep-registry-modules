@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "5268831949568039558"
+      "templateHash": "7945829068288835549"
     },
     "name": "Chat-with-your-data-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -754,15 +754,9 @@
             "value": "[variables('networkResourceName')]"
           },
           "logAnalyticsWorkSpaceResourceId": "[if(parameters('enableMonitoring'), createObject('value', reference('monitoring').outputs.logAnalyticsWorkspaceId.value), createObject('value', ''))]",
-          "vmAdminUsername": {
-            "value": "[coalesce(parameters('virtualMachineAdminUsername'), 'JumpboxAdminUser')]"
-          },
-          "vmAdminPassword": {
-            "value": "[coalesce(parameters('virtualMachineAdminPassword'), 'JumpboxAdminP@ssw0rd1234!')]"
-          },
-          "vmSize": {
-            "value": "[coalesce(parameters('vmSize'), 'Standard_DS2_v2')]"
-          },
+          "vmAdminUsername": "[if(empty(parameters('virtualMachineAdminUsername')), createObject('value', 'JumpboxAdminUser'), createObject('value', parameters('virtualMachineAdminUsername')))]",
+          "vmAdminPassword": "[if(empty(parameters('virtualMachineAdminPassword')), createObject('value', 'JumpboxAdminP@ssw0rd1234!'), createObject('value', parameters('virtualMachineAdminPassword')))]",
+          "vmSize": "[if(empty(parameters('vmSize')), createObject('value', 'Standard_DS2_v2'), createObject('value', parameters('vmSize')))]",
           "location": {
             "value": "[parameters('location')]"
           },
@@ -56376,9 +56370,9 @@
         }
       },
       "dependsOn": [
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "managedIdentityModule",
         "network"
       ]
