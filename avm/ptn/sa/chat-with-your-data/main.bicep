@@ -1600,6 +1600,59 @@ module storage './modules/storage/storage-account/storage-account.bicep' = {
   }
 }
 
+module avmEventGridSystemTopic 'br/public:avm/res/event-grid/system-topic:0.6.3' = {
+  name: take('avm.res.event-grid.system-topic.${eventGridSystemTopicName}', 64)
+  params: {
+    name: eventGridSystemTopicName
+    source: storage.outputs.resourceId
+    topicType: 'Microsoft.Storage.StorageAccounts'
+    location: location
+    tags: allTags
+    diagnosticSettings: enableMonitoring
+      ? [
+          {
+            name: 'diagnosticSettings'
+            workspaceResourceId: monitoring!.outputs.logAnalyticsWorkspaceId
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+          }
+        ]
+      : []
+    eventSubscriptions: [
+      {
+        name: eventGridSystemTopicName
+        destination: {
+          endpointType: 'StorageQueue'
+          properties: {
+            queueName: queueName
+            resourceId: storage.outputs.resourceId
+          }
+        }
+        eventDeliverySchema: 'EventGridSchema'
+        filter: {
+          includedEventTypes: [
+            'Microsoft.Storage.BlobCreated'
+            'Microsoft.Storage.BlobDeleted'
+          ]
+          enableAdvancedFilteringOnArrays: true
+          subjectBeginsWith: '/blobServices/default/containers/${blobContainerName}/blobs/'
+        }
+        retryPolicy: {
+          maxDeliveryAttempts: 30
+          eventTimeToLiveInMinutes: 1440
+        }
+        expirationTimeUtc: '2099-01-01T11:00:21.715Z'
+      }
+    ]
+    // Use only user-assigned identity
+    managedIdentities: { systemAssigned: false, userAssignedResourceIds: [managedIdentityModule.outputs.resourceId] }
+    enableTelemetry: enableTelemetry
+  }
+}
+
 var systemAssignedRoleAssignments = union(
   databaseType == 'CosmosDB'
     ? [
