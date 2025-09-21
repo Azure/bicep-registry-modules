@@ -28,16 +28,16 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.ptn.sa.build-your-own-copilot-solution.yml"
-      - "avm/ptn/sa/build-your-own-copilot-solution/**"
+      - ".github/workflows/avm.ptn.sa.build-your-own-copilot.yml"
+      - "avm/ptn/sa/build-your-own-copilot/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
       - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/ptn/sa/build-your-own-copilot-solution"
-  workflowPath: ".github/workflows/avm.ptn.sa.build-your-own-copilot-solution.yml"
+  modulePath: "avm/ptn/sa/build-your-own-copilot"
+  workflowPath: ".github/workflows/avm.ptn.sa.build-your-own-copilot.yml"
 
 concurrency:
   group: ${{ github.workflow }}
