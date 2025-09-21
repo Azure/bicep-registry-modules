@@ -303,7 +303,7 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
     analyticalStorageConfiguration: analyticalStorageConfiguration
     defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
       ? defaultIdentity!.name
-      : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
+      : 'UserAssignedIdentity=/subscriptions/cfa4dc0b-3d25-4e58-a70a-7085359080c5/resourceGroups/dep-avmx-documentdb.databaseaccounts-dddaencr-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dep-avmx-msi-dddaencr' // 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
     keyVaultKeyUri: 'https://dep-avmx-kv-dddaencr-4cb.vault.azure.net/keys/keyEncryptionKey' //!empty(customerManagedKey) ? cMKKeyVault::cMKKey!.properties.keyUri : null
     cors: cors
     enablePartitionMerge: enablePartitionMerge
