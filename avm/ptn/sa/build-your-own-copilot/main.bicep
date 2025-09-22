@@ -76,7 +76,6 @@ param embeddingDeploymentCapacity int = 80
     ]
   }
 })
-
 @description('Required. Location for AI Foundry deployment. This is the location where the AI Foundry resources will be deployed.')
 param azureAiServiceLocation string
 
@@ -120,7 +119,7 @@ param containerRegistryHostname string = 'bycwacontainerreg.azurecr.io'
 param containerImageName string = 'byc-wa-app'
 
 @description('Optional. The Container Image Tag to deploy on the webapp.')
-param containerImageTag string = 'latest'
+param containerImageTag string = 'latest_waf_2025-09-18_794'
 
 @description('Optional. Enable SQL vulnerability assessment scanning to identify potential security vulnerabilities. Helps satisfy Azure.SQL.VAScan PSRule requirement. Defaults to true.')
 param enableSqlVulnerabilityAssessment bool = true

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "15836900050020549364"
+      "templateHash": "9622982840953638258"
     },
     "name": "Build-your-own-copilot-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Build-your-own-copilot-Solution-Accelerator](https://github.com/microsoft/Build-your-own-copilot-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -185,7 +185,7 @@
     },
     "containerImageTag": {
       "type": "string",
-      "defaultValue": "latest",
+      "defaultValue": "latest_waf_2025-09-18_794",
       "metadata": {
         "description": "Optional. The Container Image Tag to deploy on the webapp."
       }
