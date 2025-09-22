@@ -149,7 +149,8 @@ module testDeployment '../../../main.bicep' = [
             }
             immutabilityPolicy: {
               immutabilityPeriodSinceCreationInDays: 7
-              allowProtectedAppendWrites: true
+              allowProtectedAppendWrites: false
+              allowProtectedAppendWritesAll: true
             }
           }
         ]

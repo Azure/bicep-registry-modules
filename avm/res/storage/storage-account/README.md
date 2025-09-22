@@ -2572,7 +2572,8 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         }
         {
           immutabilityPolicy: {
-            allowProtectedAppendWrites: true
+            allowProtectedAppendWrites: false
+            allowProtectedAppendWritesAll: true
             immutabilityPeriodSinceCreationInDays: 7
           }
           metadata: {
@@ -2829,7 +2830,8 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           },
           {
             "immutabilityPolicy": {
-              "allowProtectedAppendWrites": true,
+              "allowProtectedAppendWrites": false,
+              "allowProtectedAppendWritesAll": true,
               "immutabilityPeriodSinceCreationInDays": 7
             },
             "metadata": {
@@ -3108,7 +3110,8 @@ param blobServices = {
     }
     {
       immutabilityPolicy: {
-        allowProtectedAppendWrites: true
+        allowProtectedAppendWrites: false
+        allowProtectedAppendWritesAll: true
         immutabilityPeriodSinceCreationInDays: 7
       }
       metadata: {
