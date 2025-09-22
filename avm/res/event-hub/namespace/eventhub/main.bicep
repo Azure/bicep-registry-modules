@@ -1,13 +1,13 @@
 metadata name = 'Event Hub Namespace Event Hubs'
 metadata description = 'This module deploys an Event Hub Namespace Event Hub.'
 
-@description('Conditional. The name of the parent event hub namespace. Required if the template is used in a standalone deployment.')
+@description('Conditional. The name of the parent Event Hub namespace. Required if the template is used in a standalone deployment.')
 param namespaceName string
 
-@description('Required. The name of the event hub.')
+@description('Required. The name of the Event Hub.')
 param name string
 
-@description('Optional. Authorization Rules for the event hub.')
+@description('Optional. Authorization Rules for the Event Hub.')
 param authorizationRules eventHubAuthorizationRuleType[] = [
   {
     name: 'RootManageSharedAccessKey'
@@ -43,7 +43,7 @@ param partitionCount int = 2
 ])
 param status string = 'Active'
 
-@description('Optional. The consumer groups to create in this event hub instance.')
+@description('Optional. The consumer groups to create in this Event Hub instance.')
 param consumergroups consumerGroupType[] = [
   {
     name: '$Default'
@@ -276,13 +276,13 @@ resource eventHub_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-
 // Outputs      //
 // ============ //
 
-@description('The name of the event hub.')
+@description('The name of the Event Hub.')
 output name string = eventHub.name
 
-@description('The resource ID of the event hub.')
+@description('The resource ID of the Event Hub.')
 output resourceId string = eventHub.id
 
-@description('The resource group the event hub was deployed into.')
+@description('The resource group the Event Hub was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
 // ================ //

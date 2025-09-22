@@ -26,19 +26,19 @@ This module deploys an Event Hub Namespace Event Hub.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the event hub. |
+| [`name`](#parameter-name) | string | The name of the Event Hub. |
 
 **Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`namespaceName`](#parameter-namespacename) | string | The name of the parent event hub namespace. Required if the template is used in a standalone deployment. |
+| [`namespaceName`](#parameter-namespacename) | string | The name of the parent Event Hub namespace. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`authorizationRules`](#parameter-authorizationrules) | array | Authorization Rules for the event hub. |
+| [`authorizationRules`](#parameter-authorizationrules) | array | Authorization Rules for the Event Hub. |
 | [`captureDescriptionDestinationArchiveNameFormat`](#parameter-capturedescriptiondestinationarchivenameformat) | string | Blob naming convention for archive, e.g. {Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}. Here all the parameters (Namespace,EventHub .. etc) are mandatory irrespective of order. |
 | [`captureDescriptionDestinationBlobContainer`](#parameter-capturedescriptiondestinationblobcontainer) | string | Blob container Name. |
 | [`captureDescriptionDestinationName`](#parameter-capturedescriptiondestinationname) | string | Name for capture destination. |
@@ -48,7 +48,7 @@ This module deploys an Event Hub Namespace Event Hub.
 | [`captureDescriptionIntervalInSeconds`](#parameter-capturedescriptionintervalinseconds) | int | The time window allows you to set the frequency with which the capture to Azure Blobs will happen. |
 | [`captureDescriptionSizeLimitInBytes`](#parameter-capturedescriptionsizelimitinbytes) | int | The size window defines the amount of data built up in your Event Hub before an capture operation. |
 | [`captureDescriptionSkipEmptyArchives`](#parameter-capturedescriptionskipemptyarchives) | bool | A value that indicates whether to Skip Empty Archives. |
-| [`consumergroups`](#parameter-consumergroups) | array | The consumer groups to create in this event hub instance. |
+| [`consumergroups`](#parameter-consumergroups) | array | The consumer groups to create in this Event Hub instance. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`messageRetentionInDays`](#parameter-messageretentionindays) | int | Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Will be automatically set to infinite retention if cleanup policy is set to "Compact". |
@@ -62,21 +62,21 @@ This module deploys an Event Hub Namespace Event Hub.
 
 ### Parameter: `name`
 
-The name of the event hub.
+The name of the Event Hub.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `namespaceName`
 
-The name of the parent event hub namespace. Required if the template is used in a standalone deployment.
+The name of the parent Event Hub namespace. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `authorizationRules`
 
-Authorization Rules for the event hub.
+Authorization Rules for the Event Hub.
 
 - Required: No
 - Type: array
@@ -208,7 +208,7 @@ A value that indicates whether to Skip Empty Archives.
 
 ### Parameter: `consumergroups`
 
-The consumer groups to create in this event hub instance.
+The consumer groups to create in this Event Hub instance.
 
 - Required: No
 - Type: array
@@ -494,9 +494,9 @@ Enumerates the possible values for the status of the Event Hub.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the event hub. |
-| `resourceGroupName` | string | The resource group the event hub was deployed into. |
-| `resourceId` | string | The resource ID of the event hub. |
+| `name` | string | The name of the Event Hub. |
+| `resourceGroupName` | string | The resource group the Event Hub was deployed into. |
+| `resourceId` | string | The resource ID of the Event Hub. |
 
 ## Cross-referenced modules
 
