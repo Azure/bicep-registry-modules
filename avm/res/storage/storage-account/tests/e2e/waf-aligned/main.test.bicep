@@ -104,6 +104,14 @@ module testDeployment '../../../main.bicep' = [
           }
         ]
       }
+      immutableStorageWithVersioning: {
+        enabled: true
+        immutabilityPolicy: {
+          allowProtectedAppendWrites: true
+          immutabilityPeriodSinceCreationInDays: 7
+          state: 'Unlocked'
+        }
+      }
       localUsers: [
         {
           name: 'testuser'
@@ -148,7 +156,7 @@ module testDeployment '../../../main.bicep' = [
               testKey: 'testValue'
             }
             immutabilityPolicy: {
-              allowProtectedAppendWrites: false
+              allowProtectedAppendWrites: true
             }
           }
         ]

@@ -194,6 +194,9 @@ param keyType string?
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
+@description('Optional. The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default.')
+param immutableStorageWithVersioning resourceInput<'Microsoft.Storage/storageAccounts@2024-01-01'>.properties.immutableStorageWithVersioning?
+
 var enableReferencedModulesTelemetry = false
 
 var supportsBlobService = kind == 'BlockBlobStorage' || kind == 'BlobStorage' || kind == 'StorageV2' || kind == 'Storage'
@@ -455,6 +458,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
       ? { azureFilesIdentityBasedAuthentication: azureFilesIdentityBasedAuthentication }
       : {})
     ...(enableHierarchicalNamespace != null ? { isHnsEnabled: enableHierarchicalNamespace } : {})
+    immutableStorageWithVersioning: immutableStorageWithVersioning
   }
 }
 

@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added type for `blobServices` parameter and its children
+- Added support for `immutableStorageWithVersioning` parameter
 
 ### Breaking Changes
 
