@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "11061460770559489306"
+      "templateHash": "17686876013645522022"
     },
     "name": "Chat-with-your-data-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -700,6 +700,7 @@
     "enablePrivateNetworkingSpeech": false,
     "webServerFarmResourceName": "[variables('hostingPlanName')]",
     "postgresDBFqdn": "[format('{0}.postgres.database.azure.com', variables('postgresResourceName'))]",
+    "enablePrivateEndpointsStorage": "[and(parameters('enablePrivateNetworking'), not(parameters('useAdvancedImageProcessing')))]",
     "azureOpenAIModelInfo": "[string(createObject('model', parameters('azureOpenAIModel'), 'model_name', parameters('azureOpenAIModelName'), 'model_version', parameters('azureOpenAIModelVersion')))]",
     "azureOpenAIEmbeddingModelInfo": "[string(createObject('model', parameters('azureOpenAIEmbeddingModel'), 'model_name', parameters('azureOpenAIEmbeddingModelName'), 'model_version', parameters('azureOpenAIEmbeddingModelVersion')))]",
     "azureCosmosDBInfo": "[string(createObject('account_name', if(equals(parameters('databaseType'), 'CosmosDB'), variables('azureCosmosDBAccountName'), ''), 'database_name', if(equals(parameters('databaseType'), 'CosmosDB'), variables('cosmosDbName'), ''), 'conversations_container_name', if(equals(parameters('databaseType'), 'CosmosDB'), variables('cosmosDbContainerName'), '')))]",
@@ -52245,14 +52246,14 @@
           "allowBlobPublicAccess": {
             "value": false
           },
-          "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
+          "publicNetworkAccess": "[if(variables('enablePrivateEndpointsStorage'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "networkAcls": {
             "value": {
               "bypass": "AzureServices",
-              "defaultAction": "[if(parameters('enablePrivateNetworking'), 'Deny', 'Allow')]"
+              "defaultAction": "[if(variables('enablePrivateEndpointsStorage'), 'Deny', 'Allow')]"
             }
           },
-          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-blob-{0}', variables('solutionSuffix')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'storage-dns-zone-group-blob', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)).outputs.resourceId.value))), 'subnetResourceId', reference('network').outputs.subnetPrivateEndpointsResourceId.value, 'service', 'blob'), createObject('name', format('pep-queue-{0}', variables('solutionSuffix')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'storage-dns-zone-group-queue', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)).outputs.resourceId.value))), 'subnetResourceId', reference('network').outputs.subnetPrivateEndpointsResourceId.value, 'service', 'queue'), createObject('name', format('pep-file-{0}', variables('solutionSuffix')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'storage-dns-zone-group-file', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)).outputs.resourceId.value))), 'subnetResourceId', reference('network').outputs.subnetPrivateEndpointsResourceId.value, 'service', 'file'))), createObject('value', createArray()))]"
+          "privateEndpoints": "[if(variables('enablePrivateEndpointsStorage'), createObject('value', createArray(createObject('name', format('pep-blob-{0}', variables('solutionSuffix')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'storage-dns-zone-group-blob', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)).outputs.resourceId.value))), 'subnetResourceId', reference('network').outputs.subnetPrivateEndpointsResourceId.value, 'service', 'blob'), createObject('name', format('pep-queue-{0}', variables('solutionSuffix')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'storage-dns-zone-group-queue', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)).outputs.resourceId.value))), 'subnetResourceId', reference('network').outputs.subnetPrivateEndpointsResourceId.value, 'service', 'queue'), createObject('name', format('pep-file-{0}', variables('solutionSuffix')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'storage-dns-zone-group-file', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)).outputs.resourceId.value))), 'subnetResourceId', reference('network').outputs.subnetPrivateEndpointsResourceId.value, 'service', 'file'))), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -55437,9 +55438,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "managedIdentityModule",
         "network"
       ]

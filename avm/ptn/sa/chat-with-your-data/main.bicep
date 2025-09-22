@@ -924,7 +924,9 @@ module computerVision 'modules/core/ai/cognitiveservices.bicep' = if (useAdvance
   dependsOn: enablePrivateNetworking ? avmPrivateDnsZones : []
 }
 
-var enablePrivateNetworkingSpeech = false // Speech service does not work with private endpoints in all regions, so default to false
+// The Web socket from front end application connects to Speech service over a public internet and it does not work over a Private endpoint.
+// So public access is enabled even if AVM WAF is enabled.
+var enablePrivateNetworkingSpeech = false
 module speechService 'modules/core/ai/cognitiveservices.bicep' = {
   name: speechServiceName
   scope: resourceGroup()
@@ -1482,6 +1484,9 @@ module contentsafety 'modules/core/ai/cognitiveservices.bicep' = {
   dependsOn: enablePrivateNetworking ? avmPrivateDnsZones : []
 }
 
+// If advanced image processing is used, storage account already should be publicly accessible.
+// Computer Vision requires files to be publicly accessible as per the official docsumentation: https://learn.microsoft.com/en-us/azure/ai-services/computer-vision/how-to/blob-storage-search
+var enablePrivateEndpointsStorage = enablePrivateNetworking && !useAdvancedImageProcessing
 module storage './modules/storage/storage-account/storage-account.bicep' = {
   name: take('avm.res.storage.storage-account.${storageAccountName}', 64)
   params: {
@@ -1540,9 +1545,9 @@ module storage './modules/storage/storage-account/storage-account.bicep' = {
     ]
     allowSharedKeyAccess: true
     allowBlobPublicAccess: false
-    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
-    networkAcls: { bypass: 'AzureServices', defaultAction: enablePrivateNetworking ? 'Deny' : 'Allow' }
-    privateEndpoints: enablePrivateNetworking
+    publicNetworkAccess: enablePrivateEndpointsStorage ? 'Disabled' : 'Enabled'
+    networkAcls: { bypass: 'AzureServices', defaultAction: enablePrivateEndpointsStorage ? 'Deny' : 'Allow' }
+    privateEndpoints: enablePrivateEndpointsStorage
       ? [
           {
             name: 'pep-blob-${solutionSuffix}'
