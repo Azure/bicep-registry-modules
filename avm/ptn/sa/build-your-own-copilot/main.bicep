@@ -250,9 +250,6 @@ var allTags = union(
 // Paired location calculated based on 'location' parameter. This location will be used by applicable resources if `enableScalability` is set to `true`
 var cosmosDbHaLocation = cosmosDbZoneRedundantHaRegionPairs[resourceGroup().location]
 
-@description('Optional. Created by user name.')
-param createdBy string = empty(deployer().userPrincipalName) ? '' : split(deployer().userPrincipalName, '@')[0]
-
 // ========== Resource Group Tag ========== //
 resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
   name: 'default'
@@ -260,7 +257,6 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
     tags: {
       ...tags
       TemplateName: 'Client Advisor'
-      CreatedBy: createdBy
     }
   }
 }
