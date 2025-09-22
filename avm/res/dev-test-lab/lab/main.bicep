@@ -348,8 +348,8 @@ module lab_secrets 'secret/main.bicep' = [
       labName: lab.name
       name: secret.name
       value: secret.value
-      enabledForArtifacts: secret.?enabledForArtifacts ?? false
-      enabledForVmCreation: secret.?enabledForVmCreation ?? false
+      enabledForArtifacts: secret.?enabledForArtifacts
+      enabledForVmCreation: secret.?enabledForVmCreation
     }
   }
 ]
