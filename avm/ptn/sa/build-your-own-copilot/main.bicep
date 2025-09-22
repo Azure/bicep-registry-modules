@@ -916,6 +916,7 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.2' = {
         // to let Azure automatically manage zone placement across multiple zones.
         // When enableRedundancy is false, also use -1 (no specific zone assignment).
         availabilityZone: -1
+        requestedBackupStorageRedundancy: (enableRedundancy) ? 'Zone' : null
         collation: 'SQL_Latin1_General_CP1_CI_AS'
         diagnosticSettings: enableMonitoring
           ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }]
