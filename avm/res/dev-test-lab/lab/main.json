@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "15889866139986126980"
+      "templateHash": "12831024384586215893"
     },
     "name": "DevTest Labs",
     "description": "This module deploys a DevTest Lab."
@@ -2815,10 +2815,10 @@
             "value": "[coalesce(parameters('secrets'), createArray())[copyIndex()].value]"
           },
           "enabledForArtifacts": {
-            "value": "[coalesce(tryGet(coalesce(parameters('secrets'), createArray())[copyIndex()], 'enabledForArtifacts'), false())]"
+            "value": "[tryGet(coalesce(parameters('secrets'), createArray())[copyIndex()], 'enabledForArtifacts')]"
           },
           "enabledForVmCreation": {
-            "value": "[coalesce(tryGet(coalesce(parameters('secrets'), createArray())[copyIndex()], 'enabledForVmCreation'), false())]"
+            "value": "[tryGet(coalesce(parameters('secrets'), createArray())[copyIndex()], 'enabledForVmCreation')]"
           }
         },
         "template": {
