@@ -345,9 +345,10 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 }
 
 // ========== Container Registry ========== //
-module avmContainerRegistry './modules/container-registry.bicep' = {
+module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3' = {
+  name: take('avm.res.container-registry.${solutionSuffix}', 64)
   params: {
-    acrName: 'cr${replace(solutionSuffix, '-', '')}'
+    name: 'cr${replace(solutionSuffix, '-', '')}'
     location: solutionLocation
     acrSku: 'Standard'
     publicNetworkAccess: 'Enabled'
