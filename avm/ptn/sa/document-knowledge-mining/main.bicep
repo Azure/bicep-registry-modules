@@ -62,9 +62,6 @@ param embeddingModelVersion string = '1'
 @minValue(10)
 param embeddingModelCapacity int = 100
 
-// @description('Optional: Existing Log Analytics Workspace Resource ID')
-// param existingLogAnalyticsWorkspaceId string = ''
-
 @description('Optional. Admin username for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true.')
 @secure()
 param vmAdminUsername string?
@@ -107,13 +104,16 @@ param enableScalability bool
 param aiDeploymentsLocation string
 
 @description('Optional. Created by user name.')
-param createdBy string = empty(deployer().userPrincipalName) ? '' : split(deployer().userPrincipalName, '@')[0]
+param createdBy string = contains(deployer(), 'userPrincipalName')
+  ? split(deployer().userPrincipalName, '@')[0]
+  : deployer().objectId
 
 // ========== Resource Group Tag ========== //
 resource resourceGroupTags 'Microsoft.Resources/tags@2021-04-01' = {
   name: 'default'
   properties: {
     tags: {
+      ...resourceGroup().tags
       ...tags
       TemplateName: 'DKM'
       CreatedBy: createdBy
@@ -123,8 +123,6 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2021-04-01' = {
 
 var solutionLocation = empty(location) ? resourceGroup().location : location
 
-// @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
-// param secretsExportConfiguration secretsExportConfigurationType?
 // Replica regions list based on article in [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Enhance resilience by replicating your Log Analytics workspace across regions](https://learn.microsoft.com/azure/azure-monitor/logs/workspace-replication#supported-regions) for supported regions for Log Analytics Workspace.
 var replicaRegionPairs = {
   australiaeast: 'australiasoutheast'
@@ -159,7 +157,7 @@ var replicaAbbreviation = regionAbbreviations[?replicaLocation] ?? 'rep'
 
 // Region pairs list based on article in [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions) for supported high availability regions for CosmosDB.
 var cosmosDbZoneRedundantHaRegionPairs = {
-  australiaeast: 'uksouth' //'southeastasia'
+  australiaeast: 'uksouth'
   centralus: 'eastus2'
   eastasia: 'southeastasia'
   eastus: 'centralus'
@@ -173,9 +171,6 @@ var cosmosDbZoneRedundantHaRegionPairs = {
 
 // Paired location calculated based on 'location' parameter. This location will be used by applicable resources if `enableScalability` is set to `true`
 var cosmosDbHaLocation = cosmosDbZoneRedundantHaRegionPairs[resourceGroup().location]
-
-// Extracts subscription, resource group, and workspace name from the resource ID when using an existing Log Analytics workspace
-// var useExistingLogAnalytics = !empty(existingLogAnalyticsWorkspaceId)
 
 var gptModelDeployment = {
   modelName: gptModelName
@@ -228,8 +223,9 @@ var privateDnsZones = [
   'privatelink.queue.${environment().suffixes.storage}'
   'privatelink.api.azureml.ms'
   'privatelink.azconfig.io'
-  'privatelink.azurecr.io' // Todo: to be deleted
+  'privatelink.azurecr.io'
 ]
+
 // DNS Zone Index Constants
 var dnsZoneIndex = {
   cosmosDB: 0
@@ -317,6 +313,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
       : null
   }
 }
+
 var logAnalyticsWorkspaceResourceId = logAnalyticsWorkspace!.outputs.resourceId
 
 // ========== Network Module ========== //
@@ -349,7 +346,6 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 
 // ========== Container Registry ========== //
 module avmContainerRegistry './modules/container-registry.bicep' = {
-  //name: format(deployment_param.resource_name_format_string, abbrs.containers.containerRegistry)
   params: {
     acrName: 'cr${replace(solutionSuffix, '-', '')}'
     location: solutionLocation
@@ -416,7 +412,6 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.15.0' = {
     capabilitiesToAdd: [
       'EnableMongo'
     ]
-    //capabilitiesToAdd: enableRedundancy ? null : ['EnableServerless']
     automaticFailover: enableRedundancy ? true : false
     failoverLocations: enableRedundancy
       ? [
@@ -613,7 +608,7 @@ module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-st
 
 // ========== Storage account module ========== //
 var storageAccountName = 'st${solutionSuffix}'
-module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
+module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.26.2' = {
   name: take('avm.res.storage.storage-account.${storageAccountName}', 64)
   params: {
     name: storageAccountName
@@ -690,7 +685,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
 
 // ========== AI Foundry: AI Search ========== //
 var aiSearchName = 'srch-${solutionSuffix}'
-module avmSearchSearchServices 'br/public:avm/res/search/search-service:0.9.1' = {
+module avmSearchSearchServices 'br/public:avm/res/search/search-service:0.11.1' = {
   name: take('avm.res.cognitive-search-services.${aiSearchName}', 64)
   params: {
     name: aiSearchName
@@ -715,10 +710,6 @@ module avmSearchSearchServices 'br/public:avm/res/search/search-service:0.9.1' =
       }
     ]
     semanticSearch: 'free'
-    // secretsExportConfiguration: {
-    //   keyVaultResourceId: keyvault.outputs.resourceId
-    //   primaryAdminKeyName: varKvSecretNameAzureSearchKey
-    // }
     // WAF aligned configuration for Private Networking
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     privateEndpoints: enablePrivateNetworking

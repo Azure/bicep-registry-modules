@@ -23,7 +23,7 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. Tags to be applied to the Container Registry')
 param tags object = {}
 
-module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = {
+module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3' = {
   name: acrName
   params: {
     name: acrName
@@ -36,6 +36,11 @@ module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.1
   }
 }
 
+@description('The name of the Azure Container Registry.')
 output name string = avmContainerRegistry.outputs.name
+
+@description('The resource ID of the Azure Container Registry.')
 output resourceId string = avmContainerRegistry.outputs.resourceId
+
+@description('The login server URL of the Azure Container Registry.')
 output loginServer string = avmContainerRegistry.outputs.loginServer

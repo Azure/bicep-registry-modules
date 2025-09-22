@@ -88,9 +88,16 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = {
   ]
 }
 
+@description('The resource ID of the Azure Bastion Host.')
 output resourceId string = bastionHost.outputs.resourceId
+
+@description('The name of the Azure Bastion Host.')
 output name string = bastionHost.outputs.name
+
+@description('The resource ID of the Azure Bastion subnet.')
 output subnetId string = bastionSubnet!.outputs.resourceId
+
+@description('The name of the Azure Bastion subnet.')
 output subnetName string = bastionSubnet!.outputs.name
 
 @export()
