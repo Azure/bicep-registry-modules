@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "9622982840953638258"
+      "templateHash": "14928096238316597326"
     },
     "name": "Build-your-own-copilot-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Build-your-own-copilot-Solution-Accelerator](https://github.com/microsoft/Build-your-own-copilot-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -393,6 +393,7 @@
     "sqlDbName": "[format('sqldb-{0}', variables('solutionSuffix'))]",
     "webServerFarmResourceName": "[format('asp-{0}', variables('solutionSuffix'))]",
     "webSiteResourceName": "[format('app-{0}', variables('solutionSuffix'))]",
+    "enableSearchServicePrivateEndpoints": false,
     "aiSearchName": "[format('srch-{0}', variables('solutionSuffix'))]"
   },
   "resources": {
@@ -31948,9 +31949,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "network",
         "userAssignedIdentity"
@@ -41831,8 +41832,8 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "keyvault",
         "network",
         "userAssignedIdentity"
@@ -54766,10 +54767,8 @@
           "tags": {
             "value": "[parameters('tags')]"
           },
-          "publicNetworkAccess": {
-            "value": "Enabled"
-          },
-          "privateEndpoints": "[if(false(), createObject('value', createArray(createObject('name', format('pep-{0}', variables('aiSearchName')), 'customNetworkInterfaceName', format('nic-{0}', variables('aiSearchName')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').searchService)).outputs.resourceId.value))), 'service', 'searchService', 'subnetResourceId', reference('network').outputs.subnetPrivateEndpointsResourceId.value))), createObject('value', createArray()))]"
+          "publicNetworkAccess": "[if(variables('enableSearchServicePrivateEndpoints'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
+          "privateEndpoints": "[if(variables('enableSearchServicePrivateEndpoints'), createObject('value', createArray(createObject('name', format('pep-{0}', variables('aiSearchName')), 'customNetworkInterfaceName', format('nic-{0}', variables('aiSearchName')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').searchService)).outputs.resourceId.value))), 'service', 'searchService', 'subnetResourceId', reference('network').outputs.subnetPrivateEndpointsResourceId.value))), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",

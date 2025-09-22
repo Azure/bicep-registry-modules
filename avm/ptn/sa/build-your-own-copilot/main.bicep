@@ -1105,6 +1105,9 @@ module webSite 'modules/web-sites.bicep' = {
 }
 
 // ========== Search Service ========== //
+// Always Set search service public access as enabled.
+// The Agent AI Search tools SDK is not able to connect to search service over a private endpoint.
+var enableSearchServicePrivateEndpoints = false
 var aiSearchName = 'srch-${solutionSuffix}'
 module searchService 'br/public:avm/res/search/search-service:0.11.1' = {
   name: take('avm.res.search.search-service.${aiSearchName}', 64)
@@ -1165,9 +1168,9 @@ module searchService 'br/public:avm/res/search/search-service:0.11.1' = {
     semanticSearch: 'free'
     // Use the deployment tags provided to the template
     tags: tags
-    publicNetworkAccess: 'Enabled'
-    // Always eenabled for public access due to an Open Issue for Agents to Search connection
-    privateEndpoints: false
+    // Always enabled for public access due to an Open Issue for Agents AI search tools to Search connection
+    publicNetworkAccess: enableSearchServicePrivateEndpoints ? 'Disabled' : 'Enabled'
+    privateEndpoints: enableSearchServicePrivateEndpoints
       ? [
           {
             name: 'pep-${aiSearchName}'
