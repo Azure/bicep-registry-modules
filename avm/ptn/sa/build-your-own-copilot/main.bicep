@@ -55,9 +55,6 @@ param embeddingModel string = 'text-embedding-ada-002'
 @description('Optional. Capacity of the Embedding Model deployment.')
 param embeddingDeploymentCapacity int = 80
 
-// @description('Fabric Workspace Id if you have one, else leave it empty. ')
-// param fabricWorkspaceId string
-
 //restricting to these regions because assistants api for gpt-4o-mini is available only in these regions
 @allowed([
   'australiaeast'
@@ -70,8 +67,6 @@ param embeddingDeploymentCapacity int = 80
   'westus'
   'westus3'
 ])
-// @description('Azure OpenAI Location')
-// param AzureOpenAILocation string = 'eastus2'
 @metadata({
   azd: {
     type: 'location'
@@ -81,14 +76,13 @@ param embeddingDeploymentCapacity int = 80
     ]
   }
 })
+
 @description('Required. Location for AI Foundry deployment. This is the location where the AI Foundry resources will be deployed.')
 param azureAiServiceLocation string
 
 @description('Optional. Set this if you want to deploy to a different region than the resource group. Otherwise, it will use the resource group location by default.')
 param azureLocation string = ''
 var location = empty(azureLocation) ? resourceGroup().location : azureLocation
-
-//var solutionSuffix = 'ca${padLeft(take(uniqueId, 12), 12, '0')}'
 
 @maxLength(5)
 @description('Optional. A unique token for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name.')
@@ -157,7 +151,6 @@ var azureSearchEnableInDomain = 'False' // Set to 'True' if you want to enable i
 var azureCosmosDbEnableFeedback = 'True'
 var useInternalStream = 'True'
 var useAIProjectClientFlag = 'False'
-// var sqlServerFqdn = '${sqlDBModule.outputs.name}${environment().suffixes.sqlServerHostname}'
 var sqlServerFqdn = 'sql-${solutionSuffix}${environment().suffixes.sqlServerHostname}'
 
 @description('Optional. Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true.')
@@ -250,6 +243,11 @@ var allTags = union(
 // Paired location calculated based on 'location' parameter. This location will be used by applicable resources if `enableScalability` is set to `true`
 var cosmosDbHaLocation = cosmosDbZoneRedundantHaRegionPairs[resourceGroup().location]
 
+@description('Optional. Created by user name.')
+param createdBy string = contains(deployer(), 'userPrincipalName')
+  ? split(deployer().userPrincipalName, '@')[0]
+  : deployer().objectId
+
 // ========== Resource Group Tag ========== //
 resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
   name: 'default'
@@ -257,6 +255,7 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
     tags: {
       ...tags
       TemplateName: 'Client Advisor'
+      CreatedBy: createdBy
     }
   }
 }
@@ -384,7 +383,6 @@ module network 'modules/network.bicep' = if (enablePrivateNetworking) {
   name: take('network-${solutionSuffix}-deployment', 64)
   params: {
     resourcesName: solutionSuffix
-    // logAnalyticsWorkspace.outputs.resourceId: logAnalyticsWorkspace.outputs.resourceId
     logAnalyticsWorkSpaceResourceId: logAnalyticsWorkspace!.outputs.resourceId
     vmAdminUsername: vmAdminUsername ?? 'JumpboxAdminUser'
     vmAdminPassword: vmAdminPassword ?? 'JumpboxAdminP@ssw0rd1234!'
@@ -424,13 +422,6 @@ var dnsZoneIndex = {
   sqlServer: 9
   searchService: 10
 }
-
-// List of DNS zone indices that correspond to AI-related services.
-// var aiRelatedDnsZoneIndices = [
-//   dnsZoneIndex.cognitiveServices
-//   dnsZoneIndex.openAI
-//   dnsZoneIndex.aiServices
-// ]
 
 // ===================================================
 // DEPLOY PRIVATE DNS ZONES
@@ -561,7 +552,6 @@ var aiFoundryAiServicesEmbeddingModel = {
   raiPolicyName: 'Microsoft.Default'
 }
 
-//TODO: update to AVM module when AI Projects and AI Projects RBAC are supported
 module aiFoundryAiServices 'modules/ai-services.bicep' = {
   name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesResourceName}', 64)
   params: {
@@ -574,9 +564,6 @@ module aiFoundryAiServices 'modules/ai-services.bicep' = {
     kind: 'AIServices'
     disableLocalAuth: true
     customSubDomainName: aiFoundryAiServicesResourceName
-    apiProperties: {
-      //staticsEnabled: false
-    }
     networkAcls: {
       defaultAction: 'Allow'
       virtualNetworkRules: []
@@ -663,9 +650,8 @@ module aiFoundryAiServices 'modules/ai-services.bicep' = {
 //========== Cosmos DB module ========== //
 var cosmosDbResourceName = 'cosmos-${solutionSuffix}'
 var cosmosDbDatabaseName = 'db_conversation_history'
-// var cosmosDbDatabaseMemoryContainerName = 'memory'
 var collectionName = 'conversations'
-//TODO: update to latest version of AVM module
+
 module cosmosDb 'br/public:avm/res/document-db/database-account:0.16.0' = {
   name: take('avm.res.document-db.database-account.${cosmosDbResourceName}', 64)
   params: {
@@ -824,15 +810,6 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.26.2' = {
         }
       ]
     }
-    //   secretsExportConfiguration: {
-    //   accessKey1Name: 'ADLS-ACCOUNT-NAME'
-    //   connectionString1Name: storageAccountName
-    //   accessKey2Name: 'ADLS-ACCOUNT-CONTAINER'
-    //   connectionString2Name: 'data'
-    //   accessKey3Name: 'ADLS-ACCOUNT-KEY'
-    //   connectionString3Name: listKeys(resourceId('Microsoft.Storage/storageAccounts', storageAccountName), '2021-04-01')
-    //   keyVaultResourceId: keyvault.outputs.resourceId
-    // }
   }
   dependsOn: [keyvault]
 }
@@ -1069,7 +1046,6 @@ module webSite 'modules/web-sites.bicep' = {
           APP_ENV: appEnvironment
           APPINSIGHTS_INSTRUMENTATIONKEY: enableMonitoring ? applicationInsights!.outputs.instrumentationKey : ''
           APPLICATIONINSIGHTS_CONNECTION_STRING: enableMonitoring ? applicationInsights!.outputs.connectionString : ''
-          // AZURE_SEARCH_SERVICE: ''//azureSearchService
           AZURE_SEARCH_SERVICE: aiSearchName
           AZURE_SEARCH_INDEX: azureSearchIndex
           AZURE_SEARCH_USE_SEMANTIC_SEARCH: azureSearchUseSemanticSearch
@@ -1095,7 +1071,6 @@ module webSite 'modules/web-sites.bicep' = {
           AZURE_SEARCH_PERMITTED_GROUPS_COLUMN: azureSearchPermittedGroupsField
           AZURE_SEARCH_STRICTNESS: azureSearchStrictness
           AZURE_OPENAI_EMBEDDING_NAME: embeddingModel
-          // AZURE_OPENAI_EMBEDDING_ENDPOINT: aiFoundryAiServices.outputs.endpoint
           AZURE_OPENAI_EMBEDDING_ENDPOINT: aiFoundryAiServices.outputs.openaiEndpoint
           SQLDB_SERVER: sqlServerFqdn
           SQLDB_DATABASE: sqlDbName
@@ -1105,7 +1080,6 @@ module webSite 'modules/web-sites.bicep' = {
           AZURE_COSMOSDB_DATABASE: cosmosDbDatabaseName
           AZURE_COSMOSDB_ENABLE_FEEDBACK: azureCosmosDbEnableFeedback
           SQLDB_USER_MID: userAssignedIdentity.outputs.clientId
-          // AZURE_AI_SEARCH_ENDPOINT: '' //azureSearchServiceEndpoint
           AZURE_AI_SEARCH_ENDPOINT: 'https://${aiSearchName}.search.windows.net'
           AZURE_SQL_SYSTEM_PROMPT: functionAppSqlPrompt
           AZURE_CALL_TRANSCRIPT_SYSTEM_PROMPT: functionAppCallTranscriptSystemPrompt
@@ -1114,7 +1088,6 @@ module webSite 'modules/web-sites.bicep' = {
           AZURE_AI_AGENT_ENDPOINT: aiFoundryAiServices.outputs.aiProjectInfo.apiEndpoint
           AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME: gptModelName
           AZURE_AI_AGENT_API_VERSION: azureOpenaiAPIVersion
-          // AZURE_SEARCH_CONNECTION_NAME: '' //aiSearchProjectConnectionName
           AZURE_SEARCH_CONNECTION_NAME: aiSearchName
           AZURE_CLIENT_ID: userAssignedIdentity.outputs.clientId
         }
@@ -1193,6 +1166,7 @@ module searchService 'br/public:avm/res/search/search-service:0.11.1' = {
     // Use the deployment tags provided to the template
     tags: tags
     publicNetworkAccess: 'Enabled'
+    // Always eenabled for public access due to an Open Issue for Agents to Search connection
     privateEndpoints: false
       ? [
           {
@@ -1272,11 +1246,13 @@ output managedIdentityWebAppName string = userAssignedIdentity.outputs.name
 
 @description('Client ID of the managed identity used by the web app.')
 output managedIdentityWebAppClientId string = userAssignedIdentity.outputs.clientId
+
 @description('Name of the AI Search service.')
 output aiSearchServiceName string = aiSearchName //aifoundry.outputs.aiSearchService
 
 @description('Name of the deployed web application.')
 output webAppName string = webSite.outputs.name
+
 @description('Specifies the current application environment.')
 output appEnv string = appEnvironment
 

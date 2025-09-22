@@ -91,6 +91,7 @@ module jumpbox 'jumpbox.bicep' = if (!empty(jumpboxConfiguration)) {
 
 @description('Name of the deployed virtual network.')
 output vnetName string = virtualNetwork.outputs.name
+
 @description('Resource ID of the deployed virtual network.')
 output vnetResourceId string = virtualNetwork.outputs.resourceId
 
@@ -121,5 +122,6 @@ output jumpboxName string = jumpbox!.outputs.name
 
 @description('Jumpbox resource ID, if created.')
 output jumpboxResourceId string = jumpbox!.outputs.resourceId
+
 @description('Name of the resource group.')
 output resourceGroupName string = resourceGroup().name

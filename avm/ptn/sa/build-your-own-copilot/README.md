@@ -286,6 +286,7 @@ param enableTelemetry = true
 | [`containerImageTag`](#parameter-containerimagetag) | string | The Container Image Tag to deploy on the webapp. |
 | [`containerRegistryHostname`](#parameter-containerregistryhostname) | string | The Container Registry hostname where the docker images for the frontend are located. |
 | [`cosmosLocation`](#parameter-cosmoslocation) | string | CosmosDB Location. |
+| [`createdBy`](#parameter-createdby) | string | Created by user name. |
 | [`embeddingDeploymentCapacity`](#parameter-embeddingdeploymentcapacity) | int | Capacity of the Embedding Model deployment. |
 | [`embeddingModel`](#parameter-embeddingmodel) | string | Name of the Text Embedding model to deploy. |
 | [`embeddingModelVersion`](#parameter-embeddingmodelversion) | string | Version of the GPT model to deploy. |
@@ -405,6 +406,14 @@ CosmosDB Location.
 - Required: No
 - Type: string
 - Default: `'eastus2'`
+
+### Parameter: `createdBy`
+
+Created by user name.
+
+- Required: No
+- Type: string
+- Default: `[if(contains(deployer(), 'userPrincipalName'), split(deployer().userPrincipalName, '@')[0], deployer().objectId)]`
 
 ### Parameter: `embeddingDeploymentCapacity`
 

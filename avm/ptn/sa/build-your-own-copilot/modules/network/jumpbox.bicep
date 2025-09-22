@@ -125,13 +125,25 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.20.0' = {
   }
 }
 
+@description('The resource ID of the deployed jumpbox virtual machine.')
 output resourceId string = vm.outputs.resourceId
+
+@description('The name of the deployed jumpbox virtual machine.')
 output name string = vm.outputs.name
+
+@description('The location where the jumpbox virtual machine is deployed.')
 output location string = vm.outputs.location
 
+@description('The resource ID of the jumpbox subnet.')
 output subnetId string = subnetResource!.outputs.resourceId
+
+@description('The name of the jumpbox subnet.')
 output subnetName string = subnetResource!.outputs.name
+
+@description('The resource ID of the jumpbox network security group.')
 output nsgId string = nsg!.outputs.resourceId
+
+@description('The name of the jumpbox network security group.')
 output nsgName string = nsg!.outputs.name
 
 @export()

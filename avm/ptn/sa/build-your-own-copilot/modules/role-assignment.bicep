@@ -16,4 +16,5 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
+@description('The role assignment resource id.')
 output roleAssignmentId string = roleAssignment.id
