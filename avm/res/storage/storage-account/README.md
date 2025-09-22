@@ -2571,9 +2571,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           publicAccess: 'None'
         }
         {
-          immutabilityPolicy: {
-            allowProtectedAppendWrites: true
-          }
           metadata: {
             testKey: 'testValue'
           }
@@ -2835,9 +2832,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             "publicAccess": "None"
           },
           {
-            "immutabilityPolicy": {
-              "allowProtectedAppendWrites": true
-            },
             "metadata": {
               "testKey": "testValue"
             },
@@ -3123,9 +3117,6 @@ param blobServices = {
       publicAccess: 'None'
     }
     {
-      immutabilityPolicy: {
-        allowProtectedAppendWrites: true
-      }
       metadata: {
         testKey: 'testValue'
       }
