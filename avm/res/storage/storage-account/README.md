@@ -2571,6 +2571,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           publicAccess: 'None'
         }
         {
+          immutabilityPolicy: {
+            allowProtectedAppendWrites: true
+            immutabilityPeriodSinceCreationInDays: 7
+          }
           metadata: {
             testKey: 'testValue'
           }
@@ -2636,14 +2640,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           shareQuota: 102400
         }
       ]
-    }
-    immutableStorageWithVersioning: {
-      enabled: true
-      immutabilityPolicy: {
-        allowProtectedAppendWrites: true
-        immutabilityPeriodSinceCreationInDays: 7
-        state: 'Unlocked'
-      }
     }
     largeFileSharesState: 'Enabled'
     localUsers: [
@@ -2832,6 +2828,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             "publicAccess": "None"
           },
           {
+            "immutabilityPolicy": {
+              "allowProtectedAppendWrites": true,
+              "immutabilityPeriodSinceCreationInDays": 7
+            },
             "metadata": {
               "testKey": "testValue"
             },
@@ -2901,16 +2901,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             "shareQuota": 102400
           }
         ]
-      }
-    },
-    "immutableStorageWithVersioning": {
-      "value": {
-        "enabled": true,
-        "immutabilityPolicy": {
-          "allowProtectedAppendWrites": true,
-          "immutabilityPeriodSinceCreationInDays": 7,
-          "state": "Unlocked"
-        }
       }
     },
     "largeFileSharesState": {
@@ -3117,6 +3107,10 @@ param blobServices = {
       publicAccess: 'None'
     }
     {
+      immutabilityPolicy: {
+        allowProtectedAppendWrites: true
+        immutabilityPeriodSinceCreationInDays: 7
+      }
       metadata: {
         testKey: 'testValue'
       }
@@ -3182,14 +3176,6 @@ param fileServices = {
       shareQuota: 102400
     }
   ]
-}
-param immutableStorageWithVersioning = {
-  enabled: true
-  immutabilityPolicy: {
-    allowProtectedAppendWrites: true
-    immutabilityPeriodSinceCreationInDays: 7
-    state: 'Unlocked'
-  }
 }
 param largeFileSharesState = 'Enabled'
 param localUsers = [
