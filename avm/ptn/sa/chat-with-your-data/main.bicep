@@ -350,7 +350,6 @@ var blobContainerName = 'documents'
 var queueName = 'doc-processing'
 var clientKey = '${uniqueString(guid(subscription().id, deployment().name))}${newGuidString}'
 var eventGridSystemTopicName = 'doc-processing'
-// var tags = { 'azd-env-name': solutionName }
 var baseUrl = 'https://raw.githubusercontent.com/Azure-Samples/chat-with-your-data-solution-accelerator/waf-avm/'
 var appversion = 'latest' // Update GIT deployment branch
 var registryName = 'cwydcontainerregpk' // Update Registry name
@@ -501,7 +500,6 @@ var dnsZoneIndex = {
   openAI: 7
   keyVault: 8
   machinelearning: 9
-  // The indexes for 'storageFile' and 'containerRegistry' have been removed as they were unused
 }
 
 // ===================================================
@@ -633,7 +631,6 @@ module postgresDBModule 'br/public:avm/res/db-for-postgre-sql/flexible-server:0.
     highAvailability: enableRedundancy ? 'ZoneRedundant' : 'Disabled'
     highAvailabilityZone: enableRedundancy ? 2 : -1
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
-    //delegatedSubnetResourceId: enablePrivateNetworking ? network!.outputs.subnetPrivateEndpointsResourceId : null
     privateEndpoints: enablePrivateNetworking
       ? [
           {
@@ -1009,7 +1006,6 @@ module search 'br/public:avm/res/search/search-service:0.11.1' = if (databaseTyp
                 {
                   name: 'search-dns-zone-group-blob'
                   privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.searchService]!.outputs.resourceId
-                  // privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.storageBlob].outputs.resourceId.value
                 }
               ]
             }
@@ -1083,7 +1079,6 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.5.0' = {
     // WAF aligned configuration for Redundancy
     zoneRedundant: enableRedundancy ? true : false
   }
-  // scope: resourceGroup()
 }
 
 var postgresDBFqdn = '${postgresResourceName}.postgres.database.azure.com'
@@ -1556,7 +1551,6 @@ module storage './modules/storage/storage-account/storage-account.bicep' = {
                 {
                   name: 'storage-dns-zone-group-blob'
                   privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.storageBlob]!.outputs.resourceId
-                  // privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.storageBlob].outputs.resourceId.value
                 }
               ]
             }

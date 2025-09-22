@@ -83,10 +83,13 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = {
   }
 }
 
+@description('The name of the virtual network.')
 output name string = virtualNetwork.outputs.name
+
+@description('The resource ID of the virtual network.')
 output resourceId string = virtualNetwork.outputs.resourceId
 
-// combined output array that holds subnet details along with NSG information
+@description('An array of subnet information including associated network security group details.')
 output subnets subnetOutputType[] = [
   for (subnet, i) in subnets: {
     name: subnet.name
