@@ -111,7 +111,6 @@ This test deploys the Chat with your data Solution Accelerator using parameters 
 module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   name: 'chatWithYourDataDeployment'
   params: {
-    createdBy: 'AVM_Pipeline'
     enableMonitoring: true
     enablePrivateNetworking: true
     enableRedundancy: true
@@ -137,9 +136,6 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "createdBy": {
-      "value": "AVM_Pipeline"
-    },
     "enableMonitoring": {
       "value": true
     },
@@ -181,7 +177,6 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
 
-param createdBy = 'AVM_Pipeline'
 param enableMonitoring = true
 param enablePrivateNetworking = true
 param enableRedundancy = true
@@ -209,7 +204,6 @@ This test deploys the sandbox configuration for Chat with your data Solution Acc
 module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   name: 'chatWithYourDataDeployment'
   params: {
-    createdBy: 'AVM_Pipeline'
     location: '<location>'
     solutionName: 'scwydsmin001'
   }
@@ -228,9 +222,6 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "createdBy": {
-      "value": "AVM_Pipeline"
-    },
     "location": {
       "value": "<location>"
     },
@@ -251,7 +242,6 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
 
-param createdBy = 'AVM_Pipeline'
 param location = '<location>'
 param solutionName = 'scwydsmin001'
 ```
@@ -313,7 +303,7 @@ param solutionName = 'scwydsmin001'
 | [`computerVisionVectorizeImageApiVersion`](#parameter-computervisionvectorizeimageapiversion) | string | Azure Computer Vision Vectorize Image API Version. |
 | [`computerVisionVectorizeImageModelVersion`](#parameter-computervisionvectorizeimagemodelversion) | string | Azure Computer Vision Vectorize Image Model Version. |
 | [`conversationFlow`](#parameter-conversationflow) | string | Chat conversation type: custom or byod. If the database type is PostgreSQL, set this to custom. |
-| [`createdBy`](#parameter-createdby) | string | The name of user who is creating this deployment. |
+| [`createdBy`](#parameter-createdby) | string | Created by user name. |
 | [`databaseType`](#parameter-databasetype) | string | The type of database to deploy (cosmos or postgres). |
 | [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
@@ -761,11 +751,11 @@ Chat conversation type: custom or byod. If the database type is PostgreSQL, set 
 
 ### Parameter: `createdBy`
 
-The name of user who is creating this deployment.
+Created by user name.
 
 - Required: No
 - Type: string
-- Default: `[if(empty(deployer().userPrincipalName), '', split(deployer().userPrincipalName, '@')[0])]`
+- Default: `[if(contains(deployer(), 'userPrincipalName'), split(deployer().userPrincipalName, '@')[0], deployer().objectId)]`
 
 ### Parameter: `databaseType`
 

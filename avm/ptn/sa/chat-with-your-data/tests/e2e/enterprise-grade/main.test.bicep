@@ -38,9 +38,6 @@ var enforcedLocation = 'australiaeast'
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
-  tags: {
-    SecurityControl: 'Ignore'
-  }
 }
 
 // ============== //
@@ -61,7 +58,6 @@ module testDeployment '../../../main.bicep' = [
       enableMonitoring: true
       enablePrivateNetworking: true
       enableRedundancy: true
-      createdBy: 'AVM_Pipeline'
       virtualMachineAdminUsername: 'adminuser'
       virtualMachineAdminPassword: vmAdminPassword
     }

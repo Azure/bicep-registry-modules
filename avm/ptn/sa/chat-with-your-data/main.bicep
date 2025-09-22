@@ -378,8 +378,11 @@ var allTags = union(
   },
   tags
 )
-@description('Optional. The name of user who is creating this deployment.')
-param createdBy string = empty(deployer().userPrincipalName) ? '' : split(deployer().userPrincipalName, '@')[0]
+
+@description('Optional. Created by user name.')
+param createdBy string = contains(deployer(), 'userPrincipalName')
+  ? split(deployer().userPrincipalName, '@')[0]
+  : deployer().objectId
 
 resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
   name: 'default'
