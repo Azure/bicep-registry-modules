@@ -46,11 +46,3 @@ module testDeployment '../../../main.bicep' = {
     }
   }
 }
-
-module primeter 'perimeter.bicep' = {
-  scope: resourceGroup
-  params: {
-    perimeterName: '${namePrefix}${serviceShort}001'
-    cosmosDbResourceId: testDeployment.outputs.resourceId
-  }
-}

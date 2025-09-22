@@ -44,11 +44,3 @@ module testDeployment '../../../main.bicep' = {
     publicNetworkAccess: 'SecuredByPerimeter'
   }
 }
-
-module primeter 'perimeter.bicep' = {
-  scope: resourceGroup
-  params: {
-    perimeterName: '${namePrefix}${serviceShort}001'
-    storageAccountResourceId: testDeployment.outputs.resourceId
-  }
-}
