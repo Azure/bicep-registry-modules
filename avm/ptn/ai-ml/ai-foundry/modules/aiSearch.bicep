@@ -38,7 +38,7 @@ resource existingSearchService 'Microsoft.Search/searchServices@2025-05-01' exis
 
 var privateNetworkingEnabled = !empty(privateDnsZoneResourceId) && !empty(privateEndpointSubnetResourceId)
 
-module aiSearch 'br/public:avm/res/search/search-service:0.11.0' = if (empty(existingResourceId)) {
+module aiSearch 'br/public:avm/res/search/search-service:0.11.1' = if (empty(existingResourceId)) {
   name: take('avm.res.search.search-service.${name}', 64)
   params: {
     name: name
