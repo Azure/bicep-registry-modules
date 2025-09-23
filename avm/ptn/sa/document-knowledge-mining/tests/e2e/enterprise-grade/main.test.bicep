@@ -11,10 +11,6 @@ targetScope = 'subscription'
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-sa-dkm-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-#disable-next-line no-unused-params // overridden below to avoid the allowed location list validation
-param resourceLocation string = deployment().location
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'sdkmswaf'
 
