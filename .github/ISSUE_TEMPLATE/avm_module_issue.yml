@@ -77,6 +77,7 @@ body:
         - "avm/ptn/sa/chat-with-your-data"
         - "avm/ptn/sa/content-processing"
         - "avm/ptn/sa/conversation-knowledge-mining"
+        - "avm/ptn/sa/document-knowledge-mining"
         - "avm/ptn/sa/modernize-your-code"
         - "avm/ptn/sa/multi-agent-custom-automation-engine"
         - "avm/ptn/security/security-center"
