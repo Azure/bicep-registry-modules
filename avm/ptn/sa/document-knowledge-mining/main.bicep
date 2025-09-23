@@ -353,6 +353,7 @@ module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3
     acrSku: 'Standard'
     publicNetworkAccess: 'Enabled'
     zoneRedundancy: 'Disabled'
+    enableTelemetry: enableTelemetry
     roleAssignments: [
       {
         principalId: managedCluster.outputs.systemAssignedMIPrincipalId
