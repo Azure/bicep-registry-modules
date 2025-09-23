@@ -14,14 +14,8 @@ param serviceShort string = 'byoc-min'
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-sa.cps-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
-
-@description('Timestamp for environment name uniqueness.')
-param environmentTimestamp string = take(uniqueString(utcNow()), 5)
 
 // ============ //
 // Dependencies //

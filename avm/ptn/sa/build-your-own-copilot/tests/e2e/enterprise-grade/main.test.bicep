@@ -11,9 +11,6 @@ metadata description = 'This instance deploys the Build Your Own Copilot Solutio
 @maxLength(90)
 param resourceGroupName string = 'dep-waf-${namePrefix}-sa.byoc-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints. Remove.')
 param serviceShort string = 'byoc-waf'
 
@@ -32,8 +29,8 @@ var enforcedLocation = 'australiaeast'
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
-name: resourceGroupName
-location: enforcedLocation
+  name: resourceGroupName
+  location: enforcedLocation
 }
 
 // ============== //
@@ -42,19 +39,19 @@ location: enforcedLocation
 
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
-for iteration in ['init', 'idem']: {
-scope: resourceGroup
-name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-params: {
-azureAiServiceLocation: enforcedLocation
-enablePrivateNetworking: true
-enableMonitoring: true
-enablePurgeProtection: true
-enableRedundancy: true
-enableScalability: true
-enableTelemetry: true
-vmAdminUsername: 'adminuser'
-vmAdminPassword: virtualMachineAdminPassword
-}
-}
+  for iteration in ['init', 'idem']: {
+      scope: resourceGroup
+      name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+      params: {
+      azureAiServiceLocation: enforcedLocation
+      enablePrivateNetworking: true
+      enableMonitoring: true
+      enablePurgeProtection: true
+      enableRedundancy: true
+      enableScalability: true
+      enableTelemetry: true
+      vmAdminUsername: 'adminuser'
+      vmAdminPassword: virtualMachineAdminPassword
+    }
+  }
 ]
