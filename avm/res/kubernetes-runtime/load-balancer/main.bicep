@@ -13,7 +13,7 @@ param enableTelemetry bool = true
 param clusterName string
 
 @description('Required. IP Range - The IP addresses that this load balancer will advertise.')
-param addresses resourceInput<'Microsoft.KubernetesRuntime/loadBalancers@2024-03-01'>.properties.addresses
+param addresses string[]
 
 @description('Required. Advertise Mode - The mode in which the load balancer should advertise the IP addresses.')
 @allowed([
@@ -21,13 +21,16 @@ param addresses resourceInput<'Microsoft.KubernetesRuntime/loadBalancers@2024-03
   'BGP'
   'Both'
 ])
-param advertiseMode resourceInput<'Microsoft.KubernetesRuntime/loadBalancers@2024-03-01'>.properties.advertiseMode
+param advertiseMode string
 
 @description('Optional. The list of BGP peers it should advertise to. Null or empty means to advertise to all peers.')
-param bgpPeers resourceInput<'Microsoft.KubernetesRuntime/loadBalancers@2024-03-01'>.properties.bgpPeers?
+param bgpPeers string[]?
 
 @description('Optional. A dynamic label mapping to select related services. For instance, if you want to create a load balancer only for services with label "a=b", then please specify {"a": "b"} in the field.')
-param serviceSelector resourceInput<'Microsoft.KubernetesRuntime/loadBalancers@2024-03-01'>.properties.serviceSelector?
+param serviceSelector {
+  @description('Optional. Any additional property for service selector.')
+  *: string
+}?
 
 @description('Required. The service principal object ID of the Kubernetes Runtime HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 087fca6e-4606-4d41-b3f6-5ebdf75b8b4c`.')
 @secure()

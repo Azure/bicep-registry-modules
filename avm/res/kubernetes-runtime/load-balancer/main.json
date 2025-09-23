@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "10156071387304067618"
+      "templateHash": "17842100015260510656"
     },
     "name": "Kubernetes Runtime Load Balancers",
     "description": "This module deploys a Kubernetes Runtime Load Balancer for MetalLB and related networking services."
@@ -35,46 +35,47 @@
     },
     "addresses": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "metadata": {
-        "__bicep_resource_derived_type!": {
-          "source": "Microsoft.KubernetesRuntime/loadBalancers@2024-03-01#properties/properties/properties/addresses"
-        },
         "description": "Required. IP Range - The IP addresses that this load balancer will advertise."
       }
     },
     "advertiseMode": {
       "type": "string",
-      "metadata": {
-        "__bicep_resource_derived_type!": {
-          "source": "Microsoft.KubernetesRuntime/loadBalancers@2024-03-01#properties/properties/properties/advertiseMode"
-        },
-        "description": "Required. Advertise Mode - The mode in which the load balancer should advertise the IP addresses."
-      },
       "allowedValues": [
         "ARP",
         "BGP",
         "Both"
-      ]
+      ],
+      "metadata": {
+        "description": "Required. Advertise Mode - The mode in which the load balancer should advertise the IP addresses."
+      }
     },
     "bgpPeers": {
       "type": "array",
-      "metadata": {
-        "__bicep_resource_derived_type!": {
-          "source": "Microsoft.KubernetesRuntime/loadBalancers@2024-03-01#properties/properties/properties/bgpPeers"
-        },
-        "description": "Optional. The list of BGP peers it should advertise to. Null or empty means to advertise to all peers."
+      "items": {
+        "type": "string"
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The list of BGP peers it should advertise to. Null or empty means to advertise to all peers."
+      }
     },
     "serviceSelector": {
       "type": "object",
-      "metadata": {
-        "__bicep_resource_derived_type!": {
-          "source": "Microsoft.KubernetesRuntime/loadBalancers@2024-03-01#properties/properties/properties/serviceSelector"
-        },
-        "description": "Optional. A dynamic label mapping to select related services. For instance, if you want to create a load balancer only for services with label \"a=b\", then please specify {\"a\": \"b\"} in the field."
+      "properties": {},
+      "additionalProperties": {
+        "type": "string",
+        "metadata": {
+          "description": "Optional. Any additional property for service selector."
+        }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. A dynamic label mapping to select related services. For instance, if you want to create a load balancer only for services with label \"a=b\", then please specify {\"a\": \"b\"} in the field."
+      }
     },
     "kubernetesRuntimeRPObjectId": {
       "type": "securestring",

@@ -304,6 +304,19 @@ A dynamic label mapping to select related services. For instance, if you want to
 - Required: No
 - Type: object
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-serviceselector>any_other_property<) | string | Any additional property for service selector. |
+
+### Parameter: `serviceSelector.>Any_other_property<`
+
+Any additional property for service selector.
+
+- Required: Yes
+- Type: string
+
 ## Outputs
 
 | Output | Type | Description |
