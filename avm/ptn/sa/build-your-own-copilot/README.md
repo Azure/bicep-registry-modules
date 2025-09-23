@@ -138,7 +138,17 @@ This instance deploys the Build Your Own Copilot Solution Accelerator
 module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version>' = {
   name: 'buildYourOwnCopilotDeployment'
   params: {
-
+    // Required parameters
+    azureAiServiceLocation: '<azureAiServiceLocation>'
+    enableMonitoring: true
+    enablePrivateNetworking: true
+    enablePurgeProtection: true
+    enableRedundancy: true
+    enableScalability: true
+    // Non-required parameters
+    enableTelemetry: true
+    vmAdminPassword: '<vmAdminPassword>'
+    vmAdminUsername: 'adminuser'
   }
 }
 ```
@@ -154,7 +164,37 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {}
+  "parameters": {
+    // Required parameters
+    "azureAiServiceLocation": {
+      "value": "<azureAiServiceLocation>"
+    },
+    "enableMonitoring": {
+      "value": true
+    },
+    "enablePrivateNetworking": {
+      "value": true
+    },
+    "enablePurgeProtection": {
+      "value": true
+    },
+    "enableRedundancy": {
+      "value": true
+    },
+    "enableScalability": {
+      "value": true
+    },
+    // Non-required parameters
+    "enableTelemetry": {
+      "value": true
+    },
+    "vmAdminPassword": {
+      "value": "<vmAdminPassword>"
+    },
+    "vmAdminUsername": {
+      "value": "adminuser"
+    }
+  }
 }
 ```
 
@@ -168,7 +208,17 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
 ```bicep-params
 using 'br/public:avm/ptn/sa/build-your-own-copilot:<version>'
 
-
+// Required parameters
+param azureAiServiceLocation = '<azureAiServiceLocation>'
+param enableMonitoring = true
+param enablePrivateNetworking = true
+param enablePurgeProtection = true
+param enableRedundancy = true
+param enableScalability = true
+// Non-required parameters
+param enableTelemetry = true
+param vmAdminPassword = '<vmAdminPassword>'
+param vmAdminUsername = 'adminuser'
 ```
 
 </details>

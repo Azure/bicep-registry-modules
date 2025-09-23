@@ -43,15 +43,15 @@ module testDeployment '../../../main.bicep' = [
       scope: resourceGroup
       name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
       params: {
-      azureAiServiceLocation: enforcedLocation
-      enablePrivateNetworking: true
-      enableMonitoring: true
-      enablePurgeProtection: true
-      enableRedundancy: true
-      enableScalability: true
-      enableTelemetry: true
-      vmAdminUsername: 'adminuser'
-      vmAdminPassword: virtualMachineAdminPassword
+        azureAiServiceLocation: enforcedLocation
+        enablePrivateNetworking: true
+        enableMonitoring: true
+        enablePurgeProtection: true
+        enableRedundancy: true
+        enableScalability: true
+        enableTelemetry: true
+        vmAdminUsername: 'adminuser'
+        vmAdminPassword: virtualMachineAdminPassword
+      }
     }
-  }
 ]
