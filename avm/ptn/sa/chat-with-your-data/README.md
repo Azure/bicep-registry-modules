@@ -257,6 +257,7 @@ param solutionName = 'scwydsmin001'
 | :-- | :-- | :-- |
 | [`advancedImageProcessingMaxImages`](#parameter-advancedimageprocessingmaximages) | int | The maximum number of images to pass to the vision model in a single request. |
 | [`appEnvironment`](#parameter-appenvironment) | string | Application Environment. |
+| [`appversion`](#parameter-appversion) | string | Image version tag to use. |
 | [`azureOpenAIApiVersion`](#parameter-azureopenaiapiversion) | string | Azure OpenAI Api Version. |
 | [`azureOpenAIEmbeddingModel`](#parameter-azureopenaiembeddingmodel) | string | Azure OpenAI Embedding Model Deployment Name. |
 | [`azureOpenAIEmbeddingModelCapacity`](#parameter-azureopenaiembeddingmodelcapacity) | int | Azure OpenAI Embedding Model Capacity - See here for more info https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota . |
@@ -343,6 +344,14 @@ Application Environment.
 - Required: No
 - Type: string
 - Default: `'Prod'`
+
+### Parameter: `appversion`
+
+Image version tag to use.
+
+- Required: No
+- Type: string
+- Default: `'2025-09-23_3542'`
 
 ### Parameter: `azureOpenAIApiVersion`
 

@@ -346,13 +346,15 @@ param virtualMachineAdminPassword string = ''
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. Image version tag to use.')
+param appversion string = '2025-09-23_3542'
+
 var blobContainerName = 'documents'
 var queueName = 'doc-processing'
 var clientKey = '${uniqueString(guid(subscription().id, deployment().name))}${newGuidString}'
 var eventGridSystemTopicName = 'doc-processing'
-var baseUrl = 'https://raw.githubusercontent.com/Azure-Samples/chat-with-your-data-solution-accelerator/waf-avm/'
-var appversion = 'latest' // Update GIT deployment branch
-var registryName = 'cwydcontainerregpk' // Update Registry name
+var baseUrl = 'https://raw.githubusercontent.com/Azure-Samples/chat-with-your-data-solution-accelerator/dev/'
+var registryName = 'cwydcontainerreg'
 
 var openAIFunctionsSystemPrompt = '''You help employees to navigate only private information sources.
     You must prioritize the function call over your general knowledge for any question by calling the search_documents function.
