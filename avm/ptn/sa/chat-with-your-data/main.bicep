@@ -347,13 +347,13 @@ param virtualMachineAdminPassword string = ''
 param enableTelemetry bool = true
 
 @description('Optional. Image version tag to use.')
-param appversion string = '2025-09-23_3542'
+param appversion string = 'latest_waf_2025-09-24_3564'
 
 var blobContainerName = 'documents'
 var queueName = 'doc-processing'
 var clientKey = '${uniqueString(guid(subscription().id, deployment().name))}${newGuidString}'
 var eventGridSystemTopicName = 'doc-processing'
-var baseUrl = 'https://raw.githubusercontent.com/Azure-Samples/chat-with-your-data-solution-accelerator/dev/'
+var baseUrl = 'https://raw.githubusercontent.com/Azure-Samples/chat-with-your-data-solution-accelerator/main/'
 var registryName = 'cwydcontainerreg'
 
 var openAIFunctionsSystemPrompt = '''You help employees to navigate only private information sources.

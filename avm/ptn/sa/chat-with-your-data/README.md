@@ -351,7 +351,7 @@ Image version tag to use.
 
 - Required: No
 - Type: string
-- Default: `'2025-09-23_3542'`
+- Default: `'latest_waf_2025-09-24_3564'`
 
 ### Parameter: `azureOpenAIApiVersion`
 
