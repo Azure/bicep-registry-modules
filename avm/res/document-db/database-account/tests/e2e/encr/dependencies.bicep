@@ -41,7 +41,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
 
 resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Reader-RoleAssignment')
-  scope: keyVault //::key - TODO: Undo
+  scope: keyVault::key
   properties: {
     principalId: managedIdentity.properties.principalId
     roleDefinitionId: subscriptionResourceId(
