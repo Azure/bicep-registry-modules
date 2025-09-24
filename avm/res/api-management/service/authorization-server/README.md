@@ -7,12 +7,13 @@ This module deploys an API Management Service Authorization Server.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.ApiManagement/service/authorizationServers` | 2022-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_authorizationservers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/authorizationServers)</li></ul> |
+| `Microsoft.ApiManagement/service/authorizationServers` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_authorizationservers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/authorizationServers)</li></ul> |
 
 ## Parameters
 
@@ -42,6 +43,7 @@ This module deploys an API Management Service Authorization Server.
 | [`clientAuthenticationMethod`](#parameter-clientauthenticationmethod) | array | Method of authentication supported by the token endpoint of this authorization server. Possible values are Basic and/or Body. When Body is specified, client credentials and other parameters are passed within the request body in the application/x-www-form-urlencoded format. - Basic or Body. |
 | [`clientRegistrationEndpoint`](#parameter-clientregistrationendpoint) | string | Optional reference to a page where client or app registration for this authorization server is performed. Contains absolute URL to entity being referenced. |
 | [`defaultScope`](#parameter-defaultscope) | string | Access token scope that is going to be requested by default. Can be overridden at the API level. Should be provided in the form of a string containing space-delimited values. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`resourceOwnerPassword`](#parameter-resourceownerpassword) | securestring | Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner password. |
 | [`resourceOwnerUsername`](#parameter-resourceownerusername) | string | Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner username. |
 | [`serverDescription`](#parameter-serverdescription) | string | Description of the authorization server. Can contain HTML formatting tags. |
@@ -162,6 +164,14 @@ Access token scope that is going to be requested by default. Can be overridden a
 - Type: string
 - Default: `''`
 
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `resourceOwnerPassword`
 
 Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner password.
@@ -202,27 +212,6 @@ Additional parameters required by the token endpoint of this authorization serve
 - Type: array
 - Default: `[]`
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-tokenbodyparametersname) | string | Body parameter name. |
-| [`value`](#parameter-tokenbodyparametersvalue) | string | Body parameter value. |
-
-### Parameter: `tokenBodyParameters.name`
-
-Body parameter name.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `tokenBodyParameters.value`
-
-Body parameter value.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `tokenEndpoint`
 
 OAuth token endpoint. Contains absolute URI to entity being referenced.
@@ -238,3 +227,7 @@ OAuth token endpoint. Contains absolute URI to entity being referenced.
 | `name` | string | The name of the API management service authorization server. |
 | `resourceGroupName` | string | The resource group the API management service authorization server was deployed into. |
 | `resourceId` | string | The resource ID of the API management service authorization server. |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

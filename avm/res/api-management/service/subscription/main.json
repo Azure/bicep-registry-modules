@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "3748720225613039754"
+      "version": "0.37.4.10188",
+      "templateHash": "8450474183617387575"
     },
     "name": "API Management Service Subscriptions",
     "description": "This module deploys an API Management Service Subscription."
@@ -72,18 +72,45 @@
       "metadata": {
         "description": "Required. Subscription name."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.apimgmt-subscription.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "service": {
       "existing": true,
       "type": "Microsoft.ApiManagement/service",
-      "apiVersion": "2023-05-01-preview",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('apiManagementServiceName')]"
     },
     "subscription": {
       "type": "Microsoft.ApiManagement/service/subscriptions",
-      "apiVersion": "2022-08-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "scope": "[parameters('scope')]",

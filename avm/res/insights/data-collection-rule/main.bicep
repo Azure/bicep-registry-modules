@@ -152,14 +152,18 @@ output resourceId string = dataCollectionRuleProperties.kind == 'All' ? dataColl
 output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
-output location string = dataCollectionRuleProperties.kind == 'All'
-  ? dataCollectionRuleAll.location
-  : dataCollectionRule.location
+output location string = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll!.location : dataCollectionRule!.location
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = dataCollectionRuleProperties.kind == 'All'
   ? dataCollectionRuleAll.?identity.?principalId
   : dataCollectionRule.?identity.?principalId
+
+@description('The endpoints of the dataCollectionRule, if created.')
+output endpoints resourceOutput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.endpoints? = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll!.properties.?endpoints : dataCollectionRule!.properties.?endpoints
+
+@description('The ImmutableId of the dataCollectionRule.')
+output immutableId string? = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll!.properties.?immutableId : dataCollectionRule!.properties.?immutableId
 
 // =============== //
 //   Definitions   //

@@ -139,20 +139,45 @@ var formattedRoleAssignments = [
   })
 ]
 
+// Reserve 4 chars for "-<idx>" (supports up to 999 iterations) for wait deployment names to avoid truncating the index (which must remain unique)
+var deploymentNameIndexSuffixReserve = 4
+var deploymentNameBaseMax = 64 - deploymentNameIndexSuffixReserve
+
 var deploymentNames = {
-  mg: '${uniqueString(deployment().name, location)}-alz-mg-${managementGroupName}'
-  mgSubPlacement: '${uniqueString(deployment().name, location)}-alz-sub-place-${managementGroupName}'
-  mgSubPlacementWait: '${uniqueString(deployment().name, location)}-alz-sub-place-wait-${managementGroupName}'
-  mgRoleAssignments: '${uniqueString(deployment().name, location)}-alz-mg-rbac-asi-${managementGroupName}'
-  mgRoleDefinitions: '${uniqueString(deployment().name, location)}-alz-mg-rbac-def-${managementGroupName}'
-  mgRoleDefinitionsWait: '${uniqueString(deployment().name, location)}-alz-rbac-def-wait-${managementGroupName}'
-  mgRoleAssignmentsWait: '${uniqueString(deployment().name, location)}-alz-rbac-asi-wait-${managementGroupName}'
-  mgCustomPolicyDefinitionsWait: '${uniqueString(deployment().name, location)}-alz-pol-def-wait-${managementGroupName}'
-  mgCustomPolicySetDefinitionsWait: '${uniqueString(deployment().name, location)}-alz-pol-init-wait-${managementGroupName}'
-  mgPolicyDefinitions: '${uniqueString(deployment().name, location)}-alz-mg-pol-def-${managementGroupName}'
-  mgPolicySetDefinitions: '${uniqueString(deployment().name, location)}-alz-mg-pol-init-${managementGroupName}'
-  mgPolicyAssignments: '${uniqueString(deployment().name, location)}-alz-mg-pol-asi-${managementGroupName}'
-  mgPolicyAssignmentsWait: '${uniqueString(deployment().name, location)}-alz-pol-asi-wait${managementGroupName}'
+  mg: take('${uniqueString(deployment().name, location)}-alz-mg-${managementGroupName}', 64)
+  mgSubPlacement: take('${uniqueString(deployment().name, location)}-alz-sub-place-${managementGroupName}', 64)
+  mgSubPlacementWait: take(
+    '${uniqueString(deployment().name, location)}-alz-sub-place-wait-${managementGroupName}',
+    deploymentNameBaseMax
+  )
+  mgRoleAssignments: take('${uniqueString(deployment().name, location)}-alz-mg-rbac-asi-${managementGroupName}', 64)
+  mgRoleDefinitions: take('${uniqueString(deployment().name, location)}-alz-mg-rbac-def-${managementGroupName}', 64)
+  mgRoleDefinitionsWait: take(
+    '${uniqueString(deployment().name, location)}-alz-rbac-def-wait-${managementGroupName}',
+    deploymentNameBaseMax
+  )
+  mgRoleAssignmentsWait: take(
+    '${uniqueString(deployment().name, location)}-alz-rbac-asi-wait-${managementGroupName}',
+    deploymentNameBaseMax
+  )
+  mgCustomPolicyDefinitionsWait: take(
+    '${uniqueString(deployment().name, location)}-alz-pol-def-wait-${managementGroupName}',
+    deploymentNameBaseMax
+  )
+  mgCustomPolicySetDefinitionsWait: take(
+    '${uniqueString(deployment().name, location)}-alz-pol-init-wait-${managementGroupName}',
+    deploymentNameBaseMax
+  )
+  mgPolicyDefinitions: take('${uniqueString(deployment().name, location)}-alz-mg-pol-def-${managementGroupName}', 64)
+  mgPolicySetDefinitions: take(
+    '${uniqueString(deployment().name, location)}-alz-mg-pol-init-${managementGroupName}',
+    64
+  )
+  mgPolicyAssignments: take('${uniqueString(deployment().name, location)}-alz-mg-pol-asi-${managementGroupName}', 64)
+  mgPolicyAssignmentsWait: take(
+    '${uniqueString(deployment().name, location)}-alz-pol-asi-wait${managementGroupName}',
+    deploymentNameBaseMax
+  )
 }
 
 var filteredManagementGroupPolicyAssignments = filter(

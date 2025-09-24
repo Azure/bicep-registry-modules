@@ -2,6 +2,19 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/ai-ml/ai-foundry/CHANGELOG.md).
 
+## 0.4.0
+
+### Changes
+
+- Added support for Cognitive Services `disableLocalAuth`
+- Added input parameter `aiFoundryConfiguration.disableLocalAuth`
+- Updated Project logic to only provision the `deploymentScript` "wait" scripts if creating Connections for the Project
+- Updated interior module versions
+
+### Breaking Changes
+
+- The new parameter `disableLocalAuth` is optional but defaults to `true` to match with the Cognitive Services AVM resource module. Previously in this pattern module, `disableLocalAuth` was hard set to `false` for the internal Cognitive Services resource. The new parameter `disableLocalAuth` will need to be set explicitly to `false` to keep previous version functionality. It is recommended for security reasons to use the default value of `true`.
+
 ## 0.3.0
 
 ### Changes
@@ -14,6 +27,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added input parameter `aiFoundryConfiguration.networking.agentServiceSubnetResourceId`
 - Set Foundry Account `disableLocalAuth` to false to support Capability Hosts
 - Set Foundry Account `networkAcls.defaultAction` to 'Allow' to support Capability Hosts
+- Enabled custom notes for locks.
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 
@@ -21,17 +36,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Renamed all input parameters ending in `subnetId` to `subnetResourceId`
 - Renamed all input parameters ending in `privateDnsZoneId` to `privateDnsZoneResourceId`
 - Removed input parameter `storageAccountConfiguration.containerName`
-
-## 0.2.1
-
-### Changes
-
-- Enabled custom notes for locks.
-- Updated ReadMe with AzAdvertizer reference
-
-### Breaking Changes
-
-- None
 
 ## 0.2.0
 

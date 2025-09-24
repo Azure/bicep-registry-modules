@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "15052551736982652592"
+      "templateHash": "11645590068339312354"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -141,6 +141,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Whether to create Capability Hosts for the AI Agent Service. If true, the AI Foundry Account and default Project will be created with the capability host for the associated resources. Can only be true if 'includeAssociatedResources' is true. Defaults to false."
+          }
+        },
+        "disableLocalAuth": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Allow only Azure AD authentication. Should be enabled for security reasons. Defaults to true."
           }
         },
         "allowProjectManagement": {
@@ -378,7 +385,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -605,6 +612,9 @@
           "name": "[if(not(empty(tryGet(parameters('aiFoundryConfiguration'), 'accountName'))), createObject('value', parameters('aiFoundryConfiguration').accountName), createObject('value', format('ai{0}', variables('resourcesName'))))]",
           "location": "[if(not(empty(tryGet(parameters('aiFoundryConfiguration'), 'location'))), createObject('value', parameters('aiFoundryConfiguration').location), createObject('value', parameters('location')))]",
           "sku": "[if(not(empty(tryGet(parameters('aiFoundryConfiguration'), 'sku'))), createObject('value', parameters('aiFoundryConfiguration').sku), createObject('value', 'S0'))]",
+          "disableLocalAuth": {
+            "value": "[coalesce(tryGet(parameters('aiFoundryConfiguration'), 'disableLocalAuth'), true())]"
+          },
           "allowProjectManagement": {
             "value": "[coalesce(tryGet(parameters('aiFoundryConfiguration'), 'allowProjectManagement'), true())]"
           },
@@ -639,7 +649,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "7176206729749411912"
+              "templateHash": "6243927399917536238"
             }
           },
           "definitions": {
@@ -917,6 +927,12 @@
                 "description": "Optional. Resource Id of an existing subnet to use for agent connectivity. This is required when using agents with private endpoints."
               }
             },
+            "disableLocalAuth": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Allow only Azure AD authentication. Should be enabled for security reasons."
+              }
+            },
             "roleAssignments": {
               "type": "array",
               "items": {
@@ -1028,7 +1044,7 @@
                     "value": "[parameters('name')]"
                   },
                   "disableLocalAuth": {
-                    "value": false
+                    "value": "[parameters('disableLocalAuth')]"
                   },
                   "publicNetworkAccess": "[if(variables('privateNetworkingEnabled'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                   "networkAcls": {
@@ -1054,7 +1070,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "18408784030873090876"
+                      "templateHash": "9381727816193702843"
                     },
                     "name": "Cognitive Services",
                     "description": "This module deploys a Cognitive Service."
@@ -1382,7 +1398,73 @@
                         "description": "Type for network configuration in AI Foundry where virtual network injection occurs to secure scenarios like Agents entirely within a private network."
                       }
                     },
-                    "_1.privateEndpointCustomDnsConfigType": {
+                    "_1.secretSetOutputType": {
+                      "type": "object",
+                      "properties": {
+                        "secretResourceId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "The resourceId of the exported secret."
+                          }
+                        },
+                        "secretUri": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "The secret URI of the exported secret."
+                          }
+                        },
+                        "secretUriWithVersion": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "The secret URI with version of the exported secret."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                        }
+                      }
+                    },
+                    "_2.lockType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the name of lock."
+                          }
+                        },
+                        "kind": {
+                          "type": "string",
+                          "allowedValues": [
+                            "CanNotDelete",
+                            "None",
+                            "ReadOnly"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the type of lock."
+                          }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a lock.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                        }
+                      }
+                    },
+                    "_2.privateEndpointCustomDnsConfigType": {
                       "type": "object",
                       "properties": {
                         "fqdn": {
@@ -1404,11 +1486,11 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
-                    "_1.privateEndpointIpConfigurationType": {
+                    "_2.privateEndpointIpConfigurationType": {
                       "type": "object",
                       "properties": {
                         "name": {
@@ -1446,11 +1528,11 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
-                    "_1.privateEndpointPrivateDnsZoneGroupType": {
+                    "_2.privateEndpointPrivateDnsZoneGroupType": {
                       "type": "object",
                       "properties": {
                         "name": {
@@ -1487,36 +1569,82 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
-                    "_1.secretSetOutputType": {
+                    "_2.roleAssignmentType": {
                       "type": "object",
                       "properties": {
-                        "secretResourceId": {
+                        "name": {
                           "type": "string",
+                          "nullable": true,
                           "metadata": {
-                            "description": "The resourceId of the exported secret."
+                            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
                           }
                         },
-                        "secretUri": {
+                        "roleDefinitionIdOrName": {
                           "type": "string",
                           "metadata": {
-                            "description": "The secret URI of the exported secret."
+                            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
                           }
                         },
-                        "secretUriWithVersion": {
+                        "principalId": {
                           "type": "string",
                           "metadata": {
-                            "description": "The secret URI with version of the exported secret."
+                            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                          }
+                        },
+                        "principalType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Device",
+                            "ForeignGroup",
+                            "Group",
+                            "ServicePrincipal",
+                            "User"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The principal type of the assigned principal ID."
+                          }
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The description of the role assignment."
+                          }
+                        },
+                        "condition": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                          }
+                        },
+                        "conditionVersion": {
+                          "type": "string",
+                          "allowedValues": [
+                            "2.0"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Version of the condition."
+                          }
+                        },
+                        "delegatedManagedIdentityResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The Resource Id of the delegated managed identity resource."
                           }
                         }
                       },
                       "metadata": {
-                        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
+                        "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -1789,7 +1917,7 @@
                           }
                         },
                         "privateDnsZoneGroup": {
-                          "$ref": "#/definitions/_1.privateEndpointPrivateDnsZoneGroupType",
+                          "$ref": "#/definitions/_2.privateEndpointPrivateDnsZoneGroupType",
                           "nullable": true,
                           "metadata": {
                             "description": "Optional. The private DNS Zone Group to configure for the Private Endpoint."
@@ -1813,7 +1941,7 @@
                         "customDnsConfigs": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/definitions/_1.privateEndpointCustomDnsConfigType"
+                            "$ref": "#/definitions/_2.privateEndpointCustomDnsConfigType"
                           },
                           "nullable": true,
                           "metadata": {
@@ -1823,7 +1951,7 @@
                         "ipConfigurations": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/definitions/_1.privateEndpointIpConfigurationType"
+                            "$ref": "#/definitions/_2.privateEndpointIpConfigurationType"
                           },
                           "nullable": true,
                           "metadata": {
@@ -1848,7 +1976,7 @@
                           }
                         },
                         "lock": {
-                          "$ref": "#/definitions/lockType",
+                          "$ref": "#/definitions/_2.lockType",
                           "nullable": true,
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
@@ -1857,7 +1985,7 @@
                         "roleAssignments": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/definitions/roleAssignmentType"
+                            "$ref": "#/definitions/_2.roleAssignmentType"
                           },
                           "nullable": true,
                           "metadata": {
@@ -1868,6 +1996,9 @@
                           "type": "object",
                           "nullable": true,
                           "metadata": {
+                            "__bicep_resource_derived_type!": {
+                              "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+                            },
                             "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
                           }
                         },
@@ -1882,7 +2013,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -2300,7 +2431,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.cognitiveservices-account.{0}.{1}', replace('0.13.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.cognitiveservices-account.{0}.{1}', replace('0.13.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -3555,7 +3686,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "3619843058281336187"
+              "templateHash": "12549259947960277956"
             }
           },
           "definitions": {
@@ -3875,7 +4006,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "9847220803814850914"
+                      "templateHash": "8811577289487069918"
                     },
                     "name": "Key Vaults",
                     "description": "This module deploys a Key Vault."
@@ -4424,7 +4555,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -4466,7 +4597,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -4507,7 +4638,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -4629,7 +4760,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -4666,7 +4797,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -4794,6 +4925,9 @@
                           "type": "object",
                           "nullable": true,
                           "metadata": {
+                            "__bicep_resource_derived_type!": {
+                              "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+                            },
                             "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
                           }
                         },
@@ -4808,7 +4942,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -4883,7 +5017,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -5202,7 +5336,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.keyvault-vault.{0}.{1}', replace('0.13.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.keyvault-vault.{0}.{1}', replace('0.13.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -5336,6 +5470,9 @@
                           },
                           "accessPolicies": {
                             "value": "[parameters('accessPolicies')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
                         },
                         "template": {
@@ -5346,7 +5483,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.37.4.10188",
-                              "templateHash": "4539421523375369835"
+                              "templateHash": "8803020983329720581"
                             },
                             "name": "Key Vault Access Policies",
                             "description": "This module deploys a Key Vault Access Policy."
@@ -5504,9 +5641,36 @@
                               "metadata": {
                                 "description": "Optional. An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault's tenant ID."
                               }
+                            },
+                            "enableTelemetry": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Enable/Disable usage telemetry for module."
+                              }
                             }
                           },
                           "resources": {
+                            "avmTelemetry": {
+                              "condition": "[parameters('enableTelemetry')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2024-03-01",
+                              "name": "[format('46d3xbcp.res.keyvault-accesspolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "properties": {
+                                "mode": "Incremental",
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "resources": [],
+                                  "outputs": {
+                                    "telemetry": {
+                                      "type": "String",
+                                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                                    }
+                                  }
+                                }
+                              }
+                            },
                             "keyVault": {
                               "existing": true,
                               "type": "Microsoft.KeyVault/vaults",
@@ -5515,7 +5679,7 @@
                             },
                             "policies": {
                               "type": "Microsoft.KeyVault/vaults/accessPolicies",
-                              "apiVersion": "2023-07-01",
+                              "apiVersion": "2024-11-01",
                               "name": "[format('{0}/{1}', parameters('keyVaultName'), 'add')]",
                               "properties": {
                                 "copy": [
@@ -5602,6 +5766,9 @@
                           },
                           "roleAssignments": {
                             "value": "[tryGet(coalesce(parameters('secrets'), createArray())[copyIndex()], 'roleAssignments')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
                         },
                         "template": {
@@ -5612,7 +5779,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.37.4.10188",
-                              "templateHash": "8382262411419152826"
+                              "templateHash": "8701309639990049090"
                             },
                             "name": "Key Vault Secrets",
                             "description": "This module deploys a Key Vault Secret."
@@ -5689,7 +5856,7 @@
                               "metadata": {
                                 "description": "An AVM-aligned type for a role assignment.",
                                 "__bicep_imported_from!": {
-                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                                 }
                               }
                             }
@@ -5713,7 +5880,7 @@
                               "type": "object",
                               "metadata": {
                                 "__bicep_resource_derived_type!": {
-                                  "source": "Microsoft.KeyVault/vaults@2024-11-01#properties/tags"
+                                  "source": "Microsoft.KeyVault/vaults/secrets@2024-11-01#properties/tags"
                                 },
                                 "description": "Optional. Resource tags."
                               },
@@ -5762,6 +5929,13 @@
                               "metadata": {
                                 "description": "Optional. Array of role assignments to create."
                               }
+                            },
+                            "enableTelemetry": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Enable/Disable usage telemetry for module."
+                              }
                             }
                           },
                           "variables": {
@@ -5786,6 +5960,26 @@
                             }
                           },
                           "resources": {
+                            "avmTelemetry": {
+                              "condition": "[parameters('enableTelemetry')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2024-03-01",
+                              "name": "[format('46d3xbcp.res.keyvault-secret.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "properties": {
+                                "mode": "Incremental",
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "resources": [],
+                                  "outputs": {
+                                    "telemetry": {
+                                      "type": "String",
+                                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                                    }
+                                  }
+                                }
+                              }
+                            },
                             "keyVault": {
                               "existing": true,
                               "type": "Microsoft.KeyVault/vaults",
@@ -5921,6 +6115,9 @@
                           },
                           "rotationPolicy": {
                             "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'rotationPolicy')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
                         },
                         "template": {
@@ -5931,7 +6128,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.37.4.10188",
-                              "templateHash": "4632549097651981071"
+                              "templateHash": "1266219369073699726"
                             },
                             "name": "Key Vault Keys",
                             "description": "This module deploys a Key Vault Key."
@@ -6088,7 +6285,7 @@
                               "metadata": {
                                 "description": "An AVM-aligned type for a role assignment.",
                                 "__bicep_imported_from!": {
-                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                                 }
                               }
                             }
@@ -6212,6 +6409,13 @@
                               "metadata": {
                                 "description": "Optional. Key rotation policy properties object."
                               }
+                            },
+                            "enableTelemetry": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Enable/Disable usage telemetry for module."
+                              }
                             }
                           },
                           "variables": {
@@ -6237,6 +6441,26 @@
                             }
                           },
                           "resources": {
+                            "avmTelemetry": {
+                              "condition": "[parameters('enableTelemetry')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2024-03-01",
+                              "name": "[format('46d3xbcp.res.keyvault-key.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "properties": {
+                                "mode": "Incremental",
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "resources": [],
+                                  "outputs": {
+                                    "telemetry": {
+                                      "type": "String",
+                                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                                    }
+                                  }
+                                }
+                              }
+                            },
                             "keyVault": {
                               "existing": true,
                               "type": "Microsoft.KeyVault/vaults",
@@ -7245,7 +7469,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "6380830102881120586"
+              "templateHash": "14839127315456604070"
             }
           },
           "definitions": {
@@ -7559,8 +7783,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "7755499748127638943"
+                      "version": "0.37.4.10188",
+                      "templateHash": "10902281417196168235"
                     },
                     "name": "Search Services",
                     "description": "This module deploys a Search Service."
@@ -7743,6 +7967,43 @@
                         "__bicep_export!": true
                       }
                     },
+                    "_1.lockType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the name of lock."
+                          }
+                        },
+                        "kind": {
+                          "type": "string",
+                          "allowedValues": [
+                            "CanNotDelete",
+                            "None",
+                            "ReadOnly"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the type of lock."
+                          }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a lock.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                        }
+                      }
+                    },
                     "_1.privateEndpointCustomDnsConfigType": {
                       "type": "object",
                       "properties": {
@@ -7765,7 +8026,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -7807,7 +8068,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -7848,7 +8109,82 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                        }
+                      }
+                    },
+                    "_1.roleAssignmentType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                          }
+                        },
+                        "roleDefinitionIdOrName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                          }
+                        },
+                        "principalId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                          }
+                        },
+                        "principalType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Device",
+                            "ForeignGroup",
+                            "Group",
+                            "ServicePrincipal",
+                            "User"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The principal type of the assigned principal ID."
+                          }
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The description of the role assignment."
+                          }
+                        },
+                        "condition": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                          }
+                        },
+                        "conditionVersion": {
+                          "type": "string",
+                          "allowedValues": [
+                            "2.0"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Version of the condition."
+                          }
+                        },
+                        "delegatedManagedIdentityResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The Resource Id of the delegated managed identity resource."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a role assignment.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -7995,12 +8331,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -8136,7 +8479,7 @@
                           }
                         },
                         "lock": {
-                          "$ref": "#/definitions/lockType",
+                          "$ref": "#/definitions/_1.lockType",
                           "nullable": true,
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
@@ -8145,7 +8488,7 @@
                         "roleAssignments": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/definitions/roleAssignmentType"
+                            "$ref": "#/definitions/_1.roleAssignmentType"
                           },
                           "nullable": true,
                           "metadata": {
@@ -8156,6 +8499,9 @@
                           "type": "object",
                           "nullable": true,
                           "metadata": {
+                            "__bicep_resource_derived_type!": {
+                              "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+                            },
                             "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
                           }
                         },
@@ -8170,7 +8516,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -8490,7 +8836,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.search-searchservice.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.search-searchservice.{0}.{1}', replace('0.11.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -8579,7 +8925,7 @@
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
                       },
                       "dependsOn": [
                         "searchService"
@@ -9406,8 +9752,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "8458710175416618801"
+                              "version": "0.37.4.10188",
+                              "templateHash": "557730297583881254"
                             },
                             "name": "Search Services Private Link Resources",
                             "description": "This module deploys a Search Service Private Link Resource."
@@ -9526,8 +9872,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.1.42791",
-                              "templateHash": "803258357844469941"
+                              "version": "0.37.4.10188",
+                              "templateHash": "7634110751636246703"
                             }
                           },
                           "definitions": {
@@ -9805,7 +10151,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "16873663592844610603"
+              "templateHash": "6313994577106817567"
             }
           },
           "definitions": {
@@ -10131,7 +10477,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "16027397933856085759"
+                      "templateHash": "13673459900777676693"
                     },
                     "name": "Storage Accounts",
                     "description": "This module deploys a Storage Account."
@@ -10197,7 +10543,8 @@
                         }
                       },
                       "metadata": {
-                        "__bicep_export!": true
+                        "__bicep_export!": true,
+                        "description": "The type for the private endpoints output."
                       }
                     },
                     "networkAclsType": {
@@ -10271,7 +10618,8 @@
                         }
                       },
                       "metadata": {
-                        "__bicep_export!": true
+                        "__bicep_export!": true,
+                        "description": "The type for the network configuration."
                       }
                     },
                     "secretsExportConfigurationType": {
@@ -10313,7 +10661,8 @@
                         }
                       },
                       "metadata": {
-                        "__bicep_export!": true
+                        "__bicep_export!": true,
+                        "description": "The type of the exported secrets."
                       }
                     },
                     "localUserType": {
@@ -10372,10 +10721,77 @@
                         }
                       },
                       "metadata": {
-                        "__bicep_export!": true
+                        "__bicep_export!": true,
+                        "description": "The type of a local user."
                       }
                     },
-                    "_1.privateEndpointCustomDnsConfigType": {
+                    "_1.secretSetOutputType": {
+                      "type": "object",
+                      "properties": {
+                        "secretResourceId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "The resourceId of the exported secret."
+                          }
+                        },
+                        "secretUri": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "The secret URI of the exported secret."
+                          }
+                        },
+                        "secretUriWithVersion": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "The secret URI with version of the exported secret."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                        }
+                      }
+                    },
+                    "_2.lockType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the name of lock."
+                          }
+                        },
+                        "kind": {
+                          "type": "string",
+                          "allowedValues": [
+                            "CanNotDelete",
+                            "None",
+                            "ReadOnly"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the type of lock."
+                          }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a lock.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                        }
+                      }
+                    },
+                    "_2.privateEndpointCustomDnsConfigType": {
                       "type": "object",
                       "properties": {
                         "fqdn": {
@@ -10397,11 +10813,11 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
-                    "_1.privateEndpointIpConfigurationType": {
+                    "_2.privateEndpointIpConfigurationType": {
                       "type": "object",
                       "properties": {
                         "name": {
@@ -10439,11 +10855,11 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
-                    "_1.privateEndpointPrivateDnsZoneGroupType": {
+                    "_2.privateEndpointPrivateDnsZoneGroupType": {
                       "type": "object",
                       "properties": {
                         "name": {
@@ -10480,36 +10896,82 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
-                    "_1.secretSetOutputType": {
+                    "_2.roleAssignmentType": {
                       "type": "object",
                       "properties": {
-                        "secretResourceId": {
+                        "name": {
                           "type": "string",
+                          "nullable": true,
                           "metadata": {
-                            "description": "The resourceId of the exported secret."
+                            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
                           }
                         },
-                        "secretUri": {
+                        "roleDefinitionIdOrName": {
                           "type": "string",
                           "metadata": {
-                            "description": "The secret URI of the exported secret."
+                            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
                           }
                         },
-                        "secretUriWithVersion": {
+                        "principalId": {
                           "type": "string",
                           "metadata": {
-                            "description": "The secret URI with version of the exported secret."
+                            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                          }
+                        },
+                        "principalType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Device",
+                            "ForeignGroup",
+                            "Group",
+                            "ServicePrincipal",
+                            "User"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The principal type of the assigned principal ID."
+                          }
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The description of the role assignment."
+                          }
+                        },
+                        "condition": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                          }
+                        },
+                        "conditionVersion": {
+                          "type": "string",
+                          "allowedValues": [
+                            "2.0"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Version of the condition."
+                          }
+                        },
+                        "delegatedManagedIdentityResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The Resource Id of the delegated managed identity resource."
                           }
                         }
                       },
                       "metadata": {
-                        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
+                        "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -10783,7 +11245,7 @@
                           }
                         },
                         "privateDnsZoneGroup": {
-                          "$ref": "#/definitions/_1.privateEndpointPrivateDnsZoneGroupType",
+                          "$ref": "#/definitions/_2.privateEndpointPrivateDnsZoneGroupType",
                           "nullable": true,
                           "metadata": {
                             "description": "Optional. The private DNS zone group to configure for the private endpoint."
@@ -10807,7 +11269,7 @@
                         "customDnsConfigs": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/definitions/_1.privateEndpointCustomDnsConfigType"
+                            "$ref": "#/definitions/_2.privateEndpointCustomDnsConfigType"
                           },
                           "nullable": true,
                           "metadata": {
@@ -10817,7 +11279,7 @@
                         "ipConfigurations": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/definitions/_1.privateEndpointIpConfigurationType"
+                            "$ref": "#/definitions/_2.privateEndpointIpConfigurationType"
                           },
                           "nullable": true,
                           "metadata": {
@@ -10842,7 +11304,7 @@
                           }
                         },
                         "lock": {
-                          "$ref": "#/definitions/lockType",
+                          "$ref": "#/definitions/_2.lockType",
                           "nullable": true,
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
@@ -10851,7 +11313,7 @@
                         "roleAssignments": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/definitions/roleAssignmentType"
+                            "$ref": "#/definitions/_2.roleAssignmentType"
                           },
                           "nullable": true,
                           "metadata": {
@@ -10862,6 +11324,9 @@
                           "type": "object",
                           "nullable": true,
                           "metadata": {
+                            "__bicep_resource_derived_type!": {
+                              "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+                            },
                             "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
                           }
                         },
@@ -10876,7 +11341,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...).",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -11419,7 +11884,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.26.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.26.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -15941,7 +16406,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "9713840631975182834"
+              "templateHash": "14551498931468849514"
             }
           },
           "definitions": {
@@ -16254,8 +16719,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "8020152823352819436"
+                      "version": "0.37.4.10188",
+                      "templateHash": "17715929342484596741"
                     },
                     "name": "Azure Cosmos DB account",
                     "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -16686,7 +17151,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -16728,7 +17193,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -16769,7 +17234,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -16891,7 +17356,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -16916,12 +17381,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -16949,7 +17421,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -17076,6 +17548,9 @@
                           "type": "object",
                           "nullable": true,
                           "metadata": {
+                            "__bicep_resource_derived_type!": {
+                              "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+                            },
                             "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
                           }
                         },
@@ -17090,7 +17565,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...).",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -17165,7 +17640,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -17569,7 +18044,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-07-01",
-                      "name": "[format('46d3xbcp.res.documentdb-databaseaccount.{0}.{1}', replace('0.15.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.documentdb-databaseaccount.{0}.{1}', replace('0.16.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -17603,7 +18078,7 @@
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
                       },
                       "dependsOn": [
                         "databaseAccount"
@@ -17709,8 +18184,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "6801379641184405078"
+                              "version": "0.37.4.10188",
+                              "templateHash": "7141543733238879531"
                             },
                             "name": "DocumentDB Database Account SQL Databases",
                             "description": "This module deploys a SQL Database in a CosmosDB Account."
@@ -17841,8 +18316,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.35.1.17967",
-                                      "templateHash": "5467755913632158534"
+                                      "version": "0.37.4.10188",
+                                      "templateHash": "1789954443166349986"
                                     },
                                     "name": "DocumentDB Database Account SQL Database Containers",
                                     "description": "This module deploys a SQL Database Container in a CosmosDB Account."
@@ -18086,6 +18561,9 @@
                           },
                           "sqlRoleAssignments": {
                             "value": "[tryGet(coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()], 'assignments')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
                         },
                         "template": {
@@ -18095,8 +18573,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "12119240119487993734"
+                              "version": "0.37.4.10188",
+                              "templateHash": "9570871897890815068"
                             },
                             "name": "DocumentDB Database Account SQL Role Definitions.",
                             "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
@@ -18174,9 +18652,39 @@
                               "metadata": {
                                 "description": "Optional. An array of SQL Role Assignments to be created for the SQL Role Definition."
                               }
+                            },
+                            "enableTelemetry": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Enable/Disable usage telemetry for module."
+                              }
                             }
                           },
+                          "variables": {
+                            "enableReferencedModulesTelemetry": false
+                          },
                           "resources": {
+                            "avmTelemetry": {
+                              "condition": "[parameters('enableTelemetry')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2024-03-01",
+                              "name": "[format('46d3xbcp.res.doctdb-dbacct-sqlroledefinition.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "properties": {
+                                "mode": "Incremental",
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "resources": [],
+                                  "outputs": {
+                                    "telemetry": {
+                                      "type": "String",
+                                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                                    }
+                                  }
+                                }
+                              }
+                            },
                             "databaseAccount": {
                               "existing": true,
                               "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -18223,6 +18731,9 @@
                                   },
                                   "name": {
                                     "value": "[tryGet(coalesce(parameters('sqlRoleAssignments'), createArray())[copyIndex()], 'name')]"
+                                  },
+                                  "enableTelemetry": {
+                                    "value": "[variables('enableReferencedModulesTelemetry')]"
                                   }
                                 },
                                 "template": {
@@ -18232,8 +18743,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.35.1.17967",
-                                      "templateHash": "11941443499827753966"
+                                      "version": "0.37.4.10188",
+                                      "templateHash": "10102303164433641479"
                                     },
                                     "name": "DocumentDB Database Account SQL Role Assignments.",
                                     "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -18263,9 +18774,36 @@
                                       "metadata": {
                                         "description": "Required. The unique identifier of the associated SQL Role Definition."
                                       }
+                                    },
+                                    "enableTelemetry": {
+                                      "type": "bool",
+                                      "defaultValue": true,
+                                      "metadata": {
+                                        "description": "Optional. Enable/Disable usage telemetry for module."
+                                      }
                                     }
                                   },
                                   "resources": {
+                                    "avmTelemetry": {
+                                      "condition": "[parameters('enableTelemetry')]",
+                                      "type": "Microsoft.Resources/deployments",
+                                      "apiVersion": "2024-03-01",
+                                      "name": "[format('46d3xbcp.res.doctdb-dbacct-sqlroleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                                      "properties": {
+                                        "mode": "Incremental",
+                                        "template": {
+                                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                          "contentVersion": "1.0.0.0",
+                                          "resources": [],
+                                          "outputs": {
+                                            "telemetry": {
+                                              "type": "String",
+                                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    },
                                     "databaseAccount": {
                                       "existing": true,
                                       "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -18374,6 +18912,9 @@
                           },
                           "name": {
                             "value": "[tryGet(coalesce(parameters('dataPlaneRoleAssignments'), createArray())[copyIndex()], 'name')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
                         },
                         "template": {
@@ -18383,8 +18924,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "11941443499827753966"
+                              "version": "0.37.4.10188",
+                              "templateHash": "10102303164433641479"
                             },
                             "name": "DocumentDB Database Account SQL Role Assignments.",
                             "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -18414,9 +18955,36 @@
                               "metadata": {
                                 "description": "Required. The unique identifier of the associated SQL Role Definition."
                               }
+                            },
+                            "enableTelemetry": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Enable/Disable usage telemetry for module."
+                              }
                             }
                           },
                           "resources": {
+                            "avmTelemetry": {
+                              "condition": "[parameters('enableTelemetry')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2024-03-01",
+                              "name": "[format('46d3xbcp.res.doctdb-dbacct-sqlroleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "properties": {
+                                "mode": "Incremental",
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "resources": [],
+                                  "outputs": {
+                                    "telemetry": {
+                                      "type": "String",
+                                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                                    }
+                                  }
+                                }
+                              }
+                            },
                             "databaseAccount": {
                               "existing": true,
                               "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -18500,8 +19068,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "16911349070369924403"
+                              "version": "0.37.4.10188",
+                              "templateHash": "9160691107424630312"
                             },
                             "name": "DocumentDB Database Account MongoDB Databases",
                             "description": "This module deploys a MongoDB Database within a CosmosDB Account."
@@ -18602,8 +19170,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.35.1.17967",
-                                      "templateHash": "7802955893269337475"
+                                      "version": "0.37.4.10188",
+                                      "templateHash": "14050805189442830205"
                                     },
                                     "name": "DocumentDB Database Account MongoDB Database Collections",
                                     "description": "This module deploys a MongoDB Database Collection."
@@ -18761,8 +19329,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "4743052544503629108"
+                              "version": "0.37.4.10188",
+                              "templateHash": "16834580070429190924"
                             },
                             "name": "DocumentDB Database Account Gremlin Databases",
                             "description": "This module deploys a Gremlin Database within a CosmosDB Account."
@@ -18866,8 +19434,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.35.1.17967",
-                                      "templateHash": "9587717186996793648"
+                                      "version": "0.37.4.10188",
+                                      "templateHash": "15062578211366932944"
                                     },
                                     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
                                     "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph."
@@ -19038,8 +19606,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "14106261468136691896"
+                              "version": "0.37.4.10188",
+                              "templateHash": "3429971823201332257"
                             },
                             "name": "Azure Cosmos DB account tables",
                             "description": "This module deploys a table within an Azure Cosmos DB Account."
@@ -19193,8 +19761,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "15954548978129725136"
+                              "version": "0.34.44.8038",
+                              "templateHash": "12389807800450456797"
                             },
                             "name": "Private Endpoints",
                             "description": "This module deploys a Private Endpoint."
@@ -19603,7 +20171,7 @@
                               "condition": "[parameters('enableTelemetry')]",
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2024-03-01",
-                              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {
@@ -19621,7 +20189,7 @@
                             },
                             "privateEndpoint": {
                               "type": "Microsoft.Network/privateEndpoints",
-                              "apiVersion": "2023-11-01",
+                              "apiVersion": "2024-05-01",
                               "name": "[parameters('name')]",
                               "location": "[parameters('location')]",
                               "tags": "[parameters('tags')]",
@@ -19709,8 +20277,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "5440815542537978381"
+                                      "version": "0.34.44.8038",
+                                      "templateHash": "13997305779829540948"
                                     },
                                     "name": "Private Endpoint Private DNS Zone Groups",
                                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -19782,12 +20350,12 @@
                                     "privateEndpoint": {
                                       "existing": true,
                                       "type": "Microsoft.Network/privateEndpoints",
-                                      "apiVersion": "2023-11-01",
+                                      "apiVersion": "2024-05-01",
                                       "name": "[parameters('privateEndpointName')]"
                                     },
                                     "privateDnsZoneGroup": {
                                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                                      "apiVersion": "2023-11-01",
+                                      "apiVersion": "2024-05-01",
                                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                                       "properties": {
                                         "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
@@ -19851,7 +20419,7 @@
                               "metadata": {
                                 "description": "The location the resource was deployed into."
                               },
-                              "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
+                              "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
                             },
                             "customDnsConfigs": {
                               "type": "array",
@@ -20091,7 +20659,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "8851117120311264419"
+              "templateHash": "15661200376288831029"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -20257,6 +20825,7 @@
             }
           },
           "variables": {
+            "hasConnection": "[or(or(not(empty(parameters('cosmosDbConnection'))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]",
             "createProjectCapabilityHostInternal": "[and(and(and(parameters('createProjectCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]",
             "createAccountCapabilityHostInternal": "[and(and(and(parameters('createAccountCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]"
           },
@@ -20437,6 +21006,7 @@
               ]
             },
             "waitForProjectScript": {
+              "condition": "[variables('hasConnection')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[take(format('module.project.waitDeploymentScript.waitForProject.{0}', parameters('name')), 64)]",
@@ -20712,6 +21282,7 @@
               ]
             },
             "waitForConnectionsScript": {
+              "condition": "[and(variables('hasConnection'), or(variables('createAccountCapabilityHostInternal'), variables('createProjectCapabilityHostInternal')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[take(format('module.project.waitDeploymentScript.waitForConn.{0}', parameters('name')), 64)]",

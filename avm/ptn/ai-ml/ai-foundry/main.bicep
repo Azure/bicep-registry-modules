@@ -23,7 +23,7 @@ param aiModelDeployments deploymentType[] = []
 @description('Optional. Specifies the resource tags for all the resources.')
 param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the AI resources.')
 param lock lockType?
 
@@ -88,6 +88,7 @@ module foundryAccount 'modules/account.bicep' = {
     name: !empty(aiFoundryConfiguration.?accountName) ? aiFoundryConfiguration!.accountName! : 'ai${resourcesName}'
     location: !empty(aiFoundryConfiguration.?location) ? aiFoundryConfiguration!.location! : location
     sku: !empty(aiFoundryConfiguration.?sku) ? aiFoundryConfiguration!.sku! : 'S0'
+    disableLocalAuth: aiFoundryConfiguration.?disableLocalAuth ?? true
     allowProjectManagement: aiFoundryConfiguration.?allowProjectManagement ?? true
     aiModelDeployments: aiModelDeployments
     privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
@@ -326,6 +327,9 @@ type foundryConfigurationType = {
 
   @description('Optional. Whether to create Capability Hosts for the AI Agent Service. If true, the AI Foundry Account and default Project will be created with the capability host for the associated resources. Can only be true if \'includeAssociatedResources\' is true. Defaults to false.')
   createCapabilityHosts: bool?
+
+  @description('Optional. Allow only Azure AD authentication. Should be enabled for security reasons. Defaults to true.')
+  disableLocalAuth: bool?
 
   @description('Optional. Whether to allow project management in the AI Foundry account. If true, users can create and manage projects within the AI Foundry account. Defaults to true.')
   allowProjectManagement: bool?
