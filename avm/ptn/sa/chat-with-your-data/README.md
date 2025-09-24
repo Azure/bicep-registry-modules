@@ -95,10 +95,68 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/chat-with-your-data:<version>`.
 
-- [Default configuration with enterprise-grade parameter values](#example-1-default-configuration-with-enterprise-grade-parameter-values)
-- [Sandbox configuration with default parameter values](#example-2-sandbox-configuration-with-default-parameter-values)
+- [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
+- [Default configuration with enterprise-grade parameter values](#example-2-default-configuration-with-enterprise-grade-parameter-values)
 
-### Example 1: _Default configuration with enterprise-grade parameter values_
+### Example 1: _Sandbox configuration with default parameter values_
+
+This test deploys the sandbox configuration for Chat with your data Solution Accelerator with default parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
+  name: 'chatWithYourDataDeployment'
+  params: {
+    location: '<location>'
+    solutionName: 'scwydsmin001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "<location>"
+    },
+    "solutionName": {
+      "value": "scwydsmin001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
+
+param location = '<location>'
+param solutionName = 'scwydsmin001'
+```
+
+</details>
+<p>
+
+### Example 2: _Default configuration with enterprise-grade parameter values_
 
 This test deploys the Chat with your data Solution Accelerator using parameters that deploy the enterprise-grade configuration.
 
@@ -186,64 +244,6 @@ param location = '<location>'
 param solutionName = 'scwydswaf001'
 param virtualMachineAdminPassword = '<virtualMachineAdminPassword>'
 param virtualMachineAdminUsername = 'adminuser'
-```
-
-</details>
-<p>
-
-### Example 2: _Sandbox configuration with default parameter values_
-
-This test deploys the sandbox configuration for Chat with your data Solution Accelerator with default parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
-  name: 'chatWithYourDataDeployment'
-  params: {
-    location: '<location>'
-    solutionName: 'scwydsmin001'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "location": {
-      "value": "<location>"
-    },
-    "solutionName": {
-      "value": "scwydsmin001"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
-
-param location = '<location>'
-param solutionName = 'scwydsmin001'
 ```
 
 </details>
