@@ -109,13 +109,19 @@ function Get-GitDiff {
 
     $diffInput = @(
         '--diff-filter=AM',
-        ($PathOnly ? '--name-only' : $null),
         $currentCommit,
         $compareWithCommit,
         ((-not [String]::IsNullOrEmpty($PathFilter)) ? '--' : $null),
         $PathFilter
     ) | Where-Object { $_ }
-    $modifiedFiles = git diff $diffInput
+    $modifiedFiles = git diff $diffInput ($PathOnly ? '--name-only' : '')
+
+    $stats = git diff --diff-filter=AM $diffInput --stat
+    if ($stats.Count -gt 0) {
+        Write-Verbose ("[{0}] Plain diff files found `git diff`:`n[{1}]" -f $stats.Count, ($stats | ConvertTo-Json | Out-String)) -Verbose
+    } else {
+        Write-Verbose 'Plain diff files found via `git diff`.' -Verbose
+    }
 
     if ($PathOnly) {
         # Returns only the paths of the changed files, not the changes themselves
