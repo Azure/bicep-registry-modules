@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "18330630485971773183"
+      "templateHash": "1103910198961706586"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -1208,7 +1208,8 @@
       "type": "string",
       "defaultValue": "TLS1_2",
       "allowedValues": [
-        "TLS1_2"
+        "TLS1_2",
+        "TLS1_3"
       ],
       "metadata": {
         "description": "Optional. Set the minimum TLS version on request to storage. The TLS versions 1.0 and 1.1 are deprecated and not supported anymore."
@@ -1302,7 +1303,8 @@
       "nullable": true,
       "allowedValues": [
         "Enabled",
-        "Disabled"
+        "Disabled",
+        "SecuredByPerimeter"
       ],
       "metadata": {
         "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set."

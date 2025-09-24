@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "12114158444287519204"
+      "templateHash": "15638018858566976221"
     },
     "name": "Azure Cosmos DB account",
     "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -384,7 +384,8 @@
           "type": "string",
           "allowedValues": [
             "Disabled",
-            "Enabled"
+            "Enabled",
+            "SecuredByPerimeter"
           ],
           "nullable": true,
           "metadata": {

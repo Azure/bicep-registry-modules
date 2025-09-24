@@ -49,10 +49,11 @@ The following section provides usage examples for the module, which were used to
 - [Deploying with a key vault reference to save secrets](#example-5-deploying-with-a-key-vault-reference-to-save-secrets)
 - [Using large parameter set](#example-6-using-large-parameter-set)
 - [Deploying with a NFS File Share](#example-7-deploying-with-a-nfs-file-share)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-8-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-9-using-customer-managed-keys-with-user-assigned-identity)
-- [Deploying as Storage Account version 1](#example-10-deploying-as-storage-account-version-1)
-- [WAF-aligned](#example-11-waf-aligned)
+- [Using network perimeter](#example-8-using-network-perimeter)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-9-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-10-using-customer-managed-keys-with-user-assigned-identity)
+- [Deploying as Storage Account version 1](#example-11-deploying-as-storage-account-version-1)
+- [WAF-aligned](#example-12-waf-aligned)
 
 ### Example 1: _Deploying as a Blob Storage_
 
@@ -2158,7 +2159,76 @@ param skuName = 'Premium_LRS'
 </details>
 <p>
 
-### Example 8: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 8: _Using network perimeter_
+
+This instance deploys the module with network perimeter.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  name: 'storageAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'ssansp001'
+    // Non-required parameters
+    allowBlobPublicAccess: false
+    publicNetworkAccess: 'SecuredByPerimeter'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssansp001"
+    },
+    // Non-required parameters
+    "allowBlobPublicAccess": {
+      "value": false
+    },
+    "publicNetworkAccess": {
+      "value": "SecuredByPerimeter"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssansp001'
+// Non-required parameters
+param allowBlobPublicAccess = false
+param publicNetworkAccess = 'SecuredByPerimeter'
+```
+
+</details>
+<p>
+
+### Example 9: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
@@ -2309,7 +2379,7 @@ param privateEndpoints = [
 </details>
 <p>
 
-### Example 9: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 10: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -2483,7 +2553,7 @@ param privateEndpoints = [
 </details>
 <p>
 
-### Example 10: _Deploying as Storage Account version 1_
+### Example 11: _Deploying as Storage Account version 1_
 
 This instance deploys the module as Storage Account version 1.
 
@@ -2547,7 +2617,7 @@ param kind = 'Storage'
 </details>
 <p>
 
-### Example 11: _WAF-aligned_
+### Example 12: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -4009,6 +4079,7 @@ Set the minimum TLS version on request to storage. The TLS versions 1.0 and 1.1 
   ```Bicep
   [
     'TLS1_2'
+    'TLS1_3'
   ]
   ```
 
@@ -4535,6 +4606,7 @@ Whether or not public network access is allowed for this resource. For security 
   [
     'Disabled'
     'Enabled'
+    'SecuredByPerimeter'
   ]
   ```
 
