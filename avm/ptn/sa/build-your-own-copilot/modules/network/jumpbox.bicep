@@ -77,6 +77,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.20.0' = {
     adminPassword: password
     tags: tags
     availabilityZone: -1
+    maintenanceConfigurationResourceId: maintenanceConfiguration.outputs.resourceId
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -87,9 +88,13 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.20.0' = {
     osDisk: {
       name: 'osdisk-${vmName}'
       managedDisk: {
-        storageAccountType: 'Standard_LRS'
+        storageAccountType: 'Premium_LRS' // Required for PSRule.Rules.Azure compliance: Azure.VM.Standalone
       }
     }
+    // Patch management configuration - required for maintenance configuration compatibility
+    patchMode: 'AutomaticByPlatform'
+    bypassPlatformSafetyChecksOnUserSchedule: true
+    enableAutomaticUpdates: true
     encryptionAtHost: false // Some Azure subscriptions do not support encryption at host
     nicConfigurations: [
       {
@@ -125,25 +130,66 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.20.0' = {
   }
 }
 
-@description('The resource ID of the deployed jumpbox virtual machine.')
+// 4. Create Maintenance Configuration for VM
+// Required for PSRule.Rules.Azure compliance: Azure.VM.MaintenanceConfig
+// using AVM Virtual Machine module
+// https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/compute/virtual-machine
+
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.1' = {
+  name: take('${vmName}-jumpbox-maintenance-config', 64)
+  params: {
+    name: 'mc-${vmName}'
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    extensionProperties: {
+      InGuestPatchMode: 'User'
+    }
+    maintenanceScope: 'InGuestPatch'
+    maintenanceWindow: {
+      startDateTime: '2024-06-16 00:00'
+      duration: '03:55'
+      timeZone: 'W. Europe Standard Time'
+      recurEvery: '1Day'
+    }
+    visibility: 'Custom'
+    installPatches: {
+      rebootSetting: 'IfRequired'
+      windowsParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+      linuxParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+    }
+  }
+}
+
+@description('The resource ID of the Jumpbox Virtual Machine.')
 output resourceId string = vm.outputs.resourceId
 
-@description('The name of the deployed jumpbox virtual machine.')
+@description('The name of the Jumpbox Virtual Machine.')
 output name string = vm.outputs.name
 
-@description('The location where the jumpbox virtual machine is deployed.')
+@description('The location where the Jumpbox Virtual Machine is deployed.')
 output location string = vm.outputs.location
 
-@description('The resource ID of the jumpbox subnet.')
+@description('The resource ID of the Jumpbox subnet.')
 output subnetId string = subnetResource!.outputs.resourceId
 
-@description('The name of the jumpbox subnet.')
+@description('The name of the Jumpbox subnet.')
 output subnetName string = subnetResource!.outputs.name
 
-@description('The resource ID of the jumpbox network security group.')
+@description('The resource ID of the Network Security Group associated with the Jumpbox.')
 output nsgId string = nsg!.outputs.resourceId
 
-@description('The name of the jumpbox network security group.')
+@description('The name of the Network Security Group associated with the Jumpbox.')
 output nsgName string = nsg!.outputs.name
 
 @export()
