@@ -75,6 +75,7 @@ body:
         - "avm/ptn/network/private-link-private-dns-zones"
         - "avm/ptn/policy-insights/remediation"
         - "avm/ptn/sa/chat-with-your-data"
+        - "avm/ptn/sa/build-your-own-copilot"
         - "avm/ptn/sa/content-processing"
         - "avm/ptn/sa/conversation-knowledge-mining"
         - "avm/ptn/sa/document-knowledge-mining"
