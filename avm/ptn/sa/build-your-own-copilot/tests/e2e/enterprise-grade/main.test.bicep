@@ -14,6 +14,7 @@ param resourceGroupName string = 'dep-waf-${namePrefix}-sa.byoc-${serviceShort}-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints. Remove.')
 param serviceShort string = 'byoc-waf'
 
+@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. The password to set for the Virtual Machine.')
