@@ -984,7 +984,7 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
   }
 ]
 
-module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.3.6' = if (!empty(fluxExtension)) {
+module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.3.7' = if (!empty(fluxExtension)) {
   name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxExtension'
   params: {
     clusterName: managedCluster.name
