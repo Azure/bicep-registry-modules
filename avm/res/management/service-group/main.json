@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "10177553848302611371"
+      "templateHash": "17333057274113694998"
     },
     "name": "Service Groups",
     "description": "This module will allow you to create a service group and also associate resource to this service group, if you have permissions upon those resources."
@@ -203,6 +203,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.management-servicegroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, deployment().location), 0, 4))]",
+      "location": "[deployment().location]",
       "properties": {
         "mode": "Incremental",
         "template": {
