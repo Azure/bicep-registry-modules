@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "17016864154244872951"
+      "templateHash": "10623621135911119810"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault."
@@ -1229,8 +1229,9 @@
     },
     "publicNetworkAccess": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "",
       "allowedValues": [
+        "",
         "Enabled",
         "Disabled"
       ],
