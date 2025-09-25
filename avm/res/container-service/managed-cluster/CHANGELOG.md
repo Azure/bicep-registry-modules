@@ -2,6 +2,14 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/container-service/managed-cluster/CHANGELOG.md).
 
+## 0.11.0
+
+### Changes
+
+- update ARM API versions
+
+### Breaking Changes
+
 ## 0.10.1
 
 ### Changes

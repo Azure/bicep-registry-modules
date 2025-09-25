@@ -329,7 +329,7 @@ param enableImageCleaner bool = false
 @description('Optional. Whether to enable Image Integrity. Image integrity is a feature that works with Azure Policy to verify image integrity by signature. This will not have any effect unless Azure Policy is applied to enforce image signatures. See https://aka.ms/aks/image-integrity for how to use this feature via policy.')
 param enableImageIntegrity bool = false
 
-@description('Optional. Whether to enable Node Restriction')
+@description('Optional. Whether to enable Node Restriction.')
 param enableNodeRestriction bool = false
 
 @description('Optional. The interval in hours Image Cleaner will run. The maximum value is three months.')
