@@ -1,5 +1,5 @@
-metadata name = 'Sandbox configuration with default parameter values'
-metadata description = 'This test deploys the sandbox configuration for Chat with your data Solution Accelerator with default parameters.'
+metadata name = 'Sandbox With Azure Database for PostgreSQL flexible servers'
+metadata description = 'This deploys the sandbox configuration for Chat with your data Solution Accelerator with database as Azure Database for PostgreSQL flexible servers.'
 
 targetScope = 'subscription'
 

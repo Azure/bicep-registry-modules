@@ -1,5 +1,5 @@
-metadata name = 'Sandbox configuration with default parameter values & database as Azure Cosmos DB'
-metadata description = 'This test deploys the sandbox configuration for Chat with your data Solution Accelerator with default parameters.'
+metadata name = 'Sandbox With Azure Cosmos DB'
+metadata description = 'This deploys the sandbox configuration for Chat with your data Solution Accelerator with database as Azure Cosmos DB.'
 
 targetScope = 'subscription'
 
