@@ -60,7 +60,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = {
         delegation: subnet.?delegation
       }
     ]
-    diagnosticSettings: [
+    diagnosticSettings: !empty(logAnalyticsWorkspaceId) ? [
       {
         name: 'vnetDiagnostics'
         workspaceResourceId: logAnalyticsWorkspaceId
@@ -77,7 +77,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = {
           }
         ]
       }
-    ]
+    ] : []
     tags: tags
     enableTelemetry: enableTelemetry
   }

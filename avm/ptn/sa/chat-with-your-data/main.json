@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "13474925926763550287"
+      "templateHash": "970705411991616054"
     },
     "name": "Chat-with-your-data-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -779,7 +779,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "7925204786858091333"
+              "templateHash": "14868488405641076743"
             }
           },
           "parameters": {
@@ -1071,7 +1071,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "8751678411740080595"
+                      "templateHash": "17883317831920738462"
                     },
                     "name": "Chat-with-your-data-solution-accelerator - Network Module",
                     "description": "This module contains the network resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -1414,7 +1414,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.37.4.10188",
-                              "templateHash": "9794971204785076207"
+                              "templateHash": "667321231589082119"
                             }
                           },
                           "definitions": {
@@ -1998,26 +1998,7 @@
                                       }
                                     ]
                                   },
-                                  "diagnosticSettings": {
-                                    "value": [
-                                      {
-                                        "name": "vnetDiagnostics",
-                                        "workspaceResourceId": "[parameters('logAnalyticsWorkspaceId')]",
-                                        "logCategoriesAndGroups": [
-                                          {
-                                            "categoryGroup": "allLogs",
-                                            "enabled": true
-                                          }
-                                        ],
-                                        "metricCategories": [
-                                          {
-                                            "category": "AllMetrics",
-                                            "enabled": true
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
+                                  "diagnosticSettings": "[if(not(empty(parameters('logAnalyticsWorkspaceId'))), createObject('value', createArray(createObject('name', 'vnetDiagnostics', 'workspaceResourceId', parameters('logAnalyticsWorkspaceId'), 'logCategoriesAndGroups', createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), 'metricCategories', createArray(createObject('category', 'AllMetrics', 'enabled', true()))))), createObject('value', createArray()))]",
                                   "tags": {
                                     "value": "[parameters('tags')]"
                                   },
@@ -3730,7 +3711,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.37.4.10188",
-                              "templateHash": "6767898520357648551"
+                              "templateHash": "3087937772048786631"
                             }
                           },
                           "definitions": {
@@ -4712,20 +4693,7 @@
                                   "virtualNetworkResourceId": {
                                     "value": "[parameters('vnetId')]"
                                   },
-                                  "diagnosticSettings": {
-                                    "value": [
-                                      {
-                                        "name": "bastionDiagnostics",
-                                        "workspaceResourceId": "[parameters('logAnalyticsWorkspaceId')]",
-                                        "logCategoriesAndGroups": [
-                                          {
-                                            "categoryGroup": "allLogs",
-                                            "enabled": true
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
+                                  "diagnosticSettings": "[if(not(empty(parameters('logAnalyticsWorkspaceId'))), createObject('value', createArray(createObject('name', 'bastionDiagnostics', 'workspaceResourceId', parameters('logAnalyticsWorkspaceId'), 'logCategoriesAndGroups', createArray(createObject('categoryGroup', 'allLogs', 'enabled', true()))))), createObject('value', createArray()))]",
                                   "tags": {
                                     "value": "[parameters('tags')]"
                                   },
@@ -6499,7 +6467,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.37.4.10188",
-                              "templateHash": "14641985778144133256"
+                              "templateHash": "15239194626874855378"
                             }
                           },
                           "definitions": {
@@ -7569,24 +7537,7 @@
                                           }
                                         ],
                                         "networkSecurityGroupResourceId": "[reference('nsg').outputs.resourceId.value]",
-                                        "diagnosticSettings": [
-                                          {
-                                            "name": "jumpboxDiagnostics",
-                                            "workspaceResourceId": "[parameters('logAnalyticsWorkspaceId')]",
-                                            "logCategoriesAndGroups": [
-                                              {
-                                                "categoryGroup": "allLogs",
-                                                "enabled": true
-                                              }
-                                            ],
-                                            "metricCategories": [
-                                              {
-                                                "category": "AllMetrics",
-                                                "enabled": true
-                                              }
-                                            ]
-                                          }
-                                        ]
+                                        "diagnosticSettings": "[if(not(empty(parameters('logAnalyticsWorkspaceId'))), createArray(createObject('name', 'jumpboxDiagnostics', 'workspaceResourceId', parameters('logAnalyticsWorkspaceId'), 'logCategoriesAndGroups', createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), 'metricCategories', createArray(createObject('category', 'AllMetrics', 'enabled', true())))), createArray())]"
                                       }
                                     ]
                                   },

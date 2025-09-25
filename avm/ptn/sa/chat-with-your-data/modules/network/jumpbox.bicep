@@ -105,7 +105,7 @@ module vm '../compute/virtual-machine/virtual-machine.bicep' = {
           }
         ]
         networkSecurityGroupResourceId: nsg!.outputs.resourceId
-        diagnosticSettings: [
+        diagnosticSettings: !empty(logAnalyticsWorkspaceId) ? [
           {
             name: 'jumpboxDiagnostics'
             workspaceResourceId: logAnalyticsWorkspaceId
@@ -122,7 +122,7 @@ module vm '../compute/virtual-machine/virtual-machine.bicep' = {
               }
             ]
           }
-        ]
+        ] : []
       }
     ]
     enableTelemetry: enableTelemetry

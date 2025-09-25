@@ -64,7 +64,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = {
     skuName: 'Standard'
     location: location
     virtualNetworkResourceId: vnetId
-    diagnosticSettings: [
+    diagnosticSettings: !empty(logAnalyticsWorkspaceId) ? [
       {
         name: 'bastionDiagnostics'
         workspaceResourceId: logAnalyticsWorkspaceId
@@ -75,7 +75,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = {
           }
         ]
       }
-    ]
+    ] : []
     tags: tags
     enableTelemetry: enableTelemetry
     publicIPAddressObject: {
