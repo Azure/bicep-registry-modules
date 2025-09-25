@@ -17,8 +17,6 @@ param serviceShort string = 'krlbmin'
 param namePrefix string = '#_namePrefix_#'
 
 @description('Required. The service principal object ID of the Kubernetes Runtime HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 087fca6e-4606-4d41-b3f6-5ebdf75b8b4c`.')
-@secure()
-#disable-next-line secure-parameter-default
 param kubernetesRuntimeRPObjectId string = ''
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
