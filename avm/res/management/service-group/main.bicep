@@ -9,7 +9,7 @@ param name string
 @description('Optional. Display name of the service group to create. If not provided, the name parameter input value will be used.')
 param displayName string?
 
-@description('Optional. The parent service group resource ID, e.g. "/providers/Microsoft.Management/serviceGroups/<name>", of the service group to create. If not provided, the service group will be created at the tenant root level.')
+@description('Optional. The parent service group resource ID, e.g. "/providers/Microsoft.Management/serviceGroups/<name>", of the service group to create. If not provided, the service group will be created under the root service group, e.g. "/providers/Microsoft.Management/serviceGroups/<TENANT ID>".')
 param parentResourceId string?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -90,7 +90,7 @@ resource serviceGroup 'Microsoft.Management/serviceGroups@2024-02-01-preview' = 
   properties: {
     displayName: displayName ?? name
     parent: {
-      resourceId: parentResourceId ?? null
+      resourceId: parentResourceId ?? '/providers/Microsoft.Management/serviceGroups/${tenant().tenantId}'
     }
   }
 }
