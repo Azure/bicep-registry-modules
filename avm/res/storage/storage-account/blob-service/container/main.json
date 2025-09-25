@@ -5,13 +5,43 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "12437639664620937555"
+      "version": "0.37.4.10188",
+      "templateHash": "5026123498979497429"
     },
     "name": "Storage Account Blob Containers",
     "description": "This module deploys a Storage Account Blob Container."
   },
   "definitions": {
+    "immutabilityPolicyType": {
+      "type": "object",
+      "properties": {
+        "immutabilityPeriodSinceCreationInDays": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The immutability period for the blobs in the container since the policy creation, in days."
+          }
+        },
+        "allowProtectedAppendWrites": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API."
+          }
+        },
+        "allowProtectedAppendWritesAll": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both \"Append and Block Blobs\" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The \"allowProtectedAppendWrites\" and \"allowProtectedAppendWritesAll\" properties are mutually exclusive."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for an immutability policy."
+      }
+    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
@@ -144,15 +174,8 @@
         "description": "Optional. This is an immutable property, when set to true it enables object level immutability at the container level. The property is immutable and can only be set to true at the container creation time. Existing containers must undergo a migration process."
       }
     },
-    "immutabilityPolicyName": {
-      "type": "string",
-      "defaultValue": "default",
-      "metadata": {
-        "description": "Optional. Name of the immutable policy."
-      }
-    },
-    "immutabilityPolicyProperties": {
-      "type": "object",
+    "immutabilityPolicy": {
+      "$ref": "#/definitions/immutabilityPolicyType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Configure immutability policy."
@@ -226,7 +249,7 @@
     "storageAccount::blobServices": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts/blobServices",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-01-01",
       "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('blobServiceName'))]"
     },
     "avmTelemetry": {
@@ -252,19 +275,19 @@
     "storageAccount": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('storageAccountName')]"
     },
     "container": {
       "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-01-01",
       "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), parameters('blobServiceName'), parameters('name'))]",
       "properties": {
         "defaultEncryptionScope": "[parameters('defaultEncryptionScope')]",
         "denyEncryptionScopeOverride": "[parameters('denyEncryptionScopeOverride')]",
         "enableNfsV3AllSquash": "[if(equals(parameters('enableNfsV3AllSquash'), true()), parameters('enableNfsV3AllSquash'), null())]",
         "enableNfsV3RootSquash": "[if(equals(parameters('enableNfsV3RootSquash'), true()), parameters('enableNfsV3RootSquash'), null())]",
-        "immutableStorageWithVersioning": "[if(equals(parameters('immutableStorageWithVersioningEnabled'), true()), createObject('enabled', parameters('immutableStorageWithVersioningEnabled')), null())]",
+        "immutableStorageWithVersioning": "[if(parameters('immutableStorageWithVersioningEnabled'), createObject('enabled', parameters('immutableStorageWithVersioningEnabled')), null())]",
         "metadata": "[parameters('metadata')]",
         "publicAccess": "[parameters('publicAccess')]"
       }
@@ -291,11 +314,11 @@
         "container"
       ]
     },
-    "immutabilityPolicy": {
-      "condition": "[not(empty(coalesce(parameters('immutabilityPolicyProperties'), createObject())))]",
+    "container_immutabilityPolicy": {
+      "condition": "[not(empty(coalesce(parameters('immutabilityPolicy'), createObject())))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}', parameters('name'), parameters('immutabilityPolicyName'))]",
+      "name": "[take(format('{0}-ImmutPol', deployment().name), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -309,13 +332,13 @@
             "value": "[parameters('name')]"
           },
           "immutabilityPeriodSinceCreationInDays": {
-            "value": "[tryGet(parameters('immutabilityPolicyProperties'), 'immutabilityPeriodSinceCreationInDays')]"
+            "value": "[tryGet(parameters('immutabilityPolicy'), 'immutabilityPeriodSinceCreationInDays')]"
           },
           "allowProtectedAppendWrites": {
-            "value": "[tryGet(parameters('immutabilityPolicyProperties'), 'allowProtectedAppendWrites')]"
+            "value": "[tryGet(parameters('immutabilityPolicy'), 'allowProtectedAppendWrites')]"
           },
           "allowProtectedAppendWritesAll": {
-            "value": "[tryGet(parameters('immutabilityPolicyProperties'), 'allowProtectedAppendWritesAll')]"
+            "value": "[tryGet(parameters('immutabilityPolicy'), 'allowProtectedAppendWritesAll')]"
           }
         },
         "template": {
@@ -324,8 +347,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "8550034166416361637"
+              "version": "0.37.4.10188",
+              "templateHash": "10782942397325758470"
             },
             "name": "Storage Account Blob Container Immutability Policies",
             "description": "This module deploys a Storage Account Blob Container Immutability Policy."
@@ -355,7 +378,7 @@
               "type": "bool",
               "defaultValue": true,
               "metadata": {
-                "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API."
+                "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The \"allowProtectedAppendWrites\" and \"allowProtectedAppendWritesAll\" properties are mutually exclusive."
               }
             },
             "allowProtectedAppendWritesAll": {
@@ -366,11 +389,14 @@
               }
             }
           },
+          "variables": {
+            "name": "default"
+          },
           "resources": [
             {
               "type": "Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies",
-              "apiVersion": "2024-01-01",
-              "name": "[format('{0}/{1}/{2}/{3}', parameters('storageAccountName'), 'default', parameters('containerName'), 'default')]",
+              "apiVersion": "2025-01-01",
+              "name": "[format('{0}/{1}/{2}/{3}', parameters('storageAccountName'), 'default', parameters('containerName'), variables('name'))]",
               "properties": {
                 "immutabilityPeriodSinceCreationInDays": "[parameters('immutabilityPeriodSinceCreationInDays')]",
                 "allowProtectedAppendWrites": "[parameters('allowProtectedAppendWrites')]",
@@ -384,14 +410,14 @@
               "metadata": {
                 "description": "The name of the deployed immutability policy."
               },
-              "value": "default"
+              "value": "[variables('name')]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the deployed immutability policy."
               },
-              "value": "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies', parameters('storageAccountName'), 'default', parameters('containerName'), 'default')]"
+              "value": "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies', parameters('storageAccountName'), 'default', parameters('containerName'), variables('name'))]"
             },
             "resourceGroupName": {
               "type": "string",

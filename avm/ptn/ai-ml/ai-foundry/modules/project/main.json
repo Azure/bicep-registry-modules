@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "8851117120311264419"
+      "templateHash": "15661200376288831029"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -172,6 +172,7 @@
     }
   },
   "variables": {
+    "hasConnection": "[or(or(not(empty(parameters('cosmosDbConnection'))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]",
     "createProjectCapabilityHostInternal": "[and(and(and(parameters('createProjectCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]",
     "createAccountCapabilityHostInternal": "[and(and(and(parameters('createAccountCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]"
   },
@@ -352,6 +353,7 @@
       ]
     },
     "waitForProjectScript": {
+      "condition": "[variables('hasConnection')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('module.project.waitDeploymentScript.waitForProject.{0}', parameters('name')), 64)]",
@@ -627,6 +629,7 @@
       ]
     },
     "waitForConnectionsScript": {
+      "condition": "[and(variables('hasConnection'), or(variables('createAccountCapabilityHostInternal'), variables('createProjectCapabilityHostInternal')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('module.project.waitDeploymentScript.waitForConn.{0}', parameters('name')), 64)]",
