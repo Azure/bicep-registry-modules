@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "4705899720521679224"
+      "templateHash": "16877755236988653138"
     },
     "name": "Service Groups",
     "description": "This module will allow you to create a service group and also associate resource to this service group, if you have permissions upon those resources."
@@ -219,6 +219,12 @@
         }
       }
     },
+    "serviceGroup_tenantRoot": {
+      "existing": true,
+      "type": "Microsoft.Management/serviceGroups",
+      "apiVersion": "2024-02-01-preview",
+      "name": "[tenant().tenantId]"
+    },
     "serviceGroup": {
       "type": "Microsoft.Management/serviceGroups",
       "apiVersion": "2024-02-01-preview",
@@ -227,7 +233,7 @@
       "properties": {
         "displayName": "[coalesce(parameters('displayName'), parameters('name'))]",
         "parent": {
-          "resourceId": "[coalesce(parameters('parentResourceId'), format('/providers/Microsoft.Management/serviceGroups/{0}', tenant().tenantId))]"
+          "resourceId": "[coalesce(parameters('parentResourceId'), tenantResourceId('Microsoft.Management/serviceGroups', tenant().tenantId))]"
         }
       }
     },

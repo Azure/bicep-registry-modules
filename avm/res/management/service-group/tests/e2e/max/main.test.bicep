@@ -19,6 +19,12 @@ param namePrefix string = '#_namePrefix_#'
 
 resource serviceGroupDependency 'Microsoft.Management/serviceGroups@2024-02-01-preview' = {
   name: 'sg-${namePrefix}-${serviceShort}-dep-001'
+  properties: {
+    displayName: 'Service Group E2E Test Dependency'
+    parent: {
+      resourceId: '/providers/Microsoft.Management/serviceGroups/${tenant().tenantId}'
+    }
+  }
 }
 
 // ============== //
@@ -32,11 +38,11 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: 'sg-${namePrefix}-${serviceShort}-001'
       displayName: 'Service Group E2E Test Maximum Configuration'
-      parentResourceId: '/providers/Microsoft.Management/serviceGroups/${serviceGroupDependency.name}'
+      parentResourceId: serviceGroupDependency.id
       roleAssignments: [
         {
           principalId: deployer().objectId
-          roleDefinitionIdOrName: 'Service Group Administrator'
+          roleDefinitionIdOrName: 'Service Group Reader'
         }
       ]
       tags: {

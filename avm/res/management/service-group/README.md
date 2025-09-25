@@ -105,7 +105,7 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
     roleAssignments: [
       {
         principalId: '<principalId>'
-        roleDefinitionIdOrName: 'Service Group Administrator'
+        roleDefinitionIdOrName: 'Service Group Reader'
       }
     ]
     tags: {
@@ -144,7 +144,7 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
       "value": [
         {
           "principalId": "<principalId>",
-          "roleDefinitionIdOrName": "Service Group Administrator"
+          "roleDefinitionIdOrName": "Service Group Reader"
         }
       ]
     },
@@ -177,7 +177,7 @@ param parentResourceId = '<parentResourceId>'
 param roleAssignments = [
   {
     principalId: '<principalId>'
-    roleDefinitionIdOrName: 'Service Group Administrator'
+    roleDefinitionIdOrName: 'Service Group Reader'
   }
 ]
 param tags = {

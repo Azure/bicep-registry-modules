@@ -84,13 +84,17 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
+resource serviceGroup_tenantRoot 'Microsoft.Management/serviceGroups@2024-02-01-preview' existing = {
+  name: tenant().tenantId
+}
+
 resource serviceGroup 'Microsoft.Management/serviceGroups@2024-02-01-preview' = {
   name: name
   tags: tags
   properties: {
     displayName: displayName ?? name
     parent: {
-      resourceId: parentResourceId ?? '/providers/Microsoft.Management/serviceGroups/${tenant().tenantId}'
+      resourceId: parentResourceId ?? serviceGroup_tenantRoot.id
     }
   }
 }
