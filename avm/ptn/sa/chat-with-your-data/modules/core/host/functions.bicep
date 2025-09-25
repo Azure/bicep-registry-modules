@@ -208,6 +208,11 @@ module functions 'appservice.bicep' = {
   }
 }
 
+@description('The name of the function app.')
 output name string = functions.outputs.name
+
+@description('The default hostname of the function app.')
 output uri string = functions.outputs.defaultHostname
+
+@description('The resource ID of the function app.')
 output azureWebJobsStorage string = storageAccountName

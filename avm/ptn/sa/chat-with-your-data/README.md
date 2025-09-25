@@ -96,7 +96,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/chat-with-your-data:<version>`.
 
 - [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
-- [Default configuration with enterprise-grade parameter values](#example-2-default-configuration-with-enterprise-grade-parameter-values)
+- [WAF-aligned](#example-2-waf-aligned)
 
 ### Example 1: _Sandbox configuration with default parameter values_
 
@@ -156,9 +156,9 @@ param solutionName = 'scwydsmin001'
 </details>
 <p>
 
-### Example 2: _Default configuration with enterprise-grade parameter values_
+### Example 2: _WAF-aligned_
 
-This test deploys the Chat with your data Solution Accelerator using parameters that deploy the enterprise-grade configuration.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework
 
 
 <details>

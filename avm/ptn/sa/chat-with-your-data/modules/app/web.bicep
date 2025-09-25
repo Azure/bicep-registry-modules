@@ -6,7 +6,6 @@ param location string = resourceGroup().location
 
 @description('Tags for all resources.')
 param tags object = {}
-param allTags object = {}
 
 @description('Origin URLs allowed to call this web app.')
 param allowedOrigins array = []
@@ -70,8 +69,6 @@ param publicNetworkAccess string?
 @description('Optional. Configuration details for private endpoints.')
 param privateEndpoints array = []
 
-// Import AVM types - not using the imports directly but the types are compatible with the parameters
-
 // Calculate the linuxFxVersion based on runtime or docker settings
 var linuxFxVersion = useDocker
   ? 'DOCKER|${dockerFullImageName}'
@@ -117,7 +114,6 @@ module web '../core/host/appservice.bicep' = {
     name: name
     location: location
     tags: tags
-    allTags: allTags
     kind: kind
     serverFarmResourceId: serverFarmResourceId
     siteConfig: siteConfig
@@ -137,5 +133,8 @@ module web '../core/host/appservice.bicep' = {
   }
 }
 
+@description('The name of the frontend API.')
 output FRONTEND_API_NAME string = web.outputs.name
+
+@description('The URI of the frontend API.')
 output FRONTEND_API_URI string = 'https://${web.outputs.defaultHostname}'

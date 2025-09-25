@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "12718110245761539842"
+      "templateHash": "13474925926763550287"
     },
     "name": "Chat-with-your-data-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -766,7 +766,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[variables('allTags')]"
+            "value": "[parameters('tags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -14413,7 +14413,7 @@
             "value": "[variables('privateDnsZones')[copyIndex()]]"
           },
           "tags": {
-            "value": "[variables('allTags')]"
+            "value": "[parameters('tags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -23222,7 +23222,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[variables('allTags')]"
+            "value": "[parameters('tags')]"
           },
           "kind": {
             "value": "OpenAI"
@@ -23269,7 +23269,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "16505240488755356349"
+              "templateHash": "7415447503474535165"
             }
           },
           "parameters": {
@@ -25809,10 +25809,11 @@
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The principal ID of the system-assigned managed identity, if enabled."
               },
-              "value": "[if(parameters('enableSystemAssigned'), reference('cognitiveServices').outputs.systemAssignedMIPrincipalId.value, '')]"
+              "value": "[tryGet(tryGet(reference('cognitiveServices').outputs, 'systemAssignedMIPrincipalId'), 'value')]"
             }
           }
         }
@@ -25843,7 +25844,7 @@
           },
           "location": "[if(not(equals(parameters('computerVisionLocation'), '')), createObject('value', parameters('computerVisionLocation')), createObject('value', 'eastus'))]",
           "tags": {
-            "value": "[variables('allTags')]"
+            "value": "[parameters('tags')]"
           },
           "sku": {
             "value": "[parameters('computerVisionSkuName')]"
@@ -25875,7 +25876,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "16505240488755356349"
+              "templateHash": "7415447503474535165"
             }
           },
           "parameters": {
@@ -28415,10 +28416,11 @@
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The principal ID of the system-assigned managed identity, if enabled."
               },
-              "value": "[if(parameters('enableSystemAssigned'), reference('cognitiveServices').outputs.systemAssignedMIPrincipalId.value, '')]"
+              "value": "[tryGet(tryGet(reference('cognitiveServices').outputs, 'systemAssignedMIPrincipalId'), 'value')]"
             }
           }
         }
@@ -28482,7 +28484,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "16505240488755356349"
+              "templateHash": "7415447503474535165"
             }
           },
           "parameters": {
@@ -31022,10 +31024,11 @@
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The principal ID of the system-assigned managed identity, if enabled."
               },
-              "value": "[if(parameters('enableSystemAssigned'), reference('cognitiveServices').outputs.systemAssignedMIPrincipalId.value, '')]"
+              "value": "[tryGet(tryGet(reference('cognitiveServices').outputs, 'systemAssignedMIPrincipalId'), 'value')]"
             }
           }
         }
@@ -31055,7 +31058,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[variables('allTags')]"
+            "value": "[parameters('tags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -33413,7 +33416,7 @@
             "value": "[variables('webServerFarmResourceName')]"
           },
           "tags": {
-            "value": "[variables('allTags')]"
+            "value": "[parameters('tags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -34024,7 +34027,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "1239027958599985321"
+              "templateHash": "7126411518110675763"
             }
           },
           "parameters": {
@@ -34047,10 +34050,6 @@
               "metadata": {
                 "description": "Tags for all resources."
               }
-            },
-            "allTags": {
-              "type": "object",
-              "defaultValue": {}
             },
             "allowedOrigins": {
               "type": "array",
@@ -34234,9 +34233,6 @@
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
-                  "allTags": {
-                    "value": "[parameters('allTags')]"
-                  },
                   "kind": {
                     "value": "[parameters('kind')]"
                   },
@@ -34282,7 +34278,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "5281512861407487389"
+                      "templateHash": "4298119334635398540"
                     }
                   },
                   "definitions": {
@@ -35028,10 +35024,6 @@
                         "description": "Optional. Tags of the resource."
                       }
                     },
-                    "allTags": {
-                      "type": "object",
-                      "defaultValue": {}
-                    },
                     "diagnosticSettings": {
                       "type": "array",
                       "items": {
@@ -35478,7 +35470,7 @@
                             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'roleAssignments')]"
                           },
                           "tags": {
-                            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'allTags'), parameters('allTags'))]"
+                            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
                           },
                           "customDnsConfigs": {
                             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
@@ -36262,10 +36254,16 @@
           "outputs": {
             "FRONTEND_API_NAME": {
               "type": "string",
+              "metadata": {
+                "description": "The name of the frontend API."
+              },
               "value": "[reference('web').outputs.name.value]"
             },
             "FRONTEND_API_URI": {
               "type": "string",
+              "metadata": {
+                "description": "The URI of the frontend API."
+              },
               "value": "[format('https://{0}', reference('web').outputs.defaultHostname.value)]"
             }
           }
@@ -36300,9 +36298,6 @@
           "tags": {
             "value": "[union(parameters('tags'), createObject('azd-service-name', if(equals(parameters('hostingModel'), 'container'), 'adminweb-docker', 'adminweb')))]"
           },
-          "allTags": {
-            "value": "[variables('allTags')]"
-          },
           "kind": "[if(equals(parameters('hostingModel'), 'container'), createObject('value', 'app,linux,container'), createObject('value', 'app,linux'))]",
           "serverFarmResourceId": {
             "value": "[reference('webServerFarm').outputs.resourceId.value]"
@@ -36334,7 +36329,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "4691242466216924614"
+              "templateHash": "13674359717076185487"
             }
           },
           "parameters": {
@@ -36357,10 +36352,6 @@
               "metadata": {
                 "description": "Tags for all resources."
               }
-            },
-            "allTags": {
-              "type": "object",
-              "defaultValue": {}
             },
             "allowedOrigins": {
               "type": "array",
@@ -36544,9 +36535,6 @@
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
-                  "allTags": {
-                    "value": "[parameters('allTags')]"
-                  },
                   "kind": {
                     "value": "[parameters('kind')]"
                   },
@@ -36592,7 +36580,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "5281512861407487389"
+                      "templateHash": "4298119334635398540"
                     }
                   },
                   "definitions": {
@@ -37338,10 +37326,6 @@
                         "description": "Optional. Tags of the resource."
                       }
                     },
-                    "allTags": {
-                      "type": "object",
-                      "defaultValue": {}
-                    },
                     "diagnosticSettings": {
                       "type": "array",
                       "items": {
@@ -37788,7 +37772,7 @@
                             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'roleAssignments')]"
                           },
                           "tags": {
-                            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'allTags'), parameters('allTags'))]"
+                            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
                           },
                           "customDnsConfigs": {
                             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
@@ -38572,10 +38556,16 @@
           "outputs": {
             "WEBSITE_ADMIN_NAME": {
               "type": "string",
+              "metadata": {
+                "description": "The name of the admin web app."
+              },
               "value": "[reference('adminweb').outputs.name.value]"
             },
             "WEBSITE_ADMIN_URI": {
               "type": "string",
+              "metadata": {
+                "description": "The URI of the admin web app."
+              },
               "value": "[format('https://{0}', reference('adminweb').outputs.defaultHostname.value)]"
             }
           }
@@ -38651,7 +38641,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "976775273218650526"
+              "templateHash": "7390826503761884182"
             }
           },
           "parameters": {
@@ -38927,7 +38917,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "3984556239778248742"
+                      "templateHash": "5704195504063195524"
                     }
                   },
                   "parameters": {
@@ -39293,7 +39283,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.37.4.10188",
-                              "templateHash": "5281512861407487389"
+                              "templateHash": "4298119334635398540"
                             }
                           },
                           "definitions": {
@@ -40039,10 +40029,6 @@
                                 "description": "Optional. Tags of the resource."
                               }
                             },
-                            "allTags": {
-                              "type": "object",
-                              "defaultValue": {}
-                            },
                             "diagnosticSettings": {
                               "type": "array",
                               "items": {
@@ -40489,7 +40475,7 @@
                                     "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'roleAssignments')]"
                                   },
                                   "tags": {
-                                    "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'allTags'), parameters('allTags'))]"
+                                    "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
                                   },
                                   "customDnsConfigs": {
                                     "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
@@ -41273,14 +41259,23 @@
                   "outputs": {
                     "name": {
                       "type": "string",
+                      "metadata": {
+                        "description": "The name of the function app."
+                      },
                       "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-functions', parameters('name'))), '2022-09-01').outputs.name.value]"
                     },
                     "uri": {
                       "type": "string",
+                      "metadata": {
+                        "description": "The default hostname of the function app."
+                      },
                       "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-functions', parameters('name'))), '2022-09-01').outputs.defaultHostname.value]"
                     },
                     "azureWebJobsStorage": {
                       "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the function app."
+                      },
                       "value": "[parameters('storageAccountName')]"
                     }
                   }
@@ -46954,7 +46949,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[variables('allTags')]"
+            "value": "[parameters('tags')]"
           },
           "kind": {
             "value": "FormRecognizer"
@@ -46998,7 +46993,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "16505240488755356349"
+              "templateHash": "7415447503474535165"
             }
           },
           "parameters": {
@@ -49538,10 +49533,11 @@
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The principal ID of the system-assigned managed identity, if enabled."
               },
-              "value": "[if(parameters('enableSystemAssigned'), reference('cognitiveServices').outputs.systemAssignedMIPrincipalId.value, '')]"
+              "value": "[tryGet(tryGet(reference('cognitiveServices').outputs, 'systemAssignedMIPrincipalId'), 'value')]"
             }
           }
         }
@@ -49570,7 +49566,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[variables('allTags')]"
+            "value": "[parameters('tags')]"
           },
           "kind": {
             "value": "ContentSafety"
@@ -49602,7 +49598,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "16505240488755356349"
+              "templateHash": "7415447503474535165"
             }
           },
           "parameters": {
@@ -52142,10 +52138,11 @@
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The principal ID of the system-assigned managed identity, if enabled."
               },
-              "value": "[if(parameters('enableSystemAssigned'), reference('cognitiveServices').outputs.systemAssignedMIPrincipalId.value, '')]"
+              "value": "[tryGet(tryGet(reference('cognitiveServices').outputs, 'systemAssignedMIPrincipalId'), 'value')]"
             }
           }
         }
@@ -55444,9 +55441,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "managedIdentityModule",
         "network"
       ]
@@ -55474,7 +55471,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[variables('allTags')]"
+            "value": "[parameters('tags')]"
           },
           "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('name', 'diagnosticSettings', 'workspaceResourceId', reference('monitoring').outputs.logAnalyticsWorkspaceId.value, 'metricCategories', createArray(createObject('category', 'AllMetrics'))))), createObject('value', createArray()))]",
           "eventSubscriptions": {

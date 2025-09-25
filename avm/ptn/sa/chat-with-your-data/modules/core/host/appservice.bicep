@@ -80,7 +80,7 @@ param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Tags of the resource.')
 param tags object?
-param allTags object = {}
+
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
@@ -307,7 +307,7 @@ module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' 
       privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
   // Do not inherit azd-service-name onto private endpoints (see note above)
-      tags: privateEndpoint.?allTags ?? allTags
+      tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
       ipConfigurations: privateEndpoint.?ipConfigurations
       applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds

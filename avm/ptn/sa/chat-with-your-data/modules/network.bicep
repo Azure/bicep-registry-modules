@@ -252,14 +252,8 @@ output subnetWebResourceId string = first(filter(network.outputs.subnets, s => s
 @description('Resource ID of the "peps" subnet for Private Endpoints.')
 output subnetPrivateEndpointsResourceId string = first(filter(network.outputs.subnets, s => s.name == 'peps')).?resourceId ?? ''
 
-// @description('Resource ID of the Bastion Host.')
-// output bastionResourceId string = network.outputs.bastionHostId
-
 @description('Resource ID of the subnet for deployment scripts.')
 output subnetDeploymentScriptsResourceId string = first(filter(
   network.outputs.subnets,
   s => s.name == 'deployment-scripts'
 )).?resourceId ?? ''
-
-// @description('Resource ID of the Jumpbox VM.')
-// output jumpboxResourceId string = network.outputs.jumpboxResourceId

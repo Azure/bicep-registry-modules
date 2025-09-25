@@ -6,7 +6,7 @@ param location string = resourceGroup().location
 
 @description('Tags for all resources.')
 param tags object = {}
-param allTags object = {}
+
 @description('Origin URLs allowed to call this web app.')
 param allowedOrigins array = []
 
@@ -44,7 +44,6 @@ param scmDoBuildDuringDeployment bool = useDocker ? false : true
 @description('The health check path for the web app.')
 param healthCheckPath string = ''
 
-// AVM WAF parameters
 @description('The kind of web app to create')
 param kind string = 'app,linux'
 
@@ -68,7 +67,6 @@ param publicNetworkAccess string?
 
 @description('Optional. Configuration details for private endpoints.')
 param privateEndpoints array = []
-
 
 // Calculate the linuxFxVersion based on runtime or docker settings
 var linuxFxVersion = useDocker
@@ -115,7 +113,6 @@ module adminweb '../core/host/appservice.bicep' = {
     name: name
     location: location
     tags: tags
-    allTags: allTags
     kind: kind
     serverFarmResourceId: serverFarmResourceId
     siteConfig: siteConfig
@@ -135,5 +132,8 @@ module adminweb '../core/host/appservice.bicep' = {
   }
 }
 
+@description('The name of the admin web app.')
 output WEBSITE_ADMIN_NAME string = adminweb.outputs.name
+
+@description('The URI of the admin web app.')
 output WEBSITE_ADMIN_URI string = 'https://${adminweb.outputs.defaultHostname}'
