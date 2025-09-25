@@ -20,7 +20,7 @@ param publicIPAllocationMethod string = 'Static'
   2
   3
 ])
-param zones int[] = [
+param availabilityZones int[] = [
   1
   2
   3
@@ -39,7 +39,7 @@ param dnsSettings dnsSettingsType?
 @description('Optional. The list of tags associated with the public IP address.')
 param ipTags ipTagType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -152,7 +152,7 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
     name: skuName
     tier: skuTier
   }
-  zones: map(zones, zone => string(zone))
+  zones: map(availabilityZones, zone => string(zone))
   properties: {
     ddosSettings: ddosSettings
     dnsSettings: dnsSettings
@@ -172,9 +172,9 @@ resource publicIpAddress_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: publicIpAddress
 }

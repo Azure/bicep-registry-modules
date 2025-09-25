@@ -11,7 +11,7 @@ param computerName string = name
 param vmSize string
 
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
-param encryptionAtHost bool = true
+param encryptionAtHost bool = false
 
 @description('Optional. Specifies the SecurityType of the virtual machine. It has to be set to any specified value to enable UefiSettings. The default behavior is: UefiSettings will not be enabled unless this property is set.')
 @allowed([
@@ -81,7 +81,7 @@ param evictionPolicy string = 'Deallocate'
 param maxPriceForLowPriorityVm string = ''
 
 @description('Optional. Specifies resource ID about the dedicated host that the virtual machine resides in.')
-param dedicatedHostId string = ''
+param dedicatedHostResourceId string = ''
 
 @description('Optional. Specifies that the image or disk that is being used was licensed on-premises.')
 @allowed([
@@ -89,9 +89,8 @@ param dedicatedHostId string = ''
   'SLES_BYOS'
   'Windows_Client'
   'Windows_Server'
-  ''
 ])
-param licenseType string = ''
+param licenseType string?
 
 @description('Optional. The list of SSH public keys used to authenticate with linux based VMs.')
 param publicKeys publicKeyType[] = []
@@ -121,14 +120,14 @@ param availabilitySetResourceId string = ''
 @description('Optional. Specifies the gallery applications that should be made available to the VM/VMSS.')
 param galleryApplications vmGalleryApplicationType[]?
 
-@description('Required. If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.')
+@description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).')
 @allowed([
-  0
+  -1
   1
   2
   3
 ])
-param zone int
+param availabilityZone int
 
 // External resources
 @description('Required. Configures NICs and PIPs.')
@@ -199,23 +198,22 @@ param extensionDSCConfig object = {
   enabled: false
 }
 
-@description('Optional. The configuration for the [Custom Script] extension. Must at least contain the ["enabled": true] property to be executed.')
-param extensionCustomScriptConfig object = {
-  enabled: false
-  fileData: []
-}
+@description('Optional. The configuration for the [Custom Script] extension.')
+param extensionCustomScriptConfig extensionCustomScriptConfigType?
 
 @description('Optional. The configuration for the [Nvidia Gpu Driver Windows] extension. Must at least contain the ["enabled": true] property to be executed.')
 param extensionNvidiaGpuDriverWindows object = {
   enabled: false
 }
 
-@description('Optional. The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.')
+@description('Optional. The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identity.')
+@secure()
+#disable-next-line secure-parameter-default
 param extensionHostPoolRegistration object = {
   enabled: false
 }
 
-@description('Optional. The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.')
+@description('Optional. The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identity.')
 param extensionGuestConfigurationExtension object = {
   enabled: false
 }
@@ -225,17 +223,13 @@ param guestConfiguration object = {}
 
 @description('Optional. An object that contains the extension specific protected settings.')
 @secure()
-param extensionCustomScriptProtectedSetting object = {}
-
-@description('Optional. An object that contains the extension specific protected settings.')
-@secure()
 param extensionGuestConfigurationExtensionProtectedSettings object = {}
 
 // Shared parameters
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -244,16 +238,10 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Compute/virtualMachines@2024-11-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
-
-@description('Generated. Do not provide a value! This date value is used to generate a registration token.')
-param baseTime string = utcNow('u')
-
-@description('Optional. SAS token validity length to use to download files from storage accounts. Usage: \'PT8H\' - valid for 8 hours; \'P5D\' - valid for 5 days; \'P1Y\' - valid for 1 year. When not provided, the SAS token will be valid for 8 hours.')
-param sasTokenValidityLength string = 'PT8H'
 
 @description('Required. The chosen OS type.')
 @allowed([
@@ -316,6 +304,24 @@ param winRMListeners winRMListenerType[]?
 @description('Optional. The configuration profile of automanage. Either \'/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction\', \'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest\' or the resource Id of custom profile.')
 param configurationProfile string = ''
 
+@description('Optional. Capacity reservation group resource id that should be used for allocating the virtual machine vm instances provided enough capacity has been reserved.')
+param capacityReservationGroupResourceId string = ''
+
+@allowed([
+  'AllowAll'
+  'AllowPrivate'
+  'DenyAll'
+])
+@description('Optional. Policy for accessing the disk via network.')
+param networkAccessPolicy string = 'DenyAll'
+
+@allowed([
+  'Disabled'
+  'Enabled'
+])
+@description('Optional. Policy for controlling export on the disk.')
+param publicNetworkAccess string = 'Disabled'
+
 var enableReferencedModulesTelemetry = false
 
 var publicKeysFormatted = [
@@ -377,14 +383,6 @@ var windowsConfiguration = {
         listeners: winRMListeners
       }
     : null
-}
-
-var accountSasProperties = {
-  signedServices: 'b'
-  signedPermission: 'r'
-  signedExpiry: dateTimeAdd(baseTime, sasTokenValidityLength)
-  signedResourceTypes: 'o'
-  signedProtocol: 'https'
 }
 
 var formattedUserAssignedIdentities = reduce(
@@ -536,8 +534,12 @@ resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
       }
       diskIOPSReadWrite: dataDisk.?diskIOPSReadWrite
       diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite
+      publicNetworkAccess: publicNetworkAccess
+      networkAccessPolicy: networkAccessPolicy
     }
-    zones: zone != 0 && !contains(dataDisk.managedDisk.?storageAccountType, 'ZRS') ? array(string(zone)) : null
+    zones: availabilityZone != -1 && !contains(dataDisk.managedDisk.?storageAccountType, 'ZRS')
+      ? array(string(availabilityZone))
+      : null
     tags: dataDisk.?tags ?? tags
   }
 ]
@@ -547,14 +549,14 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
   location: location
   identity: identity
   tags: tags
-  zones: zone != 0 ? array(string(zone)) : null
+  zones: availabilityZone != -1 ? array(string(availabilityZone)) : null
   plan: plan
   properties: {
     hardwareProfile: {
       vmSize: vmSize
     }
     securityProfile: {
-      encryptionAtHost: encryptionAtHost ? encryptionAtHost : null
+      ...(encryptionAtHost ? { encryptionAtHost: encryptionAtHost } : {}) // Using shallow merge as even providing the property with `false` requires the feature to be registered
       securityType: securityType
       uefiSettings: securityType == 'TrustedLaunch'
         ? {
@@ -635,6 +637,13 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         }
       ]
     }
+    capacityReservation: !empty(capacityReservationGroupResourceId)
+      ? {
+          capacityReservationGroup: {
+            id: capacityReservationGroupResourceId
+          }
+        }
+      : null
     diagnosticsProfile: {
       bootDiagnostics: {
         enabled: !empty(bootDiagnosticStorageAccountName) ? true : bootDiagnostics
@@ -671,12 +680,12 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
           maxPrice: json(maxPriceForLowPriorityVm)
         }
       : null
-    host: !empty(dedicatedHostId)
+    host: !empty(dedicatedHostResourceId)
       ? {
-          id: dedicatedHostId
+          id: dedicatedHostResourceId
         }
       : null
-    licenseType: !empty(licenseType) ? licenseType : null
+    licenseType: licenseType
     userData: !empty(userData) ? base64(userData) : null
   }
   dependsOn: [
@@ -889,7 +898,15 @@ module vm_desiredStateConfigurationExtension 'extension/main.bicep' = if (extens
   ]
 }
 
-module vm_customScriptExtension 'extension/main.bicep' = if (extensionCustomScriptConfig.enabled) {
+resource cseIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(extensionCustomScriptConfig.?protectedSettings.?managedIdentityResourceId)) {
+  name: last(split(extensionCustomScriptConfig!.protectedSettings!.managedIdentityResourceId!, '/'))
+  scope: resourceGroup(
+    split(extensionCustomScriptConfig!.protectedSettings!.managedIdentityResourceId!, '/')[2],
+    split(extensionCustomScriptConfig!.protectedSettings!.managedIdentityResourceId!, '/')[4]
+  )
+}
+
+module vm_customScriptExtension 'extension/main.bicep' = if (!empty(extensionCustomScriptConfig)) {
   name: '${uniqueString(deployment().name, location)}-VM-CustomScriptExtension'
   params: {
     virtualMachineName: vm.name
@@ -900,16 +917,42 @@ module vm_customScriptExtension 'extension/main.bicep' = if (extensionCustomScri
     typeHandlerVersion: extensionCustomScriptConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '1.10' : '2.1')
     autoUpgradeMinorVersion: extensionCustomScriptConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionCustomScriptConfig.?enableAutomaticUpgrade ?? false
-    settings: {
-      fileUris: [
-        for fileData in extensionCustomScriptConfig.fileData: contains(fileData, 'storageAccountId')
-          ? '${fileData.uri}?${listAccountSas(fileData.storageAccountId, '2019-04-01', accountSasProperties).accountSasToken}'
-          : fileData.uri
-      ]
-    }
+    forceUpdateTag: extensionCustomScriptConfig.?forceUpdateTag
+    provisionAfterExtensions: extensionCustomScriptConfig.?provisionAfterExtensions
     supressFailures: extensionCustomScriptConfig.?supressFailures ?? false
     tags: extensionCustomScriptConfig.?tags ?? tags
-    protectedSettings: extensionCustomScriptProtectedSetting
+    protectedSettingsFromKeyVault: extensionCustomScriptConfig.?protectedSettingsFromKeyVault
+    settings: {
+      ...(!empty(extensionCustomScriptConfig!.?settings.?commandToExecute)
+        ? { commandToExecute: extensionCustomScriptConfig!.?settings.?commandToExecute }
+        : {})
+      ...(!empty(extensionCustomScriptConfig!.?settings.?fileUris)
+        ? { fileUris: extensionCustomScriptConfig!.?settings.fileUris }
+        : {})
+    }
+    protectedSettings: {
+      ...(!empty(extensionCustomScriptConfig!.?protectedSettings.?commandToExecute)
+        ? { commandToExecute: extensionCustomScriptConfig!.protectedSettings!.?commandToExecute }
+        : {})
+      ...(!empty(extensionCustomScriptConfig!.?protectedSettings.?storageAccountName)
+        ? { storageAccountName: extensionCustomScriptConfig!.protectedSettings!.storageAccountName! }
+        : {})
+      ...(!empty(extensionCustomScriptConfig!.?protectedSettings.?storageAccountKey)
+        ? { storageAccountKey: extensionCustomScriptConfig!.protectedSettings!.storageAccountKey! }
+        : {})
+      ...(!empty(extensionCustomScriptConfig!.?protectedSettings.?fileUris)
+        ? { fileUris: extensionCustomScriptConfig!.protectedSettings!.fileUris! }
+        : {})
+      ...(extensionCustomScriptConfig!.?protectedSettings.?managedIdentityResourceId != null
+        ? {
+            managedIdentity: !empty(extensionCustomScriptConfig!.protectedSettings!.?managedIdentityResourceId)
+              ? {
+                  clientId: cseIdentity!.properties.clientId // Uses user-assigned
+                }
+              : {} // Uses system-assigned
+          }
+        : {})
+    }
   }
   dependsOn: [
     vm_desiredStateConfigurationExtension
@@ -1008,7 +1051,7 @@ module vm_azureGuestConfigurationExtension 'extension/main.bicep' = if (extensio
   ]
 }
 
-resource AzureWindowsBaseline 'Microsoft.GuestConfiguration/guestConfigurationAssignments@2020-06-25' = if (!empty(guestConfiguration)) {
+resource AzureWindowsBaseline 'Microsoft.GuestConfiguration/guestConfigurationAssignments@2024-04-05' = if (!empty(guestConfiguration)) {
   name: guestConfiguration.?name ?? 'AzureWindowsBaseline'
   scope: vm
   dependsOn: [
@@ -1046,9 +1089,9 @@ resource vm_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ??
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: vm
 }
@@ -1381,4 +1424,63 @@ type nicConfigurationOutputType = {
 
   @description('Required. List of IP configurations of the NIC configuration.')
   ipConfigurations: networkInterfaceIPConfigurationOutputType[]
+}
+
+@export()
+@description('The type of a \'CustomScriptExtension\' extension.')
+type extensionCustomScriptConfigType = {
+  @description('Optional. The name of the virtual machine extension. Defaults to `CustomScriptExtension`.')
+  name: string?
+
+  @description('Optional. Specifies the version of the script handler. Defaults to `1.10` for Windows and `2.1` for Linux.')
+  typeHandlerVersion: string?
+
+  @description('Optional. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true. Defaults to `true`.')
+  autoUpgradeMinorVersion: bool?
+
+  @description('Optional. How the extension handler should be forced to update even if the extension configuration has not changed.')
+  forceUpdateTag: string?
+
+  @description('Optional. The configuration of the custom script extension. Note: You can provide any property either in the `settings` or `protectedSettings` but not both. If your property contains secrets, use `protectedSettings`.')
+  settings: {
+    @description('Conditional. The entry point script to run. If the command contains any credentials, use the same property of the `protectedSettings` instead. Required if `protectedSettings.commandToExecute` is not provided.')
+    commandToExecute: string?
+
+    @description('Optional. URLs for files to be downloaded. If URLs are sensitive, for example, if they contain keys, this field should be specified in `protectedSettings`.')
+    fileUris: string[]?
+  }?
+
+  @description('Optional. The configuration of the custom script extension. Note: You can provide any property either in the `settings` or `protectedSettings` but not both. If your property contains secrets, use `protectedSettings`.')
+  @secure()
+  protectedSettings: {
+    @description('Conditional. The entry point script to run. Use this property if your command contains secrets such as passwords or if your file URIs are sensitive. Required if `settings.commandToExecute` is not provided.')
+    commandToExecute: string?
+
+    @description('Optional. The name of storage account. If you specify storage credentials, all fileUris values must be URLs for Azure blobs..')
+    storageAccountName: string?
+
+    @description('Optional. The access key of the storage account.')
+    storageAccountKey: string?
+
+    @description('Optional. The managed identity for downloading files. Must not be used in conjunction with the `storageAccountName` or `storageAccountKey` property. If you want to use the VM\'s system assigned identity, set the `value` to an empty string.')
+    managedIdentityResourceId: string?
+
+    @description('Optional. URLs for files to be downloaded.')
+    fileUris: string[]?
+  }?
+
+  @description('Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). Defaults to `false`.')
+  supressFailures: bool?
+
+  @description('Optional. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `false`.')
+  enableAutomaticUpgrade: bool?
+
+  @description('Optional. Tags of the resource.')
+  tags: resourceInput<'Microsoft.Compute/virtualMachines/extensions@2024-11-01'>.tags?
+
+  @description('Optional. The extensions protected settings that are passed by reference, and consumed from key vault.')
+  protectedSettingsFromKeyVault: resourceInput<'Microsoft.Compute/virtualMachines/extensions@2024-11-01'>.properties.protectedSettingsFromKeyVault?
+
+  @description('Optional. Collection of extension names after which this extension needs to be provisioned.')
+  provisionAfterExtensions: resourceInput<'Microsoft.Compute/virtualMachines/extensions@2024-11-01'>.properties.provisionAfterExtensions?
 }

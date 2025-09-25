@@ -197,7 +197,7 @@ module services 'modules/deploy_services.bicep' = {
 }
 
 // import the image to the ACR that will be used to run the job
-module import_image 'br/public:avm/ptn/deployment-script/import-image-to-acr:0.4.1' = {
+module import_image 'br/public:avm/ptn/deployment-script/import-image-to-acr:0.4.4' = {
   name: '${uniqueString(deployment().name, location)}-import-image'
   params: {
     name: '${name}-import-image'
@@ -218,7 +218,7 @@ module import_image 'br/public:avm/ptn/deployment-script/import-image-to-acr:0.4
   }
 }
 
-module job 'br/public:avm/res/app/job:0.5.1' = {
+module job 'br/public:avm/res/app/job:0.6.0' = {
   name: '${uniqueString(deployment().name, location)}-${resourceGroup().name}-appjob'
   params: {
     name: '${name}-container-job'

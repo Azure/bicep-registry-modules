@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "13916745959726876819"
+      "version": "0.37.4.10188",
+      "templateHash": "15230517259272275227"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database."
@@ -302,12 +302,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -619,12 +626,22 @@
         "description": "Optional. Whether or not this database is zone redundant."
       }
     },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Sql/servers/database@2023-08-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "location": {
       "type": "string",
@@ -688,7 +705,7 @@
       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -699,11 +716,31 @@
       "apiVersion": "2023-08-01",
       "name": "[parameters('serverName')]"
     },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.sql-serverdb.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "cMKKeyVault": {
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -723,7 +760,7 @@
         "collation": "[parameters('collation')]",
         "createMode": "[parameters('createMode')]",
         "elasticPoolId": "[parameters('elasticPoolResourceId')]",
-        "encryptionProtector": "[if(not(equals(parameters('customerManagedKey'), null())), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion')), reference('cMKKeyVault::cMKKey').keyUriWithVersion), null())]",
+        "encryptionProtector": "[if(not(equals(parameters('customerManagedKey'), null())), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', tryGet(if(and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName'))))), reference('cMKKeyVault::cMKKey', '2024-11-01', 'full'), null()), 'properties', 'keyUri'), tryGet(parameters('customerManagedKey'), 'keyVersion')), tryGet(if(and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName'))))), reference('cMKKeyVault::cMKKey', '2024-11-01', 'full'), null()), 'properties', 'keyUriWithVersion')), null())]",
         "encryptionProtectorAutoRotation": "[tryGet(parameters('customerManagedKey'), 'autoRotationEnabled')]",
         "federatedClientId": "[parameters('federatedClientId')]",
         "freeLimitExhaustionBehavior": "[parameters('freeLimitExhaustionBehavior')]",
@@ -804,7 +841,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "database"
@@ -840,8 +877,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "9948442514033354219"
+              "version": "0.37.4.10188",
+              "templateHash": "16409308766047346265"
             },
             "name": "Azure SQL Server Database Short Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
@@ -951,8 +988,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "10140872033464442933"
+              "version": "0.37.4.10188",
+              "templateHash": "14473382343475213230"
             },
             "name": "SQL Server Database Long Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."

@@ -1,5 +1,10 @@
 # Azure Virtual Desktop Scaling Plan `[Microsoft.DesktopVirtualization/scalingPlans]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an Azure Virtual Desktop Scaling Plan.
 
 ## Navigation
@@ -13,12 +18,12 @@ This module deploys an Azure Virtual Desktop Scaling Plan.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DesktopVirtualization/scalingPlans` | [2023-09-05](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2023-09-05/scalingPlans) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.DesktopVirtualization/scalingPlans` | 2025-03-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.desktopvirtualization_scalingplans.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2025-03-01-preview/scalingPlans)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 
 ## Usage examples
 
@@ -45,10 +50,7 @@ This instance deploys the module with the minimum set of required parameters.
 module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<version>' = {
   name: 'scalingPlanDeployment'
   params: {
-    // Required parameters
     name: 'dvspmin002'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -65,13 +67,8 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "dvspmin002"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -87,10 +84,7 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
 ```bicep-params
 using 'br/public:avm/res/desktop-virtualization/scaling-plan:<version>'
 
-// Required parameters
 param name = 'dvspmin002'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -130,7 +124,7 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
     friendlyName: 'friendlyName'
     hostPoolReferences: [
       {
-        hostPoolArmPath: '<hostPoolArmPath>'
+        hostPoolResourceId: '<hostPoolResourceId>'
         scalingPlanEnabled: true
       }
     ]
@@ -317,7 +311,7 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
     "hostPoolReferences": {
       "value": [
         {
-          "hostPoolArmPath": "<hostPoolArmPath>",
+          "hostPoolResourceId": "<hostPoolResourceId>",
           "scalingPlanEnabled": true
         }
       ]
@@ -504,7 +498,7 @@ param diagnosticSettings = [
 param friendlyName = 'friendlyName'
 param hostPoolReferences = [
   {
-    hostPoolArmPath: '<hostPoolArmPath>'
+    hostPoolResourceId: '<hostPoolResourceId>'
     scalingPlanEnabled: true
   }
 ]
@@ -676,7 +670,6 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
       }
     ]
     friendlyName: 'myFriendlyName'
-    location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -719,9 +712,6 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
     "friendlyName": {
       "value": "myFriendlyName"
     },
-    "location": {
-      "value": "<location>"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -756,7 +746,6 @@ param diagnosticSettings = [
   }
 ]
 param friendlyName = 'myFriendlyName'
-param location = '<location>'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -785,7 +774,7 @@ param tags = {
 | [`exclusionTag`](#parameter-exclusiontag) | string | Exclusion tag to be used for exclusion of VMs from Scaling Plan. |
 | [`friendlyName`](#parameter-friendlyname) | string | Friendly name of the Scaling Plan. |
 | [`hostPoolReferences`](#parameter-hostpoolreferences) | array | Host pool references of the Scaling Plan. |
-| [`hostPoolType`](#parameter-hostpooltype) | string | Host pool type of the Scaling Plan. |
+| [`hostPoolType`](#parameter-hostpooltype) | string | Host pool type of the Scaling Plan. Defaults to 'Pooled'. |
 | [`location`](#parameter-location) | string | Location of the Scaling Plan. Defaults to resource group location. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -950,9 +939,35 @@ Host pool references of the Scaling Plan.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`hostPoolResourceId`](#parameter-hostpoolreferenceshostpoolresourceid) | string | Arm path of referenced hostpool. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`scalingPlanEnabled`](#parameter-hostpoolreferencesscalingplanenabled) | bool | Is the scaling plan enabled for this hostpool. Defaults to `true`. |
+
+### Parameter: `hostPoolReferences.hostPoolResourceId`
+
+Arm path of referenced hostpool.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `hostPoolReferences.scalingPlanEnabled`
+
+Is the scaling plan enabled for this hostpool. Defaults to `true`.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `hostPoolType`
 
-Host pool type of the Scaling Plan.
+Host pool type of the Scaling Plan. Defaults to 'Pooled'.
 
 - Required: No
 - Type: string
@@ -986,6 +1001,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -1005,6 +1021,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -1163,7 +1186,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

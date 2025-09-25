@@ -8,16 +8,17 @@ This module deploys an Event Hub Namespace Event Hub.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.EventHub/namespaces/eventhubs` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs) |
-| `Microsoft.EventHub/namespaces/eventhubs/authorizationRules` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs/authorizationRules) |
-| `Microsoft.EventHub/namespaces/eventhubs/consumergroups` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs/consumergroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.EventHub/namespaces/eventhubs` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.eventhub_namespaces_eventhubs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs)</li></ul> |
+| `Microsoft.EventHub/namespaces/eventhubs/authorizationRules` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.eventhub_namespaces_eventhubs_authorizationrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs/authorizationRules)</li></ul> |
+| `Microsoft.EventHub/namespaces/eventhubs/consumergroups` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.eventhub_namespaces_eventhubs_consumergroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs/consumergroups)</li></ul> |
 
 ## Parameters
 
@@ -25,19 +26,19 @@ This module deploys an Event Hub Namespace Event Hub.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the event hub. |
+| [`name`](#parameter-name) | string | The name of the Event Hub. |
 
 **Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`namespaceName`](#parameter-namespacename) | string | The name of the parent event hub namespace. Required if the template is used in a standalone deployment. |
+| [`namespaceName`](#parameter-namespacename) | string | The name of the parent Event Hub namespace. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`authorizationRules`](#parameter-authorizationrules) | array | Authorization Rules for the event hub. |
+| [`authorizationRules`](#parameter-authorizationrules) | array | Authorization Rules for the Event Hub. |
 | [`captureDescriptionDestinationArchiveNameFormat`](#parameter-capturedescriptiondestinationarchivenameformat) | string | Blob naming convention for archive, e.g. {Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}. Here all the parameters (Namespace,EventHub .. etc) are mandatory irrespective of order. |
 | [`captureDescriptionDestinationBlobContainer`](#parameter-capturedescriptiondestinationblobcontainer) | string | Blob container Name. |
 | [`captureDescriptionDestinationName`](#parameter-capturedescriptiondestinationname) | string | Name for capture destination. |
@@ -47,7 +48,8 @@ This module deploys an Event Hub Namespace Event Hub.
 | [`captureDescriptionIntervalInSeconds`](#parameter-capturedescriptionintervalinseconds) | int | The time window allows you to set the frequency with which the capture to Azure Blobs will happen. |
 | [`captureDescriptionSizeLimitInBytes`](#parameter-capturedescriptionsizelimitinbytes) | int | The size window defines the amount of data built up in your Event Hub before an capture operation. |
 | [`captureDescriptionSkipEmptyArchives`](#parameter-capturedescriptionskipemptyarchives) | bool | A value that indicates whether to Skip Empty Archives. |
-| [`consumergroups`](#parameter-consumergroups) | array | The consumer groups to create in this event hub instance. |
+| [`consumergroups`](#parameter-consumergroups) | array | The consumer groups to create in this Event Hub instance. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`messageRetentionInDays`](#parameter-messageretentionindays) | int | Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Will be automatically set to infinite retention if cleanup policy is set to "Compact". |
 | [`partitionCount`](#parameter-partitioncount) | int | Number of partitions created for the Event Hub, allowed values are from 1 to 32 partitions. |
@@ -60,21 +62,21 @@ This module deploys an Event Hub Namespace Event Hub.
 
 ### Parameter: `name`
 
-The name of the event hub.
+The name of the Event Hub.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `namespaceName`
 
-The name of the parent event hub namespace. Required if the template is used in a standalone deployment.
+The name of the parent Event Hub namespace. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `authorizationRules`
 
-Authorization Rules for the event hub.
+Authorization Rules for the Event Hub.
 
 - Required: No
 - Type: array
@@ -89,6 +91,35 @@ Authorization Rules for the event hub.
         'Send'
       ]
     }
+  ]
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-authorizationrulesname) | string | The name of the Event Hub authorization rule. |
+| [`rights`](#parameter-authorizationrulesrights) | array | The allowed rights for an Event Hub authorization rule. |
+
+### Parameter: `authorizationRules.name`
+
+The name of the Event Hub authorization rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `authorizationRules.rights`
+
+The allowed rights for an Event Hub authorization rule.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'Listen'
+    'Manage'
+    'Send'
   ]
   ```
 
@@ -177,7 +208,7 @@ A value that indicates whether to Skip Empty Archives.
 
 ### Parameter: `consumergroups`
 
-The consumer groups to create in this event hub instance.
+The consumer groups to create in this Event Hub instance.
 
 - Required: No
 - Type: array
@@ -189,6 +220,40 @@ The consumer groups to create in this event hub instance.
     }
   ]
   ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-consumergroupsname) | string | The name of the consumer group. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userMetadata`](#parameter-consumergroupsusermetadata) | string | User Metadata is a placeholder to store user-defined string data with maximum length 1024. e.g. it can be used to store descriptive data, such as list of teams and their contact information also user-defined configuration settings can be stored. |
+
+### Parameter: `consumergroups.name`
+
+The name of the consumer group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `consumergroups.userMetadata`
+
+User Metadata is a placeholder to store user-defined string data with maximum length 1024. e.g. it can be used to store descriptive data, such as list of teams and their contact information also user-defined configuration settings can be stored.
+
+- Required: No
+- Type: string
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `lock`
 
@@ -203,6 +268,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -222,6 +288,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -421,9 +494,9 @@ Enumerates the possible values for the status of the Event Hub.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the event hub. |
-| `resourceGroupName` | string | The resource group the event hub was deployed into. |
-| `resourceId` | string | The resource ID of the event hub. |
+| `name` | string | The name of the Event Hub. |
+| `resourceGroupName` | string | The resource group the Event Hub was deployed into. |
+| `resourceId` | string | The resource ID of the Event Hub. |
 
 ## Cross-referenced modules
 
@@ -431,4 +504,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

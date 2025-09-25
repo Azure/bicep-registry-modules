@@ -13,11 +13,11 @@ This module deploys a Compute Disk
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/disks` | [2023-10-02](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-10-02/disks) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Compute/disks` | 2023-10-02 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_disks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-10-02/disks)</li></ul> |
 
 ## Usage examples
 
@@ -47,7 +47,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   name: 'diskDeployment'
   params: {
     // Required parameters
-    availabilityZone: 0
+    availabilityZone: -1
     name: 'cdmin001'
     sku: 'Standard_LRS'
     // Non-required parameters
@@ -71,7 +71,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   "parameters": {
     // Required parameters
     "availabilityZone": {
-      "value": 0
+      "value": -1
     },
     "name": {
       "value": "cdmin001"
@@ -101,7 +101,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 using 'br/public:avm/res/compute/disk:<version>'
 
 // Required parameters
-param availabilityZone = 0
+param availabilityZone = -1
 param name = 'cdmin001'
 param sku = 'Standard_LRS'
 // Non-required parameters
@@ -126,7 +126,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   name: 'diskDeployment'
   params: {
     // Required parameters
-    availabilityZone: 0
+    availabilityZone: -1
     name: 'cdimg001'
     sku: 'Standard_LRS'
     // Non-required parameters
@@ -151,7 +151,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   "parameters": {
     // Required parameters
     "availabilityZone": {
-      "value": 0
+      "value": -1
     },
     "name": {
       "value": "cdimg001"
@@ -184,7 +184,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 using 'br/public:avm/res/compute/disk:<version>'
 
 // Required parameters
-param availabilityZone = 0
+param availabilityZone = -1
 param name = 'cdimg001'
 param sku = 'Standard_LRS'
 // Non-required parameters
@@ -210,7 +210,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   name: 'diskDeployment'
   params: {
     // Required parameters
-    availabilityZone: 0
+    availabilityZone: -1
     name: 'cdimp001'
     sku: 'Standard_LRS'
     // Non-required parameters
@@ -236,7 +236,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   "parameters": {
     // Required parameters
     "availabilityZone": {
-      "value": 0
+      "value": -1
     },
     "name": {
       "value": "cdimp001"
@@ -272,7 +272,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 using 'br/public:avm/res/compute/disk:<version>'
 
 // Required parameters
-param availabilityZone = 0
+param availabilityZone = -1
 param name = 'cdimp001'
 param sku = 'Standard_LRS'
 // Non-required parameters
@@ -620,7 +620,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone.To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones). |
+| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-name) | string | The name of the disk that is being created. |
 | [`sku`](#parameter-sku) | string | The disks sku name. Can be . |
 
@@ -663,14 +663,14 @@ param tags = {
 
 ### Parameter: `availabilityZone`
 
-If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone.To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones).
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
 
 - Required: Yes
 - Type: int
 - Allowed:
   ```Bicep
   [
-    0
+    -1
     1
     2
     3
@@ -732,11 +732,9 @@ CPU architecture supported by an OS disk.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Arm64'
     'x64'
   ]
@@ -803,11 +801,9 @@ Specifies the Edge Zone within the Azure Region where this Managed Disk should e
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'EdgeZone'
   ]
   ```
@@ -864,6 +860,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -883,6 +880,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -933,11 +937,9 @@ Sources of a disk creation.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Linux'
     'Windows'
   ]
@@ -1121,6 +1123,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

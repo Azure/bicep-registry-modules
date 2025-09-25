@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "18127768093152314001"
+      "version": "0.37.4.10188",
+      "templateHash": "9393318810571228943"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server."
@@ -115,6 +115,110 @@
         "__bicep_export!": true
       }
     },
+    "administratorType": {
+      "type": "object",
+      "properties": {
+        "objectId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The objectId of the Active Directory administrator."
+          }
+        },
+        "principalName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Active Directory administrator principal name."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Group",
+            "ServicePrincipal",
+            "Unknown",
+            "User"
+          ],
+          "metadata": {
+            "description": "Required. The principal type used to represent the type of Active Directory Administrator."
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tenantId of the Active Directory administrator."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of an administrator."
+      }
+    },
+    "firewallRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the PostgreSQL flexible server Firewall Rule."
+          }
+        },
+        "startIpAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses."
+          }
+        },
+        "endIpAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a firewall rule."
+      }
+    },
+    "_1.lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
     "_1.privateEndpointCustomDnsConfigType": {
       "type": "object",
       "properties": {
@@ -137,7 +241,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -179,7 +283,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -220,7 +324,82 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "_1.roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -404,12 +583,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -538,7 +724,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/lockType",
+          "$ref": "#/definitions/_1.lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -547,7 +733,7 @@
         "roleAssignments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/roleAssignmentType"
+            "$ref": "#/definitions/_1.roleAssignmentType"
           },
           "nullable": true,
           "metadata": {
@@ -558,6 +744,9 @@
           "type": "object",
           "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+            },
             "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
           }
         },
@@ -572,7 +761,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -682,7 +871,10 @@
     },
     "administrators": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/administratorType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The Azure AD administrators when AAD authentication enabled."
       }
@@ -899,7 +1091,10 @@
     },
     "firewallRules": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/firewallRuleType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The firewall rules to create in the PostgreSQL flexible server."
       }
@@ -1007,7 +1202,7 @@
       }
     ],
     "enableReferencedModulesTelemetry": false,
-    "standByAvailabilityZone": "[tryGet(createObject('Disabled', null(), 'SameZone', parameters('availabilityZone'), 'ZoneRedundant', parameters('highAvailabilityZone')), parameters('highAvailability'))]",
+    "standByAvailabilityZone": "[tryGet(createObject('Disabled', -1, 'SameZone', parameters('availabilityZone'), 'ZoneRedundant', parameters('highAvailabilityZone')), parameters('highAvailability'))]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None'), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -1023,7 +1218,7 @@
       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -1052,7 +1247,7 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -1061,7 +1256,7 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2023-01-31",
+      "apiVersion": "2024-11-30",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
@@ -1119,7 +1314,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "flexibleServer"
@@ -1222,8 +1417,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "335166068139660536"
+              "version": "0.37.4.10188",
+              "templateHash": "10938443433319583034"
             },
             "name": "DBforPostgreSQL Flexible Server Databases",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Database."
@@ -1299,13 +1494,14 @@
         }
       },
       "dependsOn": [
-        "flexibleServer"
+        "flexibleServer",
+        "flexibleServer_roleAssignments"
       ]
     },
     "flexibleServer_firewallRules": {
       "copy": {
         "name": "flexibleServer_firewallRules",
-        "count": "[length(parameters('firewallRules'))]"
+        "count": "[length(coalesce(parameters('firewallRules'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1317,16 +1513,16 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('firewallRules')[copyIndex()].name]"
+            "value": "[coalesce(parameters('firewallRules'), createArray())[copyIndex()].name]"
           },
           "flexibleServerName": {
             "value": "[parameters('name')]"
           },
           "startIpAddress": {
-            "value": "[parameters('firewallRules')[copyIndex()].startIpAddress]"
+            "value": "[coalesce(parameters('firewallRules'), createArray())[copyIndex()].startIpAddress]"
           },
           "endIpAddress": {
-            "value": "[parameters('firewallRules')[copyIndex()].endIpAddress]"
+            "value": "[coalesce(parameters('firewallRules'), createArray())[copyIndex()].endIpAddress]"
           }
         },
         "template": {
@@ -1335,8 +1531,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "1585180545107563289"
+              "version": "0.37.4.10188",
+              "templateHash": "14702487814399753741"
             },
             "name": "DBforPostgreSQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule."
@@ -1444,8 +1640,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "13692321818839794474"
+              "version": "0.37.4.10188",
+              "templateHash": "6442500807924546985"
             },
             "name": "DBforPostgreSQL Flexible Server Configurations",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration."
@@ -1528,7 +1724,7 @@
     "flexibleServer_administrators": {
       "copy": {
         "name": "flexibleServer_administrators",
-        "count": "[length(parameters('administrators'))]"
+        "count": "[length(coalesce(parameters('administrators'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1543,16 +1739,16 @@
             "value": "[parameters('name')]"
           },
           "objectId": {
-            "value": "[parameters('administrators')[copyIndex()].objectId]"
+            "value": "[coalesce(parameters('administrators'), createArray())[copyIndex()].objectId]"
           },
           "principalName": {
-            "value": "[parameters('administrators')[copyIndex()].principalName]"
+            "value": "[coalesce(parameters('administrators'), createArray())[copyIndex()].principalName]"
           },
           "principalType": {
-            "value": "[parameters('administrators')[copyIndex()].principalType]"
+            "value": "[coalesce(parameters('administrators'), createArray())[copyIndex()].principalType]"
           },
           "tenantId": {
-            "value": "[tryGet(parameters('administrators')[copyIndex()], 'tenantId')]"
+            "value": "[tryGet(coalesce(parameters('administrators'), createArray())[copyIndex()], 'tenantId')]"
           }
         },
         "template": {
@@ -1561,8 +1757,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "13090076068489784265"
+              "version": "0.37.4.10188",
+              "templateHash": "13733516267420319787"
             },
             "name": "DBforPostgreSQL Flexible Server Administrators",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator."
@@ -1672,8 +1868,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "4729251626539480258"
+              "version": "0.37.4.10188",
+              "templateHash": "4142088260159064277"
             },
             "name": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
             "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection."
@@ -1806,8 +2002,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "15954548978129725136"
+              "version": "0.34.44.8038",
+              "templateHash": "12389807800450456797"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -2216,7 +2412,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2234,7 +2430,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -2322,8 +2518,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "5440815542537978381"
+                      "version": "0.34.44.8038",
+                      "templateHash": "13997305779829540948"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -2395,12 +2591,12 @@
                     "privateEndpoint": {
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[parameters('privateEndpointName')]"
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
                         "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
@@ -2464,7 +2660,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
             },
             "customDnsConfigs": {
               "type": "array",

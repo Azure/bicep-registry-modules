@@ -33,6 +33,9 @@ param storageAccountResourceId string?
 @description('Optional. Resource ID of the application insight to leverage for this resource.')
 param applicationInsightResourceId string?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 @description('Optional. The current app settings.')
 param currentAppSettings {
   @description('Required. The key-values pairs of the current app settings.')
@@ -41,31 +44,50 @@ param currentAppSettings {
 
 var azureWebJobsValues = !empty(storageAccountResourceId) && !storageAccountUseIdentityAuthentication
   ? {
-      AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
+      AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount!.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
     }
   : !empty(storageAccountResourceId) && storageAccountUseIdentityAuthentication
       ? {
           AzureWebJobsStorage__accountName: storageAccount.name
-          AzureWebJobsStorage__blobServiceUri: storageAccount.properties.primaryEndpoints.blob
-          AzureWebJobsStorage__queueServiceUri: storageAccount.properties.primaryEndpoints.queue
-          AzureWebJobsStorage__tableServiceUri: storageAccount.properties.primaryEndpoints.table
+          AzureWebJobsStorage__blobServiceUri: storageAccount!.properties.primaryEndpoints.blob
+          AzureWebJobsStorage__queueServiceUri: storageAccount!.properties.primaryEndpoints.queue
+          AzureWebJobsStorage__tableServiceUri: storageAccount!.properties.primaryEndpoints.table
         }
       : {}
 
 var appInsightsValues = !empty(applicationInsightResourceId)
   ? {
-      APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights.properties.ConnectionString
+      APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights!.properties.ConnectionString
     }
   : {}
 
 var expandedProperties = union(currentAppSettings, properties, azureWebJobsValues, appInsightsValues)
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.web-siteconfig.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing = if (!empty(applicationInsightResourceId)) {
   name: last(split(applicationInsightResourceId!, '/'))
   scope: resourceGroup(split(applicationInsightResourceId!, '/')[2], split(applicationInsightResourceId!, '/')[4])
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing = if (!empty(storageAccountResourceId)) {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = if (!empty(storageAccountResourceId)) {
   name: last(split(storageAccountResourceId!, '/'))
   scope: resourceGroup(split(storageAccountResourceId!, '/')[2], split(storageAccountResourceId!, '/')[4])
 }

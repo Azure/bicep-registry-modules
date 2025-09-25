@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "10146714933242516750"
+      "version": "0.37.4.10188",
+      "templateHash": "8989332423332259354"
     },
     "name": "Azure Databricks Workspaces",
     "description": "This module deploys an Azure Databricks Workspace."
@@ -95,6 +95,43 @@
         "description": "The type for a default catalog configuration."
       }
     },
+    "_1.lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
     "_1.privateEndpointCustomDnsConfigType": {
       "type": "object",
       "properties": {
@@ -117,7 +154,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -159,7 +196,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -200,7 +237,82 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "_1.roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -237,7 +349,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type does not support auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -281,7 +393,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -378,7 +490,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if only logs are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -403,12 +515,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -515,7 +634,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/lockType",
+          "$ref": "#/definitions/_1.lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -524,7 +643,7 @@
         "roleAssignments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/roleAssignmentType"
+            "$ref": "#/definitions/_1.roleAssignmentType"
           },
           "nullable": true,
           "metadata": {
@@ -535,6 +654,9 @@
           "type": "object",
           "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+            },
             "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
           }
         },
@@ -549,7 +671,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -624,7 +746,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     }
@@ -691,10 +813,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Databricks/workspaces@2024-05-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -949,7 +1074,7 @@
       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2023-02-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
@@ -958,7 +1083,7 @@
       "condition": "[and(and(not(empty(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'))), not(equals(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))), and(not(empty(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyName')))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2023-02-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/')), coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyName'), 'dummyKey'))]"
@@ -987,7 +1112,7 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -996,7 +1121,7 @@
       "condition": "[and(not(empty(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'))), not(equals(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/'))]"
@@ -1010,7 +1135,7 @@
       "sku": {
         "name": "[parameters('skuName')]"
       },
-      "properties": "[shallowMerge(createArray(createObject('managedResourceGroupId', if(not(empty(parameters('managedResourceGroupResourceId'))), parameters('managedResourceGroupResourceId'), format('{0}/resourceGroups/rg-{1}-managed', subscription().id, parameters('name'))), 'parameters', shallowMerge(createArray(createObject('enableNoPublicIp', createObject('value', parameters('disablePublicIp')), 'prepareEncryption', createObject('value', parameters('prepareEncryption')), 'vnetAddressPrefix', createObject('value', parameters('vnetAddressPrefix')), 'requireInfrastructureEncryption', createObject('value', parameters('requireInfrastructureEncryption'))), if(not(empty(parameters('customVirtualNetworkResourceId'))), createObject('customVirtualNetworkId', createObject('value', parameters('customVirtualNetworkResourceId'))), createObject()), if(not(empty(parameters('amlWorkspaceResourceId'))), createObject('amlWorkspaceId', createObject('value', parameters('amlWorkspaceResourceId'))), createObject()), if(not(empty(parameters('customPrivateSubnetName'))), createObject('customPrivateSubnetName', createObject('value', parameters('customPrivateSubnetName'))), createObject()), if(not(empty(parameters('customPublicSubnetName'))), createObject('customPublicSubnetName', createObject('value', parameters('customPublicSubnetName'))), createObject()), if(not(empty(parameters('loadBalancerBackendPoolName'))), createObject('loadBalancerBackendPoolName', createObject('value', parameters('loadBalancerBackendPoolName'))), createObject()), if(not(empty(parameters('loadBalancerResourceId'))), createObject('loadBalancerId', createObject('value', parameters('loadBalancerResourceId'))), createObject()), if(not(empty(parameters('natGatewayName'))), createObject('natGatewayName', createObject('value', parameters('natGatewayName'))), createObject()), if(not(empty(parameters('publicIpName'))), createObject('publicIpName', createObject('value', parameters('publicIpName'))), createObject()), if(not(empty(parameters('storageAccountName'))), createObject('storageAccountName', createObject('value', parameters('storageAccountName'))), createObject()), if(not(empty(parameters('storageAccountSkuName'))), createObject('storageAccountSkuName', createObject('value', parameters('storageAccountSkuName'))), createObject()))), 'publicNetworkAccess', parameters('publicNetworkAccess'), 'requiredNsgRules', parameters('requiredNsgRules'), 'encryption', if(or(not(empty(parameters('customerManagedKey'))), not(empty(parameters('customerManagedKeyManagedDisk')))), createObject('entities', createObject('managedServices', if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.Keyvault', 'keyVaultProperties', createObject('keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), tryGet(parameters('customerManagedKey'), 'keyVersion'), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null()), 'managedDisk', if(not(empty(parameters('customerManagedKeyManagedDisk'))), createObject('keySource', 'Microsoft.Keyvault', 'keyVaultProperties', createObject('keyVaultUri', if(not(equals(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultName'), tryGet(parameters('customerManagedKey'), 'keyVaultName'))), reference('cMKManagedDiskKeyVault').vaultUri, reference('cMKKeyVault').vaultUri), 'keyName', parameters('customerManagedKeyManagedDisk').keyName, 'keyVersion', last(split(if(not(equals(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultName'), tryGet(parameters('customerManagedKey'), 'keyVaultName'))), reference('cMKManagedDiskKeyVault::cMKKey').keyUriWithVersion, reference('cMKKeyVault::cMKKey').keyUriWithVersion), '/'))), 'rotationToLatestKeyVersionEnabled', coalesce(coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'autoRotationEnabled'), true()), false())), null()))), null())), if(not(empty(parameters('privateStorageAccount'))), shallowMerge(createArray(createObject('defaultStorageFirewall', parameters('privateStorageAccount')), if(not(empty(parameters('accessConnectorResourceId'))), createObject('accessConnector', createObject('id', parameters('accessConnectorResourceId'), 'identityType', 'SystemAssigned')), createObject()))), createObject()), if(not(empty(parameters('defaultCatalog'))), createObject('defaultCatalog', createObject('initialName', '', 'initialType', tryGet(parameters('defaultCatalog'), 'initialType'))), createObject()), if(or(or(not(empty(parameters('automaticClusterUpdate'))), not(empty(parameters('complianceStandards')))), not(empty(parameters('enhancedSecurityMonitoring')))), createObject('enhancedSecurityCompliance', createObject('automaticClusterUpdate', createObject('value', parameters('automaticClusterUpdate')), 'complianceSecurityProfile', createObject('complianceStandards', parameters('complianceStandards'), 'value', parameters('complianceSecurityProfileValue')), 'enhancedSecurityMonitoring', createObject('value', parameters('enhancedSecurityMonitoring')))), createObject())))]",
+      "properties": "[shallowMerge(createArray(createObject('managedResourceGroupId', if(not(empty(parameters('managedResourceGroupResourceId'))), parameters('managedResourceGroupResourceId'), format('{0}/resourceGroups/rg-{1}-managed', subscription().id, parameters('name'))), 'parameters', shallowMerge(createArray(createObject('enableNoPublicIp', createObject('value', parameters('disablePublicIp')), 'prepareEncryption', createObject('value', parameters('prepareEncryption')), 'vnetAddressPrefix', createObject('value', parameters('vnetAddressPrefix')), 'requireInfrastructureEncryption', createObject('value', parameters('requireInfrastructureEncryption'))), if(not(empty(parameters('customVirtualNetworkResourceId'))), createObject('customVirtualNetworkId', createObject('value', parameters('customVirtualNetworkResourceId'))), createObject()), if(not(empty(parameters('amlWorkspaceResourceId'))), createObject('amlWorkspaceId', createObject('value', parameters('amlWorkspaceResourceId'))), createObject()), if(not(empty(parameters('customPrivateSubnetName'))), createObject('customPrivateSubnetName', createObject('value', parameters('customPrivateSubnetName'))), createObject()), if(not(empty(parameters('customPublicSubnetName'))), createObject('customPublicSubnetName', createObject('value', parameters('customPublicSubnetName'))), createObject()), if(not(empty(parameters('loadBalancerBackendPoolName'))), createObject('loadBalancerBackendPoolName', createObject('value', parameters('loadBalancerBackendPoolName'))), createObject()), if(not(empty(parameters('loadBalancerResourceId'))), createObject('loadBalancerId', createObject('value', parameters('loadBalancerResourceId'))), createObject()), if(not(empty(parameters('natGatewayName'))), createObject('natGatewayName', createObject('value', parameters('natGatewayName'))), createObject()), if(not(empty(parameters('publicIpName'))), createObject('publicIpName', createObject('value', parameters('publicIpName'))), createObject()), if(not(empty(parameters('storageAccountName'))), createObject('storageAccountName', createObject('value', parameters('storageAccountName'))), createObject()), if(not(empty(parameters('storageAccountSkuName'))), createObject('storageAccountSkuName', createObject('value', parameters('storageAccountSkuName'))), createObject()))), 'publicNetworkAccess', parameters('publicNetworkAccess'), 'requiredNsgRules', parameters('requiredNsgRules'), 'encryption', if(or(not(empty(parameters('customerManagedKey'))), not(empty(parameters('customerManagedKeyManagedDisk')))), createObject('entities', createObject('managedServices', if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.Keyvault', 'keyVaultProperties', createObject('keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), tryGet(parameters('customerManagedKey'), 'keyVersion'), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null()), 'managedDisk', if(not(empty(parameters('customerManagedKeyManagedDisk'))), createObject('keySource', 'Microsoft.Keyvault', 'keyVaultProperties', createObject('keyVaultUri', if(not(equals(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), reference('cMKManagedDiskKeyVault').vaultUri, reference('cMKKeyVault').vaultUri), 'keyName', parameters('customerManagedKeyManagedDisk').keyName, 'keyVersion', last(split(if(not(equals(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), reference('cMKManagedDiskKeyVault::cMKKey').keyUriWithVersion, reference('cMKKeyVault::cMKKey').keyUriWithVersion), '/'))), 'rotationToLatestKeyVersionEnabled', coalesce(coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'autoRotationEnabled'), true()), false())), null()))), null())), if(not(empty(parameters('privateStorageAccount'))), shallowMerge(createArray(createObject('defaultStorageFirewall', parameters('privateStorageAccount')), if(not(empty(parameters('accessConnectorResourceId'))), createObject('accessConnector', createObject('id', parameters('accessConnectorResourceId'), 'identityType', 'SystemAssigned')), createObject()))), createObject()), if(not(empty(parameters('defaultCatalog'))), createObject('defaultCatalog', createObject('initialName', '', 'initialType', tryGet(parameters('defaultCatalog'), 'initialType'))), createObject()), if(or(or(not(empty(parameters('automaticClusterUpdate'))), not(empty(parameters('complianceStandards')))), not(empty(parameters('enhancedSecurityMonitoring')))), createObject('enhancedSecurityCompliance', createObject('automaticClusterUpdate', createObject('value', parameters('automaticClusterUpdate')), 'complianceSecurityProfile', createObject('complianceStandards', parameters('complianceStandards'), 'value', parameters('complianceSecurityProfileValue')), 'enhancedSecurityMonitoring', createObject('value', parameters('enhancedSecurityMonitoring')))), createObject())))]",
       "dependsOn": [
         "cMKKeyVault",
         "cMKKeyVault::cMKKey",
@@ -1026,7 +1151,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "workspace"
@@ -1150,8 +1275,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "15954548978129725136"
+              "version": "0.34.44.8038",
+              "templateHash": "12389807800450456797"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -1560,7 +1685,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1578,7 +1703,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1666,8 +1791,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "5440815542537978381"
+                      "version": "0.34.44.8038",
+                      "templateHash": "13997305779829540948"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -1739,12 +1864,12 @@
                     "privateEndpoint": {
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[parameters('privateEndpointName')]"
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
                         "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
@@ -1808,7 +1933,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
             },
             "customDnsConfigs": {
               "type": "array",
@@ -1910,8 +2035,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "15954548978129725136"
+              "version": "0.34.44.8038",
+              "templateHash": "12389807800450456797"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -2320,7 +2445,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2338,7 +2463,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -2426,8 +2551,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "5440815542537978381"
+                      "version": "0.34.44.8038",
+                      "templateHash": "13997305779829540948"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -2499,12 +2624,12 @@
                     "privateEndpoint": {
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[parameters('privateEndpointName')]"
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
                         "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
@@ -2568,7 +2693,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
             },
             "customDnsConfigs": {
               "type": "array",

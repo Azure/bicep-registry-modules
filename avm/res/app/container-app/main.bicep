@@ -74,7 +74,7 @@ param activeRevisionsMode string = 'Single'
 @description('Required. Resource ID of environment.')
 param environmentResourceId string
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -149,6 +149,10 @@ param workloadProfileName string = ''
 @description('Optional. The name of the Container App Auth configs.')
 param authConfig authConfigType?
 
+import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+@description('Optional. The diagnostic settings of the service.')
+param diagnosticSettings diagnosticSettingMetricsOnlyType[]?
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -221,13 +225,13 @@ resource containerApp 'Microsoft.App/containerApps@2025-01-01' = {
     environmentId: environmentResourceId
     workloadProfileName: workloadProfileName
     template: {
-        containers: containers
-        initContainers: !empty(initContainersTemplate) ? initContainersTemplate : null
-        revisionSuffix: revisionSuffix
-        scale: scaleSettings
-        serviceBinds: (includeAddOns && !empty(serviceBinds)) ? serviceBinds : null
-        volumes: !empty(volumes) ? volumes : null
-      }
+      containers: containers
+      initContainers: !empty(initContainersTemplate) ? initContainersTemplate : null
+      revisionSuffix: revisionSuffix
+      scale: scaleSettings
+      serviceBinds: (includeAddOns && !empty(serviceBinds)) ? serviceBinds : null
+      volumes: !empty(volumes) ? volumes : null
+    }
     configuration: {
       activeRevisionsMode: activeRevisionsMode
       dapr: !empty(dapr) ? dapr : null
@@ -281,9 +285,9 @@ resource containerApp_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!emp
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: containerApp
 }
@@ -316,6 +320,29 @@ module containerAppAuthConfigs './auth-config/main.bicep' = if (!empty(authConfi
     platform: authConfig.?platform
   }
 }
+
+#disable-next-line use-recent-api-versions
+resource containerApp_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: containerApp
+  }
+]
 
 @description('The resource ID of the Container App.')
 output resourceId string = containerApp.id

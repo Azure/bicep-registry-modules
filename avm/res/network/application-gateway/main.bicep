@@ -60,7 +60,7 @@ param httpListeners array = []
 @description('Optional. Load distribution policies of the application gateway resource.')
 param loadDistributionPolicies array = []
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
@@ -171,12 +171,13 @@ param trustedRootCertificates array = []
 @description('Optional. URL path map of the application gateway resource.')
 param urlPathMaps array = []
 
-@description('Optional. A list of availability zones denoting where the resource needs to come from.')
-param zones array = [
+@description('Optional. The list of Availability zones to use for the zone-redundant resources.')
+@allowed([
   1
   2
   3
-]
+])
+param availabilityZones int[] = [1, 2, 3]
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
@@ -195,7 +196,7 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -335,16 +336,16 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2024-05-01' =
         }
       : {})
   )
-  zones: zones
+  zones: map(availabilityZones, zone => '${zone}')
 }
 
 resource applicationGateway_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: applicationGateway
 }

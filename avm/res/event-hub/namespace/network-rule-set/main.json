@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "10311264071215691288"
+      "version": "0.37.4.10188",
+      "templateHash": "96671683259154312"
     },
     "name": "Event Hub Namespace Network Rule Sets",
     "description": "This module deploys an Event Hub Namespace Network Rule Set."

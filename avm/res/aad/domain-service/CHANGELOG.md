@@ -2,6 +2,27 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/aad/domain-service/CHANGELOG.md).
 
+## 0.5.0
+
+### Changes
+
+- Updated `avm-common-types` to `0.6.1`
+
+### Breaking Changes
+
+- TLS 1.0/1.1 has been deprecated and the property `tlsV1` can't be enabled anymore. [How to migrate to Transport Layer Security (TLS) 1.2 enforcement for Microsoft Entra Domain Services](https://learn.microsoft.com/en-us/entra/identity/domain-services/reference-domain-services-tls-enforcement)
+
+## 0.4.1
+
+### Changes
+
+- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+- Changed default of `pfxCertificate` & `pfxCertificatePassword` parameters to nullable
+
+### Breaking Changes
+
+- None
+
 ## 0.4.0
 
 ### Changes
@@ -12,8 +33,9 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Resource provider updates
 - `Tags` property not an object anymore
 - Rebranding to Microsoft Entra
+- Updated ReadMe with AzAdvertizer reference
 
-## Breaking Changes
+### Breaking Changes
 
 - None
 

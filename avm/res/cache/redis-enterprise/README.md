@@ -13,17 +13,17 @@ This module deploys a Redis Enterprise or Azure Managed Redis cache.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Cache/redisEnterprise` | [2025-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-05-01-preview/redisEnterprise) |
-| `Microsoft.Cache/redisEnterprise/databases` | [2025-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-05-01-preview/redisEnterprise/databases) |
-| `Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments` | [2025-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-05-01-preview/redisEnterprise/databases/accessPolicyAssignments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
-| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Cache/redisEnterprise` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redisenterprise.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-05-01-preview/redisEnterprise)</li></ul> |
+| `Microsoft.Cache/redisEnterprise/databases` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redisenterprise_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-05-01-preview/redisEnterprise/databases)</li></ul> |
+| `Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redisenterprise_databases_accesspolicyassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-05-01-preview/redisEnterprise/databases/accessPolicyAssignments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2023-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -478,6 +478,11 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
     // Required parameters
     name: 'cremax001'
     // Non-required parameters
+    availabilityZones: [
+      1
+      2
+      3
+    ]
     database: {
       clientProtocol: 'Plaintext'
       clusteringPolicy: 'EnterpriseCluster'
@@ -574,11 +579,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zones: [
-      1
-      2
-      3
-    ]
   }
 }
 ```
@@ -600,6 +600,13 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       "value": "cremax001"
     },
     // Non-required parameters
+    "availabilityZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
     "database": {
       "value": {
         "clientProtocol": "Plaintext",
@@ -717,13 +724,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "zones": {
-      "value": [
-        1,
-        2,
-        3
-      ]
     }
   }
 }
@@ -742,6 +742,11 @@ using 'br/public:avm/res/cache/redis-enterprise:<version>'
 // Required parameters
 param name = 'cremax001'
 // Non-required parameters
+param availabilityZones = [
+  1
+  2
+  3
+]
 param database = {
   clientProtocol: 'Plaintext'
   clusteringPolicy: 'EnterpriseCluster'
@@ -838,11 +843,6 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param zones = [
-  1
-  2
-  3
-]
 ```
 
 </details>
@@ -977,6 +977,11 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
     // Required parameters
     name: 'crewaf001'
     // Non-required parameters
+    availabilityZones: [
+      1
+      2
+      3
+    ]
     database: {
       diagnosticSettings: [
         {
@@ -1034,11 +1039,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zones: [
-      1
-      2
-      3
-    ]
   }
 }
 ```
@@ -1060,6 +1060,13 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       "value": "crewaf001"
     },
     // Non-required parameters
+    "availabilityZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
     "database": {
       "value": {
         "diagnosticSettings": [
@@ -1126,13 +1133,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "zones": {
-      "value": [
-        1,
-        2,
-        3
-      ]
     }
   }
 }
@@ -1151,6 +1151,11 @@ using 'br/public:avm/res/cache/redis-enterprise:<version>'
 // Required parameters
 param name = 'crewaf001'
 // Non-required parameters
+param availabilityZones = [
+  1
+  2
+  3
+]
 param database = {
   diagnosticSettings: [
     {
@@ -1208,11 +1213,6 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param zones = [
-  1
-  2
-  3
-]
 ```
 
 </details>
@@ -1236,6 +1236,7 @@ param zones = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZones`](#parameter-availabilityzones) | array | The Availability Zones to place the resources in. Currently only supported on Enterprise and EnterpriseFlash SKUs. |
 | [`capacity`](#parameter-capacity) | int | The size of the cluster. Only supported on Redis Enterprise SKUs: Enterprise, EnterpriseFlash. Valid values are (2, 4, 6, 8, 10) for Enterprise SKUs and (3, 9) for EnterpriseFlash SKUs. [Learn more](https://learn.microsoft.com/azure/azure-cache-for-redis/cache-best-practices-enterprise-tiers#sharding-and-cpu-utilization). |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition to use for the managed service. |
 | [`database`](#parameter-database) | object | Database configuration. |
@@ -1249,7 +1250,6 @@ param zones = [
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`skuName`](#parameter-skuname) | string | The type of cluster to deploy. Some Azure Managed Redis SKUs ARE IN PREVIEW, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/redis/overview#choosing-the-right-tier) FOR CLARIFICATION. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`zones`](#parameter-zones) | array | The Availability Zones to place the resources in. Currently only supported on Enterprise and EnterpriseFlash SKUs. |
 
 ### Parameter: `name`
 
@@ -1277,6 +1277,29 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
+
+### Parameter: `availabilityZones`
+
+The Availability Zones to place the resources in. Currently only supported on Enterprise and EnterpriseFlash SKUs.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `capacity`
 
@@ -2057,6 +2080,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -2076,6 +2100,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2273,6 +2304,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -2292,6 +2324,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2684,29 +2723,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-### Parameter: `zones`
-
-The Availability Zones to place the resources in. Currently only supported on Enterprise and EnterpriseFlash SKUs.
-
-- Required: No
-- Type: array
-- Default:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
-- Allowed:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
-
 ## Outputs
 
 | Output | Type | Description |
@@ -2731,6 +2747,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 

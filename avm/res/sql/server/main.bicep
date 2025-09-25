@@ -21,7 +21,7 @@ param managedIdentities managedIdentityAllType?
 @description('Conditional. The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty.')
 param primaryUserAssignedIdentityResourceId string?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -30,7 +30,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Sql/servers@2023-08-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -48,7 +48,7 @@ param firewallRules firewallRuleType[]?
 param virtualNetworkRules virtualNetworkRuleType[]?
 
 @description('Optional. The security alert policies to create in the server.')
-param securityAlertPolicies securityAlerPolicyType[]?
+param securityAlertPolicies securityAlertPolicyType[]?
 
 @description('Optional. The keys to configure.')
 param keys keyType[]?
@@ -81,7 +81,7 @@ param minimalTlsVersion string = '1.2'
 @description('Optional. Whether or not to enable IPv6 support for this server.')
 param isIPv6Enabled string = 'Disabled'
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -201,14 +201,14 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName!
   }
 }
@@ -245,8 +245,8 @@ resource server 'Microsoft.Sql/servers@2023-08-01' = {
     isIPv6Enabled: isIPv6Enabled
     keyId: customerManagedKey != null
       ? !empty(customerManagedKey.?keyVersion)
-          ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
-          : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+          ? '${cMKKeyVault::cMKKey.?properties.keyUri}/${customerManagedKey!.?keyVersion}'
+          : cMKKeyVault::cMKKey.?properties.keyUriWithVersion
       : null
     version: '12.0'
     minimalTlsVersion: minimalTlsVersion
@@ -262,9 +262,9 @@ resource server_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(loc
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: server
 }
@@ -337,6 +337,7 @@ module server_databases 'database/main.bicep' = [
       diagnosticSettings: database.?diagnosticSettings
       backupShortTermRetentionPolicy: database.?backupShortTermRetentionPolicy
       backupLongTermRetentionPolicy: database.?backupLongTermRetentionPolicy
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       server_elasticPools // Enables us to add databases to existing elastic pools
@@ -500,11 +501,11 @@ module cmk_key 'key/main.bicep' = if (customerManagedKey != null) {
   name: '${uniqueString(deployment().name, location)}-Sql-Key'
   params: {
     serverName: server.name
-    name: '${cMKKeyVault.name}_${customerManagedKey.?keyName}_${!empty(customerManagedKey.?keyVersion) ? customerManagedKey.?keyVersion : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))}'
+    name: '${cMKKeyVault.name}_${customerManagedKey.?keyName}_${!empty(customerManagedKey.?keyVersion) ? customerManagedKey.?keyVersion : last(split(cMKKeyVault::cMKKey.?properties.keyUriWithVersion ?? '', '/'))}'
     serverKeyType: 'AzureKeyVault'
     uri: !empty(customerManagedKey.?keyVersion)
-      ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
-      : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+      ? '${cMKKeyVault::cMKKey.?properties.keyUri}/${customerManagedKey!.?keyVersion}'
+      : cMKKeyVault::cMKKey.?properties.keyUriWithVersion
   }
 }
 
@@ -512,13 +513,13 @@ module server_encryptionProtector 'encryption-protector/main.bicep' = if (custom
   name: '${uniqueString(deployment().name, location)}-Sql-EncryProtector'
   params: {
     sqlServerName: server.name
-    serverKeyName: cmk_key.outputs.name
+    serverKeyName: cmk_key.?outputs.name ?? ''
     serverKeyType: 'AzureKeyVault'
     autoRotationEnabled: customerManagedKey.?autoRotationEnabled
   }
 }
 
-module server_audit_settings 'audit-setting/main.bicep' = if (!empty(auditSettings)) {
+module server_audit_settings 'auditing-setting/main.bicep' = if (!empty(auditSettings)) {
   name: '${uniqueString(deployment().name, location)}-Sql-AuditSettings'
   params: {
     serverName: server.name
@@ -573,7 +574,7 @@ module failover_groups 'failover-group/main.bicep' = [
       tags: failoverGroup.?tags ?? tags
       serverName: server.name
       databases: failoverGroup.databases
-      partnerServers: failoverGroup.partnerServers
+      partnerServerResourceIds: failoverGroup.partnerServerResourceIds
       readOnlyEndpoint: failoverGroup.?readOnlyEndpoint
       readWriteEndpoint: failoverGroup.readWriteEndpoint
       secondaryType: failoverGroup.secondaryType
@@ -613,7 +614,11 @@ output location string = server.location
 import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
-  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  ? toObject(
+      secretsExport.?outputs.?secretsSet ?? [],
+      secret => last(split(secret.secretResourceId, '/')),
+      secret => secret
+    )
   : {}
 
 @description('The private endpoints of the SQL server.')
@@ -738,7 +743,7 @@ type databaseType = {
   name: string
 
   @description('Optional. Tags of the resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Sql/servers/databases@2023-08-01'>.tags?
 
   @description('Optional. The lock settings of the database.')
   lock: lockType?
@@ -978,7 +983,7 @@ type virtualNetworkRuleType = {
 
 @export()
 @description('The type for a security alert policy.')
-type securityAlerPolicyType = {
+type securityAlertPolicyType = {
   @description('Required. The name of the Security Alert Policy.')
   name: string
 
@@ -1022,8 +1027,8 @@ type failoverGroupType = {
   @description('Required. List of databases in the failover group.')
   databases: string[]
 
-  @description('Required. List of the partner servers for the failover group.')
-  partnerServers: string[]
+  @description('Required. List of the partner server Resource Id for the failover group.')
+  partnerServerResourceIds: string[]
 
   @description('Optional. Read-only endpoint of the failover group instance.')
   readOnlyEndpoint: readOnlyEndpointType?

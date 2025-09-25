@@ -2,6 +2,48 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/lz/sub-vending/CHANGELOG.md).
 
+## 0.4.0
+
+### Changes
+
+- Added functionality to create a standalone network security group instead of associating a network security group to each subnet created by the module.
+
+### Breaking Changes
+
+- **None**
+
+## 0.3.8
+
+### Changes
+
+- Updated additional vNet to virtual WAN hub connection name suffix expression to align with expression used for primary vNet to virtual WAN hub connection name
+
+### Breaking Changes
+
+- None
+
+## 0.3.7
+
+### Changes
+
+- Added tag assignments to resource groups
+- Added output for virtual WAN hub connection name
+- Updated ReadMe with AzAdvertizer reference
+
+### Breaking Changes
+
+- None
+
+## 0.3.6
+
+### Changes
+
+- Fixed bug where delegation if specified not applied to created subnets
+
+### Breaking Changes
+
+- None
+
 ## 0.3.5
 
 ### Changes
