@@ -89,7 +89,7 @@ param backendPoolType string = 'NodeIPConfiguration'
 ])
 param outboundType string = 'loadBalancer'
 
-@description('Optional. Name of a managed cluster SKU. AUTOMATIC CLUSTER SKU IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION.')
+@description('Optional. Name of a managed cluster SKU.')
 @allowed([
   'Base'
   'Automatic'
@@ -320,15 +320,21 @@ param enableWorkloadIdentity bool = false
 @description('Optional. Whether to enable Azure Defender.')
 param enableAzureDefender bool = false
 
-@description('Optional. Whether to enable Image Cleaner for Kubernetes.')
+@description('Optional. Microsoft Defender settings for security gating, validates container images eligibility for deployment based on Defender for Containers security findings. Using Admission Controller, it either audits or prevents the deployment of images that do not meet security standards.')
+param securityGatingConfig resourceInput<'Microsoft.containerService/managedClusters@2025-05-02-preview'>.properties.securityProfile.defender.securityGating?
+
+@description('Optional. Whether to enable Image Cleaner.')
 param enableImageCleaner bool = false
+
+@description('Optional. Whether to enable Image Integrity. Image integrity is a feature that works with Azure Policy to verify image integrity by signature. This will not have any effect unless Azure Policy is applied to enforce image signatures. See https://aka.ms/aks/image-integrity for how to use this feature via policy.')
+param enableImageIntegrity bool = false
+
+@description('Optional. Whether to enable Node Restriction')
+param enableNodeRestriction bool = false
 
 @description('Optional. The interval in hours Image Cleaner will run. The maximum value is three months.')
 @minValue(24)
 param imageCleanerIntervalHours int = 24
-
-@description('Optional. Whether to enable Kubernetes pod security policy. Requires enabling the pod security policy feature flag on the subscription.')
-param enablePodSecurityPolicy bool = false
 
 @description('Optional. Whether the AzureBlob CSI Driver for the storage profile is enabled.')
 param enableStorageProfileBlobCSIDriver bool = false
@@ -559,7 +565,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 // Main Resources //
 // ============== //
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-preview' = {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-05-02-preview' = {
   name: name
   location: location
   tags: tags
@@ -728,7 +734,6 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
           mode: nodeProvisioningProfileMode
         }
       : null
-    enablePodSecurityPolicy: enablePodSecurityPolicy
     workloadAutoScalerProfile: {
       keda: {
         enabled: kedaAddon
@@ -755,7 +760,6 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
               count: managedOutboundIPCount
             }
           : null
-        effectiveOutboundIPs: []
         backendPoolType: backendPoolType
         outboundIPPrefixes: !empty(outboundPublicIPPrefixResourceIds)
           ? {
@@ -847,21 +851,32 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
     securityProfile: {
       defender: enableAzureDefender
         ? {
+            securityGating: securityGatingConfig
             securityMonitoring: {
               enabled: enableAzureDefender
             }
             logAnalyticsWorkspaceResourceId: monitoringWorkspaceResourceId
           }
         : null
-      workloadIdentity: enableWorkloadIdentity
-        ? {
-            enabled: enableWorkloadIdentity
-          }
-        : null
       imageCleaner: enableImageCleaner
         ? {
             enabled: enableImageCleaner
             intervalHours: imageCleanerIntervalHours
+          }
+        : null
+      imageIntegrity: enableImageIntegrity
+        ? {
+            enabled: enableImageIntegrity
+          }
+        : null
+      nodeRestriction: enableNodeRestriction
+        ? {
+            enabled: enableNodeRestriction
+          }
+        : null
+      workloadIdentity: enableWorkloadIdentity
+        ? {
+            enabled: enableWorkloadIdentity
           }
         : null
     }
