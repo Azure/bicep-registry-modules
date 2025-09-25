@@ -100,7 +100,7 @@ param customDomainUseSubDomainName bool = false
 param dnsEndpointType string?
 
 @description('Optional. Blob service and containers to deploy.')
-param blobServices object = kind != 'FileStorage'
+param blobServices blobServiceType = kind != 'FileStorage'
   ? {
       containerDeleteRetentionPolicyEnabled: true
       containerDeleteRetentionPolicyDays: 7
@@ -193,6 +193,9 @@ param keyType string?
 
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
+
+@description('Optional. The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default.')
+param immutableStorageWithVersioning resourceInput<'Microsoft.Storage/storageAccounts@2024-01-01'>.properties.immutableStorageWithVersioning?
 
 var enableReferencedModulesTelemetry = false
 
@@ -455,6 +458,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
       ? { azureFilesIdentityBasedAuthentication: azureFilesIdentityBasedAuthentication }
       : {})
     ...(enableHierarchicalNamespace != null ? { isHnsEnabled: enableHierarchicalNamespace } : {})
+    immutableStorageWithVersioning: immutableStorageWithVersioning
   }
 }
 
@@ -858,4 +862,69 @@ type localUserType = {
 
   @description('Optional. The local user SSH authorized keys for SFTP.')
   sshAuthorizedKeys: sshAuthorizedKeyType[]?
+}
+
+import { containerType, corsRuleType } from 'blob-service/main.bicep'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+
+@export()
+@description('The type of a blob service.')
+type blobServiceType = {
+  @description('Optional. Automatic Snapshot is enabled if set to true.')
+  automaticSnapshotPolicyEnabled: bool?
+
+  @description('Optional. The blob service properties for change feed events. Indicates whether change feed event logging is enabled for the Blob service.')
+  changeFeedEnabled: bool?
+
+  @minValue(1)
+  @maxValue(146000)
+  @description('Optional. Indicates whether change feed event logging is enabled for the Blob service. Indicates the duration of changeFeed retention in days. If left blank, it indicates an infinite retention of the change feed.')
+  changeFeedRetentionInDays: int?
+
+  @description('Optional. The blob service properties for container soft delete. Indicates whether DeleteRetentionPolicy is enabled.')
+  containerDeleteRetentionPolicyEnabled: bool?
+
+  @minValue(1)
+  @maxValue(365)
+  @description('Optional. Indicates the number of days that the deleted item should be retained.')
+  containerDeleteRetentionPolicyDays: int?
+
+  @description('Optional. This property when set to true allows deletion of the soft deleted blob versions and snapshots. This property cannot be used with blob restore policy. This property only applies to blob service and does not apply to containers or file share.')
+  containerDeleteRetentionPolicyAllowPermanentDelete: bool?
+
+  @description('Optional. The List of CORS rules. You can include up to five CorsRule elements in the request.')
+  corsRules: corsRuleType[]?
+
+  @description('Optional. Indicates the default version to use for requests to the Blob service if an incoming request\'s version is not specified. Possible values include version 2008-10-27 and all more recent versions.')
+  defaultServiceVersion: string?
+
+  @description('Optional. The blob service properties for blob soft delete.')
+  deleteRetentionPolicyEnabled: bool?
+
+  @minValue(1)
+  @maxValue(365)
+  @description('Optional. Indicates the number of days that the deleted blob should be retained.')
+  deleteRetentionPolicyDays: int?
+
+  @description('Optional. This property when set to true allows deletion of the soft deleted blob versions and snapshots. This property cannot be used with blob restore policy. This property only applies to blob service and does not apply to containers or file share.')
+  deleteRetentionPolicyAllowPermanentDelete: bool?
+
+  @description('Optional. Use versioning to automatically maintain previous versions of your blobs.')
+  isVersioningEnabled: bool?
+
+  @description('Optional. The blob service property to configure last access time based tracking policy. When set to true last access time based tracking is enabled.')
+  lastAccessTimeTrackingPolicyEnabled: bool?
+
+  @description('Optional. The blob service properties for blob restore policy. If point-in-time restore is enabled, then versioning, change feed, and blob soft delete must also be enabled.')
+  restorePolicyEnabled: bool?
+
+  @minValue(1)
+  @description('Optional. How long this blob can be restored. It should be less than DeleteRetentionPolicy days.')
+  restorePolicyDays: int?
+
+  @description('Optional. Blob containers to create.')
+  containers: containerType[]?
+
+  @description('Optional. The diagnostic settings of the service.')
+  diagnosticSettings: diagnosticSettingFullType[]?
 }
