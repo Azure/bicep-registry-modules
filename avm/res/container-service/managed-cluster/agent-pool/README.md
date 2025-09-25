@@ -43,6 +43,7 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 | [`enableVTPM`](#parameter-enablevtpm) | bool | vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch. |
 | [`gpuInstanceProfile`](#parameter-gpuinstanceprofile) | string | GPUInstanceProfile to be used to specify GPU MIG instance profile for supported GPU VM SKU. |
 | [`kubeletDiskType`](#parameter-kubeletdisktype) | string | Determines the placement of emptyDir volumes, container runtime data root, and Kubelet ephemeral storage. |
+| [`linuxOSConfig`](#parameter-linuxosconfig) | object | Linux OS configuration. |
 | [`maxCount`](#parameter-maxcount) | int | The maximum number of nodes for auto-scaling. |
 | [`maxPods`](#parameter-maxpods) | int | The maximum number of pods that can run on a node. |
 | [`maxSurge`](#parameter-maxsurge) | string | This can either be set to an integer (e.g. "5") or a percentage (e.g. "50%"). If a percentage is specified, it is the percentage of the total agent pool size at the time of the upgrade. For percentages, fractional nodes are rounded up. If not specified, the default is 1. For more information, including best practices, see: /azure/aks/upgrade-cluster#customize-node-surge-upgrade. |
@@ -67,6 +68,7 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 | [`type`](#parameter-type) | string | The type of Agent Pool. |
 | [`vmSize`](#parameter-vmsize) | string | VM size. VM size availability varies by region. If a node contains insufficient compute resources (memory, cpu, etc) pods might fail to run correctly. For more details on restricted VM sizes, see: /azure/aks/quotas-skus-regions. |
 | [`vnetSubnetResourceId`](#parameter-vnetsubnetresourceid) | string | Node Subnet ID. If this is not specified, a VNET and subnet will be generated and used. If no podSubnetID is specified, this applies to nodes and pods, otherwise it applies to just nodes. This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}. |
+| [`windowsProfile`](#parameter-windowsprofile) | object | Windows OS configuration. |
 | [`workloadRuntime`](#parameter-workloadruntime) | string | Determines the type of workload a node can run. |
 
 ### Parameter: `name`
@@ -184,6 +186,279 @@ GPUInstanceProfile to be used to specify GPU MIG instance profile for supported 
 ### Parameter: `kubeletDiskType`
 
 Determines the placement of emptyDir volumes, container runtime data root, and Kubelet ephemeral storage.
+
+- Required: No
+- Type: string
+
+### Parameter: `linuxOSConfig`
+
+Linux OS configuration.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`swapFileSizeMB`](#parameter-linuxosconfigswapfilesizemb) | int | The size in MB of a swap file that will be created on each node. |
+| [`sysctls`](#parameter-linuxosconfigsysctls) | object | Sysctl settings for Linux agent nodes. |
+| [`transparentHugePageDefrag`](#parameter-linuxosconfigtransparenthugepagedefrag) | string | Whether the kernel should make aggressive use of memory compaction to make more hugepages available. Valid values are `always`, `defer`, `defer+madvise`, `madvise` and `never`. The default is `madvise`. For more information see [Transparent Hugepages](https://www.kernel.org/doc/html/latest/admin-guide/mm/transhuge.html#admin-guide-transhuge). |
+| [`transparentHugePageEnabled`](#parameter-linuxosconfigtransparenthugepageenabled) | string | Whether transparent hugepages are enabled. Valid values are `always`, `madvise`, and `never`. The default is `always`. For more information see [Transparent Hugepages](https://www.kernel.org/doc/html/latest/admin-guide/mm/transhuge.html#admin-guide-transhuge). |
+
+### Parameter: `linuxOSConfig.swapFileSizeMB`
+
+The size in MB of a swap file that will be created on each node.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls`
+
+Sysctl settings for Linux agent nodes.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fsAioMaxNr`](#parameter-linuxosconfigsysctlsfsaiomaxnr) | int | Sysctl setting fs.aio-max-nr. |
+| [`fsFileMax`](#parameter-linuxosconfigsysctlsfsfilemax) | int | Sysctl setting fs.file-max. |
+| [`fsInotifyMaxUserWatches`](#parameter-linuxosconfigsysctlsfsinotifymaxuserwatches) | int | Sysctl setting fs.inotify.max_user_watches. |
+| [`fsNrOpen`](#parameter-linuxosconfigsysctlsfsnropen) | int | Sysctl setting fs.nr_open. |
+| [`kernelThreadsMax`](#parameter-linuxosconfigsysctlskernelthreadsmax) | int | Sysctl setting kernel.threads-max. |
+| [`netCoreNetdevMaxBacklog`](#parameter-linuxosconfigsysctlsnetcorenetdevmaxbacklog) | int | Sysctl setting net.core.netdev.max_backlog. |
+| [`netCoreOptmemMax`](#parameter-linuxosconfigsysctlsnetcoreoptmemmax) | int | Sysctl setting net.core.optmem.max. |
+| [`netCoreRmemDefault`](#parameter-linuxosconfigsysctlsnetcorermemdefault) | int | Sysctl setting net.core.rmem.default. |
+| [`netCoreRmemMax`](#parameter-linuxosconfigsysctlsnetcorermemmax) | int | Sysctl setting net.core.rmem.max. |
+| [`netCoreSomaxconn`](#parameter-linuxosconfigsysctlsnetcoresomaxconn) | int | Sysctl setting net.core.somaxconn. |
+| [`netCoreWmemDefault`](#parameter-linuxosconfigsysctlsnetcorewmemdefault) | int | Sysctl setting net.core.wmem.default. |
+| [`netCoreWmemMax`](#parameter-linuxosconfigsysctlsnetcorewmemmax) | int | Sysctl setting net.core.wmem.max. |
+| [`netIpv4IpLocalPortRange`](#parameter-linuxosconfigsysctlsnetipv4iplocalportrange) | string | Sysctl setting net.ipv4.ip_local_port_range. |
+| [`netIpv4NeighDefaultGcThresh1`](#parameter-linuxosconfigsysctlsnetipv4neighdefaultgcthresh1) | int | Sysctl setting net.ipv4.neigh.default.gc_thresh1. |
+| [`netIpv4NeighDefaultGcThresh2`](#parameter-linuxosconfigsysctlsnetipv4neighdefaultgcthresh2) | int | Sysctl setting net.ipv4.neigh.default.gc_thresh2. |
+| [`netIpv4NeighDefaultGcThresh3`](#parameter-linuxosconfigsysctlsnetipv4neighdefaultgcthresh3) | int | Sysctl setting net.ipv4.neigh.default.gc_thresh3. |
+| [`netIpv4TcpFinTimeout`](#parameter-linuxosconfigsysctlsnetipv4tcpfintimeout) | int | Sysctl setting net.ipv4.tcp_fin_timeout. |
+| [`netIpv4TcpkeepaliveIntvl`](#parameter-linuxosconfigsysctlsnetipv4tcpkeepaliveintvl) | int | Sysctl setting net.ipv4.tcp_keepalive_intvl. |
+| [`netIpv4TcpKeepaliveProbes`](#parameter-linuxosconfigsysctlsnetipv4tcpkeepaliveprobes) | int | Sysctl setting net.ipv4.tcp_keepalive_probes. |
+| [`netIpv4TcpKeepaliveTime`](#parameter-linuxosconfigsysctlsnetipv4tcpkeepalivetime) | int | Sysctl setting net.ipv4.tcp_keepalive_time. |
+| [`netIpv4TcpMaxSynBacklog`](#parameter-linuxosconfigsysctlsnetipv4tcpmaxsynbacklog) | int | Sysctl setting net.ipv4.tcp_max_syn_backlog. |
+| [`netIpv4TcpMaxTwBuckets`](#parameter-linuxosconfigsysctlsnetipv4tcpmaxtwbuckets) | int | Sysctl setting net.ipv4.tcp_max_tw_buckets. |
+| [`netIpv4TcpTwReuse`](#parameter-linuxosconfigsysctlsnetipv4tcptwreuse) | bool | Sysctl setting net.ipv4.tcp_tw_reuse. |
+| [`netNetfilterNfConntrackBuckets`](#parameter-linuxosconfigsysctlsnetnetfilternfconntrackbuckets) | int | Sysctl setting net.netfilter.nf_conntrack_buckets. |
+| [`netNetfilterNfConntrackMax`](#parameter-linuxosconfigsysctlsnetnetfilternfconntrackmax) | int | Sysctl setting net.netfilter.nf_conntrack_max. |
+| [`vmMaxMapCount`](#parameter-linuxosconfigsysctlsvmmaxmapcount) | int | Sysctl setting vm.max_map_count. |
+| [`vmSwappiness`](#parameter-linuxosconfigsysctlsvmswappiness) | int | Sysctl setting vm.swappiness. |
+| [`vmVfsCachePressure`](#parameter-linuxosconfigsysctlsvmvfscachepressure) | int | Sysctl setting vm.vfs_cache_pressure. |
+
+### Parameter: `linuxOSConfig.sysctls.fsAioMaxNr`
+
+Sysctl setting fs.aio-max-nr.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.fsFileMax`
+
+Sysctl setting fs.file-max.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.fsInotifyMaxUserWatches`
+
+Sysctl setting fs.inotify.max_user_watches.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.fsNrOpen`
+
+Sysctl setting fs.nr_open.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.kernelThreadsMax`
+
+Sysctl setting kernel.threads-max.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.netCoreNetdevMaxBacklog`
+
+Sysctl setting net.core.netdev.max_backlog.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.netCoreOptmemMax`
+
+Sysctl setting net.core.optmem.max.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.netCoreRmemDefault`
+
+Sysctl setting net.core.rmem.default.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.netCoreRmemMax`
+
+Sysctl setting net.core.rmem.max.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.netCoreSomaxconn`
+
+Sysctl setting net.core.somaxconn.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.netCoreWmemDefault`
+
+Sysctl setting net.core.wmem.default.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.netCoreWmemMax`
+
+Sysctl setting net.core.wmem.max.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.netIpv4IpLocalPortRange`
+
+Sysctl setting net.ipv4.ip_local_port_range.
+
+- Required: No
+- Type: string
+
+### Parameter: `linuxOSConfig.sysctls.netIpv4NeighDefaultGcThresh1`
+
+Sysctl setting net.ipv4.neigh.default.gc_thresh1.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.netIpv4NeighDefaultGcThresh2`
+
+Sysctl setting net.ipv4.neigh.default.gc_thresh2.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.netIpv4NeighDefaultGcThresh3`
+
+Sysctl setting net.ipv4.neigh.default.gc_thresh3.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.netIpv4TcpFinTimeout`
+
+Sysctl setting net.ipv4.tcp_fin_timeout.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.netIpv4TcpkeepaliveIntvl`
+
+Sysctl setting net.ipv4.tcp_keepalive_intvl.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.netIpv4TcpKeepaliveProbes`
+
+Sysctl setting net.ipv4.tcp_keepalive_probes.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.netIpv4TcpKeepaliveTime`
+
+Sysctl setting net.ipv4.tcp_keepalive_time.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.netIpv4TcpMaxSynBacklog`
+
+Sysctl setting net.ipv4.tcp_max_syn_backlog.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.netIpv4TcpMaxTwBuckets`
+
+Sysctl setting net.ipv4.tcp_max_tw_buckets.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.netIpv4TcpTwReuse`
+
+Sysctl setting net.ipv4.tcp_tw_reuse.
+
+- Required: No
+- Type: bool
+
+### Parameter: `linuxOSConfig.sysctls.netNetfilterNfConntrackBuckets`
+
+Sysctl setting net.netfilter.nf_conntrack_buckets.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.netNetfilterNfConntrackMax`
+
+Sysctl setting net.netfilter.nf_conntrack_max.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.vmMaxMapCount`
+
+Sysctl setting vm.max_map_count.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.vmSwappiness`
+
+Sysctl setting vm.swappiness.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.sysctls.vmVfsCachePressure`
+
+Sysctl setting vm.vfs_cache_pressure.
+
+- Required: No
+- Type: int
+
+### Parameter: `linuxOSConfig.transparentHugePageDefrag`
+
+Whether the kernel should make aggressive use of memory compaction to make more hugepages available. Valid values are `always`, `defer`, `defer+madvise`, `madvise` and `never`. The default is `madvise`. For more information see [Transparent Hugepages](https://www.kernel.org/doc/html/latest/admin-guide/mm/transhuge.html#admin-guide-transhuge).
+
+- Required: No
+- Type: string
+
+### Parameter: `linuxOSConfig.transparentHugePageEnabled`
+
+Whether transparent hugepages are enabled. Valid values are `always`, `madvise`, and `never`. The default is `always`. For more information see [Transparent Hugepages](https://www.kernel.org/doc/html/latest/admin-guide/mm/transhuge.html#admin-guide-transhuge).
 
 - Required: No
 - Type: string
@@ -404,6 +679,26 @@ Node Subnet ID. If this is not specified, a VNET and subnet will be generated an
 
 - Required: No
 - Type: string
+
+### Parameter: `windowsProfile`
+
+Windows OS configuration.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`disableOutboundNat`](#parameter-windowsprofiledisableoutboundnat) | bool | Whether to disable OutboundNAT in windows nodes. The default value is false. Outbound NAT can only be disabled if the cluster outboundType is NAT Gateway and the Windows agent pool does not have node public IP enabled. |
+
+### Parameter: `windowsProfile.disableOutboundNat`
+
+Whether to disable OutboundNAT in windows nodes. The default value is false. Outbound NAT can only be disabled if the cluster outboundType is NAT Gateway and the Windows agent pool does not have node public IP enabled.
+
+- Required: Yes
+- Type: bool
 
 ### Parameter: `workloadRuntime`
 

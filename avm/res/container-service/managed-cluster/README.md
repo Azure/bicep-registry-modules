@@ -319,7 +319,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     managedIdentities: {
       systemAssigned: true
     }
-    outboundType: 'userDefinedRouting'
   }
 }
 ```
@@ -361,9 +360,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": {
         "systemAssigned": true
       }
-    },
-    "outboundType": {
-      "value": "userDefinedRouting"
     }
   }
 }
@@ -397,7 +393,6 @@ param aadProfile = {
 param managedIdentities = {
   systemAssigned: true
 }
-param outboundType = 'userDefinedRouting'
 ```
 
 </details>
@@ -993,6 +988,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       ]
     }
     networkPlugin: 'azure'
+    outboundType: 'userDefinedRouting'
     privateDNSZone: '<privateDNSZone>'
     serviceCidr: '10.10.200.0/24'
     skuTier: 'Standard'
@@ -1088,6 +1084,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "networkPlugin": {
       "value": "azure"
     },
+    "outboundType": {
+      "value": "userDefinedRouting"
+    },
     "privateDNSZone": {
       "value": "<privateDNSZone>"
     },
@@ -1171,6 +1170,7 @@ param managedIdentities = {
   ]
 }
 param networkPlugin = 'azure'
+param outboundType = 'userDefinedRouting'
 param privateDNSZone = '<privateDNSZone>'
 param serviceCidr = '10.10.200.0/24'
 param skuTier = 'Standard'
@@ -1765,10 +1765,14 @@ param tags = {
 | [`adminUsername`](#parameter-adminusername) | string | Specifies the administrator username of Linux virtual machines. |
 | [`agentPools`](#parameter-agentpools) | array | Define one or more secondary/additional agent pools. |
 | [`allocatedOutboundPorts`](#parameter-allocatedoutboundports) | int | The desired number of allocated SNAT ports per VM. Default is 0, which results in Azure dynamically allocating ports. |
+| [`appMonitoring`](#parameter-appmonitoring) | object | Application Monitoring Profile for Kubernetes Application Container. Collects application logs, metrics and traces through auto-instrumentation of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview. |
 | [`authorizedIPRanges`](#parameter-authorizedipranges) | array | IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer. |
 | [`autoNodeOsUpgradeProfileUpgradeChannel`](#parameter-autonodeosupgradeprofileupgradechannel) | string | Auto-upgrade channel on the Node Os. |
 | [`autoScalerProfileBalanceSimilarNodeGroups`](#parameter-autoscalerprofilebalancesimilarnodegroups) | bool | Specifies the balance of similar node groups for the auto-scaler of the AKS cluster. |
+| [`autoScalerProfileDaemonsetEvictionForEmptyNodes`](#parameter-autoscalerprofiledaemonsetevictionforemptynodes) | bool | Specifies whether to enable daemonset eviction for empty nodes for the auto-scaler of the AKS cluster. |
+| [`autoScalerProfileDaemonsetEvictionForOccupiedNodes`](#parameter-autoscalerprofiledaemonsetevictionforoccupiednodes) | bool | Specifies whether to enable daemonset eviction for occupied nodes for the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileExpander`](#parameter-autoscalerprofileexpander) | string | Specifies the expand strategy for the auto-scaler of the AKS cluster. |
+| [`autoScalerProfileIgnoreDaemonsetsUtilization`](#parameter-autoscalerprofileignoredaemonsetsutilization) | bool | Specifies whether to ignore daemonsets utilization for the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileMaxEmptyBulkDelete`](#parameter-autoscalerprofilemaxemptybulkdelete) | int | Specifies the maximum empty bulk delete for the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileMaxGracefulTerminationSec`](#parameter-autoscalerprofilemaxgracefulterminationsec) | int | Specifies the max graceful termination time interval in seconds for the auto-scaler of the AKS cluster. |
 | [`autoScalerProfileMaxNodeProvisionTime`](#parameter-autoscalerprofilemaxnodeprovisiontime) | string | Specifies the maximum node provisioning time for the auto-scaler of the AKS cluster. Values must be an integer followed by an "m". No unit of time other than minutes (m) is supported. |
@@ -2756,6 +2760,97 @@ The desired number of allocated SNAT ports per VM. Default is 0, which results i
 - Type: int
 - Default: `0`
 
+### Parameter: `appMonitoring`
+
+Application Monitoring Profile for Kubernetes Application Container. Collects application logs, metrics and traces through auto-instrumentation of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoInstrumentation`](#parameter-appmonitoringautoinstrumentation) | object | Application Monitoring Auto Instrumentation for Kubernetes Application Container. Deploys web hook to auto-instrument Azure Monitor OpenTelemetry based SDKs to collect OpenTelemetry metrics, logs and traces of the application. See aka.ms/AzureMonitorApplicationMonitoring for an overview. |
+| [`openTelemetryLogs`](#parameter-appmonitoringopentelemetrylogs) | object | Application Monitoring Open Telemetry Metrics Profile for Kubernetes Application Container Logs and Traces. Collects OpenTelemetry logs and traces of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview. |
+| [`openTelemetryMetrics`](#parameter-appmonitoringopentelemetrymetrics) | object | Application Monitoring Open Telemetry Metrics Profile for Kubernetes Application Container Metrics. Collects OpenTelemetry metrics of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview. |
+
+### Parameter: `appMonitoring.autoInstrumentation`
+
+Application Monitoring Auto Instrumentation for Kubernetes Application Container. Deploys web hook to auto-instrument Azure Monitor OpenTelemetry based SDKs to collect OpenTelemetry metrics, logs and traces of the application. See aka.ms/AzureMonitorApplicationMonitoring for an overview.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-appmonitoringautoinstrumentationenabled) | bool | Indicates if Application Monitoring Auto Instrumentation is enabled or not. |
+
+### Parameter: `appMonitoring.autoInstrumentation.enabled`
+
+Indicates if Application Monitoring Auto Instrumentation is enabled or not.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `appMonitoring.openTelemetryLogs`
+
+Application Monitoring Open Telemetry Metrics Profile for Kubernetes Application Container Logs and Traces. Collects OpenTelemetry logs and traces of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-appmonitoringopentelemetrylogsenabled) | bool | Indicates if Application Monitoring Open Telemetry Logs and traces is enabled or not. |
+| [`port`](#parameter-appmonitoringopentelemetrylogsport) | int | The Open Telemetry host port for Open Telemetry logs and traces. If not specified, the default port is 28331. |
+
+### Parameter: `appMonitoring.openTelemetryLogs.enabled`
+
+Indicates if Application Monitoring Open Telemetry Logs and traces is enabled or not.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `appMonitoring.openTelemetryLogs.port`
+
+The Open Telemetry host port for Open Telemetry logs and traces. If not specified, the default port is 28331.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `appMonitoring.openTelemetryMetrics`
+
+Application Monitoring Open Telemetry Metrics Profile for Kubernetes Application Container Metrics. Collects OpenTelemetry metrics of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-appmonitoringopentelemetrymetricsenabled) | bool | Indicates if Application Monitoring Open Telemetry Metrics is enabled or not. |
+| [`port`](#parameter-appmonitoringopentelemetrymetricsport) | int | The Open Telemetry host port for Open Telemetry metrics. If not specified, the default port is 28333. |
+
+### Parameter: `appMonitoring.openTelemetryMetrics.enabled`
+
+Indicates if Application Monitoring Open Telemetry Metrics is enabled or not.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `appMonitoring.openTelemetryMetrics.port`
+
+The Open Telemetry host port for Open Telemetry metrics. If not specified, the default port is 28333.
+
+- Required: Yes
+- Type: int
+
 ### Parameter: `authorizedIPRanges`
 
 IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer.
@@ -2788,6 +2883,22 @@ Specifies the balance of similar node groups for the auto-scaler of the AKS clus
 - Type: bool
 - Default: `False`
 
+### Parameter: `autoScalerProfileDaemonsetEvictionForEmptyNodes`
+
+Specifies whether to enable daemonset eviction for empty nodes for the auto-scaler of the AKS cluster.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `autoScalerProfileDaemonsetEvictionForOccupiedNodes`
+
+Specifies whether to enable daemonset eviction for occupied nodes for the auto-scaler of the AKS cluster.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `autoScalerProfileExpander`
 
 Specifies the expand strategy for the auto-scaler of the AKS cluster.
@@ -2804,6 +2915,14 @@ Specifies the expand strategy for the auto-scaler of the AKS cluster.
     'random'
   ]
   ```
+
+### Parameter: `autoScalerProfileIgnoreDaemonsetsUtilization`
+
+Specifies whether to ignore daemonsets utilization for the auto-scaler of the AKS cluster.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `autoScalerProfileMaxEmptyBulkDelete`
 

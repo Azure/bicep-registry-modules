@@ -53,7 +53,6 @@ module testDeployment '../../../main.bicep' = [
         aadProfileEnableAzureRBAC: true
         aadProfileManaged: true
       }
-      outboundType: 'userDefinedRouting'
     }
   }
 ]

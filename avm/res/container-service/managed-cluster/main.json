@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "17467569842600033919"
+      "templateHash": "12457979883223813620"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -533,6 +533,72 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for an AAD profile."
+      }
+    },
+    "appMonitoringType": {
+      "type": "object",
+      "properties": {
+        "autoInstrumentation": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates if Application Monitoring Auto Instrumentation is enabled or not."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Application Monitoring Auto Instrumentation for Kubernetes Application Container. Deploys web hook to auto-instrument Azure Monitor OpenTelemetry based SDKs to collect OpenTelemetry metrics, logs and traces of the application. See aka.ms/AzureMonitorApplicationMonitoring for an overview."
+          }
+        },
+        "openTelemetryLogs": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates if Application Monitoring Open Telemetry Logs and traces is enabled or not."
+              }
+            },
+            "port": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The Open Telemetry host port for Open Telemetry logs and traces. If not specified, the default port is 28331."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Application Monitoring Open Telemetry Metrics Profile for Kubernetes Application Container Logs and Traces. Collects OpenTelemetry logs and traces of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview."
+          }
+        },
+        "openTelemetryMetrics": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates if Application Monitoring Open Telemetry Metrics is enabled or not."
+              }
+            },
+            "port": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The Open Telemetry host port for Open Telemetry metrics. If not specified, the default port is 28333."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Application Monitoring Open Telemetry Metrics Profile for Kubernetes Application Container Metrics. Collects OpenTelemetry metrics of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Application Monitoring Profile for Kubernetes Application Container. Collects application logs, metrics and traces through auto-instrumentation of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview."
       }
     },
     "diagnosticSettingFullType": {
@@ -1317,6 +1383,27 @@
         "description": "Optional. Specifies the balance of similar node groups for the auto-scaler of the AKS cluster."
       }
     },
+    "autoScalerProfileDaemonsetEvictionForEmptyNodes": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether to enable daemonset eviction for empty nodes for the auto-scaler of the AKS cluster."
+      }
+    },
+    "autoScalerProfileDaemonsetEvictionForOccupiedNodes": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether to enable daemonset eviction for occupied nodes for the auto-scaler of the AKS cluster."
+      }
+    },
+    "autoScalerProfileIgnoreDaemonsetsUtilization": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether to ignore daemonsets utilization for the auto-scaler of the AKS cluster."
+      }
+    },
     "autoScalerProfileExpander": {
       "type": "string",
       "defaultValue": "random",
@@ -1653,6 +1740,13 @@
         "description": "Optional. Whether the metric state of the kubenetes cluster is enabled."
       }
     },
+    "appMonitoring": {
+      "$ref": "#/definitions/appMonitoringType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Application Monitoring Profile for Kubernetes Application Container. Collects application logs, metrics and traces through auto-instrumentation of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview."
+      }
+    },
     "enableContainerInsights": {
       "type": "bool",
       "defaultValue": false,
@@ -1885,7 +1979,10 @@
         "aadProfile": "[if(not(empty(parameters('aadProfile'))), createObject('clientAppID', tryGet(parameters('aadProfile'), 'aadProfileClientAppID'), 'serverAppID', tryGet(parameters('aadProfile'), 'aadProfileServerAppID'), 'serverAppSecret', tryGet(parameters('aadProfile'), 'aadProfileServerAppSecret'), 'managed', tryGet(parameters('aadProfile'), 'aadProfileManaged'), 'enableAzureRBAC', tryGet(parameters('aadProfile'), 'aadProfileEnableAzureRBAC'), 'adminGroupObjectIDs', tryGet(parameters('aadProfile'), 'aadProfileAdminGroupObjectIDs'), 'tenantID', tryGet(parameters('aadProfile'), 'aadProfileTenantId')), null())]",
         "autoScalerProfile": {
           "balance-similar-node-groups": "[toLower(string(parameters('autoScalerProfileBalanceSimilarNodeGroups')))]",
+          "daemonset-eviction-for-empty-nodes": "[parameters('autoScalerProfileDaemonsetEvictionForEmptyNodes')]",
+          "daemonset-eviction-for-occupied-nodes": "[parameters('autoScalerProfileDaemonsetEvictionForOccupiedNodes')]",
           "expander": "[parameters('autoScalerProfileExpander')]",
+          "ignore-daemonsets-utilization": "[parameters('autoScalerProfileIgnoreDaemonsetsUtilization')]",
           "max-empty-bulk-delete": "[format('{0}', parameters('autoScalerProfileMaxEmptyBulkDelete'))]",
           "max-graceful-termination-sec": "[format('{0}', parameters('autoScalerProfileMaxGracefulTerminationSec'))]",
           "max-node-provision-time": "[parameters('autoScalerProfileMaxNodeProvisionTime')]",
@@ -1914,6 +2011,7 @@
           "privateDNSZone": "[parameters('privateDNSZone')]"
         },
         "azureMonitorProfile": {
+          "appMonitoring": "[parameters('appMonitoring')]",
           "containerInsights": "[if(parameters('enableContainerInsights'), createObject('enabled', parameters('enableContainerInsights'), 'logAnalyticsWorkspaceResourceId', if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), null()), 'disableCustomMetrics', parameters('disableCustomMetrics'), 'disablePrometheusMetricsScraping', parameters('disablePrometheusMetricsScraping'), 'syslogPort', parameters('syslogPort')), null())]",
           "metrics": "[if(parameters('enableAzureMonitorProfileMetrics'), createObject('enabled', parameters('enableAzureMonitorProfileMetrics'), 'kubeStateMetrics', createObject('metricLabelsAllowlist', parameters('metricLabelsAllowlist'), 'metricAnnotationsAllowList', parameters('metricAnnotationsAllowList'))), null())]"
         },
@@ -2274,10 +2372,264 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "11724804179481916541"
+              "templateHash": "1961615154104198995"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
+          },
+          "definitions": {
+            "linuxOSConfigType": {
+              "type": "object",
+              "properties": {
+                "swapFileSizeMB": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The size in MB of a swap file that will be created on each node."
+                  }
+                },
+                "sysctls": {
+                  "type": "object",
+                  "properties": {
+                    "fsAioMaxNr": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting fs.aio-max-nr."
+                      }
+                    },
+                    "fsFileMax": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting fs.file-max."
+                      }
+                    },
+                    "fsInotifyMaxUserWatches": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting fs.inotify.max_user_watches."
+                      }
+                    },
+                    "fsNrOpen": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting fs.nr_open."
+                      }
+                    },
+                    "kernelThreadsMax": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting kernel.threads-max."
+                      }
+                    },
+                    "netCoreNetdevMaxBacklog": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting net.core.netdev.max_backlog."
+                      }
+                    },
+                    "netCoreOptmemMax": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting net.core.optmem.max."
+                      }
+                    },
+                    "netCoreRmemDefault": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting net.core.rmem.default."
+                      }
+                    },
+                    "netCoreRmemMax": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting net.core.rmem.max."
+                      }
+                    },
+                    "netCoreSomaxconn": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting net.core.somaxconn."
+                      }
+                    },
+                    "netCoreWmemDefault": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting net.core.wmem.default."
+                      }
+                    },
+                    "netCoreWmemMax": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting net.core.wmem.max."
+                      }
+                    },
+                    "netIpv4IpLocalPortRange": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting net.ipv4.ip_local_port_range."
+                      }
+                    },
+                    "netIpv4NeighDefaultGcThresh1": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting net.ipv4.neigh.default.gc_thresh1."
+                      }
+                    },
+                    "netIpv4NeighDefaultGcThresh2": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting net.ipv4.neigh.default.gc_thresh2."
+                      }
+                    },
+                    "netIpv4NeighDefaultGcThresh3": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting net.ipv4.neigh.default.gc_thresh3."
+                      }
+                    },
+                    "netIpv4TcpFinTimeout": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting net.ipv4.tcp_fin_timeout."
+                      }
+                    },
+                    "netIpv4TcpkeepaliveIntvl": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting net.ipv4.tcp_keepalive_intvl."
+                      }
+                    },
+                    "netIpv4TcpKeepaliveProbes": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting net.ipv4.tcp_keepalive_probes."
+                      }
+                    },
+                    "netIpv4TcpKeepaliveTime": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting net.ipv4.tcp_keepalive_time."
+                      }
+                    },
+                    "netIpv4TcpMaxSynBacklog": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting net.ipv4.tcp_max_syn_backlog."
+                      }
+                    },
+                    "netIpv4TcpMaxTwBuckets": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting net.ipv4.tcp_max_tw_buckets."
+                      }
+                    },
+                    "netIpv4TcpTwReuse": {
+                      "type": "bool",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting net.ipv4.tcp_tw_reuse."
+                      }
+                    },
+                    "netNetfilterNfConntrackBuckets": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting net.netfilter.nf_conntrack_buckets."
+                      }
+                    },
+                    "netNetfilterNfConntrackMax": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting net.netfilter.nf_conntrack_max."
+                      }
+                    },
+                    "vmMaxMapCount": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting vm.max_map_count."
+                      }
+                    },
+                    "vmSwappiness": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting vm.swappiness."
+                      }
+                    },
+                    "vmVfsCachePressure": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Sysctl setting vm.vfs_cache_pressure."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Sysctl settings for Linux agent nodes."
+                  }
+                },
+                "transparentHugePageDefrag": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Whether the kernel should make aggressive use of memory compaction to make more hugepages available. Valid values are `always`, `defer`, `defer+madvise`, `madvise` and `never`. The default is `madvise`. For more information see [Transparent Hugepages](https://www.kernel.org/doc/html/latest/admin-guide/mm/transhuge.html#admin-guide-transhuge)."
+                  }
+                },
+                "transparentHugePageEnabled": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Whether transparent hugepages are enabled. Valid values are `always`, `madvise`, and `never`. The default is `always`. For more information see [Transparent Hugepages](https://www.kernel.org/doc/html/latest/admin-guide/mm/transhuge.html#admin-guide-transhuge)."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Linux OS configuration."
+              }
+            },
+            "windowsProfileType": {
+              "type": "object",
+              "properties": {
+                "disableOutboundNat": {
+                  "type": "bool",
+                  "metadata": {
+                    "description": "Required. Whether to disable OutboundNAT in windows nodes. The default value is false. Outbound NAT can only be disabled if the cluster outboundType is NAT Gateway and the Windows agent pool does not have node public IP enabled."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Windows OS configuration."
+              }
+            }
           },
           "parameters": {
             "managedClusterName": {
@@ -2376,6 +2728,13 @@
               "nullable": true,
               "metadata": {
                 "description": "Optional. Determines the placement of emptyDir volumes, container runtime data root, and Kubelet ephemeral storage."
+              }
+            },
+            "linuxOSConfig": {
+              "$ref": "#/definitions/linuxOSConfigType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Linux OS configuration."
               }
             },
             "maxCount": {
@@ -2586,6 +2945,13 @@
               "metadata": {
                 "description": "Optional. Determines the type of workload a node can run."
               }
+            },
+            "windowsProfile": {
+              "$ref": "#/definitions/windowsProfileType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Windows OS configuration."
+              }
             }
           },
           "resources": {
@@ -2610,6 +2976,7 @@
                 "enableUltraSSD": "[parameters('enableUltraSSD')]",
                 "gpuInstanceProfile": "[parameters('gpuInstanceProfile')]",
                 "kubeletDiskType": "[parameters('kubeletDiskType')]",
+                "linuxOSConfig": "[parameters('linuxOSConfig')]",
                 "maxCount": "[parameters('maxCount')]",
                 "maxPods": "[parameters('maxPods')]",
                 "minCount": "[parameters('minCount')]",
@@ -2639,7 +3006,8 @@
                 },
                 "vmSize": "[parameters('vmSize')]",
                 "vnetSubnetID": "[parameters('vnetSubnetResourceId')]",
-                "workloadRuntime": "[parameters('workloadRuntime')]"
+                "workloadRuntime": "[parameters('workloadRuntime')]",
+                "windowsProfile": "[parameters('windowsProfile')]"
               }
             }
           },

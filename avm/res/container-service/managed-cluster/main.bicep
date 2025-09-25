@@ -250,6 +250,15 @@ param autoScalerProfileMaxGracefulTerminationSec int = 600
 @description('Optional. Specifies the balance of similar node groups for the auto-scaler of the AKS cluster.')
 param autoScalerProfileBalanceSimilarNodeGroups bool = false
 
+@description('Optional. Specifies whether to enable daemonset eviction for empty nodes for the auto-scaler of the AKS cluster.')
+param autoScalerProfileDaemonsetEvictionForEmptyNodes bool = false
+
+@description('Optional. Specifies whether to enable daemonset eviction for occupied nodes for the auto-scaler of the AKS cluster.')
+param autoScalerProfileDaemonsetEvictionForOccupiedNodes bool = false
+
+@description('Optional. Specifies whether to ignore daemonsets utilization for the auto-scaler of the AKS cluster.')
+param autoScalerProfileIgnoreDaemonsetsUtilization bool = false
+
 @allowed([
   'least-waste'
   'most-pods'
@@ -402,6 +411,9 @@ param vpaAddon bool = false
 
 @description('Optional. Whether the metric state of the kubenetes cluster is enabled.')
 param enableAzureMonitorProfileMetrics bool = false
+
+@description('Optional. Application Monitoring Profile for Kubernetes Application Container. Collects application logs, metrics and traces through auto-instrumentation of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview.')
+param appMonitoring appMonitoringType?
 
 @description('Optional. Indicates if Azure Monitor Container Insights Logs Addon is enabled.')
 param enableContainerInsights bool = false
@@ -792,7 +804,10 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-05-02-p
       : null
     autoScalerProfile: {
       'balance-similar-node-groups': toLower(string(autoScalerProfileBalanceSimilarNodeGroups))
+      'daemonset-eviction-for-empty-nodes': autoScalerProfileDaemonsetEvictionForEmptyNodes
+      'daemonset-eviction-for-occupied-nodes': autoScalerProfileDaemonsetEvictionForOccupiedNodes
       expander: autoScalerProfileExpander
+      'ignore-daemonsets-utilization': autoScalerProfileIgnoreDaemonsetsUtilization
       'max-empty-bulk-delete': '${autoScalerProfileMaxEmptyBulkDelete}'
       'max-graceful-termination-sec': '${autoScalerProfileMaxGracefulTerminationSec}'
       'max-node-provision-time': autoScalerProfileMaxNodeProvisionTime
@@ -821,6 +836,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-05-02-p
       privateDNSZone: privateDNSZone
     }
     azureMonitorProfile: {
+      appMonitoring: appMonitoring
       containerInsights: enableContainerInsights
         ? {
             enabled: enableContainerInsights
@@ -1342,4 +1358,28 @@ type aadProfileType = {
 
   @description('Optional. Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication.')
   aadProfileTenantId: string?
+}
+
+@export()
+@description('Application Monitoring Profile for Kubernetes Application Container. Collects application logs, metrics and traces through auto-instrumentation of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview.')
+type appMonitoringType = {
+  @description('Optional. Application Monitoring Auto Instrumentation for Kubernetes Application Container. Deploys web hook to auto-instrument Azure Monitor OpenTelemetry based SDKs to collect OpenTelemetry metrics, logs and traces of the application. See aka.ms/AzureMonitorApplicationMonitoring for an overview.')
+  autoInstrumentation: {
+    @description('Required. Indicates if Application Monitoring Auto Instrumentation is enabled or not.')
+    enabled: bool
+  }?
+  @description('Optional. Application Monitoring Open Telemetry Metrics Profile for Kubernetes Application Container Logs and Traces. Collects OpenTelemetry logs and traces of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview.')
+  openTelemetryLogs: {
+    @description('Required. Indicates if Application Monitoring Open Telemetry Logs and traces is enabled or not.')
+    enabled: bool
+    @description('Required. The Open Telemetry host port for Open Telemetry logs and traces. If not specified, the default port is 28331.')
+    port: int
+  }?
+  @description('Optional. Application Monitoring Open Telemetry Metrics Profile for Kubernetes Application Container Metrics. Collects OpenTelemetry metrics of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview.')
+  openTelemetryMetrics: {
+    @description('Required. Indicates if Application Monitoring Open Telemetry Metrics is enabled or not.')
+    enabled: bool
+    @description('Required. The Open Telemetry host port for Open Telemetry metrics. If not specified, the default port is 28333.')
+    port: int
+  }?
 }
