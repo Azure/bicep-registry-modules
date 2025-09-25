@@ -439,7 +439,7 @@ Azure OpenAI Embedding Model Capacity - See here for more info https://learn.mic
 
 - Required: No
 - Type: int
-- Default: `30`
+- Default: `100`
 
 ### Parameter: `azureOpenAIEmbeddingModelName`
 
@@ -479,7 +479,7 @@ Azure OpenAI Model Capacity - See here for more info  https://learn.microsoft.co
 
 - Required: No
 - Type: int
-- Default: `30`
+- Default: `150`
 
 ### Parameter: `azureOpenAIModelName`
 
