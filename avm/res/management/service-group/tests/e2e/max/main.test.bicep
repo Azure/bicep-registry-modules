@@ -20,7 +20,7 @@ param namePrefix string = '#_namePrefix_#'
 resource serviceGroupDependency 'Microsoft.Management/serviceGroups@2024-02-01-preview' = {
   name: 'sg-${namePrefix}-${serviceShort}-dep-001'
   properties: {
-    displayName: 'Service Group E2E Test Dependency'
+    displayName: 'Service Group E2E Test Maximum Dependency'
     parent: {
       resourceId: '/providers/Microsoft.Management/serviceGroups/${tenant().tenantId}'
     }
