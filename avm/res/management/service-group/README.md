@@ -27,10 +27,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/management/service-group:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Waf-Aligned](#example-2-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Maximum configuration](#example-2-maximum-configuration)
+- [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _Defaults_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -40,7 +44,7 @@ The following section provides usage examples for the module, which were used to
 module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
   name: 'serviceGroupDeployment'
   params: {
-    name: 'msgdef001'
+    name: 'msgmin001'
   }
 }
 ```
@@ -58,7 +62,7 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "name": {
-      "value": "msgdef001"
+      "value": "msgmin001"
     }
   }
 }
@@ -74,13 +78,122 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/management/service-group:<version>'
 
-param name = 'msgdef001'
+param name = 'msgmin001'
 ```
 
 </details>
 <p>
 
-### Example 2: _Waf-Aligned_
+### Example 2: _Maximum configuration_
+
+This instance deploys the module with the maximum set of parameters supported.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
+  name: 'serviceGroupDeployment'
+  params: {
+    // Required parameters
+    name: 'sg-msgmax-001'
+    // Non-required parameters
+    displayName: 'Service Group E2E Test Maximum Configuration'
+    parentResourceId: '<parentResourceId>'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        roleDefinitionIdOrName: 'Service Group Administrator'
+      }
+    ]
+    tags: {
+      environment: 'e2e'
+      module: 'service-group'
+      'test-scenario': 'max'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sg-msgmax-001"
+    },
+    // Non-required parameters
+    "displayName": {
+      "value": "Service Group E2E Test Maximum Configuration"
+    },
+    "parentResourceId": {
+      "value": "<parentResourceId>"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "roleDefinitionIdOrName": "Service Group Administrator"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "environment": "e2e",
+        "module": "service-group",
+        "test-scenario": "max"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/management/service-group:<version>'
+
+// Required parameters
+param name = 'sg-msgmax-001'
+// Non-required parameters
+param displayName = 'Service Group E2E Test Maximum Configuration'
+param parentResourceId = '<parentResourceId>'
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    roleDefinitionIdOrName: 'Service Group Administrator'
+  }
+]
+param tags = {
+  environment: 'e2e'
+  module: 'service-group'
+  'test-scenario': 'max'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -94,7 +207,6 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
     name: 'sg-msgwaf-001'
     // Non-required parameters
     displayName: 'Service Group E2E Test WAF Aligned'
-    parentResourceId: '<parentResourceId>'
     tags: {
       environment: 'e2e'
       module: 'service-group'
@@ -124,9 +236,6 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
     "displayName": {
       "value": "Service Group E2E Test WAF Aligned"
     },
-    "parentResourceId": {
-      "value": "<parentResourceId>"
-    },
     "tags": {
       "value": {
         "environment": "e2e",
@@ -152,7 +261,6 @@ using 'br/public:avm/res/management/service-group:<version>'
 param name = 'sg-msgwaf-001'
 // Non-required parameters
 param displayName = 'Service Group E2E Test WAF Aligned'
-param parentResourceId = '<parentResourceId>'
 param tags = {
   environment: 'e2e'
   module: 'service-group'
