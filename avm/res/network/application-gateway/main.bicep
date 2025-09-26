@@ -161,8 +161,8 @@ var formattedUserAssignedIdentities = reduce(
 
 var identity = !empty(managedIdentities)
   ? {
-      type: !empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null
-      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+      type: !empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None'
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : any(null)
     }
   : null
 
@@ -235,7 +235,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource applicationGateway 'Microsoft.Network/applicationGateways@2024-07-01' = {
+resource applicationGateway 'Microsoft.Network/applicationGateways@2024-10-01' = {
   name: name
   location: location
   tags: tags

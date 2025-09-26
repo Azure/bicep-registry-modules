@@ -6,6 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
+- Updated API version to `2024-10-01`
 - Added many resource-derived types for improved module usability
 
 ### Breaking Changes

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "1507069292364480929"
+      "templateHash": "9000652758413772388"
     },
     "name": "Network Application Gateways",
     "description": "This module deploys a Network Application Gateway."
@@ -1145,7 +1145,7 @@
       }
     ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None'), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -1178,7 +1178,7 @@
     },
     "applicationGateway": {
       "type": "Microsoft.Network/applicationGateways",
-      "apiVersion": "2024-07-01",
+      "apiVersion": "2024-10-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -2048,7 +2048,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('applicationGateway', '2024-07-01', 'full').location]"
+      "value": "[reference('applicationGateway', '2024-10-01', 'full').location]"
     },
     "privateEndpoints": {
       "type": "array",
