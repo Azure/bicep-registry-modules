@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "213898377458315722"
+      "templateHash": "9549123238452447574"
     },
     "name": "Service Groups",
     "description": "This module will allow you to create a service group and also associate resource to this service group, if you have permissions upon those resources."
@@ -293,7 +293,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "12154916338204024650"
+              "templateHash": "6424628369773341153"
             }
           },
           "parameters": {
@@ -311,7 +311,7 @@
             {
               "type": "Microsoft.Relationships/serviceGroupMember",
               "apiVersion": "2023-09-01-preview",
-              "name": "[guid(subscription().subscriptionId, parameters('serviceGroupResourceId'))]",
+              "name": "[subscription().subscriptionId]",
               "properties": {
                 "targetId": "[parameters('serviceGroupResourceId')]"
               }
