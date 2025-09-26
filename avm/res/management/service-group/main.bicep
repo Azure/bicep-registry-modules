@@ -12,10 +12,10 @@ param displayName string?
 @description('Optional. The parent service group resource ID, e.g. "/providers/Microsoft.Management/serviceGroups/<name>", of the service group to create. If not provided, the service group will be created under the root service group, e.g. "/providers/Microsoft.Management/serviceGroups/<TENANT ID>".')
 param parentServiceGroupResourceId string?
 
-@description('Optional. An array of subscription IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target subscriptions.')
+@description('Optional. An array of subscription IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target subscriptions. The relationship name is generated using uniqueString() function with the service group ID and the subscription ID as inputs.')
 param subscriptionIdsToAssociateToServiceGroup array = []
 
-@description('Optional. An array of resource group resource IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target resource groups.')
+@description('Optional. An array of resource group resource IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target resource groups. The relationship name is generated using uniqueString() function with the service group ID and the resource group resource ID as inputs')
 param resourceGroupResourceIdsToAssociateToServiceGroup array = []
 
 @description('Optional. Enable/Disable usage telemetry for module.')

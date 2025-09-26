@@ -2,7 +2,7 @@
 param serviceGroupResourceId resourceInput<'Microsoft.Relationships/serviceGroupMember@2023-09-01-preview'>.properties.targetId
 
 resource serviceGroup_subscriptionMember 'Microsoft.Relationships/serviceGroupMember@2023-09-01-preview' = {
-  name: uniqueString(resourceGroup().id)
+  name: uniqueString(resourceGroup().id, serviceGroupResourceId)
   properties: {
     targetId: serviceGroupResourceId
   }

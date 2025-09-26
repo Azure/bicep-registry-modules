@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "10528563407430659965"
+      "templateHash": "18335052659343733882"
     },
     "name": "Service Groups",
     "description": "This module will allow you to create a service group and also associate resource to this service group, if you have permissions upon those resources."
@@ -150,14 +150,14 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. An array of subscription IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target subscriptions."
+        "description": "Optional. An array of subscription IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target subscriptions. The relationship name is generated using uniqueString() function with the service group ID and the subscription ID as inputs."
       }
     },
     "resourceGroupResourceIdsToAssociateToServiceGroup": {
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. An array of resource group resource IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target resource groups."
+        "description": "Optional. An array of resource group resource IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target resource groups. The relationship name is generated using uniqueString() function with the service group ID and the resource group resource ID as inputs"
       }
     },
     "enableTelemetry": {
@@ -300,7 +300,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "6424628369773341153"
+              "templateHash": "16921417674676465264"
             }
           },
           "parameters": {
@@ -318,7 +318,7 @@
             {
               "type": "Microsoft.Relationships/serviceGroupMember",
               "apiVersion": "2023-09-01-preview",
-              "name": "[subscription().subscriptionId]",
+              "name": "[uniqueString(subscription().subscriptionId, parameters('serviceGroupResourceId'))]",
               "properties": {
                 "targetId": "[parameters('serviceGroupResourceId')]"
               }
@@ -357,7 +357,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "6922340949649296049"
+              "templateHash": "10634720568086308362"
             }
           },
           "parameters": {
@@ -375,7 +375,7 @@
             {
               "type": "Microsoft.Relationships/serviceGroupMember",
               "apiVersion": "2023-09-01-preview",
-              "name": "[uniqueString(resourceGroup().id)]",
+              "name": "[uniqueString(resourceGroup().id, parameters('serviceGroupResourceId'))]",
               "properties": {
                 "targetId": "[parameters('serviceGroupResourceId')]"
               }

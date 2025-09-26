@@ -4,7 +4,7 @@ targetScope = 'subscription'
 param serviceGroupResourceId resourceInput<'Microsoft.Relationships/serviceGroupMember@2023-09-01-preview'>.properties.targetId
 
 resource serviceGroup_subscriptionMember 'Microsoft.Relationships/serviceGroupMember@2023-09-01-preview' = {
-  name: subscription().subscriptionId
+  name: uniqueString(subscription().subscriptionId, serviceGroupResourceId)
   properties: {
     targetId: serviceGroupResourceId
   }

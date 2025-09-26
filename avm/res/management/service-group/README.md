@@ -277,9 +277,9 @@ param displayName = 'Service Group E2E Test WAF Aligned'
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`parentServiceGroupResourceId`](#parameter-parentservicegroupresourceid) | string | The parent service group resource ID, e.g. "/providers/Microsoft.Management/serviceGroups/<name>", of the service group to create. If not provided, the service group will be created under the root service group, e.g. "/providers/Microsoft.Management/serviceGroups/<TENANT ID>". |
-| [`resourceGroupResourceIdsToAssociateToServiceGroup`](#parameter-resourcegroupresourceidstoassociatetoservicegroup) | array | An array of resource group resource IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target resource groups. |
+| [`resourceGroupResourceIdsToAssociateToServiceGroup`](#parameter-resourcegroupresourceidstoassociatetoservicegroup) | array | An array of resource group resource IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target resource groups. The relationship name is generated using uniqueString() function with the service group ID and the resource group resource ID as inputs |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`subscriptionIdsToAssociateToServiceGroup`](#parameter-subscriptionidstoassociatetoservicegroup) | array | An array of subscription IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target subscriptions. |
+| [`subscriptionIdsToAssociateToServiceGroup`](#parameter-subscriptionidstoassociatetoservicegroup) | array | An array of subscription IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target subscriptions. The relationship name is generated using uniqueString() function with the service group ID and the subscription ID as inputs. |
 
 ### Parameter: `name`
 
@@ -356,7 +356,7 @@ The parent service group resource ID, e.g. "/providers/Microsoft.Management/serv
 
 ### Parameter: `resourceGroupResourceIdsToAssociateToServiceGroup`
 
-An array of resource group resource IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target resource groups.
+An array of resource group resource IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target resource groups. The relationship name is generated using uniqueString() function with the service group ID and the resource group resource ID as inputs
 
 - Required: No
 - Type: array
@@ -470,7 +470,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `subscriptionIdsToAssociateToServiceGroup`
 
-An array of subscription IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target subscriptions.
+An array of subscription IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target subscriptions. The relationship name is generated using uniqueString() function with the service group ID and the subscription ID as inputs.
 
 - Required: No
 - Type: array
