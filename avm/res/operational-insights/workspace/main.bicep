@@ -91,6 +91,9 @@ param diagnosticSettings diagnosticSettingType[]?
 @description('Optional. Indicates whether customer managed storage is mandatory for query management.')
 param forceCmkForQuery bool = true
 
+@description('Optional. The resource ID of the default Data Collection Rule to use for this workspace.')
+param defaultDataCollectionRuleResourceId string?
+
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
@@ -214,6 +217,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02
     publicNetworkAccessForQuery: publicNetworkAccessForQuery
     forceCmkForQuery: forceCmkForQuery
     replication: replication
+    defaultDataCollectionRuleResourceId: defaultDataCollectionRuleResourceId
   }
   identity: identity
 }
