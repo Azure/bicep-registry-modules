@@ -114,7 +114,7 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   params: {
     databaseType: 'CosmosDB'
     location: '<location>'
-    solutionName: 'sacwydcssmin001'
+    solutionName: '<solutionName>'
   }
 }
 ```
@@ -138,7 +138,7 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
       "value": "<location>"
     },
     "solutionName": {
-      "value": "sacwydcssmin001"
+      "value": "<solutionName>"
     }
   }
 }
@@ -156,7 +156,7 @@ using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
 
 param databaseType = 'CosmosDB'
 param location = '<location>'
-param solutionName = 'sacwydcssmin001'
+param solutionName = '<solutionName>'
 ```
 
 </details>
@@ -176,7 +176,7 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   name: 'chatWithYourDataDeployment'
   params: {
     location: '<location>'
-    solutionName: 'scwydsmin001'
+    solutionName: '<solutionName>'
   }
 }
 ```
@@ -197,7 +197,7 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
       "value": "<location>"
     },
     "solutionName": {
-      "value": "scwydsmin001"
+      "value": "<solutionName>"
     }
   }
 }
@@ -214,7 +214,7 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
 using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
 
 param location = '<location>'
-param solutionName = 'scwydsmin001'
+param solutionName = '<solutionName>'
 ```
 
 </details>
@@ -239,7 +239,7 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
     enableScalability: true
     enableTelemetry: true
     location: '<location>'
-    solutionName: 'scwydswaf001'
+    solutionName: '<solutionName>'
     virtualMachineAdminPassword: '<virtualMachineAdminPassword>'
     virtualMachineAdminUsername: 'adminuser'
   }
@@ -277,7 +277,7 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
       "value": "<location>"
     },
     "solutionName": {
-      "value": "scwydswaf001"
+      "value": "<solutionName>"
     },
     "virtualMachineAdminPassword": {
       "value": "<virtualMachineAdminPassword>"
@@ -305,7 +305,7 @@ param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
 param location = '<location>'
-param solutionName = 'scwydswaf001'
+param solutionName = '<solutionName>'
 param virtualMachineAdminPassword = '<virtualMachineAdminPassword>'
 param virtualMachineAdminUsername = 'adminuser'
 ```
