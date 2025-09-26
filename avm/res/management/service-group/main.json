@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "15699628318962356618"
+      "templateHash": "213898377458315722"
     },
     "name": "Service Groups",
     "description": "This module will allow you to create a service group and also associate resource to this service group, if you have permissions upon those resources."
@@ -129,7 +129,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the service group to create."
+        "description": "Required. Name of the service group to create. Must be globally unique."
       }
     },
     "displayName": {

@@ -255,7 +255,7 @@ param displayName = 'Service Group E2E Test WAF Aligned'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the service group to create. |
+| [`name`](#parameter-name) | string | Name of the service group to create. Must be globally unique. |
 
 **Optional parameters**
 
@@ -270,7 +270,7 @@ param displayName = 'Service Group E2E Test WAF Aligned'
 
 ### Parameter: `name`
 
-Name of the service group to create.
+Name of the service group to create. Must be globally unique.
 
 - Required: Yes
 - Type: string

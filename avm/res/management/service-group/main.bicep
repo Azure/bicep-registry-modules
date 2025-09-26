@@ -3,7 +3,7 @@ targetScope = 'tenant'
 metadata name = 'Service Groups'
 metadata description = 'This module will allow you to create a service group and also associate resource to this service group, if you have permissions upon those resources.'
 
-@description('Required. Name of the service group to create.')
+@description('Required. Name of the service group to create. Must be globally unique.')
 param name string
 
 @description('Optional. Display name of the service group to create. If not provided, the name parameter input value will be used.')
