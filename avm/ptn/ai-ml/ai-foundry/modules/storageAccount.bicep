@@ -38,7 +38,7 @@ resource existingStorageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' e
 
 var privateNetworkingEnabled = !empty(blobPrivateDnsZoneResourceId) && !empty(privateEndpointSubnetResourceId)
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.26.0' = if (empty(existingResourceId)) {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.26.2' = if (empty(existingResourceId)) {
   name: take('avm.res.storage.storage-account.${name}', 64)
   params: {
     name: name
