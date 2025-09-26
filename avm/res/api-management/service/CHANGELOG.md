@@ -7,7 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Applied the `@secure()` decorator to the `value` parameter within the `namedValue` input object.
-- Minor formatting adjustments triggered by the Set-AVMModule rerun
+- Minor json formatting adjustments
 
 ### Breaking Changes
 
