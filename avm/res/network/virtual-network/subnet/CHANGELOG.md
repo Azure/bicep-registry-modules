@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Minor formatting adjustments triggered by the Set-AVMModule rerun
+- Recompiled with latest Bicep version (`0.37.4`)
 
 ### Breaking Changes
 
