@@ -103,6 +103,9 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
     // Non-required parameters
     displayName: 'Service Group E2E Test Maximum Configuration'
     parentServiceGroupResourceId: '<parentServiceGroupResourceId>'
+    resourceGroupResourceIdsToAssociateToServiceGroup: [
+      '<resourceId>'
+    ]
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -139,6 +142,11 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
     "parentServiceGroupResourceId": {
       "value": "<parentServiceGroupResourceId>"
     },
+    "resourceGroupResourceIdsToAssociateToServiceGroup": {
+      "value": [
+        "<resourceId>"
+      ]
+    },
     "roleAssignments": {
       "value": [
         {
@@ -171,6 +179,9 @@ param name = '<name>'
 // Non-required parameters
 param displayName = 'Service Group E2E Test Maximum Configuration'
 param parentServiceGroupResourceId = '<parentServiceGroupResourceId>'
+param resourceGroupResourceIdsToAssociateToServiceGroup = [
+  '<resourceId>'
+]
 param roleAssignments = [
   {
     principalId: '<principalId>'
@@ -265,6 +276,7 @@ param displayName = 'Service Group E2E Test WAF Aligned'
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`parentServiceGroupResourceId`](#parameter-parentservicegroupresourceid) | string | The parent service group resource ID, e.g. "/providers/Microsoft.Management/serviceGroups/<name>", of the service group to create. If not provided, the service group will be created under the root service group, e.g. "/providers/Microsoft.Management/serviceGroups/<TENANT ID>". |
+| [`resourceGroupResourceIdsToAssociateToServiceGroup`](#parameter-resourcegroupresourceidstoassociatetoservicegroup) | array | An array of resource group resource IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target resource groups. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`subscriptionIdsToAssociateToServiceGroup`](#parameter-subscriptionidstoassociatetoservicegroup) | array | An array of subscription IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target subscriptions. |
 
@@ -340,6 +352,14 @@ The parent service group resource ID, e.g. "/providers/Microsoft.Management/serv
 
 - Required: No
 - Type: string
+
+### Parameter: `resourceGroupResourceIdsToAssociateToServiceGroup`
+
+An array of resource group resource IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target resource groups.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `roleAssignments`
 

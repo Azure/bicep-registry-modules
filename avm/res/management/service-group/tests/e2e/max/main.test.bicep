@@ -30,6 +30,13 @@ resource serviceGroupDependency 'Microsoft.Management/serviceGroups@2024-02-01-p
   }
 }
 
+module serviceGroupDependency_resourceGroupMember 'br/public:avm/res/resources/resource-group:0.4.1' = {
+  scope: subscription(subscriptionId)
+  params: {
+    name: 'rg-${namePrefix}-${serviceShort}-${uniqueString(tenant().tenantId)}-dep-001'
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -44,6 +51,9 @@ module testDeployment '../../../main.bicep' = [
       parentServiceGroupResourceId: serviceGroupDependency.id
       subscriptionIdsToAssociateToServiceGroup: [
         subscriptionId
+      ]
+      resourceGroupResourceIdsToAssociateToServiceGroup: [
+        serviceGroupDependency_resourceGroupMember.outputs.resourceId
       ]
       roleAssignments: [
         {

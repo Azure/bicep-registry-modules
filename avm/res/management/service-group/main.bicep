@@ -15,6 +15,9 @@ param parentServiceGroupResourceId string?
 @description('Optional. An array of subscription IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target subscriptions.')
 param subscriptionIdsToAssociateToServiceGroup array = []
 
+@description('Optional. An array of resource group resource IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target resource groups.')
+param resourceGroupResourceIdsToAssociateToServiceGroup array = []
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -96,6 +99,15 @@ resource serviceGroup 'Microsoft.Management/serviceGroups@2024-02-01-preview' = 
 module serviceGroup_subscriptionMember 'modules/subscriptionMember.bicep' = [
   for sub in subscriptionIdsToAssociateToServiceGroup: {
     scope: subscription(sub)
+    params: {
+      serviceGroupResourceId: serviceGroup.id
+    }
+  }
+]
+
+module serviceGroup_resourceGroupMember 'modules/resourceGroupMember.bicep' = [
+  for rg in resourceGroupResourceIdsToAssociateToServiceGroup: {
+    scope: resourceGroup(split(rg, '/')[2], split(rg, '/')[4])
     params: {
       serviceGroupResourceId: serviceGroup.id
     }
