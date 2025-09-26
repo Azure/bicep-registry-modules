@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "17376611722422498565"
+      "templateHash": "5046199650763571640"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -2438,7 +2438,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "8704446769354449733"
+              "templateHash": "3937078051979289067"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
@@ -2674,7 +2674,6 @@
                   }
                 }
               },
-              "nullable": true,
               "metadata": {
                 "__bicep_export!": true,
                 "description": "Linux OS configuration."
@@ -2690,7 +2689,6 @@
                   }
                 }
               },
-              "nullable": true,
               "metadata": {
                 "__bicep_export!": true,
                 "description": "Windows OS configuration."
@@ -2798,6 +2796,7 @@
             },
             "linuxOSConfig": {
               "$ref": "#/definitions/linuxOSConfigType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Linux OS configuration."
               }
@@ -3024,6 +3023,7 @@
             },
             "windowsProfile": {
               "$ref": "#/definitions/windowsProfileType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Windows OS configuration."
               }

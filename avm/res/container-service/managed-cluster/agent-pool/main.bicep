@@ -47,7 +47,7 @@ param gpuInstanceProfile string?
 param kubeletDiskType string?
 
 @description('Optional. Linux OS configuration.')
-param linuxOSConfig linuxOSConfigType
+param linuxOSConfig linuxOSConfigType?
 
 @description('Optional. The maximum number of nodes for auto-scaling.')
 param maxCount int?
@@ -162,7 +162,7 @@ param vnetSubnetResourceId string?
 param workloadRuntime string?
 
 @description('Optional. Windows OS configuration.')
-param windowsProfile windowsProfileType
+param windowsProfile windowsProfileType?
 
 resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-05-02-preview' existing = {
   name: managedClusterName
@@ -299,11 +299,11 @@ type linuxOSConfigType = {
   transparentHugePageDefrag: string?
   @description('Optional. Whether transparent hugepages are enabled. Valid values are `always`, `madvise`, and `never`. The default is `always`. For more information see [Transparent Hugepages](https://www.kernel.org/doc/html/latest/admin-guide/mm/transhuge.html#admin-guide-transhuge).')
   transparentHugePageEnabled: string?
-}?
+}
 
 @export()
 @description('Windows OS configuration.')
 type windowsProfileType = {
   @description('Required. Whether to disable OutboundNAT in windows nodes. The default value is false. Outbound NAT can only be disabled if the cluster outboundType is NAT Gateway and the Windows agent pool does not have node public IP enabled.')
   disableOutboundNat: bool
-}?
+}
