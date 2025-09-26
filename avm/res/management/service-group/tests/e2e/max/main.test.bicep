@@ -13,6 +13,9 @@ param serviceShort string = 'msgmax'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. Subscription ID of the subscription to add to the service group for the test execution. This is passed into the modules subscriptionIdsToAssociateToServiceGroup parameter. The deployment principal must have the necessary permissions to perform this action on the target subscription.')
+param subscriptionId string = '#_subscriptionId_#'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -39,7 +42,9 @@ module testDeployment '../../../main.bicep' = [
       name: 'sg-${namePrefix}-${serviceShort}-001'
       displayName: 'Service Group E2E Test Maximum Configuration'
       parentServiceGroupResourceId: serviceGroupDependency.id
-      subscriptionIdsToAssociateToServiceGroup: []
+      subscriptionIdsToAssociateToServiceGroup: [
+        subscriptionId
+      ]
       roleAssignments: [
         {
           principalId: deployer().objectId

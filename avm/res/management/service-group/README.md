@@ -109,6 +109,9 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
         roleDefinitionIdOrName: 'Service Group Reader'
       }
     ]
+    subscriptionIdsToAssociateToServiceGroup: [
+      '<subscriptionId>'
+    ]
   }
 }
 ```
@@ -143,6 +146,11 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
           "roleDefinitionIdOrName": "Service Group Reader"
         }
       ]
+    },
+    "subscriptionIdsToAssociateToServiceGroup": {
+      "value": [
+        "<subscriptionId>"
+      ]
     }
   }
 }
@@ -168,6 +176,9 @@ param roleAssignments = [
     principalId: '<principalId>'
     roleDefinitionIdOrName: 'Service Group Reader'
   }
+]
+param subscriptionIdsToAssociateToServiceGroup = [
+  '<subscriptionId>'
 ]
 ```
 
