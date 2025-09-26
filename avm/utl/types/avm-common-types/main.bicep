@@ -431,3 +431,10 @@ type secretsOutputType = {
   @description('An exported secret\'s references.')
   *: secretSetOutputType
 }
+
+// ================== //
+//   Service Groups   //
+// ================== //
+@export()
+@description('An AVM-aligned type for the target resource IDs to associate resource to service groups.')
+type serviceGroupTargetResourceIdsType = resourceInput<'Microsoft.Relationships/serviceGroupMember@2023-09-01-preview'>.properties.targetId

@@ -67,6 +67,7 @@ import {
   privateEndpointSingleServiceType
   secretToSetType
   secretSetOutputType
+  serviceGroupTargetResourceIdsType
 } from '../../../main.bicep' // Would be: br/public:avm/utl/types/avm-common-types:<version>
 
 //  ====================== //
@@ -333,6 +334,14 @@ param secretSet secretSetOutputType[] = [
   }
 ]
 output secretSetOutput secretSetOutputType[] = secretSet
+
+// ================== //
+//   Service Groups   //
+// ================== //
+param serviceGroupTargetResourceIds serviceGroupTargetResourceIdsType[] = [
+  '/providers/Microsoft.Management/serviceGroups/myServiceGroup'
+]
+output serviceGroupTargetResourceIdsOutput serviceGroupTargetResourceIdsType[] = serviceGroupTargetResourceIds
 ```
 
 </details>
