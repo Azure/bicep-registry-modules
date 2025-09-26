@@ -972,6 +972,7 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
       enableUltraSSD: agentPool.?enableUltraSSD
       gpuInstanceProfile: agentPool.?gpuInstanceProfile
       kubeletDiskType: agentPool.?kubeletDiskType
+      linuxOSConfig: agentPool.?linuxOSConfig
       maxCount: agentPool.?maxCount
       maxPods: agentPool.?maxPods
       minCount: agentPool.?minCount
@@ -999,11 +1000,12 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
       vmSize: agentPool.?vmSize
       vnetSubnetResourceId: agentPool.?vnetSubnetResourceId
       workloadRuntime: agentPool.?workloadRuntime
+      windowsProfile: agentPool.?windowsProfile
     }
   }
 ]
 
-module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.3.7' = if (!empty(fluxExtension)) {
+module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.3.8' = if (!empty(fluxExtension)) {
   name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxExtension'
   params: {
     clusterName: managedCluster.name
@@ -1209,6 +1211,9 @@ type agentPoolType = {
   @description('Optional. The kubelet disk type of the agent pool.')
   kubeletDiskType: string?
 
+  @description('Optional. The Linux OS configuration of the agent pool.')
+  linuxOSConfig: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-05-02-preview'>.properties.linuxOSConfig?
+
   @description('Optional. The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).')
   maxCount: int?
 
@@ -1269,6 +1274,9 @@ type agentPoolType = {
   @description('Optional. vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.')
   enableVTPM: bool?
 
+  @description('Optional. SSH access method of an agent pool.')
+  sshAccess: ('Disabled' | 'LocalUser')?
+
   @description('Optional. The spot max price of the agent pool.')
   spotMaxPrice: int?
 
@@ -1289,6 +1297,9 @@ type agentPoolType = {
 
   @description('Optional. The workload runtime of the agent pool.')
   workloadRuntime: string?
+
+  @description('Optional. The Windows profile of the agent pool.')
+  windowsProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-05-02-preview'>.properties.windowsProfile?
 
   @description('Optional. The enable default telemetry of the agent pool.')
   enableDefaultTelemetry: bool?

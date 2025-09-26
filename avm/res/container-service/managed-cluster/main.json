@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "9073955465913669499"
+      "templateHash": "15900772438210282740"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -100,6 +100,16 @@
           "metadata": {
             "description": "Optional. The kubelet disk type of the agent pool."
           }
+        },
+        "linuxOSConfig": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-05-02-preview#properties/properties/properties/linuxOSConfig"
+            },
+            "description": "Optional. The Linux OS configuration of the agent pool."
+          },
+          "nullable": true
         },
         "maxCount": {
           "type": "int",
@@ -265,6 +275,17 @@
             "description": "Optional. vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch."
           }
         },
+        "sshAccess": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "LocalUser"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. SSH access method of an agent pool."
+          }
+        },
         "spotMaxPrice": {
           "type": "int",
           "nullable": true,
@@ -317,6 +338,16 @@
           "metadata": {
             "description": "Optional. The workload runtime of the agent pool."
           }
+        },
+        "windowsProfile": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-05-02-preview#properties/properties/properties/windowsProfile"
+            },
+            "description": "Optional. The Windows profile of the agent pool."
+          },
+          "nullable": true
         },
         "enableDefaultTelemetry": {
           "type": "bool",
@@ -2313,6 +2344,9 @@
           "kubeletDiskType": {
             "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'kubeletDiskType')]"
           },
+          "linuxOSConfig": {
+            "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'linuxOSConfig')]"
+          },
           "maxCount": {
             "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'maxCount')]"
           },
@@ -2391,6 +2425,9 @@
           },
           "workloadRuntime": {
             "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'workloadRuntime')]"
+          },
+          "windowsProfile": {
+            "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'windowsProfile')]"
           }
         },
         "template": {
@@ -3137,7 +3174,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "2016669901810235100"
+              "templateHash": "9872939647776132218"
             },
             "name": "Kubernetes Configuration Extensions",
             "description": "This module deploys a Kubernetes Configuration Extension."
@@ -3270,7 +3307,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.kubernetesconfiguration-extension.{0}.{1}', replace('0.3.7', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.kubernetesconfiguration-extension.{0}.{1}', replace('0.3.8', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3314,6 +3351,9 @@
               "apiVersion": "2024-11-01",
               "scope": "[format('Microsoft.Kubernetes/connectedClusters/{0}', parameters('clusterName'))]",
               "name": "[parameters('name')]",
+              "identity": {
+                "type": "SystemAssigned"
+              },
               "properties": "[variables('extensionProperties')]"
             },
             "fluxConfiguration": {
@@ -3373,7 +3413,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "12539210087808678828"
+                      "templateHash": "12743785390507267340"
                     },
                     "name": "Kubernetes Configuration Flux Configurations",
                     "description": "This module deploys a Kubernetes Configuration Flux Configuration."
@@ -3501,13 +3541,10 @@
                     },
                     "reconciliationWaitDuration": {
                       "type": "string",
+                      "nullable": true,
                       "metadata": {
-                        "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/reconciliationWaitDuration"
-                        },
                         "description": "Optional. Reconciliation wait duration (ISO 8601 format)."
-                      },
-                      "nullable": true
+                      }
                     },
                     "suspend": {
                       "type": "bool",
@@ -3537,7 +3574,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.kubernetesconfiguration-fluxconfig.{0}.{1}', replace('0.3.7', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.kubernetesconfiguration-fluxconfig.{0}.{1}', replace('0.3.8', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {

@@ -1914,6 +1914,7 @@ Properties of the primary agent pool.
 | [`enableVTPM`](#parameter-primaryagentpoolprofilesenablevtpm) | bool | vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch. |
 | [`gpuInstanceProfile`](#parameter-primaryagentpoolprofilesgpuinstanceprofile) | string | The GPU instance profile of the agent pool. |
 | [`kubeletDiskType`](#parameter-primaryagentpoolprofileskubeletdisktype) | string | The kubelet disk type of the agent pool. |
+| [`linuxOSConfig`](#parameter-primaryagentpoolprofileslinuxosconfig) | object | The Linux OS configuration of the agent pool. |
 | [`maxCount`](#parameter-primaryagentpoolprofilesmaxcount) | int | The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
 | [`maxPods`](#parameter-primaryagentpoolprofilesmaxpods) | int | The maximum number of pods that can run on a node. |
 | [`maxSurge`](#parameter-primaryagentpoolprofilesmaxsurge) | string | The maximum number of nodes that can be created during an upgrade. |
@@ -1935,10 +1936,12 @@ Properties of the primary agent pool.
 | [`scaleSetPriority`](#parameter-primaryagentpoolprofilesscalesetpriority) | string | The scale set priority of the agent pool. |
 | [`sourceResourceId`](#parameter-primaryagentpoolprofilessourceresourceid) | string | The source resource ID to create the agent pool from. |
 | [`spotMaxPrice`](#parameter-primaryagentpoolprofilesspotmaxprice) | int | The spot max price of the agent pool. |
+| [`sshAccess`](#parameter-primaryagentpoolprofilessshaccess) | string | SSH access method of an agent pool. |
 | [`tags`](#parameter-primaryagentpoolprofilestags) | object | The tags of the agent pool. |
 | [`type`](#parameter-primaryagentpoolprofilestype) | string | The type of the agent pool. |
 | [`vmSize`](#parameter-primaryagentpoolprofilesvmsize) | string | The VM size of the agent pool. |
 | [`vnetSubnetResourceId`](#parameter-primaryagentpoolprofilesvnetsubnetresourceid) | string | The VNet subnet ID of the agent pool. |
+| [`windowsProfile`](#parameter-primaryagentpoolprofileswindowsprofile) | object | The Windows profile of the agent pool. |
 | [`workloadRuntime`](#parameter-primaryagentpoolprofilesworkloadruntime) | string | The workload runtime of the agent pool. |
 
 ### Parameter: `primaryAgentPoolProfiles.name`
@@ -2041,6 +2044,13 @@ The kubelet disk type of the agent pool.
 
 - Required: No
 - Type: string
+
+### Parameter: `primaryAgentPoolProfiles.linuxOSConfig`
+
+The Linux OS configuration of the agent pool.
+
+- Required: No
+- Type: object
 
 ### Parameter: `primaryAgentPoolProfiles.maxCount`
 
@@ -2225,6 +2235,20 @@ The spot max price of the agent pool.
 - Required: No
 - Type: int
 
+### Parameter: `primaryAgentPoolProfiles.sshAccess`
+
+SSH access method of an agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'LocalUser'
+  ]
+  ```
+
 ### Parameter: `primaryAgentPoolProfiles.tags`
 
 The tags of the agent pool.
@@ -2259,6 +2283,13 @@ The VNet subnet ID of the agent pool.
 
 - Required: No
 - Type: string
+
+### Parameter: `primaryAgentPoolProfiles.windowsProfile`
+
+The Windows profile of the agent pool.
+
+- Required: No
+- Type: object
 
 ### Parameter: `primaryAgentPoolProfiles.workloadRuntime`
 
@@ -2399,6 +2430,7 @@ Define one or more secondary/additional agent pools.
 | [`enableVTPM`](#parameter-agentpoolsenablevtpm) | bool | vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch. |
 | [`gpuInstanceProfile`](#parameter-agentpoolsgpuinstanceprofile) | string | The GPU instance profile of the agent pool. |
 | [`kubeletDiskType`](#parameter-agentpoolskubeletdisktype) | string | The kubelet disk type of the agent pool. |
+| [`linuxOSConfig`](#parameter-agentpoolslinuxosconfig) | object | The Linux OS configuration of the agent pool. |
 | [`maxCount`](#parameter-agentpoolsmaxcount) | int | The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
 | [`maxPods`](#parameter-agentpoolsmaxpods) | int | The maximum number of pods that can run on a node. |
 | [`maxSurge`](#parameter-agentpoolsmaxsurge) | string | The maximum number of nodes that can be created during an upgrade. |
@@ -2420,10 +2452,12 @@ Define one or more secondary/additional agent pools.
 | [`scaleSetPriority`](#parameter-agentpoolsscalesetpriority) | string | The scale set priority of the agent pool. |
 | [`sourceResourceId`](#parameter-agentpoolssourceresourceid) | string | The source resource ID to create the agent pool from. |
 | [`spotMaxPrice`](#parameter-agentpoolsspotmaxprice) | int | The spot max price of the agent pool. |
+| [`sshAccess`](#parameter-agentpoolssshaccess) | string | SSH access method of an agent pool. |
 | [`tags`](#parameter-agentpoolstags) | object | The tags of the agent pool. |
 | [`type`](#parameter-agentpoolstype) | string | The type of the agent pool. |
 | [`vmSize`](#parameter-agentpoolsvmsize) | string | The VM size of the agent pool. |
 | [`vnetSubnetResourceId`](#parameter-agentpoolsvnetsubnetresourceid) | string | The VNet subnet ID of the agent pool. |
+| [`windowsProfile`](#parameter-agentpoolswindowsprofile) | object | The Windows profile of the agent pool. |
 | [`workloadRuntime`](#parameter-agentpoolsworkloadruntime) | string | The workload runtime of the agent pool. |
 
 ### Parameter: `agentPools.name`
@@ -2526,6 +2560,13 @@ The kubelet disk type of the agent pool.
 
 - Required: No
 - Type: string
+
+### Parameter: `agentPools.linuxOSConfig`
+
+The Linux OS configuration of the agent pool.
+
+- Required: No
+- Type: object
 
 ### Parameter: `agentPools.maxCount`
 
@@ -2710,6 +2751,20 @@ The spot max price of the agent pool.
 - Required: No
 - Type: int
 
+### Parameter: `agentPools.sshAccess`
+
+SSH access method of an agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'LocalUser'
+  ]
+  ```
+
 ### Parameter: `agentPools.tags`
 
 The tags of the agent pool.
@@ -2744,6 +2799,13 @@ The VNet subnet ID of the agent pool.
 
 - Required: No
 - Type: string
+
+### Parameter: `agentPools.windowsProfile`
+
+The Windows profile of the agent pool.
+
+- Required: No
+- Type: object
 
 ### Parameter: `agentPools.workloadRuntime`
 
@@ -4321,7 +4383,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/kubernetes-configuration/extension:0.3.7` | Remote reference |
+| `br/public:avm/res/kubernetes-configuration/extension:0.3.8` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
