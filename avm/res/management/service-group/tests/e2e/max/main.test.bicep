@@ -45,11 +45,6 @@ module testDeployment '../../../main.bicep' = [
           roleDefinitionIdOrName: 'Service Group Reader'
         }
       ]
-      tags: {
-        environment: 'e2e'
-        module: 'service-group'
-        'test-scenario': 'max'
-      }
     }
   }
 ]

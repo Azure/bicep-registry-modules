@@ -15,9 +15,6 @@ param parentResourceId string?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Tags of the resource.')
-param tags object?
-
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
@@ -86,7 +83,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
 
 resource serviceGroup 'Microsoft.Management/serviceGroups@2024-02-01-preview' = {
   name: name
-  tags: tags
   properties: {
     displayName: displayName ?? name
     parent: {

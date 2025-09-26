@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "4705899720521679224"
+      "templateHash": "11102961847246225187"
     },
     "name": "Service Groups",
     "description": "This module will allow you to create a service group and also associate resource to this service group, if you have permissions upon those resources."
@@ -153,13 +153,6 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
-    "tags": {
-      "type": "object",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Tags of the resource."
-      }
-    },
     "lock": {
       "$ref": "#/definitions/lockType",
       "nullable": true,
@@ -223,7 +216,6 @@
       "type": "Microsoft.Management/serviceGroups",
       "apiVersion": "2024-02-01-preview",
       "name": "[parameters('name')]",
-      "tags": "[parameters('tags')]",
       "properties": {
         "displayName": "[coalesce(parameters('displayName'), parameters('name'))]",
         "parent": {

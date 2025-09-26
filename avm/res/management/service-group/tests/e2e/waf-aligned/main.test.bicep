@@ -24,11 +24,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: 'sg-${namePrefix}-${serviceShort}-001'
       displayName: 'Service Group E2E Test WAF Aligned'
-      tags: {
-        environment: 'e2e'
-        module: 'service-group'
-        'test-scenario': 'waf-aligned'
-      }
     }
   }
 ]

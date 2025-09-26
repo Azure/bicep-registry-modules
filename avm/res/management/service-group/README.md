@@ -108,11 +108,6 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
         roleDefinitionIdOrName: 'Service Group Reader'
       }
     ]
-    tags: {
-      environment: 'e2e'
-      module: 'service-group'
-      'test-scenario': 'max'
-    }
   }
 }
 ```
@@ -147,13 +142,6 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
           "roleDefinitionIdOrName": "Service Group Reader"
         }
       ]
-    },
-    "tags": {
-      "value": {
-        "environment": "e2e",
-        "module": "service-group",
-        "test-scenario": "max"
-      }
     }
   }
 }
@@ -180,11 +168,6 @@ param roleAssignments = [
     roleDefinitionIdOrName: 'Service Group Reader'
   }
 ]
-param tags = {
-  environment: 'e2e'
-  module: 'service-group'
-  'test-scenario': 'max'
-}
 ```
 
 </details>
@@ -207,11 +190,6 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
     name: 'sg-msgwaf-001'
     // Non-required parameters
     displayName: 'Service Group E2E Test WAF Aligned'
-    tags: {
-      environment: 'e2e'
-      module: 'service-group'
-      'test-scenario': 'waf-aligned'
-    }
   }
 }
 ```
@@ -235,13 +213,6 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
     // Non-required parameters
     "displayName": {
       "value": "Service Group E2E Test WAF Aligned"
-    },
-    "tags": {
-      "value": {
-        "environment": "e2e",
-        "module": "service-group",
-        "test-scenario": "waf-aligned"
-      }
     }
   }
 }
@@ -261,11 +232,6 @@ using 'br/public:avm/res/management/service-group:<version>'
 param name = 'sg-msgwaf-001'
 // Non-required parameters
 param displayName = 'Service Group E2E Test WAF Aligned'
-param tags = {
-  environment: 'e2e'
-  module: 'service-group'
-  'test-scenario': 'waf-aligned'
-}
 ```
 
 </details>
@@ -288,7 +254,6 @@ param tags = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`parentResourceId`](#parameter-parentresourceid) | string | The parent service group resource ID, e.g. "/providers/Microsoft.Management/serviceGroups/<name>", of the service group to create. If not provided, the service group will be created under the root service group, e.g. "/providers/Microsoft.Management/serviceGroups/<TENANT ID>". |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `name`
 
@@ -468,13 +433,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-
-### Parameter: `tags`
-
-Tags of the resource.
-
-- Required: No
-- Type: object
 
 ## Outputs
 
