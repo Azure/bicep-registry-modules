@@ -114,7 +114,7 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   params: {
     databaseType: 'CosmosDB'
     location: '<location>'
-    solutionName: 'scwydsmin001'
+    solutionName: 'sacwydcssmin001'
   }
 }
 ```
@@ -138,7 +138,7 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
       "value": "<location>"
     },
     "solutionName": {
-      "value": "scwydsmin001"
+      "value": "sacwydcssmin001"
     }
   }
 }
@@ -156,7 +156,7 @@ using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
 
 param databaseType = 'CosmosDB'
 param location = '<location>'
-param solutionName = 'scwydsmin001'
+param solutionName = 'sacwydcssmin001'
 ```
 
 </details>
