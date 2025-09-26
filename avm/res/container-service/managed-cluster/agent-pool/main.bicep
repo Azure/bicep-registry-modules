@@ -133,6 +133,13 @@ param enableSecureBoot bool = false
 @description('Optional. vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.')
 param enableVTPM bool = false
 
+@description('Optional. SSH access method of an agent pool.')
+@allowed([
+  'Disabled'
+  'LocalUser'
+])
+param sshAccess string?
+
 @description('Optional. Possible values are any decimal value greater than zero or -1 which indicates the willingness to pay any on-demand price. For more details on spot pricing, see spot VMs pricing (https://learn.microsoft.com/en-us/azure/virtual-machines/spot-vms#pricing).')
 param spotMaxPrice int?
 
@@ -161,7 +168,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-05-02-p
   name: managedClusterName
 }
 
-resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2025-05-01' = {
+resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2025-05-02-preview' = {
   name: name
   parent: managedCluster
   properties: {
@@ -200,6 +207,7 @@ resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2025-0
     securityProfile: {
       enableSecureBoot: enableSecureBoot
       enableVTPM: enableVTPM
+      sshAccess: sshAccess
     }
     spotMaxPrice: spotMaxPrice
     tags: tags

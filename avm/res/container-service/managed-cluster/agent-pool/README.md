@@ -12,7 +12,7 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.ContainerService/managedClusters/agentPools` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters_agentpools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2025-05-01/managedClusters/agentPools)</li></ul> |
+| `Microsoft.ContainerService/managedClusters/agentPools` | 2025-05-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters_agentpools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2025-05-02-preview/managedClusters/agentPools)</li></ul> |
 
 ## Parameters
 
@@ -64,6 +64,7 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 | [`scaleSetPriority`](#parameter-scalesetpriority) | string | The Virtual Machine Scale Set priority. |
 | [`sourceResourceId`](#parameter-sourceresourceid) | string | This is the ARM ID of the source object to be used to create the target object. |
 | [`spotMaxPrice`](#parameter-spotmaxprice) | int | Possible values are any decimal value greater than zero or -1 which indicates the willingness to pay any on-demand price. For more details on spot pricing, see spot VMs pricing (https://learn.microsoft.com/en-us/azure/virtual-machines/spot-vms#pricing). |
+| [`sshAccess`](#parameter-sshaccess) | string | SSH access method of an agent pool. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`type`](#parameter-type) | string | The type of Agent Pool. |
 | [`vmSize`](#parameter-vmsize) | string | VM size. VM size availability varies by region. If a node contains insufficient compute resources (memory, cpu, etc) pods might fail to run correctly. For more details on restricted VM sizes, see: /azure/aks/quotas-skus-regions. |
@@ -650,6 +651,20 @@ Possible values are any decimal value greater than zero or -1 which indicates th
 
 - Required: No
 - Type: int
+
+### Parameter: `sshAccess`
+
+SSH access method of an agent pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'LocalUser'
+  ]
+  ```
 
 ### Parameter: `tags`
 

@@ -989,6 +989,9 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
       scaleDownMode: agentPool.?scaleDownMode
       scaleSetEvictionPolicy: agentPool.?scaleSetEvictionPolicy
       scaleSetPriority: agentPool.?scaleSetPriority
+      enableSecureBoot: agentPool.?enableSecureBoot
+      enableVTPM: agentPool.?enableVTPM
+      sshAccess: skuName == 'Automatic' ? 'Disabled' : 'LocalUser'
       spotMaxPrice: agentPool.?spotMaxPrice
       tags: agentPool.?tags ?? tags
       type: agentPool.?type
@@ -1074,11 +1077,15 @@ resource managedCluster_roleAssignments 'Microsoft.Authorization/roleAssignments
   }
 ]
 
-resource dnsZone 'Microsoft.Network/dnsZones@2018-05-01' existing = if (enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
+resource dnsZone 'Microsoft.Network/dnsZones@2018-05-01' existing = if (publicNetworkAccess != 'Disabled' && enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
   name: last(split((!empty(dnsZoneResourceId) ? any(dnsZoneResourceId) : '/dummmyZone'), '/'))!
 }
 
-resource dnsZone_roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
+resource privateDnsZone 'Microsoft.Network/privateDnsZones@2024-06-01' existing = if (publicNetworkAccess == 'Disabled' && enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
+  name: last(split((!empty(dnsZoneResourceId) ? any(dnsZoneResourceId) : '/dummmyZone'), '/'))
+}
+
+resource dnsZone_roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (publicNetworkAccess != 'Disabled' && enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
   name: guid(
     dnsZone.id,
     subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314'),
@@ -1093,6 +1100,23 @@ resource dnsZone_roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04
     principalType: 'ServicePrincipal'
   }
   scope: dnsZone
+}
+
+resource privateDnsZone_roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (publicNetworkAccess == 'Disabled' && enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
+  name: guid(
+    privateDnsZone.id,
+    subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314'),
+    'DNS Zone Contributor'
+  )
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'befefa01-2a29-4197-83a8-272ff33ce314'
+    ) // 'DNS Zone Contributor'
+    principalId: managedCluster.properties.ingressProfile.webAppRouting.identity.objectId
+    principalType: 'ServicePrincipal'
+  }
+  scope: privateDnsZone
 }
 
 @description('The resource ID of the managed cluster.')

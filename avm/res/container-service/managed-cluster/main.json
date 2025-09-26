@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "12457979883223813620"
+      "templateHash": "9073955465913669499"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -2124,18 +2124,40 @@
       ]
     },
     "dnsZone": {
-      "condition": "[and(and(equals(parameters('enableDnsZoneContributorRoleAssignment'), true()), not(equals(parameters('dnsZoneResourceId'), null()))), parameters('webApplicationRoutingEnabled'))]",
+      "condition": "[and(and(and(not(equals(parameters('publicNetworkAccess'), 'Disabled')), equals(parameters('enableDnsZoneContributorRoleAssignment'), true())), not(equals(parameters('dnsZoneResourceId'), null()))), parameters('webApplicationRoutingEnabled'))]",
       "existing": true,
       "type": "Microsoft.Network/dnsZones",
       "apiVersion": "2018-05-01",
       "name": "[last(split(if(not(empty(parameters('dnsZoneResourceId'))), parameters('dnsZoneResourceId'), '/dummmyZone'), '/'))]"
     },
+    "privateDnsZone": {
+      "condition": "[and(and(and(equals(parameters('publicNetworkAccess'), 'Disabled'), equals(parameters('enableDnsZoneContributorRoleAssignment'), true())), not(equals(parameters('dnsZoneResourceId'), null()))), parameters('webApplicationRoutingEnabled'))]",
+      "existing": true,
+      "type": "Microsoft.Network/privateDnsZones",
+      "apiVersion": "2024-06-01",
+      "name": "[last(split(if(not(empty(parameters('dnsZoneResourceId'))), parameters('dnsZoneResourceId'), '/dummmyZone'), '/'))]"
+    },
     "dnsZone_roleAssignment": {
-      "condition": "[and(and(equals(parameters('enableDnsZoneContributorRoleAssignment'), true()), not(equals(parameters('dnsZoneResourceId'), null()))), parameters('webApplicationRoutingEnabled'))]",
+      "condition": "[and(and(and(not(equals(parameters('publicNetworkAccess'), 'Disabled')), equals(parameters('enableDnsZoneContributorRoleAssignment'), true())), not(equals(parameters('dnsZoneResourceId'), null()))), parameters('webApplicationRoutingEnabled'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.Network/dnsZones/{0}', last(split(if(not(empty(parameters('dnsZoneResourceId'))), parameters('dnsZoneResourceId'), '/dummmyZone'), '/')))]",
       "name": "[guid(resourceId('Microsoft.Network/dnsZones', last(split(if(not(empty(parameters('dnsZoneResourceId'))), parameters('dnsZoneResourceId'), '/dummmyZone'), '/'))), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314'), 'DNS Zone Contributor')]",
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314')]",
+        "principalId": "[reference('managedCluster').ingressProfile.webAppRouting.identity.objectId]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "managedCluster"
+      ]
+    },
+    "privateDnsZone_roleAssignment": {
+      "condition": "[and(and(and(equals(parameters('publicNetworkAccess'), 'Disabled'), equals(parameters('enableDnsZoneContributorRoleAssignment'), true())), not(equals(parameters('dnsZoneResourceId'), null()))), parameters('webApplicationRoutingEnabled'))]",
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.Network/privateDnsZones/{0}', last(split(if(not(empty(parameters('dnsZoneResourceId'))), parameters('dnsZoneResourceId'), '/dummmyZone'), '/')))]",
+      "name": "[guid(resourceId('Microsoft.Network/privateDnsZones', last(split(if(not(empty(parameters('dnsZoneResourceId'))), parameters('dnsZoneResourceId'), '/dummmyZone'), '/'))), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314'), 'DNS Zone Contributor')]",
       "properties": {
         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314')]",
         "principalId": "[reference('managedCluster').ingressProfile.webAppRouting.identity.objectId]",
@@ -2342,6 +2364,13 @@
           "scaleSetPriority": {
             "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'scaleSetPriority')]"
           },
+          "enableSecureBoot": {
+            "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'enableSecureBoot')]"
+          },
+          "enableVTPM": {
+            "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'enableVTPM')]"
+          },
+          "sshAccess": "[if(equals(parameters('skuName'), 'Automatic'), createObject('value', 'Disabled'), createObject('value', 'LocalUser'))]",
           "spotMaxPrice": {
             "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'spotMaxPrice')]"
           },
@@ -2372,7 +2401,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "1961615154104198995"
+              "templateHash": "7307239860984477483"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
@@ -2897,6 +2926,17 @@
                 "description": "Optional. vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch."
               }
             },
+            "sshAccess": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "Disabled",
+                "LocalUser"
+              ],
+              "metadata": {
+                "description": "Optional. SSH access method of an agent pool."
+              }
+            },
             "spotMaxPrice": {
               "type": "int",
               "nullable": true,
@@ -2963,7 +3003,7 @@
             },
             "agentPool": {
               "type": "Microsoft.ContainerService/managedClusters/agentPools",
-              "apiVersion": "2025-05-01",
+              "apiVersion": "2025-05-02-preview",
               "name": "[format('{0}/{1}', parameters('managedClusterName'), parameters('name'))]",
               "properties": {
                 "availabilityZones": "[map(coalesce(parameters('availabilityZones'), createArray()), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
@@ -2996,7 +3036,8 @@
                 "scaleSetPriority": "[parameters('scaleSetPriority')]",
                 "securityProfile": {
                   "enableSecureBoot": "[parameters('enableSecureBoot')]",
-                  "enableVTPM": "[parameters('enableVTPM')]"
+                  "enableVTPM": "[parameters('enableVTPM')]",
+                  "sshAccess": "[parameters('sshAccess')]"
                 },
                 "spotMaxPrice": "[parameters('spotMaxPrice')]",
                 "tags": "[parameters('tags')]",
