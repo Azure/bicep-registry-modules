@@ -161,7 +161,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09
   )
 }
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-preview' = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-preview' = {
   name: name
   location: location
   tags: tags
@@ -176,8 +176,8 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
           ...(!empty(appLogsConfiguration.?logAnalyticsWorkspaceResourceId)
             ? {
                 logAnalyticsConfiguration: {
-                  customerId: logAnalyticsWorkspace.properties.customerId
-                  sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
+                  customerId: logAnalyticsWorkspace!.properties.customerId
+                  sharedKey: logAnalyticsWorkspace!.listKeys().primarySharedKey
                 }
               }
             : {})
