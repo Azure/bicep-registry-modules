@@ -18,6 +18,7 @@ This module will allow you to create a service group and also associate resource
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Management/serviceGroups` | 2024-02-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.management_servicegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Management/2024-02-01-preview/serviceGroups)</li></ul> |
+| `Microsoft.Relationships/serviceGroupMember` | 2023-09-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.relationships_servicegroupmember.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Relationships/2023-09-01-preview/serviceGroupMember)</li></ul> |
 
 ## Usage examples
 
@@ -101,7 +102,7 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
     name: 'sg-msgmax-001'
     // Non-required parameters
     displayName: 'Service Group E2E Test Maximum Configuration'
-    parentResourceId: '<parentResourceId>'
+    parentServiceGroupResourceId: '<parentServiceGroupResourceId>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -132,8 +133,8 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
     "displayName": {
       "value": "Service Group E2E Test Maximum Configuration"
     },
-    "parentResourceId": {
-      "value": "<parentResourceId>"
+    "parentServiceGroupResourceId": {
+      "value": "<parentServiceGroupResourceId>"
     },
     "roleAssignments": {
       "value": [
@@ -161,7 +162,7 @@ using 'br/public:avm/res/management/service-group:<version>'
 param name = 'sg-msgmax-001'
 // Non-required parameters
 param displayName = 'Service Group E2E Test Maximum Configuration'
-param parentResourceId = '<parentResourceId>'
+param parentServiceGroupResourceId = '<parentServiceGroupResourceId>'
 param roleAssignments = [
   {
     principalId: '<principalId>'
@@ -252,8 +253,9 @@ param displayName = 'Service Group E2E Test WAF Aligned'
 | [`displayName`](#parameter-displayname) | string | Display name of the service group to create. If not provided, the name parameter input value will be used. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`parentResourceId`](#parameter-parentresourceid) | string | The parent service group resource ID, e.g. "/providers/Microsoft.Management/serviceGroups/<name>", of the service group to create. If not provided, the service group will be created under the root service group, e.g. "/providers/Microsoft.Management/serviceGroups/<TENANT ID>". |
+| [`parentServiceGroupResourceId`](#parameter-parentservicegroupresourceid) | string | The parent service group resource ID, e.g. "/providers/Microsoft.Management/serviceGroups/<name>", of the service group to create. If not provided, the service group will be created under the root service group, e.g. "/providers/Microsoft.Management/serviceGroups/<TENANT ID>". |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`subscriptionIdsToAssociateToServiceGroup`](#parameter-subscriptionidstoassociatetoservicegroup) | array | An array of subscription IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target subscriptions. |
 
 ### Parameter: `name`
 
@@ -321,7 +323,7 @@ Specify the notes of the lock.
 - Required: No
 - Type: string
 
-### Parameter: `parentResourceId`
+### Parameter: `parentServiceGroupResourceId`
 
 The parent service group resource ID, e.g. "/providers/Microsoft.Management/serviceGroups/<name>", of the service group to create. If not provided, the service group will be created under the root service group, e.g. "/providers/Microsoft.Management/serviceGroups/<TENANT ID>".
 
@@ -433,6 +435,14 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `subscriptionIdsToAssociateToServiceGroup`
+
+An array of subscription IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target subscriptions.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ## Outputs
 

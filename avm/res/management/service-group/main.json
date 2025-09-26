@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "11102961847246225187"
+      "templateHash": "15699628318962356618"
     },
     "name": "Service Groups",
     "description": "This module will allow you to create a service group and also associate resource to this service group, if you have permissions upon those resources."
@@ -139,11 +139,18 @@
         "description": "Optional. Display name of the service group to create. If not provided, the name parameter input value will be used."
       }
     },
-    "parentResourceId": {
+    "parentServiceGroupResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
         "description": "Optional. The parent service group resource ID, e.g. \"/providers/Microsoft.Management/serviceGroups/<name>\", of the service group to create. If not provided, the service group will be created under the root service group, e.g. \"/providers/Microsoft.Management/serviceGroups/<TENANT ID>\"."
+      }
+    },
+    "subscriptionIdsToAssociateToServiceGroup": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. An array of subscription IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target subscriptions."
       }
     },
     "enableTelemetry": {
@@ -219,7 +226,7 @@
       "properties": {
         "displayName": "[coalesce(parameters('displayName'), parameters('name'))]",
         "parent": {
-          "resourceId": "[coalesce(parameters('parentResourceId'), format('/providers/Microsoft.Management/serviceGroups/{0}', tenant().tenantId))]"
+          "resourceId": "[coalesce(parameters('parentServiceGroupResourceId'), format('/providers/Microsoft.Management/serviceGroups/{0}', tenant().tenantId))]"
         }
       }
     },
@@ -254,6 +261,63 @@
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
         "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+      },
+      "dependsOn": [
+        "serviceGroup"
+      ]
+    },
+    "serviceGroup_subscriptionMember": {
+      "copy": {
+        "name": "serviceGroup_subscriptionMember",
+        "count": "[length(parameters('subscriptionIdsToAssociateToServiceGroup'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('serviceGroup_subscriptionMember-{0}-{1}', copyIndex(), uniqueString('serviceGroup_subscriptionMember', deployment().name))]",
+      "subscriptionId": "[parameters('subscriptionIdsToAssociateToServiceGroup')[copyIndex()]]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "serviceGroupResourceId": {
+            "value": "[tenantResourceId('Microsoft.Management/serviceGroups', parameters('name'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.37.4.10188",
+              "templateHash": "12154916338204024650"
+            }
+          },
+          "parameters": {
+            "serviceGroupResourceId": {
+              "type": "string",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Relationships/serviceGroupMember@2023-09-01-preview#properties/properties/properties/targetId"
+                },
+                "description": "Required. The resource ID of the service group to which the subscription will be associated to."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Relationships/serviceGroupMember",
+              "apiVersion": "2023-09-01-preview",
+              "name": "[guid(subscription().subscriptionId, parameters('serviceGroupResourceId'))]",
+              "properties": {
+                "targetId": "[parameters('serviceGroupResourceId')]"
+              }
+            }
+          ]
+        }
       },
       "dependsOn": [
         "serviceGroup"

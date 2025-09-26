@@ -38,7 +38,8 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: 'sg-${namePrefix}-${serviceShort}-001'
       displayName: 'Service Group E2E Test Maximum Configuration'
-      parentResourceId: serviceGroupDependency.id
+      parentServiceGroupResourceId: serviceGroupDependency.id
+      subscriptionIdsToAssociateToServiceGroup: []
       roleAssignments: [
         {
           principalId: deployer().objectId

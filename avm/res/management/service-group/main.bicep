@@ -10,7 +10,10 @@ param name string
 param displayName string?
 
 @description('Optional. The parent service group resource ID, e.g. "/providers/Microsoft.Management/serviceGroups/<name>", of the service group to create. If not provided, the service group will be created under the root service group, e.g. "/providers/Microsoft.Management/serviceGroups/<TENANT ID>".')
-param parentResourceId string?
+param parentServiceGroupResourceId string?
+
+@description('Optional. An array of subscription IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target subscriptions.')
+param subscriptionIdsToAssociateToServiceGroup array = []
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -24,7 +27,6 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 param roleAssignments roleAssignmentType[]?
 
 var builtInRoleNames = {
-  // Add other relevant built-in roles here for your resource as per BCPNFR5
   Contributor: tenantResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: tenantResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: tenantResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
@@ -86,10 +88,19 @@ resource serviceGroup 'Microsoft.Management/serviceGroups@2024-02-01-preview' = 
   properties: {
     displayName: displayName ?? name
     parent: {
-      resourceId: parentResourceId ?? '/providers/Microsoft.Management/serviceGroups/${tenant().tenantId}'
+      resourceId: parentServiceGroupResourceId ?? '/providers/Microsoft.Management/serviceGroups/${tenant().tenantId}'
     }
   }
 }
+
+module serviceGroup_subscriptionMember 'modules/subscriptionMember.bicep' = [
+  for sub in subscriptionIdsToAssociateToServiceGroup: {
+    scope: subscription(sub)
+    params: {
+      serviceGroupResourceId: serviceGroup.id
+    }
+  }
+]
 
 resource serviceGroup_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
