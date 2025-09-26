@@ -47,7 +47,7 @@ param gpuInstanceProfile string?
 param kubeletDiskType string?
 
 @description('Optional. Linux OS configuration.')
-param linuxOSConfig linuxOSConfigType?
+param linuxOSConfig linuxOSConfigType
 
 @description('Optional. The maximum number of nodes for auto-scaling.')
 param maxCount int?
@@ -162,7 +162,7 @@ param vnetSubnetResourceId string?
 param workloadRuntime string?
 
 @description('Optional. Windows OS configuration.')
-param windowsProfile windowsProfileType?
+param windowsProfile windowsProfileType
 
 resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-05-02-preview' existing = {
   name: managedClusterName
