@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -58,8 +58,22 @@ module testDeployment '../../../main.bicep' = [
           hubAddressPrefix: '10.0.0.0/24'
           hubLocation: resourceLocation
           hubName: 'dep-${namePrefix}-hub-${resourceLocation}-${serviceShort}'
-          deploySecureHub: true
+          p2sVpnParameters: {
+            deployP2SVpnGateway: false
+            connectionConfigurationsName: 'default'
+            vpnGatewayName: 'unused'
+            vpnClientAddressPoolAddressPrefixes: []
+          }
+          s2sVpnParameters: {
+            deployS2SVpnGateway: false
+            vpnGatewayName: 'unused'
+          }
+          expressRouteParameters: {
+            deployExpressRouteGateway: false
+            expressRouteGatewayName: 'unused'
+          }
           secureHubParameters: {
+            deploySecureHub: true
             firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
             azureFirewallName: 'dep-${namePrefix}-fw-${resourceLocation}-${serviceShort}'
             azureFirewallSku: 'Standard'
@@ -69,9 +83,6 @@ module testDeployment '../../../main.bicep' = [
               privateToFirewall: true
             }
           }
-          deployP2SVpnGateway: false
-          deployS2SVpnGateway: false
-          deployExpressRouteGateway: false
         }
       ]
     }

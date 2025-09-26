@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
-metadata description = 'This instance deploys a Virtual WAN with multiple Secure Hubs and most features enabled.'
+metadata description = 'This instance deploys the module with a large parameter set.'
 
 // ========== //
 // Parameters //
@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -60,129 +60,56 @@ module testDeployment '../../../main.bicep' = [
         type: 'Standard'
         p2sVpnParameters: {
           createP2sVpnServerConfiguration: true
-          p2sVpnServerConfigurationName: 'dep-${namePrefix}-p2svpn-${serviceShort}'
-          vpnAuthenticationTypes: [
-            'AAD'
-          ]
-          aadAudience: '11111111-1234-4321-1234-111111111111'
-          aadIssuer: 'https://sts.windows.net/11111111-1111-1111-1111-111111111111/'
-          aadTenant: '${environment().authentication.loginEndpoint}11111111-1111-1111-1111-111111111111'
-          vpnProtocols: 'OpenVPN'
+          p2sVpnServerConfigurationName: 'dep-${namePrefix}-p2s-${serviceShort}'
+          vpnAuthenticationTypes: ['AAD']
+          aadTenant: '${environment().authentication.loginEndpoint}tenant-id'
+          aadAudience: '41b23e61-6c1e-4545-b367-cd054e0ed4b4'
+          aadIssuer: 'https://sts.windows.net/tenant-id/'
+        }
+        tags: {
+          Environment: 'Test'
+          CostCenter: 'IT'
         }
       }
       virtualHubParameters: [
         {
           hubAddressPrefix: '10.0.0.0/24'
-          hubLocation: nestedDependencies.outputs.virtualNetwork1Location
-          hubName: 'dep-${namePrefix}-hub-${nestedDependencies.outputs.virtualHub1Location}-${serviceShort}'
-          deploySecureHub: true
-          secureHubParameters: {
-            firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
-            azureFirewallName: 'dep-${namePrefix}-fw-${nestedDependencies.outputs.virtualHub1Location}-${serviceShort}'
-            azureFirewallSku: 'Standard'
-            azureFirewallPublicIPCount: 1
-            routingIntent: {
-              internetToFirewall: true
-              privateToFirewall: true
-            }
-          }
-          hubVirtualNetworkConnections: [
-            {
-              name: nestedDependencies.outputs.virtualNetwork1Name
-              remoteVirtualNetworkResourceId: nestedDependencies.outputs.virtualNetwork1Id
-            }
-          ]
-          hubRoutingPreference: 'ASPath'
-          virtualRouterAsn: 65515
+          hubLocation: resourceLocation
+          hubName: 'dep-${namePrefix}-hub-${resourceLocation}-${serviceShort}'
           allowBranchToBranchTraffic: true
-          deployExpressRouteGateway: true
-          expressRouteParameters: {
-            expressRouteGatewayName: 'dep-${namePrefix}-ergw-${nestedDependencies.outputs.virtualHub1Location}-${serviceShort}'
-          }
-          deployS2SVpnGateway: true
-          s2sVpnParameters: {
-            vpnGatewayName: 'dep-${namePrefix}-s2svpngw-${nestedDependencies.outputs.virtualHub1Location}-${serviceShort}'
-            vpnGatewayScaleUnit: 1
-          }
-          deployP2SVpnGateway: true
+          hubRoutingPreference: 'VpnGateway'
           p2sVpnParameters: {
-            connectionConfigurationsName: 'P2SConnectionConfig'
-            vpnClientAddressPoolAddressPrefixes: [
-              '10.0.2.0/24'
-            ]
-            vpnGatewayName: 'dep-${namePrefix}-p2svpngw-${nestedDependencies.outputs.virtualHub1Location}-${serviceShort}'
+            deployP2SVpnGateway: true
+            vpnGatewayName: 'dep-${namePrefix}-p2s-gw-${serviceShort}'
+            connectionConfigurationsName: 'default'
+            vpnClientAddressPoolAddressPrefixes: ['192.168.1.0/24']
             vpnGatewayScaleUnit: 1
-            enableInternetSecurity: true
-            vpnGatewayAssociatedRouteTable: 'defaultRouteTable'
-            propagatedRouteTableNames: [
-              'defaultRouteTable'
-            ]
           }
-        }
-        {
-          hubAddressPrefix: '10.0.1.0/24'
-          hubLocation: 'westus2'
-          hubName: 'dep-${namePrefix}-hub-${nestedDependencies.outputs.virtualHub2Location}-${serviceShort}'
-          deploySecureHub: true
+          s2sVpnParameters: {
+            deployS2SVpnGateway: true
+            vpnGatewayName: 'dep-${namePrefix}-s2s-gw-${serviceShort}'
+            vpnGatewayScaleUnit: 1
+          }
+          expressRouteParameters: {
+            deployExpressRouteGateway: false
+            expressRouteGatewayName: 'unused'
+          }
           secureHubParameters: {
-            firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
-            azureFirewallName: 'dep-${namePrefix}-fw-${nestedDependencies.outputs.virtualHub2Location}-${serviceShort}'
+            deploySecureHub: false
+            azureFirewallName: 'unused'
             azureFirewallSku: 'Standard'
             azureFirewallPublicIPCount: 1
-            routingIntent: {
-              internetToFirewall: true
-              privateToFirewall: true
-            }
           }
-          hubVirtualNetworkConnections: [
-            {
-              name: nestedDependencies.outputs.virtualNetwork2Name
-              remoteVirtualNetworkResourceId: nestedDependencies.outputs.virtualNetwork2Id
-            }
-          ]
-          hubRoutingPreference: 'ASPath'
-          allowBranchToBranchTraffic: true
-          deployExpressRouteGateway: true
-          expressRouteParameters: {
-            expressRouteGatewayName: 'dep-${namePrefix}-ergw-${nestedDependencies.outputs.virtualHub2Location}-${serviceShort}'
+          tags: {
+            HubType: 'Transit'
           }
-          deployS2SVpnGateway: true
-          s2sVpnParameters: {
-            vpnGatewayName: 'dep-${namePrefix}-s2svpngw-${nestedDependencies.outputs.virtualHub2Location}-${serviceShort}'
-            vpnGatewayScaleUnit: 1
-            isRoutingPreferenceInternet: false
-            bgpSettings: {
-              asn: 65515
-              bgpPeeringAddresses: [
-                {
-                  ipconfigurationId: 'Instance0'
-                  customBgpIpAddresses: ['169.254.21.4', '169.254.21.5']
-                }
-              ]
-            }
-            natRules: [
-              {
-                name: 'dep-${namePrefix}-nat-rule-westus2-${serviceShort}'
-                mode: 'EgressSnat'
-                externalMappings: [
-                  {
-                    addressSpace: '172.16.20.0/24'
-                    portRange: '10000-20000'
-                  }
-                ]
-                internalMappings: [
-                  {
-                    addressSpace: '10.0.1.0/24'
-                    portRange: '10000-20000'
-                  }
-                ]
-                type: 'Dynamic'
-              }
-            ]
-          }
-          deployP2SVpnGateway: false
         }
       ]
+      tags: {
+        Environment: 'Test'
+        'hidden-title': 'This is visible in the resource name'
+        Purpose: 'Maximum functionality test'
+      }
     }
   }
 ]

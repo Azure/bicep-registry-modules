@@ -32,7 +32,7 @@ param virtualHub2Location string = 'westus2'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -64,8 +64,22 @@ module testDeployment '../../../main.bicep' = [
           hubAddressPrefix: '10.0.0.0/24'
           hubLocation: virtualHub1Location
           hubName: 'dep-${namePrefix}-hub-${virtualHub1Location}-${serviceShort}'
-          deploySecureHub: true
+          p2sVpnParameters: {
+            deployP2SVpnGateway: false
+            connectionConfigurationsName: 'default'
+            vpnGatewayName: 'unused'
+            vpnClientAddressPoolAddressPrefixes: []
+          }
+          s2sVpnParameters: {
+            deployS2SVpnGateway: false
+            vpnGatewayName: 'unused'
+          }
+          expressRouteParameters: {
+            deployExpressRouteGateway: false
+            expressRouteGatewayName: 'unused'
+          }
           secureHubParameters: {
+            deploySecureHub: true
             firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
             azureFirewallName: 'dep-${namePrefix}-fw-${virtualHub1Location}-${serviceShort}'
             azureFirewallSku: 'Standard'
@@ -75,16 +89,27 @@ module testDeployment '../../../main.bicep' = [
               privateToFirewall: true
             }
           }
-          deployP2SVpnGateway: false
-          deployS2SVpnGateway: false
-          deployExpressRouteGateway: false
         }
         {
           hubAddressPrefix: '10.0.1.0/24'
           hubLocation: virtualHub2Location
           hubName: 'dep-${namePrefix}-hub-${virtualHub2Location}-${serviceShort}'
-          deploySecureHub: true
+          p2sVpnParameters: {
+            deployP2SVpnGateway: false
+            connectionConfigurationsName: 'default'
+            vpnGatewayName: 'unused'
+            vpnClientAddressPoolAddressPrefixes: []
+          }
+          s2sVpnParameters: {
+            deployS2SVpnGateway: false
+            vpnGatewayName: 'unused'
+          }
+          expressRouteParameters: {
+            deployExpressRouteGateway: false
+            expressRouteGatewayName: 'unused'
+          }
           secureHubParameters: {
+            deploySecureHub: true
             firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
             azureFirewallName: 'dep-${namePrefix}-fw-${virtualHub2Location}-${serviceShort}'
             azureFirewallSku: 'Standard'
@@ -94,9 +119,6 @@ module testDeployment '../../../main.bicep' = [
               privateToFirewall: true
             }
           }
-          deployP2SVpnGateway: false
-          deployS2SVpnGateway: false
-          deployExpressRouteGateway: false
         }
       ]
     }

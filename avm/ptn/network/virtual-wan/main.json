@@ -5,11 +5,13 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "11141150027108570463"
+      "version": "0.37.4.10188",
+      "templateHash": "10332945443203298120"
     },
     "name": "Azure Virtual WAN",
-    "description": "This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways."
+    "description": "This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways.",
+    "owner": "Azure/module-maintainers",
+    "version": "0.1.0"
   },
   "definitions": {
     "virtualWanParameterType": {
@@ -183,7 +185,73 @@
         "roleAssignments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/roleAssignmentType"
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                }
+              },
+              "roleDefinitionIdOrName": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                }
+              },
+              "principalId": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                }
+              },
+              "principalType": {
+                "type": "string",
+                "allowedValues": [
+                  "Device",
+                  "ForeignGroup",
+                  "Group",
+                  "ServicePrincipal",
+                  "User"
+                ],
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The principal type of the assigned principal ID."
+                }
+              },
+              "description": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The description of the role assignment."
+                }
+              },
+              "condition": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                }
+              },
+              "conditionVersion": {
+                "type": "string",
+                "allowedValues": [
+                  "2.0"
+                ],
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Version of the condition."
+                }
+              },
+              "delegatedManagedIdentityResourceId": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The Resource Id of the delegated managed identity resource."
+                }
+              }
+            }
           },
           "nullable": true,
           "metadata": {
@@ -270,15 +338,15 @@
             "description": "Optional. The virtual network connections for the Virtual Hub."
           }
         },
-        "deployP2SVpnGateway": {
-          "type": "bool",
-          "metadata": {
-            "description": "Required. Whether to deploy a P2S VPN Gateway."
-          }
-        },
         "p2sVpnParameters": {
           "type": "object",
           "properties": {
+            "deployP2SVpnGateway": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Whether to deploy a P2S VPN Gateway."
+              }
+            },
             "connectionConfigurationsName": {
               "type": "string",
               "metadata": {
@@ -374,18 +442,18 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Conditional. Point-to-site VPN parameters for the Virtual Hub. Required if deployP2SVpnGateway is true."
-          }
-        },
-        "deployS2SVpnGateway": {
-          "type": "bool",
-          "metadata": {
-            "description": "Required. Whether to deploy a S2S VPN Gateway."
+            "description": "Optional. Point-to-site VPN parameters for the Virtual Hub."
           }
         },
         "s2sVpnParameters": {
           "type": "object",
           "properties": {
+            "deployS2SVpnGateway": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Whether to deploy a S2S VPN Gateway."
+              }
+            },
             "vpnGatewayName": {
               "type": "string",
               "metadata": {
@@ -400,7 +468,58 @@
               }
             },
             "bgpSettings": {
-              "$ref": "#/definitions/bgpSettingsType",
+              "type": "object",
+              "properties": {
+                "asn": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. ASN for BGP."
+                  }
+                },
+                "bgpPeeringAddress": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. BGP peering address."
+                  }
+                },
+                "bgpPeeringAddresses": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ipconfigurationId": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. IP configuration ID."
+                        }
+                      },
+                      "customBgpIpAddresses": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Custom BGP IP addresses."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. BGP peering addresses."
+                  }
+                },
+                "peerWeight": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Peer weight for BGP."
+                  }
+                }
+              },
               "nullable": true,
               "metadata": {
                 "description": "Optional. BGP settings for the VPN Gateway."
@@ -430,7 +549,80 @@
             "natRules": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/natRuleType"
+                "type": "object",
+                "properties": {
+                  "externalMappings": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "addressSpace": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. Address space for external mapping."
+                          }
+                        }
+                      }
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Required. External mappings for NAT rule."
+                    }
+                  },
+                  "internalMappings": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "addressSpace": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. Address space for internal mapping."
+                          }
+                        }
+                      }
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Required. Internal mappings for NAT rule."
+                    }
+                  },
+                  "mode": {
+                    "type": "string",
+                    "allowedValues": [
+                      "EgressSnat",
+                      "IngressSnat"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Required. Mode for NAT rule."
+                    }
+                  },
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Name of the NAT rule."
+                    }
+                  },
+                  "type": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Dynamic",
+                      "Static"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Required. Type of NAT rule."
+                    }
+                  },
+                  "ipConfigurationId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. IP configuration ID."
+                    }
+                  }
+                }
               },
               "nullable": true,
               "metadata": {
@@ -567,18 +759,18 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Conditional. Site-to-site VPN parameters for the Virtual Hub. Required if deployS2SVpnGateway is true."
-          }
-        },
-        "deployExpressRouteGateway": {
-          "type": "bool",
-          "metadata": {
-            "description": "Required. Whether to deploy an ExpressRoute Gateway."
+            "description": "Optional. Site-to-site VPN parameters for the Virtual Hub."
           }
         },
         "expressRouteParameters": {
           "type": "object",
           "properties": {
+            "deployExpressRouteGateway": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Whether to deploy an ExpressRoute Gateway."
+              }
+            },
             "expressRouteGatewayName": {
               "type": "string",
               "metadata": {
@@ -706,18 +898,18 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Conditional. ExpressRoute parameters for the Virtual Hub. Required if deployExpressRouteGateway is true."
-          }
-        },
-        "deploySecureHub": {
-          "type": "bool",
-          "metadata": {
-            "description": "Required. Whether to deploy a Secure Hub."
+            "description": "Optional. ExpressRoute parameters for the Virtual Hub."
           }
         },
         "secureHubParameters": {
           "type": "object",
           "properties": {
+            "deploySecureHub": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Whether to deploy a Secure Hub."
+              }
+            },
             "firewallPolicyResourceId": {
               "type": "string",
               "nullable": true,
@@ -832,7 +1024,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Conditional. Secure Hub parameters for the Virtual Hub. Required if deploySecureHub is true."
+            "description": "Optional. Secure Hub parameters for the Virtual Hub."
           }
         },
         "sku": {
@@ -866,156 +1058,6 @@
           "metadata": {
             "description": "Optional. IP addresses for the Virtual Router."
           }
-        }
-      }
-    },
-    "roleAssignmentType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-          }
-        },
-        "roleDefinitionIdOrName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-          }
-        },
-        "principalId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-          }
-        },
-        "principalType": {
-          "type": "string",
-          "allowedValues": [
-            "Device",
-            "ForeignGroup",
-            "Group",
-            "ServicePrincipal",
-            "User"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The principal type of the assigned principal ID."
-          }
-        },
-        "description": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The description of the role assignment."
-          }
-        },
-        "condition": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-          }
-        },
-        "conditionVersion": {
-          "type": "string",
-          "allowedValues": [
-            "2.0"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Version of the condition."
-          }
-        },
-        "delegatedManagedIdentityResourceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The Resource Id of the delegated managed identity resource."
-          }
-        }
-      }
-    },
-    "_1.vpnNatRuleMappingType": {
-      "type": "object",
-      "properties": {
-        "addressSpace": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Address space for VPN NAT rule mapping."
-          }
-        },
-        "portRange": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Port range for VPN NAT rule mapping."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/vpn-gateway:0.2.0"
-        },
-        "description": "The type for a VPN NAT rule mapping."
-      }
-    },
-    "bgpSettingsType": {
-      "type": "object",
-      "properties": {
-        "asn": {
-          "type": "int",
-          "minValue": 0,
-          "maxValue": 4294967295,
-          "metadata": {
-            "description": "Required. The BGP speaker's ASN (Autonomous System Number)."
-          }
-        },
-        "peerWeight": {
-          "type": "int",
-          "nullable": true,
-          "minValue": 0,
-          "maxValue": 100,
-          "metadata": {
-            "description": "Optional. The weight added to routes learned from this BGP speaker."
-          }
-        },
-        "bgpPeeringAddresses": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "ipconfigurationId": {
-                "type": "string",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. The IP configuration ID."
-                }
-              },
-              "customBgpIpAddresses": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. The custom BGP peering addresses."
-                }
-              }
-            }
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. BGP peering addresses for this VPN Gateway."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type of BGP settings for VPN Gateway.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/vpn-gateway:0.2.0"
         }
       }
     },
@@ -1137,7 +1179,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -1287,72 +1329,6 @@
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
-        }
-      }
-    },
-    "natRuleType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the NAT rule."
-          }
-        },
-        "externalMappings": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/_1.vpnNatRuleMappingType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. External mappings."
-          }
-        },
-        "internalMappings": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/_1.vpnNatRuleMappingType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Internal mappings."
-          }
-        },
-        "ipConfigurationId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. IP configuration ID."
-          }
-        },
-        "mode": {
-          "type": "string",
-          "allowedValues": [
-            "EgressSnat",
-            "IngressSnat"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. NAT rule mode."
-          }
-        },
-        "type": {
-          "type": "string",
-          "allowedValues": [
-            "Dynamic",
-            "Static"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. NAT rule type."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type of NAT rule for VPN Gateway.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/vpn-gateway:0.2.0"
         }
       }
     },
@@ -1547,13 +1523,20 @@
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags to be applied to all resources."
+      }
     }
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2024-11-01",
       "name": "[format('46d3xbcp.ptn.network-virtualwan.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -1599,7 +1582,7 @@
             "value": "[tryGet(parameters('virtualWanParameters'), 'roleAssignments')]"
           },
           "tags": {
-            "value": "[tryGet(parameters('virtualWanParameters'), 'tags')]"
+            "value": "[coalesce(parameters('tags'), tryGet(parameters('virtualWanParameters'), 'tags'))]"
           },
           "type": {
             "value": "[tryGet(parameters('virtualWanParameters'), 'type')]"
@@ -1959,7 +1942,7 @@
             "value": "[tryGet(parameters('virtualHubParameters')[copyIndex()], 'sku')]"
           },
           "tags": {
-            "value": "[tryGet(parameters('virtualHubParameters')[copyIndex()], 'tags')]"
+            "value": "[coalesce(parameters('tags'), tryGet(parameters('virtualHubParameters')[copyIndex()], 'tags'))]"
           },
           "virtualRouterAsn": {
             "value": "[tryGet(parameters('virtualHubParameters')[copyIndex()], 'virtualRouterAsn')]"
@@ -2807,7 +2790,7 @@
         "name": "firewallModule",
         "count": "[length(parameters('virtualHubParameters'))]"
       },
-      "condition": "[tryGet(parameters('virtualHubParameters')[copyIndex()], 'deploySecureHub')]",
+      "condition": "[tryGet(tryGet(parameters('virtualHubParameters')[copyIndex()], 'secureHubParameters'), 'deploySecureHub')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[tryGet(tryGet(parameters('virtualHubParameters')[copyIndex()], 'secureHubParameters'), 'azureFirewallName')]",
@@ -2854,6 +2837,9 @@
           "diagnosticSettings": {
             "value": "[tryGet(tryGet(parameters('virtualHubParameters')[copyIndex()], 'secureHubParameters'), 'diagnosticSettings')]"
           },
+          "tags": {
+            "value": "[coalesce(parameters('tags'), tryGet(parameters('virtualHubParameters')[copyIndex()], 'tags'))]"
+          },
           "lock": {
             "value": "[coalesce(parameters('lock'), createObject())]"
           }
@@ -2865,8 +2851,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "3706058764629825741"
+              "version": "0.36.177.2456",
+              "templateHash": "7418399657340143827"
             },
             "name": "Azure Firewalls",
             "description": "This module deploys an Azure Firewall."
@@ -3728,15 +3714,23 @@
                 "description": "Optional. The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default."
               }
             },
-            "zones": {
+            "availabilityZones": {
               "type": "array",
+              "items": {
+                "type": "int"
+              },
               "defaultValue": [
                 1,
                 2,
                 3
               ],
+              "allowedValues": [
+                1,
+                2,
+                3
+              ],
               "metadata": {
-                "description": "Optional. Zone numbers e.g. 1,2,3."
+                "description": "Optional. The list of Availability zones to use for the zone-redundant resources."
               }
             },
             "enableForcedTunneling": {
@@ -3833,7 +3827,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-azurefirewall.{0}.{1}', replace('0.7.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-azurefirewall.{0}.{1}', replace('0.8.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3854,7 +3848,7 @@
               "apiVersion": "2024-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
-              "zones": "[if(equals(length(parameters('zones')), 0), null(), parameters('zones'))]",
+              "zones": "[map(parameters('availabilityZones'), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
               "tags": "[parameters('tags')]",
               "properties": "[if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('threatIntelMode', parameters('threatIntelMode'), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'ipConfigurations', concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), reference('publicIPAddress').outputs.name.value), 'properties', union(if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('virtualNetworkResourceId')))), createObject()), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), reference('publicIPAddress').outputs.resourceId.value))), createObject())))), variables('additionalPublicIpConfigurationsVar')), 'managementIpConfiguration', if(variables('requiresManagementIp'), createObject('name', if(not(empty(parameters('managementIPResourceID'))), last(split(parameters('managementIPResourceID'), '/')), reference('managementIPAddress').outputs.name.value), 'properties', createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallManagementSubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(parameters('managementIPResourceID'))), parameters('managementIPResourceID'), reference('managementIPAddress').outputs.resourceId.value)))), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'applicationRuleCollections', coalesce(parameters('applicationRuleCollections'), createArray()), 'natRuleCollections', coalesce(parameters('natRuleCollections'), createArray()), 'networkRuleCollections', coalesce(parameters('networkRuleCollections'), createArray())), createObject('autoscaleConfiguration', createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'hubIPAddresses', if(not(empty(parameters('hubIPAddresses'))), parameters('hubIPAddresses'), null()), 'virtualHub', if(not(empty(parameters('virtualHubResourceId'))), createObject('id', parameters('virtualHubResourceId')), null())))]",
               "dependsOn": [
@@ -3971,7 +3965,7 @@
                     "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'tags'), parameters('tags'))]"
                   },
                   "zones": {
-                    "value": "[parameters('zones')]"
+                    "value": "[parameters('availabilityZones')]"
                   },
                   "enableTelemetry": {
                     "value": "[variables('enableReferencedModulesTelemetry')]"
@@ -4677,7 +4671,7 @@
                     "value": "[coalesce(tryGet(parameters('managementIPAddressObject'), 'tags'), parameters('tags'))]"
                   },
                   "zones": {
-                    "value": "[parameters('zones')]"
+                    "value": "[parameters('availabilityZones')]"
                   },
                   "enableTelemetry": {
                     "value": "[variables('enableReferencedModulesTelemetry')]"
@@ -5479,6 +5473,9 @@
           "radiusServers": {
             "value": "[tryGet(tryGet(parameters('virtualWanParameters'), 'p2sVpnParameters'), 'radiusServers')]"
           },
+          "tags": {
+            "value": "[coalesce(parameters('tags'), tryGet(parameters('virtualWanParameters'), 'tags'))]"
+          },
           "vpnAuthenticationTypes": {
             "value": "[tryGet(tryGet(parameters('virtualWanParameters'), 'p2sVpnParameters'), 'vpnAuthenticationTypes')]"
           },
@@ -5916,7 +5913,7 @@
         "name": "p2sVpnGatewayModule",
         "count": "[length(parameters('virtualHubParameters'))]"
       },
-      "condition": "[equals(tryGet(parameters('virtualHubParameters')[copyIndex()], 'deployP2SVpnGateway'), true())]",
+      "condition": "[equals(tryGet(tryGet(parameters('virtualHubParameters')[copyIndex()], 'p2sVpnParameters'), 'deployP2SVpnGateway'), true())]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[tryGet(tryGet(parameters('virtualHubParameters')[copyIndex()], 'p2sVpnParameters'), 'vpnGatewayName')]",
@@ -5936,7 +5933,7 @@
             "value": "[reference(format('virtualHubModule[{0}]', copyIndex())).outputs.resourceId.value]"
           },
           "vpnServerConfigurationResourceId": {
-            "value": "[reference('vpnServerConfiguration').outputs.resourceId.value]"
+            "value": "[tryGet(tryGet(tryGet(if(equals(tryGet(tryGet(parameters('virtualWanParameters'), 'p2sVpnParameters'), 'createP2sVpnServerConfiguration'), true()), reference('vpnServerConfiguration'), null()), 'outputs'), 'resourceId'), 'value')]"
           },
           "associatedRouteTableName": {
             "value": "[tryGet(tryGet(parameters('virtualHubParameters')[copyIndex()], 'p2sVpnParameters'), 'vpnGatewayAssociatedRouteTable')]"
@@ -5978,7 +5975,7 @@
             "value": "[tryGet(tryGet(parameters('virtualHubParameters')[copyIndex()], 'p2sVpnParameters'), 'propagatedRouteTableNames')]"
           },
           "tags": {
-            "value": "[tryGet(parameters('virtualHubParameters')[copyIndex()], 'tags')]"
+            "value": "[coalesce(parameters('tags'), tryGet(parameters('virtualHubParameters')[copyIndex()], 'tags'))]"
           },
           "vnetRoutesStaticRoutes": {
             "value": "[tryGet(tryGet(parameters('virtualHubParameters')[copyIndex()], 'p2sVpnParameters'), 'vnetRoutesStaticRoutes')]"
@@ -6364,7 +6361,7 @@
         "name": "s2sVpnGatewayModule",
         "count": "[length(parameters('virtualHubParameters'))]"
       },
-      "condition": "[equals(tryGet(parameters('virtualHubParameters')[copyIndex()], 'deployS2SVpnGateway'), true())]",
+      "condition": "[equals(tryGet(tryGet(parameters('virtualHubParameters')[copyIndex()], 's2sVpnParameters'), 'deployS2SVpnGateway'), true())]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[tryGet(tryGet(parameters('virtualHubParameters')[copyIndex()], 's2sVpnParameters'), 'vpnGatewayName')]",
@@ -6405,7 +6402,7 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "tags": {
-            "value": "[tryGet(parameters('virtualHubParameters')[copyIndex()], 'tags')]"
+            "value": "[coalesce(parameters('tags'), tryGet(parameters('virtualHubParameters')[copyIndex()], 'tags'))]"
           },
           "lock": {
             "value": "[coalesce(parameters('lock'), createObject())]"
@@ -8307,7 +8304,7 @@
         "name": "expressRouteGatewayModule",
         "count": "[length(parameters('virtualHubParameters'))]"
       },
-      "condition": "[equals(tryGet(parameters('virtualHubParameters')[copyIndex()], 'deployExpressRouteGateway'), true())]",
+      "condition": "[equals(tryGet(tryGet(parameters('virtualHubParameters')[copyIndex()], 'expressRouteParameters'), 'deployExpressRouteGateway'), true())]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[tryGet(tryGet(parameters('virtualHubParameters')[copyIndex()], 'expressRouteParameters'), 'expressRouteGatewayName')]",
@@ -8342,7 +8339,7 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "tags": {
-            "value": "[tryGet(parameters('virtualHubParameters')[copyIndex()], 'tags')]"
+            "value": "[coalesce(parameters('tags'), tryGet(parameters('virtualHubParameters')[copyIndex()], 'tags'))]"
           },
           "lock": {
             "value": "[coalesce(parameters('lock'), createObject())]"

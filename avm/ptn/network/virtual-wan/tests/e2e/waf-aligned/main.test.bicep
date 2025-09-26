@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata description = 'This instance deploys the module in alignment with the Well-Architected Framework principles.'
 
 // ========== //
 // Parameters //
@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-03-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -44,18 +44,61 @@ module testDeployment '../../../main.bicep' = [
       virtualWanParameters: {
         virtualWanName: 'dep-${namePrefix}-vw-${serviceShort}'
         location: resourceLocation
+        allowBranchToBranchTraffic: false // Security: Minimize lateral movement
+        type: 'Standard' // Performance: Use Standard for production workloads
+        lock: {
+          kind: 'CanNotDelete' // Reliability: Prevent accidental deletion
+        }
+        tags: {
+          Environment: 'Production'
+          CostCenter: 'NetworkOps'
+          Owner: 'NetworkTeam'
+          Purpose: 'WAF-Aligned-Deployment'
+        }
       }
       virtualHubParameters: [
         {
-          hubAddressPrefix: '10.0.0.0/24'
+          hubAddressPrefix: '10.0.0.0/23' // Operational Excellence: Larger address space for growth
           hubLocation: resourceLocation
           hubName: 'dep-${namePrefix}-hub-${resourceLocation}-${serviceShort}'
-          deploySecureHub: false
-          deployP2SVpnGateway: false
-          deployExpressRouteGateway: false
-          deployS2SVpnGateway: false
+          allowBranchToBranchTraffic: false // Security: Consistent with WAN setting
+          hubRoutingPreference: 'ExpressRoute' // Performance: Prefer ExpressRoute over VPN
+          p2sVpnParameters: {
+            deployP2SVpnGateway: false
+            connectionConfigurationsName: 'default'
+            vpnGatewayName: 'unused'
+            vpnClientAddressPoolAddressPrefixes: []
+          }
+          s2sVpnParameters: {
+            deployS2SVpnGateway: false
+            vpnGatewayName: 'unused'
+          }
+          expressRouteParameters: {
+            deployExpressRouteGateway: false
+            expressRouteGatewayName: 'unused'
+          }
+          secureHubParameters: {
+            deploySecureHub: false
+            azureFirewallName: 'unused'
+            azureFirewallSku: 'Standard'
+            azureFirewallPublicIPCount: 1
+          }
+          tags: {
+            HubType: 'Production'
+            Monitoring: 'Enabled'
+          }
         }
       ]
+      lock: {
+        kind: 'CanNotDelete' // Reliability: Prevent accidental deletion
+      }
+      tags: {
+        Environment: 'Production'
+        'hidden-title': 'WAF-Aligned Virtual WAN Deployment'
+        Purpose: 'Well-Architected Framework demonstration'
+        SecurityLevel: 'High'
+        Monitoring: 'Required'
+      }
     }
   }
 ]

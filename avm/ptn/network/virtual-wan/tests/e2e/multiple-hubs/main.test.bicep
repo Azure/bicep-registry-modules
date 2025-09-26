@@ -33,7 +33,7 @@ param virtualHub2Location string = 'westus2'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -57,19 +57,51 @@ module testDeployment '../../../main.bicep' = [
           hubAddressPrefix: '10.0.0.0/24'
           hubLocation: virtualHub1Location
           hubName: 'dep-${namePrefix}-hub-${virtualHub1Location}-${serviceShort}'
-          deploySecureHub: false
-          deployP2SVpnGateway: false
-          deployS2SVpnGateway: false
-          deployExpressRouteGateway: false
+          p2sVpnParameters: {
+            deployP2SVpnGateway: false
+            connectionConfigurationsName: 'default'
+            vpnGatewayName: 'unused'
+            vpnClientAddressPoolAddressPrefixes: []
+          }
+          s2sVpnParameters: {
+            deployS2SVpnGateway: false
+            vpnGatewayName: 'unused'
+          }
+          expressRouteParameters: {
+            deployExpressRouteGateway: false
+            expressRouteGatewayName: 'unused'
+          }
+          secureHubParameters: {
+            deploySecureHub: false
+            azureFirewallName: 'unused'
+            azureFirewallSku: 'Standard'
+            azureFirewallPublicIPCount: 1
+          }
         }
         {
           hubAddressPrefix: '10.0.1.0/24'
           hubLocation: virtualHub2Location
           hubName: 'dep-${namePrefix}-hub-${virtualHub2Location}-${serviceShort}'
-          deploySecureHub: false
-          deployP2SVpnGateway: false
-          deployS2SVpnGateway: false
-          deployExpressRouteGateway: false
+          p2sVpnParameters: {
+            deployP2SVpnGateway: false
+            connectionConfigurationsName: 'default'
+            vpnGatewayName: 'unused'
+            vpnClientAddressPoolAddressPrefixes: []
+          }
+          s2sVpnParameters: {
+            deployS2SVpnGateway: false
+            vpnGatewayName: 'unused'
+          }
+          expressRouteParameters: {
+            deployExpressRouteGateway: false
+            expressRouteGatewayName: 'unused'
+          }
+          secureHubParameters: {
+            deploySecureHub: false
+            azureFirewallName: 'unused'
+            azureFirewallSku: 'Standard'
+            azureFirewallPublicIPCount: 1
+          }
         }
       ]
     }
