@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "5046199650763571640"
+      "templateHash": "2800932240513415054"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -1997,14 +1997,7 @@
           "dnsServiceIP": "[parameters('dnsServiceIP')]",
           "outboundType": "[parameters('outboundType')]",
           "loadBalancerSku": "[parameters('loadBalancerSku')]",
-          "loadBalancerProfile": {
-            "allocatedOutboundPorts": "[parameters('allocatedOutboundPorts')]",
-            "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
-            "managedOutboundIPs": "[if(not(equals(parameters('managedOutboundIPCount'), 0)), createObject('count', parameters('managedOutboundIPCount')), null())]",
-            "backendPoolType": "[parameters('backendPoolType')]",
-            "outboundIPPrefixes": "[if(not(empty(parameters('outboundPublicIPPrefixResourceIds'))), createObject('publicIPPrefixes', map(coalesce(parameters('outboundPublicIPPrefixResourceIds'), createArray()), lambda('id', createObject('id', lambdaVariables('id'))))), null())]",
-            "outboundIPs": "[if(not(empty(parameters('outboundPublicIPResourceIds'))), createObject('publicIPs', map(coalesce(parameters('outboundPublicIPResourceIds'), createArray()), lambda('id', createObject('id', lambdaVariables('id'))))), null())]"
-          }
+          "loadBalancerProfile": "[if(not(equals(parameters('outboundType'), 'userDefinedRouting')), createObject('allocatedOutboundPorts', parameters('allocatedOutboundPorts'), 'idleTimeoutInMinutes', parameters('idleTimeoutInMinutes'), 'managedOutboundIPs', if(not(equals(parameters('managedOutboundIPCount'), 0)), createObject('count', parameters('managedOutboundIPCount')), null()), 'backendPoolType', parameters('backendPoolType'), 'outboundIPPrefixes', if(not(empty(parameters('outboundPublicIPPrefixResourceIds'))), createObject('publicIPPrefixes', map(coalesce(parameters('outboundPublicIPPrefixResourceIds'), createArray()), lambda('id', createObject('id', lambdaVariables('id'))))), null()), 'outboundIPs', if(not(empty(parameters('outboundPublicIPResourceIds'))), createObject('publicIPs', map(coalesce(parameters('outboundPublicIPResourceIds'), createArray()), lambda('id', createObject('id', lambdaVariables('id'))))), null())), null())]"
         },
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "aadProfile": "[if(not(empty(parameters('aadProfile'))), createObject('clientAppID', tryGet(parameters('aadProfile'), 'aadProfileClientAppID'), 'serverAppID', tryGet(parameters('aadProfile'), 'aadProfileServerAppID'), 'serverAppSecret', tryGet(parameters('aadProfile'), 'aadProfileServerAppSecret'), 'managed', tryGet(parameters('aadProfile'), 'aadProfileManaged'), 'enableAzureRBAC', tryGet(parameters('aadProfile'), 'aadProfileEnableAzureRBAC'), 'adminGroupObjectIDs', tryGet(parameters('aadProfile'), 'aadProfileAdminGroupObjectIDs'), 'tenantID', tryGet(parameters('aadProfile'), 'aadProfileTenantId')), null())]",

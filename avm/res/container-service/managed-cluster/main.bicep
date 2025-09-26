@@ -764,31 +764,33 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-05-02-p
       dnsServiceIP: dnsServiceIP
       outboundType: outboundType
       loadBalancerSku: loadBalancerSku
-      loadBalancerProfile: {
-        allocatedOutboundPorts: allocatedOutboundPorts
-        idleTimeoutInMinutes: idleTimeoutInMinutes
-        managedOutboundIPs: managedOutboundIPCount != 0
-          ? {
-              count: managedOutboundIPCount
-            }
-          : null
-        backendPoolType: backendPoolType
-        outboundIPPrefixes: !empty(outboundPublicIPPrefixResourceIds)
-          ? {
-              publicIPPrefixes: map(outboundPublicIPPrefixResourceIds ?? [], id => {
-                id: id
-              })
-            }
-          : null
+      loadBalancerProfile: outboundType != 'userDefinedRouting'
+        ? {
+            allocatedOutboundPorts: allocatedOutboundPorts
+            idleTimeoutInMinutes: idleTimeoutInMinutes
+            managedOutboundIPs: managedOutboundIPCount != 0
+              ? {
+                  count: managedOutboundIPCount
+                }
+              : null
+            backendPoolType: backendPoolType
+            outboundIPPrefixes: !empty(outboundPublicIPPrefixResourceIds)
+              ? {
+                  publicIPPrefixes: map(outboundPublicIPPrefixResourceIds ?? [], id => {
+                    id: id
+                  })
+                }
+              : null
 
-        outboundIPs: !empty(outboundPublicIPResourceIds)
-          ? {
-              publicIPs: map(outboundPublicIPResourceIds ?? [], id => {
-                id: id
-              })
-            }
-          : null
-      }
+            outboundIPs: !empty(outboundPublicIPResourceIds)
+              ? {
+                  publicIPs: map(outboundPublicIPResourceIds ?? [], id => {
+                    id: id
+                  })
+                }
+              : null
+          }
+        : null
     }
     publicNetworkAccess: publicNetworkAccess
     aadProfile: !empty(aadProfile)
