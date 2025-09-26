@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "11368089743444632821"
+      "templateHash": "1507069292364480929"
     },
     "name": "Network Application Gateways",
     "description": "This module deploys a Network Application Gateway."
@@ -721,10 +721,13 @@
     },
     "authenticationCertificates": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/authenticationCertificates"
+        },
         "description": "Optional. Authentication certificates of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "autoscaleMaxCapacity": {
       "type": "int",
@@ -742,24 +745,33 @@
     },
     "backendAddressPools": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/backendAddressPools"
+        },
         "description": "Optional. Backend address pool of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "backendHttpSettingsCollection": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/backendHttpSettingsCollection"
+        },
         "description": "Optional. Backend http settings of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "customErrorConfigurations": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/customErrorConfigurations"
+        },
         "description": "Optional. Custom error configurations of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "enableFips": {
       "type": "bool",
@@ -784,24 +796,33 @@
     },
     "frontendIPConfigurations": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/frontendIPConfigurations"
+        },
         "description": "Optional. Frontend IP addresses of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "frontendPorts": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/frontendPorts"
+        },
         "description": "Optional. Frontend ports of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "gatewayIPConfigurations": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/gatewayIPConfigurations"
+        },
         "description": "Optional. Subnets of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "enableRequestBuffering": {
       "type": "bool",
@@ -819,17 +840,23 @@
     },
     "httpListeners": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/httpListeners"
+        },
         "description": "Optional. Http listeners of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "loadDistributionPolicies": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/loadDistributionPolicies"
+        },
         "description": "Optional. Load distribution policies of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "privateEndpoints": {
       "type": "array",
@@ -843,38 +870,53 @@
     },
     "privateLinkConfigurations": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/privateLinkConfigurations"
+        },
         "description": "Optional. PrivateLink configurations on application gateway."
-      }
+      },
+      "defaultValue": []
     },
     "probes": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/probes"
+        },
         "description": "Optional. Probes of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "redirectConfigurations": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/redirectConfigurations"
+        },
         "description": "Optional. Redirect configurations of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "requestRoutingRules": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/requestRoutingRules"
+        },
         "description": "Optional. Request routing rules of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "rewriteRuleSets": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/rewriteRuleSets"
+        },
         "description": "Optional. Rewrite rules for the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "sku": {
       "type": "string",
@@ -899,50 +941,26 @@
     },
     "sslCertificates": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/sslCertificates"
+        },
         "description": "Optional. SSL certificates of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "sslPolicyCipherSuites": {
       "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/sslPolicy/properties/cipherSuites"
+        },
+        "description": "Optional. Ssl cipher suites to be enabled in the specified order to application gateway."
+      },
       "defaultValue": [
         "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
         "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
-      ],
-      "allowedValues": [
-        "TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA",
-        "TLS_DHE_DSS_WITH_AES_128_CBC_SHA",
-        "TLS_DHE_DSS_WITH_AES_128_CBC_SHA256",
-        "TLS_DHE_DSS_WITH_AES_256_CBC_SHA",
-        "TLS_DHE_DSS_WITH_AES_256_CBC_SHA256",
-        "TLS_DHE_RSA_WITH_AES_128_CBC_SHA",
-        "TLS_DHE_RSA_WITH_AES_128_GCM_SHA256",
-        "TLS_DHE_RSA_WITH_AES_256_CBC_SHA",
-        "TLS_DHE_RSA_WITH_AES_256_GCM_SHA384",
-        "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
-        "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
-        "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
-        "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
-        "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",
-        "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
-        "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
-        "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
-        "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
-        "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
-        "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",
-        "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
-        "TLS_RSA_WITH_3DES_EDE_CBC_SHA",
-        "TLS_RSA_WITH_AES_128_CBC_SHA",
-        "TLS_RSA_WITH_AES_128_CBC_SHA256",
-        "TLS_RSA_WITH_AES_128_GCM_SHA256",
-        "TLS_RSA_WITH_AES_256_CBC_SHA",
-        "TLS_RSA_WITH_AES_256_CBC_SHA256",
-        "TLS_RSA_WITH_AES_256_GCM_SHA384"
-      ],
-      "metadata": {
-        "description": "Optional. Ssl cipher suites to be enabled in the specified order to application gateway."
-      }
+      ]
     },
     "sslPolicyMinProtocolVersion": {
       "type": "string",
@@ -986,31 +1004,43 @@
     },
     "sslProfiles": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/sslProfiles"
+        },
         "description": "Optional. SSL profiles of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "trustedClientCertificates": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/trustedClientCertificates"
+        },
         "description": "Optional. Trusted client certificates of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "trustedRootCertificates": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/trustedRootCertificates"
+        },
         "description": "Optional. Trusted Root certificates of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "urlPathMaps": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/urlPathMaps"
+        },
         "description": "Optional. URL path map of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "availabilityZones": {
       "type": "array",
@@ -1060,31 +1090,43 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/tags"
+        },
         "description": "Optional. Resource tags."
-      }
+      },
+      "nullable": true
     },
     "backendSettingsCollection": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/backendSettingsCollection"
+        },
         "description": "Optional. Backend settings of the application gateway resource. For default limits, see [Application Gateway limits](https://learn.microsoft.com/en-us/azure/azure-subscription-service-limits#application-gateway-limits)."
-      }
+      },
+      "defaultValue": []
     },
     "listeners": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/listeners"
+        },
         "description": "Optional. Listeners of the application gateway resource. For default limits, see [Application Gateway limits](https://learn.microsoft.com/en-us/azure/azure-subscription-service-limits#application-gateway-limits)."
-      }
+      },
+      "defaultValue": []
     },
     "routingRules": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/routingRules"
+        },
         "description": "Optional. Routing rules of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "enableTelemetry": {
       "type": "bool",
@@ -1136,7 +1178,7 @@
     },
     "applicationGateway": {
       "type": "Microsoft.Network/applicationGateways",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2024-07-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -2006,7 +2048,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('applicationGateway', '2024-05-01', 'full').location]"
+      "value": "[reference('applicationGateway', '2024-07-01', 'full').location]"
     },
     "privateEndpoints": {
       "type": "array",
