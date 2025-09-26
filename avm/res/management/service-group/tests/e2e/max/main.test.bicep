@@ -21,7 +21,7 @@ param subscriptionId string = '#_subscriptionId_#'
 // ============ //
 
 resource serviceGroupDependency 'Microsoft.Management/serviceGroups@2024-02-01-preview' = {
-  name: 'sg-${namePrefix}-${serviceShort}-dep-001'
+  name: 'sg-${namePrefix}-${serviceShort}-${uniqueString(tenant().tenantId)}-dep-001'
   properties: {
     displayName: 'Service Group E2E Test Maximum Dependency'
     parent: {
@@ -39,7 +39,7 @@ module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, deployment().location)}-test-${serviceShort}-${iteration}'
     params: {
-      name: 'sg-${namePrefix}-${serviceShort}-001'
+      name: 'sg-${namePrefix}-${serviceShort}-${uniqueString(tenant().tenantId)}-001'
       displayName: 'Service Group E2E Test Maximum Configuration'
       parentServiceGroupResourceId: serviceGroupDependency.id
       subscriptionIdsToAssociateToServiceGroup: [

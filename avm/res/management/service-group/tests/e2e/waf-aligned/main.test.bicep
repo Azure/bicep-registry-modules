@@ -22,7 +22,7 @@ module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, deployment().location)}-test-${serviceShort}-${iteration}'
     params: {
-      name: 'sg-${namePrefix}-${serviceShort}-001'
+      name: 'sg-${namePrefix}-${serviceShort}-${uniqueString(tenant().tenantId)}-001'
       displayName: 'Service Group E2E Test WAF Aligned'
     }
   }

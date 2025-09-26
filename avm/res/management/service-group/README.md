@@ -45,7 +45,7 @@ This instance deploys the module with the minimum set of required parameters.
 module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
   name: 'serviceGroupDeployment'
   params: {
-    name: 'msgmin001'
+    name: '<name>'
   }
 }
 ```
@@ -63,7 +63,7 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "name": {
-      "value": "msgmin001"
+      "value": "<name>"
     }
   }
 }
@@ -79,7 +79,7 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/management/service-group:<version>'
 
-param name = 'msgmin001'
+param name = '<name>'
 ```
 
 </details>
@@ -99,7 +99,7 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
   name: 'serviceGroupDeployment'
   params: {
     // Required parameters
-    name: 'sg-msgmax-001'
+    name: '<name>'
     // Non-required parameters
     displayName: 'Service Group E2E Test Maximum Configuration'
     parentServiceGroupResourceId: '<parentServiceGroupResourceId>'
@@ -130,7 +130,7 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sg-msgmax-001"
+      "value": "<name>"
     },
     // Non-required parameters
     "displayName": {
@@ -167,7 +167,7 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
 using 'br/public:avm/res/management/service-group:<version>'
 
 // Required parameters
-param name = 'sg-msgmax-001'
+param name = '<name>'
 // Non-required parameters
 param displayName = 'Service Group E2E Test Maximum Configuration'
 param parentServiceGroupResourceId = '<parentServiceGroupResourceId>'
@@ -199,7 +199,7 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
   name: 'serviceGroupDeployment'
   params: {
     // Required parameters
-    name: 'sg-msgwaf-001'
+    name: '<name>'
     // Non-required parameters
     displayName: 'Service Group E2E Test WAF Aligned'
   }
@@ -220,7 +220,7 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sg-msgwaf-001"
+      "value": "<name>"
     },
     // Non-required parameters
     "displayName": {
@@ -241,7 +241,7 @@ module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
 using 'br/public:avm/res/management/service-group:<version>'
 
 // Required parameters
-param name = 'sg-msgwaf-001'
+param name = '<name>'
 // Non-required parameters
 param displayName = 'Service Group E2E Test WAF Aligned'
 ```
