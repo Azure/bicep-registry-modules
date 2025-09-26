@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Minor formatting adjustments triggered by the Set-AVMModule rerun
+- Minor json formatting adjustments
 
 ### Breaking Changes
 
