@@ -124,7 +124,7 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: certDeploymentScriptName
   location: location
   kind: 'AzurePowerShell'
@@ -135,7 +135,7 @@ resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01'
     }
   }
   properties: {
-    azPowerShellVersion: '8.0'
+    azPowerShellVersion: '11.0'
     retentionInterval: 'P1D'
     arguments: '-KeyVaultName "${keyVault.name}" -CertName "${certname}" -CertSubjectName "CN=*.contoso.com"'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-CertificateInKeyVault.ps1')
