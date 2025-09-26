@@ -9,6 +9,7 @@ This module will allow you to create a service group and also associate resource
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -489,6 +490,10 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
+
+## Notes
+
+This module only supports creating a service group and optionally adding members that are of types: `Subscription` and `Resource Group`. Resource member types, e.g. a storage account or virtual machine, are not supported in this module at this time due to limitations of Bicep. However, the AVM team are planning to add a new shared interface for all resource modules to implement, which will allow you to optionally associate the resource to a service group as part of the resource module itself; you can track the progress of this feature in the issue [2324](https://github.com/Azure/Azure-Verified-Modules/issues/2324).
 
 ## Data Collection
 
