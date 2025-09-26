@@ -12,9 +12,9 @@ This module deploys an Azure SQL Server Instance Pool.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Sql/instancePools` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-05-01-preview/instancePools) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Sql/instancePools` | 2024-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_instancepools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/instancePools)</li></ul> |
 
 ## Usage examples
 
@@ -114,7 +114,7 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     location: '<location>'
-    skuName: 'GP_Gen8IM'
+    skuName: 'GP_Gen5'
   }
 }
 ```
@@ -143,7 +143,7 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
       "value": "<location>"
     },
     "skuName": {
-      "value": "GP_Gen8IM"
+      "value": "GP_Gen5"
     }
   }
 }
@@ -164,7 +164,7 @@ param name = '<name>'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
 param location = '<location>'
-param skuName = 'GP_Gen8IM'
+param skuName = 'GP_Gen5'
 ```
 
 </details>
@@ -183,9 +183,11 @@ param skuName = 'GP_Gen8IM'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`capacity`](#parameter-capacity) | int | Capacity of the particular SKU. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`licenseType`](#parameter-licensetype) | string | The license type to apply for this database. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+| [`size`](#parameter-size) | string | Size of the particular SKU. |
 | [`skuFamily`](#parameter-skufamily) | string | If the service has different generations of hardware, for the same SKU, then that can be captured here. |
 | [`skuName`](#parameter-skuname) | string | The SKU name for the instance pool. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -205,6 +207,13 @@ The subnet resource ID for the instance pool.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `capacity`
+
+Capacity of the particular SKU.
+
+- Required: No
+- Type: int
 
 ### Parameter: `enableTelemetry`
 
@@ -236,6 +245,13 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+
+### Parameter: `size`
+
+Size of the particular SKU.
+
+- Required: No
+- Type: string
 
 ### Parameter: `skuFamily`
 

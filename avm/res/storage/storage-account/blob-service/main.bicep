@@ -31,7 +31,7 @@ param containerDeleteRetentionPolicyAllowPermanentDelete bool = false
 param corsRules corsRuleType[]?
 
 @description('Optional. Indicates the default version to use for requests to the Blob service if an incoming request\'s version is not specified. Possible values include version 2008-10-27 and all more recent versions.')
-param defaultServiceVersion string = ''
+param defaultServiceVersion string?
 
 @description('Optional. The blob service properties for blob soft delete.')
 param deleteRetentionPolicyEnabled bool = true
@@ -58,20 +58,22 @@ param restorePolicyEnabled bool = false
 param restorePolicyDays int = 7
 
 @description('Optional. Blob containers to create.')
-param containers array?
+param containers containerType[]?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
+
+var enableReferencedModulesTelemetry = false
 
 // The name of the blob services
 var name = 'default'
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
   name: storageAccountName
 }
 
-resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = {
+resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2025-01-01' = {
   name: name
   parent: storageAccount
   properties: {
@@ -94,7 +96,7 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01
           corsRules: corsRules
         }
       : null
-    defaultServiceVersion: !empty(defaultServiceVersion) ? defaultServiceVersion : null
+    defaultServiceVersion: defaultServiceVersion
     deleteRetentionPolicy: {
       enabled: deleteRetentionPolicyEnabled
       days: deleteRetentionPolicyDays
@@ -161,7 +163,8 @@ module blobServices_container 'container/main.bicep' = [
       metadata: container.?metadata
       publicAccess: container.?publicAccess
       roleAssignments: container.?roleAssignments
-      immutabilityPolicyProperties: container.?immutabilityPolicyProperties
+      immutabilityPolicy: container.?immutabilityPolicy
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -196,4 +199,41 @@ type corsRuleType = {
 
   @description('Required. The number of seconds that the client/browser should cache a preflight response.')
   maxAgeInSeconds: int
+}
+
+import { immutabilityPolicyType } from './container/main.bicep'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+
+@export()
+@description('The type of a storage container.')
+type containerType = {
+  @description('Required. The name of the Storage Container to deploy.')
+  name: string
+
+  @description('Optional. Default the container to use specified encryption scope for all writes.')
+  defaultEncryptionScope: string?
+
+  @description('Optional. Block override of encryption scope from the container default.')
+  denyEncryptionScopeOverride: bool?
+
+  @description('Optional. Enable NFSv3 all squash on blob container.')
+  enableNfsV3AllSquash: bool?
+
+  @description('Optional. Enable NFSv3 root squash on blob container.')
+  enableNfsV3RootSquash: bool?
+
+  @description('Optional. This is an immutable property, when set to true it enables object level immutability at the container level. The property is immutable and can only be set to true at the container creation time. Existing containers must undergo a migration process.')
+  immutableStorageWithVersioningEnabled: bool?
+
+  @description('Optional. Configure immutability policy.')
+  immutabilityPolicy: immutabilityPolicyType?
+
+  @description('Optional. A name-value pair to associate with the container as metadata.')
+  metadata: resourceInput<'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01'>.properties.metadata?
+
+  @description('Optional. Specifies whether data in the container may be accessed publicly and the level of access.')
+  publicAccess: ('Container' | 'Blob' | 'None')?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
 }

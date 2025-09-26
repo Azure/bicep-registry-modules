@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -41,7 +41,6 @@ module nestedDependencies 'dependencies.bicep' = {
     relayNamespaceName: 'dep-${namePrefix}-ns-${serviceShort}'
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
     hybridConnectionName: 'dep-${namePrefix}-hc-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -55,7 +54,6 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -106,9 +104,13 @@ module testDeployment '../../../main.bicep' = [
           privateEndpoints: [
             {
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
-              privateDnsZoneResourceIds: [
-                nestedDependencies.outputs.privateDNSZoneResourceId
-              ]
+              privateDnsZoneGroup: {
+                privateDnsZoneGroupConfigs: [
+                  {
+                    privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+                  }
+                ]
+              }
               tags: {
                 'hidden-title': 'This is visible in the resource name'
                 Environment: 'Non-Prod'
@@ -156,11 +158,16 @@ module testDeployment '../../../main.bicep' = [
               }
             ]
           }
-          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-          storageAccountUseIdentityAuthentication: true
+          configs: [
+            {
+              name: 'appsettings'
+              storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+              storageAccountUseIdentityAuthentication: true
+            }
+          ]
           hybridConnectionRelays: [
             {
-              resourceId: nestedDependencies.outputs.hybridConnectionResourceId
+              hybridConnectionResourceId: nestedDependencies.outputs.hybridConnectionResourceId
               sendKeyName: 'defaultSender'
             }
           ]
@@ -175,8 +182,13 @@ module testDeployment '../../../main.bicep' = [
               name: 'scm'
             }
           ]
-          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-          storageAccountUseIdentityAuthentication: true
+          configs: [
+            {
+              name: 'appsettings'
+              storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+              storageAccountUseIdentityAuthentication: true
+            }
+          ]
         }
       ]
       privateEndpoints: [
@@ -235,8 +247,13 @@ module testDeployment '../../../main.bicep' = [
           }
         ]
       }
-      storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-      storageAccountUseIdentityAuthentication: true
+      configs: [
+        {
+          name: 'appsettings'
+          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+          storageAccountUseIdentityAuthentication: true
+        }
+      ]
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [
@@ -255,14 +272,16 @@ module testDeployment '../../../main.bicep' = [
       ]
       hybridConnectionRelays: [
         {
-          resourceId: nestedDependencies.outputs.hybridConnectionResourceId
+          hybridConnectionResourceId: nestedDependencies.outputs.hybridConnectionResourceId
           sendKeyName: 'defaultSender'
         }
       ]
       scmSiteAlsoStopped: true
-      vnetContentShareEnabled: true
-      vnetImagePullEnabled: true
-      vnetRouteAllEnabled: true
+      outboundVnetRouting: {
+        allTraffic: true
+        contentShareTraffic: true
+        imagePullTraffic: true
+      }
       publicNetworkAccess: 'Disabled'
     }
   }

@@ -8,7 +8,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.App/managedEnvironments@2025-02-02-preview'>.tags?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
@@ -37,7 +37,7 @@ param daprAIInstrumentationKey string = ''
 param dockerBridgeCidr string = ''
 
 @description('Conditional. Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant.')
-param infrastructureSubnetResourceId string = ''
+param infrastructureSubnetResourceId string?
 
 @description('Conditional. Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetResourceId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param internal bool = false
@@ -67,20 +67,20 @@ param certificatePassword string = ''
 
 @description('Optional. Certificate to use for the custom domain. PFX or PEM.')
 @secure()
-param certificateValue string = ''
+param certificateValue string?
 
 @description('Optional. DNS suffix for the environment domain.')
 param dnsSuffix string = ''
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
 @description('Optional. Open Telemetry configuration.')
-param openTelemetryConfiguration object = {}
+param openTelemetryConfiguration resourceInput<'Microsoft.App/managedEnvironments@2025-02-02-preview'>.properties.openTelemetryConfiguration?
 
 @description('Conditional. Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant.')
-param workloadProfiles array = []
+param workloadProfiles resourceInput<'Microsoft.App/managedEnvironments@2025-02-02-preview'>.properties.workloadProfiles?
 
 @description('Conditional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param infrastructureResourceGroupName string = take('ME_${name}', 63)
@@ -153,7 +153,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableT
   }
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = if (!empty(appLogsConfiguration.?logAnalyticsWorkspaceResourceId)) {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' existing = if (!empty(appLogsConfiguration.?logAnalyticsWorkspaceResourceId)) {
   name: last(split(appLogsConfiguration.?logAnalyticsWorkspaceResourceId!, '/'))!
   scope: resourceGroup(
     split(appLogsConfiguration.?logAnalyticsWorkspaceResourceId!, '/')[2],
@@ -187,7 +187,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-previe
     daprAIInstrumentationKey: daprAIInstrumentationKey
     customDomainConfiguration: {
       certificatePassword: certificatePassword
-      certificateValue: !empty(certificateValue) ? certificateValue : null
+      certificateValue: certificateValue
       dnsSuffix: dnsSuffix
       certificateKeyVaultProperties: !empty(certificate.?certificateKeyVaultProperties)
         ? {
@@ -196,7 +196,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-previe
           }
         : null
     }
-    openTelemetryConfiguration: !empty(openTelemetryConfiguration) ? openTelemetryConfiguration : null
+    openTelemetryConfiguration: openTelemetryConfiguration
     peerTrafficConfiguration: {
       encryption: {
         enabled: peerTrafficEncryption
@@ -205,7 +205,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-previe
     publicNetworkAccess: publicNetworkAccess
     vnetConfiguration: {
       internal: internal
-      infrastructureSubnetId: !empty(infrastructureSubnetResourceId) ? infrastructureSubnetResourceId : null
+      infrastructureSubnetId: infrastructureSubnetResourceId
       dockerBridgeCidr: !empty(infrastructureSubnetResourceId) ? dockerBridgeCidr : null
       platformReservedCidr: empty(workloadProfiles) && !empty(infrastructureSubnetResourceId)
         ? platformReservedCidr
@@ -214,7 +214,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-previe
         ? platformReservedDnsIP
         : null
     }
-    workloadProfiles: !empty(workloadProfiles) ? workloadProfiles : null
+    workloadProfiles: workloadProfiles
     zoneRedundant: zoneRedundant
     infrastructureResourceGroup: infrastructureResourceGroupName
   }
@@ -236,7 +236,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-previe
               accountName: storage.storageAccountName
               accountKey: listkeys(
                 resourceId('Microsoft.Storage/storageAccounts', storage.storageAccountName),
-                '2023-01-01'
+                '2025-01-01'
               ).keys[0].value
               shareName: storage.shareName
             }
@@ -270,9 +270,9 @@ resource managedEnvironment_lock 'Microsoft.Authorization/locks@2020-05-01' = if
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: managedEnvironment
 }
@@ -286,6 +286,8 @@ module managedEnvironment_certificate 'certificates/main.bicep' = if (!empty(cer
     certificateType: certificate.?certificateType
     certificateValue: certificate.?certificateValue
     certificatePassword: certificate.?certificatePassword
+    location: certificate.?location
+    tags: certificate.?tags
   }
 }
 
@@ -336,6 +338,12 @@ type certificateType = {
 
   @description('Optional. A key vault reference.')
   certificateKeyVaultProperties: certificateKeyVaultPropertiesType?
+
+  @description('Optional. The location for the resource.')
+  location: string?
+
+  @description('Optional. Tags of the resource.')
+  tags: resourceInput<'Microsoft.App/managedEnvironments/certificates@2025-02-02-preview'>.tags?
 }
 
 @export()

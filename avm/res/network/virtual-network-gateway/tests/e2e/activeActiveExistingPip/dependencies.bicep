@@ -15,7 +15,7 @@ param existingSecondPipName string
 
 var addressPrefix = '10.0.0.0/16'
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -35,7 +35,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
-resource localNetworkGateway 'Microsoft.Network/localNetworkGateways@2023-04-01' = {
+resource localNetworkGateway 'Microsoft.Network/localNetworkGateways@2024-07-01' = {
   name: localNetworkGatewayName
   location: location
   properties: {
@@ -48,7 +48,7 @@ resource localNetworkGateway 'Microsoft.Network/localNetworkGateways@2023-04-01'
   }
 }
 
-resource existingFirstPip 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
+resource existingFirstPip 'Microsoft.Network/publicIPAddresses@2024-07-01' = {
   name: existingFirstPipName
   location: location
   sku: {
@@ -65,7 +65,7 @@ resource existingFirstPip 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
   ]
 }
 
-resource existingSecondPip 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
+resource existingSecondPip 'Microsoft.Network/publicIPAddresses@2024-07-01' = {
   name: existingSecondPipName
   location: location
   sku: {

@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -65,15 +65,11 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
       skuName: 'Standard_ZRS'
       allowBlobPublicAccess: false
       requireInfrastructureEncryption: true
       largeFileSharesState: 'Enabled'
-      enableHierarchicalNamespace: true
-      enableSftp: true
-      enableNfsV3: true
       privateEndpoints: [
         {
           service: 'blob'
@@ -143,8 +139,6 @@ module testDeployment '../../../main.bicep' = [
         containers: [
           {
             name: 'avdscripts'
-            enableNfsV3AllSquash: true
-            enableNfsV3RootSquash: true
             publicAccess: 'None'
           }
           {
@@ -153,7 +147,11 @@ module testDeployment '../../../main.bicep' = [
             metadata: {
               testKey: 'testValue'
             }
-            allowProtectedAppendWrites: false
+            immutabilityPolicy: {
+              immutabilityPeriodSinceCreationInDays: 7
+              allowProtectedAppendWrites: false
+              allowProtectedAppendWritesAll: true
+            }
           }
         ]
         automaticSnapshotPolicyEnabled: true
@@ -303,9 +301,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

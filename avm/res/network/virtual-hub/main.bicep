@@ -88,7 +88,7 @@ param hubRouteTables hubRouteTableType[]?
 @description('Optional. Virtual network connections to create for the virtual hub.')
 param hubVirtualNetworkConnections hubVirtualNetworkConnectionType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -174,14 +174,14 @@ resource virtualHub_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: virtualHub
 }
 
-module virtualHub_routingIntent 'routingIntent/main.bicep' = if (!empty(azureFirewallResourceId) && !empty(routingIntent)) {
+module virtualHub_routingIntent 'routing-intent/main.bicep' = if (!empty(azureFirewallResourceId) && !empty(routingIntent)) {
   name: '${uniqueString(deployment().name, location)}-routingIntent'
   params: {
     virtualHubName: virtualHub.name
@@ -192,7 +192,7 @@ module virtualHub_routingIntent 'routingIntent/main.bicep' = if (!empty(azureFir
 }
 
 // Initially create the route tables without routes
-module virtualHub_routeTables 'hubRouteTable/main.bicep' = [
+module virtualHub_routeTables 'hub-route-table/main.bicep' = [
   for (routeTable, index) in (hubRouteTables ?? []): {
     name: '${uniqueString(deployment().name, location)}-routeTable-${index}'
     params: {
@@ -204,7 +204,7 @@ module virtualHub_routeTables 'hubRouteTable/main.bicep' = [
   }
 ]
 
-module virtualHub_hubVirtualNetworkConnections 'hubVirtualNetworkConnection/main.bicep' = [
+module virtualHub_hubVirtualNetworkConnections 'hub-virtual-network-connection/main.bicep' = [
   for (virtualNetworkConnection, index) in (hubVirtualNetworkConnections ?? []): {
     name: '${uniqueString(deployment().name, location)}-connection-${index}'
     params: {

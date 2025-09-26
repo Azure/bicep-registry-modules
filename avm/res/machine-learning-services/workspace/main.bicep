@@ -46,7 +46,7 @@ param associatedContainerRegistryResourceId string?
 @sys.description('Optional. Enable service-side encryption.')
 param enableServiceSideCMKEncryption bool?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -60,7 +60,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @sys.description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -68,7 +68,10 @@ param privateEndpoints privateEndpointSingleServiceType[]?
 param computes array?
 
 @sys.description('Optional. Connections to create in the workspace.')
-param connections connectionType[] = []
+param connections connectionType[]?
+
+@sys.description('Optional. Datastores to create in the workspace.')
+param datastores datastoreType[]?
 
 @sys.description('Optional. Resource tags.')
 param tags object?
@@ -328,7 +331,7 @@ module workspace_computes 'compute/main.bicep' = [
 ]
 
 module workspace_connections 'connection/main.bicep' = [
-  for connection in connections: {
+  for connection in (connections ?? []): {
     name: '${workspace.name}-${connection.name}-connection'
     params: {
       machineLearningWorkspaceName: workspace.name
@@ -345,13 +348,24 @@ module workspace_connections 'connection/main.bicep' = [
   }
 ]
 
+module workspace_datastores 'datastores/main.bicep' = [
+  for datastore in (datastores ?? []): {
+    name: '${workspace.name}-${datastore.name}-datastore'
+    params: {
+      machineLearningWorkspaceName: workspace.name
+      name: datastore.name
+      properties: datastore.properties
+    }
+  }
+]
+
 resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: workspace
 }
@@ -663,4 +677,14 @@ type connectionType = {
 
   @sys.description('Required. The properties of the connection, specific to the auth type.')
   connectionProperties: connectionPropertyType
+}
+
+@export()
+@sys.description('The type for the workspace connection.')
+type datastoreType = {
+  @sys.description('Required. Name of the datastore to create.')
+  name: string
+
+  @sys.description('Required. The properties of the datastore.')
+  properties: resourceInput<'Microsoft.MachineLearningServices/workspaces/datastores@2024-10-01'>.properties
 }

@@ -13,7 +13,7 @@ param name string
 param location string = 'global'
 
 @description('Optional. Endpoint tags.')
-param tags object?
+param tags resourceInput<'Microsoft.Communication/emailServices/domains@2023-04-01'>.tags?
 
 @allowed([
   'AzureManaged'
@@ -31,13 +31,13 @@ param domainManagement string = 'AzureManaged'
 param userEngagementTracking string = 'Disabled'
 
 @description('Optional. The domains to deploy into this namespace.')
-param senderUsernames array?
+param senderUsernames senderUsernameType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -102,9 +102,9 @@ resource domain_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(loc
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: domain
 }
@@ -137,3 +137,20 @@ output resourceId string = domain.id
 
 @description('The name of the resource group the domain was created in.')
 output resourceGroupName string = resourceGroup().name
+
+// =========== //
+// Definitions //
+// =========== //
+
+@export()
+@description('The type of sender username to create.')
+type senderUsernameType = {
+  @description('Required. Name of the sender username resource to create.')
+  name: string
+
+  @description('Required. A sender username to be used when sending emails.')
+  username: string
+
+  @description('Optional. The display name for the senderUsername.')
+  displayName: string?
+}

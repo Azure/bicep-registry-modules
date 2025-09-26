@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "3602945835134853701"
+      "version": "0.37.4.10188",
+      "templateHash": "718944121361636096"
     },
     "name": "Azure NetApp Files",
-    "description": "This module deploys an Azure NetApp File."
+    "description": "This module deploys an Azure NetApp Files Account and the associated resource types such as backups, capacity pools and volumes."
   },
   "definitions": {
     "backupVaultType": {
@@ -217,21 +217,25 @@
           "minValue": 2,
           "maxValue": 1019,
           "metadata": {
-            "description": "Optional. The daily backups to keep."
+            "description": "Optional. The daily backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max)."
           }
         },
         "monthlyBackupsToKeep": {
           "type": "int",
           "nullable": true,
+          "minValue": 0,
+          "maxValue": 1019,
           "metadata": {
-            "description": "Optional. The monthly backups to keep."
+            "description": "Optional. The monthly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max)."
           }
         },
         "weeklyBackupsToKeep": {
           "type": "int",
           "nullable": true,
+          "minValue": 0,
+          "maxValue": 1019,
           "metadata": {
-            "description": "Optional. The weekly backups to keep."
+            "description": "Optional. The weekly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max)."
           }
         },
         "enabled": {
@@ -638,7 +642,7 @@
       "metadata": {
         "description": "The type for a daily schedule for the snapshot policy.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "snapshot-policies/main.bicep"
+          "sourceTemplate": "snapshot-policy/main.bicep"
         }
       }
     },
@@ -672,7 +676,7 @@
       "metadata": {
         "description": "The type for an hourly schedule for the snapshot policy.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "snapshot-policies/main.bicep"
+          "sourceTemplate": "snapshot-policy/main.bicep"
         }
       }
     },
@@ -697,12 +701,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -771,7 +782,7 @@
       "metadata": {
         "description": "The type for a monthly schedule for the snapshot policy.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "snapshot-policies/main.bicep"
+          "sourceTemplate": "snapshot-policy/main.bicep"
         }
       }
     },
@@ -908,10 +919,10 @@
             "description": "Optional. Location of the pool volume."
           }
         },
-        "zone": {
+        "availabilityZone": {
           "type": "int",
           "metadata": {
-            "description": "Required. The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set."
+            "description": "Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones)."
           }
         },
         "serviceLevel": {
@@ -1026,6 +1037,13 @@
           "metadata": {
             "description": "Optional. The type of the volume. DataProtection volumes are used for replication."
           }
+        },
+        "throughputMibps": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The throughput in MiBps for the NetApp account."
+          }
         }
       },
       "metadata": {
@@ -1088,7 +1106,7 @@
       "metadata": {
         "description": "The type for a weekly schedule for the snapshot policy.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "snapshot-policies/main.bicep"
+          "sourceTemplate": "snapshot-policy/main.bicep"
         }
       }
     }
@@ -1395,7 +1413,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "netAppAccount"
@@ -1465,8 +1483,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "5685295510343035237"
+              "version": "0.37.4.10188",
+              "templateHash": "13913012005922583046"
             },
             "name": "Azure NetApp Files Backup Policy",
             "description": "This module deploys a Backup Policy for Azure NetApp File."
@@ -1498,21 +1516,25 @@
               "minValue": 2,
               "maxValue": 1019,
               "metadata": {
-                "description": "Optional. The daily backups to keep."
+                "description": "Optional. The daily backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max)."
               }
             },
             "monthlyBackupsToKeep": {
               "type": "int",
               "defaultValue": 0,
+              "minValue": 0,
+              "maxValue": 1019,
               "metadata": {
-                "description": "Optional. The monthly backups to keep."
+                "description": "Optional. The monthly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max)."
               }
             },
             "weeklyBackupsToKeep": {
               "type": "int",
               "defaultValue": 0,
+              "minValue": 0,
+              "maxValue": 1019,
               "metadata": {
-                "description": "Optional. The weekly backups to keep."
+                "description": "Optional. The weekly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max)."
               }
             },
             "enabled": {
@@ -1612,8 +1634,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "10770394726791174694"
+              "version": "0.37.4.10188",
+              "templateHash": "9155828860699102163"
             },
             "name": "Azure NetApp Files Snapshot Policy",
             "description": "This module deploys a Snapshot Policy for an Azure NetApp File."
@@ -1928,8 +1950,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "14413490968843992443"
+              "version": "0.37.4.10188",
+              "templateHash": "4752810787886711062"
             },
             "name": "Azure NetApp Files Volume Backup Vault",
             "description": "This module deploys a NetApp Files Backup Vault."
@@ -2067,8 +2089,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "15429195500404839384"
+                      "version": "0.37.4.10188",
+                      "templateHash": "9091602964285966352"
                     },
                     "name": "Azure NetApp Files Volume Backup",
                     "description": "This module deploys a backup of a NetApp Files Volume."
@@ -2277,8 +2299,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "4385691850958293637"
+              "version": "0.37.4.10188",
+              "templateHash": "62458517217463343"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -2342,10 +2364,10 @@
                     "description": "Optional. Location of the pool volume."
                   }
                 },
-                "zone": {
+                "availabilityZone": {
                   "type": "int",
                   "metadata": {
-                    "description": "Required. The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set."
+                    "description": "Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones)."
                   }
                 },
                 "serviceLevel": {
@@ -2459,6 +2481,13 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. The type of the volume. DataProtection volumes are used for replication."
+                  }
+                },
+                "throughputMibps": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The throughput in MiBps for the NetApp account."
                   }
                 }
               },
@@ -3046,8 +3075,8 @@
                   "networkFeatures": {
                     "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'networkFeatures')]"
                   },
-                  "zone": {
-                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'zone')]"
+                  "availabilityZone": {
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'availabilityZone')]"
                   },
                   "coolAccess": {
                     "value": "[coalesce(tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'coolAccess'), false())]"
@@ -3087,6 +3116,9 @@
                   },
                   "unixPermissions": {
                     "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'unixPermissions')]"
+                  },
+                  "throughputMibps": {
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'throughputMibps')]"
                   }
                 },
                 "template": {
@@ -3096,8 +3128,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "107014526168729045"
+                      "version": "0.37.4.10188",
+                      "templateHash": "3385223933364939220"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
@@ -3504,16 +3536,16 @@
                         "description": "Optional. The type of the volume. DataProtection volumes are used for replication."
                       }
                     },
-                    "zone": {
+                    "availabilityZone": {
                       "type": "int",
                       "allowedValues": [
-                        0,
+                        -1,
                         1,
                         2,
                         3
                       ],
                       "metadata": {
-                        "description": "Required. The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set."
+                        "description": "Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones)."
                       }
                     },
                     "serviceLevel": {
@@ -3651,6 +3683,13 @@
                       "metadata": {
                         "description": "Optional. Unix Permissions for NFS volume."
                       }
+                    },
+                    "throughputMibps": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The throughput in MiBps for the NetApp account."
+                      }
                     }
                   },
                   "variables": {
@@ -3762,8 +3801,8 @@
                       "apiVersion": "2025-01-01",
                       "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
                       "location": "[parameters('location')]",
-                      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'securityStyle', parameters('securityStyle'), 'unixPermissions', parameters('unixPermissions'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultPrivateEndpointResourceId'), '/')[2], split(parameters('keyVaultPrivateEndpointResourceId'), '/')[4]), 'Microsoft.Network/privateEndpoints', last(split(parameters('keyVaultPrivateEndpointResourceId'), '/')))), createObject()), if(not(empty(parameters('volumeType'))), createObject('volumeType', parameters('volumeType')), createObject()), createObject('dataProtection', if(not(empty(parameters('dataProtection'))), createObject('replication', if(not(empty(tryGet(parameters('dataProtection'), 'replication'))), shallowMerge(createArray(createObject('endpointType', tryGet(parameters('dataProtection'), 'replication', 'endpointType'), 'remoteVolumeRegion', if(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeRegion'))), tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeRegion'), null()), 'remoteVolumeResourceId', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId')), if(equals(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'endpointType'), 'dst'), createObject('replicationSchedule', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'replicationSchedule')), createObject()), if(equals(parameters('volumeType'), 'Migration'), createObject('remotePath', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remotePath')), createObject()))), null()), 'backup', if(not(empty(tryGet(parameters('dataProtection'), 'backup'))), createObject('backupPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/backupPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupPolicyName')), 'policyEnforced', coalesce(tryGet(parameters('dataProtection'), 'backup', 'policyEnforced'), false()), 'backupVaultId', resourceId('Microsoft.NetApp/netAppAccounts/backupVaults', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupVaultName'))), null()), 'snapshot', if(not(empty(tryGet(parameters('dataProtection'), 'snapshot'))), createObject('snapshotPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/snapshotPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'snapshot', 'snapshotPolicyName'))), null())), null()), 'networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('subnetResourceId'), '/')[2], split(parameters('subnetResourceId'), '/')[4]), 'Microsoft.Network/virtualNetworks/subnets', split(parameters('subnetResourceId'), '/')[8], last(split(parameters('subnetResourceId'), '/'))), 'exportPolicy', coalesce(parameters('exportPolicy'), createObject('rules', createArray())), 'smbContinuouslyAvailable', parameters('smbContinuouslyAvailable'), 'smbEncryption', parameters('smbEncryption'), 'smbNonBrowsable', parameters('smbNonBrowsable'), 'kerberosEnabled', parameters('kerberosEnabled'))))]",
-                      "zones": "[if(not(equals(parameters('zone'), 0)), createArray(string(parameters('zone'))), null())]"
+                      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'securityStyle', parameters('securityStyle'), 'unixPermissions', parameters('unixPermissions'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultPrivateEndpointResourceId'), '/')[2], split(parameters('keyVaultPrivateEndpointResourceId'), '/')[4]), 'Microsoft.Network/privateEndpoints', last(split(parameters('keyVaultPrivateEndpointResourceId'), '/')))), createObject()), if(not(empty(parameters('volumeType'))), createObject('volumeType', parameters('volumeType')), createObject()), createObject('dataProtection', if(not(empty(parameters('dataProtection'))), createObject('replication', if(not(empty(tryGet(parameters('dataProtection'), 'replication'))), shallowMerge(createArray(createObject('endpointType', tryGet(parameters('dataProtection'), 'replication', 'endpointType'), 'remoteVolumeRegion', if(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeRegion'))), tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeRegion'), null()), 'remoteVolumeResourceId', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId')), if(equals(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'endpointType'), 'dst'), createObject('replicationSchedule', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'replicationSchedule')), createObject()), if(equals(parameters('volumeType'), 'Migration'), createObject('remotePath', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remotePath')), createObject()))), null()), 'backup', if(not(empty(tryGet(parameters('dataProtection'), 'backup'))), createObject('backupPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/backupPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupPolicyName')), 'policyEnforced', coalesce(tryGet(parameters('dataProtection'), 'backup', 'policyEnforced'), false()), 'backupVaultId', resourceId('Microsoft.NetApp/netAppAccounts/backupVaults', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupVaultName'))), null()), 'snapshot', if(not(empty(tryGet(parameters('dataProtection'), 'snapshot'))), createObject('snapshotPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/snapshotPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'snapshot', 'snapshotPolicyName'))), null())), null()), 'networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('subnetResourceId'), '/')[2], split(parameters('subnetResourceId'), '/')[4]), 'Microsoft.Network/virtualNetworks/subnets', split(parameters('subnetResourceId'), '/')[8], last(split(parameters('subnetResourceId'), '/'))), 'exportPolicy', coalesce(parameters('exportPolicy'), createObject('rules', createArray())), 'smbContinuouslyAvailable', parameters('smbContinuouslyAvailable'), 'smbEncryption', parameters('smbEncryption'), 'smbNonBrowsable', parameters('smbNonBrowsable'), 'kerberosEnabled', parameters('kerberosEnabled')), if(not(equals(parameters('throughputMibps'), null())), createObject('throughputMibps', parameters('throughputMibps')), createObject())))]",
+                      "zones": "[if(not(equals(parameters('availabilityZone'), 0)), array(string(parameters('availabilityZone'))), null())]"
                     },
                     "volume_roleAssignments": {
                       "copy": {
@@ -3908,8 +3947,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "14413490968843992443"
+              "version": "0.37.4.10188",
+              "templateHash": "4752810787886711062"
             },
             "name": "Azure NetApp Files Volume Backup Vault",
             "description": "This module deploys a NetApp Files Backup Vault."
@@ -4047,8 +4086,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "15429195500404839384"
+                      "version": "0.37.4.10188",
+                      "templateHash": "9091602964285966352"
                     },
                     "name": "Azure NetApp Files Volume Backup",
                     "description": "This module deploys a backup of a NetApp Files Volume."

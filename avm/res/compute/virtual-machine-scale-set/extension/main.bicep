@@ -20,14 +20,14 @@ param typeHandlerVersion string
 param autoUpgradeMinorVersion bool
 
 @description('Optional. How the extension handler should be forced to update even if the extension configuration has not changed.')
-param forceUpdateTag string = ''
+param forceUpdateTag string?
 
 @description('Optional. Any object that contains the extension specific settings.')
-param settings object = {}
+param settings object? // Type any(...). Cannot use RDTs
 
 @description('Optional. Any object that contains the extension specific protected settings.')
 @secure()
-param protectedSettings object = {}
+param protectedSettings object? // Type any(...). Cannot use RDTs
 
 @description('Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false.')
 param supressFailures bool = false
@@ -35,11 +35,17 @@ param supressFailures bool = false
 @description('Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available.')
 param enableAutomaticUpgrade bool
 
-resource virtualMachineScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2023-09-01' existing = {
+@description('Optional. The extensions protected settings that are passed by reference, and consumed from key vault.')
+param protectedSettingsFromKeyVault resourceInput<'Microsoft.Compute/virtualMachineScaleSets/extensions@2024-11-01'>.properties.protectedSettingsFromKeyVault?
+
+@description('Optional. Collection of extension names after which this extension needs to be provisioned.')
+param provisionAfterExtensions string[]?
+
+resource virtualMachineScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2024-11-01' existing = {
   name: virtualMachineScaleSetName
 }
 
-resource extension 'Microsoft.Compute/virtualMachineScaleSets/extensions@2023-09-01' = {
+resource extension 'Microsoft.Compute/virtualMachineScaleSets/extensions@2024-11-01' = {
   name: name
   parent: virtualMachineScaleSet
   properties: {
@@ -48,10 +54,12 @@ resource extension 'Microsoft.Compute/virtualMachineScaleSets/extensions@2023-09
     typeHandlerVersion: typeHandlerVersion
     autoUpgradeMinorVersion: autoUpgradeMinorVersion
     enableAutomaticUpgrade: enableAutomaticUpgrade
-    forceUpdateTag: !empty(forceUpdateTag) ? forceUpdateTag : null
-    settings: !empty(settings) ? settings : null
-    protectedSettings: !empty(protectedSettings) ? protectedSettings : null
+    forceUpdateTag: forceUpdateTag
+    settings: settings
+    protectedSettings: protectedSettings
     suppressFailures: supressFailures
+    protectedSettingsFromKeyVault: protectedSettingsFromKeyVault
+    provisionAfterExtensions: provisionAfterExtensions
   }
 }
 

@@ -4,7 +4,7 @@ metadata description = 'Private Link Private DNS Zones'
 @description('Optional. Azure region where the each of the Private Link Private DNS Zones created will be deployed, default to Resource Group location if not specified.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings for the Private Link Private DNS Zones created.')
 param lock lockType?
 
@@ -34,10 +34,12 @@ We have also removed the following Private Link Private DNS Zones from the defau
 - `privatelink.azure.com`.
 ''')
 param privateLinkPrivateDnsZones array = [
+  'privatelink.{regionName}.azurecontainerapps.io'
   'privatelink.api.azureml.ms'
   'privatelink.notebooks.azure.net'
   'privatelink.cognitiveservices.azure.com'
   'privatelink.openai.azure.com'
+  'privatelink.services.ai.azure.com'
   'privatelink.directline.botframework.com'
   'privatelink.token.botframework.com'
   'privatelink.servicebus.windows.net'
@@ -67,11 +69,11 @@ param privateLinkPrivateDnsZones array = [
   'privatelink.wvd.microsoft.com'
   'privatelink.{regionName}.azmk8s.io'
   'privatelink.azurecr.io'
-  '{regionName}.data.privatelink.azurecr.io'
   #disable-next-line no-hardcoded-env-urls
   'privatelink.database.windows.net'
   'privatelink.documents.azure.com'
   'privatelink.mongo.cosmos.azure.com'
+  'privatelink.mongocluster.cosmos.azure.com'
   'privatelink.cassandra.cosmos.azure.com'
   'privatelink.gremlin.cosmos.azure.com'
   'privatelink.table.cosmos.azure.com'
@@ -87,6 +89,7 @@ param privateLinkPrivateDnsZones array = [
   'privatelink.dp.kubernetesconfiguration.azure.com'
   'privatelink.eventgrid.azure.net'
   'privatelink.azure-api.net'
+  'privatelink.azurehealthcareapis.com'
   'privatelink.workspace.azurehealthcareapis.com'
   'privatelink.fhir.azurehealthcareapis.com'
   'privatelink.dicom.azurehealthcareapis.com'
@@ -100,6 +103,7 @@ param privateLinkPrivateDnsZones array = [
   'privatelink.{regionCode}.backup.windowsazure.com'
   'privatelink.siterecovery.windowsazure.com'
   'privatelink.monitor.azure.com'
+  'privatelink.{regionName}.prometheus.monitor.azure.com'
   'privatelink.oms.opinsights.azure.com'
   'privatelink.ods.opinsights.azure.com'
   'privatelink.agentsvc.azure-automation.net'
@@ -113,7 +117,6 @@ param privateLinkPrivateDnsZones array = [
   'privatelink.attest.azure.net'
   'privatelink.search.windows.net'
   'privatelink.azurewebsites.net'
-  'scm.privatelink.azurewebsites.net'
   'privatelink.service.signalr.net'
   'privatelink.azurestaticapps.net'
   'privatelink.azuresynapse.net'
@@ -125,6 +128,9 @@ param privateLinkPrivateDnsZones array = [
 @description('Optional. An array of Private Link Private DNS Zones to exclude from the deployment. The DNS zone names must match what is provided as the default values or any input to the `privateLinkPrivateDnsZones` parameter e.g. `privatelink.api.azureml.ms` or `privatelink.{regionCode}.backup.windowsazure.com` or `privatelink.{regionName}.azmk8s.io` .')
 param privateLinkPrivateDnsZonesToExclude string[]?
 
+@description('Optional. An array of additional Private Link Private DNS Zones to include in the deployment on top of the defaults set in the parameter `privateLinkPrivateDnsZones`.')
+param additionalPrivateLinkPrivateDnsZonesToInclude string[]?
+
 @description('Optional. ***DEPRECATED, PLEASE USE `virtualNetworkLinks` INSTEAD AS MORE VIRTUAL NETWORK LINK PROPERTIES ARE EXPOSED. IF INPUT IS PROVIDED TO `virtualNetworkLinks` THIS PARAMETERS INPUT WILL BE PROCESSED AND INPUT AND FORMATTED BY THE MODULE AND UNIOND WITH THE INPUT TO `virtualNetworkLinks`. THIS PARAMETER WILL BE REMOVED IN A FUTURE RELEASE.*** An array of Virtual Network Resource IDs to link to the Private Link Private DNS Zones. Each item must be a valid Virtual Network Resource ID.')
 param virtualNetworkResourceIdsToLinkTo array = []
 
@@ -135,8 +141,13 @@ param virtualNetworkLinks virtualNetworkLinkType[]?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-var privateLinkPrivateDnsZonesWithExclusions = filter(
+var combinedPrivateLinkPrivateDnsZonesProvided = union(
   privateLinkPrivateDnsZones,
+  additionalPrivateLinkPrivateDnsZonesToInclude ?? []
+)
+
+var privateLinkPrivateDnsZonesWithExclusions = filter(
+  combinedPrivateLinkPrivateDnsZonesProvided,
   zone => !contains(privateLinkPrivateDnsZonesToExclude ?? [], zone)
 )
 
@@ -308,7 +319,7 @@ var combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink = map(
 )
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.network-privatelinkprivatednszones.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -334,7 +345,7 @@ resource pdnsZones 'Microsoft.Network/privateDnsZones@2024-06-01' = [
   }
 ]
 
-resource pdnsZonesLock 'Microsoft.Authorization/locks@2016-09-01' = [
+resource pdnsZonesLock 'Microsoft.Authorization/locks@2020-05-01' = [
   for (zone, i) in combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink: if (!empty(lock ?? {}) && lock.?kind != 'None') {
     name: lock.?name ?? 'lock-${zone.pdnsZoneName}'
     properties: {

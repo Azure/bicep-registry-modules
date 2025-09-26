@@ -13,11 +13,11 @@ This module deploys an Alert Processing Rule.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.AlertsManagement/actionRules` | [2021-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AlertsManagement/2021-08-08/actionRules) |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.AlertsManagement/actionRules` | 2021-08-08 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.alertsmanagement_actionrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AlertsManagement/2021-08-08/actionRules)</li></ul> |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 
 ## Usage examples
 
@@ -232,6 +232,11 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    schedule: {
+      effectiveFrom: '2026-01-01T00:00:00'
+      effectiveUntil: '2027-12-31T23:59:59'
+      timeZone: 'Eastern Standard Time'
+    }
     scopes: [
       '<id>'
     ]
@@ -396,6 +401,13 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
         }
       ]
     },
+    "schedule": {
+      "value": {
+        "effectiveFrom": "2026-01-01T00:00:00",
+        "effectiveUntil": "2027-12-31T23:59:59",
+        "timeZone": "Eastern Standard Time"
+      }
+    },
     "scopes": {
       "value": [
         "<id>"
@@ -546,6 +558,11 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param schedule = {
+  effectiveFrom: '2026-01-01T00:00:00'
+  effectiveUntil: '2027-12-31T23:59:59'
+  timeZone: 'Eastern Standard Time'
+}
 param scopes = [
   '<id>'
 ]
@@ -763,6 +780,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -782,6 +800,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -932,6 +957,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

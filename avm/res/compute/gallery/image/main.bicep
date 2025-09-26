@@ -37,7 +37,7 @@ param memory resourceRangeType = { min: 4, max: 16 }
 @sys.description('Optional. The release note uri. Has to be a valid URL.')
 param releaseNoteUri string?
 
-@sys.description('Optional. The security type of the image. Requires a hyperVGeneration V2.')
+@sys.description('Optional. The security type of the image. Requires a hyperVGeneration V2. Note, if storing images for e.g., DevBoxes, \'TrustedLaunch\' is required.')
 param securityType (
   | 'Standard'
   | 'ConfidentialVM'
@@ -89,7 +89,7 @@ param roleAssignments roleAssignmentType[]?
 }
 '''
 })
-param tags object?
+param tags resourceInput<'Microsoft.Compute/galleries/images@2024-03-03'>.tags?
 
 var builtInRoleNames = {
   'Compute Gallery Sharing Admin': subscriptionResourceId(
@@ -181,7 +181,7 @@ resource image 'Microsoft.Compute/galleries/images@2024-03-03' = {
     osState: osState
     osType: osType
     privacyStatementUri: privacyStatementUri
-    purchasePlan: purchasePlan ?? null
+    ...(purchasePlan != null ? { purchasePlan: purchasePlan } : {})
     recommended: { vCPUs: vCPUs, memory: memory }
     releaseNoteUri: releaseNoteUri
   }

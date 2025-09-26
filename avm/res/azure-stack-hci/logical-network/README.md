@@ -13,10 +13,10 @@ This module deploys an Azure Stack HCI Logical Network.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.AzureStackHCI/logicalNetworks` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2024-05-01-preview/logicalNetworks) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.AzureStackHCI/logicalNetworks` | 2024-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_logicalnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2024-05-01-preview/logicalNetworks)</li></ul> |
 
 ## Usage examples
 
@@ -46,9 +46,6 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
     customLocationResourceId: '<customLocationResourceId>'
     name: 'ashlnminlogicalnetwork'
     vmSwitchName: '<vmSwitchName>'
-    // Non-required parameters
-    routeName: 'default'
-    vlanId: '<vlanId>'
   }
 }
 ```
@@ -74,13 +71,6 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
     },
     "vmSwitchName": {
       "value": "<vmSwitchName>"
-    },
-    // Non-required parameters
-    "routeName": {
-      "value": "default"
-    },
-    "vlanId": {
-      "value": "<vlanId>"
     }
   }
 }
@@ -100,9 +90,6 @@ using 'br/public:avm/res/azure-stack-hci/logical-network:<version>'
 param customLocationResourceId = '<customLocationResourceId>'
 param name = 'ashlnminlogicalnetwork'
 param vmSwitchName = '<vmSwitchName>'
-// Non-required parameters
-param routeName = 'default'
-param vlanId = '<vlanId>'
 ```
 
 </details>
@@ -126,15 +113,19 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
     name: 'ashlnwaflogicalnetwork'
     vmSwitchName: '<vmSwitchName>'
     // Non-required parameters
-    addressPrefix: '172.20.0.1/24'
-    defaultGateway: '172.20.0.1'
+    addressPrefix: '192.168.1.0/24'
+    defaultGateway: '192.168.1.1'
     dnsServers: [
-      '172.20.0.1'
+      '192.168.1.254'
     ]
-    endingAddress: '172.20.0.190'
     ipAllocationMethod: 'Static'
+    ipPools: [
+      {
+        end: '192.168.1.190'
+        start: '192.168.1.171'
+      }
+    ]
     routeName: 'default'
-    startingAddress: '172.20.0.171'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -169,27 +160,29 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
     },
     // Non-required parameters
     "addressPrefix": {
-      "value": "172.20.0.1/24"
+      "value": "192.168.1.0/24"
     },
     "defaultGateway": {
-      "value": "172.20.0.1"
+      "value": "192.168.1.1"
     },
     "dnsServers": {
       "value": [
-        "172.20.0.1"
+        "192.168.1.254"
       ]
-    },
-    "endingAddress": {
-      "value": "172.20.0.190"
     },
     "ipAllocationMethod": {
       "value": "Static"
     },
+    "ipPools": {
+      "value": [
+        {
+          "end": "192.168.1.190",
+          "start": "192.168.1.171"
+        }
+      ]
+    },
     "routeName": {
       "value": "default"
-    },
-    "startingAddress": {
-      "value": "172.20.0.171"
     },
     "tags": {
       "value": {
@@ -220,15 +213,19 @@ param customLocationResourceId = '<customLocationResourceId>'
 param name = 'ashlnwaflogicalnetwork'
 param vmSwitchName = '<vmSwitchName>'
 // Non-required parameters
-param addressPrefix = '172.20.0.1/24'
-param defaultGateway = '172.20.0.1'
+param addressPrefix = '192.168.1.0/24'
+param defaultGateway = '192.168.1.1'
 param dnsServers = [
-  '172.20.0.1'
+  '192.168.1.254'
 ]
-param endingAddress = '172.20.0.190'
 param ipAllocationMethod = 'Static'
+param ipPools = [
+  {
+    end: '192.168.1.190'
+    start: '192.168.1.171'
+  }
+]
 param routeName = 'default'
-param startingAddress = '172.20.0.171'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -257,9 +254,8 @@ param vlanId = '<vlanId>'
 | [`addressPrefix`](#parameter-addressprefix) | string | Address prefix for the logical network. Required if ipAllocationMethod is Static. |
 | [`defaultGateway`](#parameter-defaultgateway) | string | The default gateway for the network. Required if ipAllocationMethod is Static. |
 | [`dnsServers`](#parameter-dnsservers) | array | The DNS servers list. Required if ipAllocationMethod is Static. |
-| [`endingAddress`](#parameter-endingaddress) | string | The ending IP address of the IP address range. Required if ipAllocationMethod is Static. |
+| [`ipPools`](#parameter-ippools) | array | Network associated pool of IP Addresses. Required if ipAllocationMethod is Static. |
 | [`routeName`](#parameter-routename) | string | The route name. Required if ipAllocationMethod is Static. |
-| [`startingAddress`](#parameter-startingaddress) | string | The starting IP address of the IP address range. Required if ipAllocationMethod is Static. |
 
 **Optional parameters**
 
@@ -317,9 +313,66 @@ The DNS servers list. Required if ipAllocationMethod is Static.
 - Type: array
 - Default: `[]`
 
-### Parameter: `endingAddress`
+### Parameter: `ipPools`
 
-The ending IP address of the IP address range. Required if ipAllocationMethod is Static.
+Network associated pool of IP Addresses. Required if ipAllocationMethod is Static.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`end`](#parameter-ippoolsend) | string | The end IP address of the pool. |
+| [`start`](#parameter-ippoolsstart) | string | The start IP address of the pool. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`info`](#parameter-ippoolsinfo) | object | Additional info for the pool. |
+| [`ipPoolType`](#parameter-ippoolsippooltype) | string | The type of the IP pool. Must be either vippool or vm. |
+| [`name`](#parameter-ippoolsname) | string | The name of the IP pool. |
+
+### Parameter: `ipPools.end`
+
+The end IP address of the pool.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipPools.start`
+
+The start IP address of the pool.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipPools.info`
+
+Additional info for the pool.
+
+- Required: No
+- Type: object
+
+### Parameter: `ipPools.ipPoolType`
+
+The type of the IP pool. Must be either vippool or vm.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'vippool'
+    'vm'
+  ]
+  ```
+
+### Parameter: `ipPools.name`
+
+The name of the IP pool.
 
 - Required: No
 - Type: string
@@ -327,13 +380,6 @@ The ending IP address of the IP address range. Required if ipAllocationMethod is
 ### Parameter: `routeName`
 
 The route name. Required if ipAllocationMethod is Static.
-
-- Required: No
-- Type: string
-
-### Parameter: `startingAddress`
-
-The starting IP address of the IP address range. Required if ipAllocationMethod is Static.
 
 - Required: No
 - Type: string

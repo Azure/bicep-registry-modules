@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "16705539934522968897"
+      "version": "0.37.4.10188",
+      "templateHash": "12623039249930333884"
     },
     "name": "Azure SQL Server failover group",
     "description": "This module deploys Azure SQL Server failover group."
@@ -86,13 +86,13 @@
         "description": "Required. List of databases in the failover group."
       }
     },
-    "partnerServers": {
+    "partnerServerResourceIds": {
       "type": "array",
       "items": {
         "type": "string"
       },
       "metadata": {
-        "description": "Required. List of the partner servers for the failover group."
+        "description": "Required. List of the partner server Resource Ids for the failover group."
       }
     },
     "readOnlyEndpoint": {
@@ -120,17 +120,20 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Sql/servers/failoverGroups@2023-08-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     }
   },
   "resources": {
     "server": {
       "existing": true,
       "type": "Microsoft.Sql/servers",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2023-08-01",
       "name": "[parameters('serverName')]"
     },
     "failoverGroup": {
@@ -147,9 +150,9 @@
           },
           {
             "name": "partnerServers",
-            "count": "[length(parameters('partnerServers'))]",
+            "count": "[length(parameters('partnerServerResourceIds'))]",
             "input": {
-              "id": "[resourceId(resourceGroup().name, 'Microsoft.Sql/servers', parameters('partnerServers')[copyIndex('partnerServers')])]"
+              "id": "[parameters('partnerServerResourceIds')[copyIndex('partnerServers')]]"
             }
           }
         ],

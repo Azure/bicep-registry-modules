@@ -29,7 +29,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -38,7 +38,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
     imageManagedIdentityName: 'dep-${namePrefix}-imsi-${serviceShort}'
     deploymentScriptManagedIdentityName: 'dep-${namePrefix}-dmsi-${serviceShort}'
     sigImageDefinitionName: 'dep-${namePrefix}-imgd-${serviceShort}'
@@ -103,7 +102,10 @@ module testDeployment '../../../main.bicep' = {
       version: 'latest'
     }
     buildTimeoutInMinutes: 60
-    subnetResourceId: nestedDependencies.outputs.subnetResourceId
+    vnetConfig: {
+      subnetResourceId: nestedDependencies.outputs.vmSubnetResourceId
+      proxyVmSize: 'Standard_A1_v2'
+    }
     osDiskSizeGB: 127
     vmSize: 'Standard_D2s_v3'
     distributions: [

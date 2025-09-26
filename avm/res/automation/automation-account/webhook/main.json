@@ -1,0 +1,101 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.37.4.10188",
+      "templateHash": "6248505883003094484"
+    },
+    "name": "Automation Account Webhook",
+    "description": "This module deploys an Azure Automation Account Webhook."
+  },
+  "parameters": {
+    "automationAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Automation Account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the webhook."
+      }
+    },
+    "runbookName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The runbook in which the webhook will be used."
+      }
+    },
+    "runOn": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The hybrid worker group that the scheduled job should run on."
+      }
+    },
+    "parameters": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. List of job properties."
+      }
+    },
+    "expiryTime": {
+      "type": "string",
+      "defaultValue": "[utcNow()]",
+      "metadata": {
+        "description": "Optional. The expiration time of the webhook."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Automation/automationAccounts/webhooks",
+      "apiVersion": "2024-10-23",
+      "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
+      "properties": {
+        "isEnabled": false,
+        "expiryTime": "[parameters('expiryTime')]",
+        "runbook": {
+          "name": "[parameters('runbookName')]"
+        },
+        "runOn": "[parameters('runOn')]",
+        "uri": "",
+        "parameters": "[parameters('parameters')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed variable."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed variable."
+      },
+      "value": "[resourceId('Microsoft.Automation/automationAccounts/webhooks', parameters('automationAccountName'), parameters('name'))]"
+    },
+    "uri": {
+      "type": "string",
+      "metadata": {
+        "description": "The URI of the deployed webhook."
+      },
+      "value": "[reference(resourceId('Microsoft.Automation/automationAccounts/webhooks', parameters('automationAccountName'), parameters('name')), '2024-10-23').uri]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed variable."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

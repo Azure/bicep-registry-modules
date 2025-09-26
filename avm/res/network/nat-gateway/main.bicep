@@ -31,7 +31,7 @@ param publicIPPrefixObjects array?
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -40,7 +40,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags for the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/natGateways@2024-07-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -98,7 +98,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.5.1' = [
+module publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.8.0' = [
   for (publicIPAddressObject, index) in (publicIPAddressObjects ?? []): {
     name: '${uniqueString(deployment().name, location)}-NatGw-PIP-${index}'
     params: {
@@ -132,7 +132,7 @@ module formattedPublicIpResourceIds 'modules/formatResourceId.bicep' = {
   }
 }
 
-module publicIPPrefixes 'br/public:avm/res/network/public-ip-prefix:0.4.1' = [
+module publicIPPrefixes 'br/public:avm/res/network/public-ip-prefix:0.6.0' = [
   for (publicIPPrefixObject, index) in (publicIPPrefixObjects ?? []): {
     name: '${uniqueString(deployment().name, location)}-NatGw-Prefix-PIP-${index}'
     params: {
@@ -159,7 +159,7 @@ module formattedPublicIpPrefixResourceIds 'modules/formatResourceId.bicep' = {
 
 // NAT GATEWAY
 // ===========
-resource natGateway 'Microsoft.Network/natGateways@2023-04-01' = {
+resource natGateway 'Microsoft.Network/natGateways@2024-07-01' = {
   name: name
   location: location
   tags: tags
@@ -178,9 +178,9 @@ resource natGateway_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: natGateway
 }

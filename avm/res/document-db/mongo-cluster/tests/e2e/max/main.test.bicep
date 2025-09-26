@@ -89,7 +89,7 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      highAvailabilityMode: false
+      highAvailabilityMode: 'Disabled'
       networkAcls: {
         customRules: [
           {
@@ -102,7 +102,6 @@ module testDeployment '../../../main.bicep' = [
         allowAllIPs: true
       }
       nodeCount: 2
-      nodeType: 'Shard'
       privateEndpoints: [
         {
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
@@ -154,6 +153,14 @@ module testDeployment '../../../main.bicep' = [
       ]
       sku: 'M30'
       storage: 256
+      enableMicrosoftEntraAuth: false
+      entraAuthIdentities: []
     }
   }
 ]
+
+@secure()
+output obscuredConnectionString string = testDeployment[0].outputs.obscuredConnectionString
+
+@secure()
+output connectionString string = testDeployment[1].outputs.connectionString

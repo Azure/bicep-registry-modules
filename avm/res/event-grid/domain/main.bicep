@@ -24,11 +24,19 @@ param autoDeleteTopicWithLastSubscription bool = true
 @description('Optional. This can be used to restrict traffic from specific IPs instead of all IPs. Note: These are considered only if PublicNetworkAccess is enabled.')
 param inboundIpRules array = []
 
+@description('Optional. The minimum TLS version required for API requests to the domain.')
+@allowed([
+  '1.0'
+  '1.1'
+  '1.2'
+])
+param minimumTlsVersionAllowed string = '1.2'
+
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -36,7 +44,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -48,6 +56,9 @@ param enableTelemetry bool = true
 
 @description('Optional. The topic names which are associated with the domain.')
 param topics array?
+
+@description('Optional. Event subscriptions to deploy.')
+param eventSubscriptions array?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
@@ -149,6 +160,7 @@ resource domain 'Microsoft.EventGrid/domains@2023-06-01-preview' = {
     autoCreateTopicWithFirstSubscription: autoCreateTopicWithFirstSubscription
     autoDeleteTopicWithLastSubscription: autoDeleteTopicWithLastSubscription
     disableLocalAuth: disableLocalAuth
+    minimumTlsVersionAllowed: minimumTlsVersionAllowed
   }
 }
 
@@ -162,13 +174,33 @@ module domain_topics 'topic/main.bicep' = [
   }
 ]
 
+// Event subscriptions
+module domain_eventSubscriptions 'event-subscription/main.bicep' = [
+  for (eventSubscription, index) in (eventSubscriptions ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Domain-EventSubs-${index}'
+    params: {
+      name: eventSubscription.name
+      domainName: domain.name
+      destination: eventSubscription.destination
+      deadLetterDestination: eventSubscription.?deadLetterDestination
+      deadLetterWithResourceIdentity: eventSubscription.?deadLetterWithResourceIdentity
+      deliveryWithResourceIdentity: eventSubscription.?deliveryWithResourceIdentity
+      eventDeliverySchema: eventSubscription.?eventDeliverySchema
+      expirationTimeUtc: eventSubscription.?expirationTimeUtc
+      filter: eventSubscription.?filter
+      labels: eventSubscription.?labels
+      retryPolicy: eventSubscription.?retryPolicy
+    }
+  }
+]
+
 resource domain_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: domain
 }

@@ -14,6 +14,9 @@ Optional. The GitHub organization the issues are located in.
 .PARAMETER RepositoryName
 Optional. The GitHub repository the issues are located in.
 
+.PARAMETER IssueId
+Optional. The id of the issue to fetch. If not provided, it will list all issues as per the remaining filters.
+
 .PARAMETER State
 Optional. Indicates the state of the issues to return.
 
@@ -30,6 +33,11 @@ Optional. The direction to sort the results by.
 Get-GitHubIssueList -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules'
 
 Get all issues from the repository [Azure/bicep-registry-modules] with the default parameters.
+
+.EXAMPLE
+Get-GitHubIssueList -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules' -IssueId 757
+
+Get the issue with ID [757] from the repository [Azure/bicep-registry-modules].
 #>
 function Get-GitHubIssueList {
 
@@ -43,6 +51,9 @@ function Get-GitHubIssueList {
 
         [Parameter(Mandatory = $true)]
         [string] $RepositoryName,
+
+        [Parameter(Mandatory = $false)]
+        [string] $IssueId,
 
         [Parameter(Mandatory = $false)]
         [ValidateSet('open', 'closed', 'all')]
@@ -76,7 +87,7 @@ function Get-GitHubIssueList {
             $queryParameters += "assignee=$Assignee"
         }
         $queryParameters = $queryParameters -join '&'
-        $queryUrl = "/repos/$RepositoryOwner/$RepositoryName/issues?$queryParameters"
+        $queryUrl = ("/repos/$RepositoryOwner/$RepositoryName/issues{0}?$queryParameters" -f ($IssueId ? "/$IssueId" : ''))
         if ($PersonalAccessToken) {
             # Using PAT
             $requestInputObject = @{
@@ -103,7 +114,7 @@ function Get-GitHubIssueList {
         }
 
         $page++
-    } while ($response)
+    } while ($response -and -not $IssueId) # Only loop if fetching more than one issue
 
     return $allIssues
 }

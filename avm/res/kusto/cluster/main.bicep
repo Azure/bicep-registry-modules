@@ -101,7 +101,7 @@ param virtualClusterGraduationProperties string?
 @description('Optional. The virtual network configuration of the Kusto Cluster.')
 param virtualNetworkConfiguration virtualNetworkConfigurationType?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -115,7 +115,7 @@ param tags object?
 @description('Optional. Enable/disable zone redundancy.')
 param enableZoneRedundant bool = false
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
@@ -301,9 +301,9 @@ resource kustoCluster_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!emp
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: kustoCluster
 }
@@ -448,7 +448,7 @@ output databases array = [
 //   Definitions   //
 // =============== //
 
-import { databasePrincipalAssignmentType, databaseReadWriteType  } from 'database/main.bicep'
+import { databasePrincipalAssignmentType, databaseReadWriteType } from 'database/main.bicep'
 
 @export()
 @description('The type for the accepted audience.')
@@ -460,8 +460,8 @@ type acceptedAudienceType = {
 @export()
 @description('The type for the language extension.')
 type languageExtensionType = {
-  @description('Required. The name of the language extension custom image.')
-  languageExtensionCustomImageName: string
+  @description('Optional. The name of the language extension custom image.')
+  languageExtensionCustomImageName: string?
 
   @description('Required. The name of the language extension image.')
   languageExtensionImageName: 'Python3_10_8' | 'Python3_10_8_DL' | 'Python3_6_5' | 'PythonCustomImage' | 'R'

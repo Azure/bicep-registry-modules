@@ -1,14 +1,14 @@
 metadata name = 'Event Hub Namespace Event Hubs'
 metadata description = 'This module deploys an Event Hub Namespace Event Hub.'
 
-@description('Conditional. The name of the parent event hub namespace. Required if the template is used in a standalone deployment.')
+@description('Conditional. The name of the parent Event Hub namespace. Required if the template is used in a standalone deployment.')
 param namespaceName string
 
-@description('Required. The name of the event hub.')
+@description('Required. The name of the Event Hub.')
 param name string
 
-@description('Optional. Authorization Rules for the event hub.')
-param authorizationRules array = [
+@description('Optional. Authorization Rules for the Event Hub.')
+param authorizationRules eventHubAuthorizationRuleType[] = [
   {
     name: 'RootManageSharedAccessKey'
     rights: [
@@ -21,7 +21,7 @@ param authorizationRules array = [
 
 @description('Optional. Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Will be automatically set to infinite retention if cleanup policy is set to "Compact".')
 @minValue(1)
-@maxValue(7)
+@maxValue(90)
 param messageRetentionInDays int = 1
 
 @description('Optional. Number of partitions created for the Event Hub, allowed values are from 1 to 32 partitions.')
@@ -43,18 +43,18 @@ param partitionCount int = 2
 ])
 param status string = 'Active'
 
-@description('Optional. The consumer groups to create in this event hub instance.')
-param consumergroups array = [
+@description('Optional. The consumer groups to create in this Event Hub instance.')
+param consumergroups consumerGroupType[] = [
   {
     name: '$Default'
   }
 ]
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -93,6 +93,9 @@ param captureDescriptionSizeLimitInBytes int = 314572800
 @description('Optional. A value that indicates whether to Skip Empty Archives.')
 param captureDescriptionSkipEmptyArchives bool = false
 
+@description('Optional. A value that indicates whether to enable retention description properties. If it is set to true the messageRetentionInDays property is ignored.')
+param retentionDescriptionEnabled bool = false
+
 @allowed([
   'Compact'
   'Delete'
@@ -101,28 +104,33 @@ param captureDescriptionSkipEmptyArchives bool = false
 param retentionDescriptionCleanupPolicy string = 'Delete'
 
 @minValue(1)
-@maxValue(168)
-@description('Optional. Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue.')
+@maxValue(2160)
+@description('Optional. Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageRetentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue.')
 param retentionDescriptionRetentionTimeInHours int = 1
 
 @minValue(1)
-@maxValue(168)
+@maxValue(2160)
 @description('Optional. Retention cleanup policy. Number of hours to retain the tombstone markers of a compacted Event Hub. This value is only used when cleanupPolicy is Compact. Consumer must complete reading the tombstone marker within this specified amount of time if consumer begins from starting offset to ensure they get a valid snapshot for the specific key described by the tombstone marker within the compacted Event Hub.')
 param retentionDescriptionTombstoneRetentionTimeInHours int = 1
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 var eventHubProperties = {
-  messageRetentionInDays: messageRetentionInDays
+  messageRetentionInDays: retentionDescriptionEnabled ? null : messageRetentionInDays
   partitionCount: partitionCount
   status: status
-  retentionDescription: {
-    cleanupPolicy: retentionDescriptionCleanupPolicy
-    retentionTimeInHours: retentionDescriptionCleanupPolicy == 'Delete'
-      ? retentionDescriptionRetentionTimeInHours
-      : null
-    tombstoneRetentionTimeInHours: retentionDescriptionCleanupPolicy == 'Compact'
-      ? retentionDescriptionTombstoneRetentionTimeInHours
-      : null
-  }
+  retentionDescription: retentionDescriptionEnabled
+    ? {
+        cleanupPolicy: retentionDescriptionCleanupPolicy
+        retentionTimeInHours: retentionDescriptionCleanupPolicy == 'Delete'
+          ? retentionDescriptionRetentionTimeInHours
+          : null
+        tombstoneRetentionTimeInHours: retentionDescriptionCleanupPolicy == 'Compact'
+          ? retentionDescriptionTombstoneRetentionTimeInHours
+          : null
+      }
+    : null
 }
 
 var eventHubPropertiesCapture = {
@@ -180,11 +188,34 @@ var formattedRoleAssignments = [
   })
 ]
 
+// ============== //
+// Resources      //
+// ============== //
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.eventhub-nseventhub.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
 resource namespace 'Microsoft.EventHub/namespaces@2024-01-01' existing = {
   name: namespaceName
 }
 
-resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2022-10-01-preview' = {
+resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2024-01-01' = {
   name: name
   parent: namespace
   properties: captureDescriptionEnabled ? union(eventHubProperties, eventHubPropertiesCapture) : eventHubProperties
@@ -194,9 +225,9 @@ resource eventHub_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(l
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: eventHub
 }
@@ -241,11 +272,39 @@ resource eventHub_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-
   }
 ]
 
-@description('The name of the event hub.')
+// ============ //
+// Outputs      //
+// ============ //
+
+@description('The name of the Event Hub.')
 output name string = eventHub.name
 
-@description('The resource ID of the event hub.')
+@description('The resource ID of the Event Hub.')
 output resourceId string = eventHub.id
 
-@description('The resource group the event hub was deployed into.')
+@description('The resource group the Event Hub was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+// ================ //
+// Definitions      //
+// ================ //
+
+@export()
+@description('Type definition for an Event Hub authorization rule.')
+type eventHubAuthorizationRuleType = {
+  @description('Required. The name of the Event Hub authorization rule.')
+  name: string
+
+  @description('Required. The allowed rights for an Event Hub authorization rule.')
+  rights: ('Listen' | 'Send' | 'Manage')[]
+}
+
+@export()
+@description('Type definition for an Event Hub consumer group.')
+type consumerGroupType = {
+  @description('Required. The name of the consumer group.')
+  name: string
+
+  @description('Optional. User Metadata is a placeholder to store user-defined string data with maximum length 1024. e.g. it can be used to store descriptive data, such as list of teams and their contact information also user-defined configuration settings can be stored.')
+  userMetadata: string?
+}

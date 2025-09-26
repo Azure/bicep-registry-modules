@@ -35,7 +35,7 @@ param hostingMode string = 'default'
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings for all Resources in the solution.')
 param lock lockType?
 
@@ -47,7 +47,7 @@ param networkRuleSet networkRuleSetType?
 @maxValue(12)
 param partitionCount int = 1
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -102,7 +102,7 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Tags to help categorize the resource in the Azure portal.')
-param tags object?
+param tags resourceInput<'Microsoft.Search/searchServices@2025-02-01-preview'>.tags?
 
 // ============= //
 //   Variables   //
@@ -240,9 +240,9 @@ resource searchService_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!em
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: searchService
 }
@@ -266,7 +266,10 @@ resource searchService_roleAssignments 'Microsoft.Authorization/roleAssignments@
 module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-searchService-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(searchService.id, '/'))}-${privateEndpoint.?service ?? 'searchService'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -385,14 +388,57 @@ output location string = searchService.location
 @description('The endpoint of the search service.')
 output endpoint string = searchService.properties.endpoint
 
+@description('The private endpoints of the search service.')
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: searchService_privateEndpoints[index].outputs.name
+    resourceId: searchService_privateEndpoints[index].outputs.resourceId
+    groupId: searchService_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: searchService_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: searchService_privateEndpoints[index].outputs.networkInterfaceResourceIds
+  }
+]
+
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
   ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
   : {}
 
+@secure()
+@description('The primary admin API key of the search service.')
+output primaryKey string = searchService.listAdminKeys().primaryKey
+
+@secure()
+@description('The secondaryKey admin API key of the search service.')
+output secondaryKey string = searchService.listAdminKeys().secondaryKey
+
 // =============== //
 //   Definitions   //
 // =============== //
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
 type secretsExportConfigurationType = {
   @description('Required. The key vault name where to store the API Admin keys generated by the modules.')

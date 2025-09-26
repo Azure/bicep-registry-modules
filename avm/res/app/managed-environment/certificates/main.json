@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "18123249047188753287"
+      "version": "0.37.4.10188",
+      "templateHash": "9217505209061214445"
     },
     "name": "App ManagedEnvironments Certificates",
     "description": "This module deploys a App Managed Environment Certificate."
@@ -88,22 +88,25 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/managedEnvironments/certificates@2025-02-02-preview#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     }
   },
   "resources": {
     "managedEnvironment": {
       "existing": true,
       "type": "Microsoft.App/managedEnvironments",
-      "apiVersion": "2024-10-02-preview",
+      "apiVersion": "2025-02-02-preview",
       "name": "[parameters('managedEnvironmentName')]"
     },
     "managedEnvironmentCertificate": {
       "type": "Microsoft.App/managedEnvironments/certificates",
-      "apiVersion": "2024-10-02-preview",
+      "apiVersion": "2025-02-02-preview",
       "name": "[format('{0}/{1}', parameters('managedEnvironmentName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "properties": {
