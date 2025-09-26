@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added many resource-derived types for module usability
+- Added many resource-derived types for improved module usability
 
 ### Breaking Changes
 
