@@ -84,7 +84,7 @@ jobs:
     with:
       workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
       # moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}" # TODO: Undo
-      moduleTestFilePaths: "{\"path\":\"tests/e2e/waf-aligned/main.test.bicep\",\"name\":\"waf-aligned\"}"
+      moduleTestFilePaths: "[{\"path\":\"tests/e2e/waf-aligned/main.test.bicep\",\"name\":\"waf-aligned\"}]"
       psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
       modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath}}"
     secrets: inherit
