@@ -21,6 +21,7 @@ param tags resourceInput<'Microsoft.ApiManagement/service/namedValues@2024-05-01
 param secret bool = false
 
 @description('Optional. Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on \'GET\' operations! Use \'/listSecrets\' POST request to get the value.')
+@secure()
 param value string = newGuid()
 
 @description('Optional. Enable/Disable usage telemetry for module.')

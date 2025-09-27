@@ -322,6 +322,12 @@ module testDeployment '../../../main.bicep' = [
         thresholdValue125DisplayOnChart: 'Disabled'
         thresholdValue75DisplayOnChart: 'Enabled'
       }
+      secrets: [
+        {
+          name: 'labSecret1'
+          value: guid(baseTime)
+        }
+      ]
     }
   }
 ]

@@ -749,7 +749,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/kubernetes-configuration/flux-configuration:0.3.7` | Remote reference |
+| `br/public:avm/res/kubernetes-configuration/flux-configuration:0.3.8` | Remote reference |
 
 ## Notes
 
