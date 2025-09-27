@@ -52,6 +52,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       azureSkuTier: 'Basic'
+      enableDnsProxy: true
       virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
       location: resourceLocation
       threatIntelMode: 'Deny'
