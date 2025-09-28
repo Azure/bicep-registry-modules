@@ -70,9 +70,6 @@ module testDeployment '../../../main.bicep' = [
       allowBlobPublicAccess: false
       requireInfrastructureEncryption: true
       largeFileSharesState: 'Enabled'
-      enableHierarchicalNamespace: true
-      enableSftp: true
-      enableNfsV3: true
       privateEndpoints: [
         {
           service: 'blob'
@@ -142,8 +139,6 @@ module testDeployment '../../../main.bicep' = [
         containers: [
           {
             name: 'avdscripts'
-            enableNfsV3AllSquash: true
-            enableNfsV3RootSquash: true
             publicAccess: 'None'
           }
           {
@@ -152,7 +147,11 @@ module testDeployment '../../../main.bicep' = [
             metadata: {
               testKey: 'testValue'
             }
-            allowProtectedAppendWrites: false
+            immutabilityPolicy: {
+              immutabilityPeriodSinceCreationInDays: 7
+              allowProtectedAppendWrites: false
+              allowProtectedAppendWritesAll: true
+            }
           }
         ]
         automaticSnapshotPolicyEnabled: true

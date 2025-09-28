@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "17842100015260510656"
+      "version": "0.36.177.2456",
+      "templateHash": "8148722030488144649"
     },
     "name": "Kubernetes Runtime Load Balancers",
     "description": "This module deploys a Kubernetes Runtime Load Balancer for MetalLB and related networking services."
@@ -78,7 +78,7 @@
       }
     },
     "kubernetesRuntimeRPObjectId": {
-      "type": "securestring",
+      "type": "string",
       "metadata": {
         "description": "Required. The service principal object ID of the Kubernetes Runtime HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 087fca6e-4606-4d41-b3f6-5ebdf75b8b4c`."
       }

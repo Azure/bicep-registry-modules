@@ -228,7 +228,7 @@ param serviceSelector = {
 | [`addresses`](#parameter-addresses) | array | IP Range - The IP addresses that this load balancer will advertise. |
 | [`advertiseMode`](#parameter-advertisemode) | string | Advertise Mode - The mode in which the load balancer should advertise the IP addresses. |
 | [`clusterName`](#parameter-clustername) | string | The name of the AKS cluster or Arc-enabled connected cluster that should be configured. |
-| [`kubernetesRuntimeRPObjectId`](#parameter-kubernetesruntimerpobjectid) | securestring | The service principal object ID of the Kubernetes Runtime HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 087fca6e-4606-4d41-b3f6-5ebdf75b8b4c`. |
+| [`kubernetesRuntimeRPObjectId`](#parameter-kubernetesruntimerpobjectid) | string | The service principal object ID of the Kubernetes Runtime HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 087fca6e-4606-4d41-b3f6-5ebdf75b8b4c`. |
 | [`name`](#parameter-name) | string | The name of the load balancer. |
 
 **Optional parameters**
@@ -273,7 +273,7 @@ The name of the AKS cluster or Arc-enabled connected cluster that should be conf
 The service principal object ID of the Kubernetes Runtime HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 087fca6e-4606-4d41-b3f6-5ebdf75b8b4c`.
 
 - Required: Yes
-- Type: securestring
+- Type: string
 
 ### Parameter: `name`
 

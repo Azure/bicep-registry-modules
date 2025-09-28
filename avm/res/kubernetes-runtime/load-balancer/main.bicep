@@ -33,7 +33,6 @@ param serviceSelector {
 }?
 
 @description('Required. The service principal object ID of the Kubernetes Runtime HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 087fca6e-4606-4d41-b3f6-5ebdf75b8b4c`.')
-@secure()
 param kubernetesRuntimeRPObjectId string
 
 var enableReferencedModulesTelemetry = false
