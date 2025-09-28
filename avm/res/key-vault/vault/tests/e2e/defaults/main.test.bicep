@@ -42,7 +42,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}002'
-      // Only for testing purposes temp
+      // Only for testing purposes
       enablePurgeProtection: false
     }
   }
