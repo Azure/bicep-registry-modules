@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "4232310117466944734"
+      "templateHash": "9651254428903693329"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -347,7 +347,7 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Use versioning to automatically maintain previous versions of your blobs."
+            "description": "Optional. Use versioning to automatically maintain previous versions of your blobs. Cannot be enabled for ADLS Gen2 storage accounts."
           }
         },
         "lastAccessTimeTrackingPolicyEnabled": {
@@ -1759,16 +1759,6 @@
         "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set."
       }
     },
-    "immutableStorageWithVersioning": {
-      "type": "object",
-      "metadata": {
-        "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Storage/storageAccounts@2025-01-01#properties/properties/properties/immutableStorageWithVersioning"
-        },
-        "description": "Optional. The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default. Cannot be enabled for ADLS Gen2 storage accounts."
-      },
-      "nullable": true
-    },
     "supportsHttpsTrafficOnly": {
       "type": "bool",
       "defaultValue": true,
@@ -1823,9 +1813,9 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Storage/storageAccounts@2024-01-01#properties/properties/properties/immutableStorageWithVersioning"
+          "source": "Microsoft.Storage/storageAccounts@2025-01-01#properties/properties/properties/immutableStorageWithVersioning"
         },
-        "description": "Optional. The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default."
+        "description": "Optional. The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default. Cannot be enabled for ADLS Gen2 storage accounts."
       },
       "nullable": true
     }
@@ -3136,7 +3126,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "7119131193841840607"
+              "templateHash": "9925173705553594819"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service."
@@ -3519,113 +3509,6 @@
                   "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
-            },
-            "immutabilityPolicyType": {
-              "type": "object",
-              "properties": {
-                "immutabilityPeriodSinceCreationInDays": {
-                  "type": "int",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The immutability period for the blobs in the container since the policy creation, in days."
-                  }
-                },
-                "allowProtectedAppendWrites": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API."
-                  }
-                },
-                "allowProtectedAppendWritesAll": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both \"Append and Block Blobs\" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The \"allowProtectedAppendWrites\" and \"allowProtectedAppendWritesAll\" properties are mutually exclusive."
-                  }
-                }
-              },
-              "metadata": {
-                "description": "The type of an immutability policy.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "container/main.bicep"
-                }
-              }
-            },
-            "roleAssignmentType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                  }
-                },
-                "roleDefinitionIdOrName": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                  }
-                },
-                "principalId": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                  }
-                },
-                "principalType": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Device",
-                    "ForeignGroup",
-                    "Group",
-                    "ServicePrincipal",
-                    "User"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The principal type of the assigned principal ID."
-                  }
-                },
-                "description": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The description of the role assignment."
-                  }
-                },
-                "condition": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                  }
-                },
-                "conditionVersion": {
-                  "type": "string",
-                  "allowedValues": [
-                    "2.0"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Version of the condition."
-                  }
-                },
-                "delegatedManagedIdentityResourceId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The Resource Id of the delegated managed identity resource."
-                  }
-                }
-              },
-              "metadata": {
-                "description": "An AVM-aligned type for a role assignment.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
-                }
-              }
             }
           },
           "parameters": {
@@ -3903,9 +3786,6 @@
                   },
                   "enableTelemetry": {
                     "value": "[variables('enableReferencedModulesTelemetry')]"
-                  },
-                  "immutabilityPolicyName": {
-                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'immutabilityPolicyName')]"
                   }
                 },
                 "template": {
