@@ -90,7 +90,7 @@ function Get-GitDiff {
     if ($inUpstream -and $currentBranch -eq 'main') {
         Write-Verbose 'Currently in the upstream branch [main].' -Verbose
         # Get the previous current and current commit
-        $compareFromCommit, $compareWithCommit = ((git log -2 --format=%H).Substring(0, 7) -split '\n') # Upstream main-1 vs upstream main latest
+        $compareWithCommit, $compareFromCommit = ((git log -2 --format=%H).Substring(0, 7) -split '\n') # Upstream main-1 vs upstream main latest
         Write-Verbose ('Fetching changes of previous commit [{0}] against latest commit [{1}] in upstream main.' -f $compareFromCommit, $compareWithCommit) -Verbose
     } else {
         Write-Verbose ("{0} branch [$currentBranch]" -f ($inUpstream ? 'Currently in the upstream' : 'Currently in the fork')) -Verbose
