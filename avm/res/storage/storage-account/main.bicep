@@ -170,9 +170,6 @@ param allowedCopyScope string?
 ])
 param publicNetworkAccess string?
 
-@description('Optional. The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default. Cannot be enabled for ADLS Gen2 storage accounts.')
-param immutableStorageWithVersioning resourceInput<'Microsoft.Storage/storageAccounts@2025-01-01'>.properties.immutableStorageWithVersioning?
-
 @description('Optional. Allows HTTPS traffic only to storage service if sets to true.')
 param supportsHttpsTrafficOnly bool = true
 
@@ -197,8 +194,8 @@ param keyType string?
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
-@description('Optional. The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default.')
-param immutableStorageWithVersioning resourceInput<'Microsoft.Storage/storageAccounts@2024-01-01'>.properties.immutableStorageWithVersioning?
+@description('Optional. The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default. Cannot be enabled for ADLS Gen2 storage accounts.')
+param immutableStorageWithVersioning resourceInput<'Microsoft.Storage/storageAccounts@2025-01-01'>.properties.immutableStorageWithVersioning?
 
 var enableReferencedModulesTelemetry = false
 
