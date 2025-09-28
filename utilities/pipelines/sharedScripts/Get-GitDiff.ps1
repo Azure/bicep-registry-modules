@@ -111,7 +111,8 @@ function Get-GitDiff {
         '--diff-filter=AM',
         $compareFromCommit,
         $compareWithCommit,
-        ((-not [String]::IsNullOrEmpty($PathFilter)) ? '--' : $null)
+        ((-not [String]::IsNullOrEmpty($PathFilter)) ? '--' : $null),
+        ((-not [String]::IsNullOrEmpty($PathFilter)) ? $PathFilter : $null)
     ) | Where-Object { $_ }
     $stats = git diff --stat $statsInput
     Write-Verbose ("Diff found:`n{0}" -f ($stats | Out-String)) -Verbose
@@ -122,6 +123,7 @@ function Get-GitDiff {
         $compareWithCommit,
         ($PathOnly ? '--name-only' : $null),
         ((-not [String]::IsNullOrEmpty($PathFilter)) ? '--' : $null)
+        ((-not [String]::IsNullOrEmpty($PathFilter)) ? $PathFilter : $null)
     ) | Where-Object { $_ }
     $modifiedFiles = git diff $diffInput
 
