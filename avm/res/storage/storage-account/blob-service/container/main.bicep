@@ -189,7 +189,7 @@ output resourceGroupName string = resourceGroup().name
 //   Definitions   //
 // =============== //
 @export()
-@description('The type of an immutability policy.')
+@description('The type for an immutability policy.')
 type immutabilityPolicyType = {
   @description('Optional. The immutability period for the blobs in the container since the policy creation, in days.')
   immutabilityPeriodSinceCreationInDays: int?
