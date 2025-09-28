@@ -436,7 +436,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
         }
       : null
     supportsHttpsTrafficOnly: supportsHttpsTrafficOnly
-    immutableStorageWithVersioning: immutableStorageWithVersioning
     isSftpEnabled: enableSftp
     isNfsV3Enabled: enableNfsV3 ? enableNfsV3 : any('')
     largeFileSharesState: (skuName == 'Standard_LRS') || (skuName == 'Standard_ZRS') ? largeFileSharesState : null
