@@ -107,17 +107,23 @@ function Get-GitDiff {
         Write-Verbose ('Fetching changes of latest upstream [main] commit [{0}] against current commit [{1}].' -f $compareFromCommit, $compareWithCommit) -Verbose
     }
 
+    $statsInput = @(
+        '--diff-filter=AM',
+        $compareFromCommit,
+        $compareWithCommit,
+        ((-not [String]::IsNullOrEmpty($PathFilter)) ? '--' : $null)
+    ) | Where-Object { $_ }
+    $stats = git diff --stat $statsInput
+    Write-Verbose ("Diff found:`n{0}" -f ($stats | Out-String)) -Verbose
+
     $diffInput = @(
         '--diff-filter=AM',
         $compareFromCommit,
         $compareWithCommit,
-        ((-not [String]::IsNullOrEmpty($PathFilter)) ? '--' : $null),
-        $PathFilter
+        ($PathOnly ? '--name-only' : $null),
+        ((-not [String]::IsNullOrEmpty($PathFilter)) ? '--' : $null)
     ) | Where-Object { $_ }
-    $modifiedFiles = git diff ($PathOnly ? '--name-only' : '') $diffInput
-
-    $stats = git diff --stat $diffInput
-    Write-Verbose ("Diff found:`n{0}" -f ($stats | Out-String)) -Verbose
+    $modifiedFiles = git diff $diffInput
 
     if ($PathOnly) {
         # Returns only the paths of the changed files, not the changes themselves
