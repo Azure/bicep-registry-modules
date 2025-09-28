@@ -110,14 +110,14 @@ jobs:
     name: "Deploy [${{ matrix.testCases.name}}]"
     environment: avm-validation
     runs-on: ubuntu-latest
-    if: |
-      !cancelled() &&
-      (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
-      needs.job_module_static_validation.result != 'failure' &&
-      needs.job_psrule_must.result != 'failure'
-    needs:
-      - job_module_static_validation
-      - job_psrule_must
+    # if: |
+    #   !cancelled() &&
+    #   (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
+    #   needs.job_module_static_validation.result != 'failure' &&
+    #   needs.job_psrule_must.result != 'failure'
+    # needs:
+    #   - job_module_static_validation
+    #   - job_psrule_must
     strategy:
       fail-fast: false
       matrix:
