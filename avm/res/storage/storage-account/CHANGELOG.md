@@ -6,12 +6,13 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added parameter `immutableStorageWithVersioning` & validation
-- Added user defined type for `blobServices` parameter
+- Added type for `blobServices` parameter and its children
+- Added support for `immutableStorageWithVersioning` parameter
 
 ### Breaking Changes
 
-- Renamed `blobServices/container/immutabilityPolicyProperties` parameter to `immutabilityPolicy`
+- Renamed `blobServices.container.immutabilityPolicyProperties` parameter to `immutabilityPolicy`
+- Moved `blobServices.container.immutabilityPolicyName` parameter into `blobServices.container.immutabilityPolicy` parameter and implemented its pass thru
 
 ## 0.26.2
 

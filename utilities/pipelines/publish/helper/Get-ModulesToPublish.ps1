@@ -28,7 +28,8 @@ function Get-ModifiedFileList {
         $currentCommit, $previousCommit = ((git log -2 --format=%H).Substring(0, 7) -split '\n')
 
         Write-Verbose ('Fetching changes of current commit [{0}] against the previous commit [{1}].' -f $currentCommit, $previousCommit) -Verbose
-        $diff = git diff --name-only --diff-filter=AM $currentCommit $previousCommit
+        $stat = git diff --diff-filter=AM $previousCommit $currentCommit --stat
+        $diff = git diff --name-only --diff-filter=AM $previousCommit $currentCommit
     } else {
         Write-Verbose ("{0} branch [$currentBranch]" -f ($inUpstream ? 'Currently in the upstream' : 'Currently in the fork')) -Verbose
 
@@ -42,11 +43,12 @@ function Get-ModifiedFileList {
         $currentUpstreamCommit = git rev-parse --short=7 'upstream/main' # Get main's commit in upstream
 
         Write-Verbose ('Fetching changes of current commit [{0}] against upstream [main] [{1}]' -f $currentCommit, $currentUpstreamCommit) -Verbose
+        $stat = git diff --diff-filter=AM $currentCommit $currentUpstreamCommit --stat
         $diff = git diff --name-only --diff-filter=AM $currentCommit $currentUpstreamCommit
     }
 
-    if ($diff.Count -gt 0) {
-        Write-Verbose ("[{0}] Plain diff files found `git diff`:`n[{1}]" -f $diff.Count, ($diff | ConvertTo-Json | Out-String)) -Verbose
+    if ($stat.Count -gt 0) {
+        Write-Verbose ("[{0}] Plain diff files found `git diff`:`n[{1}]" -f $stat.Count, ($stat | ConvertTo-Json | Out-String)) -Verbose
     } else {
         Write-Verbose 'Plain diff files found via `git diff`.' -Verbose
     }
@@ -132,10 +134,17 @@ function Get-TemplateFileToPublish {
         [switch] $SkipNotVersionedModules
     )
 
-    $ModuleRelativeFolderPath = (($ModuleFolderPath -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
+    $ModuleFolderPath = $ModuleFolderPath -replace '\\', '/'
+
+    $ModuleRelativeFolderPath = (($ModuleFolderPath -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/')
     $ModifiedFiles = Get-ModifiedFileList -Verbose
     Write-Verbose "Looking for modified files under: [$ModuleRelativeFolderPath]" -Verbose
-    $modifiedModuleFiles = $ModifiedFiles.FullName | Where-Object { $_ -like "*$ModuleFolderPath*" }
+
+    # Adding a `/` at the end of the path (if not present) to avoid that e.g. a filter like `cache/redis` also matches `cache/redis-enterprise`
+    if ($ModuleFolderPath -notmatch '^.+\/$') {
+        $ModuleFolderPath += '/'
+    }
+    $modifiedModuleFiles = $ModifiedFiles.FullName | Where-Object { ($_ -replace '\\', '/') -like "*$ModuleFolderPath*" }
 
     if ($modifiedModuleFiles.Count -gt 0) {
         Write-Verbose ("[{0}] Path-filtered files found:`n[{1}]" -f $modifiedModuleFiles.Count, ($modifiedModuleFiles | ConvertTo-Json | Out-String)) -Verbose

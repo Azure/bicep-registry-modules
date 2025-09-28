@@ -100,7 +100,7 @@ param customDomainUseSubDomainName bool = false
 param dnsEndpointType string?
 
 @description('Optional. Blob service and containers to deploy.')
-param blobServices blobServicesType = kind != 'FileStorage'
+param blobServices blobServiceType = kind != 'FileStorage'
   ? {
       containerDeleteRetentionPolicyEnabled: true
       containerDeleteRetentionPolicyDays: 7
@@ -196,6 +196,9 @@ param keyType string?
 
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
+
+@description('Optional. The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default.')
+param immutableStorageWithVersioning resourceInput<'Microsoft.Storage/storageAccounts@2024-01-01'>.properties.immutableStorageWithVersioning?
 
 var enableReferencedModulesTelemetry = false
 
@@ -464,6 +467,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
       ? { azureFilesIdentityBasedAuthentication: azureFilesIdentityBasedAuthentication }
       : {})
     ...(enableHierarchicalNamespace != null ? { isHnsEnabled: enableHierarchicalNamespace } : {})
+    immutableStorageWithVersioning: immutableStorageWithVersioning
   }
 }
 
@@ -873,8 +877,8 @@ import { containerType, corsRuleType } from 'blob-service/main.bicep'
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 
 @export()
-@description('The type of a blob services configuration.')
-type blobServicesType = {
+@description('The type of a blob service.')
+type blobServiceType = {
   @description('Optional. Automatic Snapshot is enabled if set to true.')
   automaticSnapshotPolicyEnabled: bool?
 

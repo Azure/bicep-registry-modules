@@ -22,9 +22,9 @@ This module deploys a Storage Account.
 | `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Storage/storageAccounts` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts)</li></ul> |
-| `Microsoft.Storage/storageAccounts/blobServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices)</li></ul> |
-| `Microsoft.Storage/storageAccounts/blobServices/containers` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices/containers)</li></ul> |
-| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers_immutabilitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices/containers/immutabilityPolicies)</li></ul> |
+| `Microsoft.Storage/storageAccounts/blobServices` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/blobServices/containers` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers)</li></ul> |
+| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers_immutabilitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers/immutabilityPolicies)</li></ul> |
 | `Microsoft.Storage/storageAccounts/fileServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices)</li></ul> |
 | `Microsoft.Storage/storageAccounts/fileServices/shares` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices_shares.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices/shares)</li></ul> |
 | `Microsoft.Storage/storageAccounts/localUsers` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_localusers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/localUsers)</li></ul> |
@@ -2722,12 +2722,15 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       containerDeleteRetentionPolicyEnabled: true
       containers: [
         {
-          enableNfsV3AllSquash: true
-          enableNfsV3RootSquash: true
           name: 'avdscripts'
           publicAccess: 'None'
         }
         {
+          immutabilityPolicy: {
+            allowProtectedAppendWrites: false
+            allowProtectedAppendWritesAll: true
+            immutabilityPeriodSinceCreationInDays: 7
+          }
           metadata: {
             testKey: 'testValue'
           }
@@ -2767,9 +2770,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableHierarchicalNamespace: true
-    enableNfsV3: true
-    enableSftp: true
     fileServices: {
       diagnosticSettings: [
         {
@@ -2980,12 +2980,15 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         "containerDeleteRetentionPolicyEnabled": true,
         "containers": [
           {
-            "enableNfsV3AllSquash": true,
-            "enableNfsV3RootSquash": true,
             "name": "avdscripts",
             "publicAccess": "None"
           },
           {
+            "immutabilityPolicy": {
+              "allowProtectedAppendWrites": false,
+              "allowProtectedAppendWritesAll": true,
+              "immutabilityPeriodSinceCreationInDays": 7
+            },
             "metadata": {
               "testKey": "testValue"
             },
@@ -3027,15 +3030,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "enableHierarchicalNamespace": {
-      "value": true
-    },
-    "enableNfsV3": {
-      "value": true
-    },
-    "enableSftp": {
-      "value": true
     },
     "fileServices": {
       "value": {
@@ -3266,12 +3260,15 @@ param blobServices = {
   containerDeleteRetentionPolicyEnabled: true
   containers: [
     {
-      enableNfsV3AllSquash: true
-      enableNfsV3RootSquash: true
       name: 'avdscripts'
       publicAccess: 'None'
     }
     {
+      immutabilityPolicy: {
+        allowProtectedAppendWrites: false
+        allowProtectedAppendWritesAll: true
+        immutabilityPeriodSinceCreationInDays: 7
+      }
       metadata: {
         testKey: 'testValue'
       }
@@ -3311,9 +3308,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param enableHierarchicalNamespace = true
-enableNfsV3: true
-param enableSftp = true
 param fileServices = {
   diagnosticSettings: [
     {
@@ -3533,7 +3527,7 @@ param tags = {
 | [`enableSftp`](#parameter-enablesftp) | bool | If true, enables Secure File Transfer Protocol for the storage account. Requires enableHierarchicalNamespace to be true. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`fileServices`](#parameter-fileservices) | object | File service and shares to deploy. |
-| [`immutableStorageWithVersioning`](#parameter-immutablestoragewithversioning) | object | The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default. Cannot be enabled for ADLS Gen2 storage accounts. |
+| [`immutableStorageWithVersioning`](#parameter-immutablestoragewithversioning) | object | The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default. |
 | [`isLocalUserEnabled`](#parameter-islocaluserenabled) | bool | Enables local users feature, if set to true. |
 | [`keyType`](#parameter-keytype) | string | The keyType to use with Queue & Table services. |
 | [`kind`](#parameter-kind) | string | Type of Storage Account to create. |
@@ -3659,7 +3653,7 @@ Blob service and containers to deploy.
 | [`deleteRetentionPolicyDays`](#parameter-blobservicesdeleteretentionpolicydays) | int | Indicates the number of days that the deleted blob should be retained. |
 | [`deleteRetentionPolicyEnabled`](#parameter-blobservicesdeleteretentionpolicyenabled) | bool | The blob service properties for blob soft delete. |
 | [`diagnosticSettings`](#parameter-blobservicesdiagnosticsettings) | array | The diagnostic settings of the service. |
-| [`isVersioningEnabled`](#parameter-blobservicesisversioningenabled) | bool | Use versioning to automatically maintain previous versions of your blobs. Cannot be enabled for ADLS Gen2 storage accounts. |
+| [`isVersioningEnabled`](#parameter-blobservicesisversioningenabled) | bool | Use versioning to automatically maintain previous versions of your blobs. |
 | [`lastAccessTimeTrackingPolicyEnabled`](#parameter-blobserviceslastaccesstimetrackingpolicyenabled) | bool | The blob service property to configure last access time based tracking policy. When set to true last access time based tracking is enabled. |
 | [`restorePolicyDays`](#parameter-blobservicesrestorepolicydays) | int | How long this blob can be restored. It should be less than DeleteRetentionPolicy days. |
 | [`restorePolicyEnabled`](#parameter-blobservicesrestorepolicyenabled) | bool | The blob service properties for blob restore policy. If point-in-time restore is enabled, then versioning, change feed, and blob soft delete must also be enabled. |
@@ -3731,9 +3725,7 @@ Blob containers to create.
 | [`denyEncryptionScopeOverride`](#parameter-blobservicescontainersdenyencryptionscopeoverride) | bool | Block override of encryption scope from the container default. |
 | [`enableNfsV3AllSquash`](#parameter-blobservicescontainersenablenfsv3allsquash) | bool | Enable NFSv3 all squash on blob container. |
 | [`enableNfsV3RootSquash`](#parameter-blobservicescontainersenablenfsv3rootsquash) | bool | Enable NFSv3 root squash on blob container. |
-| [`enableTelemetry`](#parameter-blobservicescontainersenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`immutabilityPolicy`](#parameter-blobservicescontainersimmutabilitypolicy) | object | Configure immutability policy. |
-| [`immutabilityPolicyName`](#parameter-blobservicescontainersimmutabilitypolicyname) | string | Name of the immutable policy. |
 | [`immutableStorageWithVersioningEnabled`](#parameter-blobservicescontainersimmutablestoragewithversioningenabled) | bool | This is an immutable property, when set to true it enables object level immutability at the container level. The property is immutable and can only be set to true at the container creation time. Existing containers must undergo a migration process. |
 | [`metadata`](#parameter-blobservicescontainersmetadata) | object | A name-value pair to associate with the container as metadata. |
 | [`publicAccess`](#parameter-blobservicescontainerspublicaccess) | string | Specifies whether data in the container may be accessed publicly and the level of access. |
@@ -3774,13 +3766,6 @@ Enable NFSv3 root squash on blob container.
 - Required: No
 - Type: bool
 
-### Parameter: `blobServices.containers.enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-
 ### Parameter: `blobServices.containers.immutabilityPolicy`
 
 Configure immutability policy.
@@ -3816,13 +3801,6 @@ The immutability period for the blobs in the container since the policy creation
 
 - Required: No
 - Type: int
-
-### Parameter: `blobServices.containers.immutabilityPolicyName`
-
-Name of the immutable policy.
-
-- Required: No
-- Type: string
 
 ### Parameter: `blobServices.containers.immutableStorageWithVersioningEnabled`
 
@@ -4195,7 +4173,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 ### Parameter: `blobServices.isVersioningEnabled`
 
-Use versioning to automatically maintain previous versions of your blobs. Cannot be enabled for ADLS Gen2 storage accounts.
+Use versioning to automatically maintain previous versions of your blobs.
 
 - Required: No
 - Type: bool
@@ -4460,7 +4438,7 @@ File service and shares to deploy.
 
 ### Parameter: `immutableStorageWithVersioning`
 
-The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default. Cannot be enabled for ADLS Gen2 storage accounts.
+The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default.
 
 - Required: No
 - Type: object

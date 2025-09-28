@@ -10,7 +10,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- Renamed parameter `immutabilityPolicyConfiguration` to `immutabilityPolicy`
+- Renamed `immutabilityPolicyProperties` parameter to `immutabilityPolicy`
+- Moved `immutabilityPolicyName` parameter into `immutabilityPolicy` parameter and implemented its pass thru
 
 ## 0.2.0
 

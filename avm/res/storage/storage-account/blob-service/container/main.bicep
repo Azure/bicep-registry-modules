@@ -26,9 +26,6 @@ param enableNfsV3RootSquash bool = false
 @description('Optional. This is an immutable property, when set to true it enables object level immutability at the container level. The property is immutable and can only be set to true at the container creation time. Existing containers must undergo a migration process.')
 param immutableStorageWithVersioningEnabled bool = false
 
-@description('Optional. Name of the immutable policy.')
-param immutabilityPolicyName string = 'default'
-
 @description('Optional. Configure immutability policy.')
 param immutabilityPolicy immutabilityPolicyType?
 
@@ -126,15 +123,15 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
   name: storageAccountName
 
-  resource blobServices 'blobServices@2024-01-01' existing = {
+  resource blobServices 'blobServices@2025-01-01' existing = {
     name: blobServiceName
   }
 }
 
-resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
+resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2025-01-01' = {
   name: name
   parent: storageAccount::blobServices
   properties: {
@@ -142,7 +139,7 @@ resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@20
     denyEncryptionScopeOverride: denyEncryptionScopeOverride
     enableNfsV3AllSquash: enableNfsV3AllSquash == true ? enableNfsV3AllSquash : null
     enableNfsV3RootSquash: enableNfsV3RootSquash == true ? enableNfsV3RootSquash : null
-    immutableStorageWithVersioning: immutableStorageWithVersioningEnabled == true
+    immutableStorageWithVersioning: immutableStorageWithVersioningEnabled
       ? {
           enabled: immutableStorageWithVersioningEnabled
         }
@@ -153,7 +150,7 @@ resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@20
 }
 
 module container_immutabilityPolicy 'immutability-policy/main.bicep' = if (!empty((immutabilityPolicy ?? {}))) {
-  name: '${name}-${immutabilityPolicyName}'
+  name: take('${deployment().name}-ImmutPol', 64)
   params: {
     storageAccountName: storageAccount.name
     containerName: container.name

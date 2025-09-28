@@ -60,7 +60,7 @@ param restorePolicyDays int = 7
 @description('Optional. Blob containers to create.')
 param containers containerType[]?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -74,11 +74,11 @@ var enableReferencedModulesTelemetry = false
 // The name of the blob services
 var name = 'default'
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
   name: storageAccountName
 }
 
-resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2024-01-01' = {
+resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2025-01-01' = {
   name: name
   parent: storageAccount
   properties: {
@@ -170,7 +170,6 @@ module blobServices_container 'container/main.bicep' = [
       roleAssignments: container.?roleAssignments
       immutabilityPolicy: container.?immutabilityPolicy
       enableTelemetry: enableReferencedModulesTelemetry
-      immutabilityPolicyName: container.?immutabilityPolicyName
     }
   }
 ]
@@ -231,9 +230,6 @@ type containerType = {
   @description('Optional. This is an immutable property, when set to true it enables object level immutability at the container level. The property is immutable and can only be set to true at the container creation time. Existing containers must undergo a migration process.')
   immutableStorageWithVersioningEnabled: bool?
 
-  @description('Optional. Name of the immutable policy.')
-  immutabilityPolicyName: string?
-
   @description('Optional. Configure immutability policy.')
   immutabilityPolicy: immutabilityPolicyType?
 
@@ -242,9 +238,6 @@ type containerType = {
 
   @description('Optional. Specifies whether data in the container may be accessed publicly and the level of access.')
   publicAccess: ('Container' | 'Blob' | 'None')?
-
-  @description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
 
   @description('Optional. Array of role assignments to create.')
   roleAssignments: roleAssignmentType[]?

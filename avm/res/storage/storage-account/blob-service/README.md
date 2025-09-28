@@ -15,9 +15,9 @@ This module deploys a Storage Account Blob Service.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Storage/storageAccounts/blobServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices)</li></ul> |
-| `Microsoft.Storage/storageAccounts/blobServices/containers` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices/containers)</li></ul> |
-| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers_immutabilitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices/containers/immutabilityPolicies)</li></ul> |
+| `Microsoft.Storage/storageAccounts/blobServices` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/blobServices/containers` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers)</li></ul> |
+| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers_immutabilitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers/immutabilityPolicies)</li></ul> |
 
 ## Parameters
 
@@ -127,9 +127,7 @@ Blob containers to create.
 | [`denyEncryptionScopeOverride`](#parameter-containersdenyencryptionscopeoverride) | bool | Block override of encryption scope from the container default. |
 | [`enableNfsV3AllSquash`](#parameter-containersenablenfsv3allsquash) | bool | Enable NFSv3 all squash on blob container. |
 | [`enableNfsV3RootSquash`](#parameter-containersenablenfsv3rootsquash) | bool | Enable NFSv3 root squash on blob container. |
-| [`enableTelemetry`](#parameter-containersenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`immutabilityPolicy`](#parameter-containersimmutabilitypolicy) | object | Configure immutability policy. |
-| [`immutabilityPolicyName`](#parameter-containersimmutabilitypolicyname) | string | Name of the immutable policy. |
 | [`immutableStorageWithVersioningEnabled`](#parameter-containersimmutablestoragewithversioningenabled) | bool | This is an immutable property, when set to true it enables object level immutability at the container level. The property is immutable and can only be set to true at the container creation time. Existing containers must undergo a migration process. |
 | [`metadata`](#parameter-containersmetadata) | object | A name-value pair to associate with the container as metadata. |
 | [`publicAccess`](#parameter-containerspublicaccess) | string | Specifies whether data in the container may be accessed publicly and the level of access. |
@@ -170,13 +168,6 @@ Enable NFSv3 root squash on blob container.
 - Required: No
 - Type: bool
 
-### Parameter: `containers.enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-
 ### Parameter: `containers.immutabilityPolicy`
 
 Configure immutability policy.
@@ -212,13 +203,6 @@ The immutability period for the blobs in the container since the policy creation
 
 - Required: No
 - Type: int
-
-### Parameter: `containers.immutabilityPolicyName`
-
-Name of the immutable policy.
-
-- Required: No
-- Type: string
 
 ### Parameter: `containers.immutableStorageWithVersioningEnabled`
 
