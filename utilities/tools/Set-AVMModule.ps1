@@ -105,7 +105,7 @@ function Set-AVMModule {
     if ($InvokeForDiff) {
         . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
 
-        $relevantTemplatePaths = Get-GitDiff -PathOnly | Where-Object { $_ -like '*main.bicep' }
+        $relevantTemplatePaths = Get-GitDiff -PathOnly | Where-Object { $_ -like '*.bicep' }
         Write-Verbose ('Running for [{0}] relevant files' -f $relevantTemplatePaths.Count) -Verbose
     } else {
         $resolvedPath = (Resolve-Path $ModuleFolderPath).Path
