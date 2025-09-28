@@ -86,13 +86,12 @@ function Get-GitDiff {
 
     $currentBranch = Get-GitBranchName
     $inUpstream = (git remote get-url origin) -match '\/Azure\/' # If in upstream the value would be [https://github.com/Azure/bicep-registry-modules.git]
-    $currentCommit = (git log -1 --format=%H).Substring(0, 7) # Get the current commit
 
     if ($inUpstream -and $currentBranch -eq 'main') {
         Write-Verbose 'Currently in the upstream branch [main].' -Verbose
-        # Get the current and previous commit
-        $compareWithCommit = (git log -2 --format=%H)[1].Substring(0, 7) # Takes the second item of revision range -2
-        Write-Verbose ('Fetching changes of current commit [{0}] against the previous commit [{1}].' -f $currentCommit, $compareWithCommit) -Verbose
+        # Get the previous current and current commit
+        $compareFromCommit, $compareWithCommit = ((git log -2 --format=%H).Substring(0, 7) -split '\n') # Upstream main-1 vs upstream main latest
+        Write-Verbose ('Fetching changes of previous commit [{0}] against latest commit [{1}] in upstream main.' -f $compareFromCommit, $compareWithCommit) -Verbose
     } else {
         Write-Verbose ("{0} branch [$currentBranch]" -f ($inUpstream ? 'Currently in the upstream' : 'Currently in the fork')) -Verbose
 
@@ -102,14 +101,15 @@ function Get-GitDiff {
         git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
         Start-Sleep 5 # Wait for git to finish adding the remote
 
-        $compareWithCommit = git rev-parse --short=7 'upstream/main' # Get main's latest commit in upstream
+        $compareFromCommit = git rev-parse --short=7 'upstream/main' # Get main's latest commit in upstream
+        $compareWithCommit = (git log -1 --format=%H).Substring(0, 7) # Get the current commit
 
-        Write-Verbose ('Fetching changes of current commit [{0}] against upstream [main] [{1}]' -f $currentCommit, $compareWithCommit) -Verbose
+        Write-Verbose ('Fetching changes of latest upstream [main] commit [{0}] against current commit [{1}].' -f $compareFromCommit, $compareWithCommit) -Verbose
     }
 
     $diffInput = @(
         '--diff-filter=AM',
-        $currentCommit,
+        $compareFromCommit,
         $compareWithCommit,
         ((-not [String]::IsNullOrEmpty($PathFilter)) ? '--' : $null),
         $PathFilter
@@ -142,11 +142,11 @@ function Get-GitDiff {
 #         Write-Verbose 'Currently in the upstream branch [main].' -Verbose
 
 #         # Get the current and previous commit
-#         $currentCommit, $previousCommit = ((git log -2 --format=%H).Substring(0, 7) -split '\n')
+#         $compareFromCommit, $previousCommit = ((git log -2 --format=%H).Substring(0, 7) -split '\n')
 
-#         Write-Verbose ('Fetching changes of current commit [{0}] against the previous commit [{1}].' -f $currentCommit, $previousCommit) -Verbose
-#         $stat = git diff --diff-filter=AM $previousCommit $currentCommit --stat
-#         $diff = git diff --name-only --diff-filter=AM $previousCommit $currentCommit
+#         Write-Verbose ('Fetching changes of current commit [{0}] against the previous commit [{1}].' -f $compareFromCommit, $previousCommit) -Verbose
+#         $stat = git diff --diff-filter=AM $previousCommit $compareFromCommit --stat
+#         $diff = git diff --name-only --diff-filter=AM $previousCommit $compareFromCommit
 #     } else {
 #         Write-Verbose ("{0} branch [$currentBranch]" -f ($inUpstream ? 'Currently in the upstream' : 'Currently in the fork')) -Verbose
 
@@ -156,12 +156,12 @@ function Get-GitDiff {
 #         git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
 #         Start-Sleep 5 # Wait for git to finish adding the remote
 
-#         $currentCommit = (git log -1 --format=%H).Substring(0, 7) # Get the current commit
+#         $compareFromCommit = (git log -1 --format=%H).Substring(0, 7) # Get the current commit
 #         $currentUpstreamCommit = git rev-parse --short=7 'upstream/main' # Get main's commit in upstream
 
-#         Write-Verbose ('Fetching changes of current commit [{0}] against upstream [main] [{1}]' -f $currentCommit, $currentUpstreamCommit) -Verbose
-#         $stat = git diff --diff-filter=AM $currentCommit $currentUpstreamCommit --stat
-#         $diff = git diff --name-only --diff-filter=AM $currentCommit $currentUpstreamCommit
+#         Write-Verbose ('Fetching changes of current commit [{0}] against upstream [main] [{1}]' -f $compareFromCommit, $currentUpstreamCommit) -Verbose
+#         $stat = git diff --diff-filter=AM $compareFromCommit $currentUpstreamCommit --stat
+#         $diff = git diff --name-only --diff-filter=AM $compareFromCommit $currentUpstreamCommit
 #     }
 
 #     if ($stat.Count -gt 0) {
