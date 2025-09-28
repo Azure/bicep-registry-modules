@@ -210,7 +210,7 @@ import { immutabilityPolicyType } from 'container/main.bicep'
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 
 @export()
-@description('The type of a container.')
+@description('The type of a storage container.')
 type containerType = {
   @description('Required. The name of the Storage Container to deploy.')
   name: string
