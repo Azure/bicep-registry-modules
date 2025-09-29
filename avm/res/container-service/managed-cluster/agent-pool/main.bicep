@@ -162,7 +162,7 @@ param vnetSubnetResourceId string?
 param workloadRuntime string?
 
 @description('Optional. Windows OS configuration.')
-param windowsProfile windowsProfileType?
+param windowsProfile resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-05-02-preview'>.properties.windowsProfile?
 
 resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-05-02-preview' existing = {
   name: managedClusterName
