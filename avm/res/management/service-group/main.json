@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "18094953411067250954"
+      "templateHash": "2483188741245687532"
     },
     "name": "Service Groups",
     "description": "This module will allow you to create a service group and also associate resource to this service group, if you have permissions upon those resources."
@@ -148,14 +148,20 @@
     },
     "subscriptionIdsToAssociateToServiceGroup": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. An array of subscription IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target subscriptions. The relationship name is generated using uniqueString() function with the service group ID and the subscription ID as inputs."
       }
     },
     "resourceGroupResourceIdsToAssociateToServiceGroup": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. An array of resource group resource IDs to associate to the service group. The deployment principal must have the necessary permissions to perform this action on the target resource groups. The relationship name is generated using uniqueString() function with the service group ID and the resource group resource ID as inputs."
       }
@@ -276,12 +282,12 @@
     "serviceGroup_subscriptionMember": {
       "copy": {
         "name": "serviceGroup_subscriptionMember",
-        "count": "[length(parameters('subscriptionIdsToAssociateToServiceGroup'))]"
+        "count": "[length(coalesce(parameters('subscriptionIdsToAssociateToServiceGroup'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('serviceGroup_subscriptionMember-{0}-{1}', copyIndex(), uniqueString('serviceGroup_subscriptionMember', deployment().name))]",
-      "subscriptionId": "[parameters('subscriptionIdsToAssociateToServiceGroup')[copyIndex()]]",
+      "subscriptionId": "[coalesce(parameters('subscriptionIdsToAssociateToServiceGroup'), createArray())[copyIndex()]]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -333,13 +339,13 @@
     "serviceGroup_resourceGroupMember": {
       "copy": {
         "name": "serviceGroup_resourceGroupMember",
-        "count": "[length(parameters('resourceGroupResourceIdsToAssociateToServiceGroup'))]"
+        "count": "[length(coalesce(parameters('resourceGroupResourceIdsToAssociateToServiceGroup'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('serviceGroup_resourceGroupMember-{0}-{1}', copyIndex(), uniqueString('serviceGroup_resourceGroupMember', deployment().name))]",
-      "subscriptionId": "[split(parameters('resourceGroupResourceIdsToAssociateToServiceGroup')[copyIndex()], '/')[2]]",
-      "resourceGroup": "[split(parameters('resourceGroupResourceIdsToAssociateToServiceGroup')[copyIndex()], '/')[4]]",
+      "subscriptionId": "[split(coalesce(parameters('resourceGroupResourceIdsToAssociateToServiceGroup'), createArray())[copyIndex()], '/')[2]]",
+      "resourceGroup": "[split(coalesce(parameters('resourceGroupResourceIdsToAssociateToServiceGroup'), createArray())[copyIndex()], '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"

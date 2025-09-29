@@ -360,7 +360,6 @@ An array of resource group resource IDs to associate to the service group. The d
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `roleAssignments`
 
@@ -474,7 +473,6 @@ An array of subscription IDs to associate to the service group. The deployment p
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ## Outputs
 
