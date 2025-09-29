@@ -47,7 +47,7 @@ param gpuInstanceProfile string?
 param kubeletDiskType string?
 
 @description('Optional. Linux OS configuration.')
-param linuxOSConfig linuxOSConfigType?
+param linuxOSConfig resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-05-02-preview'>.properties.linuxOSConfig?
 
 @description('Optional. The maximum number of nodes for auto-scaling.')
 param maxCount int?
@@ -230,80 +230,3 @@ output resourceId string = agentPool.id
 
 @description('The resource group the agent pool was deployed into.')
 output resourceGroupName string = resourceGroup().name
-
-@export()
-@description('Linux OS configuration.')
-type linuxOSConfigType = {
-  @description('Optional. The size in MB of a swap file that will be created on each node.')
-  swapFileSizeMB: int?
-  @description('Optional. Sysctl settings for Linux agent nodes.')
-  sysctls: {
-    @description('Optional. Sysctl setting fs.aio-max-nr.')
-    fsAioMaxNr: int?
-    @description('Optional. Sysctl setting fs.file-max.')
-    fsFileMax: int?
-    @description('Optional. Sysctl setting fs.inotify.max_user_watches.')
-    fsInotifyMaxUserWatches: int?
-    @description('Optional. Sysctl setting fs.nr_open.')
-    fsNrOpen: int?
-    @description('Optional. Sysctl setting kernel.threads-max.')
-    kernelThreadsMax: int?
-    @description('Optional. Sysctl setting net.core.netdev.max_backlog.')
-    netCoreNetdevMaxBacklog: int?
-    @description('Optional. Sysctl setting net.core.optmem.max.')
-    netCoreOptmemMax: int?
-    @description('Optional. Sysctl setting net.core.rmem.default.')
-    netCoreRmemDefault: int?
-    @description('Optional. Sysctl setting net.core.rmem.max.')
-    netCoreRmemMax: int?
-    @description('Optional. Sysctl setting net.core.somaxconn.')
-    netCoreSomaxconn: int?
-    @description('Optional. Sysctl setting net.core.wmem.default.')
-    netCoreWmemDefault: int?
-    @description('Optional. Sysctl setting net.core.wmem.max.')
-    netCoreWmemMax: int?
-    @description('Optional. Sysctl setting net.ipv4.ip_local_port_range.')
-    netIpv4IpLocalPortRange: string?
-    @description('Optional. Sysctl setting net.ipv4.neigh.default.gc_thresh1.')
-    netIpv4NeighDefaultGcThresh1: int?
-    @description('Optional. Sysctl setting net.ipv4.neigh.default.gc_thresh2.')
-    netIpv4NeighDefaultGcThresh2: int?
-    @description('Optional. Sysctl setting net.ipv4.neigh.default.gc_thresh3.')
-    netIpv4NeighDefaultGcThresh3: int?
-    @description('Optional. Sysctl setting net.ipv4.tcp_fin_timeout.')
-    netIpv4TcpFinTimeout: int?
-    @description('Optional. Sysctl setting net.ipv4.tcp_keepalive_intvl.')
-    netIpv4TcpkeepaliveIntvl: int?
-    @description('Optional. Sysctl setting net.ipv4.tcp_keepalive_probes.')
-    netIpv4TcpKeepaliveProbes: int?
-    @description('Optional. Sysctl setting net.ipv4.tcp_keepalive_time.')
-    netIpv4TcpKeepaliveTime: int?
-    @description('Optional. Sysctl setting net.ipv4.tcp_max_syn_backlog.')
-    netIpv4TcpMaxSynBacklog: int?
-    @description('Optional. Sysctl setting net.ipv4.tcp_max_tw_buckets.')
-    netIpv4TcpMaxTwBuckets: int?
-    @description('Optional. Sysctl setting net.ipv4.tcp_tw_reuse.')
-    netIpv4TcpTwReuse: bool?
-    @description('Optional. Sysctl setting net.netfilter.nf_conntrack_buckets.')
-    netNetfilterNfConntrackBuckets: int?
-    @description('Optional. Sysctl setting net.netfilter.nf_conntrack_max.')
-    netNetfilterNfConntrackMax: int?
-    @description('Optional. Sysctl setting vm.max_map_count.')
-    vmMaxMapCount: int?
-    @description('Optional. Sysctl setting vm.swappiness.')
-    vmSwappiness: int?
-    @description('Optional. Sysctl setting vm.vfs_cache_pressure.')
-    vmVfsCachePressure: int?
-  }?
-  @description('Optional. Whether the kernel should make aggressive use of memory compaction to make more hugepages available. Valid values are `always`, `defer`, `defer+madvise`, `madvise` and `never`. The default is `madvise`. For more information see [Transparent Hugepages](https://www.kernel.org/doc/html/latest/admin-guide/mm/transhuge.html#admin-guide-transhuge).')
-  transparentHugePageDefrag: string?
-  @description('Optional. Whether transparent hugepages are enabled. Valid values are `always`, `madvise`, and `never`. The default is `always`. For more information see [Transparent Hugepages](https://www.kernel.org/doc/html/latest/admin-guide/mm/transhuge.html#admin-guide-transhuge).')
-  transparentHugePageEnabled: string?
-}
-
-@export()
-@description('Windows OS configuration.')
-type windowsProfileType = {
-  @description('Required. Whether to disable OutboundNAT in windows nodes. The default value is false. Outbound NAT can only be disabled if the cluster outboundType is NAT Gateway and the Windows agent pool does not have node public IP enabled.')
-  disableOutboundNat: bool
-}
