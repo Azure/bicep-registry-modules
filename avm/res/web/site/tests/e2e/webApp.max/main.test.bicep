@@ -17,7 +17,7 @@ param serviceShort string = 'wswamax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-// Note, we enforce the location due to quota restrictions in other regions
+// Note, we enforce the location due to quota restrictions in other regions (esp. east-us)
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'uksouth'
 
