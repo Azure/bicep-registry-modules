@@ -44,7 +44,7 @@ param deleteRetentionPolicyDays int = 7
 @description('Optional. This property when set to true allows deletion of the soft deleted blob versions and snapshots. This property cannot be used with blob restore policy. This property only applies to blob service and does not apply to containers or file share.')
 param deleteRetentionPolicyAllowPermanentDelete bool = false
 
-@description('Optional. Use versioning to automatically maintain previous versions of your blobs.')
+@description('Optional. Use versioning to automatically maintain previous versions of your blobs. Cannot be enabled for ADLS Gen2 storage accounts.')
 param isVersioningEnabled bool = false
 
 @description('Optional. The blob service property to configure last access time based tracking policy. When set to true last access time based tracking is enabled.')
@@ -63,6 +63,11 @@ param containers containerType[]?
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
+
+#disable-next-line no-unused-vars
+var immutabilityValidation = storageAccount.properties.isHnsEnabled == true && isVersioningEnabled
+  ? fail('Configuration error: Versioning for blobs cannot be enabled when hierarchical namespace is enabled.')
+  : null
 
 var enableReferencedModulesTelemetry = false
 
@@ -201,7 +206,7 @@ type corsRuleType = {
   maxAgeInSeconds: int
 }
 
-import { immutabilityPolicyType } from './container/main.bicep'
+import { immutabilityPolicyType } from 'container/main.bicep'
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 
 @export()
