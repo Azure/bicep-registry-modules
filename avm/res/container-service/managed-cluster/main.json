@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "11262247797080238187"
+      "templateHash": "13783263215422482127"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -564,72 +564,6 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for an AAD profile."
-      }
-    },
-    "appMonitoringType": {
-      "type": "object",
-      "properties": {
-        "autoInstrumentation": {
-          "type": "object",
-          "properties": {
-            "enabled": {
-              "type": "bool",
-              "metadata": {
-                "description": "Required. Indicates if Application Monitoring Auto Instrumentation is enabled or not."
-              }
-            }
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Application Monitoring Auto Instrumentation for Kubernetes Application Container. Deploys web hook to auto-instrument Azure Monitor OpenTelemetry based SDKs to collect OpenTelemetry metrics, logs and traces of the application. See aka.ms/AzureMonitorApplicationMonitoring for an overview."
-          }
-        },
-        "openTelemetryLogs": {
-          "type": "object",
-          "properties": {
-            "enabled": {
-              "type": "bool",
-              "metadata": {
-                "description": "Required. Indicates if Application Monitoring Open Telemetry Logs and traces is enabled or not."
-              }
-            },
-            "port": {
-              "type": "int",
-              "metadata": {
-                "description": "Required. The Open Telemetry host port for Open Telemetry logs and traces. If not specified, the default port is 28331."
-              }
-            }
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Application Monitoring Open Telemetry Metrics Profile for Kubernetes Application Container Logs and Traces. Collects OpenTelemetry logs and traces of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview."
-          }
-        },
-        "openTelemetryMetrics": {
-          "type": "object",
-          "properties": {
-            "enabled": {
-              "type": "bool",
-              "metadata": {
-                "description": "Required. Indicates if Application Monitoring Open Telemetry Metrics is enabled or not."
-              }
-            },
-            "port": {
-              "type": "int",
-              "metadata": {
-                "description": "Required. The Open Telemetry host port for Open Telemetry metrics. If not specified, the default port is 28333."
-              }
-            }
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Application Monitoring Open Telemetry Metrics Profile for Kubernetes Application Container Metrics. Collects OpenTelemetry metrics of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Application Monitoring Profile for Kubernetes Application Container. Collects application logs, metrics and traces through auto-instrumentation of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview."
       }
     },
     "diagnosticSettingFullType": {
@@ -1710,7 +1644,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.ContainerService/managedClusters@2025-05-01#properties/tags"
+          "source": "Microsoft.ContainerService/managedClusters@2025-05-02-preview#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -1734,7 +1668,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.ContainerService/managedClusters@2025-05-01#properties/properties/properties/httpProxyConfig"
+          "source": "Microsoft.ContainerService/managedClusters@2025-05-02-preview#properties/properties/properties/httpProxyConfig"
         },
         "description": "Optional. Configurations for provisioning the cluster with HTTP proxy servers."
       },
@@ -1744,7 +1678,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.ContainerService/managedClusters@2025-05-01#properties/properties/properties/identityProfile"
+          "source": "Microsoft.ContainerService/managedClusters@2025-05-02-preview#properties/properties/properties/identityProfile"
         },
         "description": "Optional. Identities associated with the cluster."
       },
@@ -1772,11 +1706,14 @@
       }
     },
     "appMonitoring": {
-      "$ref": "#/definitions/appMonitoringType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2025-05-02-preview#properties/properties/properties/azureMonitorProfile/properties/appMonitoring"
+        },
         "description": "Optional. Application Monitoring Profile for Kubernetes Application Container. Collects application logs, metrics and traces through auto-instrumentation of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview."
-      }
+      },
+      "nullable": true
     },
     "enableContainerInsights": {
       "type": "bool",

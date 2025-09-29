@@ -389,7 +389,7 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 param lock lockType?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-01'>.tags?
+param tags resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-02-preview'>.tags?
 
 @description('Optional. The resource ID of the disc encryption set to apply to the cluster. For security reasons, this value should be provided.')
 param diskEncryptionSetResourceId string?
@@ -398,10 +398,10 @@ param diskEncryptionSetResourceId string?
 param fluxExtension extensionType?
 
 @description('Optional. Configurations for provisioning the cluster with HTTP proxy servers.')
-param httpProxyConfig resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-01'>.properties.httpProxyConfig?
+param httpProxyConfig resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-02-preview'>.properties.httpProxyConfig?
 
 @description('Optional. Identities associated with the cluster.')
-param identityProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-01'>.properties.identityProfile?
+param identityProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-02-preview'>.properties.identityProfile?
 
 @description('Optional. Enables Kubernetes Event-driven Autoscaling (KEDA).')
 param kedaAddon bool = false
@@ -413,7 +413,7 @@ param vpaAddon bool = false
 param enableAzureMonitorProfileMetrics bool = false
 
 @description('Optional. Application Monitoring Profile for Kubernetes Application Container. Collects application logs, metrics and traces through auto-instrumentation of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview.')
-param appMonitoring appMonitoringType?
+param appMonitoring resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-02-preview'>.properties.azureMonitorProfile.appMonitoring?
 
 @description('Optional. Indicates if Azure Monitor Container Insights Logs Addon is enabled.')
 param enableContainerInsights bool = false
@@ -1395,28 +1395,4 @@ type aadProfileType = {
 
   @description('Optional. Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication.')
   aadProfileTenantId: string?
-}
-
-@export()
-@description('Application Monitoring Profile for Kubernetes Application Container. Collects application logs, metrics and traces through auto-instrumentation of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview.')
-type appMonitoringType = {
-  @description('Optional. Application Monitoring Auto Instrumentation for Kubernetes Application Container. Deploys web hook to auto-instrument Azure Monitor OpenTelemetry based SDKs to collect OpenTelemetry metrics, logs and traces of the application. See aka.ms/AzureMonitorApplicationMonitoring for an overview.')
-  autoInstrumentation: {
-    @description('Required. Indicates if Application Monitoring Auto Instrumentation is enabled or not.')
-    enabled: bool
-  }?
-  @description('Optional. Application Monitoring Open Telemetry Metrics Profile for Kubernetes Application Container Logs and Traces. Collects OpenTelemetry logs and traces of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview.')
-  openTelemetryLogs: {
-    @description('Required. Indicates if Application Monitoring Open Telemetry Logs and traces is enabled or not.')
-    enabled: bool
-    @description('Required. The Open Telemetry host port for Open Telemetry logs and traces. If not specified, the default port is 28331.')
-    port: int
-  }?
-  @description('Optional. Application Monitoring Open Telemetry Metrics Profile for Kubernetes Application Container Metrics. Collects OpenTelemetry metrics of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview.')
-  openTelemetryMetrics: {
-    @description('Required. Indicates if Application Monitoring Open Telemetry Metrics is enabled or not.')
-    enabled: bool
-    @description('Required. The Open Telemetry host port for Open Telemetry metrics. If not specified, the default port is 28333.')
-    port: int
-  }?
 }
