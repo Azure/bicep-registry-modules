@@ -457,25 +457,25 @@ type virtualHubParameterType = {
 
     @description('Optional. NAT rules for the VPN Gateway.')
     natRules: {
-      @description('Required. External mappings for NAT rule.')
+      @description('Conditional. External mappings for NAT rule. Required when defining NAT rules.')
       externalMappings: {
         @description('Required. Address space for external mapping.')
         addressSpace: string
       }[]?
 
-      @description('Required. Internal mappings for NAT rule.')
+      @description('Conditional. Internal mappings for NAT rule. Required when defining NAT rules.')
       internalMappings: {
         @description('Required. Address space for internal mapping.')
         addressSpace: string
       }[]?
 
-      @description('Required. Mode for NAT rule.')
+      @description('Conditional. Mode for NAT rule. Required when defining NAT rules.')
       mode: ('EgressSnat' | 'IngressSnat')?
 
       @description('Required. Name of the NAT rule.')
       name: string
 
-      @description('Required. Type of NAT rule.')
+      @description('Conditional. Type of NAT rule. Required when defining NAT rules.')
       type: ('Static' | 'Dynamic')?
 
       @description('Optional. IP configuration ID.')
