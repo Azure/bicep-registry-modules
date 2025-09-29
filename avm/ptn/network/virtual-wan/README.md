@@ -1,6 +1,6 @@
-# avm/ptn/network/virtual-wan `[Network/VirtualWan]`
+# Azure Virtual WAN `[Network/VirtualWan]`
 
-Azure Virtual WAN
+This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways.
 
 ## Navigation
 
@@ -13,24 +13,24 @@ Azure Virtual WAN
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/azureFirewalls` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/azureFirewalls) |
-| `Microsoft.Network/expressRouteGateways` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/expressRouteGateways) |
-| `Microsoft.Network/p2svpnGateways` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/p2svpnGateways) |
-| `Microsoft.Network/publicIPAddresses` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses) |
-| `Microsoft.Network/virtualHubs` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualHubs) |
-| `Microsoft.Network/virtualHubs/hubRouteTables` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/virtualHubs/hubRouteTables) |
-| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualHubs/hubVirtualNetworkConnections) |
-| `Microsoft.Network/virtualHubs/routingIntent` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualHubs/routingIntent) |
-| `Microsoft.Network/virtualWans` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualWans) |
-| `Microsoft.Network/vpnGateways` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/vpnGateways) |
-| `Microsoft.Network/vpnGateways/natRules` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/vpnGateways/natRules) |
-| `Microsoft.Network/vpnGateways/vpnConnections` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/vpnGateways/vpnConnections) |
-| `Microsoft.Network/vpnServerConfigurations` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/vpnServerConfigurations) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Network/azureFirewalls` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_azurefirewalls.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/azureFirewalls)</li></ul> |
+| `Microsoft.Network/expressRouteGateways` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_expressroutegateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/expressRouteGateways)</li></ul> |
+| `Microsoft.Network/p2svpnGateways` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_p2svpngateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/p2svpnGateways)</li></ul> |
+| `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
+| `Microsoft.Network/virtualHubs` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualHubs)</li></ul> |
+| `Microsoft.Network/virtualHubs/hubRouteTables` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubroutetables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualHubs/hubRouteTables)</li></ul> |
+| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubvirtualnetworkconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualHubs/hubVirtualNetworkConnections)</li></ul> |
+| `Microsoft.Network/virtualHubs/routingIntent` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_routingintent.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualHubs/routingIntent)</li></ul> |
+| `Microsoft.Network/virtualWans` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualwans.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/virtualWans)</li></ul> |
+| `Microsoft.Network/vpnGateways` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_vpngateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways)</li></ul> |
+| `Microsoft.Network/vpnGateways/natRules` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_vpngateways_natrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways/natRules)</li></ul> |
+| `Microsoft.Network/vpnGateways/vpnConnections` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_vpngateways_vpnconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways/vpnConnections)</li></ul> |
+| `Microsoft.Network/vpnServerConfigurations` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_vpnserverconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/vpnServerConfigurations)</li></ul> |
 
 ## Usage examples
 
@@ -41,8 +41,11 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/network/virtual-wan:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using only defaults](#example-3-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [Multiple hub deployment](#example-3-multiple-hub-deployment)
+- [Multiple secure hub deployment](#example-4-multiple-secure-hub-deployment)
+- [Single secure hub deployment](#example-5-single-secure-hub-deployment)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -58,18 +61,42 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
   name: 'virtualWanDeployment'
   params: {
     // Required parameters
+    virtualHubParameters: [
+      {
+        expressRouteParameters: {
+          deployExpressRouteGateway: false
+          expressRouteGatewayName: 'unused'
+        }
+        hubAddressPrefix: '10.0.0.0/24'
+        hubLocation: '<hubLocation>'
+        hubName: '<hubName>'
+        p2sVpnParameters: {
+          connectionConfigurationsName: 'default'
+          deployP2SVpnGateway: false
+          vpnClientAddressPoolAddressPrefixes: []
+          vpnGatewayName: 'unused'
+        }
+        s2sVpnParameters: {
+          deployS2SVpnGateway: false
+          vpnGatewayName: 'unused'
+        }
+        secureHubParameters: {
+          azureFirewallName: 'unused'
+          azureFirewallPublicIPCount: 1
+          azureFirewallSku: 'Standard'
+          deploySecureHub: false
+        }
+      }
+    ]
     virtualWanParameters: {
       location: '<location>'
       virtualWanName: 'dep-vw-nvwanmin'
     }
     // Non-required parameters
-    virtualHubParameters: [
-      {
-        hubAddressPrefix: '10.0.0.0/24'
-        hubLocation: '<hubLocation>'
-        hubName: '<hubName>'
-      }
-    ]
+    tags: {
+      Environment: 'Test'
+      'hidden-title': 'This is visible in the resource name'
+    }
   }
 }
 ```
@@ -87,6 +114,35 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "virtualHubParameters": {
+      "value": [
+        {
+          "expressRouteParameters": {
+            "deployExpressRouteGateway": false,
+            "expressRouteGatewayName": "unused"
+          },
+          "hubAddressPrefix": "10.0.0.0/24",
+          "hubLocation": "<hubLocation>",
+          "hubName": "<hubName>",
+          "p2sVpnParameters": {
+            "connectionConfigurationsName": "default",
+            "deployP2SVpnGateway": false,
+            "vpnClientAddressPoolAddressPrefixes": [],
+            "vpnGatewayName": "unused"
+          },
+          "s2sVpnParameters": {
+            "deployS2SVpnGateway": false,
+            "vpnGatewayName": "unused"
+          },
+          "secureHubParameters": {
+            "azureFirewallName": "unused",
+            "azureFirewallPublicIPCount": 1,
+            "azureFirewallSku": "Standard",
+            "deploySecureHub": false
+          }
+        }
+      ]
+    },
     "virtualWanParameters": {
       "value": {
         "location": "<location>",
@@ -94,14 +150,11 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
       }
     },
     // Non-required parameters
-    "virtualHubParameters": {
-      "value": [
-        {
-          "hubAddressPrefix": "10.0.0.0/24",
-          "hubLocation": "<hubLocation>",
-          "hubName": "<hubName>"
-        }
-      ]
+    "tags": {
+      "value": {
+        "Environment": "Test",
+        "hidden-title": "This is visible in the resource name"
+      }
     }
   }
 }
@@ -118,26 +171,50 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
 using 'br/public:avm/ptn/network/virtual-wan:<version>'
 
 // Required parameters
+param virtualHubParameters = [
+  {
+    expressRouteParameters: {
+      deployExpressRouteGateway: false
+      expressRouteGatewayName: 'unused'
+    }
+    hubAddressPrefix: '10.0.0.0/24'
+    hubLocation: '<hubLocation>'
+    hubName: '<hubName>'
+    p2sVpnParameters: {
+      connectionConfigurationsName: 'default'
+      deployP2SVpnGateway: false
+      vpnClientAddressPoolAddressPrefixes: []
+      vpnGatewayName: 'unused'
+    }
+    s2sVpnParameters: {
+      deployS2SVpnGateway: false
+      vpnGatewayName: 'unused'
+    }
+    secureHubParameters: {
+      azureFirewallName: 'unused'
+      azureFirewallPublicIPCount: 1
+      azureFirewallSku: 'Standard'
+      deploySecureHub: false
+    }
+  }
+]
 param virtualWanParameters = {
   location: '<location>'
   virtualWanName: 'dep-vw-nvwanmin'
 }
 // Non-required parameters
-param virtualHubParameters = [
-  {
-    hubAddressPrefix: '10.0.0.0/24'
-    hubLocation: '<hubLocation>'
-    hubName: '<hubName>'
-  }
-]
+param tags = {
+  Environment: 'Test'
+  'hidden-title': 'This is visible in the resource name'
+}
 ```
 
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 2: _Using large parameter set_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with a large parameter set.
 
 
 <details>
@@ -149,18 +226,68 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
   name: 'virtualWanDeployment'
   params: {
     // Required parameters
-    virtualWanParameters: {
-      location: '<location>'
-      virtualWanName: 'dep-vw-nvwamax'
-    }
-    // Non-required parameters
     virtualHubParameters: [
       {
+        allowBranchToBranchTraffic: true
+        expressRouteParameters: {
+          deployExpressRouteGateway: false
+          expressRouteGatewayName: 'unused'
+        }
         hubAddressPrefix: '10.0.0.0/24'
         hubLocation: '<hubLocation>'
         hubName: '<hubName>'
+        hubRoutingPreference: 'VpnGateway'
+        p2sVpnParameters: {
+          connectionConfigurationsName: 'default'
+          deployP2SVpnGateway: true
+          vpnClientAddressPoolAddressPrefixes: [
+            '192.168.1.0/24'
+          ]
+          vpnGatewayName: 'dep-p2s-gw-nvwanmax'
+          vpnGatewayScaleUnit: 1
+        }
+        s2sVpnParameters: {
+          deployS2SVpnGateway: true
+          vpnGatewayName: 'dep-s2s-gw-nvwanmax'
+          vpnGatewayScaleUnit: 1
+        }
+        secureHubParameters: {
+          azureFirewallName: 'unused'
+          azureFirewallPublicIPCount: 1
+          azureFirewallSku: 'Standard'
+          deploySecureHub: false
+        }
+        tags: {
+          HubType: 'Transit'
+        }
       }
     ]
+    virtualWanParameters: {
+      allowBranchToBranchTraffic: true
+      location: '<location>'
+      p2sVpnParameters: {
+        aadAudience: '41b23e61-6c1e-4545-b367-cd054e0ed4b4'
+        aadIssuer: 'https://sts.windows.net/tenant-id/'
+        aadTenant: '<aadTenant>'
+        createP2sVpnServerConfiguration: true
+        p2sVpnServerConfigurationName: 'dep-p2s-nvwanmax'
+        vpnAuthenticationTypes: [
+          'AAD'
+        ]
+      }
+      tags: {
+        CostCenter: 'IT'
+        Environment: 'Test'
+      }
+      type: 'Standard'
+      virtualWanName: 'dep-vw-nvwanmax'
+    }
+    // Non-required parameters
+    tags: {
+      Environment: 'Test'
+      'hidden-title': 'This is visible in the resource name'
+      Purpose: 'Maximum functionality test'
+    }
   }
 }
 ```
@@ -178,21 +305,73 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "virtualWanParameters": {
-      "value": {
-        "location": "<location>",
-        "virtualWanName": "dep-vw-nvwamax"
-      }
-    },
-    // Non-required parameters
     "virtualHubParameters": {
       "value": [
         {
+          "allowBranchToBranchTraffic": true,
+          "expressRouteParameters": {
+            "deployExpressRouteGateway": false,
+            "expressRouteGatewayName": "unused"
+          },
           "hubAddressPrefix": "10.0.0.0/24",
           "hubLocation": "<hubLocation>",
-          "hubName": "<hubName>"
+          "hubName": "<hubName>",
+          "hubRoutingPreference": "VpnGateway",
+          "p2sVpnParameters": {
+            "connectionConfigurationsName": "default",
+            "deployP2SVpnGateway": true,
+            "vpnClientAddressPoolAddressPrefixes": [
+              "192.168.1.0/24"
+            ],
+            "vpnGatewayName": "dep-p2s-gw-nvwanmax",
+            "vpnGatewayScaleUnit": 1
+          },
+          "s2sVpnParameters": {
+            "deployS2SVpnGateway": true,
+            "vpnGatewayName": "dep-s2s-gw-nvwanmax",
+            "vpnGatewayScaleUnit": 1
+          },
+          "secureHubParameters": {
+            "azureFirewallName": "unused",
+            "azureFirewallPublicIPCount": 1,
+            "azureFirewallSku": "Standard",
+            "deploySecureHub": false
+          },
+          "tags": {
+            "HubType": "Transit"
+          }
         }
       ]
+    },
+    "virtualWanParameters": {
+      "value": {
+        "allowBranchToBranchTraffic": true,
+        "location": "<location>",
+        "p2sVpnParameters": {
+          "aadAudience": "41b23e61-6c1e-4545-b367-cd054e0ed4b4",
+          "aadIssuer": "https://sts.windows.net/tenant-id/",
+          "aadTenant": "<aadTenant>",
+          "createP2sVpnServerConfiguration": true,
+          "p2sVpnServerConfigurationName": "dep-p2s-nvwanmax",
+          "vpnAuthenticationTypes": [
+            "AAD"
+          ]
+        },
+        "tags": {
+          "CostCenter": "IT",
+          "Environment": "Test"
+        },
+        "type": "Standard",
+        "virtualWanName": "dep-vw-nvwanmax"
+      }
+    },
+    // Non-required parameters
+    "tags": {
+      "value": {
+        "Environment": "Test",
+        "hidden-title": "This is visible in the resource name",
+        "Purpose": "Maximum functionality test"
+      }
     }
   }
 }
@@ -209,26 +388,76 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
 using 'br/public:avm/ptn/network/virtual-wan:<version>'
 
 // Required parameters
-param virtualWanParameters = {
-  location: '<location>'
-  virtualWanName: 'dep-vw-nvwamax'
-}
-// Non-required parameters
 param virtualHubParameters = [
   {
+    allowBranchToBranchTraffic: true
+    expressRouteParameters: {
+      deployExpressRouteGateway: false
+      expressRouteGatewayName: 'unused'
+    }
     hubAddressPrefix: '10.0.0.0/24'
     hubLocation: '<hubLocation>'
     hubName: '<hubName>'
+    hubRoutingPreference: 'VpnGateway'
+    p2sVpnParameters: {
+      connectionConfigurationsName: 'default'
+      deployP2SVpnGateway: true
+      vpnClientAddressPoolAddressPrefixes: [
+        '192.168.1.0/24'
+      ]
+      vpnGatewayName: 'dep-p2s-gw-nvwanmax'
+      vpnGatewayScaleUnit: 1
+    }
+    s2sVpnParameters: {
+      deployS2SVpnGateway: true
+      vpnGatewayName: 'dep-s2s-gw-nvwanmax'
+      vpnGatewayScaleUnit: 1
+    }
+    secureHubParameters: {
+      azureFirewallName: 'unused'
+      azureFirewallPublicIPCount: 1
+      azureFirewallSku: 'Standard'
+      deploySecureHub: false
+    }
+    tags: {
+      HubType: 'Transit'
+    }
   }
 ]
+param virtualWanParameters = {
+  allowBranchToBranchTraffic: true
+  location: '<location>'
+  p2sVpnParameters: {
+    aadAudience: '41b23e61-6c1e-4545-b367-cd054e0ed4b4'
+    aadIssuer: 'https://sts.windows.net/tenant-id/'
+    aadTenant: '<aadTenant>'
+    createP2sVpnServerConfiguration: true
+    p2sVpnServerConfigurationName: 'dep-p2s-nvwanmax'
+    vpnAuthenticationTypes: [
+      'AAD'
+    ]
+  }
+  tags: {
+    CostCenter: 'IT'
+    Environment: 'Test'
+  }
+  type: 'Standard'
+  virtualWanName: 'dep-vw-nvwanmax'
+}
+// Non-required parameters
+param tags = {
+  Environment: 'Test'
+  'hidden-title': 'This is visible in the resource name'
+  Purpose: 'Maximum functionality test'
+}
 ```
 
 </details>
 <p>
 
-### Example 3: _Using only defaults_
+### Example 3: _Multiple hub deployment_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys a Virtual WAN with multiple Virtual Hubs.
 
 
 <details>
@@ -240,18 +469,62 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
   name: 'virtualWanDeployment'
   params: {
     // Required parameters
-    virtualWanParameters: {
-      location: '<location>'
-      virtualWanName: 'dep-vw-nvwanwaf'
-    }
-    // Non-required parameters
     virtualHubParameters: [
       {
+        expressRouteParameters: {
+          deployExpressRouteGateway: false
+          expressRouteGatewayName: 'unused'
+        }
         hubAddressPrefix: '10.0.0.0/24'
         hubLocation: '<hubLocation>'
         hubName: '<hubName>'
+        p2sVpnParameters: {
+          connectionConfigurationsName: 'default'
+          deployP2SVpnGateway: false
+          vpnClientAddressPoolAddressPrefixes: []
+          vpnGatewayName: 'unused'
+        }
+        s2sVpnParameters: {
+          deployS2SVpnGateway: false
+          vpnGatewayName: 'unused'
+        }
+        secureHubParameters: {
+          azureFirewallName: 'unused'
+          azureFirewallPublicIPCount: 1
+          azureFirewallSku: 'Standard'
+          deploySecureHub: false
+        }
+      }
+      {
+        expressRouteParameters: {
+          deployExpressRouteGateway: false
+          expressRouteGatewayName: 'unused'
+        }
+        hubAddressPrefix: '10.0.1.0/24'
+        hubLocation: '<hubLocation>'
+        hubName: '<hubName>'
+        p2sVpnParameters: {
+          connectionConfigurationsName: 'default'
+          deployP2SVpnGateway: false
+          vpnClientAddressPoolAddressPrefixes: []
+          vpnGatewayName: 'unused'
+        }
+        s2sVpnParameters: {
+          deployS2SVpnGateway: false
+          vpnGatewayName: 'unused'
+        }
+        secureHubParameters: {
+          azureFirewallName: 'unused'
+          azureFirewallPublicIPCount: 1
+          azureFirewallSku: 'Standard'
+          deploySecureHub: false
+        }
       }
     ]
+    virtualWanParameters: {
+      location: '<location>'
+      virtualWanName: 'dep-vw-nvwanmultihub'
+    }
   }
 }
 ```
@@ -269,21 +542,714 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "virtualHubParameters": {
+      "value": [
+        {
+          "expressRouteParameters": {
+            "deployExpressRouteGateway": false,
+            "expressRouteGatewayName": "unused"
+          },
+          "hubAddressPrefix": "10.0.0.0/24",
+          "hubLocation": "<hubLocation>",
+          "hubName": "<hubName>",
+          "p2sVpnParameters": {
+            "connectionConfigurationsName": "default",
+            "deployP2SVpnGateway": false,
+            "vpnClientAddressPoolAddressPrefixes": [],
+            "vpnGatewayName": "unused"
+          },
+          "s2sVpnParameters": {
+            "deployS2SVpnGateway": false,
+            "vpnGatewayName": "unused"
+          },
+          "secureHubParameters": {
+            "azureFirewallName": "unused",
+            "azureFirewallPublicIPCount": 1,
+            "azureFirewallSku": "Standard",
+            "deploySecureHub": false
+          }
+        },
+        {
+          "expressRouteParameters": {
+            "deployExpressRouteGateway": false,
+            "expressRouteGatewayName": "unused"
+          },
+          "hubAddressPrefix": "10.0.1.0/24",
+          "hubLocation": "<hubLocation>",
+          "hubName": "<hubName>",
+          "p2sVpnParameters": {
+            "connectionConfigurationsName": "default",
+            "deployP2SVpnGateway": false,
+            "vpnClientAddressPoolAddressPrefixes": [],
+            "vpnGatewayName": "unused"
+          },
+          "s2sVpnParameters": {
+            "deployS2SVpnGateway": false,
+            "vpnGatewayName": "unused"
+          },
+          "secureHubParameters": {
+            "azureFirewallName": "unused",
+            "azureFirewallPublicIPCount": 1,
+            "azureFirewallSku": "Standard",
+            "deploySecureHub": false
+          }
+        }
+      ]
+    },
     "virtualWanParameters": {
       "value": {
         "location": "<location>",
+        "virtualWanName": "dep-vw-nvwanmultihub"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/virtual-wan:<version>'
+
+// Required parameters
+param virtualHubParameters = [
+  {
+    expressRouteParameters: {
+      deployExpressRouteGateway: false
+      expressRouteGatewayName: 'unused'
+    }
+    hubAddressPrefix: '10.0.0.0/24'
+    hubLocation: '<hubLocation>'
+    hubName: '<hubName>'
+    p2sVpnParameters: {
+      connectionConfigurationsName: 'default'
+      deployP2SVpnGateway: false
+      vpnClientAddressPoolAddressPrefixes: []
+      vpnGatewayName: 'unused'
+    }
+    s2sVpnParameters: {
+      deployS2SVpnGateway: false
+      vpnGatewayName: 'unused'
+    }
+    secureHubParameters: {
+      azureFirewallName: 'unused'
+      azureFirewallPublicIPCount: 1
+      azureFirewallSku: 'Standard'
+      deploySecureHub: false
+    }
+  }
+  {
+    expressRouteParameters: {
+      deployExpressRouteGateway: false
+      expressRouteGatewayName: 'unused'
+    }
+    hubAddressPrefix: '10.0.1.0/24'
+    hubLocation: '<hubLocation>'
+    hubName: '<hubName>'
+    p2sVpnParameters: {
+      connectionConfigurationsName: 'default'
+      deployP2SVpnGateway: false
+      vpnClientAddressPoolAddressPrefixes: []
+      vpnGatewayName: 'unused'
+    }
+    s2sVpnParameters: {
+      deployS2SVpnGateway: false
+      vpnGatewayName: 'unused'
+    }
+    secureHubParameters: {
+      azureFirewallName: 'unused'
+      azureFirewallPublicIPCount: 1
+      azureFirewallSku: 'Standard'
+      deploySecureHub: false
+    }
+  }
+]
+param virtualWanParameters = {
+  location: '<location>'
+  virtualWanName: 'dep-vw-nvwanmultihub'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Multiple secure hub deployment_
+
+This instance deploys a Virtual WAN with multiple Secure Hubs utilizing Azure Firewall.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
+  name: 'virtualWanDeployment'
+  params: {
+    // Required parameters
+    virtualHubParameters: [
+      {
+        expressRouteParameters: {
+          deployExpressRouteGateway: false
+          expressRouteGatewayName: 'unused'
+        }
+        hubAddressPrefix: '10.0.0.0/24'
+        hubLocation: '<hubLocation>'
+        hubName: '<hubName>'
+        p2sVpnParameters: {
+          connectionConfigurationsName: 'default'
+          deployP2SVpnGateway: false
+          vpnClientAddressPoolAddressPrefixes: []
+          vpnGatewayName: 'unused'
+        }
+        s2sVpnParameters: {
+          deployS2SVpnGateway: false
+          vpnGatewayName: 'unused'
+        }
+        secureHubParameters: {
+          azureFirewallName: '<azureFirewallName>'
+          azureFirewallPublicIPCount: 1
+          azureFirewallSku: 'Standard'
+          deploySecureHub: true
+          firewallPolicyResourceId: '<firewallPolicyResourceId>'
+          routingIntent: {
+            internetToFirewall: true
+            privateToFirewall: true
+          }
+        }
+      }
+      {
+        expressRouteParameters: {
+          deployExpressRouteGateway: false
+          expressRouteGatewayName: 'unused'
+        }
+        hubAddressPrefix: '10.0.1.0/24'
+        hubLocation: '<hubLocation>'
+        hubName: '<hubName>'
+        p2sVpnParameters: {
+          connectionConfigurationsName: 'default'
+          deployP2SVpnGateway: false
+          vpnClientAddressPoolAddressPrefixes: []
+          vpnGatewayName: 'unused'
+        }
+        s2sVpnParameters: {
+          deployS2SVpnGateway: false
+          vpnGatewayName: 'unused'
+        }
+        secureHubParameters: {
+          azureFirewallName: '<azureFirewallName>'
+          azureFirewallPublicIPCount: 1
+          azureFirewallSku: 'Standard'
+          deploySecureHub: true
+          firewallPolicyResourceId: '<firewallPolicyResourceId>'
+          routingIntent: {
+            internetToFirewall: true
+            privateToFirewall: true
+          }
+        }
+      }
+    ]
+    virtualWanParameters: {
+      location: '<location>'
+      virtualWanName: 'dep-vw-nvwanmultisechub'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "virtualHubParameters": {
+      "value": [
+        {
+          "expressRouteParameters": {
+            "deployExpressRouteGateway": false,
+            "expressRouteGatewayName": "unused"
+          },
+          "hubAddressPrefix": "10.0.0.0/24",
+          "hubLocation": "<hubLocation>",
+          "hubName": "<hubName>",
+          "p2sVpnParameters": {
+            "connectionConfigurationsName": "default",
+            "deployP2SVpnGateway": false,
+            "vpnClientAddressPoolAddressPrefixes": [],
+            "vpnGatewayName": "unused"
+          },
+          "s2sVpnParameters": {
+            "deployS2SVpnGateway": false,
+            "vpnGatewayName": "unused"
+          },
+          "secureHubParameters": {
+            "azureFirewallName": "<azureFirewallName>",
+            "azureFirewallPublicIPCount": 1,
+            "azureFirewallSku": "Standard",
+            "deploySecureHub": true,
+            "firewallPolicyResourceId": "<firewallPolicyResourceId>",
+            "routingIntent": {
+              "internetToFirewall": true,
+              "privateToFirewall": true
+            }
+          }
+        },
+        {
+          "expressRouteParameters": {
+            "deployExpressRouteGateway": false,
+            "expressRouteGatewayName": "unused"
+          },
+          "hubAddressPrefix": "10.0.1.0/24",
+          "hubLocation": "<hubLocation>",
+          "hubName": "<hubName>",
+          "p2sVpnParameters": {
+            "connectionConfigurationsName": "default",
+            "deployP2SVpnGateway": false,
+            "vpnClientAddressPoolAddressPrefixes": [],
+            "vpnGatewayName": "unused"
+          },
+          "s2sVpnParameters": {
+            "deployS2SVpnGateway": false,
+            "vpnGatewayName": "unused"
+          },
+          "secureHubParameters": {
+            "azureFirewallName": "<azureFirewallName>",
+            "azureFirewallPublicIPCount": 1,
+            "azureFirewallSku": "Standard",
+            "deploySecureHub": true,
+            "firewallPolicyResourceId": "<firewallPolicyResourceId>",
+            "routingIntent": {
+              "internetToFirewall": true,
+              "privateToFirewall": true
+            }
+          }
+        }
+      ]
+    },
+    "virtualWanParameters": {
+      "value": {
+        "location": "<location>",
+        "virtualWanName": "dep-vw-nvwanmultisechub"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/virtual-wan:<version>'
+
+// Required parameters
+param virtualHubParameters = [
+  {
+    expressRouteParameters: {
+      deployExpressRouteGateway: false
+      expressRouteGatewayName: 'unused'
+    }
+    hubAddressPrefix: '10.0.0.0/24'
+    hubLocation: '<hubLocation>'
+    hubName: '<hubName>'
+    p2sVpnParameters: {
+      connectionConfigurationsName: 'default'
+      deployP2SVpnGateway: false
+      vpnClientAddressPoolAddressPrefixes: []
+      vpnGatewayName: 'unused'
+    }
+    s2sVpnParameters: {
+      deployS2SVpnGateway: false
+      vpnGatewayName: 'unused'
+    }
+    secureHubParameters: {
+      azureFirewallName: '<azureFirewallName>'
+      azureFirewallPublicIPCount: 1
+      azureFirewallSku: 'Standard'
+      deploySecureHub: true
+      firewallPolicyResourceId: '<firewallPolicyResourceId>'
+      routingIntent: {
+        internetToFirewall: true
+        privateToFirewall: true
+      }
+    }
+  }
+  {
+    expressRouteParameters: {
+      deployExpressRouteGateway: false
+      expressRouteGatewayName: 'unused'
+    }
+    hubAddressPrefix: '10.0.1.0/24'
+    hubLocation: '<hubLocation>'
+    hubName: '<hubName>'
+    p2sVpnParameters: {
+      connectionConfigurationsName: 'default'
+      deployP2SVpnGateway: false
+      vpnClientAddressPoolAddressPrefixes: []
+      vpnGatewayName: 'unused'
+    }
+    s2sVpnParameters: {
+      deployS2SVpnGateway: false
+      vpnGatewayName: 'unused'
+    }
+    secureHubParameters: {
+      azureFirewallName: '<azureFirewallName>'
+      azureFirewallPublicIPCount: 1
+      azureFirewallSku: 'Standard'
+      deploySecureHub: true
+      firewallPolicyResourceId: '<firewallPolicyResourceId>'
+      routingIntent: {
+        internetToFirewall: true
+        privateToFirewall: true
+      }
+    }
+  }
+]
+param virtualWanParameters = {
+  location: '<location>'
+  virtualWanName: 'dep-vw-nvwanmultisechub'
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Single secure hub deployment_
+
+This instance deploys a Virtual WAN with a single Secure Hub itilizing Azure Firewall.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
+  name: 'virtualWanDeployment'
+  params: {
+    // Required parameters
+    virtualHubParameters: [
+      {
+        expressRouteParameters: {
+          deployExpressRouteGateway: false
+          expressRouteGatewayName: 'unused'
+        }
+        hubAddressPrefix: '10.0.0.0/24'
+        hubLocation: '<hubLocation>'
+        hubName: '<hubName>'
+        p2sVpnParameters: {
+          connectionConfigurationsName: 'default'
+          deployP2SVpnGateway: false
+          vpnClientAddressPoolAddressPrefixes: []
+          vpnGatewayName: 'unused'
+        }
+        s2sVpnParameters: {
+          deployS2SVpnGateway: false
+          vpnGatewayName: 'unused'
+        }
+        secureHubParameters: {
+          azureFirewallName: '<azureFirewallName>'
+          azureFirewallPublicIPCount: 1
+          azureFirewallSku: 'Standard'
+          deploySecureHub: true
+          firewallPolicyResourceId: '<firewallPolicyResourceId>'
+          routingIntent: {
+            internetToFirewall: true
+            privateToFirewall: true
+          }
+        }
+      }
+    ]
+    virtualWanParameters: {
+      location: '<location>'
+      virtualWanName: 'dep-vw-nvwansechub'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "virtualHubParameters": {
+      "value": [
+        {
+          "expressRouteParameters": {
+            "deployExpressRouteGateway": false,
+            "expressRouteGatewayName": "unused"
+          },
+          "hubAddressPrefix": "10.0.0.0/24",
+          "hubLocation": "<hubLocation>",
+          "hubName": "<hubName>",
+          "p2sVpnParameters": {
+            "connectionConfigurationsName": "default",
+            "deployP2SVpnGateway": false,
+            "vpnClientAddressPoolAddressPrefixes": [],
+            "vpnGatewayName": "unused"
+          },
+          "s2sVpnParameters": {
+            "deployS2SVpnGateway": false,
+            "vpnGatewayName": "unused"
+          },
+          "secureHubParameters": {
+            "azureFirewallName": "<azureFirewallName>",
+            "azureFirewallPublicIPCount": 1,
+            "azureFirewallSku": "Standard",
+            "deploySecureHub": true,
+            "firewallPolicyResourceId": "<firewallPolicyResourceId>",
+            "routingIntent": {
+              "internetToFirewall": true,
+              "privateToFirewall": true
+            }
+          }
+        }
+      ]
+    },
+    "virtualWanParameters": {
+      "value": {
+        "location": "<location>",
+        "virtualWanName": "dep-vw-nvwansechub"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/virtual-wan:<version>'
+
+// Required parameters
+param virtualHubParameters = [
+  {
+    expressRouteParameters: {
+      deployExpressRouteGateway: false
+      expressRouteGatewayName: 'unused'
+    }
+    hubAddressPrefix: '10.0.0.0/24'
+    hubLocation: '<hubLocation>'
+    hubName: '<hubName>'
+    p2sVpnParameters: {
+      connectionConfigurationsName: 'default'
+      deployP2SVpnGateway: false
+      vpnClientAddressPoolAddressPrefixes: []
+      vpnGatewayName: 'unused'
+    }
+    s2sVpnParameters: {
+      deployS2SVpnGateway: false
+      vpnGatewayName: 'unused'
+    }
+    secureHubParameters: {
+      azureFirewallName: '<azureFirewallName>'
+      azureFirewallPublicIPCount: 1
+      azureFirewallSku: 'Standard'
+      deploySecureHub: true
+      firewallPolicyResourceId: '<firewallPolicyResourceId>'
+      routingIntent: {
+        internetToFirewall: true
+        privateToFirewall: true
+      }
+    }
+  }
+]
+param virtualWanParameters = {
+  location: '<location>'
+  virtualWanName: 'dep-vw-nvwansechub'
+}
+```
+
+</details>
+<p>
+
+### Example 6: _WAF-aligned_
+
+This instance deploys the module in alignment with the Well-Architected Framework principles.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
+  name: 'virtualWanDeployment'
+  params: {
+    // Required parameters
+    virtualHubParameters: [
+      {
+        allowBranchToBranchTraffic: false
+        expressRouteParameters: {
+          deployExpressRouteGateway: false
+          expressRouteGatewayName: 'unused'
+        }
+        hubAddressPrefix: '10.0.0.0/23'
+        hubLocation: '<hubLocation>'
+        hubName: '<hubName>'
+        hubRoutingPreference: 'ExpressRoute'
+        p2sVpnParameters: {
+          connectionConfigurationsName: 'default'
+          deployP2SVpnGateway: false
+          vpnClientAddressPoolAddressPrefixes: []
+          vpnGatewayName: 'unused'
+        }
+        s2sVpnParameters: {
+          deployS2SVpnGateway: false
+          vpnGatewayName: 'unused'
+        }
+        secureHubParameters: {
+          azureFirewallName: 'unused'
+          azureFirewallPublicIPCount: 1
+          azureFirewallSku: 'Standard'
+          deploySecureHub: false
+        }
+        tags: {
+          HubType: 'Production'
+          Monitoring: 'Enabled'
+        }
+      }
+    ]
+    virtualWanParameters: {
+      allowBranchToBranchTraffic: false
+      location: '<location>'
+      lock: {
+        kind: 'CanNotDelete'
+      }
+      tags: {
+        CostCenter: 'NetworkOps'
+        Environment: 'Production'
+        Owner: 'NetworkTeam'
+        Purpose: 'WAF-Aligned-Deployment'
+      }
+      type: 'Standard'
+      virtualWanName: 'dep-vw-nvwanwaf'
+    }
+    // Non-required parameters
+    lock: {
+      kind: 'CanNotDelete'
+    }
+    tags: {
+      Environment: 'Production'
+      'hidden-title': 'WAF-Aligned Virtual WAN Deployment'
+      Monitoring: 'Required'
+      Purpose: 'Well-Architected Framework demonstration'
+      SecurityLevel: 'High'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "virtualHubParameters": {
+      "value": [
+        {
+          "allowBranchToBranchTraffic": false,
+          "expressRouteParameters": {
+            "deployExpressRouteGateway": false,
+            "expressRouteGatewayName": "unused"
+          },
+          "hubAddressPrefix": "10.0.0.0/23",
+          "hubLocation": "<hubLocation>",
+          "hubName": "<hubName>",
+          "hubRoutingPreference": "ExpressRoute",
+          "p2sVpnParameters": {
+            "connectionConfigurationsName": "default",
+            "deployP2SVpnGateway": false,
+            "vpnClientAddressPoolAddressPrefixes": [],
+            "vpnGatewayName": "unused"
+          },
+          "s2sVpnParameters": {
+            "deployS2SVpnGateway": false,
+            "vpnGatewayName": "unused"
+          },
+          "secureHubParameters": {
+            "azureFirewallName": "unused",
+            "azureFirewallPublicIPCount": 1,
+            "azureFirewallSku": "Standard",
+            "deploySecureHub": false
+          },
+          "tags": {
+            "HubType": "Production",
+            "Monitoring": "Enabled"
+          }
+        }
+      ]
+    },
+    "virtualWanParameters": {
+      "value": {
+        "allowBranchToBranchTraffic": false,
+        "location": "<location>",
+        "lock": {
+          "kind": "CanNotDelete"
+        },
+        "tags": {
+          "CostCenter": "NetworkOps",
+          "Environment": "Production",
+          "Owner": "NetworkTeam",
+          "Purpose": "WAF-Aligned-Deployment"
+        },
+        "type": "Standard",
         "virtualWanName": "dep-vw-nvwanwaf"
       }
     },
     // Non-required parameters
-    "virtualHubParameters": {
-      "value": [
-        {
-          "hubAddressPrefix": "10.0.0.0/24",
-          "hubLocation": "<hubLocation>",
-          "hubName": "<hubName>"
-        }
-      ]
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete"
+      }
+    },
+    "tags": {
+      "value": {
+        "Environment": "Production",
+        "hidden-title": "WAF-Aligned Virtual WAN Deployment",
+        "Monitoring": "Required",
+        "Purpose": "Well-Architected Framework demonstration",
+        "SecurityLevel": "High"
+      }
     }
   }
 }
@@ -300,18 +1266,65 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
 using 'br/public:avm/ptn/network/virtual-wan:<version>'
 
 // Required parameters
+param virtualHubParameters = [
+  {
+    allowBranchToBranchTraffic: false
+    expressRouteParameters: {
+      deployExpressRouteGateway: false
+      expressRouteGatewayName: 'unused'
+    }
+    hubAddressPrefix: '10.0.0.0/23'
+    hubLocation: '<hubLocation>'
+    hubName: '<hubName>'
+    hubRoutingPreference: 'ExpressRoute'
+    p2sVpnParameters: {
+      connectionConfigurationsName: 'default'
+      deployP2SVpnGateway: false
+      vpnClientAddressPoolAddressPrefixes: []
+      vpnGatewayName: 'unused'
+    }
+    s2sVpnParameters: {
+      deployS2SVpnGateway: false
+      vpnGatewayName: 'unused'
+    }
+    secureHubParameters: {
+      azureFirewallName: 'unused'
+      azureFirewallPublicIPCount: 1
+      azureFirewallSku: 'Standard'
+      deploySecureHub: false
+    }
+    tags: {
+      HubType: 'Production'
+      Monitoring: 'Enabled'
+    }
+  }
+]
 param virtualWanParameters = {
+  allowBranchToBranchTraffic: false
   location: '<location>'
+  lock: {
+    kind: 'CanNotDelete'
+  }
+  tags: {
+    CostCenter: 'NetworkOps'
+    Environment: 'Production'
+    Owner: 'NetworkTeam'
+    Purpose: 'WAF-Aligned-Deployment'
+  }
+  type: 'Standard'
   virtualWanName: 'dep-vw-nvwanwaf'
 }
 // Non-required parameters
-param virtualHubParameters = [
-  {
-    hubAddressPrefix: '10.0.0.0/24'
-    hubLocation: '<hubLocation>'
-    hubName: '<hubName>'
-  }
-]
+param lock = {
+  kind: 'CanNotDelete'
+}
+param tags = {
+  Environment: 'Production'
+  'hidden-title': 'WAF-Aligned Virtual WAN Deployment'
+  Monitoring: 'Required'
+  Purpose: 'Well-Architected Framework demonstration'
+  SecurityLevel: 'High'
+}
 ```
 
 </details>
@@ -323,6 +1336,7 @@ param virtualHubParameters = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`virtualHubParameters`](#parameter-virtualhubparameters) | array | The parameters for the Virtual Hubs and associated networking components, required if configuring Virtual Hubs. |
 | [`virtualWanParameters`](#parameter-virtualwanparameters) | object | The parameters for the Virtual WAN. |
 
 **Optional parameters**
@@ -330,501 +1344,15 @@ param virtualHubParameters = [
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`lock`](#parameter-lock) | object | The lock settings for the Virtual WAN and associated components. |
-| [`virtualHubParameters`](#parameter-virtualhubparameters) | array | The parameters for the Virtual Hubs and associated networking components, required if configuring Virtual Hubs. |
-
-**Option parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`location`](#parameter-location) | string | Azure region where the Virtual WAN will be created. |
-
-### Parameter: `virtualWanParameters`
-
-The parameters for the Virtual WAN.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`virtualWanName`](#parameter-virtualwanparametersvirtualwanname) | string | The name of the Virtual WAN. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`allowBranchToBranchTraffic`](#parameter-virtualwanparametersallowbranchtobranchtraffic) | bool | Whether to allow branch-to-branch traffic within the Virtual WAN. |
-| [`allowVnetToVnetTraffic`](#parameter-virtualwanparametersallowvnettovnettraffic) | bool | Whether to allow VNet-to-VNet traffic within the Virtual WAN. |
-| [`disableVpnEncryption`](#parameter-virtualwanparametersdisablevpnencryption) | bool | Whether to disable VPN encryption for the Virtual WAN. |
-| [`location`](#parameter-virtualwanparameterslocation) | string | The Azure region where the Virtual WAN will be created. Defaults to the resource group location if not specified. |
-| [`lock`](#parameter-virtualwanparameterslock) | object | Lock settings for the Virtual WAN and associated resources. |
-| [`p2sVpnParameters`](#parameter-virtualwanparametersp2svpnparameters) | object | Point-to-site VPN server configuration parameters for the Virtual WAN. |
-| [`roleAssignments`](#parameter-virtualwanparametersroleassignments) | array | Role assignments to be applied to the Virtual WAN. |
-| [`tags`](#parameter-virtualwanparameterstags) | object | Tags to be applied to the Virtual WAN. |
-| [`type`](#parameter-virtualwanparameterstype) | string | The type of Virtual WAN. Allowed values are Standard or Basic. |
-
-### Parameter: `virtualWanParameters.virtualWanName`
-
-The name of the Virtual WAN.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `virtualWanParameters.allowBranchToBranchTraffic`
-
-Whether to allow branch-to-branch traffic within the Virtual WAN.
-
-- Required: No
-- Type: bool
-
-### Parameter: `virtualWanParameters.allowVnetToVnetTraffic`
-
-Whether to allow VNet-to-VNet traffic within the Virtual WAN.
-
-- Required: No
-- Type: bool
-
-### Parameter: `virtualWanParameters.disableVpnEncryption`
-
-Whether to disable VPN encryption for the Virtual WAN.
-
-- Required: No
-- Type: bool
-
-### Parameter: `virtualWanParameters.location`
-
-The Azure region where the Virtual WAN will be created. Defaults to the resource group location if not specified.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.lock`
-
-Lock settings for the Virtual WAN and associated resources.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`kind`](#parameter-virtualwanparameterslockkind) | string | Specify the type of lock. |
-| [`name`](#parameter-virtualwanparameterslockname) | string | Specify the name of lock. |
-
-### Parameter: `virtualWanParameters.lock.kind`
-
-Specify the type of lock.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'CanNotDelete'
-    'None'
-    'ReadOnly'
-  ]
-  ```
-
-### Parameter: `virtualWanParameters.lock.name`
-
-Specify the name of lock.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters`
-
-Point-to-site VPN server configuration parameters for the Virtual WAN.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`createP2sVpnServerConfiguration`](#parameter-virtualwanparametersp2svpnparameterscreatep2svpnserverconfiguration) | bool | Whether to create a new P2S VPN server configuration. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`aadAudience`](#parameter-virtualwanparametersp2svpnparametersaadaudience) | string | Azure AD audience for VPN authentication. |
-| [`aadIssuer`](#parameter-virtualwanparametersp2svpnparametersaadissuer) | string | Azure AD issuer for VPN authentication. |
-| [`aadTenant`](#parameter-virtualwanparametersp2svpnparametersaadtenant) | string | Azure AD tenant for VPN authentication. |
-| [`p2sConfigurationPolicyGroups`](#parameter-virtualwanparametersp2svpnparametersp2sconfigurationpolicygroups) | array | Policy groups for P2S VPN configuration. |
-| [`p2sVpnServerConfigurationName`](#parameter-virtualwanparametersp2svpnparametersp2svpnserverconfigurationname) | string | Name of the P2S VPN server configuration. |
-| [`radiusClientRootCertificates`](#parameter-virtualwanparametersp2svpnparametersradiusclientrootcertificates) | array | List of RADIUS client root certificates. |
-| [`radiusServerAddress`](#parameter-virtualwanparametersp2svpnparametersradiusserveraddress) | string | RADIUS server address. |
-| [`radiusServerRootCertificates`](#parameter-virtualwanparametersp2svpnparametersradiusserverrootcertificates) | array | List of RADIUS server root certificates. |
-| [`radiusServers`](#parameter-virtualwanparametersp2svpnparametersradiusservers) | array | List of RADIUS servers. |
-| [`radiusServerSecret`](#parameter-virtualwanparametersp2svpnparametersradiusserversecret) | string | RADIUS server secret. |
-| [`vpnAuthenticationTypes`](#parameter-virtualwanparametersp2svpnparametersvpnauthenticationtypes) | array | VPN authentication types supported. |
-| [`vpnClientIpsecPolicies`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpolicies) | array | List of VPN client IPsec policies. |
-| [`vpnClientRevokedCertificates`](#parameter-virtualwanparametersp2svpnparametersvpnclientrevokedcertificates) | array | List of revoked VPN client certificates. |
-| [`vpnClientRootCertificates`](#parameter-virtualwanparametersp2svpnparametersvpnclientrootcertificates) | array | List of VPN client root certificates. |
-| [`vpnProtocols`](#parameter-virtualwanparametersp2svpnparametersvpnprotocols) | string | Supported VPN protocols. |
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.createP2sVpnServerConfiguration`
-
-Whether to create a new P2S VPN server configuration.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.aadAudience`
-
-Azure AD audience for VPN authentication.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.aadIssuer`
-
-Azure AD issuer for VPN authentication.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.aadTenant`
-
-Azure AD tenant for VPN authentication.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.p2sConfigurationPolicyGroups`
-
-Policy groups for P2S VPN configuration.
-
-- Required: No
-- Type: array
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.p2sVpnServerConfigurationName`
-
-Name of the P2S VPN server configuration.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.radiusClientRootCertificates`
-
-List of RADIUS client root certificates.
-
-- Required: No
-- Type: array
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.radiusServerAddress`
-
-RADIUS server address.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.radiusServerRootCertificates`
-
-List of RADIUS server root certificates.
-
-- Required: No
-- Type: array
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.radiusServers`
-
-List of RADIUS servers.
-
-- Required: No
-- Type: array
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.radiusServerSecret`
-
-RADIUS server secret.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnAuthenticationTypes`
-
-VPN authentication types supported.
-
-- Required: No
-- Type: array
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies`
-
-List of VPN client IPsec policies.
-
-- Required: No
-- Type: array
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`dhGroup`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciesdhgroup) | string | The Diffie-Hellman group used in IKE phase 1. Required if using IKEv2. |
-| [`ikeEncryption`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciesikeencryption) | string | The encryption algorithm used in IKE phase 1. Required if using IKEv2. |
-| [`ikeIntegrity`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciesikeintegrity) | string | The integrity algorithm used in IKE phase 1. Required if using IKEv2. |
-| [`ipsecEncryption`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciesipsecencryption) | string | The encryption algorithm used in IKE phase 2. Required if using IKEv2. |
-| [`ipsecIntegrity`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciesipsecintegrity) | string | The integrity algorithm used in IKE phase 2. Required if using IKEv2. |
-| [`pfsGroup`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciespfsgroup) | string | The Perfect Forward Secrecy (PFS) group used in IKE phase 2. Required if using IKEv2. |
-| [`saDataSizeKilobytes`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciessadatasizekilobytes) | int | The size of the SA data in kilobytes. Required if using IKEv2. |
-| [`salfetimeSeconds`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciessalfetimeseconds) | int | The lifetime of the SA in seconds. Required if using IKEv2. |
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.dhGroup`
-
-The Diffie-Hellman group used in IKE phase 1. Required if using IKEv2.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.ikeEncryption`
-
-The encryption algorithm used in IKE phase 1. Required if using IKEv2.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.ikeIntegrity`
-
-The integrity algorithm used in IKE phase 1. Required if using IKEv2.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.ipsecEncryption`
-
-The encryption algorithm used in IKE phase 2. Required if using IKEv2.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.ipsecIntegrity`
-
-The integrity algorithm used in IKE phase 2. Required if using IKEv2.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.pfsGroup`
-
-The Perfect Forward Secrecy (PFS) group used in IKE phase 2. Required if using IKEv2.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.saDataSizeKilobytes`
-
-The size of the SA data in kilobytes. Required if using IKEv2.
-
-- Required: No
-- Type: int
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.salfetimeSeconds`
-
-The lifetime of the SA in seconds. Required if using IKEv2.
-
-- Required: No
-- Type: int
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientRevokedCertificates`
-
-List of revoked VPN client certificates.
-
-- Required: No
-- Type: array
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientRootCertificates`
-
-List of VPN client root certificates.
-
-- Required: No
-- Type: array
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnProtocols`
-
-Supported VPN protocols.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'IkeV2'
-    'OpenVPN'
-  ]
-  ```
-
-### Parameter: `virtualWanParameters.roleAssignments`
-
-Role assignments to be applied to the Virtual WAN.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalId`](#parameter-virtualwanparametersroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-virtualwanparametersroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`condition`](#parameter-virtualwanparametersroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
-| [`conditionVersion`](#parameter-virtualwanparametersroleassignmentsconditionversion) | string | Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-virtualwanparametersroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-virtualwanparametersroleassignmentsdescription) | string | The description of the role assignment. |
-| [`name`](#parameter-virtualwanparametersroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
-| [`principalType`](#parameter-virtualwanparametersroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
-
-### Parameter: `virtualWanParameters.roleAssignments.principalId`
-
-The principal ID of the principal (user/group/identity) to assign the role to.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `virtualWanParameters.roleAssignments.roleDefinitionIdOrName`
-
-The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `virtualWanParameters.roleAssignments.condition`
-
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.roleAssignments.conditionVersion`
-
-Version of the condition.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '2.0'
-  ]
-  ```
-
-### Parameter: `virtualWanParameters.roleAssignments.delegatedManagedIdentityResourceId`
-
-The Resource Id of the delegated managed identity resource.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.roleAssignments.description`
-
-The description of the role assignment.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.roleAssignments.name`
-
-The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.roleAssignments.principalType`
-
-The principal type of the assigned principal ID.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Device'
-    'ForeignGroup'
-    'Group'
-    'ServicePrincipal'
-    'User'
-  ]
-  ```
-
-### Parameter: `virtualWanParameters.tags`
-
-Tags to be applied to the Virtual WAN.
-
-- Required: No
-- Type: object
-
-### Parameter: `virtualWanParameters.type`
-
-The type of Virtual WAN. Allowed values are Standard or Basic.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Basic'
-    'Standard'
-  ]
-  ```
-
-### Parameter: `enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `lock`
-
-The lock settings for the Virtual WAN and associated components.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
-| [`name`](#parameter-lockname) | string | Specify the name of lock. |
-
-### Parameter: `lock.kind`
-
-Specify the type of lock.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'CanNotDelete'
-    'None'
-    'ReadOnly'
-  ]
-  ```
-
-### Parameter: `lock.name`
-
-Specify the name of lock.
-
-- Required: No
-- Type: string
+| [`lock`](#parameter-lock) | object | The lock settings for the Virtual WAN and associated components. |
+| [`tags`](#parameter-tags) | object | Tags to be applied to all resources. |
 
 ### Parameter: `virtualHubParameters`
 
 The parameters for the Virtual Hubs and associated networking components, required if configuring Virtual Hubs.
 
-- Required: No
+- Required: Yes
 - Type: array
 
 **Required parameters**
@@ -892,6 +1420,7 @@ ExpressRoute parameters for the Virtual Hub.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`deployExpressRouteGateway`](#parameter-virtualhubparametersexpressrouteparametersdeployexpressroutegateway) | bool | Whether to deploy an ExpressRoute Gateway. |
+| [`expressRouteGatewayName`](#parameter-virtualhubparametersexpressrouteparametersexpressroutegatewayname) | string | Name of the ExpressRoute Gateway. |
 
 **Optional parameters**
 
@@ -901,7 +1430,6 @@ ExpressRoute parameters for the Virtual Hub.
 | [`autoScaleConfigurationBoundsMax`](#parameter-virtualhubparametersexpressrouteparametersautoscaleconfigurationboundsmax) | int | Maximum bound for autoscale configuration. |
 | [`autoScaleConfigurationBoundsMin`](#parameter-virtualhubparametersexpressrouteparametersautoscaleconfigurationboundsmin) | int | Minimum bound for autoscale configuration. |
 | [`expressRouteConnections`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnections) | array | ExpressRoute connections. |
-| [`expressRouteGatewayName`](#parameter-virtualhubparametersexpressrouteparametersexpressroutegatewayname) | string | Name of the ExpressRoute Gateway. |
 
 ### Parameter: `virtualHubParameters.expressRouteParameters.deployExpressRouteGateway`
 
@@ -909,6 +1437,13 @@ Whether to deploy an ExpressRoute Gateway.
 
 - Required: Yes
 - Type: bool
+
+### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteGatewayName`
+
+Name of the ExpressRoute Gateway.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `virtualHubParameters.expressRouteParameters.allowNonVirtualWanTraffic`
 
@@ -942,12 +1477,9 @@ ExpressRoute connections.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`expressRouteCircuitId`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsexpressroutecircuitid) | string | Resource ID of the ExpressRoute circuit. |
 | [`name`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsname) | string | Name of the ExpressRoute connection. |
-| [`routingIntent`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsroutingintent) | object | Routing intent for the connection. |
 | [`routingWeight`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsroutingweight) | int | Routing weight for the connection. |
 | [`sharedKey`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionssharedkey) | string | Shared key for the connection. |
-| [`usePolicyBasedTrafficSelectors`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsusepolicybasedtrafficselectors) | bool | Use policy-based traffic selectors. |
 
 **Optional parameters**
 
@@ -957,15 +1489,11 @@ ExpressRoute connections.
 | [`enableBgp`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsenablebgp) | bool | Enable BGP for the connection. |
 | [`enableInternetSecurity`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsenableinternetsecurity) | bool | Enable internet security for the connection. |
 | [`enableRateLimiting`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsenableratelimiting) | bool | Enable rate limiting. |
+| [`expressRouteCircuitId`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsexpressroutecircuitid) | string | Resource ID of the ExpressRoute circuit. |
 | [`ipsecPolicies`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsipsecpolicies) | array | IPsec policies for the connection. |
+| [`routingIntent`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsroutingintent) | object | Routing intent for the connection. |
 | [`trafficSelectorPolicies`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionstrafficselectorpolicies) | array | Traffic selector policies for the connection. |
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.expressRouteCircuitId`
-
-Resource ID of the ExpressRoute circuit.
-
-- Required: Yes
-- Type: string
+| [`usePolicyBasedTrafficSelectors`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsusepolicybasedtrafficselectors) | bool | Use policy-based traffic selectors. |
 
 ### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.name`
 
@@ -973,34 +1501,6 @@ Name of the ExpressRoute connection.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.routingIntent`
-
-Routing intent for the connection.
-
-- Required: Yes
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`internetToFirewall`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsroutingintentinternettofirewall) | bool | Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0). |
-| [`privateToFirewall`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsroutingintentprivatetofirewall) | bool | Configures Routing Intent to forward Private traffic to the firewall (RFC1918). |
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.routingIntent.internetToFirewall`
-
-Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0).
-
-- Required: No
-- Type: bool
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.routingIntent.privateToFirewall`
-
-Configures Routing Intent to forward Private traffic to the firewall (RFC1918).
-
-- Required: No
-- Type: bool
 
 ### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.routingWeight`
 
@@ -1015,13 +1515,6 @@ Shared key for the connection.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.usePolicyBasedTrafficSelectors`
-
-Use policy-based traffic selectors.
-
-- Required: Yes
-- Type: bool
 
 ### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.connectionBandwidth`
 
@@ -1051,26 +1544,61 @@ Enable rate limiting.
 - Required: No
 - Type: bool
 
+### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.expressRouteCircuitId`
+
+Resource ID of the ExpressRoute circuit.
+
+- Required: No
+- Type: string
+
 ### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.ipsecPolicies`
 
 IPsec policies for the connection.
 
-- Required: Yes
+- Required: No
 - Type: array
+
+### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.routingIntent`
+
+Routing intent for the connection.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`internetToFirewall`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsroutingintentinternettofirewall) | bool | Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0). |
+| [`privateToFirewall`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsroutingintentprivatetofirewall) | bool | Configures Routing Intent to forward Private traffic to the firewall (RFC1918). |
+
+### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.routingIntent.internetToFirewall`
+
+Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0).
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.routingIntent.privateToFirewall`
+
+Configures Routing Intent to forward Private traffic to the firewall (RFC1918).
+
+- Required: No
+- Type: bool
 
 ### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.trafficSelectorPolicies`
 
 Traffic selector policies for the connection.
 
-- Required: Yes
+- Required: No
 - Type: array
 
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteGatewayName`
+### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.usePolicyBasedTrafficSelectors`
 
-Name of the ExpressRoute Gateway.
+Use policy-based traffic selectors.
 
 - Required: No
-- Type: string
+- Type: bool
 
 ### Parameter: `virtualHubParameters.hubRouteTables`
 
@@ -1445,6 +1973,7 @@ Site-to-site VPN parameters for the Virtual Hub.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`deployS2SVpnGateway`](#parameter-virtualhubparameterss2svpnparametersdeploys2svpngateway) | bool | Whether to deploy a S2S VPN Gateway. |
+| [`vpnGatewayName`](#parameter-virtualhubparameterss2svpnparametersvpngatewayname) | string | Name of the VPN Gateway. |
 
 **Optional parameters**
 
@@ -1456,7 +1985,6 @@ Site-to-site VPN parameters for the Virtual Hub.
 | [`lock`](#parameter-virtualhubparameterss2svpnparameterslock) | object | Lock settings for the VPN Gateway. |
 | [`natRules`](#parameter-virtualhubparameterss2svpnparametersnatrules) | array | NAT rules for the VPN Gateway. |
 | [`vpnConnections`](#parameter-virtualhubparameterss2svpnparametersvpnconnections) | array | VPN connections for the VPN Gateway. |
-| [`vpnGatewayName`](#parameter-virtualhubparameterss2svpnparametersvpngatewayname) | string | Name of the VPN Gateway. |
 | [`vpnGatewayScaleUnit`](#parameter-virtualhubparameterss2svpnparametersvpngatewayscaleunit) | int | Scale unit for the VPN Gateway. |
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.deployS2SVpnGateway`
@@ -1465,6 +1993,13 @@ Whether to deploy a S2S VPN Gateway.
 
 - Required: Yes
 - Type: bool
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.vpnGatewayName`
+
+Name of the VPN Gateway.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.bgpSettings`
 
@@ -1478,6 +2013,11 @@ BGP settings for the VPN Gateway.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`asn`](#parameter-virtualhubparameterss2svpnparametersbgpsettingsasn) | int | ASN for BGP. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 | [`bgpPeeringAddress`](#parameter-virtualhubparameterss2svpnparametersbgpsettingsbgppeeringaddress) | string | BGP peering address. |
 | [`bgpPeeringAddresses`](#parameter-virtualhubparameterss2svpnparametersbgpsettingsbgppeeringaddresses) | array | BGP peering addresses. |
 | [`peerWeight`](#parameter-virtualhubparameterss2svpnparametersbgpsettingspeerweight) | int | Peer weight for BGP. |
@@ -1493,21 +2033,42 @@ ASN for BGP.
 
 BGP peering address.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.bgpSettings.bgpPeeringAddresses`
 
 BGP peering addresses.
 
-- Required: Yes
+- Required: No
 - Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`customBgpIpAddresses`](#parameter-virtualhubparameterss2svpnparametersbgpsettingsbgppeeringaddressescustombgpipaddresses) | array | Custom BGP IP addresses. |
+| [`ipconfigurationId`](#parameter-virtualhubparameterss2svpnparametersbgpsettingsbgppeeringaddressesipconfigurationid) | string | IP configuration ID. |
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.bgpSettings.bgpPeeringAddresses.customBgpIpAddresses`
+
+Custom BGP IP addresses.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.bgpSettings.bgpPeeringAddresses.ipconfigurationId`
+
+IP configuration ID.
+
+- Required: No
+- Type: string
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.bgpSettings.peerWeight`
 
 Peer weight for BGP.
 
-- Required: Yes
+- Required: No
 - Type: int
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.enableBgpRouteTranslationForNat`
@@ -1537,6 +2098,7 @@ Lock settings for the VPN Gateway.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-virtualhubparameterss2svpnparameterslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-virtualhubparameterss2svpnparameterslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-virtualhubparameterss2svpnparameterslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.lock.kind`
 
@@ -1560,12 +2122,117 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
+### Parameter: `virtualHubParameters.s2sVpnParameters.lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
+
 ### Parameter: `virtualHubParameters.s2sVpnParameters.natRules`
 
 NAT rules for the VPN Gateway.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`externalMappings`](#parameter-virtualhubparameterss2svpnparametersnatrulesexternalmappings) | array | External mappings for NAT rule. |
+| [`internalMappings`](#parameter-virtualhubparameterss2svpnparametersnatrulesinternalmappings) | array | Internal mappings for NAT rule. |
+| [`mode`](#parameter-virtualhubparameterss2svpnparametersnatrulesmode) | string | Mode for NAT rule. |
+| [`name`](#parameter-virtualhubparameterss2svpnparametersnatrulesname) | string | Name of the NAT rule. |
+| [`type`](#parameter-virtualhubparameterss2svpnparametersnatrulestype) | string | Type of NAT rule. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipConfigurationId`](#parameter-virtualhubparameterss2svpnparametersnatrulesipconfigurationid) | string | IP configuration ID. |
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.natRules.externalMappings`
+
+External mappings for NAT rule.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressSpace`](#parameter-virtualhubparameterss2svpnparametersnatrulesexternalmappingsaddressspace) | string | Address space for external mapping. |
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.natRules.externalMappings.addressSpace`
+
+Address space for external mapping.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.natRules.internalMappings`
+
+Internal mappings for NAT rule.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressSpace`](#parameter-virtualhubparameterss2svpnparametersnatrulesinternalmappingsaddressspace) | string | Address space for internal mapping. |
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.natRules.internalMappings.addressSpace`
+
+Address space for internal mapping.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.natRules.mode`
+
+Mode for NAT rule.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'EgressSnat'
+    'IngressSnat'
+  ]
+  ```
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.natRules.name`
+
+Name of the NAT rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.natRules.type`
+
+Type of NAT rule.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dynamic'
+    'Static'
+  ]
+  ```
+
+### Parameter: `virtualHubParameters.s2sVpnParameters.natRules.ipConfigurationId`
+
+IP configuration ID.
+
+- Required: No
+- Type: string
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections`
 
@@ -1695,36 +2362,29 @@ Enable rate limiting.
 
 IPsec policies for the connection.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections.routingConfiguration`
 
 Routing configuration for the connection.
 
-- Required: Yes
+- Required: No
 - Type: object
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections.trafficSelectorPolicies`
 
 Traffic selector policies for the connection.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections.vpnLinkConnections`
 
 VPN link connections for the connection.
 
-- Required: Yes
-- Type: array
-
-### Parameter: `virtualHubParameters.s2sVpnParameters.vpnGatewayName`
-
-Name of the VPN Gateway.
-
 - Required: No
-- Type: string
+- Type: array
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.vpnGatewayScaleUnit`
 
@@ -1744,6 +2404,9 @@ Secure Hub parameters for the Virtual Hub.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`azureFirewallName`](#parameter-virtualhubparameterssecurehubparametersazurefirewallname) | string | Name of the Azure Firewall. |
+| [`azureFirewallPublicIPCount`](#parameter-virtualhubparameterssecurehubparametersazurefirewallpublicipcount) | int | Number of public IPs for the Azure Firewall. |
+| [`azureFirewallSku`](#parameter-virtualhubparameterssecurehubparametersazurefirewallsku) | string | SKU for the Azure Firewall. |
 | [`deploySecureHub`](#parameter-virtualhubparameterssecurehubparametersdeploysecurehub) | bool | Whether to deploy a Secure Hub. |
 
 **Optional parameters**
@@ -1751,13 +2414,40 @@ Secure Hub parameters for the Virtual Hub.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`additionalPublicIpConfigurationResourceIds`](#parameter-virtualhubparameterssecurehubparametersadditionalpublicipconfigurationresourceids) | array | Additional public IP configuration resource IDs. |
-| [`azureFirewallName`](#parameter-virtualhubparameterssecurehubparametersazurefirewallname) | string | Name of the Azure Firewall. |
-| [`azureFirewallPublicIPCount`](#parameter-virtualhubparameterssecurehubparametersazurefirewallpublicipcount) | int | Number of public IPs for the Azure Firewall. |
-| [`azureFirewallSku`](#parameter-virtualhubparameterssecurehubparametersazurefirewallsku) | string | SKU for the Azure Firewall. |
 | [`diagnosticSettings`](#parameter-virtualhubparameterssecurehubparametersdiagnosticsettings) | array | Diagnostic settings for the Azure Firewall in the Secure Hub. |
 | [`firewallPolicyResourceId`](#parameter-virtualhubparameterssecurehubparametersfirewallpolicyresourceid) | string | Resource ID of the firewall policy. |
 | [`publicIPAddressObject`](#parameter-virtualhubparameterssecurehubparameterspublicipaddressobject) | object | Public IP address object for the Azure Firewall. |
 | [`publicIPResourceID`](#parameter-virtualhubparameterssecurehubparameterspublicipresourceid) | string | Resource ID of the public IP address. |
+| [`routingIntent`](#parameter-virtualhubparameterssecurehubparametersroutingintent) | object | Routing intent for the Azure Firewall. |
+
+### Parameter: `virtualHubParameters.secureHubParameters.azureFirewallName`
+
+Name of the Azure Firewall.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualHubParameters.secureHubParameters.azureFirewallPublicIPCount`
+
+Number of public IPs for the Azure Firewall.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `virtualHubParameters.secureHubParameters.azureFirewallSku`
+
+SKU for the Azure Firewall.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Premium'
+    'Standard'
+  ]
+  ```
 
 ### Parameter: `virtualHubParameters.secureHubParameters.deploySecureHub`
 
@@ -1772,35 +2462,6 @@ Additional public IP configuration resource IDs.
 
 - Required: No
 - Type: array
-
-### Parameter: `virtualHubParameters.secureHubParameters.azureFirewallName`
-
-Name of the Azure Firewall.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualHubParameters.secureHubParameters.azureFirewallPublicIPCount`
-
-Number of public IPs for the Azure Firewall.
-
-- Required: No
-- Type: int
-
-### Parameter: `virtualHubParameters.secureHubParameters.azureFirewallSku`
-
-SKU for the Azure Firewall.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Basic'
-    'Premium'
-    'Standard'
-  ]
-  ```
 
 ### Parameter: `virtualHubParameters.secureHubParameters.diagnosticSettings`
 
@@ -2032,6 +2693,34 @@ Resource ID of the public IP address.
 - Required: No
 - Type: string
 
+### Parameter: `virtualHubParameters.secureHubParameters.routingIntent`
+
+Routing intent for the Azure Firewall.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`internetToFirewall`](#parameter-virtualhubparameterssecurehubparametersroutingintentinternettofirewall) | bool | Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0). |
+| [`privateToFirewall`](#parameter-virtualhubparameterssecurehubparametersroutingintentprivatetofirewall) | bool | Configures Routing Intent to forward Private traffic to the firewall (RFC1918). |
+
+### Parameter: `virtualHubParameters.secureHubParameters.routingIntent.internetToFirewall`
+
+Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0).
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualHubParameters.secureHubParameters.routingIntent.privateToFirewall`
+
+Configures Routing Intent to forward Private traffic to the firewall (RFC1918).
+
+- Required: No
+- Type: bool
+
 ### Parameter: `virtualHubParameters.sku`
 
 SKU for the Virtual Hub.
@@ -2067,6 +2756,448 @@ IP addresses for the Virtual Router.
 - Required: No
 - Type: array
 
+### Parameter: `virtualWanParameters`
+
+The parameters for the Virtual WAN.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`virtualWanName`](#parameter-virtualwanparametersvirtualwanname) | string | The name of the Virtual WAN. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowBranchToBranchTraffic`](#parameter-virtualwanparametersallowbranchtobranchtraffic) | bool | Whether to allow branch-to-branch traffic within the Virtual WAN. |
+| [`location`](#parameter-virtualwanparameterslocation) | string | The Azure region where the Virtual WAN will be created. Defaults to the resource group location if not specified. |
+| [`lock`](#parameter-virtualwanparameterslock) | object | Lock settings for the Virtual WAN and associated resources. |
+| [`p2sVpnParameters`](#parameter-virtualwanparametersp2svpnparameters) | object | Point-to-site VPN server configuration parameters for the Virtual WAN. |
+| [`roleAssignments`](#parameter-virtualwanparametersroleassignments) | array | Role assignments to be applied to the Virtual WAN. |
+| [`tags`](#parameter-virtualwanparameterstags) | object | Tags to be applied to the Virtual WAN. |
+| [`type`](#parameter-virtualwanparameterstype) | string | The type of Virtual WAN. Allowed values are Standard or Basic. |
+
+### Parameter: `virtualWanParameters.virtualWanName`
+
+The name of the Virtual WAN.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualWanParameters.allowBranchToBranchTraffic`
+
+Whether to allow branch-to-branch traffic within the Virtual WAN.
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualWanParameters.location`
+
+The Azure region where the Virtual WAN will be created. Defaults to the resource group location if not specified.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.lock`
+
+Lock settings for the Virtual WAN and associated resources.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-virtualwanparameterslockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-virtualwanparameterslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-virtualwanparameterslocknotes) | string | Specify the notes of the lock. |
+
+### Parameter: `virtualWanParameters.lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `virtualWanParameters.lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters`
+
+Point-to-site VPN server configuration parameters for the Virtual WAN.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`createP2sVpnServerConfiguration`](#parameter-virtualwanparametersp2svpnparameterscreatep2svpnserverconfiguration) | bool | Whether to create a new P2S VPN server configuration. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`aadAudience`](#parameter-virtualwanparametersp2svpnparametersaadaudience) | string | Entra ID audience for VPN authentication. Required if using Entra ID audience for VPN authentication. |
+| [`aadIssuer`](#parameter-virtualwanparametersp2svpnparametersaadissuer) | string | Entra ID issuer for VPN authentication. Required if using Entra ID authentication. |
+| [`aadTenant`](#parameter-virtualwanparametersp2svpnparametersaadtenant) | string | Entra ID tenant for VPN authentication. Required if using Entra ID authentication. |
+| [`p2sConfigurationPolicyGroups`](#parameter-virtualwanparametersp2svpnparametersp2sconfigurationpolicygroups) | array | Configure user groups and IP Address Pools. Required if using Entra ID authentication. |
+| [`radiusClientRootCertificates`](#parameter-virtualwanparametersp2svpnparametersradiusclientrootcertificates) | array | List of RADIUS client root certificates. Required if using RADIUS authentication. |
+| [`radiusServerAddress`](#parameter-virtualwanparametersp2svpnparametersradiusserveraddress) | string | RADIUS server address. Required if using RADIUS authentication. |
+| [`radiusServerRootCertificates`](#parameter-virtualwanparametersp2svpnparametersradiusserverrootcertificates) | array | List of RADIUS server root certificates. Required if using RADIUS authentication. |
+| [`radiusServers`](#parameter-virtualwanparametersp2svpnparametersradiusservers) | array | List of RADIUS servers. Required if using RADIUS authentication. |
+| [`radiusServerSecret`](#parameter-virtualwanparametersp2svpnparametersradiusserversecret) | string | RADIUS server secret. Required if using RADIUS authentication. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`p2sVpnServerConfigurationName`](#parameter-virtualwanparametersp2svpnparametersp2svpnserverconfigurationname) | string | Name of the P2S VPN server configuration. |
+| [`vpnAuthenticationTypes`](#parameter-virtualwanparametersp2svpnparametersvpnauthenticationtypes) | array | VPN authentication types supported. |
+| [`vpnClientIpsecPolicies`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpolicies) | array | List of VPN client IPsec policies. |
+| [`vpnClientRevokedCertificates`](#parameter-virtualwanparametersp2svpnparametersvpnclientrevokedcertificates) | array | List of revoked VPN client certificates. |
+| [`vpnClientRootCertificates`](#parameter-virtualwanparametersp2svpnparametersvpnclientrootcertificates) | array | List of VPN client root certificates. |
+| [`vpnProtocols`](#parameter-virtualwanparametersp2svpnparametersvpnprotocols) | string | Supported VPN protocols. |
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.createP2sVpnServerConfiguration`
+
+Whether to create a new P2S VPN server configuration.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.aadAudience`
+
+Entra ID audience for VPN authentication. Required if using Entra ID audience for VPN authentication.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.aadIssuer`
+
+Entra ID issuer for VPN authentication. Required if using Entra ID authentication.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.aadTenant`
+
+Entra ID tenant for VPN authentication. Required if using Entra ID authentication.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.p2sConfigurationPolicyGroups`
+
+Configure user groups and IP Address Pools. Required if using Entra ID authentication.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.radiusClientRootCertificates`
+
+List of RADIUS client root certificates. Required if using RADIUS authentication.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.radiusServerAddress`
+
+RADIUS server address. Required if using RADIUS authentication.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.radiusServerRootCertificates`
+
+List of RADIUS server root certificates. Required if using RADIUS authentication.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.radiusServers`
+
+List of RADIUS servers. Required if using RADIUS authentication.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.radiusServerSecret`
+
+RADIUS server secret. Required if using RADIUS authentication.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.p2sVpnServerConfigurationName`
+
+Name of the P2S VPN server configuration.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnAuthenticationTypes`
+
+VPN authentication types supported.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies`
+
+List of VPN client IPsec policies.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dhGroup`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciesdhgroup) | string | The Diffie-Hellman group used in IKE phase 1. Required if using IKEv2. |
+| [`ikeEncryption`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciesikeencryption) | string | The encryption algorithm used in IKE phase 1. Required if using IKEv2. |
+| [`ikeIntegrity`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciesikeintegrity) | string | The integrity algorithm used in IKE phase 1. Required if using IKEv2. |
+| [`ipsecEncryption`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciesipsecencryption) | string | The encryption algorithm used in IKE phase 2. Required if using IKEv2. |
+| [`ipsecIntegrity`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciesipsecintegrity) | string | The integrity algorithm used in IKE phase 2. Required if using IKEv2. |
+| [`pfsGroup`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciespfsgroup) | string | The Perfect Forward Secrecy (PFS) group used in IKE phase 2. Required if using IKEv2. |
+| [`saDataSizeKilobytes`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciessadatasizekilobytes) | int | The size of the SA data in kilobytes. Required if using IKEv2. |
+| [`salfetimeSeconds`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciessalfetimeseconds) | int | The lifetime of the SA in seconds. Required if using IKEv2. |
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.dhGroup`
+
+The Diffie-Hellman group used in IKE phase 1. Required if using IKEv2.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.ikeEncryption`
+
+The encryption algorithm used in IKE phase 1. Required if using IKEv2.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.ikeIntegrity`
+
+The integrity algorithm used in IKE phase 1. Required if using IKEv2.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.ipsecEncryption`
+
+The encryption algorithm used in IKE phase 2. Required if using IKEv2.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.ipsecIntegrity`
+
+The integrity algorithm used in IKE phase 2. Required if using IKEv2.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.pfsGroup`
+
+The Perfect Forward Secrecy (PFS) group used in IKE phase 2. Required if using IKEv2.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.saDataSizeKilobytes`
+
+The size of the SA data in kilobytes. Required if using IKEv2.
+
+- Required: No
+- Type: int
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.salfetimeSeconds`
+
+The lifetime of the SA in seconds. Required if using IKEv2.
+
+- Required: No
+- Type: int
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientRevokedCertificates`
+
+List of revoked VPN client certificates.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientRootCertificates`
+
+List of VPN client root certificates.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnProtocols`
+
+Supported VPN protocols.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'IkeV2'
+    'OpenVPN'
+  ]
+  ```
+
+### Parameter: `virtualWanParameters.roleAssignments`
+
+Role assignments to be applied to the Virtual WAN.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-virtualwanparametersroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-virtualwanparametersroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-virtualwanparametersroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-virtualwanparametersroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-virtualwanparametersroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-virtualwanparametersroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-virtualwanparametersroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-virtualwanparametersroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `virtualWanParameters.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualWanParameters.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualWanParameters.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `virtualWanParameters.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `virtualWanParameters.tags`
+
+Tags to be applied to the Virtual WAN.
+
+- Required: No
+- Type: object
+
+### Parameter: `virtualWanParameters.type`
+
+The type of Virtual WAN. Allowed values are Standard or Basic.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Standard'
+  ]
+  ```
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `location`
 
 Azure region where the Virtual WAN will be created.
@@ -2075,12 +3206,65 @@ Azure region where the Virtual WAN will be created.
 - Type: string
 - Default: `[resourceGroup().location]`
 
+### Parameter: `lock`
+
+The lock settings for the Virtual WAN and associated components.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
+
+### Parameter: `lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `tags`
+
+Tags to be applied to all resources.
+
+- Required: No
+- Type: object
+
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `virtualHubs` | array | The array containing the Virtual Hub information |
-| `virtualWan` | object | Object containing the Virtual WAN information |
+| `resourceGroupName` | string | The resource group where the resource is deployed. |
+| `virtualHubs` | array | The array containing the Virtual Hub information. |
+| `virtualWan` | object | Object containing the Virtual WAN information. |
+| `vpnServerConfigurationResourceId` | string | The resource ID of the VPN Server Configuration, if created. Returns an empty string if not deployed. |
 
 ## Cross-referenced modules
 
@@ -2089,6 +3273,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

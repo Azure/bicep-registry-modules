@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Multiple hub deployment'
+metadata description = 'This instance deploys a Virtual WAN with multiple Virtual Hubs.'
 
 // ========== //
 // Parameters //
@@ -15,10 +15,17 @@ param resourceGroupName string = 'dep-${namePrefix}-network.virtual-wan-${servic
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'nvwanmin'
+param serviceShort string = 'nvwanmultihub'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
+
+@description('Optional. The location for the first virtual hub. Defaults to the main resource location.')
+param virtualHub1Location string = resourceLocation
+
+@description('Optional. The location for the second virtual hub. Defaults to westus2.')
+param virtualHub2Location string = 'westus2'
+
 
 // ============ //
 // Dependencies //
@@ -48,8 +55,33 @@ module testDeployment '../../../main.bicep' = [
       virtualHubParameters: [
         {
           hubAddressPrefix: '10.0.0.0/24'
-          hubLocation: resourceLocation
-          hubName: 'dep-${namePrefix}-hub-${resourceLocation}-${serviceShort}'
+          hubLocation: virtualHub1Location
+          hubName: 'dep-${namePrefix}-hub-${virtualHub1Location}-${serviceShort}'
+          p2sVpnParameters: {
+            deployP2SVpnGateway: false
+            connectionConfigurationsName: 'default'
+            vpnGatewayName: 'unused'
+            vpnClientAddressPoolAddressPrefixes: []
+          }
+          s2sVpnParameters: {
+            deployS2SVpnGateway: false
+            vpnGatewayName: 'unused'
+          }
+          expressRouteParameters: {
+            deployExpressRouteGateway: false
+            expressRouteGatewayName: 'unused'
+          }
+          secureHubParameters: {
+            deploySecureHub: false
+            azureFirewallName: 'unused'
+            azureFirewallSku: 'Standard'
+            azureFirewallPublicIPCount: 1
+          }
+        }
+        {
+          hubAddressPrefix: '10.0.1.0/24'
+          hubLocation: virtualHub2Location
+          hubName: 'dep-${namePrefix}-hub-${virtualHub2Location}-${serviceShort}'
           p2sVpnParameters: {
             deployP2SVpnGateway: false
             connectionConfigurationsName: 'default'
@@ -72,10 +104,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      tags: {
-        Environment: 'Test'
-        'hidden-title': 'This is visible in the resource name'
-      }
     }
   }
 ]
