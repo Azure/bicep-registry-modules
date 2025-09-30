@@ -113,7 +113,6 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
-      outboundType: 'userDefinedRouting'
     }
   }
 ]

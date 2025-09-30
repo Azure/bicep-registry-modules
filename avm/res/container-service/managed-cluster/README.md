@@ -988,7 +988,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       ]
     }
     networkPlugin: 'azure'
-    outboundType: 'userDefinedRouting'
     privateDNSZone: '<privateDNSZone>'
     serviceCidr: '10.10.200.0/24'
     skuTier: 'Standard'
@@ -1084,9 +1083,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "networkPlugin": {
       "value": "azure"
     },
-    "outboundType": {
-      "value": "userDefinedRouting"
-    },
     "privateDNSZone": {
       "value": "<privateDNSZone>"
     },
@@ -1170,7 +1166,6 @@ param managedIdentities = {
   ]
 }
 param networkPlugin = 'azure'
-param outboundType = 'userDefinedRouting'
 param privateDNSZone = '<privateDNSZone>'
 param serviceCidr = '10.10.200.0/24'
 param skuTier = 'Standard'
