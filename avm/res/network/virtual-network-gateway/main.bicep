@@ -586,7 +586,7 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2024-05
       name: skuName
       tier: skuName
     }
-    vpnType: !isExpressRoute ? vpnType : 'PolicyBased'
+    vpnType: isExpressRoute ? 'RouteBased' : vpnType
     vpnClientConfiguration: !empty(vpnClientAddressPoolPrefix) ? vpnClientConfiguration : null
     vpnGatewayGeneration: gatewayType == 'Vpn' ? vpnGatewayGeneration : 'None'
     customRoutes: customRoutes
