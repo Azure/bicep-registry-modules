@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "17650947843670351841"
+      "templateHash": "4409346047976764894"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
@@ -1136,7 +1136,7 @@
           "name": "[parameters('skuName')]",
           "tier": "[parameters('skuName')]"
         },
-        "vpnType": "[if(not(variables('isExpressRoute')), parameters('vpnType'), 'PolicyBased')]",
+        "vpnType": "[if(variables('isExpressRoute'), 'RouteBased', parameters('vpnType'))]",
         "vpnClientConfiguration": "[if(not(empty(parameters('vpnClientAddressPoolPrefix'))), variables('vpnClientConfiguration'), null())]",
         "vpnGatewayGeneration": "[if(equals(parameters('gatewayType'), 'Vpn'), parameters('vpnGatewayGeneration'), 'None')]",
         "customRoutes": "[parameters('customRoutes')]",
