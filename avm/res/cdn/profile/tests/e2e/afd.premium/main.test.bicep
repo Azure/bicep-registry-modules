@@ -127,9 +127,9 @@ module testDeployment '../../../main.bicep' = [
                   id: resourceId(
                     subscription().subscriptionId,
                     resourceGroup.name,
-                    'Microsoft.Cdn/profiles/afdEndpoints',
-                    'dep-${namePrefix}-test-${serviceShort}',
-                    'dep-${namePrefix}-test-afd-${serviceShort}-afd-endpoint'
+                    'Microsoft.Cdn/profiles/customDomains',
+                    'dep-${namePrefix}-test-afd-${serviceShort}',
+                    'dep-${namePrefix}-test-${serviceShort}-custom-domain'
                   )
                 }
               ]

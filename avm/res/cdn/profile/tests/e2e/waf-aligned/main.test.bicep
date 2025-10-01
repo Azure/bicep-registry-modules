@@ -35,7 +35,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}wafsa${serviceShort}' // FIXED: Shortened name
+    storageAccountName: 'dep${namePrefix}wafsa${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-waf-msi-${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${uniqueString(resourceGroupName)}'
     location: resourceLocation
@@ -70,14 +70,6 @@ module testDeployment '../../../main.bicep' = [
       location: 'global'
       sku: 'Premium_AzureFrontDoor' // WAF: Premium SKU for advanced security features
       originResponseTimeoutSeconds: 60 // WAF: Reasonable timeout for reliability
-
-      // WAF: Reliability - Enable managed identities for secure access
-      managedIdentities: {
-        systemAssigned: true
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
-      }
 
       // WAF: Security - Resource locking to prevent accidental deletion
       lock: {
@@ -285,39 +277,6 @@ module testDeployment '../../../main.bicep' = [
             }
           ]
         }
-        // {
-        //   name: 'dep${namePrefix}wafperformancerules${serviceShort}'
-        //   rules: [
-        //     {
-        //       name: 'StaticContentCachingRule'
-        //       order: 1
-        //       matchProcessingBehavior: 'Continue'
-        //       conditions: [
-        //         {
-        //           name: 'RequestUri'
-        //           parameters: {
-        //             typeName: 'DeliveryRuleRequestUriConditionParameters'
-        //             operator: 'Contains'
-        //             negateCondition: false
-        //             matchValues: ['.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.ico', '.svg', '.woff', '.woff2']
-        //             transforms: ['Lowercase']
-        //           }
-        //         }
-        //       ]
-        //       actions: [
-        //         // {
-        //         //   name: 'CacheExpiration'
-        //         //   parameters: {
-        //         //     typeName: 'DeliveryRuleCacheExpirationActionParameters'
-        //         //     cacheBehavior: 'Override'
-        //         //     cacheType: 'All'
-        //         //     cacheDuration: '30.00:00:00' // WAF: Performance - Long cache for static content
-        //         //   }
-        //         // }
-        //       ]
-        //     }
-        //   ]
-        // }
       ]
 
       // WAF: Performance & Reliability - Optimized AFD endpoints

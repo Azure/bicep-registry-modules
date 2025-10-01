@@ -129,6 +129,24 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
         ]
       }
     ]
+    securityPolicies: [
+      {
+        associations: [
+          {
+            domains: [
+              {
+                id: '<id>'
+              }
+            ]
+            patternsToMatch: [
+              '/*'
+            ]
+          }
+        ]
+        name: 'deptestcdnpafdpsecpol'
+        wafPolicyResourceId: '<wafPolicyResourceId>'
+      }
+    ]
   }
 }
 ```
@@ -231,6 +249,26 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
           ]
         }
       ]
+    },
+    "securityPolicies": {
+      "value": [
+        {
+          "associations": [
+            {
+              "domains": [
+                {
+                  "id": "<id>"
+                }
+              ],
+              "patternsToMatch": [
+                "/*"
+              ]
+            }
+          ],
+          "name": "deptestcdnpafdpsecpol",
+          "wafPolicyResourceId": "<wafPolicyResourceId>"
+        }
+      ]
     }
   }
 }
@@ -315,6 +353,24 @@ param ruleSets = [
         order: 1
       }
     ]
+  }
+]
+param securityPolicies = [
+  {
+    associations: [
+      {
+        domains: [
+          {
+            id: '<id>'
+          }
+        ]
+        patternsToMatch: [
+          '/*'
+        ]
+      }
+    ]
+    name: 'deptestcdnpafdpsecpol'
+    wafPolicyResourceId: '<wafPolicyResourceId>'
   }
 ]
 ```
@@ -1533,12 +1589,6 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       name: 'waf-protection-lock'
       notes: 'WAF: Protected against accidental deletion for business continuity'
     }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
     originGroups: [
       {
         healthProbeSettings: {
@@ -1849,14 +1899,6 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
         "notes": "WAF: Protected against accidental deletion for business continuity"
       }
     },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
     "originGroups": {
       "value": [
         {
@@ -2160,12 +2202,6 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'waf-protection-lock'
   notes: 'WAF: Protected against accidental deletion for business continuity'
-}
-param managedIdentities = {
-  systemAssigned: true
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
 }
 param originGroups = [
   {
