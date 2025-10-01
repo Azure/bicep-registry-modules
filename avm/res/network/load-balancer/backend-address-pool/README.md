@@ -36,6 +36,7 @@ This module deploys a Load Balancer Backend Address Pools.
 | [`loadBalancerBackendAddresses`](#parameter-loadbalancerbackendaddresses) | array | An array of backend addresses. |
 | [`syncMode`](#parameter-syncmode) | string | Backend address synchronous mode for the backend pool. |
 | [`tunnelInterfaces`](#parameter-tunnelinterfaces) | array | An array of gateway load balancer tunnel interfaces. |
+| [`virtualNetworkId`](#parameter-virtualnetworkid) | string | The resource ID of the virtual network. |
 
 ### Parameter: `name`
 
@@ -90,6 +91,14 @@ An array of gateway load balancer tunnel interfaces.
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `virtualNetworkId`
+
+The resource ID of the virtual network.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ## Outputs
 

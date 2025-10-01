@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "601516314831460935"
+      "version": "0.38.3.11034",
+      "templateHash": "2986204027553752756"
     },
     "name": "Load Balancer Backend Address Pools",
     "description": "This module deploys a Load Balancer Backend Address Pools."
@@ -55,6 +55,13 @@
       "metadata": {
         "description": "Optional. Backend address synchronous mode for the backend pool."
       }
+    },
+    "virtualNetworkId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The resource ID of the virtual network."
+      }
     }
   },
   "resources": [
@@ -66,7 +73,8 @@
         "loadBalancerBackendAddresses": "[parameters('loadBalancerBackendAddresses')]",
         "tunnelInterfaces": "[parameters('tunnelInterfaces')]",
         "drainPeriodInSeconds": "[if(not(equals(parameters('drainPeriodInSeconds'), 0)), parameters('drainPeriodInSeconds'), null())]",
-        "syncMode": "[if(not(empty(parameters('syncMode'))), parameters('syncMode'), null())]"
+        "syncMode": "[if(not(empty(parameters('syncMode'))), parameters('syncMode'), null())]",
+        "virtualNetwork": "[if(not(empty(parameters('virtualNetworkId'))), createObject('id', parameters('virtualNetworkId')), null())]"
       }
     }
   ],
