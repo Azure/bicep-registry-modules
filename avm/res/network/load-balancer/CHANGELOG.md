@@ -2,16 +2,6 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/load-balancer/CHANGELOG.md).
 
-## 0.4.3
-
-### Changes
-
-Updated Loadbalancer API versions.
-
-### Breaking Changes
-
-- None
-
 ## 0.4.4
 
 ### Changes
