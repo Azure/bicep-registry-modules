@@ -117,30 +117,30 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       ]
-      // securityPolicies: [
-      //   {
-      //     name: 'dep${namePrefix}test${serviceShort}secpol'
-      //     associations: [
-      //       {
-      //         domains: [
-      //           {
-      //             id: resourceId(
-      //               subscription().subscriptionId,
-      //               resourceGroup.name,
-      //               'Microsoft.Cdn/profiles/afdEndpoints',
-      //               'dep-${namePrefix}-test-${serviceShort}',
-      //               'dep-${namePrefix}-test-afd-${serviceShort}-afd-endpoint'
-      //             )
-      //           }
-      //         ]
-      //         patternsToMatch: [
-      //           '/*'
-      //         ]
-      //       }
-      //     ]
-      //     wafPolicyResourceId: wafPolicy.outputs.resourceId
-      //   }
-      // ]
+      securityPolicies: [
+        {
+          name: 'dep${namePrefix}test${serviceShort}secpol'
+          associations: [
+            {
+              domains: [
+                {
+                  id: resourceId(
+                    subscription().subscriptionId,
+                    resourceGroup.name,
+                    'Microsoft.Cdn/profiles/afdEndpoints',
+                    'dep-${namePrefix}-test-${serviceShort}',
+                    'dep-${namePrefix}-test-afd-${serviceShort}-afd-endpoint'
+                  )
+                }
+              ]
+              patternsToMatch: [
+                '/*'
+              ]
+            }
+          ]
+          wafPolicyResourceId: wafPolicy.outputs.resourceId
+        }
+      ]
     }
   }
 ]
