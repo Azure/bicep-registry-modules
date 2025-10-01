@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "13783263215422482127"
+      "templateHash": "13892076982555016602"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -684,7 +684,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -721,7 +721,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -749,7 +749,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -824,7 +824,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -1474,17 +1474,23 @@
     },
     "podIdentityProfileUserAssignedIdentities": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2025-05-02-preview#properties/properties/properties/podIdentityProfile/properties/userAssignedIdentities"
+        },
         "description": "Optional. The pod identities to use in the cluster."
-      }
+      },
+      "nullable": true
     },
     "podIdentityProfileUserAssignedIdentityExceptions": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2025-05-02-preview#properties/properties/properties/podIdentityProfile/properties/userAssignedIdentityExceptions"
+        },
         "description": "Optional. The pod identity exceptions to allow."
-      }
+      },
+      "nullable": true
     },
     "enableOidcIssuerProfile": {
       "type": "bool",
