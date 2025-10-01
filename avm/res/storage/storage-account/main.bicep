@@ -843,7 +843,14 @@ type secretsExportConfigurationType = {
   connectionString2Name: string?
 }
 
-import { sshAuthorizedKeyType, permissionScopeType } from 'local-user/main.bicep'
+// import { sshAuthorizedKeyType, permissionScopeType } from 'local-user/main.bicep'
+import * as localUserTpes from 'local-user/main.bicep'
+
+@export()
+type sshAuthorizedKeyType = localUserTpes.sshAuthorizedKeyType
+@export()
+type permissionScopeType = localUserTpes.sshAuthorizedKeyType
+
 @export()
 @description('The type of a local user.')
 type localUserType = {
@@ -869,8 +876,20 @@ type localUserType = {
   sshAuthorizedKeys: sshAuthorizedKeyType[]?
 }
 
-import { containerType, corsRuleType } from 'blob-service/main.bicep'
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+// import { containerType, corsRuleType } from 'blob-service/main.bicep'
+// import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+
+import { diagnosticSettingFullType as _diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+
+@export()
+type diagnosticSettingFullType = _diagnosticSettingFullType
+
+import * as blobServiceTypes from 'blob-service/main.bicep'
+
+@export()
+type containerType = blobServiceTypes.containerType
+@export()
+type corsRuleType = blobServiceTypes.corsRuleType
 
 @export()
 @description('The type of a blob service.')

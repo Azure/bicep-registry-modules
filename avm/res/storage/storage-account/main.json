@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "9651254428903693329"
+      "templateHash": "15564361303122659250"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -194,6 +194,18 @@
         "description": "The type of the exported secrets."
       }
     },
+    "sshAuthorizedKeyType": {
+      "$ref": "#/definitions/_5.sshAuthorizedKeyType",
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "permissionScopeType": {
+      "$ref": "#/definitions/_5.sshAuthorizedKeyType",
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
     "localUserType": {
       "type": "object",
       "properties": {
@@ -252,6 +264,24 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type of a local user."
+      }
+    },
+    "diagnosticSettingFullType": {
+      "$ref": "#/definitions/_diagnosticSettingFullType",
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "containerType": {
+      "$ref": "#/definitions/_2.containerType",
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "corsRuleType": {
+      "$ref": "#/definitions/_2.corsRuleType",
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "blobServiceType": {
@@ -430,257 +460,7 @@
         }
       }
     },
-    "_2.secretSetOutputType": {
-      "type": "object",
-      "properties": {
-        "secretResourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "The resourceId of the exported secret."
-          }
-        },
-        "secretUri": {
-          "type": "string",
-          "metadata": {
-            "description": "The secret URI of the exported secret."
-          }
-        },
-        "secretUriWithVersion": {
-          "type": "string",
-          "metadata": {
-            "description": "The secret URI with version of the exported secret."
-          }
-        }
-      },
-      "metadata": {
-        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
-        }
-      }
-    },
-    "_3.lockType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the name of lock."
-          }
-        },
-        "kind": {
-          "type": "string",
-          "allowedValues": [
-            "CanNotDelete",
-            "None",
-            "ReadOnly"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the type of lock."
-          }
-        },
-        "notes": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the notes of the lock."
-          }
-        }
-      },
-      "metadata": {
-        "description": "An AVM-aligned type for a lock.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
-        }
-      }
-    },
-    "_3.privateEndpointCustomDnsConfigType": {
-      "type": "object",
-      "properties": {
-        "fqdn": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. FQDN that resolves to private endpoint IP address."
-          }
-        },
-        "ipAddresses": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "metadata": {
-            "description": "Required. A list of private IP addresses of the private endpoint."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
-        }
-      }
-    },
-    "_3.privateEndpointIpConfigurationType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the resource that is unique within a resource group."
-          }
-        },
-        "properties": {
-          "type": "object",
-          "properties": {
-            "groupId": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
-              }
-            },
-            "memberName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
-              }
-            },
-            "privateIPAddress": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. A private IP address obtained from the private endpoint's subnet."
-              }
-            }
-          },
-          "metadata": {
-            "description": "Required. Properties of private endpoint IP configurations."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
-        }
-      }
-    },
-    "_3.privateEndpointPrivateDnsZoneGroupType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of the Private DNS Zone Group."
-          }
-        },
-        "privateDnsZoneGroupConfigs": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. The name of the private DNS Zone Group config."
-                }
-              },
-              "privateDnsZoneResourceId": {
-                "type": "string",
-                "metadata": {
-                  "description": "Required. The resource id of the private DNS zone."
-                }
-              }
-            }
-          },
-          "metadata": {
-            "description": "Required. The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
-        }
-      }
-    },
-    "_3.roleAssignmentType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-          }
-        },
-        "roleDefinitionIdOrName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-          }
-        },
-        "principalId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-          }
-        },
-        "principalType": {
-          "type": "string",
-          "allowedValues": [
-            "Device",
-            "ForeignGroup",
-            "Group",
-            "ServicePrincipal",
-            "User"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The principal type of the assigned principal ID."
-          }
-        },
-        "description": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The description of the role assignment."
-          }
-        },
-        "condition": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-          }
-        },
-        "conditionVersion": {
-          "type": "string",
-          "allowedValues": [
-            "2.0"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Version of the condition."
-          }
-        },
-        "delegatedManagedIdentityResourceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The Resource Id of the delegated managed identity resource."
-          }
-        }
-      },
-      "metadata": {
-        "description": "An AVM-aligned type for a role assignment.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
-        }
-      }
-    },
-    "containerType": {
+    "_2.containerType": {
       "type": "object",
       "properties": {
         "name": {
@@ -756,7 +536,7 @@
         "roleAssignments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_3.roleAssignmentType"
+            "$ref": "#/definitions/_4.roleAssignmentType"
           },
           "nullable": true,
           "metadata": {
@@ -771,7 +551,7 @@
         }
       }
     },
-    "corsRuleType": {
+    "_2.corsRuleType": {
       "type": "object",
       "properties": {
         "allowedHeaders": {
@@ -833,51 +613,308 @@
         }
       }
     },
-    "customerManagedKeyWithAutoRotateType": {
+    "_3.secretSetOutputType": {
       "type": "object",
       "properties": {
-        "keyVaultResourceId": {
+        "secretResourceId": {
           "type": "string",
           "metadata": {
-            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+            "description": "The resourceId of the exported secret."
           }
         },
-        "keyName": {
+        "secretUri": {
           "type": "string",
           "metadata": {
-            "description": "Required. The name of the customer managed key to use for encryption."
+            "description": "The secret URI of the exported secret."
           }
         },
-        "keyVersion": {
+        "secretUriWithVersion": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting."
-          }
-        },
-        "autoRotationEnabled": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used."
-          }
-        },
-        "userAssignedIdentityResourceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
+            "description": "The secret URI with version of the exported secret."
           }
         }
       },
       "metadata": {
-        "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
+        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
-    "diagnosticSettingFullType": {
+    "_4.lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "_4.privateEndpointCustomDnsConfigType": {
+      "type": "object",
+      "properties": {
+        "fqdn": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. FQDN that resolves to private endpoint IP address."
+          }
+        },
+        "ipAddresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of private IP addresses of the private endpoint."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "_4.privateEndpointIpConfigurationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the resource that is unique within a resource group."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "groupId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+              }
+            },
+            "memberName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
+              }
+            },
+            "privateIPAddress": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. A private IP address obtained from the private endpoint's subnet."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. Properties of private endpoint IP configurations."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "_4.privateEndpointPrivateDnsZoneGroupType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Private DNS Zone Group."
+          }
+        },
+        "privateDnsZoneGroupConfigs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The name of the private DNS Zone Group config."
+                }
+              },
+              "privateDnsZoneResourceId": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The resource id of the private DNS zone."
+                }
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "_4.roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "_5.permissionScopeType": {
+      "type": "object",
+      "properties": {
+        "permissions": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The permissions for the local user. Possible values include: Read (r), Write (w), Delete (d), List (l), and Create (c)."
+          }
+        },
+        "resourceName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of resource, normally the container name or the file share name, used by the local user."
+          }
+        },
+        "service": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The service used by the local user, e.g. blob, file."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "local-user/main.bicep"
+        }
+      }
+    },
+    "_5.sshAuthorizedKeyType": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Description used to store the function/usage of the key."
+          }
+        },
+        "key": {
+          "type": "securestring",
+          "metadata": {
+            "description": "Required. SSH public key base64 encoded. The format should be: '{keyType} {keyData}', e.g. ssh-rsa AAAABBBB."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "local-user/main.bicep"
+        }
+      }
+    },
+    "_diagnosticSettingFullType": {
       "type": "object",
       "properties": {
         "name": {
@@ -996,6 +1033,50 @@
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "customerManagedKeyWithAutoRotateType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+          }
+        },
+        "keyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the customer managed key to use for encryption."
+          }
+        },
+        "keyVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting."
+          }
+        },
+        "autoRotationEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used."
+          }
+        },
+        "userAssignedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -1153,34 +1234,6 @@
         }
       }
     },
-    "permissionScopeType": {
-      "type": "object",
-      "properties": {
-        "permissions": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The permissions for the local user. Possible values include: Read (r), Write (w), Delete (d), List (l), and Create (c)."
-          }
-        },
-        "resourceName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of resource, normally the container name or the file share name, used by the local user."
-          }
-        },
-        "service": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The service used by the local user, e.g. blob, file."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "local-user/main.bicep"
-        }
-      }
-    },
     "privateEndpointMultiServiceType": {
       "type": "object",
       "properties": {
@@ -1225,7 +1278,7 @@
           }
         },
         "privateDnsZoneGroup": {
-          "$ref": "#/definitions/_3.privateEndpointPrivateDnsZoneGroupType",
+          "$ref": "#/definitions/_4.privateEndpointPrivateDnsZoneGroupType",
           "nullable": true,
           "metadata": {
             "description": "Optional. The private DNS zone group to configure for the private endpoint."
@@ -1249,7 +1302,7 @@
         "customDnsConfigs": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_3.privateEndpointCustomDnsConfigType"
+            "$ref": "#/definitions/_4.privateEndpointCustomDnsConfigType"
           },
           "nullable": true,
           "metadata": {
@@ -1259,7 +1312,7 @@
         "ipConfigurations": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_3.privateEndpointIpConfigurationType"
+            "$ref": "#/definitions/_4.privateEndpointIpConfigurationType"
           },
           "nullable": true,
           "metadata": {
@@ -1284,7 +1337,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/_3.lockType",
+          "$ref": "#/definitions/_4.lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -1293,7 +1346,7 @@
         "roleAssignments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_3.roleAssignmentType"
+            "$ref": "#/definitions/_4.roleAssignmentType"
           },
           "nullable": true,
           "metadata": {
@@ -1404,7 +1457,7 @@
       "type": "object",
       "properties": {},
       "additionalProperties": {
-        "$ref": "#/definitions/_2.secretSetOutputType",
+        "$ref": "#/definitions/_3.secretSetOutputType",
         "metadata": {
           "description": "An exported secret's references."
         }
@@ -1413,29 +1466,6 @@
         "description": "A map of the exported secrets",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
-        }
-      }
-    },
-    "sshAuthorizedKeyType": {
-      "type": "object",
-      "properties": {
-        "description": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Description used to store the function/usage of the key."
-          }
-        },
-        "key": {
-          "type": "securestring",
-          "metadata": {
-            "description": "Required. SSH public key base64 encoded. The format should be: '{keyType} {keyData}', e.g. ssh-rsa AAAABBBB."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "local-user/main.bicep"
         }
       }
     }
