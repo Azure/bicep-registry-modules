@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "6971131422578142315"
+      "templateHash": "9720848511307190061"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
@@ -2200,10 +2200,11 @@
     },
     "primaryPublicIpAddress": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The primary public IP address of the virtual network gateway."
       },
-      "value": "[if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), reference('primaryPublicIP').ipAddress, reference(format('publicIPAddress[{0}]', 0)).outputs.ipAddress.value)]"
+      "value": "[if(variables('isExpressRoute'), null(), if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), reference('primaryPublicIP').ipAddress, reference(format('publicIPAddress[{0}]', 0)).outputs.ipAddress.value))]"
     },
     "defaultBgpIpAddresses": {
       "type": "string",

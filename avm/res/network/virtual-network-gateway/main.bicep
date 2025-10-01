@@ -712,9 +712,11 @@ output asn int? = virtualNetworkGateway.properties.?bgpSettings.?asn
 output ipConfigurations object[]? = virtualNetworkGateway.properties.?ipConfigurations
 
 @description('The primary public IP address of the virtual network gateway.')
-output primaryPublicIpAddress string = !empty(existingPrimaryPublicIPResourceId)
-  ? primaryPublicIP!.properties.ipAddress
-  : publicIPAddress[0].outputs.ipAddress
+output primaryPublicIpAddress string? = isExpressRoute
+  ? null
+  : (!empty(existingPrimaryPublicIPResourceId)
+      ? primaryPublicIP!.properties.ipAddress
+      : publicIPAddress[0].outputs.ipAddress)
 
 @description('The primary default Azure BGP peer IP address.')
 output defaultBgpIpAddresses string? = join(
