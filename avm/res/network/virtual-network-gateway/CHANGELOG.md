@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-network-gateway/CHANGELOG.md).
 
+## 0.9.1
+
+### Changes
+
+- Fixed ExpressRoute gateway deployment issue where providing a Public IP caused subsequent deployments to timeout with InternalServerError. Public IP is now set to `null` for ExpressRoute gateways as Azure automatically manages them with API version 2024-07-01+.
+
+### Breaking Changes
+
+- None
+
 ## 0.9.0
 
 ### Changes
