@@ -438,7 +438,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     istioServiceMeshEnabled: true
     istioServiceMeshInternalIngressGatewayEnabled: true
     istioServiceMeshRevisions: [
-      'asm-1-24'
+      'asm-1-25'
     ]
     location: '<location>'
     managedIdentities: {
@@ -504,7 +504,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "istioServiceMeshRevisions": {
       "value": [
-        "asm-1-24"
+        "asm-1-25"
       ]
     },
     "location": {
@@ -556,7 +556,7 @@ param istioServiceMeshCertificateAuthority = {
 param istioServiceMeshEnabled = true
 param istioServiceMeshInternalIngressGatewayEnabled = true
 param istioServiceMeshRevisions = [
-  'asm-1-24'
+  'asm-1-25'
 ]
 param location = '<location>'
 param managedIdentities = {
