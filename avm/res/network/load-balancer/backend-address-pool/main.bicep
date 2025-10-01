@@ -27,11 +27,11 @@ param syncMode string = ''
 @description('Optional. The resource ID of the virtual network.')
 param virtualNetworkId string = ''
 
-resource loadBalancer 'Microsoft.Network/loadBalancers@2023-11-01' existing = {
+resource loadBalancer 'Microsoft.Network/loadBalancers@2024-10-01' existing = {
   name: loadBalancerName
 }
 
-resource backendAddressPool 'Microsoft.Network/loadBalancers/backendAddressPools@2023-11-01' = {
+resource backendAddressPool 'Microsoft.Network/loadBalancers/backendAddressPools@2024-10-01' = {
   name: name
   properties: {
     loadBalancerBackendAddresses: loadBalancerBackendAddresses
