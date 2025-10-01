@@ -12,7 +12,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Changed `vpnType` calculatation from `PolicyBased` to `RouteBased` for ExpressRouteGateways. If not an ExpressRouteGateway, the specified `vpnType` will be used
 
-- ## 0.8.1
+## 0.8.1
 
 ### Changes
 
