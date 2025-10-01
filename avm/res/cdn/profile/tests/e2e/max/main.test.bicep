@@ -9,7 +9,7 @@ metadata description = 'This instance deploys the module with all available feat
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-afd.premium.max-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-cdn.profiles.max-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
