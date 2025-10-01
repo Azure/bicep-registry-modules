@@ -47,7 +47,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
   location: location
 }

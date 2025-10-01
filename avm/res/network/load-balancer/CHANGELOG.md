@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/load-balancer/CHANGELOG.md).
 
+## 0.5
+
+### Changes
+
+- Updated Load Balancer API versions.
+- Added Virtual Network support to BackendAddressPools.
+
+### Breaking Changes
+
+- None
+
 ## 0.4.3
 
 ### Changes
