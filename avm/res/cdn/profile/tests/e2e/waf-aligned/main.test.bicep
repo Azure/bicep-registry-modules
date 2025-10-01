@@ -37,7 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     storageAccountName: 'dep${namePrefix}wafsa${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-waf-msi-${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${uniqueString(resourceGroupName)}'
+    // keyVaultName: 'dep-${namePrefix}-kv-${uniqueString(resourceGroupName)}'
     location: resourceLocation
   }
 }
@@ -351,6 +351,14 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
+
+      // WAF: Reliability - Enable managed identities for secure access
+      managedIdentities: {
+        systemAssigned: true
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
     }
   }
 ]
@@ -373,9 +381,6 @@ output afdEndpointNames array = testDeployment[0].outputs.frontDoorEndpointHostN
 
 @description('The resource group name.')
 output resourceGroupName string = resourceGroup.name
-
-@description('The system-assigned managed identity principal ID.')
-output systemAssignedMIPrincipalId string = testDeployment[0].outputs.?systemAssignedMIPrincipalId
 
 @description('WAF compliance summary.')
 output wafComplianceSummary object = {

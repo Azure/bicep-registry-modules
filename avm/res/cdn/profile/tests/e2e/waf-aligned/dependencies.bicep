@@ -7,9 +7,6 @@ param storageAccountName string
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
-@description('Required. The name of the Key Vault to create.')
-param keyVaultName string
-
 // WAF: Reliability - Primary storage account with geo-redundancy
 resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   name: storageAccountName
@@ -78,38 +75,6 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
   location: location
 }
 
-// WAF: Security - Key Vault for secrets management
-resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
-  name: keyVaultName
-  location: location
-  properties: {
-    sku: {
-      family: 'A'
-      name: 'standard'
-    }
-    tenantId: tenant().tenantId
-    enabledForDeployment: false
-    enabledForDiskEncryption: false
-    enabledForTemplateDeployment: true
-    enableSoftDelete: true // WAF: Reliability - Soft delete protection
-    softDeleteRetentionInDays: 90
-    enablePurgeProtection: true // WAF: Security - Purge protection
-    networkAcls: {
-      defaultAction: 'Allow'
-      bypass: 'AzureServices'
-    }
-    accessPolicies: [
-      {
-        tenantId: tenant().tenantId
-        objectId: managedIdentity.properties.principalId
-        permissions: {
-          secrets: ['get', 'list']
-        }
-      }
-    ]
-  }
-}
-
 // Outputs
 @description('The resource ID of the primary Storage Account.')
 output storageAccountResourceId string = storageAccount.id
@@ -125,9 +90,3 @@ output managedIdentityResourceId string = managedIdentity.id
 
 @description('The principal ID of the Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
-
-@description('The resource ID of the Key Vault.')
-output keyVaultResourceId string = keyVault.id
-
-@description('The name of the Key Vault.')
-output keyVaultName string = keyVault.name
