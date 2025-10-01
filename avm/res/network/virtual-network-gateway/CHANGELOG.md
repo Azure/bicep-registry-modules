@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-network-gateway/CHANGELOG.md).
 
-## 0.8.1
+## 0.9.0
 
 ### Changes
 
@@ -10,7 +10,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- None
+- Changed `vpnType` calculatation from `PolicyBased` to `RouteBased` for ExpressRouteGateways. If not an ExpressRouteGateway, the specified `vpnType` will be used
 
 ## 0.8.0
 
