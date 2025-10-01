@@ -2608,6 +2608,7 @@ param tags = {
 | [`dataExports`](#parameter-dataexports) | array | LAW data export instances to be deployed. |
 | [`dataRetention`](#parameter-dataretention) | int | Number of days data will be retained for. |
 | [`dataSources`](#parameter-datasources) | array | LAW data sources to configure. |
+| [`defaultDataCollectionRuleResourceId`](#parameter-defaultdatacollectionruleresourceid) | string | The resource ID of the default Data Collection Rule to use for this workspace. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`features`](#parameter-features) | object | The workspace features. |
@@ -2899,6 +2900,13 @@ Tags to configure in the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `defaultDataCollectionRuleResourceId`
+
+The resource ID of the default Data Collection Rule to use for this workspace.
+
+- Required: No
+- Type: string
 
 ### Parameter: `diagnosticSettings`
 
