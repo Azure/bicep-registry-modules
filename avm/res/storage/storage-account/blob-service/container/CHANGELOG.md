@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/storage/storage-account/blob-service/container/CHANGELOG.md).
 
+## 0.3.1
+
+### Changes
+
+- Added check for immutability when hierarchical namespace is enabled
+
+### Breaking Changes
+
+- None
+
 ## 0.3.0
 
 ### Changes

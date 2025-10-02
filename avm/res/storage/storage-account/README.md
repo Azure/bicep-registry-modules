@@ -46,13 +46,14 @@ The following section provides usage examples for the module, which were used to
 - [Deploying as a Block Blob Storage](#example-2-deploying-as-a-block-blob-storage)
 - [Using only changefeed configuration](#example-3-using-only-changefeed-configuration)
 - [Using only defaults](#example-4-using-only-defaults)
-- [Deploying with a key vault reference to save secrets](#example-5-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-6-using-large-parameter-set)
-- [Deploying with a NFS File Share](#example-7-deploying-with-a-nfs-file-share)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-8-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-9-using-customer-managed-keys-with-user-assigned-identity)
-- [Deploying as Storage Account version 1](#example-10-deploying-as-storage-account-version-1)
-- [WAF-aligned](#example-11-waf-aligned)
+- [With immutability policy](#example-5-with-immutability-policy)
+- [Deploying with a key vault reference to save secrets](#example-6-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-7-using-large-parameter-set)
+- [Deploying with a NFS File Share](#example-8-deploying-with-a-nfs-file-share)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-9-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-10-using-customer-managed-keys-with-user-assigned-identity)
+- [Deploying as Storage Account version 1](#example-11-deploying-as-storage-account-version-1)
+- [WAF-aligned](#example-12-waf-aligned)
 
 ### Example 1: _Deploying as a Blob Storage_
 
@@ -345,7 +346,161 @@ param networkAcls = {
 </details>
 <p>
 
-### Example 5: _Deploying with a key vault reference to save secrets_
+### Example 5: _With immutability policy_
+
+This instance deploys the module with the immutability policy enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  name: 'storageAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'ssaim001'
+    // Non-required parameters
+    allowBlobPublicAccess: false
+    blobServices: {
+      containers: [
+        {
+          immutabilityPolicy: {
+            allowProtectedAppendWrites: false
+          }
+          immutableStorageWithVersioningEnabled: true
+          metadata: {
+            testKey: 'testValue'
+          }
+          name: 'archivecontainer'
+          publicAccess: 'None'
+        }
+      ]
+      isVersioningEnabled: true
+    }
+    immutableStorageWithVersioning: {
+      enabled: true
+      immutabilityPolicy: {
+        allowProtectedAppendWrites: true
+        immutabilityPeriodSinceCreationInDays: 7
+        state: 'Unlocked'
+      }
+    }
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssaim001"
+    },
+    // Non-required parameters
+    "allowBlobPublicAccess": {
+      "value": false
+    },
+    "blobServices": {
+      "value": {
+        "containers": [
+          {
+            "immutabilityPolicy": {
+              "allowProtectedAppendWrites": false
+            },
+            "immutableStorageWithVersioningEnabled": true,
+            "metadata": {
+              "testKey": "testValue"
+            },
+            "name": "archivecontainer",
+            "publicAccess": "None"
+          }
+        ],
+        "isVersioningEnabled": true
+      }
+    },
+    "immutableStorageWithVersioning": {
+      "value": {
+        "enabled": true,
+        "immutabilityPolicy": {
+          "allowProtectedAppendWrites": true,
+          "immutabilityPeriodSinceCreationInDays": 7,
+          "state": "Unlocked"
+        }
+      }
+    },
+    "networkAcls": {
+      "value": {
+        "bypass": "AzureServices",
+        "defaultAction": "Deny"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssaim001'
+// Non-required parameters
+param allowBlobPublicAccess = false
+param blobServices = {
+  containers: [
+    {
+      immutabilityPolicy: {
+        allowProtectedAppendWrites: false
+      }
+      immutableStorageWithVersioningEnabled: true
+      metadata: {
+        testKey: 'testValue'
+      }
+      name: 'archivecontainer'
+      publicAccess: 'None'
+    }
+  ]
+  isVersioningEnabled: true
+}
+param immutableStorageWithVersioning = {
+  enabled: true
+  immutabilityPolicy: {
+    allowProtectedAppendWrites: true
+    immutabilityPeriodSinceCreationInDays: 7
+    state: 'Unlocked'
+  }
+}
+param networkAcls = {
+  bypass: 'AzureServices'
+  defaultAction: 'Deny'
+}
+```
+
+</details>
+<p>
+
+### Example 6: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving all its secrets in a key vault.
 
@@ -427,7 +582,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 6: _Using large parameter set_
+### Example 7: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -2060,7 +2215,7 @@ param tags = {
 </details>
 <p>
 
-### Example 7: _Deploying with a NFS File Share_
+### Example 8: _Deploying with a NFS File Share_
 
 This instance deploys the module with a NFS File Share.
 
@@ -2155,7 +2310,7 @@ param skuName = 'Premium_LRS'
 </details>
 <p>
 
-### Example 8: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 9: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
@@ -2306,7 +2461,7 @@ param privateEndpoints = [
 </details>
 <p>
 
-### Example 9: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 10: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -2480,7 +2635,7 @@ param privateEndpoints = [
 </details>
 <p>
 
-### Example 10: _Deploying as Storage Account version 1_
+### Example 11: _Deploying as Storage Account version 1_
 
 This instance deploys the module as Storage Account version 1.
 
@@ -2544,7 +2699,7 @@ param kind = 'Storage'
 </details>
 <p>
 
-### Example 11: _WAF-aligned_
+### Example 12: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -3372,7 +3527,7 @@ param tags = {
 | [`enableSftp`](#parameter-enablesftp) | bool | If true, enables Secure File Transfer Protocol for the storage account. Requires enableHierarchicalNamespace to be true. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`fileServices`](#parameter-fileservices) | object | File service and shares to deploy. |
-| [`immutableStorageWithVersioning`](#parameter-immutablestoragewithversioning) | object | The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default. |
+| [`immutableStorageWithVersioning`](#parameter-immutablestoragewithversioning) | object | The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default. Cannot be enabled for ADLS Gen2 storage accounts. |
 | [`isLocalUserEnabled`](#parameter-islocaluserenabled) | bool | Enables local users feature, if set to true. |
 | [`keyType`](#parameter-keytype) | string | The keyType to use with Queue & Table services. |
 | [`kind`](#parameter-kind) | string | Type of Storage Account to create. |
@@ -3498,7 +3653,7 @@ Blob service and containers to deploy.
 | [`deleteRetentionPolicyDays`](#parameter-blobservicesdeleteretentionpolicydays) | int | Indicates the number of days that the deleted blob should be retained. |
 | [`deleteRetentionPolicyEnabled`](#parameter-blobservicesdeleteretentionpolicyenabled) | bool | The blob service properties for blob soft delete. |
 | [`diagnosticSettings`](#parameter-blobservicesdiagnosticsettings) | array | The diagnostic settings of the service. |
-| [`isVersioningEnabled`](#parameter-blobservicesisversioningenabled) | bool | Use versioning to automatically maintain previous versions of your blobs. |
+| [`isVersioningEnabled`](#parameter-blobservicesisversioningenabled) | bool | Use versioning to automatically maintain previous versions of your blobs. Cannot be enabled for ADLS Gen2 storage accounts. |
 | [`lastAccessTimeTrackingPolicyEnabled`](#parameter-blobserviceslastaccesstimetrackingpolicyenabled) | bool | The blob service property to configure last access time based tracking policy. When set to true last access time based tracking is enabled. |
 | [`restorePolicyDays`](#parameter-blobservicesrestorepolicydays) | int | How long this blob can be restored. It should be less than DeleteRetentionPolicy days. |
 | [`restorePolicyEnabled`](#parameter-blobservicesrestorepolicyenabled) | bool | The blob service properties for blob restore policy. If point-in-time restore is enabled, then versioning, change feed, and blob soft delete must also be enabled. |
@@ -4018,7 +4173,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 ### Parameter: `blobServices.isVersioningEnabled`
 
-Use versioning to automatically maintain previous versions of your blobs.
+Use versioning to automatically maintain previous versions of your blobs. Cannot be enabled for ADLS Gen2 storage accounts.
 
 - Required: No
 - Type: bool
@@ -4283,7 +4438,7 @@ File service and shares to deploy.
 
 ### Parameter: `immutableStorageWithVersioning`
 
-The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default.
+The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default. Cannot be enabled for ADLS Gen2 storage accounts.
 
 - Required: No
 - Type: object

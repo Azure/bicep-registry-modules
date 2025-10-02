@@ -194,10 +194,15 @@ param keyType string?
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
-@description('Optional. The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default.')
-param immutableStorageWithVersioning resourceInput<'Microsoft.Storage/storageAccounts@2024-01-01'>.properties.immutableStorageWithVersioning?
+@description('Optional. The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default. Cannot be enabled for ADLS Gen2 storage accounts.')
+param immutableStorageWithVersioning resourceInput<'Microsoft.Storage/storageAccounts@2025-01-01'>.properties.immutableStorageWithVersioning?
 
 var enableReferencedModulesTelemetry = false
+
+#disable-next-line no-unused-vars
+var immutabilityValidation = enableHierarchicalNamespace == true && !empty(immutableStorageWithVersioning)
+  ? fail('Configuration error: Immutable storage with versioning cannot be enabled when hierarchical namespace is enabled.')
+  : null
 
 var supportsBlobService = kind == 'BlockBlobStorage' || kind == 'BlobStorage' || kind == 'StorageV2' || kind == 'Storage'
 var supportsFileService = kind == 'FileStorage' || kind == 'StorageV2' || kind == 'Storage'
@@ -909,7 +914,7 @@ type blobServiceType = {
   @description('Optional. This property when set to true allows deletion of the soft deleted blob versions and snapshots. This property cannot be used with blob restore policy. This property only applies to blob service and does not apply to containers or file share.')
   deleteRetentionPolicyAllowPermanentDelete: bool?
 
-  @description('Optional. Use versioning to automatically maintain previous versions of your blobs.')
+  @description('Optional. Use versioning to automatically maintain previous versions of your blobs. Cannot be enabled for ADLS Gen2 storage accounts.')
   isVersioningEnabled: bool?
 
   @description('Optional. The blob service property to configure last access time based tracking policy. When set to true last access time based tracking is enabled.')
