@@ -8,13 +8,14 @@ This module deploys a Key Vault Key.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.KeyVault/vaults/keys` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.KeyVault/vaults/keys` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/keys)</li></ul> |
 
 ## Parameters
 
@@ -38,6 +39,7 @@ This module deploys a Key Vault Key.
 | [`attributesExp`](#parameter-attributesexp) | int | Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible. |
 | [`attributesNbf`](#parameter-attributesnbf) | int | Not before date in seconds since 1970-01-01T00:00:00Z. |
 | [`curveName`](#parameter-curvename) | string | The elliptic curve name. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`keyOps`](#parameter-keyops) | array | Array of JsonWebKeyOperation. |
 | [`keySize`](#parameter-keysize) | int | The key size in bits. For example: 2048, 3072, or 4096 for RSA. |
 | [`kty`](#parameter-kty) | string | The type of the key. |
@@ -98,6 +100,14 @@ The elliptic curve name.
     'P-521'
   ]
   ```
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `keyOps`
 
@@ -265,6 +275,102 @@ Key rotation policy properties object.
 - Required: No
 - Type: object
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`attributes`](#parameter-rotationpolicyattributes) | object | The attributes of key rotation policy. |
+| [`lifetimeActions`](#parameter-rotationpolicylifetimeactions) | array | The key rotation policy lifetime actions. |
+
+### Parameter: `rotationPolicy.attributes`
+
+The attributes of key rotation policy.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`expiryTime`](#parameter-rotationpolicyattributesexpirytime) | string | The expiration time for the new key version. It should be in ISO8601 format. Eg: "P90D", "P1Y". |
+
+### Parameter: `rotationPolicy.attributes.expiryTime`
+
+The expiration time for the new key version. It should be in ISO8601 format. Eg: "P90D", "P1Y".
+
+- Required: No
+- Type: string
+
+### Parameter: `rotationPolicy.lifetimeActions`
+
+The key rotation policy lifetime actions.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`action`](#parameter-rotationpolicylifetimeactionsaction) | object | The type of the action. |
+| [`trigger`](#parameter-rotationpolicylifetimeactionstrigger) | object | The time duration for rotating the key. |
+
+### Parameter: `rotationPolicy.lifetimeActions.action`
+
+The type of the action.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`type`](#parameter-rotationpolicylifetimeactionsactiontype) | string | The type of the action. |
+
+### Parameter: `rotationPolicy.lifetimeActions.action.type`
+
+The type of the action.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'notify'
+    'rotate'
+  ]
+  ```
+
+### Parameter: `rotationPolicy.lifetimeActions.trigger`
+
+The time duration for rotating the key.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`timeAfterCreate`](#parameter-rotationpolicylifetimeactionstriggertimeaftercreate) | string | The time duration after key creation to rotate the key. It only applies to rotate. It will be in ISO 8601 duration format. Eg: "P90D", "P1Y". |
+| [`timeBeforeExpiry`](#parameter-rotationpolicylifetimeactionstriggertimebeforeexpiry) | string | The time duration before key expiring to rotate or notify. It will be in ISO 8601 duration format. Eg: "P90D", "P1Y". |
+
+### Parameter: `rotationPolicy.lifetimeActions.trigger.timeAfterCreate`
+
+The time duration after key creation to rotate the key. It only applies to rotate. It will be in ISO 8601 duration format. Eg: "P90D", "P1Y".
+
+- Required: No
+- Type: string
+
+### Parameter: `rotationPolicy.lifetimeActions.trigger.timeBeforeExpiry`
+
+The time duration before key expiring to rotate or notify. It will be in ISO 8601 duration format. Eg: "P90D", "P1Y".
+
+- Required: No
+- Type: string
+
 ### Parameter: `tags`
 
 Resource tags.
@@ -288,4 +394,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

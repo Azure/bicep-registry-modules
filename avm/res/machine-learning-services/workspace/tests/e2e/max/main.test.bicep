@@ -72,6 +72,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      friendlyName: 'Workspace'
       location: resourceLocation
       kind: 'Default'
       associatedApplicationInsightsResourceId: nestedDependencies.outputs.applicationInsightsResourceId
@@ -108,16 +109,35 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      connections: [
+      // Currently unable to create both a connection and a private endpoint in the same deployment.
+      // connections: [
+      //   {
+      //     name: 'connection'
+      //     category: 'ApiKey'
+      //     target: 'https://example.com'
+      //     connectionProperties: {
+      //       authType: 'ApiKey'
+      //       credentials: {
+      //         key: 'key'
+      //       }
+      //     }
+      //   }
+      // ]
+      datastores: [
         {
-          name: 'connection'
-          category: 'ApiKey'
-          target: 'https://example.com'
-          connectionProperties: {
-            authType: 'ApiKey'
+          name: 'datastore'
+          properties: {
             credentials: {
-              key: 'key'
+              credentialsType: 'None'
             }
+            subscriptionId: subscription().subscriptionId
+            resourceGroup: resourceGroupName
+            datastoreType: 'AzureBlob'
+            accountName: 'myaccount'
+            containerName: 'my-container'
+            endpoint: environment().suffixes.storage
+            protocol: 'https'
+            serviceDataAccessAuthIdentity: 'None'
           }
         }
       ]
@@ -138,6 +158,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       discoveryUrl: 'http://example.com'
       imageBuildCompute: 'testcompute'
+      ipAllowlist: ['1.2.3.4/32']
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
@@ -174,6 +195,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      provisionNetworkNow: true
       roleAssignments: [
         {
           name: 'f9b5b0d9-f27e-4c89-bacf-1bbc4a99dbce'
@@ -209,16 +231,12 @@ module testDeployment '../../../main.bicep' = [
       managedNetworkSettings: {
         isolationMode: 'Disabled'
       }
-      systemDatastoresAuthMode: 'accessKey'
+      systemDatastoresAuthMode: 'AccessKey'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

@@ -37,7 +37,7 @@ param sessionNetworkStatus string = 'EgressDisabled'
 @allowed(['Dynamic', 'Manual'])
 param poolManagementType string = 'Dynamic'
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -53,10 +53,10 @@ param managedIdentities managedIdentityAllType?
 param managedIdentitySettings managedIdentitySettingType[]?
 
 @description('Optional. Resource ID of the session pool\'s environment.')
-param environmentId string?
+param environmentResourceId string?
 
 @description('Optional. Tags of the Automation Account resource.')
-param tags object?
+param tags resourceInput<'Microsoft.App/sessionPools@2024-10-02-preview'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -138,7 +138,7 @@ resource sessionPool 'Microsoft.App/sessionPools@2024-10-02-preview' = {
   identity: identity
   properties: {
     containerType: containerType
-    environmentId: environmentId
+    environmentId: environmentResourceId
     customContainerTemplate: containerType == 'CustomContainer'
       ? {
           containers: containers
@@ -169,9 +169,9 @@ resource sessionPool_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empt
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: sessionPool
 }

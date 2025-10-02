@@ -52,8 +52,16 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
-      location: resourceLocation
+      appLogsConfiguration: {
+        destination: 'log-analytics'
+        logAnalyticsConfiguration: {
+          customerId: nestedDependencies.outputs.logAnalyticsWorkspaceCustomerId
+          sharedKey: listKeys(
+            '${resourceGroup.id}/providers/Microsoft.OperationalInsights/workspaces/dep-${namePrefix}-law-${serviceShort}',
+            '2023-09-01'
+          ).primarySharedKey
+        }
+      }
       workloadProfiles: [
         {
           workloadProfileType: 'D4'
@@ -66,39 +74,12 @@ module testDeployment '../../../main.bicep' = [
       dockerBridgeCidr: '172.16.0.1/28'
       platformReservedCidr: '172.17.17.0/24'
       platformReservedDnsIP: '172.17.17.17'
-      infrastructureSubnetId: nestedDependencies.outputs.subnetResourceId
+      infrastructureSubnetResourceId: nestedDependencies.outputs.subnetResourceId
       infrastructureResourceGroupName: 'me-${resourceGroupName}'
-      roleAssignments: [
-        {
-          roleDefinitionIdOrName: 'Owner'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: subscriptionResourceId(
-            'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-          )
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-      ]
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Env: 'test'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

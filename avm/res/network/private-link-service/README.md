@@ -8,15 +8,16 @@ This module deploys a Private Link Service.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/privateLinkServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateLinkServices) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Network/privateLinkServices` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatelinkservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateLinkServices)</li></ul> |
 
 ## Usage examples
 
@@ -60,8 +61,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
       }
     ]
     name: 'nplsmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -100,10 +99,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
     },
     "name": {
       "value": "nplsmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -136,8 +131,6 @@ param loadBalancerFrontendIpConfigurations = [
   }
 ]
 param name = 'nplsmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -448,7 +441,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
       'nplswaf.plsfqdn01.azure.privatelinkservice'
       'nplswaf.plsfqdn02.azure.privatelinkservice'
     ]
-    location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -517,9 +509,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
         "nplswaf.plsfqdn02.azure.privatelinkservice"
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -578,7 +567,6 @@ param fqdns = [
   'nplswaf.plsfqdn01.azure.privatelinkservice'
   'nplswaf.plsfqdn02.azure.privatelinkservice'
 ]
-param location = '<location>'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -701,6 +689,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -720,6 +709,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -852,6 +848,15 @@ Controls the exposure settings for your Private Link service. Service providers 
 | `name` | string | The name of the private link service. |
 | `resourceGroupName` | string | The resource group the private link service was deployed into. |
 | `resourceId` | string | The resource ID of the private link service. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

@@ -11,13 +11,13 @@ This module deploys a Storage Account Blob Service.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
-| `Microsoft.Storage/storageAccounts/blobServices/containers` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers) |
-| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Storage/storageAccounts/blobServices` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/blobServices/containers` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers)</li></ul> |
+| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers_immutabilitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers/immutabilityPolicies)</li></ul> |
 
 ## Parameters
 
@@ -44,7 +44,7 @@ This module deploys a Storage Account Blob Service.
 | [`deleteRetentionPolicyDays`](#parameter-deleteretentionpolicydays) | int | Indicates the number of days that the deleted blob should be retained. |
 | [`deleteRetentionPolicyEnabled`](#parameter-deleteretentionpolicyenabled) | bool | The blob service properties for blob soft delete. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`isVersioningEnabled`](#parameter-isversioningenabled) | bool | Use versioning to automatically maintain previous versions of your blobs. |
+| [`isVersioningEnabled`](#parameter-isversioningenabled) | bool | Use versioning to automatically maintain previous versions of your blobs. Cannot be enabled for ADLS Gen2 storage accounts. |
 | [`lastAccessTimeTrackingPolicyEnabled`](#parameter-lastaccesstimetrackingpolicyenabled) | bool | The blob service property to configure last access time based tracking policy. When set to true last access time based tracking is enabled. |
 | [`restorePolicyDays`](#parameter-restorepolicydays) | int | How long this blob can be restored. It should be less than DeleteRetentionPolicy days. |
 | [`restorePolicyEnabled`](#parameter-restorepolicyenabled) | bool | The blob service properties for blob restore policy. If point-in-time restore is enabled, then versioning, change feed, and blob soft delete must also be enabled. |
@@ -88,8 +88,6 @@ This property when set to true allows deletion of the soft deleted blob versions
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 1
-- MaxValue: 146000
 
 ### Parameter: `containerDeleteRetentionPolicyDays`
 
@@ -107,8 +105,6 @@ The blob service properties for container soft delete. Indicates whether DeleteR
 - Required: No
 - Type: bool
 - Default: `True`
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `containers`
 
@@ -116,8 +112,223 @@ Blob containers to create.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 365
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-containersname) | string | The name of the Storage Container to deploy. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`defaultEncryptionScope`](#parameter-containersdefaultencryptionscope) | string | Default the container to use specified encryption scope for all writes. |
+| [`denyEncryptionScopeOverride`](#parameter-containersdenyencryptionscopeoverride) | bool | Block override of encryption scope from the container default. |
+| [`enableNfsV3AllSquash`](#parameter-containersenablenfsv3allsquash) | bool | Enable NFSv3 all squash on blob container. |
+| [`enableNfsV3RootSquash`](#parameter-containersenablenfsv3rootsquash) | bool | Enable NFSv3 root squash on blob container. |
+| [`immutabilityPolicy`](#parameter-containersimmutabilitypolicy) | object | Configure immutability policy. |
+| [`immutableStorageWithVersioningEnabled`](#parameter-containersimmutablestoragewithversioningenabled) | bool | This is an immutable property, when set to true it enables object level immutability at the container level. The property is immutable and can only be set to true at the container creation time. Existing containers must undergo a migration process. |
+| [`metadata`](#parameter-containersmetadata) | object | A name-value pair to associate with the container as metadata. |
+| [`publicAccess`](#parameter-containerspublicaccess) | string | Specifies whether data in the container may be accessed publicly and the level of access. |
+| [`roleAssignments`](#parameter-containersroleassignments) | array | Array of role assignments to create. |
+
+### Parameter: `containers.name`
+
+The name of the Storage Container to deploy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.defaultEncryptionScope`
+
+Default the container to use specified encryption scope for all writes.
+
+- Required: No
+- Type: string
+
+### Parameter: `containers.denyEncryptionScopeOverride`
+
+Block override of encryption scope from the container default.
+
+- Required: No
+- Type: bool
+
+### Parameter: `containers.enableNfsV3AllSquash`
+
+Enable NFSv3 all squash on blob container.
+
+- Required: No
+- Type: bool
+
+### Parameter: `containers.enableNfsV3RootSquash`
+
+Enable NFSv3 root squash on blob container.
+
+- Required: No
+- Type: bool
+
+### Parameter: `containers.immutabilityPolicy`
+
+Configure immutability policy.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowProtectedAppendWrites`](#parameter-containersimmutabilitypolicyallowprotectedappendwrites) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. |
+| [`allowProtectedAppendWritesAll`](#parameter-containersimmutabilitypolicyallowprotectedappendwritesall) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive. |
+| [`immutabilityPeriodSinceCreationInDays`](#parameter-containersimmutabilitypolicyimmutabilityperiodsincecreationindays) | int | The immutability period for the blobs in the container since the policy creation, in days. |
+
+### Parameter: `containers.immutabilityPolicy.allowProtectedAppendWrites`
+
+This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API.
+
+- Required: No
+- Type: bool
+
+### Parameter: `containers.immutabilityPolicy.allowProtectedAppendWritesAll`
+
+This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive.
+
+- Required: No
+- Type: bool
+
+### Parameter: `containers.immutabilityPolicy.immutabilityPeriodSinceCreationInDays`
+
+The immutability period for the blobs in the container since the policy creation, in days.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.immutableStorageWithVersioningEnabled`
+
+This is an immutable property, when set to true it enables object level immutability at the container level. The property is immutable and can only be set to true at the container creation time. Existing containers must undergo a migration process.
+
+- Required: No
+- Type: bool
+
+### Parameter: `containers.metadata`
+
+A name-value pair to associate with the container as metadata.
+
+- Required: No
+- Type: object
+
+### Parameter: `containers.publicAccess`
+
+Specifies whether data in the container may be accessed publicly and the level of access.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Blob'
+    'Container'
+    'None'
+  ]
+  ```
+
+### Parameter: `containers.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-containersroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-containersroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-containersroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-containersroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-containersroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-containersroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-containersroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-containersroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `containers.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `containers.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `containers.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `containers.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `containers.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `containers.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
 
 ### Parameter: `corsRules`
 
@@ -125,8 +336,6 @@ The List of CORS rules. You can include up to five CorsRule elements in the requ
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 365
 
 **Required parameters**
 
@@ -144,8 +353,6 @@ A list of headers allowed to be part of the cross-origin request.
 
 - Required: Yes
 - Type: array
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `corsRules.allowedMethods`
 
@@ -168,8 +375,6 @@ A list of HTTP methods that are allowed to be executed by the origin.
     'TRACE'
   ]
   ```
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `corsRules.allowedOrigins`
 
@@ -177,8 +382,6 @@ A list of origin domains that will be allowed via CORS, or "*" to allow all doma
 
 - Required: Yes
 - Type: array
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `corsRules.exposedHeaders`
 
@@ -186,8 +389,6 @@ A list of response headers to expose to CORS clients.
 
 - Required: Yes
 - Type: array
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `corsRules.maxAgeInSeconds`
 
@@ -195,8 +396,6 @@ The number of seconds that the client/browser should cache a preflight response.
 
 - Required: Yes
 - Type: int
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `defaultServiceVersion`
 
@@ -204,9 +403,6 @@ Indicates the default version to use for requests to the Blob service if an inco
 
 - Required: No
 - Type: string
-- Default: `''`
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `deleteRetentionPolicyAllowPermanentDelete`
 
@@ -215,8 +411,6 @@ This property when set to true allows deletion of the soft deleted blob versions
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `deleteRetentionPolicyDays`
 
@@ -235,8 +429,6 @@ The blob service properties for blob soft delete.
 - Required: No
 - Type: bool
 - Default: `True`
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `diagnosticSettings`
 
@@ -244,8 +436,6 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 365
 
 **Optional parameters**
 
@@ -267,8 +457,6 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -276,8 +464,6 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -292,8 +478,6 @@ A string indicating whether the export to Log Analytics should use the default d
     'Dedicated'
   ]
   ```
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups`
 
@@ -301,8 +485,6 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 365
 
 **Optional parameters**
 
@@ -318,8 +500,6 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -327,8 +507,6 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -336,8 +514,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -345,8 +521,6 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -354,8 +528,6 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 365
 
 **Required parameters**
 
@@ -375,8 +547,6 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -384,8 +554,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -393,8 +561,6 @@ The name of the diagnostic setting.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -402,8 +568,6 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -411,18 +575,14 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `isVersioningEnabled`
 
-Use versioning to automatically maintain previous versions of your blobs.
+Use versioning to automatically maintain previous versions of your blobs. Cannot be enabled for ADLS Gen2 storage accounts.
 
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `lastAccessTimeTrackingPolicyEnabled`
 
@@ -431,8 +591,6 @@ The blob service property to configure last access time based tracking policy. W
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `restorePolicyDays`
 
@@ -442,7 +600,6 @@ How long this blob can be restored. It should be less than DeleteRetentionPolicy
 - Type: int
 - Default: `7`
 - MinValue: 1
-- MaxValue: 365
 
 ### Parameter: `restorePolicyEnabled`
 
@@ -451,8 +608,6 @@ The blob service properties for blob restore policy. If point-in-time restore is
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 1
-- MaxValue: 365
 
 ## Outputs
 
@@ -468,4 +623,5 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |

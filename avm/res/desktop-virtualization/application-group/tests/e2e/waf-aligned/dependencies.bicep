@@ -4,7 +4,8 @@ param location string = resourceGroup().location
 @description('Required. The name of the Host Pool to create.')
 param hostPoolName string
 
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2022-09-09' = {
+#disable-next-line use-recent-api-versions
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview' = {
   name: hostPoolName
   location: location
   properties: {

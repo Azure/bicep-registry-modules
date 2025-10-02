@@ -72,6 +72,65 @@ var storagePrivateDnsZones = {
   'privatelink.file.${environment().suffixes.storage}': 'file'
 }
 
+// Location pairs mapping for replication (no primary == secondary)
+var locationPairs = {
+  // North America
+  canadacentral: 'centralus'
+  canadaeast: 'canadacentral'
+  centralus: 'eastus'
+  eastus: 'westus'
+  eastus2: 'westus2'
+  northcentralus: 'centralus'
+  southcentralus: 'westus'
+  westcentralus: 'westus'
+  westus: 'westus2'
+  westus2: 'westus'
+  westus3: 'westus2'
+  // South America
+  brazilsouth: 'brazilsoutheast'
+  brazilsoutheast: 'brazilsouth'
+  // Europe
+  francecentral: 'westeurope'
+  francesouth: 'francecentral'
+  germanynorth: 'northeurope'
+  germanywestcentral: 'northeurope'
+  italynorth: 'francecentral'
+  northeurope: 'westeurope'
+  norwayeast: 'northeurope'
+  norwaywest: 'northeurope'
+  polandcentral: 'northeurope'
+  uksouth: 'westeurope'
+  spaincentral: 'francecentral'
+  swedencentral: 'northeurope'
+  swedensouth: 'northeurope'
+  switzerlandnorth: 'westeurope'
+  switzerlandwest: 'westeurope'
+  westeurope: 'northeurope'
+  ukwest: 'uksouth'
+  // Middle East
+  qatarcentral: 'uaecentral'
+  uaecentral: 'uaenorth'
+  uaenorth: 'qatarcentral'
+  // India
+  centralindia: 'southindia'
+  southindia: 'centralindia'
+  // Asia Pacific
+  eastasia: 'japaneast'
+  japaneast: 'koreacentral'
+  japanwest: 'japaneast'
+  koreacentral: 'eastasia'
+  koreasouth: 'koreacentral'
+  southeastasia: 'eastasia'
+  // Oceania
+  australiacentral: 'australiaeast'
+  australiacentral2: 'australiacentral'
+  australiaeast: 'australiasoutheast'
+  australiasoutheast: 'australiaeast'
+  // Africa
+  southafricanorth: 'southafricawest'
+  southafricawest: 'southafricanorth'
+}
+
 // ============== //
 // Resources      //
 // ============== //
@@ -100,6 +159,7 @@ module storageAccount_privateDnsZones 'br/public:avm/res/network/private-dns-zon
     name: '${uniqueString(deployment().name, location, zone)}-storage-private-dns-zones'
     params: {
       name: zone
+      enableTelemetry: enableTelemetry
       virtualNetworkLinks: [
         {
           virtualNetworkResourceId: virtualNetwork.outputs.resourceId
@@ -114,6 +174,7 @@ module workspaceHub_privateDnsZones 'br/public:avm/res/network/private-dns-zone:
     name: '${uniqueString(deployment().name, location, zone)}-workspace-private-dns-zones'
     params: {
       name: zone
+      enableTelemetry: enableTelemetry
       virtualNetworkLinks: [
         {
           virtualNetworkResourceId: virtualNetwork.outputs.resourceId
@@ -137,6 +198,7 @@ module defaultNetworkSecurityGroup 'br/public:avm/res/network/network-security-g
   params: {
     name: 'nsg-${name}'
     location: location
+    enableTelemetry: enableTelemetry
     securityRules: [
       {
         name: 'DenySshRdpOutbound'
@@ -273,9 +335,15 @@ resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@
   name: managedIdentityName ?? 'null'
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
   name: logAnalyticsConfiguration.?name ?? 'log-${name}'
   location: location
+  properties: {
+    replication: {
+      enabled: true
+      location: locationPairs[location]
+    }
+  }
   tags: tags
 }
 

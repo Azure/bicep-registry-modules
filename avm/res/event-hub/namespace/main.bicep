@@ -16,7 +16,7 @@ param location string = resourceGroup().location
 ])
 param skuName string = 'Standard'
 
-@description('Optional. The Event Hub\'s throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units.')
+@description('Optional. The Event Hubs throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units.')
 @minValue(1)
 @maxValue(20)
 param skuCapacity int = 1
@@ -67,38 +67,38 @@ param minimumTlsVersion string = '1.2'
 ])
 param publicNetworkAccess string = ''
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Configure networking options. This object contains IPs/Subnets to allow or restrict access to private endpoints only. For security reasons, it is recommended to configure this object on the Namespace.')
 param networkRuleSets object = {}
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Optional. Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters.')
 param requireInfrastructureEncryption bool = false
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.EventHub/namespaces@2024-01-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -168,23 +168,23 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName!
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
@@ -230,12 +230,12 @@ resource eventHubNamespace 'Microsoft.EventHub/namespaces@2024-01-01' = {
                   }
                 : null
               keyName: customerManagedKey!.keyName
-              keyVaultUri: cMKKeyVault.properties.vaultUri
+              keyVaultUri: cMKKeyVault!.properties.vaultUri
               keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
                 ? customerManagedKey!.?keyVersion
                 : (customerManagedKey.?autoRotationEnabled ?? true)
                     ? null
-                    : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+                    : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
             }
           ]
           requireInfrastructureEncryption: requireInfrastructureEncryption
@@ -278,6 +278,7 @@ module eventHubNamespace_eventhubs 'eventhub/main.bicep' = [
     params: {
       namespaceName: eventHubNamespace.name
       name: eventHub.name
+      enableTelemetry: enableReferencedModulesTelemetry
       authorizationRules: eventHub.?authorizationRules
       captureDescriptionDestinationArchiveNameFormat: eventHub.?captureDescriptionDestinationArchiveNameFormat
       captureDescriptionDestinationBlobContainer: eventHub.?captureDescriptionDestinationBlobContainer
@@ -294,6 +295,7 @@ module eventHubNamespace_eventhubs 'eventhub/main.bicep' = [
       partitionCount: eventHub.?partitionCount
       roleAssignments: eventHub.?roleAssignments
       status: eventHub.?status
+      retentionDescriptionEnabled: eventHub.?retentionDescriptionEnabled
       retentionDescriptionCleanupPolicy: eventHub.?retentionDescriptionCleanupPolicy
       retentionDescriptionRetentionTimeInHours: eventHub.?retentionDescriptionRetentionTimeInHours
       retentionDescriptionTombstoneRetentionTimeInHours: eventHub.?retentionDescriptionTombstoneRetentionTimeInHours
@@ -315,10 +317,13 @@ module eventHubNamespace_networkRuleSet 'network-rule-set/main.bicep' = if (!emp
   }
 }
 
-module eventHubNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module eventHubNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-eventHubNamespace-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    name: '${uniqueString(deployment().name, location)}-namespace-PrivateEndpoint-${index}'
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(eventHubNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -391,9 +396,9 @@ resource eventHubNamespace_lock 'Microsoft.Authorization/locks@2020-05-01' = if 
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: eventHubNamespace
 }
@@ -430,11 +435,11 @@ resource eventHubNamespace_diagnosticSettings 'Microsoft.Insights/diagnosticSett
 module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
   )
   params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
     secretsToSet: union(
       [],
       contains(secretsExportConfiguration!, 'rootPrimaryConnectionStringName')
@@ -495,20 +500,48 @@ output eventHubResourceIds string[] = [
 
 @description('The private endpoints of the eventspace.')
 output privateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: eventHubNamespace_privateEndpoints[i].outputs.name
-    resourceId: eventHubNamespace_privateEndpoints[i].outputs.resourceId
-    groupId: eventHubNamespace_privateEndpoints[i].outputs.?groupId!
-    customDnsConfigs: eventHubNamespace_privateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: eventHubNamespace_privateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (item, index) in (privateEndpoints ?? []): {
+    name: eventHubNamespace_privateEndpoints[index].outputs.name
+    resourceId: eventHubNamespace_privateEndpoints[index].outputs.resourceId
+    groupId: eventHubNamespace_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: eventHubNamespace_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: eventHubNamespace_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
-import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
-  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  ? toObject(secretsExport!.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
   : {}
+
+@secure()
+@description('The namespace\'s primary connection string.')
+output primaryConnectionString string = listkeys(
+  '${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey',
+  '2024-01-01'
+).primaryConnectionString
+
+@secure()
+@description('The namespace\'s secondary connection string.')
+output secondaryConnectionString string = listkeys(
+  '${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey',
+  '2024-01-01'
+).secondaryConnectionString
+
+@secure()
+@description('The namespace\'s primary key.')
+output primaryKey string = listkeys(
+  '${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey',
+  '2024-01-01'
+).primaryKey
+
+@secure()
+@description('The namespace\'s secondary key.')
+output secondaryKey string = listkeys(
+  '${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey',
+  '2024-01-01'
+).secondaryKey
 
 // =============== //
 //   Definitions   //

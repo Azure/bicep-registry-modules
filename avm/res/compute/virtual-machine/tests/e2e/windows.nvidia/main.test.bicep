@@ -63,7 +63,7 @@ module testDeployment '../../../main.bicep' = [
         sku: '2022-datacenter-azure-edition'
         version: 'latest'
       }
-      zone: 0
+      availabilityZone: -1
       nicConfigurations: [
         {
           ipConfigurations: [
@@ -84,6 +84,7 @@ module testDeployment '../../../main.bicep' = [
       }
       osType: 'Windows'
       vmSize: 'Standard_NV6ads_A10_v5'
+      hibernationEnabled: true
       adminPassword: password
       extensionNvidiaGpuDriverWindows: {
         enabled: true

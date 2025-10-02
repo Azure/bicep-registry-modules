@@ -17,10 +17,10 @@ param name string
 param description string = ''
 
 @sys.description('Required. List of network groups for configuration. An admin rule collection must be associated to at least one network group.')
-param appliesToGroups appliesToGroupsType
+param appliesToGroups appliesToGroupType[]
 
 @sys.description('Optional. List of rules for the admin rules collection. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.')
-param rules rulesType
+param rules ruleType[]?
 
 resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
   name: networkManagerName
@@ -76,14 +76,16 @@ output resourceGroupName string = resourceGroup().name
 // =============== //
 
 @export()
-type appliesToGroupsType = {
+@sys.description('The type for a applies to group.')
+type appliesToGroupType = {
   @sys.description('Required. The resource ID of the network group.')
   networkGroupResourceId: string
-}[]
+}
 
-import { destinationPortRangesType, destinationsType, sourcePortRangesType, sourcesType } from './rule/main.bicep'
+import { destinationType, sourceType } from './rule/main.bicep'
 @export()
-type rulesType = {
+@sys.description('The type of a rule.')
+type ruleType = {
   @sys.description('Required. The name of the rule.')
   name: string
 
@@ -94,10 +96,10 @@ type rulesType = {
   description: string?
 
   @sys.description('Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535.')
-  destinationPortRanges: destinationPortRangesType?
+  destinationPortRanges: string[]?
 
   @sys.description('Optional. The destnations filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted.')
-  destinations: destinationsType?
+  destinations: destinationType[]?
 
   @sys.description('Required. Indicates if the traffic matched against the rule in inbound or outbound.')
   direction: 'Inbound' | 'Outbound'
@@ -111,8 +113,8 @@ type rulesType = {
   protocol: 'Ah' | 'Any' | 'Esp' | 'Icmp' | 'Tcp' | 'Udp'
 
   @sys.description('Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535.')
-  sourcePortRanges: sourcePortRangesType?
+  sourcePortRanges: string[]?
 
   @sys.description('Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted.')
-  sources: sourcesType?
-}[]?
+  sources: sourceType[]?
+}

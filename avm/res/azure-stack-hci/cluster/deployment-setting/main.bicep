@@ -7,10 +7,15 @@ metadata description = 'This module deploys an Azure Stack HCI Cluster Deploymen
 ])
 param name string = 'default'
 
-@description('Conditional. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure. Required if the template is used in a standalone deployment.')
-@maxLength(15)
+@description('Conditional. The name of the Azure Stack HCI cluster - this will be the name of your cluster in Azure. Required if the template is used in a standalone deployment.')
+@maxLength(40)
 @minLength(4)
 param clusterName string
+
+@description('Conditional. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name. Required if the template is used in a standalone deployment.')
+@maxLength(15)
+@minLength(4)
+param clusterADName string
 
 @description('Required. First must pass with this parameter set to Validate prior running with it set to Deploy. If either Validation or Deployment phases fail, fix the issue, then resubmit the template with the same deploymentMode to retry.')
 @allowed([
@@ -82,6 +87,9 @@ param episodicDataUpload bool = true
 ])
 param storageConfigurationMode string = 'Express'
 
+@description('Required. If true, the service principal secret for ARB is required. If false, the secrets wiil not be required.')
+param needArbSecret bool
+
 // cluster network configuration details
 @description('Required. The subnet mask pf the Management Network for the HCI cluster - ex: 255.255.252.0.')
 param subnetMask string
@@ -117,50 +125,77 @@ param customLocationName string
 @description('Required. The name of the storage account to be used as the witness for the HCI Windows Failover Cluster.')
 param clusterWitnessStorageAccountName string
 
-@description('Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster.')
+@description('Required. The name of the key vault to be used for storing secrets for the HCI cluster.')
 param keyVaultName string
 
 @description('Optional. If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource.')
 param cloudId string?
 
+@description('Optional. The intended operation for a cluster.')
+@allowed([
+  'ClusterProvisioning'
+  'ClusterUpgrade'
+])
+param operationType string = 'ClusterProvisioning'
+
 var arcNodeResourceIds = [
   for (nodeName, index) in clusterNodeNames: resourceId('Microsoft.HybridCompute/machines', nodeName)
+]
+
+var storageNetworksArray = [
+  for (storageAdapter, index) in storageNetworks: {
+    name: storageAdapter.name
+    networkAdapterName: storageAdapter.adapterName
+    vlanId: storageAdapter.vlan
+    storageAdapterIPInfo: storageAdapter.?storageAdapterIPInfo
+  }
 ]
 
 resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' existing = {
   name: clusterName
 }
 
-resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings@2024-04-01' = {
+var baseSecretNames = [
+  'LocalAdminCredential'
+  'AzureStackLCMUserCredential'
+  'WitnessStorageKey'
+]
+
+var allSecretNames = needArbSecret ? concat(baseSecretNames, ['DefaultARBApplication']) : baseSecretNames
+
+resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings@2024-09-01-preview' = {
   name: name
   parent: cluster
   properties: {
     arcNodeResourceIds: arcNodeResourceIds
     deploymentMode: deploymentMode
+    operationType: operationType == 'ClusterUpgrade' ? operationType : null
     deploymentConfiguration: {
-      version: '10.0.0.0'
+      version: operationType == 'ClusterUpgrade' ? '10.1.0.0' : '10.0.0.0'
       scaleUnits: [
         {
           deploymentData: {
-            securitySettings: {
-              hvciProtection: hvciProtection
-              drtmProtection: drtmProtection
-              driftControlEnforced: driftControlEnforced
-              credentialGuardEnforced: credentialGuardEnforced
-              smbSigningEnforced: smbSigningEnforced
-              smbClusterEncryption: smbClusterEncryption
-              sideChannelMitigationEnforced: sideChannelMitigationEnforced
-              bitlockerBootVolume: bitlockerBootVolume
-              bitlockerDataVolumes: bitlockerDataVolumes
-              wdacEnforced: wdacEnforced
-            }
+            securitySettings: operationType == 'ClusterUpgrade'
+              ? null
+              : {
+                  hvciProtection: hvciProtection
+                  drtmProtection: drtmProtection
+                  driftControlEnforced: driftControlEnforced
+                  credentialGuardEnforced: credentialGuardEnforced
+                  smbSigningEnforced: smbSigningEnforced
+                  smbClusterEncryption: smbClusterEncryption
+                  sideChannelMitigationEnforced: sideChannelMitigationEnforced
+                  bitlockerBootVolume: bitlockerBootVolume
+                  bitlockerDataVolumes: bitlockerDataVolumes
+                  wdacEnforced: wdacEnforced
+                }
             observability: {
               streamingDataClient: streamingDataClient
               euLocation: isEuropeanUnionLocation
               episodicDataUpload: episodicDataUpload
             }
             cluster: {
-              name: clusterName
+              name: clusterADName
               witnessType: 'Cloud'
               witnessPath: ''
               cloudAccountName: clusterWitnessStorageAccountName
@@ -197,31 +232,21 @@ resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings
                 ))[0].ip4Address
               }
             ]
-            hostNetwork: {
-              intents: networkIntents
-              storageConnectivitySwitchless: storageConnectivitySwitchless
-              storageNetworks: [
-                for (storageAdapter, index) in storageNetworks: {
-                  name: 'StorageNetwork${index + 1}'
-                  networkAdapterName: storageAdapter.adapterName
-                  vlanId: storageAdapter.vlan
-                  storageAdapterIPInfo: storageAdapter.?storageAdapterIPInfo
+            hostNetwork: operationType == 'ClusterUpgrade'
+              ? null
+              : {
+                  intents: networkIntents
+                  storageConnectivitySwitchless: storageConnectivitySwitchless
+                  storageNetworks: storageNetworksArray
+                  enableStorageAutoIp: enableStorageAutoIp
                 }
-              ]
-              enableStorageAutoIp: enableStorageAutoIp
-            }
             adouPath: domainOUPath
             secretsLocation: 'https://${keyVaultName}${environment().suffixes.keyvaultDns}'
             optionalServices: {
               customLocation: customLocationName
             }
             secrets: [
-              for secretName in [
-                'LocalAdminCredential'
-                'AzureStackLCMUserCredential'
-                'DefaultARBApplication'
-                'WitnessStorageKey'
-              ]: {
+              for secretName in allSecretNames: {
                 secretName: empty(cloudId) ? secretName : '${clusterName}-${secretName}-${cloudId}'
                 eceSecretName: secretName
                 secretLocation: empty(cloudId)

@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -83,13 +83,31 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       enableNonSslPort: true
+      firewallRules: [
+        {
+          endIP: '0.0.0.0'
+          name: 'AllowAllWindowsAzureIps'
+          startIP: '0.0.0.0'
+        }
+        {
+          endIP: '10.10.10.10'
+          name: 'testrule1'
+          startIP: '10.10.10.1'
+        }
+        {
+          endIP: '100.100.100.10'
+          name: 'testrule2'
+          startIP: '100.100.100.1'
+        }
+      ]
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
       minimumTlsVersion: '1.2'
       zoneRedundant: true
-      zones: [1, 2]
+      availabilityZones: [1, 2]
+      zonalAllocationPolicy: 'UserDefined'
       privateEndpoints: [
         {
           privateDnsZoneGroup: {

@@ -53,16 +53,13 @@ var accountSasProperties = {
   signedProtocol: 'https'
 }
 
-resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' existing = {
+resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' existing = {
   name: automationAccountName
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = if (!empty(scriptStorageAccountResourceId)) {
-  name: last(split((scriptStorageAccountResourceId ?? 'dummyVault'), '/'))
-  scope: resourceGroup(
-    split((scriptStorageAccountResourceId ?? '//'), '/')[2],
-    split((scriptStorageAccountResourceId ?? '////'), '/')[4]
-  )
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = if (!empty(scriptStorageAccountResourceId)) {
+  name: last(split(scriptStorageAccountResourceId!, '/'))
+  scope: resourceGroup(split(scriptStorageAccountResourceId!, '/')[2], split(scriptStorageAccountResourceId!, '/')[4])
 }
 
 var publishContentLink = empty(uri)

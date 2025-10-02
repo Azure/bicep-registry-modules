@@ -27,7 +27,7 @@ param prefixLength int
 ])
 param publicIPAddressVersion string = 'IPv4'
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -50,7 +50,7 @@ param ipTags ipTagType[]?
   2
   3
 ])
-param zones int[] = [
+param availabilityZones int[] = [
   1
   2
   3
@@ -115,7 +115,7 @@ resource publicIpPrefix 'Microsoft.Network/publicIPPrefixes@2024-01-01' = {
     name: 'Standard'
     tier: tier
   }
-  zones: map(zones, zone => string(zone))
+  zones: map(availabilityZones, zone => string(zone))
   properties: {
     customIPPrefix: !empty(customIPPrefix) ? customIPPrefix : null
     publicIPAddressVersion: publicIPAddressVersion
@@ -128,9 +128,9 @@ resource publicIpPrefix_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!e
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: publicIpPrefix
 }

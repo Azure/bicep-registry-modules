@@ -85,6 +85,7 @@ module testDeployment '../../../main.bicep' = [
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
+      skuName: 'Aligned'
     }
   }
 ]

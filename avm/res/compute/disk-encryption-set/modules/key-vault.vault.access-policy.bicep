@@ -5,7 +5,7 @@ metadata description = 'This module deploys a Key Vault Access Policy.'
 param keyVaultName string
 
 @description('Optional. An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault\'s tenant ID.')
-param accessPolicies accessPoliciesType
+param accessPolicies accessPolicyType[]?
 
 var formattedAccessPolicies = [
   for accessPolicy in (accessPolicies ?? []): {
@@ -40,7 +40,9 @@ output resourceId string = policies.id
 // ================ //
 // Definitions      //
 // ================ //
-type accessPoliciesType = {
+
+@description('Type describing an access policy.')
+type accessPolicyType = {
   @description('Optional. The tenant ID that is used for authenticating requests to the key vault.')
   tenantId: string?
 
@@ -116,4 +118,4 @@ type accessPoliciesType = {
       | 'setsas'
       | 'update')[]?
   }
-}[]?
+}

@@ -10,17 +10,11 @@ This module deploys a SQL Managed Instance Database Backup Short-Term Retention 
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/managedInstances/databases/backupShortTermRetentionPolicies) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies` | 2024-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_managedinstances_databases_backupshorttermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances/databases/backupShortTermRetentionPolicies)</li></ul> |
 
 ## Parameters
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the Short Term Retention backup policy. For example "default". |
 
 **Conditional parameters**
 
@@ -33,14 +27,8 @@ This module deploys a SQL Managed Instance Database Backup Short-Term Retention 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`name`](#parameter-name) | string | The name of the Short Term Retention backup policy. |
 | [`retentionDays`](#parameter-retentiondays) | int | The backup retention period in days. This is how many days Point-in-Time Restore will be supported. |
-
-### Parameter: `name`
-
-The name of the Short Term Retention backup policy. For example "default".
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `databaseName`
 
@@ -55,6 +43,14 @@ The name of the parent SQL managed instance. Required if the template is used in
 
 - Required: Yes
 - Type: string
+
+### Parameter: `name`
+
+The name of the Short Term Retention backup policy.
+
+- Required: No
+- Type: string
+- Default: `'default'`
 
 ### Parameter: `retentionDays`
 

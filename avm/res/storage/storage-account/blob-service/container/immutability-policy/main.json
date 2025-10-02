@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "8061556339565534458"
+      "version": "0.37.4.10188",
+      "templateHash": "10782942397325758470"
     },
     "name": "Storage Account Blob Container Immutability Policies",
     "description": "This module deploys a Storage Account Blob Container Immutability Policy."
@@ -35,7 +35,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API."
+        "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The \"allowProtectedAppendWrites\" and \"allowProtectedAppendWritesAll\" properties are mutually exclusive."
       }
     },
     "allowProtectedAppendWritesAll": {
@@ -46,11 +46,14 @@
       }
     }
   },
+  "variables": {
+    "name": "default"
+  },
   "resources": [
     {
       "type": "Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}/{1}/{2}/{3}', parameters('storageAccountName'), 'default', parameters('containerName'), 'default')]",
+      "apiVersion": "2025-01-01",
+      "name": "[format('{0}/{1}/{2}/{3}', parameters('storageAccountName'), 'default', parameters('containerName'), variables('name'))]",
       "properties": {
         "immutabilityPeriodSinceCreationInDays": "[parameters('immutabilityPeriodSinceCreationInDays')]",
         "allowProtectedAppendWrites": "[parameters('allowProtectedAppendWrites')]",
@@ -64,14 +67,14 @@
       "metadata": {
         "description": "The name of the deployed immutability policy."
       },
-      "value": "default"
+      "value": "[variables('name')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the deployed immutability policy."
       },
-      "value": "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies', parameters('storageAccountName'), 'default', parameters('containerName'), 'default')]"
+      "value": "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies', parameters('storageAccountName'), 'default', parameters('containerName'), variables('name'))]"
     },
     "resourceGroupName": {
       "type": "string",

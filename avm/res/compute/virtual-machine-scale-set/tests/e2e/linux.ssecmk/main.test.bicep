@@ -11,8 +11,9 @@ metadata description = 'This instance deploys the module with disk enryption set
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-compute.virtualmachinescalesets-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
+// Capacity constraints for VM type
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'italynorth'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'cvmsslcmk'
@@ -33,16 +34,15 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep${namePrefix}kv${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
@@ -60,13 +60,12 @@ module nestedDependencies 'dependencies.bicep' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       extensionMonitoringAgentConfig: {
         enabled: true
         autoUpgradeMinorVersion: true
       }
-      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
       adminUsername: 'scaleSetAdmin'
       adminPassword: password
@@ -96,7 +95,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       osDisk: {
         createOption: 'fromImage'
-        diskSizeGB: '128'
+        diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
           diskEncryptionSet: {
@@ -106,9 +105,10 @@ module testDeployment '../../../main.bicep' = [
       }
       dataDisks: [
         {
+          lun: 1
           caching: 'ReadOnly'
           createOption: 'Empty'
-          diskSizeGB: '128'
+          diskSizeGB: 128
           managedDisk: {
             storageAccountType: 'Premium_LRS'
             diskEncryptionSet: {

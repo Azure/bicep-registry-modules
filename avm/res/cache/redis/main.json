@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "7160551208293569842"
+      "version": "0.37.4.10188",
+      "templateHash": "7183520689009242079"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache."
@@ -95,6 +95,13 @@
     "accessPolicyAssignmentType": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Access Policy Assignment."
+          }
+        },
         "objectId": {
           "type": "string",
           "metadata": {
@@ -171,7 +178,73 @@
         "__bicep_export!": true
       }
     },
-    "_1.privateEndpointCustomDnsConfigType": {
+    "_1.secretSetOutputType": {
+      "type": "object",
+      "properties": {
+        "secretResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resourceId of the exported secret."
+          }
+        },
+        "secretUri": {
+          "type": "string",
+          "metadata": {
+            "description": "The secret URI of the exported secret."
+          }
+        },
+        "secretUriWithVersion": {
+          "type": "string",
+          "metadata": {
+            "description": "The secret URI with version of the exported secret."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "_2.lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "_2.privateEndpointCustomDnsConfigType": {
       "type": "object",
       "properties": {
         "fqdn": {
@@ -193,11 +266,11 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
-    "_1.privateEndpointIpConfigurationType": {
+    "_2.privateEndpointIpConfigurationType": {
       "type": "object",
       "properties": {
         "name": {
@@ -235,11 +308,11 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
-    "_1.privateEndpointPrivateDnsZoneGroupType": {
+    "_2.privateEndpointPrivateDnsZoneGroupType": {
       "type": "object",
       "properties": {
         "name": {
@@ -276,36 +349,82 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
-    "_1.secretSetOutputType": {
+    "_2.roleAssignmentType": {
       "type": "object",
       "properties": {
-        "secretResourceId": {
+        "name": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "The resourceId of the exported secret."
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
           }
         },
-        "secretUri": {
+        "roleDefinitionIdOrName": {
           "type": "string",
           "metadata": {
-            "description": "The secret URI of the exported secret."
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
           }
         },
-        "secretUriWithVersion": {
+        "principalId": {
           "type": "string",
           "metadata": {
-            "description": "The secret URI with version of the exported secret."
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
           }
         }
       },
       "metadata": {
-        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
+        "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -452,12 +571,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -534,7 +660,7 @@
           }
         },
         "privateDnsZoneGroup": {
-          "$ref": "#/definitions/_1.privateEndpointPrivateDnsZoneGroupType",
+          "$ref": "#/definitions/_2.privateEndpointPrivateDnsZoneGroupType",
           "nullable": true,
           "metadata": {
             "description": "Optional. The private DNS Zone Group to configure for the Private Endpoint."
@@ -558,7 +684,7 @@
         "customDnsConfigs": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_1.privateEndpointCustomDnsConfigType"
+            "$ref": "#/definitions/_2.privateEndpointCustomDnsConfigType"
           },
           "nullable": true,
           "metadata": {
@@ -568,7 +694,7 @@
         "ipConfigurations": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_1.privateEndpointIpConfigurationType"
+            "$ref": "#/definitions/_2.privateEndpointIpConfigurationType"
           },
           "nullable": true,
           "metadata": {
@@ -593,7 +719,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/lockType",
+          "$ref": "#/definitions/_2.lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -602,7 +728,7 @@
         "roleAssignments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/roleAssignmentType"
+            "$ref": "#/definitions/_2.roleAssignmentType"
           },
           "nullable": true,
           "metadata": {
@@ -613,6 +739,9 @@
           "type": "object",
           "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+            },
             "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
           }
         },
@@ -627,7 +756,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -756,10 +885,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Cache/redis@2024-11-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "managedIdentities": {
       "$ref": "#/definitions/managedIdentityAllType",
@@ -796,9 +928,8 @@
     },
     "publicNetworkAccess": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
-        "",
         "Enabled",
         "Disabled"
       ],
@@ -808,10 +939,13 @@
     },
     "redisConfiguration": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Cache/redis@2024-11-01#properties/properties/properties/redisConfiguration"
+        },
         "description": "Optional. All Redis Settings. Few possible keys: rdb-backup-enabled,rdb-storage-connection-string,rdb-backup-frequency,maxmemory-delta,maxmemory-policy,notify-keyspace-events,maxmemory-samples,slowlog-log-slower-than,slowlog-max-len,list-max-ziplist-entries,list-max-ziplist-value,hash-max-ziplist-entries,hash-max-ziplist-value,set-max-intset-entries,zset-max-ziplist-entries,zset-max-ziplist-value etc."
-      }
+      },
+      "nullable": true
     },
     "redisVersion": {
       "type": "string",
@@ -878,24 +1012,27 @@
     },
     "staticIP": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Static IP address. Optionally, may be specified when deploying a Redis cache inside an existing Azure Virtual Network; auto assigned by default."
       }
     },
     "subnetResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The full resource ID of a subnet in a virtual network to deploy the Redis cache in."
       }
     },
     "tenantSettings": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Cache/redis@2024-11-01#properties/properties/properties/tenantSettings"
+        },
         "description": "Optional. A dictionary of tenant settings."
-      }
+      },
+      "defaultValue": {}
     },
     "zoneRedundant": {
       "type": "bool",
@@ -904,7 +1041,7 @@
         "description": "Optional. When true, replicas will be provisioned in availability zones specified in the zones parameter."
       }
     },
-    "zones": {
+    "availabilityZones": {
       "type": "array",
       "items": {
         "type": "int"
@@ -914,8 +1051,25 @@
         2,
         3
       ],
+      "allowedValues": [
+        1,
+        2,
+        3
+      ],
       "metadata": {
         "description": "Optional. If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed."
+      }
+    },
+    "zonalAllocationPolicy": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Automatic",
+        "NoZones",
+        "UserDefined"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies how availability zones are allocated to the Redis cache. \"Automatic\" enables zone redundancy and Azure will automatically select zones. \"UserDefined\" will select availability zones passed in by you using the \"availabilityZones\" parameter. \"NoZones\" will produce a non-zonal cache. Only applicable when zoneRedundant is true."
       }
     },
     "privateEndpoints": {
@@ -972,6 +1126,13 @@
         "description": "Optional. Array of access policy assignments."
       }
     },
+    "firewallRules": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The firewall rules to create in the PostgreSQL flexible server."
+      }
+    },
     "secretsExportConfiguration": {
       "$ref": "#/definitions/secretsExportConfigurationType",
       "nullable": true,
@@ -989,7 +1150,7 @@
       }
     ],
     "enableReferencedModulesTelemetry": false,
-    "availabilityZones": "[if(equals(parameters('skuName'), 'Premium'), if(parameters('zoneRedundant'), if(not(empty(parameters('zones'))), parameters('zones'), pickZones('Microsoft.Cache', 'redis', parameters('location'), 3)), createArray()), createArray())]",
+    "zones": "[if(equals(parameters('skuName'), 'Premium'), if(parameters('zoneRedundant'), if(not(empty(parameters('availabilityZones'))), parameters('availabilityZones'), pickZones('Microsoft.Cache', 'redis', parameters('location'), 3)), createArray()), createArray())]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -1034,7 +1195,7 @@
         "enableNonSslPort": "[parameters('enableNonSslPort')]",
         "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('privateEndpoints'))), 'Disabled', null()))]",
-        "redisConfiguration": "[if(not(empty(parameters('redisConfiguration'))), parameters('redisConfiguration'), null())]",
+        "redisConfiguration": "[parameters('redisConfiguration')]",
         "redisVersion": "[parameters('redisVersion')]",
         "replicasPerMaster": "[if(equals(parameters('skuName'), 'Premium'), parameters('replicasPerMaster'), null())]",
         "replicasPerPrimary": "[if(equals(parameters('skuName'), 'Premium'), parameters('replicasPerPrimary'), null())]",
@@ -1044,44 +1205,12 @@
           "family": "[if(equals(parameters('skuName'), 'Premium'), 'P', 'C')]",
           "name": "[parameters('skuName')]"
         },
-        "staticIP": "[if(not(empty(parameters('staticIP'))), parameters('staticIP'), null())]",
-        "subnetId": "[if(not(empty(parameters('subnetResourceId'))), parameters('subnetResourceId'), null())]",
-        "tenantSettings": "[parameters('tenantSettings')]"
+        "staticIP": "[parameters('staticIP')]",
+        "subnetId": "[parameters('subnetResourceId')]",
+        "tenantSettings": "[parameters('tenantSettings')]",
+        "zonalAllocationPolicy": "[if(and(equals(parameters('skuName'), 'Premium'), parameters('zoneRedundant')), parameters('zonalAllocationPolicy'), null())]"
       },
-      "zones": "[variables('availabilityZones')]"
-    },
-    "redis_accessPolicies": {
-      "copy": {
-        "name": "redis_accessPolicies",
-        "count": "[length(parameters('accessPolicies'))]"
-      },
-      "type": "Microsoft.Cache/redis/accessPolicies",
-      "apiVersion": "2024-11-01",
-      "name": "[format('{0}/{1}', parameters('name'), parameters('accessPolicies')[copyIndex()].name)]",
-      "properties": {
-        "permissions": "[parameters('accessPolicies')[copyIndex()].permissions]"
-      },
-      "dependsOn": [
-        "redis"
-      ]
-    },
-    "redis_accessPolicyAssignments": {
-      "copy": {
-        "name": "redis_accessPolicyAssignments",
-        "count": "[length(parameters('accessPolicyAssignments'))]"
-      },
-      "type": "Microsoft.Cache/redis/accessPolicyAssignments",
-      "apiVersion": "2024-11-01",
-      "name": "[format('{0}/{1}', parameters('name'), parameters('accessPolicyAssignments')[copyIndex()].objectId)]",
-      "properties": {
-        "objectId": "[parameters('accessPolicyAssignments')[copyIndex()].objectId]",
-        "objectIdAlias": "[parameters('accessPolicyAssignments')[copyIndex()].objectIdAlias]",
-        "accessPolicyName": "[parameters('accessPolicyAssignments')[copyIndex()].accessPolicyName]"
-      },
-      "dependsOn": [
-        "redis",
-        "redis_accessPolicies"
-      ]
+      "zones": "[variables('zones')]"
     },
     "redis_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -1091,7 +1220,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "redis"
@@ -1160,6 +1289,218 @@
         "redis"
       ]
     },
+    "redis_accessPolicies": {
+      "copy": {
+        "name": "redis_accessPolicies",
+        "count": "[length(parameters('accessPolicies'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-redis-AccessPolicy-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "redisCacheName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('accessPolicies')[copyIndex()].name]"
+          },
+          "permissions": {
+            "value": "[parameters('accessPolicies')[copyIndex()].permissions]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.37.4.10188",
+              "templateHash": "2561498253986334673"
+            },
+            "name": "Redis Cache Access Policy",
+            "description": "This module deploys an access policy for Redis Cache."
+          },
+          "parameters": {
+            "redisCacheName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Redis cache."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the access policy."
+              }
+            },
+            "permissions": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Permissions associated with the access policy."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Cache/redis/accessPolicies",
+              "apiVersion": "2024-11-01",
+              "name": "[format('{0}/{1}', parameters('redisCacheName'), parameters('name'))]",
+              "properties": {
+                "permissions": "[parameters('permissions')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the access policy."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the access policy."
+              },
+              "value": "[resourceId('Microsoft.Cache/redis/accessPolicies', parameters('redisCacheName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the access policy was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "redis"
+      ]
+    },
+    "redis_policyAssignments": {
+      "copy": {
+        "name": "redis_policyAssignments",
+        "count": "[length(parameters('accessPolicyAssignments'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-redis-PolicyAssignment-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "redisCacheName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[tryGet(parameters('accessPolicyAssignments')[copyIndex()], 'name')]"
+          },
+          "objectId": {
+            "value": "[parameters('accessPolicyAssignments')[copyIndex()].objectId]"
+          },
+          "objectIdAlias": {
+            "value": "[parameters('accessPolicyAssignments')[copyIndex()].objectIdAlias]"
+          },
+          "accessPolicyName": {
+            "value": "[parameters('accessPolicyAssignments')[copyIndex()].accessPolicyName]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.37.4.10188",
+              "templateHash": "17395565015682034728"
+            },
+            "name": "Redis Cache Access Policy Assignment",
+            "description": "This module deploys an access policy assignment for Redis Cache."
+          },
+          "parameters": {
+            "redisCacheName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Redis cache."
+              }
+            },
+            "objectId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Object ID to which the access policy will be assigned."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "[parameters('objectId')]",
+              "metadata": {
+                "description": "Optional. The name of the assignment. By default uses the Object ID to which the access policy will be assigned."
+              }
+            },
+            "objectIdAlias": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Alias for the target object ID."
+              }
+            },
+            "accessPolicyName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the access policy to be assigned."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Cache/redis/accessPolicyAssignments",
+              "apiVersion": "2024-11-01",
+              "name": "[format('{0}/{1}', parameters('redisCacheName'), parameters('name'))]",
+              "properties": {
+                "objectId": "[parameters('objectId')]",
+                "objectIdAlias": "[parameters('objectIdAlias')]",
+                "accessPolicyName": "[parameters('accessPolicyName')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the access policy assignment."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the access policy assignment."
+              },
+              "value": "[resourceId('Microsoft.Cache/redis/accessPolicyAssignments', parameters('redisCacheName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the access policy assignment was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "redis",
+        "redis_accessPolicies"
+      ]
+    },
     "redis_privateEndpoints": {
       "copy": {
         "name": "redis_privateEndpoints",
@@ -1222,8 +1563,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "15954548978129725136"
+              "version": "0.34.44.8038",
+              "templateHash": "12389807800450456797"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -1632,7 +1973,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1650,7 +1991,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1738,8 +2079,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "5440815542537978381"
+                      "version": "0.34.44.8038",
+                      "templateHash": "13997305779829540948"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -1811,12 +2152,12 @@
                     "privateEndpoint": {
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[parameters('privateEndpointName')]"
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
                         "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
@@ -1880,7 +2221,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
             },
             "customDnsConfigs": {
               "type": "array",
@@ -1909,6 +2250,111 @@
                 "description": "The group Id for the private endpoint Group."
               },
               "value": "[coalesce(tryGet(tryGet(tryGet(tryGet(reference('privateEndpoint'), 'manualPrivateLinkServiceConnections'), 0, 'properties'), 'groupIds'), 0), tryGet(tryGet(tryGet(tryGet(reference('privateEndpoint'), 'privateLinkServiceConnections'), 0, 'properties'), 'groupIds'), 0))]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "redis"
+      ]
+    },
+    "redis_firewallRules": {
+      "copy": {
+        "name": "redis_firewallRules",
+        "count": "[length(parameters('firewallRules'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-redis-FirewallRules-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('firewallRules')[copyIndex()].name]"
+          },
+          "redisCacheName": {
+            "value": "[parameters('name')]"
+          },
+          "startIP": {
+            "value": "[parameters('firewallRules')[copyIndex()].startIP]"
+          },
+          "endIP": {
+            "value": "[parameters('firewallRules')[copyIndex()].endIP]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.37.4.10188",
+              "templateHash": "14034068209702972198"
+            },
+            "name": "Redis Cache Firewall Rules",
+            "description": "This module creates a firewall rule for Redis Cache."
+          },
+          "parameters": {
+            "redisCacheName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Redis cache name."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Redis Cache Firewall Rule."
+              }
+            },
+            "startIP": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses."
+              }
+            },
+            "endIP": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Cache/redis/firewallRules",
+              "apiVersion": "2024-11-01",
+              "name": "[format('{0}/{1}', parameters('redisCacheName'), parameters('name'))]",
+              "properties": {
+                "startIP": "[parameters('startIP')]",
+                "endIP": "[parameters('endIP')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed firewall rule."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed firewall rule."
+              },
+              "value": "[resourceId('Microsoft.Cache/redis/firewallRules', parameters('redisCacheName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed firewall rule."
+              },
+              "value": "[resourceGroup().name]"
             }
           }
         }
@@ -1948,8 +2394,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "322534394383651316"
+              "version": "0.37.4.10188",
+              "templateHash": "6243969540339199112"
             },
             "name": "Redis Cache Linked Servers",
             "description": "This module connects a primary and secondary Redis Cache together for geo-replication."
@@ -2052,8 +2498,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '////'), '/')[4]]",
+      "subscriptionId": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2061,10 +2507,10 @@
         "mode": "Incremental",
         "parameters": {
           "keyVaultName": {
-            "value": "[last(split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/'))]"
+            "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), 'value', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), 'value', format('rediss://:{0}@{1}:6380', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').primaryKey, reference('redis').hostName))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryStackExchangeRedisConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryStackExchangeRedisConnectionStringName'), 'value', format('{0}:6380,password={1},ssl=True,abortConnect=False', reference('redis').hostName, listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').primaryKey))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), 'value', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').secondaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), 'value', format('rediss://:{0}@{1}:6380', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').secondaryKey, reference('redis').hostName))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryStackExchangeRedisConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryStackExchangeRedisConnectionStringName'), 'value', format('{0}:6380,password={1},ssl=True,abortConnect=False', reference('redis').hostName, listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').secondaryKey))), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), 'value', listKeys('redis', '2024-11-01').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), 'value', format('rediss://:{0}@{1}:6380', listKeys('redis', '2024-11-01').primaryKey, reference('redis').hostName))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryStackExchangeRedisConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryStackExchangeRedisConnectionStringName'), 'value', format('{0}:6380,password={1},ssl=True,abortConnect=False', reference('redis').hostName, listKeys('redis', '2024-11-01').primaryKey))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), 'value', listKeys('redis', '2024-11-01').secondaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), 'value', format('rediss://:{0}@{1}:6380', listKeys('redis', '2024-11-01').secondaryKey, reference('redis').hostName))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryStackExchangeRedisConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryStackExchangeRedisConnectionStringName'), 'value', format('{0}:6380,password={1},ssl=True,abortConnect=False', reference('redis').hostName, listKeys('redis', '2024-11-01').secondaryKey))), createArray()))]"
           }
         },
         "template": {
@@ -2074,8 +2520,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "8063348652715653257"
+              "version": "0.37.4.10188",
+              "templateHash": "1109595524033975808"
             }
           },
           "definitions": {
@@ -2104,7 +2550,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             },
@@ -2127,7 +2573,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for the secret to set via the secrets export feature.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             }
@@ -2153,7 +2599,7 @@
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2022-07-01",
+              "apiVersion": "2024-12-01-preview",
               "name": "[parameters('keyVaultName')]"
             },
             "secrets": {
@@ -2162,7 +2608,7 @@
                 "count": "[length(parameters('secretsToSet'))]"
               },
               "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2023-07-01",
+              "apiVersion": "2024-12-01-preview",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
               "properties": {
                 "value": "[parameters('secretsToSet')[copyIndex()].value]"

@@ -11,8 +11,9 @@ metadata description = 'This instance deploys the module in alignment with the b
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-compute.virtualmachinescalesets-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
+// Capacity constraints for VM type
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'italynorth'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'cvmsswinwaf'
@@ -30,16 +31,15 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
@@ -52,13 +52,12 @@ module nestedDependencies 'dependencies.bicep' = {
 // ===========
 module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: take('dep${namePrefix}diasa${serviceShort}01', 24)
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -70,9 +69,9 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
+      location: enforcedLocation
       name: '${namePrefix}${serviceShort}001'
       adminUsername: 'localAdminUser'
       imageReference: {
@@ -83,7 +82,7 @@ module testDeployment '../../../main.bicep' = [
       }
       osDisk: {
         createOption: 'fromImage'
-        diskSizeGB: '128'
+        diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
@@ -125,15 +124,15 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       extensionCustomScriptConfig: {
-        enabled: true
-        fileData: [
-          {
-            storageAccountId: nestedDependencies.outputs.storageAccountResourceId
-            uri: nestedDependencies.outputs.storageAccountCSEFileUrl
-          }
-        ]
-        protectedSettings: {
+        settings: {
           commandToExecute: 'powershell -ExecutionPolicy Unrestricted -Command "& ./${nestedDependencies.outputs.storageAccountCSEFileName}"'
+          // Needs 'Storage Blob Data Reader' role on the storage account
+          fileUris: [
+            nestedDependencies.outputs.storageAccountCSEFileUrl
+          ]
+        }
+        protectedSettings: {
+          managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
         }
       }
       extensionDependencyAgentConfig: {

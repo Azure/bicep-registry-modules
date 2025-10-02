@@ -117,7 +117,7 @@ module testDeployment '../../../main.bicep' = [
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
-      zones: [
+      availabilityZones: [
         1
         2
         3

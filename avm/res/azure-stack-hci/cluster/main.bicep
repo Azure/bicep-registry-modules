@@ -5,10 +5,15 @@ metadata description = 'This module deploys an Azure Stack HCI Cluster on the pr
 //   Parameters   //
 // ============== //
 
-@description('Required. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure.')
-@maxLength(15)
+@description('Required. The name of the Azure Stack HCI cluster - this will be the name of your cluster in Azure.')
+@maxLength(40)
 @minLength(4)
 param name string
+
+@description('Optional. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name.')
+@maxLength(15)
+@minLength(4)
+param clusterADName string?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -26,8 +31,8 @@ param deploymentOperations string[] = ['Validate', 'Deploy']
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. The deployment settings of the cluster.')
-param deploymentSettings deploymentSettingsType?
+@description('Required. The deployment settings of the cluster.')
+param deploymentSettings deploymentSettingsType
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
@@ -35,6 +40,74 @@ param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Specify whether to use the shared key vault for the HCI cluster.')
 param useSharedKeyVault bool = true
+
+@description('Conditional. The name of the deployment user. Required if useSharedKeyVault is true.')
+param deploymentUser string?
+
+@secure()
+@description('Conditional. The password of the deployment user. Required if useSharedKeyVault is true.')
+param deploymentUserPassword string?
+
+@description('Conditional. The name of the local admin user. Required if useSharedKeyVault is true.')
+param localAdminUser string?
+
+@secure()
+@description('Conditional. The password of the local admin user. Required if useSharedKeyVault is true.')
+param localAdminPassword string?
+
+@description('Conditional. The service principal ID for ARB. Required if useSharedKeyVault is true and need ARB service principal id.')
+param servicePrincipalId string?
+
+@secure()
+@description('Conditional. The service principal secret for ARB. Required if useSharedKeyVault is true and need ARB service principal id.')
+param servicePrincipalSecret string?
+
+@description('Optional. Content type of the azure stack lcm user credential.')
+param azureStackLCMUserCredentialContentType string = 'Secret'
+
+@description('Optional. Content type of the local admin credential.')
+param localAdminCredentialContentType string = 'Secret'
+
+@description('Optional. Content type of the witness storage key.')
+param witnessStoragekeyContentType string = 'Secret'
+
+@description('Optional. Content type of the default ARB application.')
+param defaultARBApplicationContentType string = 'Secret'
+
+@description('Optional. Tags of azure stack LCM user credential.')
+param azureStackLCMUserCredentialTags object?
+
+@description('Optional. Tags of the local admin credential.')
+param localAdminCredentialTags object?
+
+@description('Optional. Tags of the witness storage key.')
+param witnessStoragekeyTags object?
+
+@description('Optional. Tags of the default ARB application.')
+param defaultARBApplicationTags object?
+
+@description('Optional. Key vault subscription ID, which is used for for storing secrets for the HCI cluster.')
+param keyvaultSubscriptionId string?
+
+@description('Optional. Key vault resource group, which is used for for storing secrets for the HCI cluster.')
+param keyvaultResourceGroup string?
+
+@description('Optional. Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster.')
+param witnessStorageAccountSubscriptionId string?
+
+@description('Optional. Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.')
+param witnessStorageAccountResourceGroup string?
+
+@description('Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the \'Microsoft.AzureStackHCI\' provider was registered in the subscription.')
+@secure()
+param hciResourceProviderObjectId string
+
+@description('Optional. The intended operation for a cluster.')
+@allowed([
+  'ClusterProvisioning'
+  'ClusterUpgrade'
+])
+param operationType string = 'ClusterProvisioning'
 
 // ============= //
 //   Variables   //
@@ -74,6 +147,83 @@ var formattedRoleAssignments = [
   })
 ]
 
+var azureConnectedMachineResourceManagerRoleID = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  'f5819b54-e033-4d82-ac66-4fec3cbf3f4c'
+)
+var readerRoleID = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+)
+var azureStackHCIDeviceManagementRole = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  '865ae368-6a45-4bd1-8fbf-0d5151f56fc1'
+)
+
+resource spConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(
+    subscription().subscriptionId,
+    hciResourceProviderObjectId,
+    'ConnectedMachineResourceManagerRolePermissions',
+    resourceGroup().id
+  )
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: azureConnectedMachineResourceManagerRoleID
+    principalId: hciResourceProviderObjectId
+    principalType: 'ServicePrincipal'
+    description: 'Created by Azure Stack HCI deployment template'
+  }
+}
+
+resource nodeAzureConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for hciNode in arcNodeResourceIds: {
+    name: guid(
+      subscription().subscriptionId,
+      hciResourceProviderObjectId,
+      'azureConnectedMachineResourceManager',
+      hciNode,
+      resourceGroup().id
+    )
+    properties: {
+      roleDefinitionId: azureConnectedMachineResourceManagerRoleID
+      principalId: reference(hciNode, '2023-10-03-preview', 'Full').identity.principalId
+      principalType: 'ServicePrincipal'
+      description: 'Created by Azure Stack HCI deployment template'
+    }
+  }
+]
+
+resource nodeazureStackHCIDeviceManagementRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for hciNode in arcNodeResourceIds: {
+    name: guid(
+      subscription().subscriptionId,
+      hciResourceProviderObjectId,
+      'azureStackHCIDeviceManagementRole',
+      hciNode,
+      resourceGroup().id
+    )
+    properties: {
+      roleDefinitionId: azureStackHCIDeviceManagementRole
+      principalId: reference(hciNode, '2023-10-03-preview', 'Full').identity.principalId
+      principalType: 'ServicePrincipal'
+      description: 'Created by Azure Stack HCI deployment template'
+    }
+  }
+]
+
+resource nodereaderRoleIDPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for hciNode in arcNodeResourceIds: {
+    name: guid(subscription().subscriptionId, hciResourceProviderObjectId, 'reader', hciNode, resourceGroup().id)
+    properties: {
+      roleDefinitionId: readerRoleID
+      principalId: reference(hciNode, '2023-10-03-preview', 'Full').identity.principalId
+      principalType: 'ServicePrincipal'
+      description: 'Created by Azure Stack HCI deployment template'
+    }
+  }
+]
+
 // if deployment operations requested, validation must be performed first so we reverse sort the array
 var sortedDeploymentOperations = (!empty(deploymentOperations)) ? sort(deploymentOperations, (a, b) => a > b) : []
 
@@ -103,6 +253,33 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
+var arcNodeResourceIds = [
+  for (nodeName, index) in deploymentSettings!.clusterNodeNames: resourceId(
+    'Microsoft.HybridCompute/machines',
+    nodeName
+  )
+]
+
+resource arcMachines 'Microsoft.HybridCompute/machines@2024-07-10' existing = [
+  for nodeName in deploymentSettings!.clusterNodeNames: {
+    name: nodeName
+  }
+]
+
+resource edgeDevices 'Microsoft.AzureStackHCI/edgeDevices@2024-02-15-preview' = [
+  for (nodeName, index) in deploymentSettings!.clusterNodeNames: {
+    name: 'default'
+    scope: arcMachines[index]
+    kind: 'HCI'
+    properties: {
+      deviceConfiguration: {
+        deviceMetadata: ''
+        nicDetails: []
+      }
+    }
+  }
+]
+
 resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   name: name
   identity: {
@@ -111,48 +288,162 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   location: location
   properties: {}
   tags: tags
+  dependsOn: [
+    edgeDevices
+  ]
 }
-@batchSize(1)
-module deploymentSetting 'deployment-setting/main.bicep' = [
-  for deploymentOperation in sortedDeploymentOperations: if (!empty(deploymentOperation) && !empty(deploymentSettings)) {
-    name: 'deploymentSettings-${deploymentOperation}'
-    params: {
-      cloudId: useSharedKeyVault ? cluster.properties.cloudId : null
-      clusterName: cluster.name
-      deploymentMode: deploymentOperation
-      clusterNodeNames: deploymentSettings!.clusterNodeNames
-      clusterWitnessStorageAccountName: deploymentSettings!.clusterWitnessStorageAccountName
-      customLocationName: deploymentSettings!.customLocationName
-      defaultGateway: deploymentSettings!.defaultGateway
-      deploymentPrefix: deploymentSettings!.deploymentPrefix
-      dnsServers: deploymentSettings!.dnsServers
-      domainFqdn: deploymentSettings!.domainFqdn
-      domainOUPath: deploymentSettings!.domainOUPath
-      endingIPAddress: deploymentSettings!.endingIPAddress
-      keyVaultName: deploymentSettings!.keyVaultName
-      networkIntents: deploymentSettings!.networkIntents
-      startingIPAddress: deploymentSettings!.startingIPAddress
-      storageConnectivitySwitchless: deploymentSettings!.storageConnectivitySwitchless
-      storageNetworks: deploymentSettings!.storageNetworks
-      subnetMask: deploymentSettings!.subnetMask
-      bitlockerBootVolume: deploymentSettings!.?bitlockerBootVolume
-      bitlockerDataVolumes: deploymentSettings!.?bitlockerDataVolumes
-      credentialGuardEnforced: deploymentSettings!.?credentialGuardEnforced
-      driftControlEnforced: deploymentSettings!.?driftControlEnforced
-      drtmProtection: deploymentSettings!.?drtmProtection
-      enableStorageAutoIp: deploymentSettings!.?enableStorageAutoIp
-      episodicDataUpload: deploymentSettings!.?episodicDataUpload
-      hvciProtection: deploymentSettings!.?hvciProtection
-      isEuropeanUnionLocation: deploymentSettings!.?isRFEuropeanUnionLocation
-      sideChannelMitigationEnforced: deploymentSettings!.?sideChannelMitigationEnforced
-      smbClusterEncryption: deploymentSettings!.?smbClusterEncryption
-      smbSigningEnforced: deploymentSettings!.?smbSigningEnforced
-      storageConfigurationMode: deploymentSettings!.?storageConfigurationMode
-      streamingDataClient: deploymentSettings!.?streamingDataClient
-      wdacEnforced: deploymentSettings!.?wdacEnforced
+
+module secrets './secrets.bicep' = if (useSharedKeyVault) {
+  name: '${uniqueString(deployment().name, location)}-secrets'
+  scope: resourceGroup(
+    keyvaultSubscriptionId ?? subscription().subscriptionId,
+    keyvaultResourceGroup ?? resourceGroup().name
+  )
+  params: {
+    clusterName: name
+    cloudId: cluster.properties.cloudId
+    keyVaultName: deploymentSettings!.keyVaultName
+    storageAccountName: deploymentSettings!.clusterWitnessStorageAccountName
+    deploymentUser: deploymentUser!
+    deploymentUserPassword: deploymentUserPassword!
+    localAdminUser: localAdminUser!
+    localAdminPassword: localAdminPassword!
+    servicePrincipalId: servicePrincipalId!
+    servicePrincipalSecret: servicePrincipalSecret!
+    azureStackLCMUserCredentialContentType: azureStackLCMUserCredentialContentType
+    localAdminCredentialContentType: localAdminCredentialContentType
+    witnessStoragekeyContentType: witnessStoragekeyContentType
+    defaultARBApplicationContentType: defaultARBApplicationContentType
+    azureStackLCMUserCredentialTags: azureStackLCMUserCredentialTags
+    localAdminCredentialTags: localAdminCredentialTags
+    witnessStoragekeyTags: witnessStoragekeyTags
+    defaultARBApplicationTags: defaultARBApplicationTags
+    witnessStorageAccountResourceGroup: witnessStorageAccountResourceGroup ?? resourceGroup().name
+    witnessStorageAccountSubscriptionId: witnessStorageAccountSubscriptionId ?? subscription().subscriptionId
+    hciResourceProviderObjectId: hciResourceProviderObjectId
+    arcNodeResourceIds: arcNodeResourceIds
+  }
+}
+
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+  name: 'temp-${name}'
+  location: location
+  tags: tags
+}
+
+// Contributor
+resource roleAssignmentContributor 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(managedIdentity.id, builtInRoleNames.Contributor, resourceGroup().id)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: builtInRoleNames.Contributor
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// Reader
+resource roleAssignmentReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(managedIdentity.id, builtInRoleNames.Reader, resourceGroup().id)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: builtInRoleNames.Reader
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// Role Based Access Control Administrator
+resource roleAssignmentRBACAdmin 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(managedIdentity.id, builtInRoleNames['Role Based Access Control Administrator'], resourceGroup().id)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: builtInRoleNames['Role Based Access Control Administrator']
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// Use deployment script to run the shell script
+resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  name: 'hci-deployment-script-${uniqueString(resourceGroup().id)}'
+  location: resourceGroup().location
+  kind: 'AzureCLI'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
     }
   }
-]
+  properties: {
+    azCliVersion: '2.50.0'
+    timeout: 'PT5H'
+    retentionInterval: 'P1D'
+    cleanupPreference: 'OnSuccess'
+    environmentVariables: [
+      {
+        name: 'RESOURCE_GROUP_NAME'
+        value: resourceGroup().name
+      }
+      {
+        name: 'SUBSCRIPTION_ID'
+        value: subscription().subscriptionId
+      }
+      {
+        name: 'CLUSTER_NAME'
+        value: cluster.name
+      }
+      {
+        name: 'CLUSTER_AD_NAME'
+        value: clusterADName ?? cluster.name
+      }
+      {
+        name: 'CLOUD_ID'
+        value: cluster.properties.cloudId
+      }
+      {
+        name: 'USE_SHARED_KEYVAULT'
+        value: string(useSharedKeyVault)
+      }
+      {
+        name: 'DEPLOYMENT_OPERATIONS'
+        value: join(sortedDeploymentOperations, ',')
+      }
+      {
+        name: 'OPERATION_TYPE'
+        value: operationType
+      }
+      {
+        name: 'DEPLOYMENT_SETTINGS'
+        value: string(deploymentSettings)
+      }
+      {
+        name: 'DEPLOYMENT_SETTING_BICEP_BASE64'
+        value: base64(loadTextContent('./nested/deployment-setting.bicep'))
+      }
+      {
+        name: 'DEPLOYMENT_SETTING_MAIN_BICEP_BASE64'
+        value: base64(loadTextContent('./deployment-setting/main.bicep'))
+      }
+      {
+        name: 'NEED_ARB_SECRET'
+        value: empty(servicePrincipalId) || empty(servicePrincipalSecret) ? string(false) : string(true)
+      }
+    ]
+    scriptContent: loadTextContent('./deploy.sh')
+  }
+  dependsOn: [
+    edgeDevices
+    spConnectedMachineResourceManagerRolePermissions
+    nodeAzureConnectedMachineResourceManagerRolePermissions
+    nodeazureStackHCIDeviceManagementRole
+    nodereaderRoleIDPermissions
+    roleAssignmentContributor
+    roleAssignmentReader
+    roleAssignmentRBACAdmin
+    secrets
+  ]
+}
 
 resource cluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
@@ -170,6 +461,9 @@ resource cluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-0
   }
 ]
 
+var managementNetworks = filter(deploymentSettings.networkIntents, n => contains(n.trafficType, 'Management'))
+var managementIntentName = length(managementNetworks) > 0 ? managementNetworks[0].name : ''
+
 @description('The name of the cluster.')
 output name string = cluster.name
 
@@ -184,6 +478,9 @@ output systemAssignedMIPrincipalId string = cluster.identity.principalId
 
 @description('The location of the cluster.')
 output location string = cluster.location
+
+@description('The name of the vSwitch.')
+output vSwitchName string = 'ConvergedSwitch(${managementIntentName})'
 
 // =============== //
 //   Definitions   //
@@ -218,13 +515,13 @@ type networkIntentType = {
   @description('Required. The qosPolicy overrides for the network intent.')
   qosPolicyOverrides: {
     @description('Required. The bandwidthPercentage for the network intent. Recommend 50.')
-    bandwidthPercentage_SMB: string
+    bandwidthPercentageSMB: string
 
     @description('Required. Recommend 7.')
-    priorityValue8021Action_Cluster: string
+    priorityValue8021ActionCluster: string
 
     @description('Required. Recommend 3.')
-    priorityValue8021Action_SMB: string
+    priorityValue8021ActionSMB: string
   }
 
   @description('Required. Specify whether to override the virtualSwitchConfiguration property. Use false by default.')
@@ -259,6 +556,9 @@ type storageAdapterIPInfoType = {
 // define custom type for storage network objects
 @export()
 type storageNetworksType = {
+  @description('Required. The name of the storage network.')
+  name: string
+
   @description('Required. The name of the storage adapter.')
   adapterName: string
 
@@ -303,6 +603,7 @@ type securityConfigurationType = {
   wdacEnforced: bool
 }
 
+@export()
 type deploymentSettingsType = {
   @minLength(4)
   @maxLength(8)
@@ -379,7 +680,7 @@ type deploymentSettingsType = {
   dnsServers: string[]
 
   @description('Required. An array of Network ATC Network Intent objects that define the Compute, Management, and Storage network configuration for the cluster.')
-  networkIntents: array
+  networkIntents: networkIntentType[]
 
   @description('Required. Specify whether the Storage Network connectivity is switched or switchless.')
   storageConnectivitySwitchless: bool
@@ -388,7 +689,7 @@ type deploymentSettingsType = {
   enableStorageAutoIp: bool?
 
   @description('Required. An array of JSON objects that define the storage network configuration for the cluster. Each object should contain the adapterName, VLAN properties, and (optionally) IP configurations.')
-  storageNetworks: array
+  storageNetworks: storageNetworksType[]
 
   // other cluster configuration parameters
   @description('Required. The name of the Custom Location associated with the Arc Resource Bridge for this cluster. This value should reflect the physical location and identifier of the HCI cluster. Example: cl-hci-den-clu01.')
@@ -399,7 +700,4 @@ type deploymentSettingsType = {
 
   @description('Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster.')
   keyVaultName: string
-
-  @description('Optional. If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource.')
-  cloudId: string?
 }

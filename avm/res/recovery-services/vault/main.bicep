@@ -4,9 +4,6 @@ metadata description = 'This module deploys a Recovery Services Vault.'
 @description('Required. Name of the Azure Recovery Service Vault.')
 param name string
 
-@description('Optional. The storage configuration for the Azure Recovery Service Vault.')
-param backupStorageConfig backupStorageConfigType?
-
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -31,34 +28,42 @@ param replicationPolicies replicationPolicyType[]?
 @description('Optional. Replication alert settings.')
 param replicationAlertSettings replicationAlertSettingsType?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. Tags of the Recovery Service Vault resource.')
-param tags object?
+param tags resourceInput<'Microsoft.RecoveryServices/vaults@2024-04-01'>.tags?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Monitoring Settings of the vault.')
 param monitoringSettings monitoringSettingsType?
 
-@description('Optional. Security Settings of the vault.')
-param securitySettings securitySettingType?
+@description('Optional. The soft delete related settings.')
+param softDeleteSettings softDeleteSettingType?
+
+@description('Optional. The immmutability setting state of the recovery services vault resource.')
+@allowed([
+  'Disabled'
+  'Locked'
+  'Unlocked'
+])
+param immutabilitySettingState string?
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled.')
 @allowed([
@@ -162,23 +167,23 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+  resource cMKKey 'keys@2024-12-01-preview' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName!
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
@@ -209,9 +214,21 @@ resource rsv 'Microsoft.RecoveryServices/vaults@2024-04-01' = {
             : null
         }
       : null
-    securitySettings: securitySettings
+    securitySettings: {
+      immutabilitySettings: !empty(immutabilitySettingState)
+        ? {
+            state: immutabilitySettingState
+          }
+        : null
+      softDeleteSettings: softDeleteSettings
+    }
     publicNetworkAccess: publicNetworkAccess
-    redundancySettings: redundancySettings
+    redundancySettings: (!empty(redundancySettings))
+      ? {
+          standardTierStorageRedundancy: redundancySettings!.standardTierStorageRedundancy
+          crossRegionRestore: redundancySettings.?crossRegionRestore ?? 'Disabled'
+        }
+      : null
     restoreSettings: restoreSettings
     encryption: !empty(customerManagedKey)
       ? {
@@ -225,10 +242,10 @@ resource rsv 'Microsoft.RecoveryServices/vaults@2024-04-01' = {
               }
           keyVaultProperties: {
             keyUri: !empty(customerManagedKey.?keyVersion)
-              ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+              ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.?keyVersion}'
               : (customerManagedKey.?autoRotationEnabled ?? true)
-                  ? cMKKeyVault::cMKKey.properties.keyUri
-                  : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+                  ? cMKKeyVault::cMKKey!.properties.keyUri
+                  : cMKKeyVault::cMKKey!.properties.keyUriWithVersion
           }
         }
       : null
@@ -263,16 +280,6 @@ module rsv_replicationPolicies 'replication-policy/main.bicep' = [
     }
   }
 ]
-
-module rsv_backupStorageConfiguration 'backup-storage-config/main.bicep' = if (!empty(backupStorageConfig)) {
-  name: '${uniqueString(deployment().name, location)}-RSV-BackupStorageConfig'
-  params: {
-    recoveryVaultName: rsv.name
-    storageModelType: backupStorageConfig!.?storageModelType
-    crossRegionRestoreFlag: backupStorageConfig!.?crossRegionRestoreFlag
-  }
-}
-
 module rsv_backupFabric_protectionContainer_protectedItems 'backup-fabric/protection-container/protected-item/main.bicep' = [
   for (protectedItem, index) in (protectedItems ?? []): {
     name: '${uniqueString(deployment().name, location)}-ProtectedItem-${index}'
@@ -332,9 +339,9 @@ resource rsv_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: rsv
 }
@@ -368,7 +375,7 @@ resource rsv_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-0
   }
 ]
 
-module rsv_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module rsv_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-rsv-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -493,16 +500,6 @@ type privateEndpointOutputType = {
 }
 
 @export()
-@description('The type for redundancy settings.')
-type redundancySettingsType = {
-  @description('Optional. Flag to show if Cross Region Restore is enabled on the Vault or not.')
-  crossRegionRestore: string?
-
-  @description('Optional. The storage redundancy setting of a vault.')
-  standardTierStorageRedundancy: string?
-}
-
-@export()
 @description('The type for restore settings.')
 type restoreSettingsType = {
   @description('Required. The restore settings of the vault.')
@@ -543,19 +540,6 @@ type replicationPolicyType = {
 
   @description('Optional. The duration in minutes until which the recovery points need to be stored.')
   recoveryPointHistory: int?
-}
-
-@export()
-@description('The type for a backup storage config.')
-type backupStorageConfigType = {
-  @description('Optional. The name of the backup storage config.')
-  name: string?
-
-  @description('Optional. Change Vault Storage Type (Works if vault has not registered any backup instance).')
-  storageModelType: ('GeoRedundant' | 'LocallyRedundant' | 'ReadAccessGeoZoneRedundant' | 'ZoneRedundant')?
-
-  @description('Optional. Opt in details of Cross Region Restore feature.')
-  crossRegionRestoreFlag: bool?
 }
 
 @export()
@@ -669,23 +653,37 @@ type monitoringSettingsType = {
 }
 
 @export()
-@description('The type for security settings.')
-type securitySettingType = {
-  @description('Optional. Immutability settings of a vault.')
-  immutabilitySettings: {
-    @description('Required. The immmutability setting of the vault.')
-    state: ('Disabled' | 'Locked' | 'Unlocked')
-  }?
+@description('The type for soft delete settings.')
+type softDeleteSettingType = {
+  @description('Required. The enhanced security state.')
+  enhancedSecurityState: ('AlwaysON' | 'Disabled' | 'Enabled' | 'Invalid')
 
-  @description('Optional. Soft delete settings of a vault.')
-  softDeleteSettings: {
-    @description('Required. The enhanced security state.')
-    enhancedSecurityState: ('AlwaysON' | 'Disabled' | 'Enabled' | 'Invalid')
+  @description('Required. The soft delete retention period in days.')
+  softDeleteRetentionPeriodInDays: int
 
-    @description('Required. The soft delete retention period in days.')
-    softDeleteRetentionPeriodInDays: int
+  @description('Required. The soft delete state.')
+  softDeleteState: ('AlwaysON' | 'Disabled' | 'Enabled' | 'Invalid')
+}
 
-    @description('Required. The soft delete state.')
-    softDeleteState: ('AlwaysON' | 'Disabled' | 'Enabled' | 'Invalid')
-  }?
+@export()
+@discriminator('standardTierStorageRedundancy')
+@description('The type for the recovery services vault\'s redundancy settings.')
+type redundancySettingsType = redundancySettingsGeoType | redundancySettingsLocalType | redundancySettingsZoneType
+
+type redundancySettingsGeoType = {
+  @description('Required. The storage redundancy setting of a vault.')
+  standardTierStorageRedundancy: 'GeoRedundant'
+
+  @description('Optional. Flag to show if Cross Region Restore is enabled on the Vault or not.')
+  crossRegionRestore: 'Enabled' | 'Disabled'?
+}
+
+type redundancySettingsLocalType = {
+  @description('Required. The storage redundancy setting of a vault.')
+  standardTierStorageRedundancy: 'LocallyRedundant'
+}
+
+type redundancySettingsZoneType = {
+  @description('Required. The storage redundancy setting of a vault.')
+  standardTierStorageRedundancy: 'ZoneRedundant'
 }

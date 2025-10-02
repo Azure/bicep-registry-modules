@@ -30,7 +30,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -39,10 +39,11 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
-    location: resourceLocation
     storageAccountName: toLower('dep${namePrefix}v${serviceShort}01')
   }
 }
@@ -57,7 +58,6 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}-${serviceShort}'
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
@@ -65,27 +65,31 @@ module testDeployment '../../../main.bicep' = [
       managedIdentities: {
         systemAssigned: true
       }
-      securityAlertPoliciesObj: {
+      securityAlertPolicy: {
         emailAccountAdmins: true
         name: 'default'
         state: 'Enabled'
-      }
-      vulnerabilityAssessmentsObj: {
-        emailSubscriptionAdmins: true
-        name: 'default'
-        recurringScansEmails: [
+        storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+        emailAddresses: [
           'test1@contoso.com'
           'test2@contoso.com'
         ]
-        recurringScansIsEnabled: true
-        storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-        useStorageAccountAccessKey: false
-        createStorageRoleAssignment: true
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
+        disabledAlerts: [
+          'Unsafe_Action'
+        ]
+        retentionDays: 7
+      }
+      vulnerabilityAssessment: {
+        name: 'default'
+        recurringScans: {
+          isEnabled: true
+          emailSubscriptionAdmins: true
+          emails: [
+            'test1@contoso.com'
+            'test2@contoso.com'
+          ]
         }
+        storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
       }
     }
   }

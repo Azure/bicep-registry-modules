@@ -31,7 +31,7 @@ param access string
 param destinationPortRanges string[]?
 
 @sys.description('Optional. The destnations filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted.')
-param destinations destinationsType
+param destinations destinationType[]?
 
 @allowed([
   'Inbound'
@@ -60,7 +60,7 @@ param protocol string
 param sourcePortRanges string[]?
 
 @sys.description('Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted.')
-param sources sourcesType
+param sources sourceType[]?
 
 resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
   name: networkManagerName
@@ -105,25 +105,21 @@ output resourceGroupName string = resourceGroup().name
 // =============== //
 
 @export()
-type destinationPortRangesType = string[]?
-
-@export()
-type destinationsType = {
+@sys.description('The type of a destination.')
+type destinationType = {
   @sys.description('Required. Address prefix type.')
   addressPrefixType: 'IPPrefix' | 'ServiceTag'
 
   @sys.description('Required. Address prefix.')
   addressPrefix: string
-}[]?
+}
 
 @export()
-type sourcePortRangesType = string[]?
-
-@export()
-type sourcesType = {
+@sys.description('The type of a source.')
+type sourceType = {
   @sys.description('Required. Address prefix type.')
   addressPrefixType: 'IPPrefix' | 'ServiceTag'
 
   @sys.description('Required. Address prefix.')
   addressPrefix: string
-}[]?
+}

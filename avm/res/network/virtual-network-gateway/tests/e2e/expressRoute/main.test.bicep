@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -35,7 +35,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }
@@ -44,32 +43,30 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-@batchSize(1)
-module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-    params: {
-      location: resourceLocation
-      name: '${namePrefix}${serviceShort}001'
-      skuName: 'ErGw1AZ'
-      gatewayType: 'ExpressRoute'
-      vNetResourceId: nestedDependencies.outputs.vnetResourceId
-      clusterSettings:{
-        clusterMode: 'activePassiveBgp'
-      }
-      domainNameLabel: [
-        '${namePrefix}-dm-${serviceShort}'
-      ]
-      firstPipName: '${namePrefix}-pip-${serviceShort}'
-      publicIpZones: [
-        1
-        2
-        3
-      ]
+module testDeployment '../../../main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
+  params: {
+    name: '${namePrefix}${serviceShort}002'
+    skuName: 'ErGw1AZ'
+    gatewayType: 'ExpressRoute'
+    virtualNetworkResourceId: nestedDependencies.outputs.vnetResourceId
+    clusterSettings: {
+      clusterMode: 'activePassiveBgp'
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
-]
+}
+
+output activeActive bool = testDeployment.outputs.activeActive
+output asn int? = testDeployment.outputs.?asn
+output customBgpIpAddresses string? = testDeployment.outputs.?customBgpIpAddresses
+output defaultBgpIpAddresses string? = testDeployment.outputs.?defaultBgpIpAddresses
+output ipConfigurations array? = testDeployment.outputs.?ipConfigurations
+output location string = testDeployment.outputs.location
+output name string = testDeployment.outputs.name
+output primaryPublicIpAddress string? = testDeployment.outputs.?primaryPublicIpAddress
+output resourceGroupName string = testDeployment.outputs.resourceGroupName
+output resourceId string = testDeployment.outputs.resourceId
+output secondaryCustomBgpIpAddress string? = testDeployment.outputs.?secondaryCustomBgpIpAddress
+output secondaryDefaultBgpIpAddress string? = testDeployment.outputs.?secondaryDefaultBgpIpAddress
+output secondaryPublicIpAddress string? = testDeployment.outputs.?secondaryPublicIpAddress

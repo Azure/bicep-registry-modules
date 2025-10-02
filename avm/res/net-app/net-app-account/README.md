@@ -1,6 +1,6 @@
 # Azure NetApp Files `[Microsoft.NetApp/netAppAccounts]`
 
-This module deploys an Azure NetApp File.
+This module deploys an Azure NetApp Files Account and the associated resource types such as backups, capacity pools and volumes.
 
 ## Navigation
 
@@ -13,17 +13,17 @@ This module deploys an Azure NetApp File.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.NetApp/netAppAccounts` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts) |
-| `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/backupPolicies) |
-| `Microsoft.NetApp/netAppAccounts/backupVaults` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/backupVaults) |
-| `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/backupVaults/backups) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/capacityPools) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/capacityPools/volumes) |
-| `Microsoft.NetApp/netAppAccounts/snapshotPolicies` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/snapshotPolicies) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.NetApp/netAppAccounts` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.netapp_netappaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts)</li></ul> |
+| `Microsoft.NetApp/netAppAccounts/backupPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.netapp_netappaccounts_backuppolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/backupPolicies)</li></ul> |
+| `Microsoft.NetApp/netAppAccounts/backupVaults` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.netapp_netappaccounts_backupvaults.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/backupVaults)</li></ul> |
+| `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.netapp_netappaccounts_backupvaults_backups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/backupVaults/backups)</li></ul> |
+| `Microsoft.NetApp/netAppAccounts/capacityPools` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.netapp_netappaccounts_capacitypools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/capacityPools)</li></ul> |
+| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.netapp_netappaccounts_capacitypools_volumes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/capacityPools/volumes)</li></ul> |
+| `Microsoft.NetApp/netAppAccounts/snapshotPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.netapp_netappaccounts_snapshotpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/snapshotPolicies)</li></ul> |
 
 ## Usage examples
 
@@ -148,6 +148,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         size: 1
         volumes: [
           {
+            availabilityZone: 1
             dataProtection: {
               backup: {
                 backupPolicyName: 'myBackupPolicy'
@@ -191,9 +192,9 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
-            zone: 1
           }
           {
+            availabilityZone: 1
             encryptionKeySource: '<encryptionKeySource>'
             exportPolicy: {
               rules: [
@@ -224,7 +225,6 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             smbNonBrowsable: 'Disabled'
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
-            zone: 1
           }
         ]
       }
@@ -342,6 +342,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           "size": 1,
           "volumes": [
             {
+              "availabilityZone": 1,
               "dataProtection": {
                 "backup": {
                   "backupPolicyName": "myBackupPolicy",
@@ -384,10 +385,10 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 }
               ],
               "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400,
-              "zone": 1
+              "usageThreshold": 107374182400
             },
             {
+              "availabilityZone": 1,
               "encryptionKeySource": "<encryptionKeySource>",
               "exportPolicy": {
                 "rules": [
@@ -417,8 +418,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               "smbEncryption": false,
               "smbNonBrowsable": "Disabled",
               "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400,
-              "zone": 1
+              "usageThreshold": 107374182400
             }
           ]
         },
@@ -538,6 +538,7 @@ param capacityPools = [
     size: 1
     volumes: [
       {
+        availabilityZone: 1
         dataProtection: {
           backup: {
             backupPolicyName: 'myBackupPolicy'
@@ -581,9 +582,9 @@ param capacityPools = [
         ]
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
-        zone: 1
       }
       {
+        availabilityZone: 1
         encryptionKeySource: '<encryptionKeySource>'
         exportPolicy: {
           rules: [
@@ -614,7 +615,6 @@ param capacityPools = [
         smbNonBrowsable: 'Disabled'
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
-        zone: 1
       }
     ]
   }
@@ -711,6 +711,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         size: 1
         volumes: [
           {
+            availabilityZone: 1
             encryptionKeySource: '<encryptionKeySource>'
             exportPolicy: {
               rules: [
@@ -744,9 +745,9 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
-            zone: 1
           }
           {
+            availabilityZone: 1
             encryptionKeySource: '<encryptionKeySource>'
             name: 'nanaanfs3-vol-002'
             networkFeatures: 'Standard'
@@ -755,7 +756,6 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
-            zone: 1
           }
         ]
       }
@@ -840,6 +840,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           "size": 1,
           "volumes": [
             {
+              "availabilityZone": 1,
               "encryptionKeySource": "<encryptionKeySource>",
               "exportPolicy": {
                 "rules": [
@@ -872,10 +873,10 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 }
               ],
               "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400,
-              "zone": 1
+              "usageThreshold": 107374182400
             },
             {
+              "availabilityZone": 1,
               "encryptionKeySource": "<encryptionKeySource>",
               "name": "nanaanfs3-vol-002",
               "networkFeatures": "Standard",
@@ -883,8 +884,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 "NFSv3"
               ],
               "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400,
-              "zone": 1
+              "usageThreshold": 107374182400
             }
           ]
         },
@@ -973,6 +973,7 @@ param capacityPools = [
     size: 1
     volumes: [
       {
+        availabilityZone: 1
         encryptionKeySource: '<encryptionKeySource>'
         exportPolicy: {
           rules: [
@@ -1006,9 +1007,9 @@ param capacityPools = [
         ]
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
-        zone: 1
       }
       {
+        availabilityZone: 1
         encryptionKeySource: '<encryptionKeySource>'
         name: 'nanaanfs3-vol-002'
         networkFeatures: 'Standard'
@@ -1017,7 +1018,6 @@ param capacityPools = [
         ]
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
-        zone: 1
       }
     ]
   }
@@ -1160,6 +1160,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`adName`](#parameter-adname) | string | Name of the active directory host as part of Kerberos Realm used for Kerberos authentication. |
 | [`aesEncryption`](#parameter-aesencryption) | bool | Enable AES encryption on the SMB Server. |
+| [`allowLocalNfsUsersWithLdap`](#parameter-allowlocalnfsuserswithldap) | bool | If enabled, NFS client local users can also (in addition to LDAP users) access the NFS volumes. |
 | [`backupPolicies`](#parameter-backuppolicies) | array | The backup policies to create. |
 | [`backupVault`](#parameter-backupvault) | object | The netapp backup vault to create & configure. |
 | [`capacityPools`](#parameter-capacitypools) | array | Capacity pools to create. |
@@ -1206,6 +1207,14 @@ Enable AES encryption on the SMB Server.
 - Type: bool
 - Default: `False`
 
+### Parameter: `allowLocalNfsUsersWithLdap`
+
+If enabled, NFS client local users can also (in addition to LDAP users) access the NFS volumes.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `backupPolicies`
 
 The backup policies to create.
@@ -1217,16 +1226,16 @@ The backup policies to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dailyBackupsToKeep`](#parameter-backuppoliciesdailybackupstokeep) | int | The daily backups to keep. |
+| [`dailyBackupsToKeep`](#parameter-backuppoliciesdailybackupstokeep) | int | The daily backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max). |
 | [`enabled`](#parameter-backuppoliciesenabled) | bool | Indicates whether the backup policy is enabled. |
 | [`location`](#parameter-backuppolicieslocation) | string | The location of the backup policy. |
-| [`monthlyBackupsToKeep`](#parameter-backuppoliciesmonthlybackupstokeep) | int | The monthly backups to keep. |
+| [`monthlyBackupsToKeep`](#parameter-backuppoliciesmonthlybackupstokeep) | int | The monthly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max). |
 | [`name`](#parameter-backuppoliciesname) | string | The name of the backup policy. |
-| [`weeklyBackupsToKeep`](#parameter-backuppoliciesweeklybackupstokeep) | int | The weekly backups to keep. |
+| [`weeklyBackupsToKeep`](#parameter-backuppoliciesweeklybackupstokeep) | int | The weekly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max). |
 
 ### Parameter: `backupPolicies.dailyBackupsToKeep`
 
-The daily backups to keep.
+The daily backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max).
 
 - Required: No
 - Type: int
@@ -1239,8 +1248,6 @@ Indicates whether the backup policy is enabled.
 
 - Required: No
 - Type: bool
-- MinValue: 2
-- MaxValue: 1019
 
 ### Parameter: `backupPolicies.location`
 
@@ -1248,16 +1255,14 @@ The location of the backup policy.
 
 - Required: No
 - Type: string
-- MinValue: 2
-- MaxValue: 1019
 
 ### Parameter: `backupPolicies.monthlyBackupsToKeep`
 
-The monthly backups to keep.
+The monthly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max).
 
 - Required: No
 - Type: int
-- MinValue: 2
+- MinValue: 0
 - MaxValue: 1019
 
 ### Parameter: `backupPolicies.name`
@@ -1266,16 +1271,14 @@ The name of the backup policy.
 
 - Required: No
 - Type: string
-- MinValue: 2
-- MaxValue: 1019
 
 ### Parameter: `backupPolicies.weeklyBackupsToKeep`
 
-The weekly backups to keep.
+The weekly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max).
 
 - Required: No
 - Type: int
-- MinValue: 2
+- MinValue: 0
 - MaxValue: 1019
 
 ### Parameter: `backupVault`
@@ -1413,8 +1416,6 @@ If enabled (true) the pool can contain cool Access enabled volumes.
 
 - Required: No
 - Type: bool
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.encryptionType`
 
@@ -1429,8 +1430,6 @@ Encryption type of the capacity pool, set encryption type for data at rest for t
     'Single'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.location`
 
@@ -1438,8 +1437,6 @@ Location of the pool volume.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.qosType`
 
@@ -1454,8 +1451,6 @@ The qos type of the pool.
     'Manual'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.roleAssignments`
 
@@ -1463,8 +1458,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 2048
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -1496,8 +1489,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.roleAssignments.roleDefinitionIdOrName`
 
@@ -1505,8 +1496,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.roleAssignments.condition`
 
@@ -1514,8 +1503,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.roleAssignments.conditionVersion`
 
@@ -1529,8 +1516,6 @@ Version of the condition.
     '2.0'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -1538,8 +1523,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.roleAssignments.description`
 
@@ -1547,8 +1530,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.roleAssignments.name`
 
@@ -1556,8 +1537,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.roleAssignments.principalType`
 
@@ -1575,8 +1554,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.serviceLevel`
 
@@ -1593,8 +1570,6 @@ The pool service level.
     'Ultra'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.tags`
 
@@ -1602,8 +1577,6 @@ Tags for the capcity pool.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes`
 
@@ -1611,17 +1584,15 @@ List of volumes to create in the capacity pool.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 2048
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-capacitypoolsvolumesavailabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-capacitypoolsvolumesname) | string | The name of the pool volume. |
 | [`subnetResourceId`](#parameter-capacitypoolsvolumessubnetresourceid) | string | The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes. |
 | [`usageThreshold`](#parameter-capacitypoolsvolumesusagethreshold) | int | Maximum storage quota allowed for a file system in bytes. |
-| [`zone`](#parameter-capacitypoolsvolumeszone) | int | The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set. |
 
 **Optional parameters**
 
@@ -1644,7 +1615,15 @@ List of volumes to create in the capacity pool.
 | [`smbContinuouslyAvailable`](#parameter-capacitypoolsvolumessmbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-capacitypoolsvolumessmbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-capacitypoolsvolumessmbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
+| [`throughputMibps`](#parameter-capacitypoolsvolumesthroughputmibps) | int | The throughput in MiBps for the NetApp account. |
 | [`volumeType`](#parameter-capacitypoolsvolumesvolumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
+
+### Parameter: `capacityPools.volumes.availabilityZone`
+
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
+
+- Required: Yes
+- Type: int
 
 ### Parameter: `capacityPools.volumes.name`
 
@@ -1652,8 +1631,6 @@ The name of the pool volume.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.subnetResourceId`
 
@@ -1661,8 +1638,6 @@ The Azure Resource URI for a delegated subnet. Must have the delegation Microsof
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.usageThreshold`
 
@@ -1670,17 +1645,6 @@ Maximum storage quota allowed for a file system in bytes.
 
 - Required: Yes
 - Type: int
-- MinValue: 1
-- MaxValue: 2048
-
-### Parameter: `capacityPools.volumes.zone`
-
-The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set.
-
-- Required: Yes
-- Type: int
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.coolAccess`
 
@@ -1688,8 +1652,6 @@ If enabled (true) the pool can contain cool Access enabled volumes.
 
 - Required: No
 - Type: bool
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.coolAccessRetrievalPolicy`
 
@@ -1697,8 +1659,6 @@ Determines the data retrieval behavior from the cool tier to standard storage ba
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.coolnessPeriod`
 
@@ -1706,8 +1666,6 @@ Specifies the number of days after which data that is not accessed by clients wi
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.creationToken`
 
@@ -1715,8 +1673,6 @@ A unique file path for the volume. This is the name of the volume export. A volu
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.dataProtection`
 
@@ -1724,8 +1680,6 @@ DataProtection type volumes include an object containing details of the replicat
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 2048
 
 **Optional parameters**
 
@@ -1741,8 +1695,6 @@ Backup properties.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 2048
 
 **Required parameters**
 
@@ -1758,8 +1710,6 @@ The name of the backup policy to link.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.dataProtection.backup.backupVaultName`
 
@@ -1767,8 +1717,6 @@ The name of the Backup Vault.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.dataProtection.backup.policyEnforced`
 
@@ -1776,8 +1724,6 @@ Enable to enforce the policy.
 
 - Required: Yes
 - Type: bool
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.dataProtection.replication`
 
@@ -1785,15 +1731,12 @@ Replication properties.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 2048
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`endpointType`](#parameter-capacitypoolsvolumesdataprotectionreplicationendpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication. |
-| [`replicationSchedule`](#parameter-capacitypoolsvolumesdataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume. |
 
 **Optional parameters**
 
@@ -1802,6 +1745,7 @@ Replication properties.
 | [`remotePath`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotepath) | object | The full path to a volume that is to be migrated into ANF. Required for Migration volumes. |
 | [`remoteVolumeRegion`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication.Required for Data Protection volumes. |
 | [`remoteVolumeResourceId`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. Required for Data Protection volumes. |
+| [`replicationSchedule`](#parameter-capacitypoolsvolumesdataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume (to only be set on the destination (dst)). |
 
 ### Parameter: `capacityPools.volumes.dataProtection.replication.endpointType`
 
@@ -1816,25 +1760,6 @@ Indicates whether the local volume is the source or destination for the Volume R
     'src'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2048
-
-### Parameter: `capacityPools.volumes.dataProtection.replication.replicationSchedule`
-
-The replication schedule for the volume.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '_10minutely'
-    'daily'
-    'hourly'
-  ]
-  ```
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.dataProtection.replication.remotePath`
 
@@ -1842,8 +1767,6 @@ The full path to a volume that is to be migrated into ANF. Required for Migratio
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 2048
 
 **Required parameters**
 
@@ -1859,8 +1782,6 @@ The Path to a ONTAP Host.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.dataProtection.replication.remotePath.serverName`
 
@@ -1868,8 +1789,6 @@ The name of a server on the ONTAP Host.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.dataProtection.replication.remotePath.volumeName`
 
@@ -1877,8 +1796,6 @@ The name of a volume on the server.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.dataProtection.replication.remoteVolumeRegion`
 
@@ -1886,8 +1803,6 @@ The remote region for the other end of the Volume Replication.Required for Data 
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.dataProtection.replication.remoteVolumeResourceId`
 
@@ -1895,8 +1810,21 @@ The resource ID of the remote volume. Required for Data Protection volumes.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
+
+### Parameter: `capacityPools.volumes.dataProtection.replication.replicationSchedule`
+
+The replication schedule for the volume (to only be set on the destination (dst)).
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '_10minutely'
+    'daily'
+    'hourly'
+  ]
+  ```
 
 ### Parameter: `capacityPools.volumes.dataProtection.snapshot`
 
@@ -1904,8 +1832,6 @@ Snapshot properties.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 2048
 
 **Required parameters**
 
@@ -1919,8 +1845,6 @@ The name of the snapshot policy to link.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.encryptionKeySource`
 
@@ -1928,8 +1852,6 @@ The source of the encryption key.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.exportPolicy`
 
@@ -1937,8 +1859,6 @@ Export policy rules.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 2048
 
 **Required parameters**
 
@@ -1952,8 +1872,6 @@ The Export policy rules.
 
 - Required: Yes
 - Type: array
-- MinValue: 1
-- MaxValue: 2048
 
 **Required parameters**
 
@@ -1986,8 +1904,6 @@ Kerberos5i Read only access.
 
 - Required: Yes
 - Type: bool
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.exportPolicy.rules.kerberos5iReadWrite`
 
@@ -1995,8 +1911,6 @@ Kerberos5i Read and write access.
 
 - Required: Yes
 - Type: bool
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.exportPolicy.rules.kerberos5pReadOnly`
 
@@ -2004,8 +1918,6 @@ Kerberos5p Read only access.
 
 - Required: Yes
 - Type: bool
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.exportPolicy.rules.kerberos5pReadWrite`
 
@@ -2013,8 +1925,6 @@ Kerberos5p Read and write access.
 
 - Required: Yes
 - Type: bool
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.exportPolicy.rules.kerberos5ReadOnly`
 
@@ -2022,8 +1932,6 @@ Kerberos5 Read only access.
 
 - Required: Yes
 - Type: bool
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.exportPolicy.rules.kerberos5ReadWrite`
 
@@ -2031,8 +1939,6 @@ Kerberos5 Read and write access.
 
 - Required: Yes
 - Type: bool
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.exportPolicy.rules.nfsv3`
 
@@ -2040,8 +1946,6 @@ Allows NFSv3 protocol. Enable only for NFSv3 type volumes.
 
 - Required: Yes
 - Type: bool
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.exportPolicy.rules.nfsv41`
 
@@ -2049,8 +1953,6 @@ Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes.
 
 - Required: Yes
 - Type: bool
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.exportPolicy.rules.ruleIndex`
 
@@ -2058,8 +1960,6 @@ Order index.
 
 - Required: Yes
 - Type: int
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.exportPolicy.rules.unixReadOnly`
 
@@ -2067,8 +1967,6 @@ Read only access.
 
 - Required: Yes
 - Type: bool
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.exportPolicy.rules.unixReadWrite`
 
@@ -2076,8 +1974,6 @@ Read and write access.
 
 - Required: Yes
 - Type: bool
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.exportPolicy.rules.allowedClients`
 
@@ -2085,8 +1981,6 @@ Client ingress specification as comma separated string with IPv4 CIDRs, IPv4 hos
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.exportPolicy.rules.chownMode`
 
@@ -2101,8 +1995,6 @@ This parameter specifies who is authorized to change the ownership of a file. re
     'Unrestricted'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.exportPolicy.rules.cifs`
 
@@ -2110,8 +2002,6 @@ Allows CIFS protocol.
 
 - Required: No
 - Type: bool
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.exportPolicy.rules.hasRootAccess`
 
@@ -2119,8 +2009,6 @@ Has root access to volume.
 
 - Required: No
 - Type: bool
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.kerberosEnabled`
 
@@ -2128,8 +2016,6 @@ Define if a volume is KerberosEnabled.
 
 - Required: No
 - Type: bool
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.keyVaultPrivateEndpointResourceId`
 
@@ -2137,8 +2023,6 @@ The resource ID of the key vault private endpoint.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.location`
 
@@ -2146,8 +2030,6 @@ Location of the pool volume.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.networkFeatures`
 
@@ -2164,8 +2046,6 @@ Network feature for the volume.
     'Standard_Basic'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.protocolTypes`
 
@@ -2181,8 +2061,6 @@ Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-
     'NFSv4.1'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.roleAssignments`
 
@@ -2190,8 +2068,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 2048
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -2223,8 +2099,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.roleAssignments.roleDefinitionIdOrName`
 
@@ -2232,8 +2106,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.roleAssignments.condition`
 
@@ -2241,8 +2113,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.roleAssignments.conditionVersion`
 
@@ -2256,8 +2126,6 @@ Version of the condition.
     '2.0'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -2265,8 +2133,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.roleAssignments.description`
 
@@ -2274,8 +2140,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.roleAssignments.name`
 
@@ -2283,8 +2147,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.roleAssignments.principalType`
 
@@ -2302,8 +2164,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.serviceLevel`
 
@@ -2320,8 +2180,6 @@ The pool service level. Must match the one of the parent capacity pool.
     'Ultra'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.smbContinuouslyAvailable`
 
@@ -2329,8 +2187,6 @@ Enables continuously available share property for SMB volume. Only applicable fo
 
 - Required: No
 - Type: bool
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.smbEncryption`
 
@@ -2338,8 +2194,6 @@ Enables SMB encryption. Only applicable for SMB/DualProtocol volume.
 
 - Required: No
 - Type: bool
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `capacityPools.volumes.smbNonBrowsable`
 
@@ -2354,8 +2208,13 @@ Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProto
     'Enabled'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2048
+
+### Parameter: `capacityPools.volumes.throughputMibps`
+
+The throughput in MiBps for the NetApp account.
+
+- Required: No
+- Type: int
 
 ### Parameter: `capacityPools.volumes.volumeType`
 
@@ -2363,8 +2222,6 @@ The type of the volume. DataProtection volumes are used for replication.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2048
 
 ### Parameter: `customerManagedKey`
 
@@ -2516,6 +2373,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -2535,6 +2393,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2762,8 +2627,6 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 255
 
 ### Parameter: `snapshotPolicies.hourlySchedule`
 
@@ -2809,8 +2672,6 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 255
 
 ### Parameter: `snapshotPolicies.location`
 
@@ -2881,8 +2742,6 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 255
 
 ### Parameter: `snapshotPolicies.weeklySchedule`
 
@@ -2958,8 +2817,6 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 255
 
 ### Parameter: `tags`
 
@@ -2984,7 +2841,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

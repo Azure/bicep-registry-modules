@@ -56,7 +56,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      skuName: 'Balanced_B10'
       customerManagedKey: {
         keyName: nestedDependencies.outputs.keyVaultKeyName
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId

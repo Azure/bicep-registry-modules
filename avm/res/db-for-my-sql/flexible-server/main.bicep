@@ -4,7 +4,7 @@ metadata description = 'This module deploys a DBforMySQL Flexible Server.'
 @description('Required. The name of the MySQL flexible server.')
 param name string
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -12,7 +12,7 @@ param lock lockType?
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.DBforMySQL/flexibleServers@2024-10-01-preview'>.tags?
 
 @description('Optional. The administrator login name of a server. Can only be specified when the MySQL server is being created.')
 param administratorLogin string?
@@ -36,16 +36,22 @@ param skuName string
 param tier string
 
 @allowed([
-  ''
-  '1'
-  '2'
-  '3'
+  -1
+  1
+  2
+  3
 ])
-@description('Optional. Availability zone information of the server. Default will have no preference set.')
-param availabilityZone string = ''
+@description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).')
+param availabilityZone int
 
-@description('Optional. Standby availability zone information of the server. Default will have no preference set.')
-param highAvailabilityZone string = ''
+@description('Optional. Standby availability zone information of the server. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Default will have no preference set.')
+@allowed([
+  -1
+  1
+  2
+  3
+])
+param highAvailabilityZone int = -1
 
 @minValue(1)
 @maxValue(35)
@@ -88,7 +94,7 @@ param customerManagedKeyGeo customerManagedKeyType?
 param highAvailability string = 'ZoneRedundant'
 
 @description('Optional. Properties for the maintenence window. If provided, "customWindow" property must exist and set to "Enabled".')
-param maintenanceWindow object = {}
+param maintenanceWindow resourceInput<'Microsoft.DBforMySQL/flexibleServers@2024-10-01-preview'>.properties.maintenanceWindow = {}
 
 @description('Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is "Private Access" - virtual network integration. Delegation must be enabled on the subnet for MySQL Flexible Servers and subnet CIDR size is /29.')
 param delegatedSubnetResourceId string?
@@ -165,6 +171,9 @@ param databases array = []
 @description('Optional. The firewall rules to create in the MySQL flexible server.')
 param firewallRules array = []
 
+@description('Optional. The configurations to create in the server.')
+param configurations configurationType[]?
+
 @description('Optional. Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server.')
 @allowed([
   'Enabled'
@@ -180,16 +189,20 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+@description('Optional. Configuration details for private endpoints. Used when the desired connectivity mode is \'Public Access\' and \'delegatedSubnetResourceId\' is NOT used.')
+param privateEndpoints privateEndpointSingleServiceType[]?
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-var standByAvailabilityZoneTable = {
-  Disabled: null
+var enableReferencedModulesTelemetry = false
+
+var standByAvailabilityZone = {
+  Disabled: -1
   SameZone: availabilityZone
   ZoneRedundant: highAvailabilityZone
-}
-
-var standByAvailabilityZone = standByAvailabilityZoneTable[?highAvailability]
+}[?highAvailability]
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -252,47 +265,47 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName!
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
-resource cMKGeoKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKeyGeo.?keyVaultResourceId)) {
-  name: last(split((customerManagedKeyGeo.?keyVaultResourceId ?? 'dummyVault'), '/'))
+resource cMKGeoKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKeyGeo.?keyVaultResourceId)) {
+  name: last(split(customerManagedKeyGeo.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKeyGeo.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKeyGeo.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKeyGeo.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKeyGeo.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKeyGeo.?keyVaultResourceId) && !empty(customerManagedKeyGeo.?keyName)) {
-    name: customerManagedKeyGeo.?keyName ?? 'dummyKey'
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKeyGeo.?keyVaultResourceId) && !empty(customerManagedKeyGeo.?keyName)) {
+    name: customerManagedKeyGeo.?keyName!
   }
 }
 
-resource cMKGeoUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKeyGeo.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKeyGeo.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+resource cMKGeoUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKeyGeo.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKeyGeo.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKeyGeo.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-    split((customerManagedKeyGeo.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    split(customerManagedKeyGeo.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKeyGeo.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
-resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' = {
+resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2024-12-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -304,7 +317,7 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' = {
   properties: {
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
-    availabilityZone: availabilityZone
+    availabilityZone: availabilityZone != -1 ? string(availabilityZone) : null
     backup: {
       backupRetentionDays: backupRetentionDays
       geoRedundantBackup: geoRedundantBackup
@@ -315,19 +328,19 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' = {
           type: 'AzureKeyVault'
           geoBackupKeyURI: geoRedundantBackup == 'Enabled'
             ? (!empty(customerManagedKeyGeo.?keyVersion ?? '')
-                ? '${cMKGeoKeyVault::cMKKey.properties.keyUri}/${customerManagedKeyGeo!.keyVersion}'
-                : cMKGeoKeyVault::cMKKey.properties.keyUriWithVersion)
+                ? '${cMKGeoKeyVault::cMKKey!.properties.keyUri}/${customerManagedKeyGeo!.?keyVersion!}'
+                : cMKGeoKeyVault::cMKKey!.properties.keyUriWithVersion)
             : null
           geoBackupUserAssignedIdentityId: geoRedundantBackup == 'Enabled' ? cMKGeoUserAssignedIdentity.id : null
           primaryKeyURI: !empty(customerManagedKey.?keyVersion ?? '')
-            ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion}'
-            : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+            ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.?keyVersion!}'
+            : cMKKeyVault::cMKKey!.properties.keyUriWithVersion
           primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
         }
       : null
     highAvailability: {
       mode: highAvailability
-      standbyAvailabilityZone: standByAvailabilityZone
+      standbyAvailabilityZone: standByAvailabilityZone != -1 ? string(standByAvailabilityZone) : null
     }
     maintenanceWindow: !empty(maintenanceWindow)
       ? {
@@ -359,9 +372,9 @@ resource flexibleServer_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!e
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: flexibleServer
 }
@@ -419,6 +432,18 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
   }
 ]
 
+module flexibleServer_configurations 'configuration/main.bicep' = [
+  for (configuration, index) in (configurations ?? []): {
+    name: '${uniqueString(deployment().name, location)}-MySQL-Configuration-${index}'
+    params: {
+      name: configuration.name
+      flexibleServerName: flexibleServer.name
+      source: configuration.?source
+      value: configuration.?value
+    }
+  }
+]
+
 module flexibleServer_advancedThreatProtection 'advanced-threat-protection/main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-MySQL-AdvancedThreatProtection'
   params: {
@@ -456,6 +481,61 @@ resource flexibleServer_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
   }
 ]
 
+module flexibleServer_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): if (empty(delegatedSubnetResourceId)) {
+    name: '${uniqueString(deployment().name, location)}-MySQL-Flex-PrivateEndpoint-${index}'
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(flexibleServer.id, '/'))}-${privateEndpoint.?service ?? 'mysqlServer'}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(flexibleServer.id, '/'))}-${privateEndpoint.?service ?? 'mysqlServer'}-${index}'
+              properties: {
+                privateLinkServiceId: flexibleServer.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'mysqlServer'
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(flexibleServer.id, '/'))}-${privateEndpoint.?service ?? 'mysqlServer'}-${index}'
+              properties: {
+                privateLinkServiceId: flexibleServer.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'mysqlServer'
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: enableReferencedModulesTelemetry
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
+  }
+]
+
 @description('The name of the deployed MySQL Flexible server.')
 output name string = flexibleServer.name
 
@@ -470,3 +550,55 @@ output location string = flexibleServer.location
 
 @description('The FQDN of the MySQL Flexible server.')
 output fqdn string = flexibleServer.properties.fullyQualifiedDomainName
+
+@description('The private endpoints of the MySQL Flexible server.')
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: flexibleServer_privateEndpoints[index]!.outputs.name
+    resourceId: flexibleServer_privateEndpoints[index]!.outputs.resourceId
+    groupId: flexibleServer_privateEndpoints[index]!.outputs.?groupId!
+    customDnsConfigs: flexibleServer_privateEndpoints[index]!.outputs.customDnsConfigs
+    networkInterfaceResourceIds: flexibleServer_privateEndpoints[index]!.outputs.networkInterfaceResourceIds
+  }
+]
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@description('The type for a configuration')
+type configurationType = {
+  @description('Required. The name of the configuration.')
+  name: string
+
+  @description('Optional. Source of the configuration.')
+  source: ('system-default' | 'user-override')?
+
+  @description('Optional. Value of the configuration.')
+  value: string?
+}
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}

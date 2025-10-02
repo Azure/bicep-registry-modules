@@ -12,10 +12,10 @@ This module deploys a Policy Assignment at a Management Group, Subscription or R
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/policyAssignments` | [2022-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-06-01/policyAssignments) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/policyAssignments` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_policyassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2025-01-01/policyAssignments)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 
 ## Usage examples
 
@@ -138,6 +138,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     additionalSubscriptionIDsToAssignRbacTo: [
       '<subscriptionId>'
     ]
+    definitionVersion: '1.*.*-preview'
     description: '[Description] Policy Assignment at the management group scope'
     displayName: '[Display Name] Policy Assignment at the management group scope'
     enforcementMode: 'DoNotEnforce'
@@ -172,9 +173,14 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
         value: 'Disabled'
       }
     ]
-    parameters: {
+    parameterOverrides: {
       effect: {
         value: 'Disabled'
+      }
+    }
+    parameters: {
+      effect: {
+        value: 'DeployIfNotExists'
       }
       enableCollectionOfSqlQueriesForSecurityResearch: {
         value: false
@@ -241,6 +247,9 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
         "<subscriptionId>"
       ]
     },
+    "definitionVersion": {
+      "value": "1.*.*-preview"
+    },
     "description": {
       "value": "[Description] Policy Assignment at the management group scope"
     },
@@ -295,10 +304,17 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
         }
       ]
     },
-    "parameters": {
+    "parameterOverrides": {
       "value": {
         "effect": {
           "value": "Disabled"
+        }
+      }
+    },
+    "parameters": {
+      "value": {
+        "effect": {
+          "value": "DeployIfNotExists"
         },
         "enableCollectionOfSqlQueriesForSecurityResearch": {
           "value": false
@@ -358,6 +374,7 @@ param additionalResourceGroupResourceIDsToAssignRbacTo = [
 param additionalSubscriptionIDsToAssignRbacTo = [
   '<subscriptionId>'
 ]
+param definitionVersion = '1.*.*-preview'
 param description = '[Description] Policy Assignment at the management group scope'
 param displayName = '[Display Name] Policy Assignment at the management group scope'
 param enforcementMode = 'DoNotEnforce'
@@ -392,9 +409,14 @@ param overrides = [
     value: 'Disabled'
   }
 ]
-param parameters = {
+param parameterOverrides = {
   effect: {
     value: 'Disabled'
+  }
+}
+param parameters = {
+  effect: {
+    value: 'DeployIfNotExists'
   }
   enableCollectionOfSqlQueriesForSecurityResearch: {
     value: false
@@ -534,6 +556,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     name: 'apargmax001'
     policyDefinitionId: '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
     // Non-required parameters
+    definitionVersion: '1.*.*-preview'
     description: '[Description] Policy Assignment at the resource group scope'
     displayName: '[Display Name] Policy Assignment at the resource group scope'
     enforcementMode: 'DoNotEnforce'
@@ -567,9 +590,14 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
         value: 'Disabled'
       }
     ]
-    parameters: {
+    parameterOverrides: {
       effect: {
         value: 'Disabled'
+      }
+    }
+    parameters: {
+      effect: {
+        value: 'DeployIfNotExists'
       }
       enableCollectionOfSqlQueriesForSecurityResearch: {
         value: false
@@ -624,6 +652,9 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
       "value": "/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611"
     },
     // Non-required parameters
+    "definitionVersion": {
+      "value": "1.*.*-preview"
+    },
     "description": {
       "value": "[Description] Policy Assignment at the resource group scope"
     },
@@ -675,10 +706,17 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
         }
       ]
     },
-    "parameters": {
+    "parameterOverrides": {
       "value": {
         "effect": {
           "value": "Disabled"
+        }
+      }
+    },
+    "parameters": {
+      "value": {
+        "effect": {
+          "value": "DeployIfNotExists"
         },
         "enableCollectionOfSqlQueriesForSecurityResearch": {
           "value": false
@@ -738,6 +776,7 @@ using 'br/public:avm/ptn/authorization/policy-assignment:<version>'
 param name = 'apargmax001'
 param policyDefinitionId = '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
 // Non-required parameters
+param definitionVersion = '1.*.*-preview'
 param description = '[Description] Policy Assignment at the resource group scope'
 param displayName = '[Display Name] Policy Assignment at the resource group scope'
 param enforcementMode = 'DoNotEnforce'
@@ -771,9 +810,14 @@ param overrides = [
     value: 'Disabled'
   }
 ]
-param parameters = {
+param parameterOverrides = {
   effect: {
     value: 'Disabled'
+  }
+}
+param parameters = {
+  effect: {
+    value: 'DeployIfNotExists'
   }
   enableCollectionOfSqlQueriesForSecurityResearch: {
     value: false
@@ -917,6 +961,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     name: 'apasubmax001'
     policyDefinitionId: '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
     // Non-required parameters
+    definitionVersion: '1.*.*-preview'
     description: '[Description] Policy Assignment at the subscription scope'
     displayName: '[Display Name] Policy Assignment at the subscription scope'
     enforcementMode: 'DoNotEnforce'
@@ -950,9 +995,14 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
         value: 'Disabled'
       }
     ]
-    parameters: {
+    parameterOverrides: {
       effect: {
         value: 'Disabled'
+      }
+    }
+    parameters: {
+      effect: {
+        value: 'DeployIfNotExists'
       }
       enableCollectionOfSqlQueriesForSecurityResearch: {
         value: false
@@ -1006,6 +1056,9 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
       "value": "/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611"
     },
     // Non-required parameters
+    "definitionVersion": {
+      "value": "1.*.*-preview"
+    },
     "description": {
       "value": "[Description] Policy Assignment at the subscription scope"
     },
@@ -1057,10 +1110,17 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
         }
       ]
     },
-    "parameters": {
+    "parameterOverrides": {
       "value": {
         "effect": {
           "value": "Disabled"
+        }
+      }
+    },
+    "parameters": {
+      "value": {
+        "effect": {
+          "value": "DeployIfNotExists"
         },
         "enableCollectionOfSqlQueriesForSecurityResearch": {
           "value": false
@@ -1117,6 +1177,7 @@ using 'br/public:avm/ptn/authorization/policy-assignment:<version>'
 param name = 'apasubmax001'
 param policyDefinitionId = '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
 // Non-required parameters
+param definitionVersion = '1.*.*-preview'
 param description = '[Description] Policy Assignment at the subscription scope'
 param displayName = '[Display Name] Policy Assignment at the subscription scope'
 param enforcementMode = 'DoNotEnforce'
@@ -1150,9 +1211,14 @@ param overrides = [
     value: 'Disabled'
   }
 ]
-param parameters = {
+param parameterOverrides = {
   effect: {
     value: 'Disabled'
+  }
+}
+param parameters = {
+  effect: {
+    value: 'DeployIfNotExists'
   }
   enableCollectionOfSqlQueriesForSecurityResearch: {
     value: false
@@ -1203,6 +1269,7 @@ param userAssignedIdentityId = '<userAssignedIdentityId>'
 | [`additionalManagementGroupsIDsToAssignRbacTo`](#parameter-additionalmanagementgroupsidstoassignrbacto) | array | An array of additional management group IDs to assign RBAC to for the policy assignment if it has an identity. |
 | [`additionalResourceGroupResourceIDsToAssignRbacTo`](#parameter-additionalresourcegroupresourceidstoassignrbacto) | array | An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments. |
 | [`additionalSubscriptionIDsToAssignRbacTo`](#parameter-additionalsubscriptionidstoassignrbacto) | array | An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments. |
+| [`definitionVersion`](#parameter-definitionversion) | string | The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview. |
 | [`description`](#parameter-description) | string | This message will be part of response in case of policy violation. |
 | [`displayName`](#parameter-displayname) | string | The display name of the policy assignment. Maximum length is 128 characters. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -1214,6 +1281,7 @@ param userAssignedIdentityId = '<userAssignedIdentityId>'
 | [`nonComplianceMessages`](#parameter-noncompliancemessages) | array | The messages that describe why a resource is non-compliant with the policy. |
 | [`notScopes`](#parameter-notscopes) | array | The policy excluded scopes. |
 | [`overrides`](#parameter-overrides) | array | The policy property value override. Allows changing the effect of a policy definition without modifying the underlying policy definition or using a parameterized effect in the policy definition. |
+| [`parameterOverrides`](#parameter-parameteroverrides) | object | Parameter Overrides for the policy assignment if needed, useful when passing in parameters via a JSON or YAML file via the `loadJsonContent`, `loadYamlContent` or `loadTextContent` functions. Parameters specified here will override the parameters and their corresponding values provided in the `parameters` parameter of this module. |
 | [`parameters`](#parameter-parameters) | object | Parameters for the policy assignment if needed. |
 | [`resourceGroupName`](#parameter-resourcegroupname) | string | The Target Scope for the Policy. The name of the resource group for the policy assignment. |
 | [`resourceSelectors`](#parameter-resourceselectors) | array | The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location. |
@@ -1258,6 +1326,13 @@ An array of additional Subscription IDs to assign RBAC to for the policy assignm
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `definitionVersion`
+
+The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview.
+
+- Required: No
+- Type: string
 
 ### Parameter: `description`
 
@@ -1361,6 +1436,14 @@ The policy property value override. Allows changing the effect of a policy defin
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `parameterOverrides`
+
+Parameter Overrides for the policy assignment if needed, useful when passing in parameters via a JSON or YAML file via the `loadJsonContent`, `loadYamlContent` or `loadTextContent` functions. Parameters specified here will override the parameters and their corresponding values provided in the `parameters` parameter of this module.
+
+- Required: No
+- Type: object
+- Default: `{}`
 
 ### Parameter: `parameters`
 

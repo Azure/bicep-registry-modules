@@ -17,15 +17,15 @@ param enableTelemetry bool = true
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -71,6 +71,10 @@ var dataCollectionRulePropertiesUnion = union(
   dataCollectionRuleProperties.kind == 'Linux' || dataCollectionRuleProperties.kind == 'Windows' || dataCollectionRuleProperties.kind == 'All'
     ? {
         dataSources: dataCollectionRuleProperties.dataSources
+      }
+    : {},
+  dataCollectionRuleProperties.kind == 'Linux' || dataCollectionRuleProperties.kind == 'Windows' || dataCollectionRuleProperties.kind == 'All' || dataCollectionRuleProperties.kind == 'Direct'
+    ? {
         dataFlows: dataCollectionRuleProperties.dataFlows
         destinations: dataCollectionRuleProperties.destinations
         dataCollectionEndpointId: dataCollectionRuleProperties.?dataCollectionEndpointResourceId
@@ -148,14 +152,18 @@ output resourceId string = dataCollectionRuleProperties.kind == 'All' ? dataColl
 output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
-output location string = dataCollectionRuleProperties.kind == 'All'
-  ? dataCollectionRuleAll.location
-  : dataCollectionRule.location
+output location string = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll!.location : dataCollectionRule!.location
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = dataCollectionRuleProperties.kind == 'All'
   ? dataCollectionRuleAll.?identity.?principalId
   : dataCollectionRule.?identity.?principalId
+
+@description('The endpoints of the dataCollectionRule, if created.')
+output endpoints resourceOutput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.endpoints? = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll!.properties.?endpoints : dataCollectionRule!.properties.?endpoints
+
+@description('The ImmutableId of the dataCollectionRule.')
+output immutableId string? = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll!.properties.?immutableId : dataCollectionRule!.properties.?immutableId
 
 // =============== //
 //   Definitions   //
@@ -163,12 +171,15 @@ output systemAssignedMIPrincipalId string? = dataCollectionRuleProperties.kind =
 
 @export()
 @discriminator('kind')
+@description('The type for data collection rule properties. Depending on the kind, the properties will be different.')
 type dataCollectionRulePropertiesType =
   | linuxDcrPropertiesType
   | windowsDcrPropertiesType
   | allPlatformsDcrPropertiesType
   | agentSettingsDcrPropertiesType
+  | directDcrPropertiesType
 
+@description('The type for the properties of the \'Linux\' data collection rule.')
 type linuxDcrPropertiesType = {
   @description('Required. The platform type specifies the type of resources this rule can apply to.')
   kind: 'Linux'
@@ -192,6 +203,7 @@ type linuxDcrPropertiesType = {
   description: string?
 }
 
+@description('The type for the properties of the \'Windows\' data collection rule.')
 type windowsDcrPropertiesType = {
   @description('Required. The platform type specifies the type of resources this rule can apply to.')
   kind: 'Windows'
@@ -215,6 +227,7 @@ type windowsDcrPropertiesType = {
   description: string?
 }
 
+@description('The type for the properties of the data collection rule of the kind \'All\'.')
 type allPlatformsDcrPropertiesType = {
   @description('Required. The platform type specifies the type of resources this rule can apply to.')
   kind: 'All'
@@ -238,6 +251,7 @@ type allPlatformsDcrPropertiesType = {
   description: string?
 }
 
+@description('The type for the properties of the \'AgentSettings\' data collection rule.')
 type agentSettingsDcrPropertiesType = {
   @description('Required. The platform type specifies the type of resources this rule can apply to.')
   kind: 'AgentSettings'
@@ -249,15 +263,38 @@ type agentSettingsDcrPropertiesType = {
   agentSettings: agentSettingsType
 }
 
+@description('The type for the agent settings.')
 type agentSettingsType = {
   @description('Required. All the settings that are applicable to the logs agent (AMA).')
   logs: agentSettingType[]
 }
 
+@description('The type for the (single) agent setting.')
 type agentSettingType = {
   @description('Required. The name of the agent setting.')
   name: ('MaxDiskQuotaInMB' | 'UseTimeReceivedForForwardedEvents')
 
   @description('Required. The value of the agent setting.')
   value: string
+}
+
+@description('The type for the properties of the \'Direct\' data collection rule.')
+type directDcrPropertiesType = {
+  @description('Required. The platform type specifies the type of resources this rule can apply to.')
+  kind: 'Direct'
+
+  @description('Required. The specification of data flows.')
+  dataFlows: array
+
+  @description('Required. Specification of destinations that can be used in data flows.')
+  destinations: object
+
+  @description('Optional. The resource ID of the data collection endpoint that this rule can be used with.')
+  dataCollectionEndpointResourceId: string?
+
+  @description('Required. Declaration of custom streams used in this rule.')
+  streamDeclarations: object
+
+  @description('Optional. Description of the data collection rule.')
+  description: string?
 }

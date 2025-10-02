@@ -8,15 +8,16 @@ This module deploys a Proximity Placement Group.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/proximityPlacementGroups` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-08-01/proximityPlacementGroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Compute/proximityPlacementGroups` | 2022-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_proximityplacementgroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-08-01/proximityPlacementGroups)</li></ul> |
 
 ## Usage examples
 
@@ -44,6 +45,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
   name: 'proximityPlacementGroupDeployment'
   params: {
     // Required parameters
+    availabilityZone: -1
     name: 'cppgmin001'
     // Non-required parameters
     location: '<location>'
@@ -64,6 +66,9 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
     "name": {
       "value": "cppgmin001"
     },
@@ -86,6 +91,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 using 'br/public:avm/res/compute/proximity-placement-group:<version>'
 
 // Required parameters
+param availabilityZone = -1
 param name = 'cppgmin001'
 // Non-required parameters
 param location = '<location>'
@@ -108,6 +114,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
   name: 'proximityPlacementGroupDeployment'
   params: {
     // Required parameters
+    availabilityZone: 1
     name: 'cppgmax001'
     // Non-required parameters
     colocationStatus: {
@@ -152,9 +159,6 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
       TagB: 'Tags for sale'
     }
     type: 'Standard'
-    zones: [
-      '1'
-    ]
   }
 }
 ```
@@ -172,6 +176,9 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
     "name": {
       "value": "cppgmax001"
     },
@@ -231,11 +238,6 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
     },
     "type": {
       "value": "Standard"
-    },
-    "zones": {
-      "value": [
-        "1"
-      ]
     }
   }
 }
@@ -252,6 +254,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 using 'br/public:avm/res/compute/proximity-placement-group:<version>'
 
 // Required parameters
+param availabilityZone = 1
 param name = 'cppgmax001'
 // Non-required parameters
 param colocationStatus = {
@@ -296,9 +299,6 @@ param tags = {
   TagB: 'Tags for sale'
 }
 param type = 'Standard'
-param zones = [
-  '1'
-]
 ```
 
 </details>
@@ -318,6 +318,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
   name: 'proximityPlacementGroupDeployment'
   params: {
     // Required parameters
+    availabilityZone: 1
     name: 'cppgwaf001'
     // Non-required parameters
     colocationStatus: {
@@ -339,9 +340,6 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
       TagB: 'Tags for sale'
     }
     type: 'Standard'
-    zones: [
-      '1'
-    ]
   }
 }
 ```
@@ -359,6 +357,9 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
     "name": {
       "value": "cppgwaf001"
     },
@@ -391,11 +392,6 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
     },
     "type": {
       "value": "Standard"
-    },
-    "zones": {
-      "value": [
-        "1"
-      ]
     }
   }
 }
@@ -412,6 +408,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 using 'br/public:avm/res/compute/proximity-placement-group:<version>'
 
 // Required parameters
+param availabilityZone = 1
 param name = 'cppgwaf001'
 // Non-required parameters
 param colocationStatus = {
@@ -433,9 +430,6 @@ param tags = {
   TagB: 'Tags for sale'
 }
 param type = 'Standard'
-param zones = [
-  '1'
-]
 ```
 
 </details>
@@ -447,6 +441,7 @@ param zones = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-availabilityzone) | int | Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-name) | string | The name of the proximity placement group that is being created. |
 
 **Optional parameters**
@@ -461,7 +456,22 @@ param zones = [
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the proximity placement group resource. |
 | [`type`](#parameter-type) | string | Specifies the type of the proximity placement group. |
-| [`zones`](#parameter-zones) | array | Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created. |
+
+### Parameter: `availabilityZone`
+
+Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    -1
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `name`
 
@@ -513,6 +523,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -532,6 +543,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -661,13 +679,6 @@ Specifies the type of the proximity placement group.
   ]
   ```
 
-### Parameter: `zones`
-
-Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created.
-
-- Required: No
-- Type: array
-
 ## Outputs
 
 | Output | Type | Description |
@@ -676,6 +687,15 @@ Specifies the Availability Zone where virtual machine, virtual machine scale set
 | `name` | string | The name of the proximity placement group. |
 | `resourceGroupName` | string | The resource group the proximity placement group was deployed into. |
 | `resourceId` | string | The resourceId the proximity placement group. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

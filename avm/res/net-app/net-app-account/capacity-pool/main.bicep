@@ -40,7 +40,7 @@ param volumes volumeType[]?
 @description('Optional. If enabled (true) the pool can contain cool Access enabled volumes.')
 param coolAccess bool = false
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -76,11 +76,11 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2025-01-01' existing = {
   name: netAppAccountName
 }
 
-resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2024-07-01' = {
+resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2025-01-01' = {
   name: name
   parent: netAppAccount
   location: location
@@ -111,7 +111,7 @@ module capacityPool_volumes 'volume/main.bicep' = [
       exportPolicy: volume.?exportPolicy
       roleAssignments: volume.?roleAssignments
       networkFeatures: volume.?networkFeatures
-      zone: volume.?zone
+      availabilityZone: volume.?availabilityZone
       coolAccess: volume.?coolAccess ?? false
       coolAccessRetrievalPolicy: volume.?coolAccessRetrievalPolicy
       coolnessPeriod: volume.?coolnessPeriod
@@ -123,6 +123,9 @@ module capacityPool_volumes 'volume/main.bicep' = [
       smbEncryption: volume.?smbEncryption
       smbNonBrowsable: volume.?smbNonBrowsable
       volumeType: volume.?volumeType
+      securityStyle: volume.?securityStyle
+      unixPermissions: volume.?unixPermissions
+      throughputMibps: volume.?throughputMibps
     }
   }
 ]
@@ -192,14 +195,14 @@ type volumeType = {
   @description('Optional. Location of the pool volume.')
   location: string?
 
-  @description('Required. The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set.')
+  @description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).')
   @sys.allowed([
-    0
+    -1
     1
     2
     3
   ])
-  zone: int
+  availabilityZone: int
 
   @description('Optional. The pool service level. Must match the one of the parent capacity pool.')
   serviceLevel: ('Premium' | 'Standard' | 'StandardZRS' | 'Ultra')?
@@ -239,6 +242,9 @@ type volumeType = {
 
   @description('Optional. The type of the volume. DataProtection volumes are used for replication.')
   volumeType: string?
+
+  @description('Optional. The throughput in MiBps for the NetApp account.')
+  throughputMibps: int?
 }
 
 // ================ //

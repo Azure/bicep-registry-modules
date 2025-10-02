@@ -53,7 +53,6 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       tier: 'Premium'
-      mode: 'Alert'
       ruleCollectionGroups: [
         {
           name: '${namePrefix}-rule-001'
@@ -129,7 +128,12 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
       allowSqlRedirect: true
-      autoLearnPrivateRanges: 'Enabled'
+      snat: {
+        autoLearnPrivateRanges: 'Enabled'
+      }
+      intrusionDetection: {
+        mode: 'Alert'
+      }
     }
   }
 ]

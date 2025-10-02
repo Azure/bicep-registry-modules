@@ -1,6 +1,6 @@
 targetScope = 'managementGroup'
 
-metadata name = 'Policy Remediation (Resource Group scope)'
+metadata name = 'Policy Remediation (Resource Group scope - max)'
 metadata description = 'This module runs a Policy remediation task at Resource Group scope using common parameters.'
 
 // ========== //
@@ -60,6 +60,7 @@ module testDeployment '../../../main.bicep' = {
     policyAssignmentId: policySetAssignments.outputs.resourceId
     policyDefinitionReferenceId: 'Prerequisite_DeployExtensionWindows'
     filtersLocations: []
+    filtersResourceIds: []
     resourceCount: 10
     resourceDiscoveryMode: 'ReEvaluateCompliance'
     parallelDeployments: 1

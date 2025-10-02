@@ -30,9 +30,9 @@ on:
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.res.fabric.capacity.yml"
       - "avm/res/fabric/capacity/**"
-      - "avm/res/fabric/capacity/topic/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
+      - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:

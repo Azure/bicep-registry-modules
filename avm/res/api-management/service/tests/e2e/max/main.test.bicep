@@ -42,13 +42,16 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     locationRegion1: resourceLocation
     locationRegion2: locationRegion2
-    publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    publicIPNamePrefix: 'dep-${namePrefix}-pip-${serviceShort}'
     publicIpDnsLabelPrefix: 'dep-${namePrefix}-dnsprefix-${uniqueString(deployment().name, resourceLocation)}'
-    networkSecurityGroupName: 'nsg'
-    virtualNetworkName: 'vnet'
+    networkSecurityGroupNamePrefix: 'dep-${namePrefix}-nsg-${serviceShort}'
+    virtualNetworkNamePrefix: 'dep-${namePrefix}-vnet-${serviceShort}'
+    routeTableNamePrefix: 'dep-${namePrefix}-rt-${serviceShort}'
+    applicationInsightsName: 'dep-${namePrefix}-ai-${serviceShort}'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-s-${serviceShort}'
   }
 }
 
@@ -88,7 +91,7 @@ module testDeployment '../../../main.bicep' = [
             capacity: 1
           }
           disableGateway: false
-          publicIpAddressId: nestedDependencies.outputs.publicIPResourceIdRegion2
+          publicIpAddressResourceId: nestedDependencies.outputs.publicIPResourceIdRegion2
           virtualNetworkConfiguration: {
             subnetResourceId: nestedDependencies.outputs.subnetResourceIdRegion2
           }
@@ -99,15 +102,8 @@ module testDeployment '../../../main.bicep' = [
       publicIpAddressResourceId: nestedDependencies.outputs.publicIPResourceIdRegion1
       apis: [
         {
-          apiVersionSet: {
-            name: 'echo-version-set'
-            properties: {
-              description: 'echo-version-set'
-              displayName: 'echo-version-set'
-              versioningScheme: 'Segment'
-            }
-          }
           displayName: 'Echo API'
+          apiVersionSetName: 'echo-version-set'
           name: 'echo-api'
           path: 'echo'
           serviceUrl: 'http://echoapi.cloudapp.net/api'
@@ -117,22 +113,28 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       ]
-      authorizationServers: {
-        secureList: [
-          {
-            authorizationEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/authorize'
-            clientId: 'apimclientid'
-            clientSecret: customSecret
-            clientRegistrationEndpoint: 'http://localhost'
-            grantTypes: [
-              'authorizationCode'
-            ]
-            name: 'AuthServer1'
-            displayName: 'AuthServer1'
-            tokenEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/token'
-          }
-        ]
-      }
+      apiVersionSets: [
+        {
+          name: 'echo-version-set'
+          description: 'echo-version-set'
+          displayName: 'echo-version-set'
+          versioningScheme: 'Segment'
+        }
+      ]
+      authorizationServers: [
+        {
+          authorizationEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/authorize'
+          clientId: 'apimclientid'
+          clientSecret: customSecret
+          clientRegistrationEndpoint: 'http://localhost'
+          grantTypes: [
+            'authorizationCode'
+          ]
+          name: 'AuthServer1'
+          displayName: 'AuthServer1'
+          tokenEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/token'
+        }
+      ]
       backends: [
         {
           name: 'backend'
@@ -179,7 +181,7 @@ module testDeployment '../../../main.bicep' = [
           clientLibrary: 'MSAL-2'
           clientSecret: 'apimSlientSecret'
           authority: split(environment().authentication.loginEndpoint, '/')[2]
-          signinTenant: 'mytenant.onmicrosoft.com'
+          signInTenant: 'mytenant.onmicrosoft.com'
           allowedTenants: [
             'mytenant.onmicrosoft.com'
           ]
@@ -188,13 +190,13 @@ module testDeployment '../../../main.bicep' = [
       loggers: [
         {
           name: 'logger'
-          loggerType: 'applicationInsights'
+          type: 'applicationInsights'
           isBuffered: false
           description: 'Logger to Azure Application Insights'
           credentials: {
             instrumentationKey: nestedDependencies.outputs.appInsightsInstrumentationKey
           }
-          resourceId: nestedDependencies.outputs.appInsightsResourceId
+          targetResourceId: nestedDependencies.outputs.appInsightsResourceId
         }
       ]
       lock: {
@@ -235,15 +237,11 @@ module testDeployment '../../../main.bicep' = [
       products: [
         {
           apis: [
-            {
-              name: 'echo-api'
-            }
+            'echo-api'
           ]
           approvalRequired: false
           groups: [
-            {
-              name: 'developers'
-            }
+            'developers'
           ]
           name: 'Starter'
           displayName: 'Starter'

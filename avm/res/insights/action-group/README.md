@@ -13,10 +13,11 @@ This module deploys an Action Group.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/actionGroups` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-01-01/actionGroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/actionGroups` | 2024-10-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_actiongroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2024-10-01-preview/actionGroups)</li></ul> |
 
 ## Usage examples
 
@@ -46,8 +47,6 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
     // Required parameters
     groupShortName: 'agiagmin001'
     name: 'iagmin001'
-    // Non-required parameters
-    location: 'global'
   }
 }
 ```
@@ -70,10 +69,6 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
     },
     "name": {
       "value": "iagmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "global"
     }
   }
 }
@@ -92,8 +87,6 @@ using 'br/public:avm/res/insights/action-group:<version>'
 // Required parameters
 param groupShortName = 'agiagmin001'
 param name = 'iagmin001'
-// Non-required parameters
-param location = 'global'
 ```
 
 </details>
@@ -129,6 +122,10 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
       }
     ]
     location: 'global'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     roleAssignments: [
       {
         name: 'fc3ee4d9-d0c0-42c2-962f-082cf8d78882'
@@ -201,6 +198,12 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
     "location": {
       "value": "global"
     },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
     "roleAssignments": {
       "value": [
         {
@@ -269,6 +272,10 @@ param emailReceivers = [
   }
 ]
 param location = 'global'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
 param roleAssignments = [
   {
     name: 'fc3ee4d9-d0c0-42c2-962f-082cf8d78882'
@@ -322,7 +329,6 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
     groupShortName: 'agiagwaf001'
     name: 'iagwaf001'
     // Non-required parameters
-    location: 'global'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -352,9 +358,6 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
       "value": "iagwaf001"
     },
     // Non-required parameters
-    "location": {
-      "value": "global"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -380,7 +383,6 @@ using 'br/public:avm/res/insights/action-group:<version>'
 param groupShortName = 'agiagwaf001'
 param name = 'iagwaf001'
 // Non-required parameters
-param location = 'global'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -411,8 +413,11 @@ param tags = {
 | [`emailReceivers`](#parameter-emailreceivers) | array | The list of email receivers that are part of this action group. |
 | [`enabled`](#parameter-enabled) | bool | Indicates whether this action group is enabled. If an action group is not enabled, then none of its receivers will receive communications. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`eventHubReceivers`](#parameter-eventhubreceivers) | array | The list of Event Hub receivers that are part of this action group. |
+| [`incidentReceivers`](#parameter-incidentreceivers) | array | The list of incident receivers that are part of this action group. |
 | [`itsmReceivers`](#parameter-itsmreceivers) | array | The list of ITSM receivers that are part of this action group. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+| [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`logicAppReceivers`](#parameter-logicappreceivers) | array | The list of logic app receivers that are part of this action group. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`smsReceivers`](#parameter-smsreceivers) | array | The list of SMS receivers that are part of this action group. |
@@ -485,6 +490,20 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `eventHubReceivers`
+
+The list of Event Hub receivers that are part of this action group.
+
+- Required: No
+- Type: array
+
+### Parameter: `incidentReceivers`
+
+The list of incident receivers that are part of this action group.
+
+- Required: No
+- Type: array
+
 ### Parameter: `itsmReceivers`
 
 The list of ITSM receivers that are part of this action group.
@@ -500,12 +519,106 @@ Location for all resources.
 - Type: string
 - Default: `'global'`
 
+### Parameter: `lock`
+
+The lock settings of the service.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
+
+### Parameter: `lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
+
 ### Parameter: `logicAppReceivers`
 
 The list of logic app receivers that are part of this action group.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`callbackUrl`](#parameter-logicappreceiverscallbackurl) | securestring | The callback url where http request sent to. |
+| [`name`](#parameter-logicappreceiversname) | string | The name of the logic app receiver. Names must be unique across all receivers within an action group. |
+| [`resourceId`](#parameter-logicappreceiversresourceid) | string | The azure resource id of the logic app receiver. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`managedIdentity`](#parameter-logicappreceiversmanagedidentity) | string | The principal id of the managed identity. The value can be "None", "SystemAssigned". |
+| [`useCommonAlertSchema`](#parameter-logicappreceiversusecommonalertschema) | bool | Indicates whether to use common alert schema. |
+
+### Parameter: `logicAppReceivers.callbackUrl`
+
+The callback url where http request sent to.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `logicAppReceivers.name`
+
+The name of the logic app receiver. Names must be unique across all receivers within an action group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `logicAppReceivers.resourceId`
+
+The azure resource id of the logic app receiver.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `logicAppReceivers.managedIdentity`
+
+The principal id of the managed identity. The value can be "None", "SystemAssigned".
+
+- Required: No
+- Type: string
+
+### Parameter: `logicAppReceivers.useCommonAlertSchema`
+
+Indicates whether to use common alert schema.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `roleAssignments`
 
@@ -653,7 +766,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 

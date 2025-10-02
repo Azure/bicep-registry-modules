@@ -25,6 +25,9 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param password string = newGuid()
 
+@description('Optional. The current time in UTC.')
+param timeNow string = utcNow()
+
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -117,6 +120,27 @@ module testDeployment '../../../main.bicep' = [
           version: 'latest'
         }
       ]
+      powershell72Modules: [
+        {
+          name: 'powershell-yaml'
+          uri: 'https://www.powershellgallery.com/api/v2/package'
+          version: 'latest'
+        }
+      ]
+      python3Packages: [
+        {
+          name: 'geniz-0.0.1-py3-none-any.whl'
+          uri: 'https://files.pythonhosted.org/packages/8f/4b/c61bb7b176b34dd0c9ab0f3d821234c1e9f81f3ba5a609a1cf9032c852e7'
+          version: 'latest'
+        }
+      ]
+      python2Packages: [
+        {
+          name: 'pycx2-1.0.3-py2-none-any.whl'
+          uri: 'https://files.pythonhosted.org/packages/59/8c/40f66c4ac7564a68edd629a7836536af53d10b2d89f78c63e77cfcd9d460'
+          version: 'latest'
+        }
+      ]
       privateEndpoints: [
         {
           privateDnsZoneGroup: {
@@ -169,7 +193,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
-          name: 'de334944-f952-4273-8ab3-bd523380034c'
+          name: guid('${resourceGroupName}${namePrefix}/Owner')
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -209,63 +233,7 @@ module testDeployment '../../../main.bicep' = [
           timeZone: 'Europe/Berlin'
         }
       ]
-      softwareUpdateConfigurations: [
-        {
-          excludeUpdates: [
-            '123456'
-          ]
-          frequency: 'Month'
-          includeUpdates: [
-            '654321'
-          ]
-          interval: 1
-          maintenanceWindow: 'PT4H'
-          monthlyOccurrences: [
-            {
-              day: 'Friday'
-              occurrence: 3
-            }
-          ]
-          name: 'Windows_ZeroDay'
-          operatingSystem: 'Windows'
-          rebootSetting: 'IfRequired'
-          scopeByTags: {
-            Update: [
-              'Automatic-Wave1'
-            ]
-          }
-          startTime: '22:00'
-          updateClassifications: [
-            'Critical'
-            'Definition'
-            'FeaturePack'
-            'Security'
-            'ServicePack'
-            'Tools'
-            'UpdateRollup'
-            'Updates'
-          ]
-        }
-        {
-          excludeUpdates: [
-            'icacls'
-          ]
-          frequency: 'OneTime'
-          includeUpdates: [
-            'kernel'
-          ]
-          maintenanceWindow: 'PT4H'
-          name: 'Linux_ZeroDay'
-          operatingSystem: 'Linux'
-          rebootSetting: 'IfRequired'
-          startTime: '22:00'
-          updateClassifications: [
-            'Critical'
-            'Other'
-            'Security'
-          ]
-        }
-      ]
+
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [
@@ -298,6 +266,17 @@ module testDeployment '../../../main.bicep' = [
           description: 'TestEncryptedDescription'
           name: 'TestEncryptedVariable'
           value: '\'TestEncryptedValue\''
+        }
+      ]
+      webhooks: [
+        {
+          name: 'TestWebhook'
+          runbookName: 'TestRunbook'
+          expiryTime: dateTimeAdd(timeNow, 'P1M')
+          parameters: {
+            param1: 'value1'
+            param2: 'value2'
+          }
         }
       ]
       tags: {

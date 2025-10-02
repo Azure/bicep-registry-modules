@@ -7,7 +7,7 @@ param location string = resourceGroup().location
 @description('Required. The name of the Redis cache resource.')
 param name string
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -16,7 +16,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Cache/redis@2024-11-01'>.tags?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
@@ -38,14 +38,13 @@ param minimumTlsVersion string = '1.2'
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
 @allowed([
-  ''
   'Enabled'
   'Disabled'
 ])
-param publicNetworkAccess string = ''
+param publicNetworkAccess string?
 
 @description('Optional. All Redis Settings. Few possible keys: rdb-backup-enabled,rdb-storage-connection-string,rdb-backup-frequency,maxmemory-delta,maxmemory-policy,notify-keyspace-events,maxmemory-samples,slowlog-log-slower-than,slowlog-max-len,list-max-ziplist-entries,list-max-ziplist-value,hash-max-ziplist-entries,hash-max-ziplist-value,set-max-intset-entries,zset-max-ziplist-entries,zset-max-ziplist-value etc.')
-param redisConfiguration object = {}
+param redisConfiguration resourceInput<'Microsoft.Cache/redis@2024-11-01'>.properties.redisConfiguration?
 
 @allowed([
   '4'
@@ -87,21 +86,30 @@ param capacity int = 1
 param skuName string = 'Premium'
 
 @description('Optional. Static IP address. Optionally, may be specified when deploying a Redis cache inside an existing Azure Virtual Network; auto assigned by default.')
-param staticIP string = ''
+param staticIP string?
 
 @description('Optional. The full resource ID of a subnet in a virtual network to deploy the Redis cache in.')
-param subnetResourceId string = ''
+param subnetResourceId string?
 
 @description('Optional. A dictionary of tenant settings.')
-param tenantSettings object = {}
+param tenantSettings resourceInput<'Microsoft.Cache/redis@2024-11-01'>.properties.tenantSettings = {}
 
 @description('Optional. When true, replicas will be provisioned in availability zones specified in the zones parameter.')
 param zoneRedundant bool = true
 
 @description('Optional. If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed.')
-param zones int[] = [1, 2, 3]
+@allowed([1, 2, 3])
+param availabilityZones int[] = [1, 2, 3]
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. Specifies how availability zones are allocated to the Redis cache. "Automatic" enables zone redundancy and Azure will automatically select zones. "UserDefined" will select availability zones passed in by you using the "availabilityZones" parameter. "NoZones" will produce a non-zonal cache. Only applicable when zoneRedundant is true.')
+@allowed([
+  'Automatic'
+  'NoZones'
+  'UserDefined'
+])
+param zonalAllocationPolicy string?
+
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -121,13 +129,18 @@ param accessPolicies accessPolicyType[] = []
 @description('Optional. Array of access policy assignments.')
 param accessPolicyAssignments accessPolicyAssignmentType[] = []
 
+@description('Optional. The firewall rules to create in the PostgreSQL flexible server.')
+param firewallRules array = []
+
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
 var enableReferencedModulesTelemetry = false
 
-var availabilityZones = skuName == 'Premium'
-  ? zoneRedundant ? !empty(zones) ? zones : pickZones('Microsoft.Cache', 'redis', location, 3) : []
+var zones = skuName == 'Premium'
+  ? zoneRedundant
+      ? !empty(availabilityZones) ? availabilityZones : pickZones('Microsoft.Cache', 'redis', location, 3)
+      : []
   : []
 
 var formattedUserAssignedIdentities = reduce(
@@ -205,7 +218,7 @@ resource redis 'Microsoft.Cache/redis@2024-11-01' = {
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? any(publicNetworkAccess)
       : (!empty(privateEndpoints) ? 'Disabled' : null)
-    redisConfiguration: !empty(redisConfiguration) ? redisConfiguration : null
+    redisConfiguration: redisConfiguration
     redisVersion: redisVersion
     replicasPerMaster: skuName == 'Premium' ? replicasPerMaster : null
     replicasPerPrimary: skuName == 'Premium' ? replicasPerPrimary : null
@@ -215,34 +228,39 @@ resource redis 'Microsoft.Cache/redis@2024-11-01' = {
       family: skuName == 'Premium' ? 'P' : 'C'
       name: skuName
     }
-    staticIP: !empty(staticIP) ? staticIP : null
-    subnetId: !empty(subnetResourceId) ? subnetResourceId : null
+    staticIP: staticIP
+    subnetId: subnetResourceId
     tenantSettings: tenantSettings
+    zonalAllocationPolicy: skuName == 'Premium' && zoneRedundant ? zonalAllocationPolicy : null
   }
-  zones: availabilityZones
+  zones: zones
 }
 
-resource redis_accessPolicies 'Microsoft.Cache/redis/accessPolicies@2024-11-01' = [
-  for policy in accessPolicies: {
-    name: policy.name
-    parent: redis
-    properties: {
+// Deploy access policies
+module redis_accessPolicies 'access-policy/main.bicep' = [
+  for (policy, index) in accessPolicies: {
+    name: '${uniqueString(deployment().name, location)}-redis-AccessPolicy-${index}'
+    params: {
+      redisCacheName: redis.name
+      name: policy.name
       permissions: policy.permissions
     }
   }
 ]
 
-resource redis_accessPolicyAssignments 'Microsoft.Cache/redis/accessPolicyAssignments@2024-11-01' = [
-  for assignment in accessPolicyAssignments: {
-    name: assignment.objectId
-    parent: redis
-    properties: {
+// Deploy access policy assignments
+module redis_policyAssignments 'access-policy-assignment/main.bicep' = [
+  for (assignment, index) in accessPolicyAssignments: {
+    name: '${uniqueString(deployment().name, location)}-redis-PolicyAssignment-${index}'
+    params: {
+      redisCacheName: redis.name
+      name: assignment.?name
       objectId: assignment.objectId
       objectIdAlias: assignment.objectIdAlias
       accessPolicyName: assignment.accessPolicyName
     }
     dependsOn: [
-      redis_accessPolicies
+      redis_accessPolicies // Ensure policies exist before assigning them
     ]
   }
 ]
@@ -251,9 +269,9 @@ resource redis_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: redis
 }
@@ -303,7 +321,7 @@ resource redis_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-
   }
 ]
 
-module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -358,6 +376,18 @@ module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1
   }
 ]
 
+module redis_firewallRules 'firewall-rule/main.bicep' = [
+  for (firewallRule, index) in firewallRules: {
+    name: '${uniqueString(deployment().name, location)}-redis-FirewallRules-${index}'
+    params: {
+      name: firewallRule.name
+      redisCacheName: redis.name
+      startIP: firewallRule.startIP
+      endIP: firewallRule.endIP
+    }
+  }
+]
+
 module redis_geoReplication 'linked-servers/main.bicep' = if (!empty(geoReplicationObject)) {
   name: '${uniqueString(deployment().name, location)}-redis-LinkedServer'
   params: {
@@ -372,11 +402,11 @@ module redis_geoReplication 'linked-servers/main.bicep' = if (!empty(geoReplicat
 module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
   )
   params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
     secretsToSet: union(
       [],
       contains(secretsExportConfiguration!, 'primaryAccessKeyName')
@@ -469,7 +499,7 @@ output privateEndpoints privateEndpointOutputType[] = [
 import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
-  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  ? toObject(secretsExport!.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
   : {}
 
 // =============== //
@@ -508,6 +538,8 @@ type accessPolicyType = {
 }
 
 type accessPolicyAssignmentType = {
+  @description('Optional. The name of the Access Policy Assignment.')
+  name: string?
   @description('Required. Object id to which the access policy will be assigned.')
   objectId: string
   @description('Required. Alias for the target object id.')

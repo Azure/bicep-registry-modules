@@ -8,11 +8,11 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -28,15 +28,21 @@ param kind string = 'StorageV2'
 
 @allowed([
   'Standard_LRS'
-  'Standard_GRS'
-  'Standard_RAGRS'
   'Standard_ZRS'
+  'Standard_GRS'
+  'Standard_GZRS'
+  'Standard_RAGRS'
+  'Standard_RAGZRS'
+  'StandardV2_LRS'
+  'StandardV2_ZRS'
+  'StandardV2_GRS'
+  'StandardV2_GZRS'
   'Premium_LRS'
   'Premium_ZRS'
-  'Standard_GZRS'
-  'Standard_RAGZRS'
+  'PremiumV2_LRS'
+  'PremiumV2_ZRS'
 ])
-@description('Optional. Storage Account Sku Name.')
+@description('Optional. Storage Account Sku Name - note: certain V2 SKUs require the use of: kind = FileStorage.')
 param skuName string = 'Standard_GRS'
 
 @allowed([
@@ -52,11 +58,11 @@ param accessTier string = 'Hot'
   'Disabled'
   'Enabled'
 ])
-@description('Optional. Allow large file shares if sets to \'Enabled\'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares).')
+@description('Optional. Allow large file shares if set to \'Enabled\'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares).')
 param largeFileSharesState string = 'Disabled'
 
 @description('Optional. Provides the identity based authentication settings for Azure Files.')
-param azureFilesIdentityBasedAuthentication object = {}
+param azureFilesIdentityBasedAuthentication resourceInput<'Microsoft.Storage/storageAccounts@2024-01-01'>.properties.azureFilesIdentityBasedAuthentication?
 
 @description('Optional. A boolean flag which indicates whether the default authentication is OAuth or not.')
 param defaultToOAuthAuthentication bool = false
@@ -64,7 +70,7 @@ param defaultToOAuthAuthentication bool = false
 @description('Optional. Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Azure Active Directory (Azure AD). The default value is null, which is equivalent to true.')
 param allowSharedKeyAccess bool = true
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
@@ -88,14 +94,13 @@ param customDomainUseSubDomainName bool = false
 
 @description('Optional. Allows you to specify the type of endpoint. Set this to AzureDNSZone to create a large number of accounts in a single subscription, which creates accounts in an Azure DNS Zone and the endpoint URL will have an alphanumeric DNS Zone identifier.')
 @allowed([
-  ''
   'AzureDnsZone'
   'Standard'
 ])
-param dnsEndpointType string = ''
+param dnsEndpointType string?
 
 @description('Optional. Blob service and containers to deploy.')
-param blobServices object = kind != 'FileStorage'
+param blobServices blobServiceType = kind != 'FileStorage'
   ? {
       containerDeleteRetentionPolicyEnabled: true
       containerDeleteRetentionPolicyDays: 7
@@ -118,13 +123,12 @@ param allowBlobPublicAccess bool = false
 
 @allowed([
   'TLS1_2'
-  'TLS1_3'
 ])
 @description('Optional. Set the minimum TLS version on request to storage. The TLS versions 1.0 and 1.1 are deprecated and not supported anymore.')
 param minimumTlsVersion string = 'TLS1_2'
 
 @description('Conditional. If true, enables Hierarchical Namespace for the storage account. Required if enableSftp or enableNfsV3 is set to true.')
-param enableHierarchicalNamespace bool = false
+param enableHierarchicalNamespace bool?
 
 @description('Optional. If true, enables Secure File Transfer Protocol for the storage account. Requires enableHierarchicalNamespace to be true.')
 param enableSftp bool = false
@@ -138,45 +142,47 @@ param isLocalUserEnabled bool = false
 @description('Optional. If true, enables NFS 3.0 support for the storage account. Requires enableHierarchicalNamespace to be true.')
 param enableNfsV3 bool = false
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingFullType[]?
+param diagnosticSettings diagnosticSettingMetricsOnlyType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Storage/storageAccounts@2024-01-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. Restrict copy to and from Storage Accounts within an AAD tenant or with Private Links to the same VNet.')
 @allowed([
-  ''
   'AAD'
   'PrivateLink'
 ])
-param allowedCopyScope string = ''
+param allowedCopyScope string?
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set.')
 @allowed([
-  ''
   'Enabled'
   'Disabled'
 ])
-param publicNetworkAccess string = ''
+param publicNetworkAccess string?
 
 @description('Optional. Allows HTTPS traffic only to storage service if sets to true.')
 param supportsHttpsTrafficOnly bool = true
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Optional. The SAS expiration period. DD.HH:MM:SS.')
 param sasExpirationPeriod string = ''
+
+@description('Optional. The SAS expiration action. Allowed values are Block and Log.')
+@allowed(['Block', 'Log'])
+param sasExpirationAction string = 'Log'
 
 @description('Optional. The keyType to use with Queue & Table services.')
 @allowed([
@@ -188,7 +194,15 @@ param keyType string?
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
+@description('Optional. The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default. Cannot be enabled for ADLS Gen2 storage accounts.')
+param immutableStorageWithVersioning resourceInput<'Microsoft.Storage/storageAccounts@2025-01-01'>.properties.immutableStorageWithVersioning?
+
 var enableReferencedModulesTelemetry = false
+
+#disable-next-line no-unused-vars
+var immutabilityValidation = enableHierarchicalNamespace == true && !empty(immutableStorageWithVersioning)
+  ? fail('Configuration error: Immutable storage with versioning cannot be enabled when hierarchical namespace is enabled.')
+  : null
 
 var supportsBlobService = kind == 'BlockBlobStorage' || kind == 'BlobStorage' || kind == 'StorageV2' || kind == 'Storage'
 var supportsFileService = kind == 'FileStorage' || kind == 'StorageV2' || kind == 'Storage'
@@ -328,27 +342,27 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName!
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   name: name
   location: location
   kind: kind
@@ -361,12 +375,12 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
     allowSharedKeyAccess: allowSharedKeyAccess
     defaultToOAuthAuthentication: defaultToOAuthAuthentication
     allowCrossTenantReplication: allowCrossTenantReplication
-    allowedCopyScope: !empty(allowedCopyScope) ? allowedCopyScope : null
+    allowedCopyScope: allowedCopyScope
     customDomain: {
       name: customDomainName
       useSubDomainName: customDomainUseSubDomainName
     }
-    dnsEndpointType: !empty(dnsEndpointType) ? dnsEndpointType : null
+    dnsEndpointType: dnsEndpointType
     isLocalUserEnabled: isLocalUserEnabled
     encryption: union(
       {
@@ -394,12 +408,12 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
         keyvaultproperties: !empty(customerManagedKey)
           ? {
               keyname: customerManagedKey!.keyName
-              keyvaulturi: cMKKeyVault.properties.vaultUri
+              keyvaulturi: cMKKeyVault!.properties.vaultUri
               keyversion: !empty(customerManagedKey.?keyVersion)
-                ? customerManagedKey!.keyVersion
+                ? customerManagedKey!.keyVersion!
                 : (customerManagedKey.?autoRotationEnabled ?? true)
                     ? null
-                    : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+                    : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
             }
           : null
         identity: {
@@ -417,12 +431,11 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
     accessTier: (kind != 'Storage' && kind != 'BlockBlobStorage') ? accessTier : null
     sasPolicy: !empty(sasExpirationPeriod)
       ? {
-          expirationAction: 'Log'
+          expirationAction: sasExpirationAction
           sasExpirationPeriod: sasExpirationPeriod
         }
       : null
     supportsHttpsTrafficOnly: supportsHttpsTrafficOnly
-    isHnsEnabled: enableHierarchicalNamespace
     isSftpEnabled: enableSftp
     isNfsV3Enabled: enableNfsV3 ? enableNfsV3 : any('')
     largeFileSharesState: (skuName == 'Standard_LRS') || (skuName == 'Standard_ZRS') ? largeFileSharesState : null
@@ -446,9 +459,11 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? any(publicNetworkAccess)
       : (!empty(privateEndpoints) && empty(networkAcls) ? 'Disabled' : null)
-    azureFilesIdentityBasedAuthentication: !empty(azureFilesIdentityBasedAuthentication)
-      ? azureFilesIdentityBasedAuthentication
-      : null
+    ...(!empty(azureFilesIdentityBasedAuthentication)
+      ? { azureFilesIdentityBasedAuthentication: azureFilesIdentityBasedAuthentication }
+      : {})
+    ...(enableHierarchicalNamespace != null ? { isHnsEnabled: enableHierarchicalNamespace } : {})
+    immutableStorageWithVersioning: immutableStorageWithVersioning
   }
 }
 
@@ -478,9 +493,9 @@ resource storageAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!e
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: storageAccount
 }
@@ -501,9 +516,9 @@ resource storageAccount_roleAssignments 'Microsoft.Authorization/roleAssignments
   }
 ]
 
-module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-storageAccount-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-sa-PrivateEndpoint-${index}'
     scope: resourceGroup(
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
@@ -561,7 +576,7 @@ module storageAccount_managementPolicies 'management-policy/main.bicep' = if (!e
   name: '${uniqueString(deployment().name, location)}-Storage-ManagementPolicies'
   params: {
     storageAccountName: storageAccount.name
-    rules: managementPolicyRules ?? []
+    rules: managementPolicyRules!
   }
   dependsOn: [
     storageAccount_blobServices // To ensure the lastAccessTimeTrackingPolicy is set first (if used in rule)
@@ -648,11 +663,11 @@ module storageAccount_tableServices 'table-service/main.bicep' = if (!empty(tabl
 module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
   )
   params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
     secretsToSet: union(
       [],
       contains(secretsExportConfiguration!, 'accessKey1Name')
@@ -725,17 +740,34 @@ output privateEndpoints privateEndpointOutputType[] = [
   }
 ]
 
-import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
-  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  ? toObject(secretsExport!.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
   : {}
+
+@secure()
+@description('The primary access key of the storage account.')
+output primaryAccessKey string = storageAccount.listKeys().keys[0].value
+
+@secure()
+@description('The secondary access key of the storage account.')
+output secondaryAccessKey string = storageAccount.listKeys().keys[1].value
+
+@secure()
+@description('The primary connection string of the storage account.')
+output primaryConnectionString string = 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
+
+@secure()
+@description('The secondary connection string of the storage account.')
+output secondaryConnectionString string = 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[1].value};EndpointSuffix=${environment().suffixes.storage}'
 
 // =============== //
 //   Definitions   //
 // =============== //
 
 @export()
+@description('The type for the private endpoints output.')
 type privateEndpointOutputType = {
   @description('The name of the private endpoint.')
   name: string
@@ -760,6 +792,7 @@ type privateEndpointOutputType = {
 }
 
 @export()
+@description('The type for the network configuration.')
 type networkAclsType = {
   @description('Optional. Sets the resource access rules. Array entries must consist of "tenantId" and "resourceId" fields only.')
   resourceAccessRules: {
@@ -792,6 +825,7 @@ type networkAclsType = {
 }
 
 @export()
+@description('The type of the exported secrets.')
 type secretsExportConfigurationType = {
   @description('Required. The key vault name where to store the keys and connection strings generated by the modules.')
   keyVaultResourceId: string
@@ -811,6 +845,7 @@ type secretsExportConfigurationType = {
 
 import { sshAuthorizedKeyType, permissionScopeType } from 'local-user/main.bicep'
 @export()
+@description('The type of a local user.')
 type localUserType = {
   @description('Required. The name of the local user used for SFTP Authentication.')
   name: string
@@ -832,4 +867,69 @@ type localUserType = {
 
   @description('Optional. The local user SSH authorized keys for SFTP.')
   sshAuthorizedKeys: sshAuthorizedKeyType[]?
+}
+
+import { containerType, corsRuleType } from 'blob-service/main.bicep'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+
+@export()
+@description('The type of a blob service.')
+type blobServiceType = {
+  @description('Optional. Automatic Snapshot is enabled if set to true.')
+  automaticSnapshotPolicyEnabled: bool?
+
+  @description('Optional. The blob service properties for change feed events. Indicates whether change feed event logging is enabled for the Blob service.')
+  changeFeedEnabled: bool?
+
+  @minValue(1)
+  @maxValue(146000)
+  @description('Optional. Indicates whether change feed event logging is enabled for the Blob service. Indicates the duration of changeFeed retention in days. If left blank, it indicates an infinite retention of the change feed.')
+  changeFeedRetentionInDays: int?
+
+  @description('Optional. The blob service properties for container soft delete. Indicates whether DeleteRetentionPolicy is enabled.')
+  containerDeleteRetentionPolicyEnabled: bool?
+
+  @minValue(1)
+  @maxValue(365)
+  @description('Optional. Indicates the number of days that the deleted item should be retained.')
+  containerDeleteRetentionPolicyDays: int?
+
+  @description('Optional. This property when set to true allows deletion of the soft deleted blob versions and snapshots. This property cannot be used with blob restore policy. This property only applies to blob service and does not apply to containers or file share.')
+  containerDeleteRetentionPolicyAllowPermanentDelete: bool?
+
+  @description('Optional. The List of CORS rules. You can include up to five CorsRule elements in the request.')
+  corsRules: corsRuleType[]?
+
+  @description('Optional. Indicates the default version to use for requests to the Blob service if an incoming request\'s version is not specified. Possible values include version 2008-10-27 and all more recent versions.')
+  defaultServiceVersion: string?
+
+  @description('Optional. The blob service properties for blob soft delete.')
+  deleteRetentionPolicyEnabled: bool?
+
+  @minValue(1)
+  @maxValue(365)
+  @description('Optional. Indicates the number of days that the deleted blob should be retained.')
+  deleteRetentionPolicyDays: int?
+
+  @description('Optional. This property when set to true allows deletion of the soft deleted blob versions and snapshots. This property cannot be used with blob restore policy. This property only applies to blob service and does not apply to containers or file share.')
+  deleteRetentionPolicyAllowPermanentDelete: bool?
+
+  @description('Optional. Use versioning to automatically maintain previous versions of your blobs. Cannot be enabled for ADLS Gen2 storage accounts.')
+  isVersioningEnabled: bool?
+
+  @description('Optional. The blob service property to configure last access time based tracking policy. When set to true last access time based tracking is enabled.')
+  lastAccessTimeTrackingPolicyEnabled: bool?
+
+  @description('Optional. The blob service properties for blob restore policy. If point-in-time restore is enabled, then versioning, change feed, and blob soft delete must also be enabled.')
+  restorePolicyEnabled: bool?
+
+  @minValue(1)
+  @description('Optional. How long this blob can be restored. It should be less than DeleteRetentionPolicy days.')
+  restorePolicyDays: int?
+
+  @description('Optional. Blob containers to create.')
+  containers: containerType[]?
+
+  @description('Optional. The diagnostic settings of the service.')
+  diagnosticSettings: diagnosticSettingFullType[]?
 }

@@ -13,15 +13,15 @@ param eventHubNamespaceName string
 @description('Required. The name of the Event Hub to create.')
 param eventHubName string
 
-@description('Required. Service Bus name')
-param serviceBusName string
+@description('Required. The name of the Service Bus Namespace to create.')
+param serviceBusNamespaceName string
 
-@description('Required. Event Grid Domain name.')
-param eventGridDomainName string
+@description('Required. The name of the Event Grid Topic to create.')
+param eventGridTopicName string
 
 var addressPrefix = '10.0.0.0/16'
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -46,16 +46,16 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+resource privateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: 'privatelink.digitaltwins.azure.net'
   location: 'global'
 
-  resource virtualNetworkLinks 'virtualNetworkLinks@2020-06-01' = {
+  resource virtualNetworkLinks 'virtualNetworkLinks@2024-06-01' = {
     name: '${virtualNetwork.name}-vnetlink'
     location: 'global'
     properties: {
@@ -67,7 +67,12 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   }
 }
 
-resource eventHubNamespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' = {
+resource eventGridTopic 'Microsoft.EventGrid/topics@2025-02-15' = {
+  name: eventGridTopicName
+  location: location
+}
+
+resource eventHubNamespace 'Microsoft.EventHub/namespaces@2024-01-01' = {
   name: eventHubNamespaceName
   location: location
   properties: {
@@ -76,32 +81,41 @@ resource eventHubNamespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' = 
     maximumThroughputUnits: 0
   }
 
-  resource eventHub 'eventhubs@2022-10-01-preview' = {
+  resource eventHub 'eventhubs@2024-01-01' = {
     name: eventHubName
+
+    resource authorizationRule 'authorizationRules@2024-01-01' = {
+      name: 'testRule'
+      properties: {
+        rights: [
+          'Listen'
+          'Send'
+        ]
+      }
+    }
   }
 }
 
-resource serviceBus 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' = {
-  name: serviceBusName
+resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2024-01-01' = {
+  name: serviceBusNamespaceName
   location: location
   properties: {
     zoneRedundant: false
   }
 
-  resource topic 'topics@2022-10-01-preview' = {
+  resource topic 'topics@2024-01-01' = {
     name: 'topic'
-  }
-}
 
-resource eventGridDomain 'Microsoft.EventGrid/domains@2022-06-15' = {
-  name: eventGridDomainName
-  location: location
-  properties: {
-    disableLocalAuth: false
-  }
-
-  resource topic 'topics@2022-06-15' = {
-    name: 'topic'
+    resource authorizationRule 'authorizationRules@2024-01-01' = {
+      name: 'testRule'
+      properties: {
+        rights: [
+          'Listen'
+          'Send'
+          'Manage'
+        ]
+      }
+    }
   }
 }
 
@@ -120,7 +134,7 @@ resource eventHubNamespaceRbacAssignment 'Microsoft.Authorization/roleAssignment
 
 resource serviceBusRbacAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(managedIdentity.id, 'sbrbacAssignment')
-  scope: serviceBus
+  scope: serviceBusNamespace
   properties: {
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
@@ -141,28 +155,25 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 output privateDNSZoneResourceId string = privateDNSZone.id
 
 @description('The name of the Event Hub Namespace.')
-output eventhubNamespaceName string = eventHubNamespace.name
+output eventHubNamespaceName string = eventHubNamespace.name
 
-@description('The resource ID of the created Event Hub Namespace.')
-output eventHubResourceId string = eventHubNamespace::eventHub.id
+@description('The name of the Event Hub Namespace Event Hub Authorization Rule.')
+output eventHubNamespaceEventHubAuthorizationRuleName string = eventHubNamespace::eventHub::authorizationRule.name
 
-@description('The name of the Event Hub.')
-output eventhubName string = eventHubNamespace::eventHub.name
+@description('The resource ID of the Service Bus Namespace Topic.')
+output serviceBusNamespaceTopicResourceId string = serviceBusNamespace::topic.id
 
-@description('The name of the Service Bus Namespace.')
-output serviceBusName string = serviceBus.name
-
-@description('The name of the Service Bus Topic.')
-output serviceBusTopicName string = serviceBus::topic.name
-
-@description('The Event Grid endpoint uri.')
-output eventGridEndpoint string = eventGridDomain.properties.endpoint
-
-@description('The resource ID of the created Event Grid Topic.')
-output eventGridTopicResourceId string = eventGridDomain::topic.id
-
-@description('The resource ID of the created Event Grid Domain.')
-output eventGridDomainResourceId string = eventGridDomain.id
+@description('The resource ID of the Service Bus Namespace Topic Authorization Rule.')
+output serviceBusNamespaceTopicAuthorizationRuleName string = serviceBusNamespace::topic::authorizationRule.name
 
 @description('The resource ID of the created Managed Identity.')
 output managedIdentityResourceId string = managedIdentity.id
+
+@description('The resource ID of the created Event Grid Topic.')
+output eventGridTopicResourceId string = eventGridTopic.id
+
+@description('The endpoint of the created Event Grid Topic.')
+output eventGridTopicEndpoint string = eventGridTopic.properties.endpoint
+
+@description('The resource ID of the created Event Hub Namespace Event Hub.')
+output eventHubNamespaceEventHubResourceId string = eventHubNamespace::eventHub.id

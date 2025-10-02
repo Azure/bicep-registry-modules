@@ -11,14 +11,15 @@ metadata description = 'This instance deploys the module as Function App with mo
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-web.sites-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'wsfamax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
+
+// Note, we enforce the location due to quota restrictions in other regions (esp. east-us)
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'uksouth'
 
 // ============ //
 // Dependencies //
@@ -26,14 +27,14 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
@@ -42,7 +43,6 @@ module nestedDependencies 'dependencies.bicep' = {
     applicationInsightsName: 'dep-${namePrefix}-appi-${serviceShort}'
     relayNamespaceName: 'dep-${namePrefix}-ns-${serviceShort}'
     hybridConnectionName: 'dep-${namePrefix}-hc-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -50,13 +50,12 @@ module nestedDependencies 'dependencies.bicep' = {
 // ===========
 module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -68,81 +67,93 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
+      location: enforcedLocation
       kind: 'functionapp'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
-      appInsightResourceId: nestedDependencies.outputs.applicationInsightsResourceId
-      appSettingsKeyValuePairs: {
-        AzureFunctionsJobHost__logging__logLevel__default: 'Trace'
-        EASYAUTH_SECRET: 'https://${namePrefix}-KeyVault${environment().suffixes.keyvaultDns}/secrets/Modules-Test-SP-Password'
-        FUNCTIONS_EXTENSION_VERSION: '~4'
-        FUNCTIONS_WORKER_RUNTIME: 'dotnet'
-      }
-      authSettingV2Configuration: {
-        globalValidation: {
-          requireAuthentication: true
-          unauthenticatedClientAction: 'Return401'
-        }
-        httpSettings: {
-          forwardProxy: {
-            convention: 'NoProxy'
-          }
-          requireHttps: true
-          routes: {
-            apiPrefix: '/.auth'
+      configs: [
+        {
+          // Persisted on service in 'Settings/Environment variables'
+          name: 'appsettings'
+          applicationInsightResourceId: nestedDependencies.outputs.applicationInsightsResourceId
+          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+          storageAccountUseIdentityAuthentication: true
+          properties: {
+            AzureFunctionsJobHost__logging__logLevel__default: 'Trace'
+            EASYAUTH_SECRET: 'https://${namePrefix}-KeyVault${environment().suffixes.keyvaultDns}/secrets/Modules-Test-SP-Password'
+            FUNCTIONS_EXTENSION_VERSION: '~4'
+            FUNCTIONS_WORKER_RUNTIME: 'dotnet'
           }
         }
-        identityProviders: {
-          azureActiveDirectory: {
-            enabled: true
-            login: {
-              disableWWWAuthenticate: false
+        {
+          // Persisted on service in 'Settings/Authentication'
+          name: 'authsettingsV2'
+          properties: {
+            globalValidation: {
+              requireAuthentication: true
+              unauthenticatedClientAction: 'Return401'
             }
-            registration: {
-              clientId: 'd874dd2f-2032-4db1-a053-f0ec243685aa'
-              clientSecretSettingName: 'EASYAUTH_SECRET'
-              openIdIssuer: 'https://sts.windows.net/${tenant().tenantId}/v2.0/'
-            }
-            validation: {
-              allowedAudiences: [
-                'api://d874dd2f-2032-4db1-a053-f0ec243685aa'
-              ]
-              defaultAuthorizationPolicy: {
-                allowedPrincipals: {}
+            httpSettings: {
+              forwardProxy: {
+                convention: 'NoProxy'
               }
-              jwtClaimChecks: {}
+              requireHttps: true
+              routes: {
+                apiPrefix: '/.auth'
+              }
+            }
+            identityProviders: {
+              azureActiveDirectory: {
+                enabled: true
+                login: {
+                  disableWWWAuthenticate: false
+                }
+                registration: {
+                  clientId: 'd874dd2f-2032-4db1-a053-f0ec243685aa'
+                  clientSecretSettingName: 'EASYAUTH_SECRET'
+                  openIdIssuer: 'https://sts.windows.net/${tenant().tenantId}/v2.0/'
+                }
+                validation: {
+                  allowedAudiences: [
+                    'api://d874dd2f-2032-4db1-a053-f0ec243685aa'
+                  ]
+                  defaultAuthorizationPolicy: {
+                    allowedPrincipals: {}
+                  }
+                  jwtClaimChecks: {}
+                }
+              }
+            }
+            login: {
+              allowedExternalRedirectUrls: [
+                'string'
+              ]
+              cookieExpiration: {
+                convention: 'FixedTime'
+                timeToExpiration: '08:00:00'
+              }
+              nonce: {
+                nonceExpirationInterval: '00:05:00'
+                validateNonce: true
+              }
+              preserveUrlFragmentsForLogins: false
+              routes: {}
+              tokenStore: {
+                azureBlobStorage: {}
+                enabled: true
+                fileSystem: {}
+                tokenRefreshExtensionHours: 72
+              }
+            }
+            platform: {
+              enabled: true
+              runtimeVersion: '~1'
             }
           }
         }
-        login: {
-          allowedExternalRedirectUrls: [
-            'string'
-          ]
-          cookieExpiration: {
-            convention: 'FixedTime'
-            timeToExpiration: '08:00:00'
-          }
-          nonce: {
-            nonceExpirationInterval: '00:05:00'
-            validateNonce: true
-          }
-          preserveUrlFragmentsForLogins: false
-          routes: {}
-          tokenStore: {
-            azureBlobStorage: {}
-            enabled: true
-            fileSystem: {}
-            tokenRefreshExtensionHours: 72
-          }
-        }
-        platform: {
-          enabled: true
-          runtimeVersion: '~1'
-        }
-      }
+      ]
       basicPublishingCredentialsPolicies: [
         {
           name: 'ftp'
@@ -225,8 +236,6 @@ module testDeployment '../../../main.bicep' = [
         alwaysOn: true
         use32BitWorkerProcess: false
       }
-      storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-      storageAccountUseIdentityAuthentication: true
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [
@@ -235,7 +244,7 @@ module testDeployment '../../../main.bicep' = [
       }
       hybridConnectionRelays: [
         {
-          resourceId: nestedDependencies.outputs.hybridConnectionResourceId
+          hybridConnectionResourceId: nestedDependencies.outputs.hybridConnectionResourceId
           sendKeyName: 'defaultSender'
         }
       ]

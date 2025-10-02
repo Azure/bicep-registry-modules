@@ -7,7 +7,7 @@ param virtualWanName string
 @description('Required. The name of the Virtual Hub to create.')
 param virtualHubName string
 
-resource virtualWan 'Microsoft.Network/virtualWans@2023-04-01' = {
+resource virtualWan 'Microsoft.Network/virtualWans@2024-05-01' = {
   name: virtualWanName
   location: location
   properties: {
@@ -17,7 +17,7 @@ resource virtualWan 'Microsoft.Network/virtualWans@2023-04-01' = {
   }
 }
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2021-08-01' = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2024-05-01' = {
   name: virtualHubName
   location: location
   properties: {

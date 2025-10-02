@@ -21,7 +21,7 @@ param description string = ''
 param memberType string = 'VirtualNetwork'
 
 @sys.description('Optional. Static Members to create for the network group. Contains virtual networks to add to the network group.')
-param staticMembers staticMembersType
+param staticMembers staticMemberType[]?
 
 resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
   name: networkManagerName
@@ -62,10 +62,11 @@ output resourceGroupName string = resourceGroup().name
 // =============== //
 
 @export()
-type staticMembersType = {
+@sys.description('The type of a static member.')
+type staticMemberType = {
   @sys.description('Required. The name of the static member.')
   name: string
 
   @sys.description('Required. Resource ID of the virtual network.')
   resourceId: string
-}[]?
+}

@@ -5,13 +5,93 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "12000970886778046699"
+      "version": "0.37.4.10188",
+      "templateHash": "1266219369073699726"
     },
     "name": "Key Vault Keys",
     "description": "This module deploys a Key Vault Key."
   },
   "definitions": {
+    "rotationPolicyType": {
+      "type": "object",
+      "properties": {
+        "attributes": {
+          "type": "object",
+          "properties": {
+            "expiryTime": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The expiration time for the new key version. It should be in ISO8601 format. Eg: \"P90D\", \"P1Y\"."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The attributes of key rotation policy."
+          }
+        },
+        "lifetimeActions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "allowedValues": [
+                      "notify",
+                      "rotate"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The type of the action."
+                    }
+                  }
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The type of the action."
+                }
+              },
+              "trigger": {
+                "type": "object",
+                "properties": {
+                  "timeAfterCreate": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The time duration after key creation to rotate the key. It only applies to rotate. It will be in ISO 8601 duration format. Eg: \"P90D\", \"P1Y\"."
+                    }
+                  },
+                  "timeBeforeExpiry": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The time duration before key expiring to rotate or notify. It will be in ISO 8601 duration format. Eg: \"P90D\", \"P1Y\"."
+                    }
+                  }
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The time duration for rotating the key."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The key rotation policy lifetime actions."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a rotation policy."
+      }
+    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
@@ -83,7 +163,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -103,10 +183,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.KeyVault/vaults/keys@2024-11-01#properties/tags"
+        },
         "description": "Optional. Resource tags."
-      }
+      },
+      "nullable": true
     },
     "attributesEnabled": {
       "type": "bool",
@@ -144,6 +227,9 @@
     },
     "keyOps": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "nullable": true,
       "allowedValues": [
         "decrypt",
@@ -196,10 +282,17 @@
       }
     },
     "rotationPolicy": {
-      "type": "object",
+      "$ref": "#/definitions/rotationPolicyType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Key rotation policy properties object."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     }
   },
@@ -226,15 +319,35 @@
     }
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.keyvault-key.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "keyVault": {
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2022-07-01",
+      "apiVersion": "2024-11-01",
       "name": "[parameters('keyVaultName')]"
     },
     "key": {
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2022-07-01",
+      "apiVersion": "2024-11-01",
       "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": "[shallowMerge(createArray(createObject('attributes', createObject('enabled', parameters('attributesEnabled'), 'exp', parameters('attributesExp'), 'nbf', parameters('attributesNbf')), 'curveName', parameters('curveName'), 'keyOps', parameters('keyOps'), 'keySize', parameters('keySize'), 'kty', parameters('kty'), 'release_policy', coalesce(parameters('releasePolicy'), createObject())), if(not(empty(parameters('rotationPolicy'))), createObject('rotationPolicy', parameters('rotationPolicy')), createObject())))]"

@@ -56,8 +56,9 @@ param vpnServerConfigurationResourceId string?
 @description('Optional. Tags of the resource.')
 param tags object?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -151,9 +152,9 @@ resource vpnGateway_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: p2sVpnGateway
 }
@@ -173,14 +174,6 @@ output location string = p2sVpnGateway.location
 // =============== //
 //   Definitions   //
 // =============== //
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
 
 @export()
 @description('Optional. A Type representing the VNET static routes for the P2S VPN Gateway.')

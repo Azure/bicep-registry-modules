@@ -129,17 +129,14 @@ module testDeployment '../../../main.bicep' = [
             category: 'UserDefined'
           }
         }
+        firewallSku: 'Standard'
       }
-      systemDatastoresAuthMode: 'identity'
+      systemDatastoresAuthMode: 'Identity'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

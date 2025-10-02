@@ -32,7 +32,7 @@ var locationSecondary = 'southeastasia'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: locationPrimary
 }
@@ -70,6 +70,7 @@ module testDeployment '../../../main.bicep' = [
           }
           maxSizeBytes: 2147483648
           zoneRedundant: false
+          availabilityZone: -1
         }
         {
           name: '${namePrefix}-${serviceShort}-db2'
@@ -79,8 +80,8 @@ module testDeployment '../../../main.bicep' = [
             capacity: 2
           }
           maxSizeBytes: 2147483648
-          // licenseType: 'LicenseIncluded'
           zoneRedundant: false
+          availabilityZone: -1
         }
         {
           name: '${namePrefix}-${serviceShort}-db3'
@@ -90,6 +91,7 @@ module testDeployment '../../../main.bicep' = [
           }
           maxSizeBytes: 2147483648
           zoneRedundant: false
+          availabilityZone: -1
         }
       ]
       failoverGroups: [
@@ -99,8 +101,8 @@ module testDeployment '../../../main.bicep' = [
           databases: [
             '${namePrefix}-${serviceShort}-db1'
           ]
-          partnerServers: [
-            nestedDependencies.outputs.secondaryServerName
+          partnerServerResourceIds: [
+            nestedDependencies.outputs.secondaryServerResourceId
           ]
           readWriteEndpoint: {
             failoverPolicy: 'Manual'
@@ -113,8 +115,8 @@ module testDeployment '../../../main.bicep' = [
           databases: [
             '${namePrefix}-${serviceShort}-db2'
           ]
-          partnerServers: [
-            nestedDependencies.outputs.secondaryServerName
+          partnerServerResourceIds: [
+            nestedDependencies.outputs.secondaryServerResourceId
           ]
           readWriteEndpoint: {
             failoverPolicy: 'Automatic'
@@ -128,8 +130,8 @@ module testDeployment '../../../main.bicep' = [
           databases: [
             '${namePrefix}-${serviceShort}-db3'
           ]
-          partnerServers: [
-            nestedDependencies.outputs.secondaryServerName
+          partnerServerResourceIds: [
+            nestedDependencies.outputs.secondaryServerResourceId
           ]
           readWriteEndpoint: {
             failoverPolicy: 'Manual'

@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -37,6 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    fwPolicyName: 'dep-${namePrefix}-fwp-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -56,6 +57,7 @@ module testDeployment '../../../main.bicep' = [
       // You parameters go here
       name: resourceName
       location: resourceLocation
+      firewallPolicyResourceId: nestedDependencies.outputs.fwPolicyResourceId
       gatewayIPConfigurations: [
         {
           name: 'publicIPConfig1'

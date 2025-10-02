@@ -7,13 +7,15 @@ param name string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
 @allowed([
   'Free'
+  'Developer'
   'Standard'
+  'Premium'
 ])
 @description('Optional. Pricing tier of App Configuration.')
 param sku string = 'Standard'
@@ -43,7 +45,7 @@ param publicNetworkAccess string?
 @maxValue(7)
 param softDeleteRetentionInDays int = 1
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
@@ -51,22 +53,22 @@ param customerManagedKey customerManagedKeyWithAutoRotateType?
 param keyValues array?
 
 @description('Optional. All Replicas to create.')
-param replicaLocations array?
+param replicaLocations replicaLocationType[]?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.AppConfiguration/configurationStores@2024-05-01'>.tags?
 
 @description('Optional. Property specifying the configuration of data plane proxy for Azure Resource Manager (ARM).')
 param dataPlaneProxy dataPlaneProxyType?
@@ -74,7 +76,7 @@ param dataPlaneProxy dataPlaneProxyType?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -112,6 +114,14 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     '516239f1-63e1-4d78-a4de-a74fb236a071'
   )
+  'App Configuration Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '175b81b9-6e0d-490a-85e4-0d422273c10c'
+  )
+  'App Configuration Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'fe86443c-f201-4fc4-9d2a-ac61149fbda0'
+  )
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
@@ -137,7 +147,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.appconfiguration-configurationstore.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -155,27 +165,27 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName!
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
-resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2024-05-01' = {
+resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2025-02-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -186,17 +196,17 @@ resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2024
   properties: {
     createMode: createMode
     disableLocalAuth: disableLocalAuth
-    enablePurgeProtection: sku == 'Free' ? false : enablePurgeProtection
+    enablePurgeProtection: sku == 'Free' || sku == 'Developer' ? false : enablePurgeProtection
     encryption: !empty(customerManagedKey)
       ? {
           keyVaultProperties: {
             keyIdentifier: !empty(customerManagedKey.?keyVersion)
-              ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion}'
+              ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
               : (customerManagedKey.?autoRotationEnabled ?? true)
-                  ? cMKKeyVault::cMKKey.properties.keyUri
-                  : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+                  ? cMKKeyVault::cMKKey!.properties.keyUri
+                  : cMKKeyVault::cMKKey!.properties.keyUriWithVersion
             identityClientId: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-              ? cMKUserAssignedIdentity.properties.clientId
+              ? cMKUserAssignedIdentity!.properties.clientId
               : null
           }
         }
@@ -204,7 +214,7 @@ resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2024
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? any(publicNetworkAccess)
       : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
-    softDeleteRetentionInDays: sku == 'Free' ? 0 : softDeleteRetentionInDays
+    softDeleteRetentionInDays: sku == 'Free' || sku == 'Developer' ? 0 : softDeleteRetentionInDays
     dataPlaneProxy: !empty(dataPlaneProxy)
       ? {
           authenticationMode: dataPlaneProxy.?authenticationMode ?? 'Pass-through'
@@ -226,14 +236,14 @@ module configurationStore_keyValues 'key-value/main.bicep' = [
     }
   }
 ]
-
+@batchSize(1)
 module configurationStore_replicas 'replica/main.bicep' = [
   for (replicaLocation, index) in (replicaLocations ?? []): {
     name: '${uniqueString(deployment().name, location)}-AppConfig-Replicas-${index}'
     params: {
       appConfigurationName: configurationStore.name
-      replicaLocation: replicaLocation
-      name: '${replicaLocation}replica'
+      replicaLocation: replicaLocation.replicaLocation
+      name: replicaLocation.?name
     }
   }
 ]
@@ -241,9 +251,9 @@ resource configurationStore_lock 'Microsoft.Authorization/locks@2020-05-01' = if
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: configurationStore
 }
@@ -298,10 +308,13 @@ resource configurationStore_roleAssignments 'Microsoft.Authorization/roleAssignm
 ]
 
 @batchSize(1)
-module configurationStore_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module configurationStore_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-configurationStore-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    name: '${uniqueString(deployment().name, location)}-configStore-PrivateEndpoint-${index}'
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(configurationStore.id, '/'))}-${privateEndpoint.?service ?? 'configurationStores'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -369,13 +382,13 @@ output location string = configurationStore.location
 output endpoint string = configurationStore.properties.endpoint
 
 @description('The private endpoints of the app configuration.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: configurationStore_privateEndpoints[i].outputs.name
-    resourceId: configurationStore_privateEndpoints[i].outputs.resourceId
-    groupId: configurationStore_privateEndpoints[i].outputs.groupId
-    customDnsConfig: configurationStore_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: configurationStore_privateEndpoints[i].outputs.networkInterfaceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: configurationStore_privateEndpoints[index].outputs.name
+    resourceId: configurationStore_privateEndpoints[index].outputs.resourceId
+    groupId: configurationStore_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: configurationStore_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: configurationStore_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -391,4 +404,38 @@ type dataPlaneProxyType = {
 
   @description('Required. The data plane proxy private link delegation. This property manages if a request from delegated Azure Resource Manager (ARM) private link is allowed when the data plane resource requires private link.')
   privateLinkDelegation: 'Disabled' | 'Enabled'
+}
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
+
+@export()
+@description('The type for a replica location')
+type replicaLocationType = {
+  @description('Required. Location of the replica.')
+  replicaLocation: string
+
+  @description('Optional. Name of the replica.')
+  name: string?
 }

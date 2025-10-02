@@ -13,20 +13,21 @@ This module is designed to simplify the creation of multi-region hub networks in
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/azureFirewalls` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/azureFirewalls) |
-| `Microsoft.Network/bastionHosts` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/bastionHosts) |
-| `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
-| `Microsoft.Network/routeTables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/routeTables) |
-| `Microsoft.Network/routeTables/routes` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/routeTables/routes) |
-| `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualNetworks/subnets) |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Network/azureFirewalls` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_azurefirewalls.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/azureFirewalls)</li></ul> |
+| `Microsoft.Network/bastionHosts` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_bastionhosts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/bastionHosts)</li></ul> |
+| `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
+| `Microsoft.Network/routeTables` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_routetables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/routeTables)</li></ul> |
+| `Microsoft.Network/routeTables/routes` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_routetables_routes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/routeTables/routes)</li></ul> |
+| `Microsoft.Network/virtualNetworks` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks)</li></ul> |
+| `Microsoft.Network/virtualNetworks/subnets` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets)</li></ul> |
+| `Microsoft.Network/virtualNetworks/subnets` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualNetworks/subnets)</li></ul> |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
 
 ## Usage examples
 
@@ -54,7 +55,7 @@ This instance deploys the module with the minimum set of required parameters.
 module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
   name: 'hubNetworkingDeployment'
   params: {
-    location: '<location>'
+
   }
 }
 ```
@@ -70,11 +71,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {
-    "location": {
-      "value": "<location>"
-    }
-  }
+  "parameters": {}
 }
 ```
 
@@ -88,7 +85,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/network/hub-networking:<version>'
 
-param location = '<location>'
+
 ```
 
 </details>
@@ -112,7 +109,20 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         addressPrefixes: '<addressPrefixes>'
         azureFirewallSettings: {
           azureSkuTier: 'Standard'
-          enableTelemetry: true
+          diagnosticSettings: [
+            {
+              eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+              eventHubName: '<eventHubName>'
+              metricCategories: [
+                {
+                  category: 'AllMetrics'
+                }
+              ]
+              name: 'customSetting'
+              storageAccountResourceId: '<storageAccountResourceId>'
+              workspaceResourceId: '<workspaceResourceId>'
+            }
+          ]
           location: '<location>'
           publicIPAddressObject: {
             name: 'hub1-waf-pip'
@@ -154,7 +164,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         enableAzureFirewall: true
         enableBastion: true
         enablePeering: false
-        enableTelemetry: true
         flowTimeoutInMinutes: 30
         location: '<location>'
         lock: {
@@ -192,6 +201,11 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             addressPrefix: '<addressPrefix>'
             name: 'AzureBastionSubnet'
           }
+          {
+            addressPrefix: '<addressPrefix>'
+            delegation: 'Microsoft.Network/dnsResolvers'
+            name: 'DNSResolver'
+          }
         ]
         tags: {
           Environment: 'Non-Prod'
@@ -205,7 +219,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         addressPrefixes: '<addressPrefixes>'
         azureFirewallSettings: {
           azureSkuTier: 'Standard'
-          enableTelemetry: true
           location: '<location>'
           publicIPAddressObject: {
             name: 'hub2-waf-pip'
@@ -228,7 +241,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         enableAzureFirewall: true
         enableBastion: true
         enablePeering: false
-        enableTelemetry: false
         flowTimeoutInMinutes: 10
         location: '<location>'
         lock: {
@@ -299,7 +311,20 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "addressPrefixes": "<addressPrefixes>",
           "azureFirewallSettings": {
             "azureSkuTier": "Standard",
-            "enableTelemetry": true,
+            "diagnosticSettings": [
+              {
+                "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+                "eventHubName": "<eventHubName>",
+                "metricCategories": [
+                  {
+                    "category": "AllMetrics"
+                  }
+                ],
+                "name": "customSetting",
+                "storageAccountResourceId": "<storageAccountResourceId>",
+                "workspaceResourceId": "<workspaceResourceId>"
+              }
+            ],
             "location": "<location>",
             "publicIPAddressObject": {
               "name": "hub1-waf-pip"
@@ -341,7 +366,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "enableAzureFirewall": true,
           "enableBastion": true,
           "enablePeering": false,
-          "enableTelemetry": true,
           "flowTimeoutInMinutes": 30,
           "location": "<location>",
           "lock": {
@@ -378,6 +402,11 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             {
               "addressPrefix": "<addressPrefix>",
               "name": "AzureBastionSubnet"
+            },
+            {
+              "addressPrefix": "<addressPrefix>",
+              "delegation": "Microsoft.Network/dnsResolvers",
+              "name": "DNSResolver"
             }
           ],
           "tags": {
@@ -392,7 +421,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "addressPrefixes": "<addressPrefixes>",
           "azureFirewallSettings": {
             "azureSkuTier": "Standard",
-            "enableTelemetry": true,
             "location": "<location>",
             "publicIPAddressObject": {
               "name": "hub2-waf-pip"
@@ -415,7 +443,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "enableAzureFirewall": true,
           "enableBastion": true,
           "enablePeering": false,
-          "enableTelemetry": false,
           "flowTimeoutInMinutes": 10,
           "location": "<location>",
           "lock": {
@@ -486,7 +513,20 @@ param hubVirtualNetworks = {
     addressPrefixes: '<addressPrefixes>'
     azureFirewallSettings: {
       azureSkuTier: 'Standard'
-      enableTelemetry: true
+      diagnosticSettings: [
+        {
+          eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+          eventHubName: '<eventHubName>'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          name: 'customSetting'
+          storageAccountResourceId: '<storageAccountResourceId>'
+          workspaceResourceId: '<workspaceResourceId>'
+        }
+      ]
       location: '<location>'
       publicIPAddressObject: {
         name: 'hub1-waf-pip'
@@ -528,7 +568,6 @@ param hubVirtualNetworks = {
     enableAzureFirewall: true
     enableBastion: true
     enablePeering: false
-    enableTelemetry: true
     flowTimeoutInMinutes: 30
     location: '<location>'
     lock: {
@@ -566,6 +605,11 @@ param hubVirtualNetworks = {
         addressPrefix: '<addressPrefix>'
         name: 'AzureBastionSubnet'
       }
+      {
+        addressPrefix: '<addressPrefix>'
+        delegation: 'Microsoft.Network/dnsResolvers'
+        name: 'DNSResolver'
+      }
     ]
     tags: {
       Environment: 'Non-Prod'
@@ -579,7 +623,6 @@ param hubVirtualNetworks = {
     addressPrefixes: '<addressPrefixes>'
     azureFirewallSettings: {
       azureSkuTier: 'Standard'
-      enableTelemetry: true
       location: '<location>'
       publicIPAddressObject: {
         name: 'hub2-waf-pip'
@@ -602,7 +645,6 @@ param hubVirtualNetworks = {
     enableAzureFirewall: true
     enableBastion: true
     enablePeering: false
-    enableTelemetry: false
     flowTimeoutInMinutes: 10
     location: '<location>'
     lock: {
@@ -693,13 +735,8 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         enableAzureFirewall: false
         enableBastion: false
         enablePeering: false
-        enableTelemetry: true
         flowTimeoutInMinutes: 30
         location: '<location>'
-        lock: {
-          kind: 'CanNotDelete'
-          name: 'hub1Lock'
-        }
         routes: [
           {
             name: 'defaultRoute'
@@ -723,11 +760,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             name: 'AzureBastionSubnet'
           }
         ]
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
         vnetEncryption: false
         vnetEncryptionEnforcement: 'AllowUnencrypted'
       }
@@ -774,13 +806,8 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "enableAzureFirewall": false,
           "enableBastion": false,
           "enablePeering": false,
-          "enableTelemetry": true,
           "flowTimeoutInMinutes": 30,
           "location": "<location>",
-          "lock": {
-            "kind": "CanNotDelete",
-            "name": "hub1Lock"
-          },
           "routes": [
             {
               "name": "defaultRoute",
@@ -804,11 +831,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
               "name": "AzureBastionSubnet"
             }
           ],
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          },
           "vnetEncryption": false,
           "vnetEncryptionEnforcement": "AllowUnencrypted"
         }
@@ -855,13 +877,8 @@ param hubVirtualNetworks = {
     enableAzureFirewall: false
     enableBastion: false
     enablePeering: false
-    enableTelemetry: true
     flowTimeoutInMinutes: 30
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'hub1Lock'
-    }
     routes: [
       {
         name: 'defaultRoute'
@@ -885,11 +902,6 @@ param hubVirtualNetworks = {
         name: 'AzureBastionSubnet'
       }
     ]
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
     vnetEncryption: false
     vnetEncryptionEnforcement: 'AllowUnencrypted'
   }
@@ -918,7 +930,14 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         addressPrefixes: '<addressPrefixes>'
         azureFirewallSettings: {
           azureSkuTier: 'Standard'
-          enableTelemetry: true
+          diagnosticSettings: [
+            {
+              eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+              eventHubName: '<eventHubName>'
+              storageAccountResourceId: '<storageAccountResourceId>'
+              workspaceResourceId: '<workspaceResourceId>'
+            }
+          ]
           location: '<location>'
           publicIPAddressObject: {
             name: 'hub1PublicIp'
@@ -959,13 +978,8 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         enableAzureFirewall: true
         enableBastion: true
         enablePeering: false
-        enableTelemetry: true
         flowTimeoutInMinutes: 30
         location: '<location>'
-        lock: {
-          kind: 'CanNotDelete'
-          name: 'hub1Lock'
-        }
         routes: [
           {
             name: 'defaultRoute'
@@ -1021,7 +1035,14 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "addressPrefixes": "<addressPrefixes>",
           "azureFirewallSettings": {
             "azureSkuTier": "Standard",
-            "enableTelemetry": true,
+            "diagnosticSettings": [
+              {
+                "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+                "eventHubName": "<eventHubName>",
+                "storageAccountResourceId": "<storageAccountResourceId>",
+                "workspaceResourceId": "<workspaceResourceId>"
+              }
+            ],
             "location": "<location>",
             "publicIPAddressObject": {
               "name": "hub1PublicIp"
@@ -1062,13 +1083,8 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "enableAzureFirewall": true,
           "enableBastion": true,
           "enablePeering": false,
-          "enableTelemetry": true,
           "flowTimeoutInMinutes": 30,
           "location": "<location>",
-          "lock": {
-            "kind": "CanNotDelete",
-            "name": "hub1Lock"
-          },
           "routes": [
             {
               "name": "defaultRoute",
@@ -1124,7 +1140,14 @@ param hubVirtualNetworks = {
     addressPrefixes: '<addressPrefixes>'
     azureFirewallSettings: {
       azureSkuTier: 'Standard'
-      enableTelemetry: true
+      diagnosticSettings: [
+        {
+          eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+          eventHubName: '<eventHubName>'
+          storageAccountResourceId: '<storageAccountResourceId>'
+          workspaceResourceId: '<workspaceResourceId>'
+        }
+      ]
       location: '<location>'
       publicIPAddressObject: {
         name: 'hub1PublicIp'
@@ -1165,13 +1188,8 @@ param hubVirtualNetworks = {
     enableAzureFirewall: true
     enableBastion: true
     enablePeering: false
-    enableTelemetry: true
     flowTimeoutInMinutes: 30
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'hub1Lock'
-    }
     routes: [
       {
         name: 'defaultRoute'
@@ -1266,7 +1284,6 @@ The hub virtual networks to create.
 | [`enableAzureFirewall`](#parameter-hubvirtualnetworks>any_other_property<enableazurefirewall) | bool | Enable/Disable Azure Firewall for the virtual network. |
 | [`enableBastion`](#parameter-hubvirtualnetworks>any_other_property<enablebastion) | bool | Enable/Disable Azure Bastion for the virtual network. |
 | [`enablePeering`](#parameter-hubvirtualnetworks>any_other_property<enablepeering) | bool | Enable/Disable peering for the virtual network. |
-| [`enableTelemetry`](#parameter-hubvirtualnetworks>any_other_property<enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`flowTimeoutInMinutes`](#parameter-hubvirtualnetworks>any_other_property<flowtimeoutinminutes) | int | The flow timeout in minutes. |
 | [`location`](#parameter-hubvirtualnetworks>any_other_property<location) | string | The location of the virtual network. Defaults to the location of the resource group. |
 | [`lock`](#parameter-hubvirtualnetworks>any_other_property<lock) | object | The lock settings of the virtual network. |
@@ -1302,7 +1319,6 @@ The Azure Firewall config.
 | [`azureFirewallName`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsazurefirewallname) | string | The name of the Azure Firewall. |
 | [`azureSkuTier`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsazureskutier) | string | Azure Firewall SKU. |
 | [`diagnosticSettings`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettings) | array | Diagnostic settings. |
-| [`enableTelemetry`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`firewallPolicyId`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsfirewallpolicyid) | string | Firewall policy ID. |
 | [`hubIpAddresses`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingshubipaddresses) | object | Hub IP addresses. |
 | [`location`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingslocation) | string | The location of the virtual network. Defaults to the location of the resource group. |
@@ -1316,7 +1332,7 @@ The Azure Firewall config.
 | [`roleAssignments`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsroleassignments) | array | Role assignments. |
 | [`tags`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingstags) | object | Tags of the resource. |
 | [`threatIntelMode`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsthreatintelmode) | string | Threat Intel mode. |
-| [`virtualHub`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsvirtualhub) | string | Virtual Hub ID. |
+| [`virtualHubResourceId`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsvirtualhubresourceid) | string | Virtual Hub resource dID. |
 | [`zones`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingszones) | array | Zones. |
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.additionalPublicIpConfigurations`
@@ -1367,14 +1383,14 @@ Diagnostic settings.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`eventHubAuthorizationRuleResourceId`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
-| [`eventHubName`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value. |
+| [`eventHubName`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`logAnalyticsDestinationType`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
 | [`logCategoriesAndGroups`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingsname) | string | The name of diagnostic setting. |
-| [`storageAccountResourceId`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value. |
-| [`workspaceResourceId`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value. |
+| [`name`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.eventHubAuthorizationRuleResourceId`
 
@@ -1385,7 +1401,7 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.eventHubName`
 
-Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value.
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
@@ -1482,31 +1498,24 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.storageAccountResourceId`
 
-Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value.
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings.workspaceResourceId`
 
-Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value.
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
-
-### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.firewallPolicyId`
 
@@ -1542,6 +1551,7 @@ Lock settings.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.lock.kind`
 
@@ -1561,6 +1571,13 @@ Specify the type of lock.
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -1718,9 +1735,9 @@ Threat Intel mode.
 - Required: No
 - Type: string
 
-### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.virtualHub`
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.virtualHubResourceId`
 
-Virtual Hub ID.
+Virtual Hub resource dID.
 
 - Required: No
 - Type: string
@@ -1836,14 +1853,14 @@ The diagnostic settings of the virtual network.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`eventHubAuthorizationRuleResourceId`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
-| [`eventHubName`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value. |
+| [`eventHubName`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`logAnalyticsDestinationType`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
 | [`logCategoriesAndGroups`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingsname) | string | The name of diagnostic setting. |
-| [`storageAccountResourceId`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value. |
-| [`workspaceResourceId`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value. |
+| [`name`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-hubvirtualnetworks>any_other_property<diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.eventHubAuthorizationRuleResourceId`
 
@@ -1854,7 +1871,7 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.eventHubName`
 
-Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value.
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
@@ -1951,21 +1968,21 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.storageAccountResourceId`
 
-Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value.
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.diagnosticSettings.workspaceResourceId`
 
-Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value.
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
@@ -1998,13 +2015,6 @@ Enable/Disable peering for the virtual network.
 - Required: No
 - Type: bool
 
-### Parameter: `hubVirtualNetworks.>Any_other_property<.enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.flowTimeoutInMinutes`
 
 The flow timeout in minutes.
@@ -2032,6 +2042,7 @@ The lock settings of the virtual network.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-hubvirtualnetworks>any_other_property<lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-hubvirtualnetworks>any_other_property<lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-hubvirtualnetworks>any_other_property<locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.lock.kind`
 
@@ -2051,6 +2062,13 @@ Specify the type of lock.
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `hubVirtualNetworks.>Any_other_property<.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2270,10 +2288,12 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/azure-firewall:0.5.1` | Remote reference |
-| `br/public:avm/res/network/bastion-host:0.4.0` | Remote reference |
-| `br/public:avm/res/network/route-table:0.4.0` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.5.0` | Remote reference |
+| `br/public:avm/res/network/azure-firewall:0.7.1` | Remote reference |
+| `br/public:avm/res/network/bastion-host:0.6.1` | Remote reference |
+| `br/public:avm/res/network/route-table:0.4.1` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 

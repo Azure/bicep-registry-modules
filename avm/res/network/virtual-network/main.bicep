@@ -7,8 +7,11 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Required. An Array of 1 or more IP Address Prefixes for the Virtual Network.')
+@description('Required. An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`.')
 param addressPrefixes array
+
+@description('Optional. Number of IP addresses allocated from the pool. To be used only when the addressPrefix param is defined with a resource ID of an IPAM pool.')
+param ipamPoolNumberOfIpAddresses string?
 
 @description('Optional. The BGP community associated with the virtual network.')
 param virtualNetworkBgpCommunity string?
@@ -43,7 +46,7 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -59,6 +62,8 @@ param enableTelemetry bool = true
 
 @description('Optional. Indicates if VM protection is enabled for all the subnets in the virtual network.')
 param enableVmProtection bool?
+
+var enableReferencedModulesTelemetry = false
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -112,14 +117,25 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-01-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   name: name
   location: location
   tags: tags
   properties: {
-    addressSpace: {
-      addressPrefixes: addressPrefixes
-    }
+    addressSpace: contains(addressPrefixes[0], '/Microsoft.Network/networkManagers/')
+      ? {
+          ipamPoolPrefixAllocations: [
+            {
+              pool: {
+                id: addressPrefixes[0]
+              }
+              numberOfIpAddresses: ipamPoolNumberOfIpAddresses
+            }
+          ]
+        }
+      : {
+          addressPrefixes: addressPrefixes
+        }
     bgpCommunities: !empty(virtualNetworkBgpCommunity)
       ? {
           virtualNetworkCommunity: virtualNetworkBgpCommunity!
@@ -156,6 +172,7 @@ module virtualNetwork_subnets 'subnet/main.bicep' = [
       name: subnet.name
       addressPrefix: subnet.?addressPrefix
       addressPrefixes: subnet.?addressPrefixes
+      ipamPoolPrefixAllocations: subnet.?ipamPoolPrefixAllocations
       applicationGatewayIPConfigurations: subnet.?applicationGatewayIPConfigurations
       delegation: subnet.?delegation
       natGatewayResourceId: subnet.?natGatewayResourceId
@@ -168,6 +185,7 @@ module virtualNetwork_subnets 'subnet/main.bicep' = [
       serviceEndpoints: subnet.?serviceEndpoints
       defaultOutboundAccess: subnet.?defaultOutboundAccess
       sharingScope: subnet.?sharingScope
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -224,9 +242,9 @@ resource virtualNetwork_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!e
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: virtualNetwork
 }
@@ -300,6 +318,7 @@ output location string = virtualNetwork.location
 //   Definitions   //
 // =============== //
 
+@export()
 type peeringType = {
   @description('Optional. The Name of VNET Peering resource. If not provided, default value will be peer-localVnetName-remoteVnetName.')
   name: string?
@@ -344,6 +363,7 @@ type peeringType = {
   remotePeeringUseRemoteGateways: bool?
 }
 
+@export()
 type subnetType = {
   @description('Required. The Name of the subnet resource.')
   name: string
@@ -353,6 +373,19 @@ type subnetType = {
 
   @description('Conditional. List of address prefixes for the subnet. Required if `addressPrefix` is empty.')
   addressPrefixes: string[]?
+
+  @description('Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty and the VNet address space configured to use IPAM Pool.')
+  ipamPoolPrefixAllocations: [
+    {
+      @description('Required. The Resource ID of the IPAM pool.')
+      pool: {
+        @description('Required. The Resource ID of the IPAM pool.')
+        id: string
+      }
+      @description('Required. Number of IP addresses allocated from the pool.')
+      numberOfIpAddresses: string
+    }
+  ]?
 
   @description('Optional. Application gateway IP configurations of virtual network resource.')
   applicationGatewayIPConfigurations: object[]?
