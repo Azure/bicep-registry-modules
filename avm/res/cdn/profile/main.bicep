@@ -49,7 +49,7 @@ param afdEndpoints afdEndpointType[] = []
 param securityPolicies securityPolicyType[] = []
 
 @description('Optional. Endpoint tags.')
-param tags object?
+param tags resourceInput<'Microsoft.Cdn/profiles@2025-06-01'>.tags?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
