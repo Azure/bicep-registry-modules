@@ -224,7 +224,6 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
         probeName: 'probe2'
       }
     ]
-    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -392,9 +391,6 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "lock": {
       "value": {
         "kind": "CanNotDelete",
@@ -558,7 +554,6 @@ param loadBalancingRules = [
     probeName: 'probe2'
   }
 ]
-param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'

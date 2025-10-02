@@ -27,20 +27,27 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2024-07-01' = {
   ]
 }
 
-resource vnet 'Microsoft.Network/virtualNetworks@2024-07-01' = {
+var addressPrefix = '10.0.0.0/16'
+
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   name: virtualNetworkName
   location: location
   properties: {
     addressSpace: {
       addressPrefixes: [
-        '10.0.0.0/16'
+        addressPrefix
       ]
     }
     subnets: [
       {
-        name: 'default'
+        name: 'defaultSubnet'
         properties: {
-          addressPrefix: '10.0.0.0/24'
+          addressPrefix: cidrSubnet(addressPrefix, 16, 0)
+          serviceEndpoints: [
+            {
+              service: 'Microsoft.KeyVault'
+            }
+          ]
         }
       }
     ]
@@ -59,4 +66,4 @@ output publicIPResourceId string = publicIP.id
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 
 @description('The resource ID of the created Virtual Network.')
-output virtualNetworkResourceId string = vnet.id
+output virtualNetworkResourceId string = virtualNetwork.id
