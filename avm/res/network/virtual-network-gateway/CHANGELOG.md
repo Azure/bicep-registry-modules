@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-network-gateway/CHANGELOG.md).
 
-## 0.9.1
+## 0.10.0
 
 ### Changes
 
@@ -10,7 +10,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- None
+- Updated referenced `avm/res/network/public-ip-address` module version to `0.9.0` which uses `availabilityZones` instead of `zones`.
 
 ## 0.9.0
 
