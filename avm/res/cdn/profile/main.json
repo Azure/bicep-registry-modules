@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "13802973968710931826"
+      "templateHash": "4341435923657449536"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile."
@@ -434,7 +434,8 @@
           "type": "string",
           "allowedValues": [
             "TLS10",
-            "TLS12"
+            "TLS12",
+            "TLS13"
           ],
           "nullable": true,
           "metadata": {
@@ -1186,7 +1187,7 @@
     },
     "profile": {
       "type": "Microsoft.Cdn/profiles",
-      "apiVersion": "2025-04-15",
+      "apiVersion": "2025-06-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
@@ -1823,7 +1824,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "1129107995084048204"
+              "templateHash": "1486369118418758330"
             },
             "name": "CDN Profiles Custom Domains",
             "description": "This module deploys a CDN Profile Custom Domains."
@@ -1880,7 +1881,8 @@
                   "type": "string",
                   "allowedValues": [
                     "TLS10",
-                    "TLS12"
+                    "TLS12",
+                    "TLS13"
                   ],
                   "nullable": true,
                   "metadata": {
@@ -2001,7 +2003,8 @@
               "defaultValue": "TLS12",
               "allowedValues": [
                 "TLS10",
-                "TLS12"
+                "TLS12",
+                "TLS13"
               ],
               "metadata": {
                 "description": "Optional. The minimum TLS version required for the custom domain. Default value: TLS12."
@@ -2045,7 +2048,7 @@
             },
             "customDomain": {
               "type": "Microsoft.Cdn/profiles/customDomains",
-              "apiVersion": "2025-04-15",
+              "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
               "properties": {
                 "azureDnsZone": "[if(not(empty(parameters('azureDnsZoneResourceId'))), createObject('id', parameters('azureDnsZoneResourceId')), null())]",
@@ -4205,7 +4208,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('profile', '2025-04-15', 'full').location]"
+      "value": "[reference('profile', '2025-06-01', 'full').location]"
     },
     "endpointName": {
       "type": "string",
@@ -4234,7 +4237,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('profile', '2025-04-15', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('profile', '2025-06-01', 'full'), 'identity'), 'principalId')]"
     },
     "dnsValidation": {
       "type": "array",

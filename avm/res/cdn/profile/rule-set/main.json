@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "9308092005992913249"
+      "version": "0.37.4.10188",
+      "templateHash": "2563031334159492138"
     },
     "name": "CDN Profiles Rule Sets",
     "description": "This module deploys a CDN Profile rule set."
@@ -165,8 +165,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "13557087255389320076"
+              "version": "0.37.4.10188",
+              "templateHash": "14802510232650562515"
             },
             "name": "CDN Profiles Rules",
             "description": "This module deploys a CDN Profile rule."

@@ -12,7 +12,7 @@ This module deploys a CDN Profile Custom Domains.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Cdn/profiles/customDomains` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_customdomains.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/customDomains)</li></ul> |
+| `Microsoft.Cdn/profiles/customDomains` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_customdomains.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-06-01/profiles/customDomains)</li></ul> |
 
 ## Parameters
 
@@ -114,6 +114,7 @@ The minimum TLS version required for the custom domain. Default value: TLS12.
   [
     'TLS10'
     'TLS12'
+    'TLS13'
   ]
   ```
 
