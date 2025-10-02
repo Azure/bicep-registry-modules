@@ -47,7 +47,7 @@ param gpuInstanceProfile string?
 param kubeletDiskType string?
 
 @description('Optional. Linux OS configuration.')
-param linuxOSConfig resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-05-02-preview'>.properties.linuxOSConfig?
+param linuxOSConfig resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-07-02-preview'>.properties.linuxOSConfig?
 
 @description('Optional. The maximum number of nodes for auto-scaling.')
 param maxCount int?
@@ -162,13 +162,13 @@ param vnetSubnetResourceId string?
 param workloadRuntime string?
 
 @description('Optional. Windows OS configuration.')
-param windowsProfile resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-05-02-preview'>.properties.windowsProfile?
+param windowsProfile resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-07-02-preview'>.properties.windowsProfile?
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-05-02-preview' existing = {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-07-02-preview' existing = {
   name: managedClusterName
 }
 
-resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2025-05-02-preview' = {
+resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2025-07-02-preview' = {
   name: name
   parent: managedCluster
   properties: {

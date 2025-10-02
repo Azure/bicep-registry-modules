@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "10674124128040534735"
+      "version": "0.38.3.11034",
+      "templateHash": "6331628706501898061"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
@@ -114,7 +114,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-05-02-preview#properties/properties/properties/linuxOSConfig"
+          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-07-02-preview#properties/properties/properties/linuxOSConfig"
         },
         "description": "Optional. Linux OS configuration."
       },
@@ -344,7 +344,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-05-02-preview#properties/properties/properties/windowsProfile"
+          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-07-02-preview#properties/properties/properties/windowsProfile"
         },
         "description": "Optional. Windows OS configuration."
       },
@@ -355,12 +355,12 @@
     "managedCluster": {
       "existing": true,
       "type": "Microsoft.ContainerService/managedClusters",
-      "apiVersion": "2025-05-02-preview",
+      "apiVersion": "2025-07-02-preview",
       "name": "[parameters('managedClusterName')]"
     },
     "agentPool": {
       "type": "Microsoft.ContainerService/managedClusters/agentPools",
-      "apiVersion": "2025-05-02-preview",
+      "apiVersion": "2025-07-02-preview",
       "name": "[format('{0}/{1}', parameters('managedClusterName'), parameters('name'))]",
       "properties": {
         "availabilityZones": "[map(coalesce(parameters('availabilityZones'), createArray()), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
