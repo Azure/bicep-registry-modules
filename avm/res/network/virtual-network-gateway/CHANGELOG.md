@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-network-gateway/CHANGELOG.md).
 
+## 0.10.0
+
+### Changes
+
+- Fixed ExpressRoute gateway deployments by setting publicIPAddress to null when gatewayType is ExpressRoute, as Azure now manages these IPs automatically.
+
+### Breaking Changes
+
+- Updated referenced `avm/res/network/public-ip-address` module version to `0.9.0` which uses `availabilityZones` instead of `zones`.
+
 ## 0.9.0
 
 ### Changes
