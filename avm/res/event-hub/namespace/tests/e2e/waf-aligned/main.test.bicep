@@ -68,9 +68,7 @@ module testDeployment '../../../main.bicep' = [
       skuName: 'Standard'
       skuCapacity: 2
       managedIdentities: {
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
+        userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
       }
       authorizationRules: [
         {

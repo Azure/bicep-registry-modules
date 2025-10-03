@@ -120,7 +120,7 @@ var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
         ? 'SystemAssigned'
-        : (!empty(managedIdentities.?userAssignedResourceId ?? {}) ? 'UserAssigned' : null)
+        : (!empty(managedIdentities.?userAssignedResourceId) ? 'UserAssigned' : null)
       userAssignedIdentities: !empty(managedIdentities.?userAssignedResourceId)
         ? { '${managedIdentities.?userAssignedResourceId}': {} }
         : null

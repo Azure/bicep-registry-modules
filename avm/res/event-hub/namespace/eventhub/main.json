@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.5.1644",
-      "templateHash": "16763470862840239583"
+      "templateHash": "1163176676996133406"
     },
     "name": "Event Hub Namespace Event Hubs",
     "description": "This module deploys an Event Hub Namespace Event Hub."
@@ -441,7 +441,7 @@
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
-    "captureIdentity": "[if(not(empty(tryGet(tryGet(parameters('captureDescription'), 'destination'), 'identity'))), createObject('type', if(coalesce(tryGet(parameters('captureDescription').destination.identity, 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(coalesce(tryGet(parameters('captureDescription').destination.identity, 'userAssignedResourceId'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentity', if(not(empty(tryGet(parameters('captureDescription').destination.identity, 'userAssignedResourceId'))), parameters('captureDescription').destination.identity.userAssignedResourceId, null())), null())]"
+    "captureIdentity": "[if(not(empty(tryGet(tryGet(parameters('captureDescription'), 'destination'), 'identity'))), createObject('type', if(coalesce(tryGet(parameters('captureDescription').destination.identity, 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(tryGet(parameters('captureDescription').destination.identity, 'userAssignedResourceId'))), 'UserAssigned', null())), 'userAssignedIdentity', if(not(empty(tryGet(parameters('captureDescription').destination.identity, 'userAssignedResourceId'))), parameters('captureDescription').destination.identity.userAssignedResourceId, null())), null())]"
   },
   "resources": {
     "avmTelemetry": {

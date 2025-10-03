@@ -114,7 +114,7 @@ var captureIdentity = !empty(captureDescription.?destination.?identity)
   ? {
       type: (captureDescription!.destination!.identity!.?systemAssigned ?? false)
         ? 'SystemAssigned'
-        : (!empty(captureDescription!.destination!.identity!.?userAssignedResourceId ?? {}) ? 'UserAssigned' : null)
+        : (!empty(captureDescription!.destination!.identity!.?userAssignedResourceId) ? 'UserAssigned' : null)
       userAssignedIdentity: !empty(captureDescription!.destination!.identity!.?userAssignedResourceId)
         ? captureDescription!.destination!.identity!.userAssignedResourceId!
         : null

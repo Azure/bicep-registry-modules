@@ -421,9 +421,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     }
     managedIdentities: {
       systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
     }
     maximumThroughputUnits: 4
     minimumTlsVersion: '1.2'
@@ -643,10 +640,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
+        "systemAssigned": true
       }
     },
     "maximumThroughputUnits": {
@@ -867,9 +861,6 @@ param lock = {
 }
 param managedIdentities = {
   systemAssigned: true
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
 }
 param maximumThroughputUnits = 4
 param minimumTlsVersion = '1.2'
@@ -1050,9 +1041,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     isAutoInflateEnabled: true
     kafkaEnabled: true
     managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
+      userAssignedResourceId: '<userAssignedResourceId>'
     }
     maximumThroughputUnits: 4
     minimumTlsVersion: '1.2'
@@ -1224,9 +1213,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     },
     "managedIdentities": {
       "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
+        "userAssignedResourceId": "<userAssignedResourceId>"
       }
     },
     "maximumThroughputUnits": {
@@ -1398,9 +1385,7 @@ param eventhubs = [
 param isAutoInflateEnabled = true
 param kafkaEnabled = true
 param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
+  userAssignedResourceId: '<userAssignedResourceId>'
 }
 param maximumThroughputUnits = 4
 param minimumTlsVersion = '1.2'

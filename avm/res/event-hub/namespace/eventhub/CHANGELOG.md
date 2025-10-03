@@ -11,6 +11,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Breaking Changes
 
 - Aligned `captureDescription` properties with resource provider format. For example, the parameter `captureDescriptionIntervalInSeconds` was moved to the parameter `captureDescription` as `captureDescription.intervalInSeconds`.
+- Updated `identity` parameter to support only a single user-assigned or system-assigned identity as per what the resource provider supports
 
 ## 0.1.1
 

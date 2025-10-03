@@ -12,6 +12,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Breaking Changes
 
 - Aligned `eventhubs.captureDescription` properties with resource provider format. For example, the `eventhubs` parameter `captureDescriptionIntervalInSeconds` was moved to the parameter `captureDescription` as `captureDescription.intervalInSeconds`.
+- Adjusted
 
 ## 0.12.5
 
