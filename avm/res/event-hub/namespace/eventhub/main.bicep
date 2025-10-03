@@ -48,10 +48,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Properties of capture description.')
-param captureDescription resourceInput<'Microsoft.EventHub/namespaces/eventhubs@2024-01-01'>.properties.captureDescription?
-
-@description('Optional. A value that indicates whether capture description is enabled.')
-param captureDescriptionEnabled bool = false
+param captureDescription captureDescriptionType?
 
 @description('Optional. A value that indicates whether to enable retention description properties. If it is set to true the messageRetentionInDays property is ignored.')
 param retentionDescriptionEnabled bool = false
@@ -113,6 +110,17 @@ var formattedRoleAssignments = [
   })
 ]
 
+var captureIdentity = !empty(captureDescription.?destination.?identity)
+  ? {
+      type: (captureDescription!.destination!.identity!.?systemAssigned ?? false)
+        ? 'SystemAssigned'
+        : (!empty(captureDescription!.destination!.identity!.?userAssignedResourceId ?? {}) ? 'UserAssigned' : null)
+      userAssignedIdentity: !empty(captureDescription!.destination!.identity!.?userAssignedResourceId)
+        ? captureDescription!.destination!.identity!.?userAssignedResourceId
+        : null
+    }
+  : null
+
 // ============== //
 // Resources      //
 // ============== //
@@ -158,9 +166,20 @@ resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2024-01-01' = {
             : null
         }
       : null
-    ...(captureDescriptionEnabled
+    ...(captureDescription.?enabled ?? false
       ? {
-          captureDescription: captureDescription
+          captureDescription: {
+            destination: {
+              name: captureDescription!.destination!.?name
+              identity: captureIdentity
+              properties: captureDescription!.destination!.?properties
+            }
+            enabled: captureDescription!.enabled!
+            encoding: captureDescription!.?encoding
+            intervalInSeconds: captureDescription!.?intervalInSeconds
+            sizeLimitInBytes: captureDescription!.?sizeLimitInBytes
+            skipEmptyArchives: captureDescription!.?skipEmptyArchives
+          }
         }
       : {})
   }
@@ -252,4 +271,49 @@ type consumerGroupType = {
 
   @description('Optional. User Metadata is a placeholder to store user-defined string data with maximum length 1024. e.g. it can be used to store descriptive data, such as list of teams and their contact information also user-defined configuration settings can be stored.')
   userMetadata: string?
+}
+
+@export()
+@description('The type of a capture description.')
+type captureDescriptionType = {
+  @description('Optional. Properties of Destination where capture will be stored. (Storage Account, Blob Names)')
+  destination: {
+    @description('Optional. The identity used for the capture destination.')
+    identity: managedIdentityType?
+
+    @description('Optional. Name for capture destination.')
+    name: string
+
+    @description('Optional. Properties describing the storage account, blob container and archive name format for capture destination.')
+    properties: resourceInput<'Microsoft.EventHub/namespaces/eventhubs@2024-01-01'>.properties.captureDescription.destination.properties?
+  }?
+
+  @description('Optional. A value that indicates whether capture description is enabled.')
+  enabled: bool?
+
+  @description('Optional. Enumerates the possible values for the encoding format of capture description. Note: "AvroDeflate" will be deprecated in New API Version.')
+  encoding: ('Avro' | 'AvroDeflate')?
+
+  @description('Optional. The time window allows you to set the frequency with which the capture to Azure Blobs will happen.')
+  @minValue(60)
+  @maxValue(900)
+  intervalInSeconds: int?
+
+  @description('Optional. The size window defines the amount of data built up in your Event Hub before an capture operation.')
+  @minValue(10485760)
+  @maxValue(524288000)
+  sizeLimitInBytes: int?
+
+  @description('Optional. A value that indicates whether to Skip Empty Archives.')
+  skipEmptyArchives: bool?
+}
+
+@export()
+@description('An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.')
+type managedIdentityType = {
+  @description('Optional. Enables system assigned managed identity on the resource.')
+  systemAssigned: bool?
+
+  @description('Optional. The resource ID to assign to the resource.')
+  userAssignedResourceId: string?
 }

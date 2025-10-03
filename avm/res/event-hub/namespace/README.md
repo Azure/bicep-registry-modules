@@ -367,15 +367,23 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
             ]
           }
         ]
-        captureDescriptionDestinationArchiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
-        captureDescriptionDestinationBlobContainer: 'eventhub'
-        captureDescriptionDestinationName: 'EventHubArchive.AzureBlockBlob'
-        captureDescriptionDestinationStorageAccountResourceId: '<captureDescriptionDestinationStorageAccountResourceId>'
-        captureDescriptionEnabled: true
-        captureDescriptionEncoding: 'Avro'
-        captureDescriptionIntervalInSeconds: 300
-        captureDescriptionSizeLimitInBytes: 314572800
-        captureDescriptionSkipEmptyArchives: true
+        captureDescription: {
+          destination: {
+            identity: {
+              systemAssigned: true
+            }
+            name: 'EventHubArchive.AzureBlockBlob'
+            properties: {
+              archiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
+              blobContainer: 'eventhub'
+              storageAccountResourceId: '<storageAccountResourceId>'
+            }
+          }
+          encoding: 'Avro'
+          intervalInSeconds: 300
+          sizeLimitInBytes: 314572800
+          skipEmptyArchives: true
+        }
         consumergroups: [
           {
             name: 'custom'
@@ -572,15 +580,23 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
               ]
             }
           ],
-          "captureDescriptionDestinationArchiveNameFormat": "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}",
-          "captureDescriptionDestinationBlobContainer": "eventhub",
-          "captureDescriptionDestinationName": "EventHubArchive.AzureBlockBlob",
-          "captureDescriptionDestinationStorageAccountResourceId": "<captureDescriptionDestinationStorageAccountResourceId>",
-          "captureDescriptionEnabled": true,
-          "captureDescriptionEncoding": "Avro",
-          "captureDescriptionIntervalInSeconds": 300,
-          "captureDescriptionSizeLimitInBytes": 314572800,
-          "captureDescriptionSkipEmptyArchives": true,
+          "captureDescription": {
+            "destination": {
+              "identity": {
+                "systemAssigned": true
+              },
+              "name": "EventHubArchive.AzureBlockBlob",
+              "properties": {
+                "archiveNameFormat": "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}",
+                "blobContainer": "eventhub",
+                "storageAccountResourceId": "<storageAccountResourceId>"
+              }
+            },
+            "encoding": "Avro",
+            "intervalInSeconds": 300,
+            "sizeLimitInBytes": 314572800,
+            "skipEmptyArchives": true
+          },
           "consumergroups": [
             {
               "name": "custom",
@@ -797,15 +813,23 @@ param eventhubs = [
         ]
       }
     ]
-    captureDescriptionDestinationArchiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
-    captureDescriptionDestinationBlobContainer: 'eventhub'
-    captureDescriptionDestinationName: 'EventHubArchive.AzureBlockBlob'
-    captureDescriptionDestinationStorageAccountResourceId: '<captureDescriptionDestinationStorageAccountResourceId>'
-    captureDescriptionEnabled: true
-    captureDescriptionEncoding: 'Avro'
-    captureDescriptionIntervalInSeconds: 300
-    captureDescriptionSizeLimitInBytes: 314572800
-    captureDescriptionSkipEmptyArchives: true
+    captureDescription: {
+      destination: {
+        identity: {
+          systemAssigned: true
+        }
+        name: 'EventHubArchive.AzureBlockBlob'
+        properties: {
+          archiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
+          blobContainer: 'eventhub'
+          storageAccountResourceId: '<storageAccountResourceId>'
+        }
+      }
+      encoding: 'Avro'
+      intervalInSeconds: 300
+      sizeLimitInBytes: 314572800
+      skipEmptyArchives: true
+    }
     consumergroups: [
       {
         name: 'custom'
@@ -987,15 +1011,24 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
             ]
           }
         ]
-        captureDescriptionDestinationArchiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
-        captureDescriptionDestinationBlobContainer: 'eventhub'
-        captureDescriptionDestinationName: 'EventHubArchive.AzureBlockBlob'
-        captureDescriptionDestinationStorageAccountResourceId: '<captureDescriptionDestinationStorageAccountResourceId>'
-        captureDescriptionEnabled: true
-        captureDescriptionEncoding: 'Avro'
-        captureDescriptionIntervalInSeconds: 300
-        captureDescriptionSizeLimitInBytes: 314572800
-        captureDescriptionSkipEmptyArchives: true
+        captureDescription: {
+          destination: {
+            identity: {
+              userAssignedResourceId: '<userAssignedResourceId>'
+            }
+            name: 'EventHubArchive.AzureBlockBlob'
+            properties: {
+              archiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
+              blobContainer: 'eventhub'
+              storageAccountResourceId: '<storageAccountResourceId>'
+            }
+          }
+          enabled: true
+          encoding: 'Avro'
+          intervalInSeconds: 300
+          sizeLimitInBytes: 314572800
+          skipEmptyArchives: true
+        }
         consumergroups: [
           {
             name: 'custom'
@@ -1142,15 +1175,24 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
               ]
             }
           ],
-          "captureDescriptionDestinationArchiveNameFormat": "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}",
-          "captureDescriptionDestinationBlobContainer": "eventhub",
-          "captureDescriptionDestinationName": "EventHubArchive.AzureBlockBlob",
-          "captureDescriptionDestinationStorageAccountResourceId": "<captureDescriptionDestinationStorageAccountResourceId>",
-          "captureDescriptionEnabled": true,
-          "captureDescriptionEncoding": "Avro",
-          "captureDescriptionIntervalInSeconds": 300,
-          "captureDescriptionSizeLimitInBytes": 314572800,
-          "captureDescriptionSkipEmptyArchives": true,
+          "captureDescription": {
+            "destination": {
+              "identity": {
+                "userAssignedResourceId": "<userAssignedResourceId>"
+              },
+              "name": "EventHubArchive.AzureBlockBlob",
+              "properties": {
+                "archiveNameFormat": "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}",
+                "blobContainer": "eventhub",
+                "storageAccountResourceId": "<storageAccountResourceId>"
+              }
+            },
+            "enabled": true,
+            "encoding": "Avro",
+            "intervalInSeconds": 300,
+            "sizeLimitInBytes": 314572800,
+            "skipEmptyArchives": true
+          },
           "consumergroups": [
             {
               "name": "custom",
@@ -1307,15 +1349,24 @@ param eventhubs = [
         ]
       }
     ]
-    captureDescriptionDestinationArchiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
-    captureDescriptionDestinationBlobContainer: 'eventhub'
-    captureDescriptionDestinationName: 'EventHubArchive.AzureBlockBlob'
-    captureDescriptionDestinationStorageAccountResourceId: '<captureDescriptionDestinationStorageAccountResourceId>'
-    captureDescriptionEnabled: true
-    captureDescriptionEncoding: 'Avro'
-    captureDescriptionIntervalInSeconds: 300
-    captureDescriptionSizeLimitInBytes: 314572800
-    captureDescriptionSkipEmptyArchives: true
+    captureDescription: {
+      destination: {
+        identity: {
+          userAssignedResourceId: '<userAssignedResourceId>'
+        }
+        name: 'EventHubArchive.AzureBlockBlob'
+        properties: {
+          archiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
+          blobContainer: 'eventhub'
+          storageAccountResourceId: '<storageAccountResourceId>'
+        }
+      }
+      enabled: true
+      encoding: 'Avro'
+      intervalInSeconds: 300
+      sizeLimitInBytes: 314572800
+      skipEmptyArchives: true
+    }
     consumergroups: [
       {
         name: 'custom'
@@ -1707,7 +1758,440 @@ The event hubs to deploy into this namespace.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-eventhubsname) | string | The name of the Event Hub. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authorizationRules`](#parameter-eventhubsauthorizationrules) | array | Authorization Rules for the Event Hub. |
+| [`captureDescription`](#parameter-eventhubscapturedescription) | object | Properties of capture description. |
+| [`consumergroups`](#parameter-eventhubsconsumergroups) | array | The consumer groups to create in this Event Hub instance. |
+| [`lock`](#parameter-eventhubslock) | object | The lock settings of the service. |
+| [`messageRetentionInDays`](#parameter-eventhubsmessageretentionindays) | int | Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Will be automatically set to infinite retention if cleanup policy is set to "Compact". |
+| [`partitionCount`](#parameter-eventhubspartitioncount) | int | Number of partitions created for the Event Hub, allowed values are from 1 to 32 partitions. |
+| [`retentionDescriptionCleanupPolicy`](#parameter-eventhubsretentiondescriptioncleanuppolicy) | string | Retention cleanup policy. Enumerates the possible values for cleanup policy. |
+| [`retentionDescriptionEnabled`](#parameter-eventhubsretentiondescriptionenabled) | bool | A value that indicates whether to enable retention description properties. If it is set to true the messageRetentionInDays property is ignored. |
+| [`retentionDescriptionRetentionTimeInHours`](#parameter-eventhubsretentiondescriptionretentiontimeinhours) | int | Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageRetentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue. |
+| [`retentionDescriptionTombstoneRetentionTimeInHours`](#parameter-eventhubsretentiondescriptiontombstoneretentiontimeinhours) | int | Retention cleanup policy. Number of hours to retain the tombstone markers of a compacted Event Hub. This value is only used when cleanupPolicy is Compact. Consumer must complete reading the tombstone marker within this specified amount of time if consumer begins from starting offset to ensure they get a valid snapshot for the specific key described by the tombstone marker within the compacted Event Hub. |
+| [`roleAssignments`](#parameter-eventhubsroleassignments) | array | Array of role assignments to create. |
+| [`status`](#parameter-eventhubsstatus) | string | Enumerates the possible values for the status of the Event Hub. |
+
+### Parameter: `eventhubs.name`
+
+The name of the Event Hub.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `eventhubs.authorizationRules`
+
+Authorization Rules for the Event Hub.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-eventhubsauthorizationrulesname) | string | The name of the Event Hub authorization rule. |
+| [`rights`](#parameter-eventhubsauthorizationrulesrights) | array | The allowed rights for an Event Hub authorization rule. |
+
+### Parameter: `eventhubs.authorizationRules.name`
+
+The name of the Event Hub authorization rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `eventhubs.authorizationRules.rights`
+
+The allowed rights for an Event Hub authorization rule.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'Listen'
+    'Manage'
+    'Send'
+  ]
+  ```
+
+### Parameter: `eventhubs.captureDescription`
+
+Properties of capture description.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-eventhubscapturedescriptiondestination) | object | Properties of Destination where capture will be stored. (Storage Account, Blob Names) |
+| [`enabled`](#parameter-eventhubscapturedescriptionenabled) | bool | A value that indicates whether capture description is enabled. |
+| [`encoding`](#parameter-eventhubscapturedescriptionencoding) | string | Enumerates the possible values for the encoding format of capture description. Note: "AvroDeflate" will be deprecated in New API Version. |
+| [`intervalInSeconds`](#parameter-eventhubscapturedescriptionintervalinseconds) | int | The time window allows you to set the frequency with which the capture to Azure Blobs will happen. |
+| [`sizeLimitInBytes`](#parameter-eventhubscapturedescriptionsizelimitinbytes) | int | The size window defines the amount of data built up in your Event Hub before an capture operation. |
+| [`skipEmptyArchives`](#parameter-eventhubscapturedescriptionskipemptyarchives) | bool | A value that indicates whether to Skip Empty Archives. |
+
+### Parameter: `eventhubs.captureDescription.destination`
+
+Properties of Destination where capture will be stored. (Storage Account, Blob Names)
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`identity`](#parameter-eventhubscapturedescriptiondestinationidentity) | object | The identity used for the capture destination. |
+| [`name`](#parameter-eventhubscapturedescriptiondestinationname) | string | Name for capture destination. |
+| [`properties`](#parameter-eventhubscapturedescriptiondestinationproperties) | object | Properties describing the storage account, blob container and archive name format for capture destination. |
+
+### Parameter: `eventhubs.captureDescription.destination.identity`
+
+The identity used for the capture destination.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-eventhubscapturedescriptiondestinationidentitysystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceId`](#parameter-eventhubscapturedescriptiondestinationidentityuserassignedresourceid) | string | The resource ID to assign to the resource. |
+
+### Parameter: `eventhubs.captureDescription.destination.identity.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `eventhubs.captureDescription.destination.identity.userAssignedResourceId`
+
+The resource ID to assign to the resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `eventhubs.captureDescription.destination.name`
+
+Name for capture destination.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `eventhubs.captureDescription.destination.properties`
+
+Properties describing the storage account, blob container and archive name format for capture destination.
+
+- Required: No
+- Type: object
+
+### Parameter: `eventhubs.captureDescription.enabled`
+
+A value that indicates whether capture description is enabled.
+
+- Required: No
+- Type: bool
+
+### Parameter: `eventhubs.captureDescription.encoding`
+
+Enumerates the possible values for the encoding format of capture description. Note: "AvroDeflate" will be deprecated in New API Version.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Avro'
+    'AvroDeflate'
+  ]
+  ```
+
+### Parameter: `eventhubs.captureDescription.intervalInSeconds`
+
+The time window allows you to set the frequency with which the capture to Azure Blobs will happen.
+
+- Required: No
+- Type: int
+- MinValue: 60
+- MaxValue: 900
+
+### Parameter: `eventhubs.captureDescription.sizeLimitInBytes`
+
+The size window defines the amount of data built up in your Event Hub before an capture operation.
+
+- Required: No
+- Type: int
+- MinValue: 10485760
+- MaxValue: 524288000
+
+### Parameter: `eventhubs.captureDescription.skipEmptyArchives`
+
+A value that indicates whether to Skip Empty Archives.
+
+- Required: No
+- Type: bool
+
+### Parameter: `eventhubs.consumergroups`
+
+The consumer groups to create in this Event Hub instance.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-eventhubsconsumergroupsname) | string | The name of the consumer group. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userMetadata`](#parameter-eventhubsconsumergroupsusermetadata) | string | User Metadata is a placeholder to store user-defined string data with maximum length 1024. e.g. it can be used to store descriptive data, such as list of teams and their contact information also user-defined configuration settings can be stored. |
+
+### Parameter: `eventhubs.consumergroups.name`
+
+The name of the consumer group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `eventhubs.consumergroups.userMetadata`
+
+User Metadata is a placeholder to store user-defined string data with maximum length 1024. e.g. it can be used to store descriptive data, such as list of teams and their contact information also user-defined configuration settings can be stored.
+
+- Required: No
+- Type: string
+
+### Parameter: `eventhubs.lock`
+
+The lock settings of the service.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-eventhubslockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-eventhubslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-eventhubslocknotes) | string | Specify the notes of the lock. |
+
+### Parameter: `eventhubs.lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `eventhubs.lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `eventhubs.lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `eventhubs.messageRetentionInDays`
+
+Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Will be automatically set to infinite retention if cleanup policy is set to "Compact".
+
+- Required: No
+- Type: int
+- MinValue: 1
+- MaxValue: 90
+
+### Parameter: `eventhubs.partitionCount`
+
+Number of partitions created for the Event Hub, allowed values are from 1 to 32 partitions.
+
+- Required: No
+- Type: int
+- MinValue: 1
+- MaxValue: 32
+
+### Parameter: `eventhubs.retentionDescriptionCleanupPolicy`
+
+Retention cleanup policy. Enumerates the possible values for cleanup policy.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Compact'
+    'Delete'
+  ]
+  ```
+
+### Parameter: `eventhubs.retentionDescriptionEnabled`
+
+A value that indicates whether to enable retention description properties. If it is set to true the messageRetentionInDays property is ignored.
+
+- Required: No
+- Type: bool
+
+### Parameter: `eventhubs.retentionDescriptionRetentionTimeInHours`
+
+Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageRetentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue.
+
+- Required: No
+- Type: int
+- MinValue: 1
+- MaxValue: 2160
+
+### Parameter: `eventhubs.retentionDescriptionTombstoneRetentionTimeInHours`
+
+Retention cleanup policy. Number of hours to retain the tombstone markers of a compacted Event Hub. This value is only used when cleanupPolicy is Compact. Consumer must complete reading the tombstone marker within this specified amount of time if consumer begins from starting offset to ensure they get a valid snapshot for the specific key described by the tombstone marker within the compacted Event Hub.
+
+- Required: No
+- Type: int
+- MinValue: 1
+- MaxValue: 2160
+
+### Parameter: `eventhubs.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+- Roles configurable by name:
+  - `'Azure Event Hubs Data Owner'`
+  - `'Azure Event Hubs Data Receiver'`
+  - `'Azure Event Hubs Data Sender'`
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-eventhubsroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-eventhubsroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-eventhubsroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-eventhubsroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-eventhubsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-eventhubsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-eventhubsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-eventhubsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `eventhubs.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `eventhubs.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `eventhubs.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `eventhubs.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `eventhubs.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `eventhubs.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `eventhubs.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `eventhubs.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `eventhubs.status`
+
+Enumerates the possible values for the status of the Event Hub.
+
+- Required: No
+- Type: string
 
 ### Parameter: `isAutoInflateEnabled`
 

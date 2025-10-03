@@ -131,15 +131,23 @@ module testDeployment '../../../main.bicep' = [
               ]
             }
           ]
-          captureDescriptionDestinationArchiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
-          captureDescriptionDestinationBlobContainer: 'eventhub'
-          captureDescriptionDestinationName: 'EventHubArchive.AzureBlockBlob'
-          captureDescriptionDestinationStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-          captureDescriptionEnabled: true
-          captureDescriptionEncoding: 'Avro'
-          captureDescriptionIntervalInSeconds: 300
-          captureDescriptionSizeLimitInBytes: 314572800
-          captureDescriptionSkipEmptyArchives: true
+          captureDescription: {
+            destination: {
+              name: 'EventHubArchive.AzureBlockBlob'
+              identity: {
+                systemAssigned: true
+              }
+              properties: {
+                archiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
+                blobContainer: 'eventhub'
+                storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+              }
+            }
+            intervalInSeconds: 300
+            sizeLimitInBytes: 314572800
+            skipEmptyArchives: true
+            encoding: 'Avro'
+          }
           consumergroups: [
             {
               name: 'custom'

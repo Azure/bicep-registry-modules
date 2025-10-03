@@ -104,7 +104,7 @@ param tags resourceInput<'Microsoft.EventHub/namespaces@2024-01-01'>.tags?
 param enableTelemetry bool = true
 
 @description('Optional. The event hubs to deploy into this namespace.')
-param eventhubs array = []
+param eventhubs eventHubType[]?
 
 @description('Optional. The disaster recovery config for this namespace.')
 param disasterRecoveryConfig disasterRecoveryConfigType?
@@ -273,7 +273,7 @@ module eventHubNamespace_disasterRecoveryConfig 'disaster-recovery-config/main.b
 }
 
 module eventHubNamespace_eventhubs 'eventhub/main.bicep' = [
-  for (eventHub, index) in eventhubs: {
+  for (eventHub, index) in (eventhubs ?? []): {
     name: '${uniqueString(deployment().name, location)}-EvhbNamespace-EventHub-${index}'
     params: {
       namespaceName: eventHubNamespace.name
@@ -281,7 +281,6 @@ module eventHubNamespace_eventhubs 'eventhub/main.bicep' = [
       enableTelemetry: enableReferencedModulesTelemetry
       authorizationRules: eventHub.?authorizationRules
       captureDescription: eventHub.?captureDescription
-      captureDescriptionEnabled: eventHub.?captureDescriptionEnabled
       consumergroups: eventHub.?consumergroups ?? []
       lock: eventHub.?lock ?? lock
       messageRetentionInDays: eventHub.?messageRetentionInDays
@@ -591,11 +590,14 @@ type secretsExportConfigurationType = {
   rootSecondaryKeyName: string?
 }
 
-import { consumerGroupType, eventHubAuthorizationRuleType } from 'eventhub/main.bicep'
+import { consumerGroupType, eventHubAuthorizationRuleType, captureDescriptionType } from 'eventhub/main.bicep'
 
 @export()
 @description('The type of an event hub.')
 type eventHubType = {
+  @description('Required. The name of the Event Hub.')
+  name: string
+
   @description('Optional. Authorization Rules for the Event Hub.')
   authorizationRules: eventHubAuthorizationRuleType[]?
 
@@ -622,10 +624,7 @@ type eventHubType = {
   roleAssignments: roleAssignmentType[]?
 
   @description('Optional. Properties of capture description.')
-  captureDescription: resourceInput<'Microsoft.EventHub/namespaces/eventhubs@2024-01-01'>.properties.captureDescription?
-
-  @description('Optional. A value that indicates whether capture description is enabled.')
-  captureDescriptionEnabled: bool?
+  captureDescription: captureDescriptionType?
 
   @description('Optional. A value that indicates whether to enable retention description properties. If it is set to true the messageRetentionInDays property is ignored.')
   retentionDescriptionEnabled: bool?

@@ -7,6 +7,9 @@ param virtualNetworkName string
 @description('Required. The name of the Storage Account to create.')
 param storageAccountName string
 
+@description('Required. The name of the Managed Identity to create.')
+param managedIdentityName string
+
 var addressPrefix = '10.0.0.0/16'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
@@ -58,6 +61,14 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
   }
   kind: 'StorageV2'
 }
+
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
+  name: managedIdentityName
+  location: location
+}
+
+@description('The resource ID of the created Managed Identity.')
+output managedIdentityResourceId string = managedIdentity.id
 
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id

@@ -39,15 +39,7 @@ This module deploys an Event Hub Namespace Event Hub.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`authorizationRules`](#parameter-authorizationrules) | array | Authorization Rules for the Event Hub. |
-| [`captureDescriptionDestinationArchiveNameFormat`](#parameter-capturedescriptiondestinationarchivenameformat) | string | Blob naming convention for archive, e.g. {Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}. Here all the parameters (Namespace,EventHub .. etc) are mandatory irrespective of order. |
-| [`captureDescriptionDestinationBlobContainer`](#parameter-capturedescriptiondestinationblobcontainer) | string | Blob container Name. |
-| [`captureDescriptionDestinationName`](#parameter-capturedescriptiondestinationname) | string | Name for capture destination. |
-| [`captureDescriptionDestinationStorageAccountResourceId`](#parameter-capturedescriptiondestinationstorageaccountresourceid) | string | Resource ID of the storage account to be used to create the blobs. |
-| [`captureDescriptionEnabled`](#parameter-capturedescriptionenabled) | bool | A value that indicates whether capture description is enabled. |
-| [`captureDescriptionEncoding`](#parameter-capturedescriptionencoding) | string | Enumerates the possible values for the encoding format of capture description. Note: "AvroDeflate" will be deprecated in New API Version. |
-| [`captureDescriptionIntervalInSeconds`](#parameter-capturedescriptionintervalinseconds) | int | The time window allows you to set the frequency with which the capture to Azure Blobs will happen. |
-| [`captureDescriptionSizeLimitInBytes`](#parameter-capturedescriptionsizelimitinbytes) | int | The size window defines the amount of data built up in your Event Hub before an capture operation. |
-| [`captureDescriptionSkipEmptyArchives`](#parameter-capturedescriptionskipemptyarchives) | bool | A value that indicates whether to Skip Empty Archives. |
+| [`captureDescription`](#parameter-capturedescription) | object | Properties of capture description. |
 | [`consumergroups`](#parameter-consumergroups) | array | The consumer groups to create in this Event Hub instance. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -123,53 +115,94 @@ The allowed rights for an Event Hub authorization rule.
   ]
   ```
 
-### Parameter: `captureDescriptionDestinationArchiveNameFormat`
+### Parameter: `captureDescription`
 
-Blob naming convention for archive, e.g. {Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}. Here all the parameters (Namespace,EventHub .. etc) are mandatory irrespective of order.
+Properties of capture description.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-capturedescriptiondestination) | object | Properties of Destination where capture will be stored. (Storage Account, Blob Names) |
+| [`enabled`](#parameter-capturedescriptionenabled) | bool | A value that indicates whether capture description is enabled. |
+| [`encoding`](#parameter-capturedescriptionencoding) | string | Enumerates the possible values for the encoding format of capture description. Note: "AvroDeflate" will be deprecated in New API Version. |
+| [`intervalInSeconds`](#parameter-capturedescriptionintervalinseconds) | int | The time window allows you to set the frequency with which the capture to Azure Blobs will happen. |
+| [`sizeLimitInBytes`](#parameter-capturedescriptionsizelimitinbytes) | int | The size window defines the amount of data built up in your Event Hub before an capture operation. |
+| [`skipEmptyArchives`](#parameter-capturedescriptionskipemptyarchives) | bool | A value that indicates whether to Skip Empty Archives. |
+
+### Parameter: `captureDescription.destination`
+
+Properties of Destination where capture will be stored. (Storage Account, Blob Names)
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`identity`](#parameter-capturedescriptiondestinationidentity) | object | The identity used for the capture destination. |
+| [`name`](#parameter-capturedescriptiondestinationname) | string | Name for capture destination. |
+| [`properties`](#parameter-capturedescriptiondestinationproperties) | object | Properties describing the storage account, blob container and archive name format for capture destination. |
+
+### Parameter: `captureDescription.destination.identity`
+
+The identity used for the capture destination.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-capturedescriptiondestinationidentitysystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceId`](#parameter-capturedescriptiondestinationidentityuserassignedresourceid) | string | The resource ID to assign to the resource. |
+
+### Parameter: `captureDescription.destination.identity.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `captureDescription.destination.identity.userAssignedResourceId`
+
+The resource ID to assign to the resource.
 
 - Required: No
 - Type: string
-- Default: `'{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'`
 
-### Parameter: `captureDescriptionDestinationBlobContainer`
-
-Blob container Name.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `captureDescriptionDestinationName`
+### Parameter: `captureDescription.destination.name`
 
 Name for capture destination.
 
-- Required: No
+- Required: Yes
 - Type: string
-- Default: `'EventHubArchive.AzureBlockBlob'`
 
-### Parameter: `captureDescriptionDestinationStorageAccountResourceId`
+### Parameter: `captureDescription.destination.properties`
 
-Resource ID of the storage account to be used to create the blobs.
+Properties describing the storage account, blob container and archive name format for capture destination.
 
 - Required: No
-- Type: string
-- Default: `''`
+- Type: object
 
-### Parameter: `captureDescriptionEnabled`
+### Parameter: `captureDescription.enabled`
 
 A value that indicates whether capture description is enabled.
 
 - Required: No
 - Type: bool
-- Default: `False`
 
-### Parameter: `captureDescriptionEncoding`
+### Parameter: `captureDescription.encoding`
 
 Enumerates the possible values for the encoding format of capture description. Note: "AvroDeflate" will be deprecated in New API Version.
 
 - Required: No
 - Type: string
-- Default: `'Avro'`
 - Allowed:
   ```Bicep
   [
@@ -178,33 +211,30 @@ Enumerates the possible values for the encoding format of capture description. N
   ]
   ```
 
-### Parameter: `captureDescriptionIntervalInSeconds`
+### Parameter: `captureDescription.intervalInSeconds`
 
 The time window allows you to set the frequency with which the capture to Azure Blobs will happen.
 
 - Required: No
 - Type: int
-- Default: `300`
 - MinValue: 60
 - MaxValue: 900
 
-### Parameter: `captureDescriptionSizeLimitInBytes`
+### Parameter: `captureDescription.sizeLimitInBytes`
 
 The size window defines the amount of data built up in your Event Hub before an capture operation.
 
 - Required: No
 - Type: int
-- Default: `314572800`
 - MinValue: 10485760
 - MaxValue: 524288000
 
-### Parameter: `captureDescriptionSkipEmptyArchives`
+### Parameter: `captureDescription.skipEmptyArchives`
 
 A value that indicates whether to Skip Empty Archives.
 
 - Required: No
 - Type: bool
-- Default: `False`
 
 ### Parameter: `consumergroups`
 
@@ -474,21 +504,6 @@ Enumerates the possible values for the status of the Event Hub.
 
 - Required: No
 - Type: string
-- Default: `'Active'`
-- Allowed:
-  ```Bicep
-  [
-    'Active'
-    'Creating'
-    'Deleting'
-    'Disabled'
-    'ReceiveDisabled'
-    'Renaming'
-    'Restoring'
-    'SendDisabled'
-    'Unknown'
-  ]
-  ```
 
 ## Outputs
 

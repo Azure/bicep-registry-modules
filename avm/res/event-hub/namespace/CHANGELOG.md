@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/event-hub/namespace/CHANGELOG.md).
 
+## 0.13.0
+
+### Changes
+
+- Added type for `eventhubs` parameter
+- Added `identity` support to `eventhubs.captureDescription.destination`  parameter
+
+### Breaking Changes
+
+- Aligned `eventhubs.captureDescription` properties with resource provider format. For example, the parameter
+
 ## 0.12.5
 
 ### Changes
