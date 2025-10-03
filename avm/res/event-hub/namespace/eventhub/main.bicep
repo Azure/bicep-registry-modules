@@ -243,8 +243,8 @@ resource namespace 'Microsoft.EventHub/namespaces@2024-01-01' existing = {
 // @description('The name of the Event Hub.')
 // output name string = eventHub.name
 
-// @description('The resource ID of the Event Hub.')
-// output resourceId string = eventHub.id
+@description('The resource ID of the Event Hub.')
+output resourceId string = 'undo' // eventHub.id
 
 // @description('The resource group the Event Hub was deployed into.')
 // output resourceGroupName string = resourceGroup().name
