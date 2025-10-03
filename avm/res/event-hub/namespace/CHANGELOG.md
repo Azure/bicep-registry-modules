@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added type for `eventhubs` parameter
+- Added type for `eventhubs` & `networkRuleSets` parameters
 - Added `identity` support to `eventhubs.captureDescription.destination`  parameter
 
 ### Breaking Changes
