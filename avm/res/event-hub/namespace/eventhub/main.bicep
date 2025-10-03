@@ -276,13 +276,13 @@ type consumerGroupType = {
 @export()
 @description('The type of a capture description.')
 type captureDescriptionType = {
-  @description('Optional. Properties of Destination where capture will be stored. (Storage Account, Blob Names)')
+  @description('Optional. Properties of Destination where capture will be stored. (Storage Account, Blob Names).')
   destination: {
     @description('Optional. The identity used for the capture destination.')
     identity: managedIdentityType?
 
     @description('Optional. Name for capture destination.')
-    name: string
+    name: string?
 
     @description('Optional. Properties describing the storage account, blob container and archive name format for capture destination.')
     properties: resourceInput<'Microsoft.EventHub/namespaces/eventhubs@2024-01-01'>.properties.captureDescription.destination.properties?

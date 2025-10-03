@@ -126,7 +126,7 @@ Properties of capture description.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`destination`](#parameter-capturedescriptiondestination) | object | Properties of Destination where capture will be stored. (Storage Account, Blob Names) |
+| [`destination`](#parameter-capturedescriptiondestination) | object | Properties of Destination where capture will be stored. (Storage Account, Blob Names). |
 | [`enabled`](#parameter-capturedescriptionenabled) | bool | A value that indicates whether capture description is enabled. |
 | [`encoding`](#parameter-capturedescriptionencoding) | string | Enumerates the possible values for the encoding format of capture description. Note: "AvroDeflate" will be deprecated in New API Version. |
 | [`intervalInSeconds`](#parameter-capturedescriptionintervalinseconds) | int | The time window allows you to set the frequency with which the capture to Azure Blobs will happen. |
@@ -135,7 +135,7 @@ Properties of capture description.
 
 ### Parameter: `captureDescription.destination`
 
-Properties of Destination where capture will be stored. (Storage Account, Blob Names)
+Properties of Destination where capture will be stored. (Storage Account, Blob Names).
 
 - Required: No
 - Type: object
@@ -180,7 +180,7 @@ The resource ID to assign to the resource.
 
 Name for capture destination.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `captureDescription.destination.properties`

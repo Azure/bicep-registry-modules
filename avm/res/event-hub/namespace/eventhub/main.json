@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "10665321517059457325"
+      "templateHash": "6007019259720171289"
     },
     "name": "Event Hub Namespace Event Hubs",
     "description": "This module deploys an Event Hub Namespace Event Hub."
@@ -75,6 +75,7 @@
             },
             "name": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Name for capture destination."
               }
@@ -92,7 +93,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. Properties of Destination where capture will be stored. (Storage Account, Blob Names)"
+            "description": "Optional. Properties of Destination where capture will be stored. (Storage Account, Blob Names)."
           }
         },
         "enabled": {
