@@ -18,7 +18,7 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'nercmax'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'nga'
 
 // ============ //
 // Dependencies //
@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -36,6 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    routeFilterName: 'dep-${namePrefix}-rfc-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -68,6 +69,49 @@ module testDeployment '../../../main.bicep' = [
       bandwidthInMbps: 50
       peeringLocation: 'Amsterdam'
       serviceProviderName: 'Equinix'
+      peerings: [
+        {
+          name: 'AzurePrivatePeering'
+          peeringType: 'AzurePrivatePeering'
+          peerASN: 65001
+          primaryPeerAddressPrefix: '10.0.0.0/30'
+          secondaryPeerAddressPrefix: '10.0.0.4/30'
+          vlanId: 100
+          state: 'Enabled'
+          ipv6PeeringConfig: {
+            primaryPeerAddressPrefix: '2001:db8::/126'
+            secondaryPeerAddressPrefix: '2001:db8::8/126'
+          }
+        }
+        {
+          name: 'MicrosoftPeering'
+          peeringType: 'MicrosoftPeering'
+          peerASN: 65002
+          primaryPeerAddressPrefix: '192.168.1.0/30'
+          secondaryPeerAddressPrefix: '192.168.1.4/30'
+          vlanId: 200
+          state: 'Disabled'
+          microsoftPeeringConfig: {
+            advertisedPublicPrefixes: [
+              '203.0.113.0/24'
+            ]
+            customerASN: 65002
+            routingRegistryName: 'ARIN'
+          }
+          ipv6PeeringConfig: {
+            primaryPeerAddressPrefix: '2001:db8:1::/126'
+            secondaryPeerAddressPrefix: '2001:db8:1::8/126'
+            microsoftPeeringConfig: {
+              advertisedPublicPrefixes: [
+                '2001:db8:2::/48'
+              ]
+              customerASN: 65002
+              routingRegistryName: 'ARIN'
+            }
+          }
+        }
+      ]
+      globalReachEnabled: true
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -118,6 +162,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [nestedDependencies]
   }
 ]
