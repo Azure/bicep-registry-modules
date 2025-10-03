@@ -82,9 +82,9 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { managedIdentityType } from 'eventhub/main.bicep'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentityAllType?
+param managedIdentities managedIdentityType?
 
 import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The customer managed key definition.')
@@ -116,18 +116,14 @@ var enableReferencedModulesTelemetry = false
 
 var maximumThroughputUnitsVar = !isAutoInflateEnabled ? 0 : maximumThroughputUnits
 
-var formattedUserAssignedIdentities = reduce(
-  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
-  {},
-  (cur, next) => union(cur, next)
-) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
-
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
-      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+        ? 'SystemAssigned'
+        : (!empty(managedIdentities.?userAssignedResourceId ?? {}) ? 'UserAssigned' : null)
+      userAssignedIdentities: !empty(managedIdentities.?userAssignedResourceId)
+        ? { '${managedIdentities.?userAssignedResourceId}': {} }
+        : null
     }
   : null
 
