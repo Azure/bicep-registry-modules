@@ -10,7 +10,7 @@ param location string = resourceGroup().location
 @description('Optional. Specifies the DNS prefix specified when creating the managed cluster.')
 param dnsPrefix string = name
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
 param managedIdentities managedIdentityAllType?
 
@@ -315,10 +315,10 @@ param podIdentityProfileAllowNetworkPluginKubenet bool = false
 param podIdentityProfileEnable bool = false
 
 @description('Optional. The pod identities to use in the cluster.')
-param podIdentityProfileUserAssignedIdentities array?
+param podIdentityProfileUserAssignedIdentities resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-02-preview'>.properties.podIdentityProfile.userAssignedIdentities?
 
 @description('Optional. The pod identity exceptions to allow.')
-param podIdentityProfileUserAssignedIdentityExceptions array?
+param podIdentityProfileUserAssignedIdentityExceptions resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-02-preview'>.properties.podIdentityProfile.userAssignedIdentityExceptions?
 
 @description('Optional. Whether the The OIDC issuer profile of the Managed Cluster is enabled.')
 param enableOidcIssuerProfile bool = false
@@ -364,7 +364,7 @@ param enableStorageProfileSnapshotController bool = false
 @description('Optional. The support plan for the Managed Cluster.')
 param supportPlan string = 'KubernetesOfficial'
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -380,11 +380,11 @@ param monitoringWorkspaceResourceId string?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
