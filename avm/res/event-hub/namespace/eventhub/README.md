@@ -39,7 +39,7 @@ This module deploys an Event Hub Namespace Event Hub.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`authorizationRules`](#parameter-authorizationrules) | array | Authorization Rules for the Event Hub. |
-| [`captureDescription`](#parameter-capturedescription) | object | Properties of capture description. |
+| [`captureDescription`](#parameter-capturedescription) | object | Properties of capture description. Note: The chose identity needs the required permissions on the target before the assignment can be executed. For example 'Storage Data Blob Contributor' for a container. |
 | [`consumergroups`](#parameter-consumergroups) | array | The consumer groups to create in this Event Hub instance. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -117,7 +117,7 @@ The allowed rights for an Event Hub authorization rule.
 
 ### Parameter: `captureDescription`
 
-Properties of capture description.
+Properties of capture description. Note: The chose identity needs the required permissions on the target before the assignment can be executed. For example 'Storage Data Blob Contributor' for a container.
 
 - Required: No
 - Type: object

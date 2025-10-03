@@ -47,7 +47,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-@description('Optional. Properties of capture description.')
+@description('Optional. Properties of capture description. Note: The chose identity needs the required permissions on the target before the assignment can be executed. For example \'Storage Data Blob Contributor\' for a container.')
 param captureDescription captureDescriptionType?
 
 @description('Optional. A value that indicates whether to enable retention description properties. If it is set to true the messageRetentionInDays property is ignored.')
@@ -116,7 +116,7 @@ var captureIdentity = !empty(captureDescription.?destination.?identity)
         ? 'SystemAssigned'
         : (!empty(captureDescription!.destination!.identity!.?userAssignedResourceId ?? {}) ? 'UserAssigned' : null)
       userAssignedIdentity: !empty(captureDescription!.destination!.identity!.?userAssignedResourceId)
-        ? captureDescription!.destination!.identity!.?userAssignedResourceId
+        ? captureDescription!.destination!.identity!.userAssignedResourceId!
         : null
     }
   : null

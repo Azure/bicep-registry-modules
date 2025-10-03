@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "17561713370721644464"
+      "version": "0.38.5.1644",
+      "templateHash": "16903855692504058773"
     },
     "name": "Event Hub Namespace Event Hub Consumer Groups",
     "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group."
