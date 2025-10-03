@@ -17,10 +17,10 @@ This module deploys a CDN Profile.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.Cdn/profiles` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles)</li></ul> |
+| `Microsoft.Cdn/profiles` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-06-01/profiles)</li></ul> |
 | `Microsoft.Cdn/profiles/afdEndpoints` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_afdendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/afdEndpoints)</li></ul> |
 | `Microsoft.Cdn/profiles/afdEndpoints/routes` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_afdendpoints_routes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/afdEndpoints/routes)</li></ul> |
-| `Microsoft.Cdn/profiles/customDomains` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_customdomains.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/customDomains)</li></ul> |
+| `Microsoft.Cdn/profiles/customDomains` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_customdomains.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-06-01/profiles/customDomains)</li></ul> |
 | `Microsoft.Cdn/profiles/endpoints` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_endpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/endpoints)</li></ul> |
 | `Microsoft.Cdn/profiles/endpoints/origins` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_endpoints_origins.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/endpoints/origins)</li></ul> |
 | `Microsoft.Cdn/profiles/originGroups` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_origingroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/originGroups)</li></ul> |
@@ -42,8 +42,8 @@ The following section provides usage examples for the module, which were used to
 - [As Azure Front Door Premium](#example-1-as-azure-front-door-premium)
 - [As Azure Front Door](#example-2-as-azure-front-door)
 - [Using only defaults](#example-3-using-only-defaults)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using maximum parameter set](#example-4-using-maximum-parameter-set)
+- [WAF-aligned Premium AFD](#example-5-waf-aligned-premium-afd)
 
 ### Example 1: _As Azure Front Door Premium_
 
@@ -59,12 +59,12 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
   name: 'profileDeployment'
   params: {
     // Required parameters
-    name: 'dep-test-cdnpafdp'
+    name: 'dep-test-afd-cdnpafdp'
     sku: 'Premium_AzureFrontDoor'
     // Non-required parameters
     afdEndpoints: [
       {
-        name: 'dep-test-cdnpafdp-afd-endpoint'
+        name: 'dep-test-afd-cdnpafdp-afd-endpoint'
         routes: [
           {
             customDomainNames: [
@@ -165,7 +165,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dep-test-cdnpafdp"
+      "value": "dep-test-afd-cdnpafdp"
     },
     "sku": {
       "value": "Premium_AzureFrontDoor"
@@ -174,7 +174,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     "afdEndpoints": {
       "value": [
         {
-          "name": "dep-test-cdnpafdp-afd-endpoint",
+          "name": "dep-test-afd-cdnpafdp-afd-endpoint",
           "routes": [
             {
               "customDomainNames": [
@@ -285,12 +285,12 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 using 'br/public:avm/res/cdn/profile:<version>'
 
 // Required parameters
-param name = 'dep-test-cdnpafdp'
+param name = 'dep-test-afd-cdnpafdp'
 param sku = 'Premium_AzureFrontDoor'
 // Non-required parameters
 param afdEndpoints = [
   {
-    name: 'dep-test-cdnpafdp-afd-endpoint'
+    name: 'dep-test-afd-cdnpafdp-afd-endpoint'
     routes: [
       {
         customDomainNames: [
@@ -747,9 +747,9 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
   params: {
     // Required parameters
     name: 'dep-test-cdnpmin'
-    sku: 'Standard_Microsoft'
+    sku: 'Standard_AzureFrontDoor'
     // Non-required parameters
-    location: '<location>'
+    location: 'global'
   }
 }
 ```
@@ -771,11 +771,11 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       "value": "dep-test-cdnpmin"
     },
     "sku": {
-      "value": "Standard_Microsoft"
+      "value": "Standard_AzureFrontDoor"
     },
     // Non-required parameters
     "location": {
-      "value": "<location>"
+      "value": "global"
     }
   }
 }
@@ -793,17 +793,17 @@ using 'br/public:avm/res/cdn/profile:<version>'
 
 // Required parameters
 param name = 'dep-test-cdnpmin'
-param sku = 'Standard_Microsoft'
+param sku = 'Standard_AzureFrontDoor'
 // Non-required parameters
-param location = '<location>'
+param location = 'global'
 ```
 
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 4: _Using maximum parameter set_
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module with all available features and parameters for Premium_AzureFrontDoor SKU.
 
 
 <details>
@@ -816,8 +816,81 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
   params: {
     // Required parameters
     name: 'dep-test-cdnpmax'
-    sku: 'Standard_Microsoft'
+    sku: 'Premium_AzureFrontDoor'
     // Non-required parameters
+    afdEndpoints: [
+      {
+        autoGeneratedDomainNameLabelScope: 'TenantReuse'
+        enabledState: 'Enabled'
+        name: 'dep-test-cdnpmax-afd-endpoint-1'
+        routes: [
+          {
+            cacheConfiguration: {
+              compressionSettings: {
+                contentTypesToCompress: [
+                  'application/json'
+                  'text/css'
+                  'text/html'
+                ]
+                isCompressionEnabled: true
+              }
+              queryParameters: 'version,locale'
+              queryStringCachingBehavior: 'IncludeSpecifiedQueryStrings'
+            }
+            customDomainNames: [
+              'dep-test1-cdnpmax-custom-domain'
+            ]
+            enabledState: 'Enabled'
+            forwardingProtocol: 'MatchRequest'
+            httpsRedirect: 'Enabled'
+            linkToDefaultDomain: 'Enabled'
+            name: 'dep-test-cdnpmax-afd-route-1'
+            originGroupName: 'dep-test-cdnpmax-origin-group-1'
+            patternsToMatch: [
+              '/api/*'
+              '/health'
+            ]
+            ruleSets: [
+              {
+                name: 'deptestcdnpmaxruleset1'
+              }
+            ]
+            supportedProtocols: [
+              'Http'
+              'Https'
+            ]
+          }
+        ]
+      }
+    ]
+    customDomains: [
+      {
+        certificateType: 'ManagedCertificate'
+        hostName: 'dep-test1-cdnpmax-custom-domain.azurewebsites.net'
+        minimumTlsVersion: 'TLS12'
+        name: 'dep-test1-cdnpmax-custom-domain'
+      }
+      {
+        certificateType: 'ManagedCertificate'
+        cipherSuiteSetType: 'TLS12_2022'
+        hostName: 'dep-test2-cdnpmax-custom-domain.azurewebsites.net'
+        minimumTlsVersion: 'TLS12'
+        name: 'dep-test2-cdnpmax-custom-domain'
+      }
+      {
+        certificateType: 'ManagedCertificate'
+        cipherSuiteSetType: 'Customized'
+        customizedCipherSuiteSet: {
+          cipherSuiteSetForTls13: [
+            'TLS_AES_128_GCM_SHA256'
+            'TLS_AES_256_GCM_SHA384'
+          ]
+        }
+        hostName: 'dep-test3-cdnpmax-custom-domain.azurewebsites.net'
+        minimumTlsVersion: 'TLS13'
+        name: 'dep-test3-cdnpmax-custom-domain'
+      }
+    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -839,61 +912,109 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    endpointProperties: {
-      contentTypesToCompress: [
-        'application/javascript'
-        'application/json'
-        'application/x-javascript'
-        'application/xml'
-        'text/css'
-        'text/html'
-        'text/javascript'
-        'text/plain'
-      ]
-      geoFilters: []
-      isCompressionEnabled: true
-      isHttpAllowed: true
-      isHttpsAllowed: true
-      originGroups: []
-      originHostHeader: '<originHostHeader>'
-      origins: [
-        {
-          name: 'dep-cdn-endpoint01'
-          properties: {
-            enabled: true
-            hostName: '<hostName>'
-            httpPort: 80
-            httpsPort: 443
-          }
-        }
-      ]
-      queryStringCachingBehavior: 'IgnoreQueryString'
-    }
-    location: '<location>'
+    location: 'global'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+      notes: 'This resource cannot be deleted for security reasons.'
     }
-    originResponseTimeoutSeconds: 60
-    roleAssignments: [
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    originGroups: [
       {
-        name: '50362c78-6910-43c3-8639-9cae123943bb'
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        healthProbeSettings: {
+          probeIntervalInSeconds: 120
+          probePath: '/health'
+          probeProtocol: 'Https'
+          probeRequestType: 'GET'
+        }
+        loadBalancingSettings: {
+          additionalLatencyInMilliseconds: 50
+          sampleSize: 4
+          successfulSamplesRequired: 3
+        }
+        name: 'dep-test-cdnpmax-origin-group-1'
+        origins: [
+          {
+            enabledState: 'Enabled'
+            enforceCertificateNameCheck: true
+            hostName: '<hostName>'
+            httpPort: 80
+            httpsPort: 443
+            name: 'dep-test-cdnpmax-origin-1'
+            priority: 1
+            weight: 1000
+          }
+        ]
+        sessionAffinityState: 'Enabled'
+        trafficRestorationTimeToHealedOrNewEndpointsInMinutes: 15
       }
       {
-        name: '<name>'
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+        loadBalancingSettings: {
+          additionalLatencyInMilliseconds: 100
+          sampleSize: 6
+          successfulSamplesRequired: 4
+        }
+        name: 'dep-test-cdnpmax-origin-group-2'
+        origins: [
+          {
+            enabledState: 'Enabled'
+            enforceCertificateNameCheck: true
+            hostName: '<hostName>'
+            httpPort: 80
+            httpsPort: 443
+            name: 'dep-test-cdnpmax-origin-2'
+            priority: 1
+            weight: 1000
+          }
+        ]
+        sessionAffinityState: 'Disabled'
+        trafficRestorationTimeToHealedOrNewEndpointsInMinutes: 10
       }
     ]
+    originResponseTimeoutSeconds: 240
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'CDN Profile Contributor'
+      }
+    ]
+    ruleSets: [
+      {
+        name: 'deptestcdnpmaxruleset1'
+        rules: [
+          {
+            actions: [
+              {
+                name: 'UrlRedirect'
+                parameters: {
+                  customHostname: 'api.example.com'
+                  customPath: '/v2/api/'
+                  destinationProtocol: 'Https'
+                  redirectType: 'PermanentRedirect'
+                  typeName: 'DeliveryRuleUrlRedirectActionParameters'
+                }
+              }
+            ]
+            conditions: []
+            matchProcessingBehavior: 'Continue'
+            name: 'deptestcdnpmaxrule1'
+            order: 1
+          }
+        ]
+      }
+    ]
+    tags: {
+      Application: 'CDN'
+      CostCenter: '12345'
+      Environment: 'Test'
+      Owner: 'TestTeam'
+    }
   }
 }
 ```
@@ -915,9 +1036,86 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       "value": "dep-test-cdnpmax"
     },
     "sku": {
-      "value": "Standard_Microsoft"
+      "value": "Premium_AzureFrontDoor"
     },
     // Non-required parameters
+    "afdEndpoints": {
+      "value": [
+        {
+          "autoGeneratedDomainNameLabelScope": "TenantReuse",
+          "enabledState": "Enabled",
+          "name": "dep-test-cdnpmax-afd-endpoint-1",
+          "routes": [
+            {
+              "cacheConfiguration": {
+                "compressionSettings": {
+                  "contentTypesToCompress": [
+                    "application/json",
+                    "text/css",
+                    "text/html"
+                  ],
+                  "isCompressionEnabled": true
+                },
+                "queryParameters": "version,locale",
+                "queryStringCachingBehavior": "IncludeSpecifiedQueryStrings"
+              },
+              "customDomainNames": [
+                "dep-test1-cdnpmax-custom-domain"
+              ],
+              "enabledState": "Enabled",
+              "forwardingProtocol": "MatchRequest",
+              "httpsRedirect": "Enabled",
+              "linkToDefaultDomain": "Enabled",
+              "name": "dep-test-cdnpmax-afd-route-1",
+              "originGroupName": "dep-test-cdnpmax-origin-group-1",
+              "patternsToMatch": [
+                "/api/*",
+                "/health"
+              ],
+              "ruleSets": [
+                {
+                  "name": "deptestcdnpmaxruleset1"
+                }
+              ],
+              "supportedProtocols": [
+                "Http",
+                "Https"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "customDomains": {
+      "value": [
+        {
+          "certificateType": "ManagedCertificate",
+          "hostName": "dep-test1-cdnpmax-custom-domain.azurewebsites.net",
+          "minimumTlsVersion": "TLS12",
+          "name": "dep-test1-cdnpmax-custom-domain"
+        },
+        {
+          "certificateType": "ManagedCertificate",
+          "cipherSuiteSetType": "TLS12_2022",
+          "hostName": "dep-test2-cdnpmax-custom-domain.azurewebsites.net",
+          "minimumTlsVersion": "TLS12",
+          "name": "dep-test2-cdnpmax-custom-domain"
+        },
+        {
+          "certificateType": "ManagedCertificate",
+          "cipherSuiteSetType": "Customized",
+          "customizedCipherSuiteSet": {
+            "cipherSuiteSetForTls13": [
+              "TLS_AES_128_GCM_SHA256",
+              "TLS_AES_256_GCM_SHA384"
+            ]
+          },
+          "hostName": "dep-test3-cdnpmax-custom-domain.azurewebsites.net",
+          "minimumTlsVersion": "TLS13",
+          "name": "dep-test3-cdnpmax-custom-domain"
+        }
+      ]
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -941,70 +1139,124 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
         }
       ]
     },
-    "endpointProperties": {
-      "value": {
-        "contentTypesToCompress": [
-          "application/javascript",
-          "application/json",
-          "application/x-javascript",
-          "application/xml",
-          "text/css",
-          "text/html",
-          "text/javascript",
-          "text/plain"
-        ],
-        "geoFilters": [],
-        "isCompressionEnabled": true,
-        "isHttpAllowed": true,
-        "isHttpsAllowed": true,
-        "originGroups": [],
-        "originHostHeader": "<originHostHeader>",
-        "origins": [
-          {
-            "name": "dep-cdn-endpoint01",
-            "properties": {
-              "enabled": true,
-              "hostName": "<hostName>",
-              "httpPort": 80,
-              "httpsPort": 443
-            }
-          }
-        ],
-        "queryStringCachingBehavior": "IgnoreQueryString"
-      }
-    },
     "location": {
-      "value": "<location>"
+      "value": "global"
     },
     "lock": {
       "value": {
         "kind": "CanNotDelete",
-        "name": "myCustomLockName"
+        "name": "myCustomLockName",
+        "notes": "This resource cannot be deleted for security reasons."
       }
     },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "originGroups": {
+      "value": [
+        {
+          "healthProbeSettings": {
+            "probeIntervalInSeconds": 120,
+            "probePath": "/health",
+            "probeProtocol": "Https",
+            "probeRequestType": "GET"
+          },
+          "loadBalancingSettings": {
+            "additionalLatencyInMilliseconds": 50,
+            "sampleSize": 4,
+            "successfulSamplesRequired": 3
+          },
+          "name": "dep-test-cdnpmax-origin-group-1",
+          "origins": [
+            {
+              "enabledState": "Enabled",
+              "enforceCertificateNameCheck": true,
+              "hostName": "<hostName>",
+              "httpPort": 80,
+              "httpsPort": 443,
+              "name": "dep-test-cdnpmax-origin-1",
+              "priority": 1,
+              "weight": 1000
+            }
+          ],
+          "sessionAffinityState": "Enabled",
+          "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": 15
+        },
+        {
+          "loadBalancingSettings": {
+            "additionalLatencyInMilliseconds": 100,
+            "sampleSize": 6,
+            "successfulSamplesRequired": 4
+          },
+          "name": "dep-test-cdnpmax-origin-group-2",
+          "origins": [
+            {
+              "enabledState": "Enabled",
+              "enforceCertificateNameCheck": true,
+              "hostName": "<hostName>",
+              "httpPort": 80,
+              "httpsPort": 443,
+              "name": "dep-test-cdnpmax-origin-2",
+              "priority": 1,
+              "weight": 1000
+            }
+          ],
+          "sessionAffinityState": "Disabled",
+          "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": 10
+        }
+      ]
+    },
     "originResponseTimeoutSeconds": {
-      "value": 60
+      "value": 240
     },
     "roleAssignments": {
       "value": [
         {
-          "name": "50362c78-6910-43c3-8639-9cae123943bb",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "name": "<name>",
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+          "roleDefinitionIdOrName": "CDN Profile Contributor"
         }
       ]
+    },
+    "ruleSets": {
+      "value": [
+        {
+          "name": "deptestcdnpmaxruleset1",
+          "rules": [
+            {
+              "actions": [
+                {
+                  "name": "UrlRedirect",
+                  "parameters": {
+                    "customHostname": "api.example.com",
+                    "customPath": "/v2/api/",
+                    "destinationProtocol": "Https",
+                    "redirectType": "PermanentRedirect",
+                    "typeName": "DeliveryRuleUrlRedirectActionParameters"
+                  }
+                }
+              ],
+              "conditions": [],
+              "matchProcessingBehavior": "Continue",
+              "name": "deptestcdnpmaxrule1",
+              "order": 1
+            }
+          ]
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Application": "CDN",
+        "CostCenter": "12345",
+        "Environment": "Test",
+        "Owner": "TestTeam"
+      }
     }
   }
 }
@@ -1022,8 +1274,81 @@ using 'br/public:avm/res/cdn/profile:<version>'
 
 // Required parameters
 param name = 'dep-test-cdnpmax'
-param sku = 'Standard_Microsoft'
+param sku = 'Premium_AzureFrontDoor'
 // Non-required parameters
+param afdEndpoints = [
+  {
+    autoGeneratedDomainNameLabelScope: 'TenantReuse'
+    enabledState: 'Enabled'
+    name: 'dep-test-cdnpmax-afd-endpoint-1'
+    routes: [
+      {
+        cacheConfiguration: {
+          compressionSettings: {
+            contentTypesToCompress: [
+              'application/json'
+              'text/css'
+              'text/html'
+            ]
+            isCompressionEnabled: true
+          }
+          queryParameters: 'version,locale'
+          queryStringCachingBehavior: 'IncludeSpecifiedQueryStrings'
+        }
+        customDomainNames: [
+          'dep-test1-cdnpmax-custom-domain'
+        ]
+        enabledState: 'Enabled'
+        forwardingProtocol: 'MatchRequest'
+        httpsRedirect: 'Enabled'
+        linkToDefaultDomain: 'Enabled'
+        name: 'dep-test-cdnpmax-afd-route-1'
+        originGroupName: 'dep-test-cdnpmax-origin-group-1'
+        patternsToMatch: [
+          '/api/*'
+          '/health'
+        ]
+        ruleSets: [
+          {
+            name: 'deptestcdnpmaxruleset1'
+          }
+        ]
+        supportedProtocols: [
+          'Http'
+          'Https'
+        ]
+      }
+    ]
+  }
+]
+param customDomains = [
+  {
+    certificateType: 'ManagedCertificate'
+    hostName: 'dep-test1-cdnpmax-custom-domain.azurewebsites.net'
+    minimumTlsVersion: 'TLS12'
+    name: 'dep-test1-cdnpmax-custom-domain'
+  }
+  {
+    certificateType: 'ManagedCertificate'
+    cipherSuiteSetType: 'TLS12_2022'
+    hostName: 'dep-test2-cdnpmax-custom-domain.azurewebsites.net'
+    minimumTlsVersion: 'TLS12'
+    name: 'dep-test2-cdnpmax-custom-domain'
+  }
+  {
+    certificateType: 'ManagedCertificate'
+    cipherSuiteSetType: 'Customized'
+    customizedCipherSuiteSet: {
+      cipherSuiteSetForTls13: [
+        'TLS_AES_128_GCM_SHA256'
+        'TLS_AES_256_GCM_SHA384'
+      ]
+    }
+    hostName: 'dep-test3-cdnpmax-custom-domain.azurewebsites.net'
+    minimumTlsVersion: 'TLS13'
+    name: 'dep-test3-cdnpmax-custom-domain'
+  }
+]
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1045,69 +1370,117 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param endpointProperties = {
-  contentTypesToCompress: [
-    'application/javascript'
-    'application/json'
-    'application/x-javascript'
-    'application/xml'
-    'text/css'
-    'text/html'
-    'text/javascript'
-    'text/plain'
-  ]
-  geoFilters: []
-  isCompressionEnabled: true
-  isHttpAllowed: true
-  isHttpsAllowed: true
-  originGroups: []
-  originHostHeader: '<originHostHeader>'
-  origins: [
-    {
-      name: 'dep-cdn-endpoint01'
-      properties: {
-        enabled: true
-        hostName: '<hostName>'
-        httpPort: 80
-        httpsPort: 443
-      }
-    }
-  ]
-  queryStringCachingBehavior: 'IgnoreQueryString'
-}
-param location = '<location>'
+param location = 'global'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+  notes: 'This resource cannot be deleted for security reasons.'
 }
-param originResponseTimeoutSeconds = 60
-param roleAssignments = [
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param originGroups = [
   {
-    name: '50362c78-6910-43c3-8639-9cae123943bb'
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    healthProbeSettings: {
+      probeIntervalInSeconds: 120
+      probePath: '/health'
+      probeProtocol: 'Https'
+      probeRequestType: 'GET'
+    }
+    loadBalancingSettings: {
+      additionalLatencyInMilliseconds: 50
+      sampleSize: 4
+      successfulSamplesRequired: 3
+    }
+    name: 'dep-test-cdnpmax-origin-group-1'
+    origins: [
+      {
+        enabledState: 'Enabled'
+        enforceCertificateNameCheck: true
+        hostName: '<hostName>'
+        httpPort: 80
+        httpsPort: 443
+        name: 'dep-test-cdnpmax-origin-1'
+        priority: 1
+        weight: 1000
+      }
+    ]
+    sessionAffinityState: 'Enabled'
+    trafficRestorationTimeToHealedOrNewEndpointsInMinutes: 15
   }
   {
-    name: '<name>'
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-  }
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+    loadBalancingSettings: {
+      additionalLatencyInMilliseconds: 100
+      sampleSize: 6
+      successfulSamplesRequired: 4
+    }
+    name: 'dep-test-cdnpmax-origin-group-2'
+    origins: [
+      {
+        enabledState: 'Enabled'
+        enforceCertificateNameCheck: true
+        hostName: '<hostName>'
+        httpPort: 80
+        httpsPort: 443
+        name: 'dep-test-cdnpmax-origin-2'
+        priority: 1
+        weight: 1000
+      }
+    ]
+    sessionAffinityState: 'Disabled'
+    trafficRestorationTimeToHealedOrNewEndpointsInMinutes: 10
   }
 ]
+param originResponseTimeoutSeconds = 240
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'CDN Profile Contributor'
+  }
+]
+param ruleSets = [
+  {
+    name: 'deptestcdnpmaxruleset1'
+    rules: [
+      {
+        actions: [
+          {
+            name: 'UrlRedirect'
+            parameters: {
+              customHostname: 'api.example.com'
+              customPath: '/v2/api/'
+              destinationProtocol: 'Https'
+              redirectType: 'PermanentRedirect'
+              typeName: 'DeliveryRuleUrlRedirectActionParameters'
+            }
+          }
+        ]
+        conditions: []
+        matchProcessingBehavior: 'Continue'
+        name: 'deptestcdnpmaxrule1'
+        order: 1
+      }
+    ]
+  }
+]
+param tags = {
+  Application: 'CDN'
+  CostCenter: '12345'
+  Environment: 'Test'
+  Owner: 'TestTeam'
+}
 ```
 
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 5: _WAF-aligned Premium AFD_
 
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework using Premium_AzureFrontDoor SKU.
 
 
 <details>
@@ -1119,41 +1492,291 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
   name: 'profileDeployment'
   params: {
     // Required parameters
-    name: 'dep-test-cdnpwaf'
-    sku: 'Standard_Microsoft'
+    name: 'dep-waf-cdnpwaf'
+    sku: 'Premium_AzureFrontDoor'
     // Non-required parameters
-    endpointProperties: {
-      contentTypesToCompress: [
-        'application/javascript'
-        'application/json'
-        'application/x-javascript'
-        'application/xml'
-        'text/css'
-        'text/html'
-        'text/javascript'
-        'text/plain'
-      ]
-      geoFilters: []
-      isCompressionEnabled: true
-      isHttpAllowed: true
-      isHttpsAllowed: true
-      originGroups: []
-      originHostHeader: '<originHostHeader>'
-      origins: [
-        {
-          name: 'dep-cdn-endpoint01'
-          properties: {
+    afdEndpoints: [
+      {
+        autoGeneratedDomainNameLabelScope: 'TenantReuse'
+        enabledState: 'Enabled'
+        name: 'dep-waf-primary-endpoint'
+        routes: [
+          {
+            cacheConfiguration: {
+              compressionSettings: {
+                contentTypesToCompress: [
+                  'application/json'
+                  'application/xml'
+                  'text/xml'
+                ]
+                isCompressionEnabled: true
+              }
+              queryParameters: 'timestamp,nonce'
+              queryStringCachingBehavior: 'IgnoreSpecifiedQueryStrings'
+            }
+            customDomainNames: [
+              'dep-waf-api-cdnpwaf-domain'
+            ]
+            enabledState: 'Enabled'
+            forwardingProtocol: 'HttpsOnly'
+            httpsRedirect: 'Enabled'
+            linkToDefaultDomain: 'Disabled'
+            name: 'dep-waf-api-route'
+            originGroupName: 'dep-waf-api-origin-group'
+            patternsToMatch: [
+              '/api/*'
+              '/v1/*'
+              '/v2/*'
+            ]
+            ruleSets: [
+              {
+                name: 'depwafsecurityrulescdnpwaf'
+              }
+            ]
+            supportedProtocols: [
+              'Https'
+            ]
+          }
+        ]
+      }
+    ]
+    customDomains: [
+      {
+        certificateType: 'ManagedCertificate'
+        cipherSuiteSetType: 'TLS12_2023'
+        hostName: 'dep-waf-primary-cdnpwaf.example.com'
+        minimumTlsVersion: 'TLS12'
+        name: 'dep-waf-primary-cdnpwaf-domain'
+      }
+      {
+        certificateType: 'ManagedCertificate'
+        cipherSuiteSetType: 'Customized'
+        customizedCipherSuiteSet: {
+          cipherSuiteSetForTls13: [
+            'TLS_AES_128_GCM_SHA256'
+            'TLS_AES_256_GCM_SHA384'
+          ]
+        }
+        hostName: 'api-dep-waf-cdnpwaf.example.com'
+        minimumTlsVersion: 'TLS13'
+        name: 'dep-waf-api-cdnpwaf-domain'
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
             enabled: true
+          }
+        ]
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+            enabled: true
+          }
+        ]
+        name: 'waf-comprehensive-diagnostics'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    location: 'global'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'waf-protection-lock'
+      notes: 'WAF: Protected against accidental deletion for business continuity'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    originGroups: [
+      {
+        healthProbeSettings: {
+          probeIntervalInSeconds: 15
+          probePath: '/api/health'
+          probeProtocol: 'Https'
+          probeRequestType: 'GET'
+        }
+        loadBalancingSettings: {
+          additionalLatencyInMilliseconds: 25
+          sampleSize: 6
+          successfulSamplesRequired: 4
+        }
+        name: 'dep-waf-api-origin-group'
+        origins: [
+          {
+            enabledState: 'Enabled'
+            enforceCertificateNameCheck: true
             hostName: '<hostName>'
             httpPort: 80
             httpsPort: 443
+            name: 'dep-waf-api-origin'
+            priority: 1
+            weight: 1000
           }
-        }
-      ]
-      queryStringCachingBehavior: 'IgnoreQueryString'
-    }
-    location: '<location>'
+        ]
+        sessionAffinityState: 'Disabled'
+        trafficRestorationTimeToHealedOrNewEndpointsInMinutes: 2
+      }
+    ]
     originResponseTimeoutSeconds: 60
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'CDN Profile Reader'
+      }
+    ]
+    ruleSets: [
+      {
+        name: 'depwafsecurityrulescdnpwaf'
+        rules: [
+          {
+            actions: [
+              {
+                name: 'UrlRedirect'
+                parameters: {
+                  destinationProtocol: 'Https'
+                  redirectType: 'PermanentRedirect'
+                  typeName: 'DeliveryRuleUrlRedirectActionParameters'
+                }
+              }
+            ]
+            conditions: [
+              {
+                name: 'RequestScheme'
+                parameters: {
+                  matchValues: [
+                    'HTTP'
+                  ]
+                  negateCondition: false
+                  operator: 'Equal'
+                  typeName: 'DeliveryRuleRequestSchemeConditionParameters'
+                }
+              }
+            ]
+            matchProcessingBehavior: 'Stop'
+            name: 'HTTPSRedirectRule'
+            order: 1
+          }
+          {
+            actions: [
+              {
+                name: 'ModifyResponseHeader'
+                parameters: {
+                  headerAction: 'Overwrite'
+                  headerName: 'Strict-Transport-Security'
+                  typeName: 'DeliveryRuleHeaderActionParameters'
+                  value: 'max-age=31536000; includeSubDomains; preload'
+                }
+              }
+              {
+                name: 'ModifyResponseHeader'
+                parameters: {
+                  headerAction: 'Overwrite'
+                  headerName: 'X-Content-Type-Options'
+                  typeName: 'DeliveryRuleHeaderActionParameters'
+                  value: 'nosniff'
+                }
+              }
+              {
+                name: 'ModifyResponseHeader'
+                parameters: {
+                  headerAction: 'Overwrite'
+                  headerName: 'X-Frame-Options'
+                  typeName: 'DeliveryRuleHeaderActionParameters'
+                  value: 'DENY'
+                }
+              }
+              {
+                name: 'ModifyResponseHeader'
+                parameters: {
+                  headerAction: 'Overwrite'
+                  headerName: 'X-XSS-Protection'
+                  typeName: 'DeliveryRuleHeaderActionParameters'
+                  value: '1; mode=block'
+                }
+              }
+              {
+                name: 'ModifyResponseHeader'
+                parameters: {
+                  headerAction: 'Overwrite'
+                  headerName: 'Referrer-Policy'
+                  typeName: 'DeliveryRuleHeaderActionParameters'
+                  value: 'strict-origin-when-cross-origin'
+                }
+              }
+            ]
+            conditions: [
+              {
+                name: 'RequestScheme'
+                parameters: {
+                  matchValues: [
+                    'HTTPS'
+                  ]
+                  negateCondition: false
+                  operator: 'Equal'
+                  typeName: 'DeliveryRuleRequestSchemeConditionParameters'
+                }
+              }
+            ]
+            matchProcessingBehavior: 'Continue'
+            name: 'SecurityHeadersRule'
+            order: 2
+          }
+          {
+            actions: [
+              {
+                name: 'ModifyResponseHeader'
+                parameters: {
+                  headerAction: 'Overwrite'
+                  headerName: 'X-RateLimit-Limit'
+                  typeName: 'DeliveryRuleHeaderActionParameters'
+                  value: '1000'
+                }
+              }
+            ]
+            conditions: [
+              {
+                name: 'RequestUri'
+                parameters: {
+                  matchValues: [
+                    '/api/'
+                  ]
+                  negateCondition: false
+                  operator: 'BeginsWith'
+                  transforms: [
+                    'Lowercase'
+                  ]
+                  typeName: 'DeliveryRuleRequestUriConditionParameters'
+                }
+              }
+            ]
+            matchProcessingBehavior: 'Continue'
+            name: 'APIRateLimitRule'
+            order: 3
+          }
+        ]
+      }
+    ]
+    tags: {
+      Application: 'CDN-WAF-Aligned'
+      BackupRequired: 'Yes'
+      BusinessUnit: 'Digital-Services'
+      CostCenter: 'IT-Infrastructure'
+      Criticality: 'High'
+      DataClassification: 'Internal'
+      Environment: 'Production'
+      MonitoringRequired: 'Yes'
+      Owner: 'Platform-Team'
+      'WAF-Pillar': 'All'
+    }
   }
 }
 ```
@@ -1172,49 +1795,315 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dep-test-cdnpwaf"
+      "value": "dep-waf-cdnpwaf"
     },
     "sku": {
-      "value": "Standard_Microsoft"
+      "value": "Premium_AzureFrontDoor"
     },
     // Non-required parameters
-    "endpointProperties": {
-      "value": {
-        "contentTypesToCompress": [
-          "application/javascript",
-          "application/json",
-          "application/x-javascript",
-          "application/xml",
-          "text/css",
-          "text/html",
-          "text/javascript",
-          "text/plain"
-        ],
-        "geoFilters": [],
-        "isCompressionEnabled": true,
-        "isHttpAllowed": true,
-        "isHttpsAllowed": true,
-        "originGroups": [],
-        "originHostHeader": "<originHostHeader>",
-        "origins": [
-          {
-            "name": "dep-cdn-endpoint01",
-            "properties": {
-              "enabled": true,
-              "hostName": "<hostName>",
-              "httpPort": 80,
-              "httpsPort": 443
+    "afdEndpoints": {
+      "value": [
+        {
+          "autoGeneratedDomainNameLabelScope": "TenantReuse",
+          "enabledState": "Enabled",
+          "name": "dep-waf-primary-endpoint",
+          "routes": [
+            {
+              "cacheConfiguration": {
+                "compressionSettings": {
+                  "contentTypesToCompress": [
+                    "application/json",
+                    "application/xml",
+                    "text/xml"
+                  ],
+                  "isCompressionEnabled": true
+                },
+                "queryParameters": "timestamp,nonce",
+                "queryStringCachingBehavior": "IgnoreSpecifiedQueryStrings"
+              },
+              "customDomainNames": [
+                "dep-waf-api-cdnpwaf-domain"
+              ],
+              "enabledState": "Enabled",
+              "forwardingProtocol": "HttpsOnly",
+              "httpsRedirect": "Enabled",
+              "linkToDefaultDomain": "Disabled",
+              "name": "dep-waf-api-route",
+              "originGroupName": "dep-waf-api-origin-group",
+              "patternsToMatch": [
+                "/api/*",
+                "/v1/*",
+                "/v2/*"
+              ],
+              "ruleSets": [
+                {
+                  "name": "depwafsecurityrulescdnpwaf"
+                }
+              ],
+              "supportedProtocols": [
+                "Https"
+              ]
             }
-          }
-        ],
-        "queryStringCachingBehavior": "IgnoreQueryString"
-      }
+          ]
+        }
+      ]
+    },
+    "customDomains": {
+      "value": [
+        {
+          "certificateType": "ManagedCertificate",
+          "cipherSuiteSetType": "TLS12_2023",
+          "hostName": "dep-waf-primary-cdnpwaf.example.com",
+          "minimumTlsVersion": "TLS12",
+          "name": "dep-waf-primary-cdnpwaf-domain"
+        },
+        {
+          "certificateType": "ManagedCertificate",
+          "cipherSuiteSetType": "Customized",
+          "customizedCipherSuiteSet": {
+            "cipherSuiteSetForTls13": [
+              "TLS_AES_128_GCM_SHA256",
+              "TLS_AES_256_GCM_SHA384"
+            ]
+          },
+          "hostName": "api-dep-waf-cdnpwaf.example.com",
+          "minimumTlsVersion": "TLS13",
+          "name": "dep-waf-api-cdnpwaf-domain"
+        }
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "categoryGroup": "allLogs",
+              "enabled": true
+            }
+          ],
+          "metricCategories": [
+            {
+              "category": "AllMetrics",
+              "enabled": true
+            }
+          ],
+          "name": "waf-comprehensive-diagnostics",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
     },
     "location": {
-      "value": "<location>"
+      "value": "global"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "waf-protection-lock",
+        "notes": "WAF: Protected against accidental deletion for business continuity"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "originGroups": {
+      "value": [
+        {
+          "healthProbeSettings": {
+            "probeIntervalInSeconds": 15,
+            "probePath": "/api/health",
+            "probeProtocol": "Https",
+            "probeRequestType": "GET"
+          },
+          "loadBalancingSettings": {
+            "additionalLatencyInMilliseconds": 25,
+            "sampleSize": 6,
+            "successfulSamplesRequired": 4
+          },
+          "name": "dep-waf-api-origin-group",
+          "origins": [
+            {
+              "enabledState": "Enabled",
+              "enforceCertificateNameCheck": true,
+              "hostName": "<hostName>",
+              "httpPort": 80,
+              "httpsPort": 443,
+              "name": "dep-waf-api-origin",
+              "priority": 1,
+              "weight": 1000
+            }
+          ],
+          "sessionAffinityState": "Disabled",
+          "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": 2
+        }
+      ]
     },
     "originResponseTimeoutSeconds": {
       "value": 60
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "CDN Profile Reader"
+        }
+      ]
+    },
+    "ruleSets": {
+      "value": [
+        {
+          "name": "depwafsecurityrulescdnpwaf",
+          "rules": [
+            {
+              "actions": [
+                {
+                  "name": "UrlRedirect",
+                  "parameters": {
+                    "destinationProtocol": "Https",
+                    "redirectType": "PermanentRedirect",
+                    "typeName": "DeliveryRuleUrlRedirectActionParameters"
+                  }
+                }
+              ],
+              "conditions": [
+                {
+                  "name": "RequestScheme",
+                  "parameters": {
+                    "matchValues": [
+                      "HTTP"
+                    ],
+                    "negateCondition": false,
+                    "operator": "Equal",
+                    "typeName": "DeliveryRuleRequestSchemeConditionParameters"
+                  }
+                }
+              ],
+              "matchProcessingBehavior": "Stop",
+              "name": "HTTPSRedirectRule",
+              "order": 1
+            },
+            {
+              "actions": [
+                {
+                  "name": "ModifyResponseHeader",
+                  "parameters": {
+                    "headerAction": "Overwrite",
+                    "headerName": "Strict-Transport-Security",
+                    "typeName": "DeliveryRuleHeaderActionParameters",
+                    "value": "max-age=31536000; includeSubDomains; preload"
+                  }
+                },
+                {
+                  "name": "ModifyResponseHeader",
+                  "parameters": {
+                    "headerAction": "Overwrite",
+                    "headerName": "X-Content-Type-Options",
+                    "typeName": "DeliveryRuleHeaderActionParameters",
+                    "value": "nosniff"
+                  }
+                },
+                {
+                  "name": "ModifyResponseHeader",
+                  "parameters": {
+                    "headerAction": "Overwrite",
+                    "headerName": "X-Frame-Options",
+                    "typeName": "DeliveryRuleHeaderActionParameters",
+                    "value": "DENY"
+                  }
+                },
+                {
+                  "name": "ModifyResponseHeader",
+                  "parameters": {
+                    "headerAction": "Overwrite",
+                    "headerName": "X-XSS-Protection",
+                    "typeName": "DeliveryRuleHeaderActionParameters",
+                    "value": "1; mode=block"
+                  }
+                },
+                {
+                  "name": "ModifyResponseHeader",
+                  "parameters": {
+                    "headerAction": "Overwrite",
+                    "headerName": "Referrer-Policy",
+                    "typeName": "DeliveryRuleHeaderActionParameters",
+                    "value": "strict-origin-when-cross-origin"
+                  }
+                }
+              ],
+              "conditions": [
+                {
+                  "name": "RequestScheme",
+                  "parameters": {
+                    "matchValues": [
+                      "HTTPS"
+                    ],
+                    "negateCondition": false,
+                    "operator": "Equal",
+                    "typeName": "DeliveryRuleRequestSchemeConditionParameters"
+                  }
+                }
+              ],
+              "matchProcessingBehavior": "Continue",
+              "name": "SecurityHeadersRule",
+              "order": 2
+            },
+            {
+              "actions": [
+                {
+                  "name": "ModifyResponseHeader",
+                  "parameters": {
+                    "headerAction": "Overwrite",
+                    "headerName": "X-RateLimit-Limit",
+                    "typeName": "DeliveryRuleHeaderActionParameters",
+                    "value": "1000"
+                  }
+                }
+              ],
+              "conditions": [
+                {
+                  "name": "RequestUri",
+                  "parameters": {
+                    "matchValues": [
+                      "/api/"
+                    ],
+                    "negateCondition": false,
+                    "operator": "BeginsWith",
+                    "transforms": [
+                      "Lowercase"
+                    ],
+                    "typeName": "DeliveryRuleRequestUriConditionParameters"
+                  }
+                }
+              ],
+              "matchProcessingBehavior": "Continue",
+              "name": "APIRateLimitRule",
+              "order": 3
+            }
+          ]
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Application": "CDN-WAF-Aligned",
+        "BackupRequired": "Yes",
+        "BusinessUnit": "Digital-Services",
+        "CostCenter": "IT-Infrastructure",
+        "Criticality": "High",
+        "DataClassification": "Internal",
+        "Environment": "Production",
+        "MonitoringRequired": "Yes",
+        "Owner": "Platform-Team",
+        "WAF-Pillar": "All"
+      }
     }
   }
 }
@@ -1231,41 +2120,291 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 using 'br/public:avm/res/cdn/profile:<version>'
 
 // Required parameters
-param name = 'dep-test-cdnpwaf'
-param sku = 'Standard_Microsoft'
+param name = 'dep-waf-cdnpwaf'
+param sku = 'Premium_AzureFrontDoor'
 // Non-required parameters
-param endpointProperties = {
-  contentTypesToCompress: [
-    'application/javascript'
-    'application/json'
-    'application/x-javascript'
-    'application/xml'
-    'text/css'
-    'text/html'
-    'text/javascript'
-    'text/plain'
-  ]
-  geoFilters: []
-  isCompressionEnabled: true
-  isHttpAllowed: true
-  isHttpsAllowed: true
-  originGroups: []
-  originHostHeader: '<originHostHeader>'
-  origins: [
-    {
-      name: 'dep-cdn-endpoint01'
-      properties: {
+param afdEndpoints = [
+  {
+    autoGeneratedDomainNameLabelScope: 'TenantReuse'
+    enabledState: 'Enabled'
+    name: 'dep-waf-primary-endpoint'
+    routes: [
+      {
+        cacheConfiguration: {
+          compressionSettings: {
+            contentTypesToCompress: [
+              'application/json'
+              'application/xml'
+              'text/xml'
+            ]
+            isCompressionEnabled: true
+          }
+          queryParameters: 'timestamp,nonce'
+          queryStringCachingBehavior: 'IgnoreSpecifiedQueryStrings'
+        }
+        customDomainNames: [
+          'dep-waf-api-cdnpwaf-domain'
+        ]
+        enabledState: 'Enabled'
+        forwardingProtocol: 'HttpsOnly'
+        httpsRedirect: 'Enabled'
+        linkToDefaultDomain: 'Disabled'
+        name: 'dep-waf-api-route'
+        originGroupName: 'dep-waf-api-origin-group'
+        patternsToMatch: [
+          '/api/*'
+          '/v1/*'
+          '/v2/*'
+        ]
+        ruleSets: [
+          {
+            name: 'depwafsecurityrulescdnpwaf'
+          }
+        ]
+        supportedProtocols: [
+          'Https'
+        ]
+      }
+    ]
+  }
+]
+param customDomains = [
+  {
+    certificateType: 'ManagedCertificate'
+    cipherSuiteSetType: 'TLS12_2023'
+    hostName: 'dep-waf-primary-cdnpwaf.example.com'
+    minimumTlsVersion: 'TLS12'
+    name: 'dep-waf-primary-cdnpwaf-domain'
+  }
+  {
+    certificateType: 'ManagedCertificate'
+    cipherSuiteSetType: 'Customized'
+    customizedCipherSuiteSet: {
+      cipherSuiteSetForTls13: [
+        'TLS_AES_128_GCM_SHA256'
+        'TLS_AES_256_GCM_SHA384'
+      ]
+    }
+    hostName: 'api-dep-waf-cdnpwaf.example.com'
+    minimumTlsVersion: 'TLS13'
+    name: 'dep-waf-api-cdnpwaf-domain'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
         enabled: true
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    name: 'waf-comprehensive-diagnostics'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = 'global'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'waf-protection-lock'
+  notes: 'WAF: Protected against accidental deletion for business continuity'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param originGroups = [
+  {
+    healthProbeSettings: {
+      probeIntervalInSeconds: 15
+      probePath: '/api/health'
+      probeProtocol: 'Https'
+      probeRequestType: 'GET'
+    }
+    loadBalancingSettings: {
+      additionalLatencyInMilliseconds: 25
+      sampleSize: 6
+      successfulSamplesRequired: 4
+    }
+    name: 'dep-waf-api-origin-group'
+    origins: [
+      {
+        enabledState: 'Enabled'
+        enforceCertificateNameCheck: true
         hostName: '<hostName>'
         httpPort: 80
         httpsPort: 443
+        name: 'dep-waf-api-origin'
+        priority: 1
+        weight: 1000
       }
-    }
-  ]
-  queryStringCachingBehavior: 'IgnoreQueryString'
-}
-param location = '<location>'
+    ]
+    sessionAffinityState: 'Disabled'
+    trafficRestorationTimeToHealedOrNewEndpointsInMinutes: 2
+  }
+]
 param originResponseTimeoutSeconds = 60
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'CDN Profile Reader'
+  }
+]
+param ruleSets = [
+  {
+    name: 'depwafsecurityrulescdnpwaf'
+    rules: [
+      {
+        actions: [
+          {
+            name: 'UrlRedirect'
+            parameters: {
+              destinationProtocol: 'Https'
+              redirectType: 'PermanentRedirect'
+              typeName: 'DeliveryRuleUrlRedirectActionParameters'
+            }
+          }
+        ]
+        conditions: [
+          {
+            name: 'RequestScheme'
+            parameters: {
+              matchValues: [
+                'HTTP'
+              ]
+              negateCondition: false
+              operator: 'Equal'
+              typeName: 'DeliveryRuleRequestSchemeConditionParameters'
+            }
+          }
+        ]
+        matchProcessingBehavior: 'Stop'
+        name: 'HTTPSRedirectRule'
+        order: 1
+      }
+      {
+        actions: [
+          {
+            name: 'ModifyResponseHeader'
+            parameters: {
+              headerAction: 'Overwrite'
+              headerName: 'Strict-Transport-Security'
+              typeName: 'DeliveryRuleHeaderActionParameters'
+              value: 'max-age=31536000; includeSubDomains; preload'
+            }
+          }
+          {
+            name: 'ModifyResponseHeader'
+            parameters: {
+              headerAction: 'Overwrite'
+              headerName: 'X-Content-Type-Options'
+              typeName: 'DeliveryRuleHeaderActionParameters'
+              value: 'nosniff'
+            }
+          }
+          {
+            name: 'ModifyResponseHeader'
+            parameters: {
+              headerAction: 'Overwrite'
+              headerName: 'X-Frame-Options'
+              typeName: 'DeliveryRuleHeaderActionParameters'
+              value: 'DENY'
+            }
+          }
+          {
+            name: 'ModifyResponseHeader'
+            parameters: {
+              headerAction: 'Overwrite'
+              headerName: 'X-XSS-Protection'
+              typeName: 'DeliveryRuleHeaderActionParameters'
+              value: '1; mode=block'
+            }
+          }
+          {
+            name: 'ModifyResponseHeader'
+            parameters: {
+              headerAction: 'Overwrite'
+              headerName: 'Referrer-Policy'
+              typeName: 'DeliveryRuleHeaderActionParameters'
+              value: 'strict-origin-when-cross-origin'
+            }
+          }
+        ]
+        conditions: [
+          {
+            name: 'RequestScheme'
+            parameters: {
+              matchValues: [
+                'HTTPS'
+              ]
+              negateCondition: false
+              operator: 'Equal'
+              typeName: 'DeliveryRuleRequestSchemeConditionParameters'
+            }
+          }
+        ]
+        matchProcessingBehavior: 'Continue'
+        name: 'SecurityHeadersRule'
+        order: 2
+      }
+      {
+        actions: [
+          {
+            name: 'ModifyResponseHeader'
+            parameters: {
+              headerAction: 'Overwrite'
+              headerName: 'X-RateLimit-Limit'
+              typeName: 'DeliveryRuleHeaderActionParameters'
+              value: '1000'
+            }
+          }
+        ]
+        conditions: [
+          {
+            name: 'RequestUri'
+            parameters: {
+              matchValues: [
+                '/api/'
+              ]
+              negateCondition: false
+              operator: 'BeginsWith'
+              transforms: [
+                'Lowercase'
+              ]
+              typeName: 'DeliveryRuleRequestUriConditionParameters'
+            }
+          }
+        ]
+        matchProcessingBehavior: 'Continue'
+        name: 'APIRateLimitRule'
+        order: 3
+      }
+    ]
+  }
+]
+param tags = {
+  Application: 'CDN-WAF-Aligned'
+  BackupRequired: 'Yes'
+  BusinessUnit: 'Digital-Services'
+  CostCenter: 'IT-Infrastructure'
+  Criticality: 'High'
+  DataClassification: 'Internal'
+  Environment: 'Production'
+  MonitoringRequired: 'Yes'
+  Owner: 'Platform-Team'
+  'WAF-Pillar': 'All'
+}
 ```
 
 </details>
@@ -1955,6 +3094,7 @@ The minimum TLS version.
   [
     'TLS10'
     'TLS12'
+    'TLS13'
   ]
   ```
 

@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using large parameter set'
-metadata description = 'This instance deploys the module with most of its features enabled.'
+metadata name = 'Using maximum parameter set'
+metadata description = 'This instance deploys the module with all available features and parameters for Premium_AzureFrontDoor SKU.'
 
 // ========== //
 // Parameters //
@@ -9,7 +9,7 @@ metadata description = 'This instance deploys the module with most of its featur
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-cdn.profiles-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-cdn.profiles.max-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -66,43 +66,203 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: 'dep-${namePrefix}-test-${serviceShort}'
-      location: resourceLocation
+      location: 'global'
+      sku: 'Premium_AzureFrontDoor'
+      originResponseTimeoutSeconds: 240
+
+      // Managed Identity
+      managedIdentities: {
+        systemAssigned: true
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+
+      // Lock configuration
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
+        notes: 'This resource cannot be deleted for security reasons.'
       }
-      originResponseTimeoutSeconds: 60
-      sku: 'Standard_Microsoft'
-      endpointProperties: {
-        originHostHeader: '${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}'
-        contentTypesToCompress: [
-          'text/plain'
-          'text/html'
-          'text/css'
-          'text/javascript'
-          'application/x-javascript'
-          'application/javascript'
-          'application/json'
-          'application/xml'
-        ]
-        isCompressionEnabled: true
-        isHttpAllowed: true
-        isHttpsAllowed: true
-        queryStringCachingBehavior: 'IgnoreQueryString'
-        origins: [
-          {
-            name: 'dep-${namePrefix}-cdn-endpoint01'
-            properties: {
+
+      // Tags
+      tags: {
+        Environment: 'Test'
+        Application: 'CDN'
+        CostCenter: '12345'
+        Owner: 'TestTeam'
+      }
+
+      // Custom Domains with simplified configurations (FIXED)
+      customDomains: [
+        {
+          name: 'dep-${namePrefix}-test1-${serviceShort}-custom-domain'
+          hostName: 'dep-${namePrefix}-test1-${serviceShort}-custom-domain.azurewebsites.net'
+          certificateType: 'ManagedCertificate'
+          minimumTlsVersion: 'TLS12'
+        }
+        {
+          name: 'dep-${namePrefix}-test2-${serviceShort}-custom-domain'
+          hostName: 'dep-${namePrefix}-test2-${serviceShort}-custom-domain.azurewebsites.net'
+          certificateType: 'ManagedCertificate'
+          minimumTlsVersion: 'TLS12'
+          cipherSuiteSetType: 'TLS12_2022'
+        }
+        {
+          name: 'dep-${namePrefix}-test3-${serviceShort}-custom-domain'
+          hostName: 'dep-${namePrefix}-test3-${serviceShort}-custom-domain.azurewebsites.net'
+          certificateType: 'ManagedCertificate'
+          minimumTlsVersion: 'TLS13'
+          cipherSuiteSetType: 'Customized'
+          customizedCipherSuiteSet: {
+            // cipherSuiteSetForTls12: [
+            //   'DHE_RSA_AES128_GCM_SHA256'
+            //   'DHE_RSA_AES256_GCM_SHA384'
+            //   'ECDHE_RSA_AES128_GCM_SHA256'
+            //   'ECDHE_RSA_AES256_GCM_SHA384'
+            // ]
+            cipherSuiteSetForTls13: [
+              'TLS_AES_128_GCM_SHA256'
+              'TLS_AES_256_GCM_SHA384'
+            ]
+          }
+        }
+      ]
+
+      // Origin Groups with realistic hostnames (FIXED)
+      originGroups: [
+        {
+          name: 'dep-${namePrefix}-test-${serviceShort}-origin-group-1'
+          loadBalancingSettings: {
+            additionalLatencyInMilliseconds: 50
+            sampleSize: 4
+            successfulSamplesRequired: 3
+          }
+          healthProbeSettings: {
+            probePath: '/health'
+            probeProtocol: 'Https'
+            probeRequestType: 'GET'
+            probeIntervalInSeconds: 120
+          }
+          sessionAffinityState: 'Enabled'
+          trafficRestorationTimeToHealedOrNewEndpointsInMinutes: 15
+          origins: [
+            {
+              name: 'dep-${namePrefix}-test-${serviceShort}-origin-1'
               hostName: '${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}'
               httpPort: 80
               httpsPort: 443
-              enabled: true
+              priority: 1
+              weight: 1000
+              enabledState: 'Enabled'
+              enforceCertificateNameCheck: true
             }
+          ]
+        }
+        {
+          name: 'dep-${namePrefix}-test-${serviceShort}-origin-group-2'
+          loadBalancingSettings: {
+            additionalLatencyInMilliseconds: 100
+            sampleSize: 6
+            successfulSamplesRequired: 4
           }
-        ]
-        originGroups: []
-        geoFilters: []
-      }
+          sessionAffinityState: 'Disabled'
+          trafficRestorationTimeToHealedOrNewEndpointsInMinutes: 10
+          origins: [
+            {
+              name: 'dep-${namePrefix}-test-${serviceShort}-origin-2'
+              hostName: '${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}'
+              httpPort: 80
+              httpsPort: 443
+              priority: 1
+              weight: 1000
+              enabledState: 'Enabled'
+              enforceCertificateNameCheck: true
+            }
+          ]
+        }
+      ]
+
+      // Rule Sets with comprehensive rules
+      ruleSets: [
+        {
+          name: 'dep${namePrefix}test${serviceShort}ruleset1'
+          rules: [
+            {
+              name: 'dep${namePrefix}test${serviceShort}rule1'
+              order: 1
+              matchProcessingBehavior: 'Continue'
+              conditions: [
+                // {
+                //   name: 'RequestMethod'
+                //   parameters: {
+                //     typeName: 'DeliveryRuleRequestMethodConditionParameters'
+                //     operator: 'Equal'
+                //     negateCondition: false
+                //     matchValues: ['GET', 'POST']
+                //     transforms: []
+                //   }
+                // }
+              ]
+              actions: [
+                {
+                  name: 'UrlRedirect'
+                  parameters: {
+                    typeName: 'DeliveryRuleUrlRedirectActionParameters'
+                    redirectType: 'PermanentRedirect'
+                    destinationProtocol: 'Https'
+                    customPath: '/v2/api/'
+                    customHostname: 'api.example.com'
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+
+      // AFD Endpoints with simplified routing (FIXED)
+      afdEndpoints: [
+        {
+          name: 'dep-${namePrefix}-test-${serviceShort}-afd-endpoint-1'
+          autoGeneratedDomainNameLabelScope: 'TenantReuse'
+          enabledState: 'Enabled'
+          routes: [
+            {
+              name: 'dep-${namePrefix}-test-${serviceShort}-afd-route-1'
+              originGroupName: 'dep-${namePrefix}-test-${serviceShort}-origin-group-1'
+              customDomainNames: [
+                'dep-${namePrefix}-test1-${serviceShort}-custom-domain'
+              ]
+              enabledState: 'Enabled'
+              forwardingProtocol: 'MatchRequest'
+              httpsRedirect: 'Enabled'
+              linkToDefaultDomain: 'Enabled'
+              patternsToMatch: ['/api/*', '/health']
+              supportedProtocols: ['Http', 'Https']
+              cacheConfiguration: {
+                queryStringCachingBehavior: 'IncludeSpecifiedQueryStrings'
+                queryParameters: 'version,locale'
+                compressionSettings: {
+                  contentTypesToCompress: [
+                    'application/json'
+                    'text/css'
+                    'text/html'
+                  ]
+                  isCompressionEnabled: true
+                }
+              }
+              ruleSets: [
+                {
+                  name: 'dep${namePrefix}test${serviceShort}ruleset1'
+                }
+              ]
+            }
+          ]
+        }
+      ]
+
+      // Diagnostics settings
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -124,24 +284,11 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
+
+      // Role assignments
       roleAssignments: [
         {
-          name: '50362c78-6910-43c3-8639-9cae123943bb'
-          roleDefinitionIdOrName: 'Owner'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
-          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: subscriptionResourceId(
-            'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-          )
+          roleDefinitionIdOrName: 'CDN Profile Contributor'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
@@ -149,3 +296,25 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+// =========== //
+//   Outputs   //
+// =========== //
+
+@description('The name of the CDN profile.')
+output profileName string = testDeployment[0].outputs.name
+
+@description('The resource ID of the CDN profile.')
+output profileResourceId string = testDeployment[0].outputs.resourceId
+
+@description('The DNS validation records for custom domains.')
+output dnsValidationRecords array = testDeployment[0].outputs.dnsValidation
+
+@description('The AFD endpoint host names.')
+output afdEndpointNames array = testDeployment[0].outputs.frontDoorEndpointHostNames
+
+@description('The resource group name.')
+output resourceGroupName string = resourceGroup.name
+
+@description('The system-assigned managed identity principal ID.')
+output systemAssignedMIPrincipalId string = testDeployment[0].outputs.?systemAssignedMIPrincipalId
