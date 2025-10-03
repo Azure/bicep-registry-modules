@@ -43,17 +43,17 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-// module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
-//   scope: resourceGroup
-//   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
-//   params: {
-//     storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
-//     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-//     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
-//     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
-//     location: resourceLocation
-//   }
-// }
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+  params: {
+    storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
+    location: resourceLocation
+  }
+}
 
 // ============== //
 // Test Execution //
