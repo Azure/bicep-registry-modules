@@ -140,6 +140,9 @@ module testDeployment '../../../main.bicep' = [
           captureDescriptionIntervalInSeconds: 300
           captureDescriptionSizeLimitInBytes: 314572800
           captureDescriptionSkipEmptyArchives: true
+          captureDescriptionDestinationIdentityEnabled: true
+          captureDescriptionDestinationIdentityType: 'UserAssigned'
+          captureDescriptionDestinationIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
           consumergroups: [
             {
               name: 'custom'

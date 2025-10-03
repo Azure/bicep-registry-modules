@@ -41,6 +41,9 @@ This module deploys an Event Hub Namespace Event Hub.
 | [`authorizationRules`](#parameter-authorizationrules) | array | Authorization Rules for the Event Hub. |
 | [`captureDescriptionDestinationArchiveNameFormat`](#parameter-capturedescriptiondestinationarchivenameformat) | string | Blob naming convention for archive, e.g. {Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}. Here all the parameters (Namespace,EventHub .. etc) are mandatory irrespective of order. |
 | [`captureDescriptionDestinationBlobContainer`](#parameter-capturedescriptiondestinationblobcontainer) | string | Blob container Name. |
+| [`captureDescriptionDestinationIdentityEnabled`](#parameter-capturedescriptiondestinationidentityenabled) | bool | The type of identity used for the capture destination. Required if captureDescriptionDestinationIdentityEnabled is true. |
+| [`captureDescriptionDestinationIdentityResourceId`](#parameter-capturedescriptiondestinationidentityresourceid) | string | The resource ID of the user assigned identity to be used for the capture destination. Required if captureDescriptionDestinationIdentityEnabled is true and captureDescriptionDestinationIdentityType is UserAssigned. |
+| [`captureDescriptionDestinationIdentityType`](#parameter-capturedescriptiondestinationidentitytype) | string | The type of identity used for the capture destination. Required if captureDescriptionDestinationIdentityEnabled is true. |
 | [`captureDescriptionDestinationName`](#parameter-capturedescriptiondestinationname) | string | Name for capture destination. |
 | [`captureDescriptionDestinationStorageAccountResourceId`](#parameter-capturedescriptiondestinationstorageaccountresourceid) | string | Resource ID of the storage account to be used to create the blobs. |
 | [`captureDescriptionEnabled`](#parameter-capturedescriptionenabled) | bool | A value that indicates whether capture description is enabled. |
@@ -138,6 +141,36 @@ Blob container Name.
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `captureDescriptionDestinationIdentityEnabled`
+
+The type of identity used for the capture destination. Required if captureDescriptionDestinationIdentityEnabled is true.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `captureDescriptionDestinationIdentityResourceId`
+
+The resource ID of the user assigned identity to be used for the capture destination. Required if captureDescriptionDestinationIdentityEnabled is true and captureDescriptionDestinationIdentityType is UserAssigned.
+
+- Required: No
+- Type: string
+
+### Parameter: `captureDescriptionDestinationIdentityType`
+
+The type of identity used for the capture destination. Required if captureDescriptionDestinationIdentityEnabled is true.
+
+- Required: No
+- Type: string
+- Default: `'SystemAssigned'`
+- Allowed:
+  ```Bicep
+  [
+    'SystemAssigned'
+    'UserAssigned'
+  ]
+  ```
 
 ### Parameter: `captureDescriptionDestinationName`
 

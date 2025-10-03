@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "15625262238130064609"
+      "version": "0.38.5.1644",
+      "templateHash": "11387393798805099271"
     },
     "name": "Event Hub Namespaces",
     "description": "This module deploys an Event Hub Namespace."
@@ -1143,7 +1143,7 @@
         "count": "[length(parameters('authorizationRules'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-EvhbNamespace-AuthRule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1167,8 +1167,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "3266192078743248389"
+              "version": "0.38.5.1644",
+              "templateHash": "13585293332022093189"
             },
             "name": "Event Hub Namespace Authorization Rule",
             "description": "This module deploys an Event Hub Namespace Authorization Rule."
@@ -1241,7 +1241,7 @@
     "eventHubNamespace_disasterRecoveryConfig": {
       "condition": "[not(empty(parameters('disasterRecoveryConfig')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-EvhbNamespace-DisRecConfig', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1265,8 +1265,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "8486894700983072317"
+              "version": "0.38.5.1644",
+              "templateHash": "826661506370683816"
             },
             "name": "Event Hub Namespace Disaster Recovery Configs",
             "description": "This module deploys an Event Hub Namespace Disaster Recovery Config."
@@ -1337,7 +1337,7 @@
         "count": "[length(parameters('eventhubs'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-EvhbNamespace-EventHub-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1422,8 +1422,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "17167481729800422327"
+              "version": "0.38.5.1644",
+              "templateHash": "5882557825998124715"
             },
             "name": "Event Hub Namespace Event Hubs",
             "description": "This module deploys an Event Hub Namespace Event Hub."
@@ -1760,6 +1760,31 @@
                 "description": "Optional. A value that indicates whether to Skip Empty Archives."
               }
             },
+            "captureDescriptionDestinationIdentityEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. The type of identity used for the capture destination. Required if captureDescriptionDestinationIdentityEnabled is true."
+              }
+            },
+            "captureDescriptionDestinationIdentityType": {
+              "type": "string",
+              "defaultValue": "SystemAssigned",
+              "allowedValues": [
+                "SystemAssigned",
+                "UserAssigned"
+              ],
+              "metadata": {
+                "description": "Optional. The type of identity used for the capture destination. Required if captureDescriptionDestinationIdentityEnabled is true."
+              }
+            },
+            "captureDescriptionDestinationIdentityResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The resource ID of the user assigned identity to be used for the capture destination. Required if captureDescriptionDestinationIdentityEnabled is true and captureDescriptionDestinationIdentityType is UserAssigned."
+              }
+            },
             "retentionDescriptionEnabled": {
               "type": "bool",
               "defaultValue": false,
@@ -1826,7 +1851,8 @@
                     "archiveNameFormat": "[parameters('captureDescriptionDestinationArchiveNameFormat')]",
                     "blobContainer": "[parameters('captureDescriptionDestinationBlobContainer')]",
                     "storageAccountResourceId": "[parameters('captureDescriptionDestinationStorageAccountResourceId')]"
-                  }
+                  },
+                  "identity": "[if(parameters('captureDescriptionDestinationIdentityEnabled'), createObject('type', parameters('captureDescriptionDestinationIdentityType'), 'userAssignedIdentity', if(equals(parameters('captureDescriptionDestinationIdentityType'), 'UserAssigned'), parameters('captureDescriptionDestinationIdentityResourceId'), null())), null())]"
                 },
                 "enabled": "[parameters('captureDescriptionEnabled')]",
                 "encoding": "[parameters('captureDescriptionEncoding')]",
@@ -1921,7 +1947,7 @@
                 "count": "[length(parameters('consumergroups'))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-ConsumerGroup-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -1948,8 +1974,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "17561713370721644464"
+                      "version": "0.38.5.1644",
+                      "templateHash": "16903855692504058773"
                     },
                     "name": "Event Hub Namespace Event Hub Consumer Groups",
                     "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group."
@@ -2027,7 +2053,7 @@
                 "count": "[length(parameters('authorizationRules'))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-AuthRule-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -2054,8 +2080,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "71535215115158592"
+                      "version": "0.38.5.1644",
+                      "templateHash": "12252274361962622681"
                     },
                     "name": "Event Hub Namespace Event Hub Authorization Rules",
                     "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule."
@@ -2164,7 +2190,7 @@
     "eventHubNamespace_networkRuleSet": {
       "condition": "[or(not(empty(parameters('networkRuleSets'))), not(empty(parameters('privateEndpoints'))))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-EvhbNamespace-NetworkRuleSet', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2197,8 +2223,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "96671683259154312"
+              "version": "0.38.5.1644",
+              "templateHash": "9847244450141853110"
             },
             "name": "Event Hub Namespace Network Rule Sets",
             "description": "This module deploys an Event Hub Namespace Network Rule Set."
@@ -2322,7 +2348,7 @@
         "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-namespace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
@@ -3076,7 +3102,7 @@
     "secretsExport": {
       "condition": "[not(equals(parameters('secretsExportConfiguration'), null()))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
       "subscriptionId": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[4]]",
@@ -3100,8 +3126,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "6381990212545754493"
+              "version": "0.38.5.1644",
+              "templateHash": "7188206751842103058"
             }
           },
           "definitions": {

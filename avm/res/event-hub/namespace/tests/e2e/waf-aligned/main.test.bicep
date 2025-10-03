@@ -129,6 +129,7 @@ module testDeployment '../../../main.bicep' = [
           captureDescriptionIntervalInSeconds: 300
           captureDescriptionSizeLimitInBytes: 314572800
           captureDescriptionSkipEmptyArchives: true
+          captureDescriptionDestinationIdentityEnabled: true
           consumergroups: [
             {
               name: 'custom'

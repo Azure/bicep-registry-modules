@@ -369,6 +369,9 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
         ]
         captureDescriptionDestinationArchiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
         captureDescriptionDestinationBlobContainer: 'eventhub'
+        captureDescriptionDestinationIdentityEnabled: true
+        captureDescriptionDestinationIdentityResourceId: '<captureDescriptionDestinationIdentityResourceId>'
+        captureDescriptionDestinationIdentityType: 'UserAssigned'
         captureDescriptionDestinationName: 'EventHubArchive.AzureBlockBlob'
         captureDescriptionDestinationStorageAccountResourceId: '<captureDescriptionDestinationStorageAccountResourceId>'
         captureDescriptionEnabled: true
@@ -574,6 +577,9 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
           ],
           "captureDescriptionDestinationArchiveNameFormat": "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}",
           "captureDescriptionDestinationBlobContainer": "eventhub",
+          "captureDescriptionDestinationIdentityEnabled": true,
+          "captureDescriptionDestinationIdentityResourceId": "<captureDescriptionDestinationIdentityResourceId>",
+          "captureDescriptionDestinationIdentityType": "UserAssigned",
           "captureDescriptionDestinationName": "EventHubArchive.AzureBlockBlob",
           "captureDescriptionDestinationStorageAccountResourceId": "<captureDescriptionDestinationStorageAccountResourceId>",
           "captureDescriptionEnabled": true,
@@ -799,6 +805,9 @@ param eventhubs = [
     ]
     captureDescriptionDestinationArchiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
     captureDescriptionDestinationBlobContainer: 'eventhub'
+    captureDescriptionDestinationIdentityEnabled: true
+    captureDescriptionDestinationIdentityResourceId: '<captureDescriptionDestinationIdentityResourceId>'
+    captureDescriptionDestinationIdentityType: 'UserAssigned'
     captureDescriptionDestinationName: 'EventHubArchive.AzureBlockBlob'
     captureDescriptionDestinationStorageAccountResourceId: '<captureDescriptionDestinationStorageAccountResourceId>'
     captureDescriptionEnabled: true
@@ -989,6 +998,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
         ]
         captureDescriptionDestinationArchiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
         captureDescriptionDestinationBlobContainer: 'eventhub'
+        captureDescriptionDestinationIdentityEnabled: true
         captureDescriptionDestinationName: 'EventHubArchive.AzureBlockBlob'
         captureDescriptionDestinationStorageAccountResourceId: '<captureDescriptionDestinationStorageAccountResourceId>'
         captureDescriptionEnabled: true
@@ -1144,6 +1154,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
           ],
           "captureDescriptionDestinationArchiveNameFormat": "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}",
           "captureDescriptionDestinationBlobContainer": "eventhub",
+          "captureDescriptionDestinationIdentityEnabled": true,
           "captureDescriptionDestinationName": "EventHubArchive.AzureBlockBlob",
           "captureDescriptionDestinationStorageAccountResourceId": "<captureDescriptionDestinationStorageAccountResourceId>",
           "captureDescriptionEnabled": true,
@@ -1309,6 +1320,7 @@ param eventhubs = [
     ]
     captureDescriptionDestinationArchiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
     captureDescriptionDestinationBlobContainer: 'eventhub'
+    captureDescriptionDestinationIdentityEnabled: true
     captureDescriptionDestinationName: 'EventHubArchive.AzureBlockBlob'
     captureDescriptionDestinationStorageAccountResourceId: '<captureDescriptionDestinationStorageAccountResourceId>'
     captureDescriptionEnabled: true

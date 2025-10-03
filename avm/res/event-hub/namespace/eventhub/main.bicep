@@ -93,6 +93,19 @@ param captureDescriptionSizeLimitInBytes int = 314572800
 @description('Optional. A value that indicates whether to Skip Empty Archives.')
 param captureDescriptionSkipEmptyArchives bool = false
 
+@description('Optional. The type of identity used for the capture destination. Required if captureDescriptionDestinationIdentityEnabled is true.')
+param captureDescriptionDestinationIdentityEnabled bool = false
+
+@description('Optional. The type of identity used for the capture destination. Required if captureDescriptionDestinationIdentityEnabled is true.')
+@allowed([
+  'SystemAssigned'
+  'UserAssigned'
+])
+param captureDescriptionDestinationIdentityType string = 'SystemAssigned'
+
+@description('Optional. The resource ID of the user assigned identity to be used for the capture destination. Required if captureDescriptionDestinationIdentityEnabled is true and captureDescriptionDestinationIdentityType is UserAssigned.')
+param captureDescriptionDestinationIdentityResourceId string?
+
 @description('Optional. A value that indicates whether to enable retention description properties. If it is set to true the messageRetentionInDays property is ignored.')
 param retentionDescriptionEnabled bool = false
 
@@ -142,6 +155,14 @@ var eventHubPropertiesCapture = {
         blobContainer: captureDescriptionDestinationBlobContainer
         storageAccountResourceId: captureDescriptionDestinationStorageAccountResourceId
       }
+      identity: captureDescriptionDestinationIdentityEnabled
+      ? {
+          type: captureDescriptionDestinationIdentityType
+          userAssignedIdentity: captureDescriptionDestinationIdentityType == 'UserAssigned'
+            ? captureDescriptionDestinationIdentityResourceId
+            : null
+        }
+      : null
     }
     enabled: captureDescriptionEnabled
     encoding: captureDescriptionEncoding
