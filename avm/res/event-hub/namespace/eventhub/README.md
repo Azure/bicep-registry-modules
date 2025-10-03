@@ -39,7 +39,7 @@ This module deploys an Event Hub Namespace Event Hub.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`authorizationRules`](#parameter-authorizationrules) | array | Authorization Rules for the Event Hub. |
-| [`captureDescription`](#parameter-capturedescription) | object | Properties of capture description. Note: The chose identity needs the required permissions on the target before the assignment can be executed. For example 'Storage Data Blob Contributor' for a container. |
+| [`captureDescription`](#parameter-capturedescription) | object | Properties of capture description. Note: The chose identity needs the required permissions on the target before the assignment can be executed. For example 'Storage Data Blob Contributor' for a container. Also, the identity must be configured on the namespace level. |
 | [`consumergroups`](#parameter-consumergroups) | array | The consumer groups to create in this Event Hub instance. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -117,7 +117,7 @@ The allowed rights for an Event Hub authorization rule.
 
 ### Parameter: `captureDescription`
 
-Properties of capture description. Note: The chose identity needs the required permissions on the target before the assignment can be executed. For example 'Storage Data Blob Contributor' for a container.
+Properties of capture description. Note: The chose identity needs the required permissions on the target before the assignment can be executed. For example 'Storage Data Blob Contributor' for a container. Also, the identity must be configured on the namespace level.
 
 - Required: No
 - Type: object
@@ -127,7 +127,7 @@ Properties of capture description. Note: The chose identity needs the required p
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`destination`](#parameter-capturedescriptiondestination) | object | Properties of Destination where capture will be stored. (Storage Account, Blob Names). |
-| [`enabled`](#parameter-capturedescriptionenabled) | bool | A value that indicates whether capture description is enabled. |
+| [`enabled`](#parameter-capturedescriptionenabled) | bool | A value that indicates whether capture description is enabled. Defaults to true if `captureDescription` is provided. |
 | [`encoding`](#parameter-capturedescriptionencoding) | string | Enumerates the possible values for the encoding format of capture description. Note: "AvroDeflate" will be deprecated in New API Version. |
 | [`intervalInSeconds`](#parameter-capturedescriptionintervalinseconds) | int | The time window allows you to set the frequency with which the capture to Azure Blobs will happen. |
 | [`sizeLimitInBytes`](#parameter-capturedescriptionsizelimitinbytes) | int | The size window defines the amount of data built up in your Event Hub before an capture operation. |
@@ -192,7 +192,7 @@ Properties describing the storage account, blob container and archive name forma
 
 ### Parameter: `captureDescription.enabled`
 
-A value that indicates whether capture description is enabled.
+A value that indicates whether capture description is enabled. Defaults to true if `captureDescription` is provided.
 
 - Required: No
 - Type: bool

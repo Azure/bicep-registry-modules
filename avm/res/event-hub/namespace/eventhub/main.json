@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.5.1644",
-      "templateHash": "335046118131131379"
+      "templateHash": "16763470862840239583"
     },
     "name": "Event Hub Namespace Event Hubs",
     "description": "This module deploys an Event Hub Namespace Event Hub."
@@ -100,7 +100,7 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. A value that indicates whether capture description is enabled."
+            "description": "Optional. A value that indicates whether capture description is enabled. Defaults to true if `captureDescription` is provided."
           }
         },
         "encoding": {
@@ -376,7 +376,7 @@
       "$ref": "#/definitions/captureDescriptionType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Properties of capture description. Note: The chose identity needs the required permissions on the target before the assignment can be executed. For example 'Storage Data Blob Contributor' for a container."
+        "description": "Optional. Properties of capture description. Note: The chose identity needs the required permissions on the target before the assignment can be executed. For example 'Storage Data Blob Contributor' for a container. Also, the identity must be configured on the namespace level."
       }
     },
     "retentionDescriptionEnabled": {
@@ -474,7 +474,7 @@
       "type": "Microsoft.EventHub/namespaces/eventhubs",
       "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
-      "properties": "[shallowMerge(createArray(createObject('messageRetentionInDays', if(parameters('retentionDescriptionEnabled'), null(), parameters('messageRetentionInDays')), 'partitionCount', parameters('partitionCount'), 'status', parameters('status'), 'retentionDescription', if(parameters('retentionDescriptionEnabled'), createObject('cleanupPolicy', parameters('retentionDescriptionCleanupPolicy'), 'retentionTimeInHours', if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Delete'), parameters('retentionDescriptionRetentionTimeInHours'), null()), 'tombstoneRetentionTimeInHours', if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Compact'), parameters('retentionDescriptionTombstoneRetentionTimeInHours'), null())), null())), if(coalesce(tryGet(parameters('captureDescription'), 'enabled'), false()), createObject('captureDescription', createObject('destination', createObject('name', tryGet(parameters('captureDescription').destination, 'name'), 'identity', variables('captureIdentity'), 'properties', tryGet(parameters('captureDescription').destination, 'properties')), 'enabled', parameters('captureDescription').enabled, 'encoding', tryGet(parameters('captureDescription'), 'encoding'), 'intervalInSeconds', tryGet(parameters('captureDescription'), 'intervalInSeconds'), 'sizeLimitInBytes', tryGet(parameters('captureDescription'), 'sizeLimitInBytes'), 'skipEmptyArchives', tryGet(parameters('captureDescription'), 'skipEmptyArchives'))), createObject())))]"
+      "properties": "[shallowMerge(createArray(createObject('messageRetentionInDays', if(parameters('retentionDescriptionEnabled'), null(), parameters('messageRetentionInDays')), 'partitionCount', parameters('partitionCount'), 'status', parameters('status'), 'retentionDescription', if(parameters('retentionDescriptionEnabled'), createObject('cleanupPolicy', parameters('retentionDescriptionCleanupPolicy'), 'retentionTimeInHours', if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Delete'), parameters('retentionDescriptionRetentionTimeInHours'), null()), 'tombstoneRetentionTimeInHours', if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Compact'), parameters('retentionDescriptionTombstoneRetentionTimeInHours'), null())), null())), if(and(not(empty(parameters('captureDescription'))), not(equals(tryGet(parameters('captureDescription'), 'enabled'), false()))), createObject('captureDescription', createObject('destination', createObject('name', tryGet(parameters('captureDescription').destination, 'name'), 'identity', variables('captureIdentity'), 'properties', tryGet(parameters('captureDescription').destination, 'properties')), 'enabled', parameters('captureDescription').enabled, 'encoding', tryGet(parameters('captureDescription'), 'encoding'), 'intervalInSeconds', tryGet(parameters('captureDescription'), 'intervalInSeconds'), 'sizeLimitInBytes', tryGet(parameters('captureDescription'), 'sizeLimitInBytes'), 'skipEmptyArchives', tryGet(parameters('captureDescription'), 'skipEmptyArchives'))), createObject())))]"
     },
     "eventHub_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",

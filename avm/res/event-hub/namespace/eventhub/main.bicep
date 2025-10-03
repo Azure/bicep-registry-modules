@@ -166,7 +166,7 @@ resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2024-01-01' = {
             : null
         }
       : null
-    ...(captureDescription.?enabled ?? false
+    ...(!empty(captureDescription) && (captureDescription!.?enabled != false)
       ? {
           captureDescription: {
             destination: {
@@ -288,7 +288,7 @@ type captureDescriptionType = {
     properties: resourceInput<'Microsoft.EventHub/namespaces/eventhubs@2024-01-01'>.properties.captureDescription.destination.properties?
   }?
 
-  @description('Optional. A value that indicates whether capture description is enabled.')
+  @description('Optional. A value that indicates whether capture description is enabled. Defaults to true if `captureDescription` is provided.')
   enabled: bool?
 
   @description('Optional. Enumerates the possible values for the encoding format of capture description. Note: "AvroDeflate" will be deprecated in New API Version.')

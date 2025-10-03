@@ -1023,7 +1023,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
               storageAccountResourceId: '<storageAccountResourceId>'
             }
           }
-          enabled: true
           encoding: 'Avro'
           intervalInSeconds: 300
           sizeLimitInBytes: 314572800
@@ -1050,6 +1049,11 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     ]
     isAutoInflateEnabled: true
     kafkaEnabled: true
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     maximumThroughputUnits: 4
     minimumTlsVersion: '1.2'
     networkRuleSets: {
@@ -1187,7 +1191,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
                 "storageAccountResourceId": "<storageAccountResourceId>"
               }
             },
-            "enabled": true,
             "encoding": "Avro",
             "intervalInSeconds": 300,
             "sizeLimitInBytes": 314572800,
@@ -1218,6 +1221,13 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     },
     "kafkaEnabled": {
       "value": true
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
     },
     "maximumThroughputUnits": {
       "value": 4
@@ -1361,7 +1371,6 @@ param eventhubs = [
           storageAccountResourceId: '<storageAccountResourceId>'
         }
       }
-      enabled: true
       encoding: 'Avro'
       intervalInSeconds: 300
       sizeLimitInBytes: 314572800
@@ -1388,6 +1397,11 @@ param eventhubs = [
 ]
 param isAutoInflateEnabled = true
 param kafkaEnabled = true
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
 param maximumThroughputUnits = 4
 param minimumTlsVersion = '1.2'
 param networkRuleSets = {
@@ -1837,7 +1851,7 @@ Properties of capture description.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`destination`](#parameter-eventhubscapturedescriptiondestination) | object | Properties of Destination where capture will be stored. (Storage Account, Blob Names). |
-| [`enabled`](#parameter-eventhubscapturedescriptionenabled) | bool | A value that indicates whether capture description is enabled. |
+| [`enabled`](#parameter-eventhubscapturedescriptionenabled) | bool | A value that indicates whether capture description is enabled. Defaults to true if `captureDescription` is provided. |
 | [`encoding`](#parameter-eventhubscapturedescriptionencoding) | string | Enumerates the possible values for the encoding format of capture description. Note: "AvroDeflate" will be deprecated in New API Version. |
 | [`intervalInSeconds`](#parameter-eventhubscapturedescriptionintervalinseconds) | int | The time window allows you to set the frequency with which the capture to Azure Blobs will happen. |
 | [`sizeLimitInBytes`](#parameter-eventhubscapturedescriptionsizelimitinbytes) | int | The size window defines the amount of data built up in your Event Hub before an capture operation. |
@@ -1902,7 +1916,7 @@ Properties describing the storage account, blob container and archive name forma
 
 ### Parameter: `eventhubs.captureDescription.enabled`
 
-A value that indicates whether capture description is enabled.
+A value that indicates whether capture description is enabled. Defaults to true if `captureDescription` is provided.
 
 - Required: No
 - Type: bool
@@ -2273,7 +2287,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+| [`userAssignedResourceId`](#parameter-managedidentitiesuserassignedresourceid) | string | The resource ID to assign to the resource. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -2282,12 +2296,12 @@ Enables system assigned managed identity on the resource.
 - Required: No
 - Type: bool
 
-### Parameter: `managedIdentities.userAssignedResourceIds`
+### Parameter: `managedIdentities.userAssignedResourceId`
 
-The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+The resource ID to assign to the resource.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `maximumThroughputUnits`
 

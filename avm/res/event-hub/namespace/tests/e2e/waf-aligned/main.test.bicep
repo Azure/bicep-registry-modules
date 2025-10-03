@@ -142,7 +142,6 @@ module testDeployment '../../../main.bicep' = [
             sizeLimitInBytes: 314572800
             skipEmptyArchives: true
             encoding: 'Avro'
-            enabled: true
           }
           consumergroups: [
             {
