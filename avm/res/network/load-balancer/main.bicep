@@ -260,7 +260,7 @@ module loadBalancer_backendAddressPools 'backend-address-pool/main.bicep' = [
       tunnelInterfaces: backendAddressPool.?tunnelInterfaces
       loadBalancerBackendAddresses: backendAddressPool.?loadBalancerBackendAddresses
       drainPeriodInSeconds: backendAddressPool.?drainPeriodInSeconds
-      virtualNetworkResourceID: backendAddressPool.?virtualNetworkResourceID
+      virtualNetworkResourceId: backendAddressPool.?virtualNetworkResourceId
     }
   }
 ]

@@ -56,11 +56,11 @@
         "description": "Optional. Backend address synchronous mode for the backend pool."
       }
     },
-    "virtualNetworkResourceID": {
+    "virtualNetworkResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The resource ID of the virtual network."
+        "description": "Optional. The resource Id of the virtual network."
       }
     }
   },
@@ -74,7 +74,7 @@
         "tunnelInterfaces": "[parameters('tunnelInterfaces')]",
         "drainPeriodInSeconds": "[if(not(equals(parameters('drainPeriodInSeconds'), 0)), parameters('drainPeriodInSeconds'), null())]",
         "syncMode": "[if(not(empty(parameters('syncMode'))), parameters('syncMode'), null())]",
-        "virtualNetwork": "[if(not(empty(parameters('virtualNetworkResourceID'))), createObject('id', parameters('virtualNetworkResourceID')), null())]"
+        "virtualNetwork": "[if(not(empty(parameters('virtualNetworkResourceId'))), createObject('id', parameters('virtualNetworkResourceId')), null())]"
       }
     }
   ],

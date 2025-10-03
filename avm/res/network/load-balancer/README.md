@@ -161,7 +161,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
           }
         ]
         name: 'backendAddressPool1'
-        virtualNetworkId: '<virtualNetworkId>'
+        virtualNetworkResourceId: '<virtualNetworkResourceId>'
       }
       {
         name: 'backendAddressPool2'
@@ -321,7 +321,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
             }
           ],
           "name": "backendAddressPool1",
-          "virtualNetworkId": "<virtualNetworkId>"
+          "virtualNetworkResourceId": "<virtualNetworkResourceId>"
         },
         {
           "name": "backendAddressPool2"
@@ -491,7 +491,7 @@ param backendAddressPools = [
       }
     ]
     name: 'backendAddressPool1'
-    virtualNetworkId: '<virtualNetworkId>'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
   }
   {
     name: 'backendAddressPool2'
