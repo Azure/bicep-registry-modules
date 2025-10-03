@@ -31,38 +31,6 @@ param skuFamily string = 'MeteredData'
 @description('Optional. Array of peering configurations for the ExpressRoute circuit.')
 param peerings peeringConfigType[]?
 
-// @description('Optional. BGP peering type for the Circuit. Choose from AzurePrivatePeering, AzurePublicPeering or MicrosoftPeering.')
-// @allowed([
-//   'AzurePrivatePeering'
-//   'MicrosoftPeering'
-// ])
-// param peeringType string = 'AzurePrivatePeering'
-
-// @secure()
-// @description('Optional. The shared key for peering configuration. Router does MD5 hash comparison to validate the packets sent by BGP connection. This parameter is optional and can be removed from peering configuration if not required.')
-// param sharedKey string = ''
-
-// @description('Optional. The autonomous system number of the customer/connectivity provider.')
-// param peerASN int = 0
-
-// @description('Optional. A /30 subnet used to configure IP addresses for interfaces on Link1.')
-// param primaryPeerAddressPrefix string = ''
-
-// @description('Optional. A /30 subnet used to configure IP addresses for interfaces on Link2.')
-// param secondaryPeerAddressPrefix string = ''
-
-// @description('Optional. A /125 subnet used to configure IPV6 addresses for interfaces on Link1.')
-// param primaryIPv6PeerAddressPrefix string = ''
-
-// @description('Optional. A /125 subnet used to configure IPV6 addresses for interfaces on Link2.')
-// param secondaryIPv6PeerAddressPrefix string = ''
-
-// @description('Optional. The Microsoft peering configuration.')
-// param ipv6PeeringState ('Disabled' | 'Enabled') = 'Disabled'
-
-// @description('Optional. Specifies the identifier that is used to identify the customer.')
-// param vlanId int = 0
-
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
@@ -187,6 +155,7 @@ resource expressRouteCircuit 'Microsoft.Network/expressRouteCircuits@2024-07-01'
         properties: {
           peeringType: peering.peeringType
           sharedKey: peering.?sharedKey
+          azureASN: peering.?azureASN ?? 12076
           peerASN: peering.?peerASN
           primaryPeerAddressPrefix: peering.?primaryPeerAddressPrefix
           secondaryPeerAddressPrefix: peering.?secondaryPeerAddressPrefix
@@ -195,7 +164,6 @@ resource expressRouteCircuit 'Microsoft.Network/expressRouteCircuits@2024-07-01'
           microsoftPeeringConfig: peering.?microsoftPeeringConfig
           routeFilter: peering.?routeFilter
           state: peering.?ipv4State
-          azureASN: peering.?azureASN
         }
       }
     ]
@@ -316,6 +284,9 @@ type peeringConfigType = {
 
   @description('Optional. The shared key for peering configuration.')
   sharedKey: string?
+
+  @description('Optional. The Azure ASN.')
+  azureASN: int?
 
   @description('Required. The autonomous system number of the customer/connectivity provider.')
   peerASN: int

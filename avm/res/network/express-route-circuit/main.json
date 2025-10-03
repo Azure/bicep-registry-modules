@@ -5,13 +5,338 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "17585067054312165142"
+      "version": "0.38.3.11034",
+      "templateHash": "11388754536950421814"
     },
     "name": "ExpressRoute Circuits",
     "description": "This module deploys an Express Route Circuit."
   },
   "definitions": {
+    "ipv6PeeringConfigType": {
+      "type": "object",
+      "properties": {
+        "primaryPeerAddressPrefix": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The primary IPv6 prefix for the peering."
+          }
+        },
+        "secondaryPeerAddressPrefix": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The secondary IPv6 prefix for the peering."
+          }
+        },
+        "microsoftPeeringConfig": {
+          "type": "object",
+          "properties": {
+            "advertisedCommunities": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The communities to be advertised through BGP."
+              }
+            },
+            "advertisedPublicPrefixes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The IPv6 prefixes to be advertised through BGP."
+              }
+            },
+            "advertisedPublicPrefixInfo": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "prefix": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The IPv6 prefix."
+                    }
+                  },
+                  "signature": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The signature for the prefix."
+                    }
+                  },
+                  "validationId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The validation ID for the prefix."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The IPv6 prefix information to be advertised through BGP."
+              }
+            },
+            "customerASN": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The customer ASN for the peering."
+              }
+            },
+            "legacyMode": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The legacy mode for the peering."
+              }
+            },
+            "routingRegistryName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The routing registry name."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Microsoft peering configuration for IPv6."
+          }
+        },
+        "routeFilter": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the route filter."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The route filter resource ID."
+          }
+        }
+      }
+    },
+    "peeringConfigType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the peering."
+          }
+        },
+        "peeringType": {
+          "type": "string",
+          "allowedValues": [
+            "AzurePrivatePeering",
+            "AzurePublicPeering",
+            "MicrosoftPeering"
+          ],
+          "metadata": {
+            "description": "Required. BGP peering type for the Circuit."
+          }
+        },
+        "sharedKey": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The shared key for peering configuration."
+          }
+        },
+        "azureASN": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Azure ASN."
+          }
+        },
+        "peerASN": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The autonomous system number of the customer/connectivity provider."
+          }
+        },
+        "primaryPeerAddressPrefix": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. A /30 subnet used to configure IP addresses for interfaces on Link1."
+          }
+        },
+        "secondaryPeerAddressPrefix": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. A /30 subnet used to configure IP addresses for interfaces on Link2."
+          }
+        },
+        "vlanId": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. Specifies the identifier that is used to identify the customer."
+          }
+        },
+        "ipv6PeeringConfig": {
+          "type": "object",
+          "properties": {
+            "primaryPeerAddressPrefix": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. A /125 subnet used to configure IPv6 addresses for interfaces on Link1."
+              }
+            },
+            "secondaryPeerAddressPrefix": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. A /125 subnet used to configure IPv6 addresses for interfaces on Link2."
+              }
+            },
+            "microsoftPeeringConfig": {
+              "type": "object",
+              "properties": {
+                "advertisedCommunities": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The communities to be advertised through BGP."
+                  }
+                },
+                "advertisedPublicPrefixes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The IPv6 prefixes to be advertised through BGP."
+                  }
+                },
+                "customerASN": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The customer ASN for the peering."
+                  }
+                },
+                "legacyMode": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The legacy mode for the peering."
+                  }
+                },
+                "routingRegistryName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The routing registry name."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The Microsoft peering configuration for IPv6."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. IPv6 peering configuration."
+          }
+        },
+        "microsoftPeeringConfig": {
+          "type": "object",
+          "properties": {
+            "advertisedCommunities": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The communities to be advertised through BGP."
+              }
+            },
+            "advertisedPublicPrefixes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The public prefixes to be advertised through BGP."
+              }
+            },
+            "customerASN": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The customer ASN for the peering."
+              }
+            },
+            "legacyMode": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The legacy mode for the peering."
+              }
+            },
+            "routingRegistryName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The routing registry name."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Microsoft peering configuration for IPv4."
+          }
+        },
+        "routeFilter": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the route filter."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The route filter resource ID."
+          }
+        },
+        "state": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The state of the peering."
+          }
+        }
+      }
+    },
     "diagnosticSettingFullType": {
       "type": "object",
       "properties": {
@@ -298,57 +623,14 @@
         "description": "Optional. Chosen SKU family of ExpressRoute circuit. Choose from MeteredData or UnlimitedData SKU families."
       }
     },
-    "peering": {
-      "type": "bool",
-      "defaultValue": false,
+    "peerings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/peeringConfigType"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Enabled BGP peering type for the Circuit."
-      }
-    },
-    "peeringType": {
-      "type": "string",
-      "defaultValue": "AzurePrivatePeering",
-      "allowedValues": [
-        "AzurePrivatePeering",
-        "MicrosoftPeering"
-      ],
-      "metadata": {
-        "description": "Optional. BGP peering type for the Circuit. Choose from AzurePrivatePeering, AzurePublicPeering or MicrosoftPeering."
-      }
-    },
-    "sharedKey": {
-      "type": "securestring",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The shared key for peering configuration. Router does MD5 hash comparison to validate the packets sent by BGP connection. This parameter is optional and can be removed from peering configuration if not required."
-      }
-    },
-    "peerASN": {
-      "type": "int",
-      "defaultValue": 0,
-      "metadata": {
-        "description": "Optional. The autonomous system number of the customer/connectivity provider."
-      }
-    },
-    "primaryPeerAddressPrefix": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. A /30 subnet used to configure IP addresses for interfaces on Link1."
-      }
-    },
-    "secondaryPeerAddressPrefix": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. A /30 subnet used to configure IP addresses for interfaces on Link2."
-      }
-    },
-    "vlanId": {
-      "type": "int",
-      "defaultValue": 0,
-      "metadata": {
-        "description": "Optional. Specifies the identifier that is used to identify the customer."
+        "description": "Optional. Array of peering configurations for the ExpressRoute circuit."
       }
     },
     "location": {
@@ -485,7 +767,7 @@
     },
     "expressRouteCircuit": {
       "type": "Microsoft.Network/expressRouteCircuits",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2024-07-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -502,6 +784,26 @@
             "input": {
               "name": "[parameters('authorizationNames')[copyIndex('authorizations')]]"
             }
+          },
+          {
+            "name": "peerings",
+            "count": "[length(coalesce(parameters('peerings'), createArray()))]",
+            "input": {
+              "name": "[coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].name]",
+              "properties": {
+                "peeringType": "[coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].peeringType]",
+                "sharedKey": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')], 'sharedKey')]",
+                "azureASN": "[coalesce(tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')], 'azureASN'), 12076)]",
+                "peerASN": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')], 'peerASN')]",
+                "primaryPeerAddressPrefix": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')], 'primaryPeerAddressPrefix')]",
+                "secondaryPeerAddressPrefix": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')], 'secondaryPeerAddressPrefix')]",
+                "vlanId": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')], 'vlanId')]",
+                "ipv6PeeringConfig": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')], 'ipv6PeeringConfig')]",
+                "microsoftPeeringConfig": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')], 'microsoftPeeringConfig')]",
+                "routeFilter": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')], 'routeFilter')]",
+                "state": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')], 'ipv4State')]"
+              }
+            }
           }
         ],
         "allowClassicOperations": "[parameters('allowClassicOperations')]",
@@ -509,8 +811,7 @@
         "bandwidthInGbps": "[if(not(equals(parameters('bandwidthInGbps'), 0)), parameters('bandwidthInGbps'), null())]",
         "enableDirectPortRateLimit": "[parameters('enableDirectPortRateLimit')]",
         "expressRoutePort": "[if(not(empty(parameters('expressRoutePortResourceId'))), createObject('id', parameters('expressRoutePortResourceId')), null())]",
-        "serviceProviderProperties": "[if(empty(parameters('expressRoutePortResourceId')), createObject('serviceProviderName', parameters('serviceProviderName'), 'peeringLocation', parameters('peeringLocation'), 'bandwidthInMbps', parameters('bandwidthInMbps')), null())]",
-        "peerings": "[if(parameters('peering'), createArray(createObject('name', parameters('peeringType'), 'properties', createObject('peeringType', parameters('peeringType'), 'sharedKey', parameters('sharedKey'), 'peerASN', parameters('peerASN'), 'primaryPeerAddressPrefix', parameters('primaryPeerAddressPrefix'), 'secondaryPeerAddressPrefix', parameters('secondaryPeerAddressPrefix'), 'vlanId', parameters('vlanId')))), null())]"
+        "serviceProviderProperties": "[if(empty(parameters('expressRoutePortResourceId')), createObject('serviceProviderName', parameters('serviceProviderName'), 'peeringLocation', parameters('peeringLocation'), 'bandwidthInMbps', parameters('bandwidthInMbps')), null())]"
       }
     },
     "expressRouteCircuit_lock": {
@@ -595,7 +896,7 @@
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of express route curcuit."
+        "description": "The resource ID of express route circuit."
       },
       "value": "[resourceId('Microsoft.Network/expressRouteCircuits', parameters('name'))]"
     },
@@ -632,7 +933,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('expressRouteCircuit', '2024-05-01', 'full').location]"
+      "value": "[reference('expressRouteCircuit', '2024-07-01', 'full').location]"
     }
   }
 }

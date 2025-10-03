@@ -18,7 +18,7 @@ This module deploys an Express Route Circuit.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/expressRouteCircuits` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_expressroutecircuits.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/expressRouteCircuits)</li></ul> |
+| `Microsoft.Network/expressRouteCircuits` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_expressroutecircuits.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/expressRouteCircuits)</li></ul> |
 
 ## Usage examples
 
@@ -125,7 +125,7 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
   name: 'expressRouteCircuitDeployment'
   params: {
     // Required parameters
-    name: 'nercmax001'
+    name: '#_namePrefix_#001'
     // Non-required parameters
     allowClassicOperations: true
     bandwidthInMbps: 50
@@ -144,12 +144,55 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
       }
     ]
     enableDirectPortRateLimit: true
+    globalReachEnabled: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
     peeringLocation: 'Amsterdam'
+    peerings: [
+      {
+        ipv6PeeringConfig: {
+          primaryPeerAddressPrefix: '2001:db8::/126'
+          secondaryPeerAddressPrefix: '2001:db8::8/126'
+        }
+        name: 'AzurePrivatePeering'
+        peerASN: 65001
+        peeringType: 'AzurePrivatePeering'
+        primaryPeerAddressPrefix: '10.0.0.0/30'
+        secondaryPeerAddressPrefix: '10.0.0.4/30'
+        state: 'Enabled'
+        vlanId: 100
+      }
+      {
+        ipv6PeeringConfig: {
+          microsoftPeeringConfig: {
+            advertisedPublicPrefixes: [
+              '2001:db8:2::/48'
+            ]
+            customerASN: 65002
+            routingRegistryName: 'ARIN'
+          }
+          primaryPeerAddressPrefix: '2001:db8:1::/126'
+          secondaryPeerAddressPrefix: '2001:db8:1::8/126'
+        }
+        microsoftPeeringConfig: {
+          advertisedPublicPrefixes: [
+            '203.0.113.0/24'
+          ]
+          customerASN: 65002
+          routingRegistryName: 'ARIN'
+        }
+        name: 'MicrosoftPeering'
+        peerASN: 65002
+        peeringType: 'MicrosoftPeering'
+        primaryPeerAddressPrefix: '192.168.1.0/30'
+        secondaryPeerAddressPrefix: '192.168.1.4/30'
+        state: 'Disabled'
+        vlanId: 200
+      }
+    ]
     roleAssignments: [
       {
         name: 'd7aa3dfa-6ba6-4ed8-b561-2164fbb1327e'
@@ -195,7 +238,7 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
   "parameters": {
     // Required parameters
     "name": {
-      "value": "nercmax001"
+      "value": "#_namePrefix_#001"
     },
     // Non-required parameters
     "allowClassicOperations": {
@@ -223,6 +266,9 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
     "enableDirectPortRateLimit": {
       "value": true
     },
+    "globalReachEnabled": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
     },
@@ -234,6 +280,50 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
     },
     "peeringLocation": {
       "value": "Amsterdam"
+    },
+    "peerings": {
+      "value": [
+        {
+          "ipv6PeeringConfig": {
+            "primaryPeerAddressPrefix": "2001:db8::/126",
+            "secondaryPeerAddressPrefix": "2001:db8::8/126"
+          },
+          "name": "AzurePrivatePeering",
+          "peerASN": 65001,
+          "peeringType": "AzurePrivatePeering",
+          "primaryPeerAddressPrefix": "10.0.0.0/30",
+          "secondaryPeerAddressPrefix": "10.0.0.4/30",
+          "state": "Enabled",
+          "vlanId": 100
+        },
+        {
+          "ipv6PeeringConfig": {
+            "microsoftPeeringConfig": {
+              "advertisedPublicPrefixes": [
+                "2001:db8:2::/48"
+              ],
+              "customerASN": 65002,
+              "routingRegistryName": "ARIN"
+            },
+            "primaryPeerAddressPrefix": "2001:db8:1::/126",
+            "secondaryPeerAddressPrefix": "2001:db8:1::8/126"
+          },
+          "microsoftPeeringConfig": {
+            "advertisedPublicPrefixes": [
+              "203.0.113.0/24"
+            ],
+            "customerASN": 65002,
+            "routingRegistryName": "ARIN"
+          },
+          "name": "MicrosoftPeering",
+          "peerASN": 65002,
+          "peeringType": "MicrosoftPeering",
+          "primaryPeerAddressPrefix": "192.168.1.0/30",
+          "secondaryPeerAddressPrefix": "192.168.1.4/30",
+          "state": "Disabled",
+          "vlanId": 200
+        }
+      ]
     },
     "roleAssignments": {
       "value": [
@@ -287,7 +377,7 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
 using 'br/public:avm/res/network/express-route-circuit:<version>'
 
 // Required parameters
-param name = 'nercmax001'
+param name = '#_namePrefix_#001'
 // Non-required parameters
 param allowClassicOperations = true
 param bandwidthInMbps = 50
@@ -306,12 +396,55 @@ param diagnosticSettings = [
   }
 ]
 param enableDirectPortRateLimit = true
+param globalReachEnabled = true
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
 param peeringLocation = 'Amsterdam'
+param peerings = [
+  {
+    ipv6PeeringConfig: {
+      primaryPeerAddressPrefix: '2001:db8::/126'
+      secondaryPeerAddressPrefix: '2001:db8::8/126'
+    }
+    name: 'AzurePrivatePeering'
+    peerASN: 65001
+    peeringType: 'AzurePrivatePeering'
+    primaryPeerAddressPrefix: '10.0.0.0/30'
+    secondaryPeerAddressPrefix: '10.0.0.4/30'
+    state: 'Enabled'
+    vlanId: 100
+  }
+  {
+    ipv6PeeringConfig: {
+      microsoftPeeringConfig: {
+        advertisedPublicPrefixes: [
+          '2001:db8:2::/48'
+        ]
+        customerASN: 65002
+        routingRegistryName: 'ARIN'
+      }
+      primaryPeerAddressPrefix: '2001:db8:1::/126'
+      secondaryPeerAddressPrefix: '2001:db8:1::8/126'
+    }
+    microsoftPeeringConfig: {
+      advertisedPublicPrefixes: [
+        '203.0.113.0/24'
+      ]
+      customerASN: 65002
+      routingRegistryName: 'ARIN'
+    }
+    name: 'MicrosoftPeering'
+    peerASN: 65002
+    peeringType: 'MicrosoftPeering'
+    primaryPeerAddressPrefix: '192.168.1.0/30'
+    secondaryPeerAddressPrefix: '192.168.1.4/30'
+    state: 'Disabled'
+    vlanId: 200
+  }
+]
 param roleAssignments = [
   {
     name: 'd7aa3dfa-6ba6-4ed8-b561-2164fbb1327e'
@@ -543,17 +676,11 @@ param tags = {
 | [`globalReachEnabled`](#parameter-globalreachenabled) | bool | Flag denoting global reach status. To enable ExpressRoute Global Reach between different geopolitical regions, your circuits must be Premium SKU. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`peerASN`](#parameter-peerasn) | int | The autonomous system number of the customer/connectivity provider. |
-| [`peering`](#parameter-peering) | bool | Enabled BGP peering type for the Circuit. |
-| [`peeringType`](#parameter-peeringtype) | string | BGP peering type for the Circuit. Choose from AzurePrivatePeering, AzurePublicPeering or MicrosoftPeering. |
-| [`primaryPeerAddressPrefix`](#parameter-primarypeeraddressprefix) | string | A /30 subnet used to configure IP addresses for interfaces on Link1. |
+| [`peerings`](#parameter-peerings) | array | Array of peering configurations for the ExpressRoute circuit. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`secondaryPeerAddressPrefix`](#parameter-secondarypeeraddressprefix) | string | A /30 subnet used to configure IP addresses for interfaces on Link2. |
-| [`sharedKey`](#parameter-sharedkey) | securestring | The shared key for peering configuration. Router does MD5 hash comparison to validate the packets sent by BGP connection. This parameter is optional and can be removed from peering configuration if not required. |
 | [`skuFamily`](#parameter-skufamily) | string | Chosen SKU family of ExpressRoute circuit. Choose from MeteredData or UnlimitedData SKU families. |
 | [`skuTier`](#parameter-skutier) | string | Chosen SKU Tier of ExpressRoute circuit. Choose from Local, Premium or Standard SKU tiers. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`vlanId`](#parameter-vlanid) | int | Specifies the identifier that is used to identify the customer. |
 
 ### Parameter: `name`
 
@@ -837,44 +964,265 @@ Specify the notes of the lock.
 - Required: No
 - Type: string
 
-### Parameter: `peerASN`
+### Parameter: `peerings`
+
+Array of peering configurations for the ExpressRoute circuit.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-peeringsname) | string | The name of the peering. |
+| [`peerASN`](#parameter-peeringspeerasn) | int | The autonomous system number of the customer/connectivity provider. |
+| [`peeringType`](#parameter-peeringspeeringtype) | string | BGP peering type for the Circuit. |
+| [`primaryPeerAddressPrefix`](#parameter-peeringsprimarypeeraddressprefix) | string | A /30 subnet used to configure IP addresses for interfaces on Link1. |
+| [`secondaryPeerAddressPrefix`](#parameter-peeringssecondarypeeraddressprefix) | string | A /30 subnet used to configure IP addresses for interfaces on Link2. |
+| [`vlanId`](#parameter-peeringsvlanid) | int | Specifies the identifier that is used to identify the customer. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`azureASN`](#parameter-peeringsazureasn) | int | The Azure ASN. |
+| [`ipv6PeeringConfig`](#parameter-peeringsipv6peeringconfig) | object | IPv6 peering configuration. |
+| [`microsoftPeeringConfig`](#parameter-peeringsmicrosoftpeeringconfig) | object | Microsoft peering configuration for IPv4. |
+| [`routeFilter`](#parameter-peeringsroutefilter) | object | The route filter resource ID. |
+| [`sharedKey`](#parameter-peeringssharedkey) | string | The shared key for peering configuration. |
+| [`state`](#parameter-peeringsstate) | string | The state of the peering. |
+
+### Parameter: `peerings.name`
+
+The name of the peering.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `peerings.peerASN`
 
 The autonomous system number of the customer/connectivity provider.
 
-- Required: No
+- Required: Yes
 - Type: int
-- Default: `0`
 
-### Parameter: `peering`
+### Parameter: `peerings.peeringType`
 
-Enabled BGP peering type for the Circuit.
+BGP peering type for the Circuit.
 
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `peeringType`
-
-BGP peering type for the Circuit. Choose from AzurePrivatePeering, AzurePublicPeering or MicrosoftPeering.
-
-- Required: No
+- Required: Yes
 - Type: string
-- Default: `'AzurePrivatePeering'`
 - Allowed:
   ```Bicep
   [
     'AzurePrivatePeering'
+    'AzurePublicPeering'
     'MicrosoftPeering'
   ]
   ```
 
-### Parameter: `primaryPeerAddressPrefix`
+### Parameter: `peerings.primaryPeerAddressPrefix`
 
 A /30 subnet used to configure IP addresses for interfaces on Link1.
 
+- Required: Yes
+- Type: string
+
+### Parameter: `peerings.secondaryPeerAddressPrefix`
+
+A /30 subnet used to configure IP addresses for interfaces on Link2.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `peerings.vlanId`
+
+Specifies the identifier that is used to identify the customer.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `peerings.azureASN`
+
+The Azure ASN.
+
+- Required: No
+- Type: int
+
+### Parameter: `peerings.ipv6PeeringConfig`
+
+IPv6 peering configuration.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`microsoftPeeringConfig`](#parameter-peeringsipv6peeringconfigmicrosoftpeeringconfig) | object | The Microsoft peering configuration for IPv6. |
+| [`primaryPeerAddressPrefix`](#parameter-peeringsipv6peeringconfigprimarypeeraddressprefix) | string | A /125 subnet used to configure IPv6 addresses for interfaces on Link1. |
+| [`secondaryPeerAddressPrefix`](#parameter-peeringsipv6peeringconfigsecondarypeeraddressprefix) | string | A /125 subnet used to configure IPv6 addresses for interfaces on Link2. |
+
+### Parameter: `peerings.ipv6PeeringConfig.microsoftPeeringConfig`
+
+The Microsoft peering configuration for IPv6.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`advertisedCommunities`](#parameter-peeringsipv6peeringconfigmicrosoftpeeringconfigadvertisedcommunities) | array | The communities to be advertised through BGP. |
+| [`advertisedPublicPrefixes`](#parameter-peeringsipv6peeringconfigmicrosoftpeeringconfigadvertisedpublicprefixes) | array | The IPv6 prefixes to be advertised through BGP. |
+| [`customerASN`](#parameter-peeringsipv6peeringconfigmicrosoftpeeringconfigcustomerasn) | int | The customer ASN for the peering. |
+| [`legacyMode`](#parameter-peeringsipv6peeringconfigmicrosoftpeeringconfiglegacymode) | int | The legacy mode for the peering. |
+| [`routingRegistryName`](#parameter-peeringsipv6peeringconfigmicrosoftpeeringconfigroutingregistryname) | string | The routing registry name. |
+
+### Parameter: `peerings.ipv6PeeringConfig.microsoftPeeringConfig.advertisedCommunities`
+
+The communities to be advertised through BGP.
+
+- Required: No
+- Type: array
+
+### Parameter: `peerings.ipv6PeeringConfig.microsoftPeeringConfig.advertisedPublicPrefixes`
+
+The IPv6 prefixes to be advertised through BGP.
+
+- Required: No
+- Type: array
+
+### Parameter: `peerings.ipv6PeeringConfig.microsoftPeeringConfig.customerASN`
+
+The customer ASN for the peering.
+
+- Required: No
+- Type: int
+
+### Parameter: `peerings.ipv6PeeringConfig.microsoftPeeringConfig.legacyMode`
+
+The legacy mode for the peering.
+
+- Required: No
+- Type: int
+
+### Parameter: `peerings.ipv6PeeringConfig.microsoftPeeringConfig.routingRegistryName`
+
+The routing registry name.
+
 - Required: No
 - Type: string
-- Default: `''`
+
+### Parameter: `peerings.ipv6PeeringConfig.primaryPeerAddressPrefix`
+
+A /125 subnet used to configure IPv6 addresses for interfaces on Link1.
+
+- Required: No
+- Type: string
+
+### Parameter: `peerings.ipv6PeeringConfig.secondaryPeerAddressPrefix`
+
+A /125 subnet used to configure IPv6 addresses for interfaces on Link2.
+
+- Required: No
+- Type: string
+
+### Parameter: `peerings.microsoftPeeringConfig`
+
+Microsoft peering configuration for IPv4.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`advertisedCommunities`](#parameter-peeringsmicrosoftpeeringconfigadvertisedcommunities) | array | The communities to be advertised through BGP. |
+| [`advertisedPublicPrefixes`](#parameter-peeringsmicrosoftpeeringconfigadvertisedpublicprefixes) | array | The public prefixes to be advertised through BGP. |
+| [`customerASN`](#parameter-peeringsmicrosoftpeeringconfigcustomerasn) | int | The customer ASN for the peering. |
+| [`legacyMode`](#parameter-peeringsmicrosoftpeeringconfiglegacymode) | int | The legacy mode for the peering. |
+| [`routingRegistryName`](#parameter-peeringsmicrosoftpeeringconfigroutingregistryname) | string | The routing registry name. |
+
+### Parameter: `peerings.microsoftPeeringConfig.advertisedCommunities`
+
+The communities to be advertised through BGP.
+
+- Required: No
+- Type: array
+
+### Parameter: `peerings.microsoftPeeringConfig.advertisedPublicPrefixes`
+
+The public prefixes to be advertised through BGP.
+
+- Required: No
+- Type: array
+
+### Parameter: `peerings.microsoftPeeringConfig.customerASN`
+
+The customer ASN for the peering.
+
+- Required: No
+- Type: int
+
+### Parameter: `peerings.microsoftPeeringConfig.legacyMode`
+
+The legacy mode for the peering.
+
+- Required: No
+- Type: int
+
+### Parameter: `peerings.microsoftPeeringConfig.routingRegistryName`
+
+The routing registry name.
+
+- Required: No
+- Type: string
+
+### Parameter: `peerings.routeFilter`
+
+The route filter resource ID.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-peeringsroutefilterid) | string | The resource ID of the route filter. |
+
+### Parameter: `peerings.routeFilter.id`
+
+The resource ID of the route filter.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `peerings.sharedKey`
+
+The shared key for peering configuration.
+
+- Required: No
+- Type: string
+
+### Parameter: `peerings.state`
+
+The state of the peering.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 
@@ -980,22 +1328,6 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `secondaryPeerAddressPrefix`
-
-A /30 subnet used to configure IP addresses for interfaces on Link2.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `sharedKey`
-
-The shared key for peering configuration. Router does MD5 hash comparison to validate the packets sent by BGP connection. This parameter is optional and can be removed from peering configuration if not required.
-
-- Required: No
-- Type: securestring
-- Default: `''`
-
 ### Parameter: `skuFamily`
 
 Chosen SKU family of ExpressRoute circuit. Choose from MeteredData or UnlimitedData SKU families.
@@ -1034,14 +1366,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-### Parameter: `vlanId`
-
-Specifies the identifier that is used to identify the customer.
-
-- Required: No
-- Type: int
-- Default: `0`
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1049,7 +1373,7 @@ Specifies the identifier that is used to identify the customer.
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of express route curcuit. |
 | `resourceGroupName` | string | The resource group the express route curcuit was deployed into. |
-| `resourceId` | string | The resource ID of express route curcuit. |
+| `resourceId` | string | The resource ID of express route circuit. |
 | `serviceKey` | string | The service key of the express route circuit. |
 | `serviceProviderProvisioningState` | string | The service provider provisioning state of the express route circuit. |
 
