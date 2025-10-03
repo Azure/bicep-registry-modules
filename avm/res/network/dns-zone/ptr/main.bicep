@@ -8,10 +8,10 @@ param dnsZoneName string
 param name string
 
 @description('Optional. The metadata attached to the record set.')
-param metadata object?
+param metadata resourceInput<'Microsoft.Network/dnsZones/PTR@2018-05-01'>.properties.metadata?
 
 @description('Optional. The list of PTR records in the record set.')
-param ptrRecords array?
+param ptrRecords resourceInput<'Microsoft.Network/dnsZones/PTR@2018-05-01'>.properties.PTRRecords?
 
 @description('Optional. The TTL (time-to-live) of the records in the record set.')
 param ttl int = 3600

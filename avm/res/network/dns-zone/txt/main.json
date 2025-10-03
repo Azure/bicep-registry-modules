@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "1999603597680394703"
+      "version": "0.38.5.1644",
+      "templateHash": "2335422075892571507"
     },
     "name": "Public DNS Zone TXT record",
     "description": "This module deploys a Public DNS Zone TXT record."
@@ -103,10 +103,13 @@
     },
     "metadata": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/dnsZones/TXT@2018-05-01#properties/properties/properties/metadata"
+        },
         "description": "Optional. The metadata attached to the record set."
-      }
+      },
+      "nullable": true
     },
     "ttl": {
       "type": "int",
@@ -117,10 +120,13 @@
     },
     "txtRecords": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/dnsZones/TXT@2018-05-01#properties/properties/properties/TXTRecords"
+        },
         "description": "Optional. The list of TXT records in the record set."
-      }
+      },
+      "nullable": true
     },
     "roleAssignments": {
       "type": "array",
