@@ -135,11 +135,11 @@ module testDeployment '../../../main.bicep' = [
             destination: {
               name: 'EventHubArchive.AzureBlockBlob'
               identity: {
-                systemAssigned: true
+                userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
               }
               properties: {
                 archiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
-                blobContainer: 'eventhub'
+                blobContainer: nestedDependencies.outputs.storageAccountContainerName
                 storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
               }
             }

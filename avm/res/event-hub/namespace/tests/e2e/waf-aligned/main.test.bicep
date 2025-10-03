@@ -132,7 +132,7 @@ module testDeployment '../../../main.bicep' = [
               }
               properties: {
                 archiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
-                blobContainer: 'eventhub'
+                blobContainer: nestedDependencies.outputs.storageAccountContainerName
                 storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
               }
             }

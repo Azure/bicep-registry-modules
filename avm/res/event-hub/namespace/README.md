@@ -364,12 +364,12 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
         captureDescription: {
           destination: {
             identity: {
-              systemAssigned: true
+              userAssignedResourceId: '<userAssignedResourceId>'
             }
             name: 'EventHubArchive.AzureBlockBlob'
             properties: {
               archiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
-              blobContainer: 'eventhub'
+              blobContainer: '<blobContainer>'
               storageAccountResourceId: '<storageAccountResourceId>'
             }
           }
@@ -575,12 +575,12 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
           "captureDescription": {
             "destination": {
               "identity": {
-                "systemAssigned": true
+                "userAssignedResourceId": "<userAssignedResourceId>"
               },
               "name": "EventHubArchive.AzureBlockBlob",
               "properties": {
                 "archiveNameFormat": "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}",
-                "blobContainer": "eventhub",
+                "blobContainer": "<blobContainer>",
                 "storageAccountResourceId": "<storageAccountResourceId>"
               }
             },
@@ -806,12 +806,12 @@ param eventhubs = [
     captureDescription: {
       destination: {
         identity: {
-          systemAssigned: true
+          userAssignedResourceId: '<userAssignedResourceId>'
         }
         name: 'EventHubArchive.AzureBlockBlob'
         properties: {
           archiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
-          blobContainer: 'eventhub'
+          blobContainer: '<blobContainer>'
           storageAccountResourceId: '<storageAccountResourceId>'
         }
       }
@@ -1007,7 +1007,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
             name: 'EventHubArchive.AzureBlockBlob'
             properties: {
               archiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
-              blobContainer: 'eventhub'
+              blobContainer: '<blobContainer>'
               storageAccountResourceId: '<storageAccountResourceId>'
             }
           }
@@ -1173,7 +1173,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
               "name": "EventHubArchive.AzureBlockBlob",
               "properties": {
                 "archiveNameFormat": "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}",
-                "blobContainer": "eventhub",
+                "blobContainer": "<blobContainer>",
                 "storageAccountResourceId": "<storageAccountResourceId>"
               }
             },
@@ -1351,7 +1351,7 @@ param eventhubs = [
         name: 'EventHubArchive.AzureBlockBlob'
         properties: {
           archiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
-          blobContainer: 'eventhub'
+          blobContainer: '<blobContainer>'
           storageAccountResourceId: '<storageAccountResourceId>'
         }
       }

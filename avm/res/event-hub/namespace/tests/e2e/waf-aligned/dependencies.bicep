@@ -100,3 +100,6 @@ output privateDNSZoneResourceId string = privateDNSZone.id
 
 @description('The resource ID of the created Storage Account.')
 output storageAccountResourceId string = storageAccount.id
+
+@description('The name of the created Storage Account Container.')
+output storageAccountContainerName string = storageAccount::blobServices::container.name
