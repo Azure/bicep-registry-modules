@@ -65,7 +65,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
     name: 'default'
 
     resource container 'containers@2025-01-01' = {
-      name: 'my-container'
+      name: 'eventhub'
     }
   }
 }
