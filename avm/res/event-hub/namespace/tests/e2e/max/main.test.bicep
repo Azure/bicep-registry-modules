@@ -238,6 +238,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       managedIdentities: {
         systemAssigned: true
+        userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
       }
       tags: {
         'hidden-title': 'This is visible in the resource name'

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.5.1644",
-      "templateHash": "17045828549487891146"
+      "templateHash": "15901701927312749517"
     },
     "name": "Event Hub Namespaces",
     "description": "This module deploys an Event Hub Namespace."
@@ -1234,7 +1234,7 @@
     ],
     "enableReferencedModulesTelemetry": false,
     "maximumThroughputUnitsVar": "[if(not(parameters('isAutoInflateEnabled')), 0, parameters('maximumThroughputUnits'))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'))), createObject(format('{0}', tryGet(parameters('managedIdentities'), 'userAssignedResourceId')), createObject()), null())), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'))), createObject(format('{0}', tryGet(parameters('managedIdentities'), 'userAssignedResourceId')), createObject()), null())), null())]",
     "builtInRoleNames": {
       "Azure Event Hubs Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f526a384-b230-433a-b45c-95f59c4a2dec')]",
       "Azure Event Hubs Data Receiver": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a638d3c7-ab3a-418d-83e6-5f17a39d4fde')]",

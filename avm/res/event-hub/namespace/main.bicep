@@ -119,8 +119,8 @@ var maximumThroughputUnitsVar = !isAutoInflateEnabled ? 0 : maximumThroughputUni
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? 'SystemAssigned'
-        : (!empty(managedIdentities.?userAssignedResourceId) ? 'UserAssigned' : null)
+        ? (!empty(managedIdentities.?userAssignedResourceId) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceId) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(managedIdentities.?userAssignedResourceId)
         ? { '${managedIdentities.?userAssignedResourceId}': {} }
         : null

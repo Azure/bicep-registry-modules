@@ -421,6 +421,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     }
     managedIdentities: {
       systemAssigned: true
+      userAssignedResourceId: '<userAssignedResourceId>'
     }
     maximumThroughputUnits: 4
     minimumTlsVersion: '1.2'
@@ -640,7 +641,8 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true
+        "systemAssigned": true,
+        "userAssignedResourceId": "<userAssignedResourceId>"
       }
     },
     "maximumThroughputUnits": {
@@ -861,6 +863,7 @@ param lock = {
 }
 param managedIdentities = {
   systemAssigned: true
+  userAssignedResourceId: '<userAssignedResourceId>'
 }
 param maximumThroughputUnits = 4
 param minimumTlsVersion = '1.2'
