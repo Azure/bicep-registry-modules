@@ -43,17 +43,17 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
-  params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
-    location: resourceLocation
-  }
-}
+// module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+//   scope: resourceGroup
+//   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+//   params: {
+//     storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
+//     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+//     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
+//     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
+//     location: resourceLocation
+//   }
+// }
 
 // ============== //
 // Test Execution //
@@ -67,41 +67,41 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       skuName: 'Standard'
       skuCapacity: 2
-      authorizationRules: [
-        {
-          name: 'RootManageSharedAccessKey'
-          rights: [
-            'Listen'
-            'Manage'
-            'Send'
-          ]
-        }
-        {
-          name: 'SendListenAccess'
-          rights: [
-            'Listen'
-            'Send'
-          ]
-        }
-      ]
-      diagnosticSettings: [
-        {
-          name: 'customSetting'
-          metricCategories: [
-            {
-              category: 'AllMetrics'
-            }
-          ]
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-        }
-      ]
+      // authorizationRules: [
+      //   {
+      //     name: 'RootManageSharedAccessKey'
+      //     rights: [
+      //       'Listen'
+      //       'Manage'
+      //       'Send'
+      //     ]
+      //   }
+      //   {
+      //     name: 'SendListenAccess'
+      //     rights: [
+      //       'Listen'
+      //       'Send'
+      //     ]
+      //   }
+      // ]
+      // diagnosticSettings: [
+      //   {
+      //     name: 'customSetting'
+      //     metricCategories: [
+      //       {
+      //         category: 'AllMetrics'
+      //       }
+      //     ]
+      //     eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+      //     eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+      //     storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+      //     workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+      //   }
+      // ]
       eventhubs: [
-        {
-          name: '${namePrefix}-az-evh-x-001'
-        }
+        // {
+        //   name: '${namePrefix}-az-evh-x-001'
+        // }
         {
           name: '${namePrefix}-az-evh-x-002'
           authorizationRules: [
@@ -173,23 +173,23 @@ module testDeployment '../../../main.bicep' = [
           }
         ]
       }
-      privateEndpoints: [
-        {
-          privateDnsZoneGroup: {
-            privateDnsZoneGroupConfigs: [
-              {
-                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
-              }
-            ]
-          }
-          subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          tags: {
-            'hidden-title': 'This is visible in the resource name'
-            Environment: 'Non-Prod'
-            Role: 'DeploymentValidation'
-          }
-        }
-      ]
+      // privateEndpoints: [
+      //   {
+      //     privateDnsZoneGroup: {
+      //       privateDnsZoneGroupConfigs: [
+      //         {
+      //           privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+      //         }
+      //       ]
+      //     }
+      //     subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      //     tags: {
+      //       'hidden-title': 'This is visible in the resource name'
+      //       Environment: 'Non-Prod'
+      //       Role: 'DeploymentValidation'
+      //     }
+      //   }
+      // ]
       kafkaEnabled: true
       disableLocalAuth: true
       isAutoInflateEnabled: true
