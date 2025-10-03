@@ -174,7 +174,7 @@ resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2024-01-01' = {
               identity: captureIdentity
               properties: captureDescription!.destination!.?properties
             }
-            enabled: captureDescription!.?enabled ?? true // Assuming that if captureDescription is provided, its intended to be used
+            enabled: captureDescription!.?enabled ?? true // Assuming that if captureDescription is provided, it's intended to be used
             encoding: captureDescription!.?encoding
             intervalInSeconds: captureDescription!.?intervalInSeconds
             sizeLimitInBytes: captureDescription!.?sizeLimitInBytes
