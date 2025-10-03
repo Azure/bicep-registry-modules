@@ -60,6 +60,14 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
     name: 'Standard_LRS'
   }
   kind: 'StorageV2'
+
+  resource blobServices 'blobServices@2025-01-01' = {
+    name: 'default'
+
+    resource container 'containers@2025-01-01' = {
+      name: 'myContainer'
+    }
+  }
 }
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
