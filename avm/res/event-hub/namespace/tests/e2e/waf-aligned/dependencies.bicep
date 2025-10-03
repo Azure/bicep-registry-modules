@@ -89,6 +89,20 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
+// Both the MSI & deployment principal need the permissions to add capture to event hubs
+resource roleAssignmentDEploymentPrincial 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('${storageAccount.id}-${deployer().objectId}-Storage-Blob-Data-Contributor')
+  scope: storageAccount
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'ba92f5b4-2d11-453d-a403-e96b0029c9fe' // Storage Blob Data Contributor
+    )
+    principalId: deployer().objectId
+    principalType: 'ServicePrincipal'
+  }
+}
+
 @description('The resource ID of the created Managed Identity.')
 output managedIdentityResourceId string = managedIdentity.id
 

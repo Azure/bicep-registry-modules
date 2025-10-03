@@ -148,123 +148,106 @@ resource namespace 'Microsoft.EventHub/namespaces@2024-01-01' existing = {
   name: namespaceName
 }
 
-// resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2024-01-01' = {
-//   name: name
-//   parent: namespace
-//   properties: {
-//     messageRetentionInDays: retentionDescriptionEnabled ? null : messageRetentionInDays
-//     partitionCount: partitionCount
-//     status: status
-//     retentionDescription: retentionDescriptionEnabled
-//       ? {
-//           cleanupPolicy: retentionDescriptionCleanupPolicy
-//           retentionTimeInHours: retentionDescriptionCleanupPolicy == 'Delete'
-//             ? retentionDescriptionRetentionTimeInHours
-//             : null
-//           tombstoneRetentionTimeInHours: retentionDescriptionCleanupPolicy == 'Compact'
-//             ? retentionDescriptionTombstoneRetentionTimeInHours
-//             : null
-//         }
-//       : null
-//     ...(captureDescription.?enabled ?? false
-//       ? {
-//           captureDescription: {
-//             destination: {
-//               name: captureDescription!.destination!.?name
-//               identity: captureIdentity
-//               properties: captureDescription!.destination!.?properties
-//             }
-//             enabled: captureDescription!.enabled!
-//             encoding: captureDescription!.?encoding
-//             intervalInSeconds: captureDescription!.?intervalInSeconds
-//             sizeLimitInBytes: captureDescription!.?sizeLimitInBytes
-//             skipEmptyArchives: captureDescription!.?skipEmptyArchives
-//           }
-//         }
-//       : {})
-//   }
-// }
+resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2024-01-01' = {
+  name: name
+  parent: namespace
+  properties: {
+    messageRetentionInDays: retentionDescriptionEnabled ? null : messageRetentionInDays
+    partitionCount: partitionCount
+    status: status
+    retentionDescription: retentionDescriptionEnabled
+      ? {
+          cleanupPolicy: retentionDescriptionCleanupPolicy
+          retentionTimeInHours: retentionDescriptionCleanupPolicy == 'Delete'
+            ? retentionDescriptionRetentionTimeInHours
+            : null
+          tombstoneRetentionTimeInHours: retentionDescriptionCleanupPolicy == 'Compact'
+            ? retentionDescriptionTombstoneRetentionTimeInHours
+            : null
+        }
+      : null
+    ...(captureDescription.?enabled ?? false
+      ? {
+          captureDescription: {
+            destination: {
+              name: captureDescription!.destination!.?name
+              identity: captureIdentity
+              properties: captureDescription!.destination!.?properties
+            }
+            enabled: captureDescription!.enabled!
+            encoding: captureDescription!.?encoding
+            intervalInSeconds: captureDescription!.?intervalInSeconds
+            sizeLimitInBytes: captureDescription!.?sizeLimitInBytes
+            skipEmptyArchives: captureDescription!.?skipEmptyArchives
+          }
+        }
+      : {})
+  }
+}
 
-// resource eventHub_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-//   name: lock.?name ?? 'lock-${name}'
-//   properties: {
-//     level: lock.?kind ?? ''
-//     notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
-//       ? 'Cannot delete resource or child resources.'
-//       : 'Cannot delete or modify the resource or child resources.')
-//   }
-//   scope: eventHub
-// }
+resource eventHub_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
+  }
+  scope: eventHub
+}
 
-// module eventHub_consumergroups 'consumergroup/main.bicep' = [
-//   for (consumerGroup, index) in consumergroups: {
-//     name: '${deployment().name}-ConsumerGroup-${index}'
-//     params: {
-//       namespaceName: namespaceName
-//       eventHubName: eventHub.name
-//       name: consumerGroup.name
-//       userMetadata: consumerGroup.?userMetadata
-//     }
-//   }
-// ]
+module eventHub_consumergroups 'consumergroup/main.bicep' = [
+  for (consumerGroup, index) in consumergroups: {
+    name: '${deployment().name}-ConsumerGroup-${index}'
+    params: {
+      namespaceName: namespaceName
+      eventHubName: eventHub.name
+      name: consumerGroup.name
+      userMetadata: consumerGroup.?userMetadata
+    }
+  }
+]
 
-// module eventHub_authorizationRules 'authorization-rule/main.bicep' = [
-//   for (authorizationRule, index) in authorizationRules: {
-//     name: '${deployment().name}-AuthRule-${index}'
-//     params: {
-//       namespaceName: namespaceName
-//       eventHubName: eventHub.name
-//       name: authorizationRule.name
-//       rights: authorizationRule.?rights
-//     }
-//   }
-// ]
+module eventHub_authorizationRules 'authorization-rule/main.bicep' = [
+  for (authorizationRule, index) in authorizationRules: {
+    name: '${deployment().name}-AuthRule-${index}'
+    params: {
+      namespaceName: namespaceName
+      eventHubName: eventHub.name
+      name: authorizationRule.name
+      rights: authorizationRule.?rights
+    }
+  }
+]
 
-// resource eventHub_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-//   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
-//     name: roleAssignment.?name ?? guid(eventHub.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
-//     properties: {
-//       roleDefinitionId: roleAssignment.roleDefinitionId
-//       principalId: roleAssignment.principalId
-//       description: roleAssignment.?description
-//       principalType: roleAssignment.?principalType
-//       condition: roleAssignment.?condition
-//       conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-//       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
-//     }
-//     scope: eventHub
-//   }
-// ]
+resource eventHub_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(eventHub.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
+    properties: {
+      roleDefinitionId: roleAssignment.roleDefinitionId
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: eventHub
+  }
+]
 
-// // ============ //
-// // Outputs      //
-// // ============ //
+// ============ //
+// Outputs      //
+// ============ //
 
-// @description('The name of the Event Hub.')
-// output name string = eventHub.name
+@description('The name of the Event Hub.')
+output name string = eventHub.name
 
 @description('The resource ID of the Event Hub.')
-output resourceId string = 'undo' // eventHub.id
+output resourceId string = eventHub.id
 
-// @description('The resource group the Event Hub was deployed into.')
-// output resourceGroupName string = resourceGroup().name
-
-output test object = (captureDescription.?enabled ?? false
-  ? {
-      captureDescription: {
-        destination: {
-          name: captureDescription!.destination!.?name
-          identity: captureIdentity
-          properties: captureDescription!.destination!.?properties
-        }
-        enabled: captureDescription!.enabled!
-        encoding: captureDescription!.?encoding
-        intervalInSeconds: captureDescription!.?intervalInSeconds
-        sizeLimitInBytes: captureDescription!.?sizeLimitInBytes
-        skipEmptyArchives: captureDescription!.?skipEmptyArchives
-      }
-    }
-  : {})
+@description('The resource group the Event Hub was deployed into.')
+output resourceGroupName string = resourceGroup().name
 
 // ================ //
 // Definitions      //
