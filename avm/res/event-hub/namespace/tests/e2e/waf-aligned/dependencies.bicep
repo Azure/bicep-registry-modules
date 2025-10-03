@@ -75,7 +75,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
   location: location
 }
 
-// Assign Storage Blob Data Contributor RBAC role
+// Assign Storage Blob Data Contributor RBAC role required for the event hub capture feature
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('${storageAccount.id}-${managedIdentity.id}-Storage-Blob-Data-Contributor')
   scope: storageAccount
