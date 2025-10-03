@@ -30,18 +30,7 @@ param messageRetentionInDays int = 1
 param partitionCount int = 2
 
 @description('Optional. Enumerates the possible values for the status of the Event Hub.')
-@allowed([
-  'Active'
-  'Creating'
-  'Deleting'
-  'Disabled'
-  'ReceiveDisabled'
-  'Renaming'
-  'Restoring'
-  'SendDisabled'
-  'Unknown'
-])
-param status string = 'Active'
+param status resourceInput<'Microsoft.EventHub/namespaces/eventhubs@2024-01-01'>.properties.status?
 
 @description('Optional. The consumer groups to create in this Event Hub instance.')
 param consumergroups consumerGroupType[] = [
@@ -58,40 +47,11 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-@description('Optional. Name for capture destination.')
-param captureDescriptionDestinationName string = 'EventHubArchive.AzureBlockBlob'
-
-@description('Optional. Blob naming convention for archive, e.g. {Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}. Here all the parameters (Namespace,EventHub .. etc) are mandatory irrespective of order.')
-param captureDescriptionDestinationArchiveNameFormat string = '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
-
-@description('Optional. Blob container Name.')
-param captureDescriptionDestinationBlobContainer string = ''
-
-@description('Optional. Resource ID of the storage account to be used to create the blobs.')
-param captureDescriptionDestinationStorageAccountResourceId string = ''
+@description('Optional. Properties of capture description.')
+param captureDescription resourceInput<'Microsoft.EventHub/namespaces/eventhubs@2024-01-01'>.properties.captureDescription?
 
 @description('Optional. A value that indicates whether capture description is enabled.')
 param captureDescriptionEnabled bool = false
-
-@description('Optional. Enumerates the possible values for the encoding format of capture description. Note: "AvroDeflate" will be deprecated in New API Version.')
-@allowed([
-  'Avro'
-  'AvroDeflate'
-])
-param captureDescriptionEncoding string = 'Avro'
-
-@description('Optional. The time window allows you to set the frequency with which the capture to Azure Blobs will happen.')
-@minValue(60)
-@maxValue(900)
-param captureDescriptionIntervalInSeconds int = 300
-
-@description('Optional. The size window defines the amount of data built up in your Event Hub before an capture operation.')
-@minValue(10485760)
-@maxValue(524288000)
-param captureDescriptionSizeLimitInBytes int = 314572800
-
-@description('Optional. A value that indicates whether to Skip Empty Archives.')
-param captureDescriptionSkipEmptyArchives bool = false
 
 @description('Optional. A value that indicates whether to enable retention description properties. If it is set to true the messageRetentionInDays property is ignored.')
 param retentionDescriptionEnabled bool = false
@@ -115,41 +75,6 @@ param retentionDescriptionTombstoneRetentionTimeInHours int = 1
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
-
-var eventHubProperties = {
-  messageRetentionInDays: retentionDescriptionEnabled ? null : messageRetentionInDays
-  partitionCount: partitionCount
-  status: status
-  retentionDescription: retentionDescriptionEnabled
-    ? {
-        cleanupPolicy: retentionDescriptionCleanupPolicy
-        retentionTimeInHours: retentionDescriptionCleanupPolicy == 'Delete'
-          ? retentionDescriptionRetentionTimeInHours
-          : null
-        tombstoneRetentionTimeInHours: retentionDescriptionCleanupPolicy == 'Compact'
-          ? retentionDescriptionTombstoneRetentionTimeInHours
-          : null
-      }
-    : null
-}
-
-var eventHubPropertiesCapture = {
-  captureDescription: {
-    destination: {
-      name: captureDescriptionDestinationName
-      properties: {
-        archiveNameFormat: captureDescriptionDestinationArchiveNameFormat
-        blobContainer: captureDescriptionDestinationBlobContainer
-        storageAccountResourceId: captureDescriptionDestinationStorageAccountResourceId
-      }
-    }
-    enabled: captureDescriptionEnabled
-    encoding: captureDescriptionEncoding
-    intervalInSeconds: captureDescriptionIntervalInSeconds
-    sizeLimitInBytes: captureDescriptionSizeLimitInBytes
-    skipEmptyArchives: captureDescriptionSkipEmptyArchives
-  }
-}
 
 var builtInRoleNames = {
   'Azure Event Hubs Data Owner': subscriptionResourceId(
@@ -218,7 +143,27 @@ resource namespace 'Microsoft.EventHub/namespaces@2024-01-01' existing = {
 resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2024-01-01' = {
   name: name
   parent: namespace
-  properties: captureDescriptionEnabled ? union(eventHubProperties, eventHubPropertiesCapture) : eventHubProperties
+  properties: {
+    messageRetentionInDays: retentionDescriptionEnabled ? null : messageRetentionInDays
+    partitionCount: partitionCount
+    status: status
+    retentionDescription: retentionDescriptionEnabled
+      ? {
+          cleanupPolicy: retentionDescriptionCleanupPolicy
+          retentionTimeInHours: retentionDescriptionCleanupPolicy == 'Delete'
+            ? retentionDescriptionRetentionTimeInHours
+            : null
+          tombstoneRetentionTimeInHours: retentionDescriptionCleanupPolicy == 'Compact'
+            ? retentionDescriptionTombstoneRetentionTimeInHours
+            : null
+        }
+      : null
+    ...(captureDescriptionEnabled
+      ? {
+          captureDescription: captureDescription
+        }
+      : {})
+  }
 }
 
 resource eventHub_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {

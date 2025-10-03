@@ -280,15 +280,8 @@ module eventHubNamespace_eventhubs 'eventhub/main.bicep' = [
       name: eventHub.name
       enableTelemetry: enableReferencedModulesTelemetry
       authorizationRules: eventHub.?authorizationRules
-      captureDescriptionDestinationArchiveNameFormat: eventHub.?captureDescriptionDestinationArchiveNameFormat
-      captureDescriptionDestinationBlobContainer: eventHub.?captureDescriptionDestinationBlobContainer
-      captureDescriptionDestinationName: eventHub.?captureDescriptionDestinationName
-      captureDescriptionDestinationStorageAccountResourceId: eventHub.?captureDescriptionDestinationStorageAccountResourceId
+      captureDescription: eventHub.?captureDescription
       captureDescriptionEnabled: eventHub.?captureDescriptionEnabled
-      captureDescriptionEncoding: eventHub.?captureDescriptionEncoding
-      captureDescriptionIntervalInSeconds: eventHub.?captureDescriptionIntervalInSeconds
-      captureDescriptionSizeLimitInBytes: eventHub.?captureDescriptionSizeLimitInBytes
-      captureDescriptionSkipEmptyArchives: eventHub.?captureDescriptionSkipEmptyArchives
       consumergroups: eventHub.?consumergroups ?? []
       lock: eventHub.?lock ?? lock
       messageRetentionInDays: eventHub.?messageRetentionInDays
@@ -596,4 +589,57 @@ type secretsExportConfigurationType = {
 
   @description('Optional. The rootSecondaryKeyName secret name to create.')
   rootSecondaryKeyName: string?
+}
+
+import { consumerGroupType, eventHubAuthorizationRuleType } from 'eventhub/main.bicep'
+
+@export()
+@description('The type of an event hub.')
+type eventHubType = {
+  @description('Optional. Authorization Rules for the Event Hub.')
+  authorizationRules: eventHubAuthorizationRuleType[]?
+
+  @description('Optional. Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Will be automatically set to infinite retention if cleanup policy is set to "Compact".')
+  @minValue(1)
+  @maxValue(90)
+  messageRetentionInDays: int?
+
+  @description('Optional. Number of partitions created for the Event Hub, allowed values are from 1 to 32 partitions.')
+  @minValue(1)
+  @maxValue(32)
+  partitionCount: int?
+
+  @description('Optional. Enumerates the possible values for the status of the Event Hub.')
+  status: resourceInput<'Microsoft.EventHub/namespaces/eventhubs@2024-01-01'>.properties.status?
+
+  @description('Optional. The consumer groups to create in this Event Hub instance.')
+  consumergroups: consumerGroupType[]?
+
+  @description('Optional. The lock settings of the service.')
+  lock: lockType?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. Properties of capture description.')
+  captureDescription: resourceInput<'Microsoft.EventHub/namespaces/eventhubs@2024-01-01'>.properties.captureDescription?
+
+  @description('Optional. A value that indicates whether capture description is enabled.')
+  captureDescriptionEnabled: bool?
+
+  @description('Optional. A value that indicates whether to enable retention description properties. If it is set to true the messageRetentionInDays property is ignored.')
+  retentionDescriptionEnabled: bool?
+
+  @description('Optional. Retention cleanup policy. Enumerates the possible values for cleanup policy.')
+  retentionDescriptionCleanupPolicy: ('Compact' | 'Delete')?
+
+  @minValue(1)
+  @maxValue(2160)
+  @description('Optional. Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageRetentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue.')
+  retentionDescriptionRetentionTimeInHours: int?
+
+  @minValue(1)
+  @maxValue(2160)
+  @description('Optional. Retention cleanup policy. Number of hours to retain the tombstone markers of a compacted Event Hub. This value is only used when cleanupPolicy is Compact. Consumer must complete reading the tombstone marker within this specified amount of time if consumer begins from starting offset to ensure they get a valid snapshot for the specific key described by the tombstone marker within the compacted Event Hub.')
+  retentionDescriptionTombstoneRetentionTimeInHours: int?
 }
