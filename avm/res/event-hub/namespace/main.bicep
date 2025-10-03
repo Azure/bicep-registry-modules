@@ -72,7 +72,7 @@ import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-co
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Configure networking options. This object contains IPs/Subnets to allow or restrict access to private endpoints only. For security reasons, it is recommended to configure this object on the Namespace.')
-param networkRuleSets object = {}
+param networkRuleSets networkRuleSetType?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
@@ -637,4 +637,27 @@ type eventHubType = {
   @maxValue(2160)
   @description('Optional. Retention cleanup policy. Number of hours to retain the tombstone markers of a compacted Event Hub. This value is only used when cleanupPolicy is Compact. Consumer must complete reading the tombstone marker within this specified amount of time if consumer begins from starting offset to ensure they get a valid snapshot for the specific key described by the tombstone marker within the compacted Event Hub.')
   retentionDescriptionTombstoneRetentionTimeInHours: int?
+}
+
+import { networkRuleType } from 'network-rule-set/main.bicep'
+@export()
+@description('The type of a network rule set.')
+type networkRuleSetType = {
+  @description('Optional. This determines if traffic is allowed over public network. Default is "Enabled". If set to "Disabled", traffic to this namespace will be restricted over Private Endpoints only and network rules will not be applied.')
+  publicNetworkAccess: ('Enabled' | 'Disabled')?
+
+  @description('Optional. Default Action for Network Rule Set. Default is "Allow". It will not be set if publicNetworkAccess is "Disabled". Otherwise, it will be set to "Deny" if ipRules or virtualNetworkRules are being used.')
+  defaultAction: ('Allow' | 'Deny')?
+
+  @description('Optional. Value that indicates whether Trusted Service Access is enabled or not.')
+  trustedServiceAccessEnabled: bool?
+
+  @description('Optional. An array of subnet resource ID objects that this Event Hub Namespace is exposed to via Service Endpoints. You can enable the `ignoreMissingVnetServiceEndpoint` if you wish to add this virtual network to Event Hub Namespace but do not have an existing service endpoint. It will not be set if publicNetworkAccess is "Disabled". Otherwise, when used, defaultAction will be set to "Deny".')
+  virtualNetworkRules: networkRuleType[]?
+
+  @description('Optional. An array of objects for the public IP ranges you want to allow via the Event Hub Namespace firewall. Supports IPv4 address or CIDR. It will not be set if publicNetworkAccess is "Disabled". Otherwise, when used, defaultAction will be set to "Deny".')
+  ipRules: resourceInput<'Microsoft.EventHub/namespaces/networkRuleSets@2024-01-01'>.properties.ipRules?
+
+  @description('Optional. The name of the network ruleset. Defaults to \'default\'.')
+  networkRuleSetName: string?
 }

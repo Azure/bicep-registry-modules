@@ -124,9 +124,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     }
     managedIdentities: {
       systemAssigned: false
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
+      userAssignedResourceId: '<userAssignedResourceId>'
     }
     requireInfrastructureEncryption: true
     skuName: 'Premium'
@@ -161,9 +159,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     "managedIdentities": {
       "value": {
         "systemAssigned": false,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
+        "userAssignedResourceId": "<userAssignedResourceId>"
       }
     },
     "requireInfrastructureEncryption": {
@@ -196,9 +192,7 @@ param customerManagedKey = {
 }
 param managedIdentities = {
   systemAssigned: false
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
+  userAssignedResourceId: '<userAssignedResourceId>'
 }
 param requireInfrastructureEncryption = true
 param skuName = 'Premium'
@@ -2323,7 +2317,94 @@ Configure networking options. This object contains IPs/Subnets to allow or restr
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`defaultAction`](#parameter-networkrulesetsdefaultaction) | string | Default Action for Network Rule Set. Default is "Allow". It will not be set if publicNetworkAccess is "Disabled". Otherwise, it will be set to "Deny" if ipRules or virtualNetworkRules are being used. |
+| [`ipRules`](#parameter-networkrulesetsiprules) | array | An array of objects for the public IP ranges you want to allow via the Event Hub Namespace firewall. Supports IPv4 address or CIDR. It will not be set if publicNetworkAccess is "Disabled". Otherwise, when used, defaultAction will be set to "Deny". |
+| [`networkRuleSetName`](#parameter-networkrulesetsnetworkrulesetname) | string | The name of the network ruleset. Defaults to 'default'. |
+| [`publicNetworkAccess`](#parameter-networkrulesetspublicnetworkaccess) | string | This determines if traffic is allowed over public network. Default is "Enabled". If set to "Disabled", traffic to this namespace will be restricted over Private Endpoints only and network rules will not be applied. |
+| [`trustedServiceAccessEnabled`](#parameter-networkrulesetstrustedserviceaccessenabled) | bool | Value that indicates whether Trusted Service Access is enabled or not. |
+| [`virtualNetworkRules`](#parameter-networkrulesetsvirtualnetworkrules) | array | An array of subnet resource ID objects that this Event Hub Namespace is exposed to via Service Endpoints. You can enable the `ignoreMissingVnetServiceEndpoint` if you wish to add this virtual network to Event Hub Namespace but do not have an existing service endpoint. It will not be set if publicNetworkAccess is "Disabled". Otherwise, when used, defaultAction will be set to "Deny". |
+
+### Parameter: `networkRuleSets.defaultAction`
+
+Default Action for Network Rule Set. Default is "Allow". It will not be set if publicNetworkAccess is "Disabled". Otherwise, it will be set to "Deny" if ipRules or virtualNetworkRules are being used.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'Deny'
+  ]
+  ```
+
+### Parameter: `networkRuleSets.ipRules`
+
+An array of objects for the public IP ranges you want to allow via the Event Hub Namespace firewall. Supports IPv4 address or CIDR. It will not be set if publicNetworkAccess is "Disabled". Otherwise, when used, defaultAction will be set to "Deny".
+
+- Required: No
+- Type: array
+
+### Parameter: `networkRuleSets.networkRuleSetName`
+
+The name of the network ruleset. Defaults to 'default'.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkRuleSets.publicNetworkAccess`
+
+This determines if traffic is allowed over public network. Default is "Enabled". If set to "Disabled", traffic to this namespace will be restricted over Private Endpoints only and network rules will not be applied.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `networkRuleSets.trustedServiceAccessEnabled`
+
+Value that indicates whether Trusted Service Access is enabled or not.
+
+- Required: No
+- Type: bool
+
+### Parameter: `networkRuleSets.virtualNetworkRules`
+
+An array of subnet resource ID objects that this Event Hub Namespace is exposed to via Service Endpoints. You can enable the `ignoreMissingVnetServiceEndpoint` if you wish to add this virtual network to Event Hub Namespace but do not have an existing service endpoint. It will not be set if publicNetworkAccess is "Disabled". Otherwise, when used, defaultAction will be set to "Deny".
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ignoreMissingVnetServiceEndpoint`](#parameter-networkrulesetsvirtualnetworkrulesignoremissingvnetserviceendpoint) | bool | Value that indicates whether to ignore missing Vnet Service Endpoint. |
+| [`subnetResourceId`](#parameter-networkrulesetsvirtualnetworkrulessubnetresourceid) | string | The resource Id of a Virtual Network Subnet. |
+
+### Parameter: `networkRuleSets.virtualNetworkRules.ignoreMissingVnetServiceEndpoint`
+
+Value that indicates whether to ignore missing Vnet Service Endpoint.
+
+- Required: No
+- Type: bool
+
+### Parameter: `networkRuleSets.virtualNetworkRules.subnetResourceId`
+
+The resource Id of a Virtual Network Subnet.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints`
 
