@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "462114859989274544"
+      "templateHash": "14637174565842593677"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall."
@@ -618,7 +618,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -655,7 +655,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -730,7 +730,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "11484436645222902841"
+      "templateHash": "2375954184515731924"
     },
     "name": "User Assigned Identities",
     "description": "This module deploys a User Assigned Identity."
@@ -204,10 +204,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
