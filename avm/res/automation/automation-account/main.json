@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "3198677949208280134"
+      "templateHash": "16170497427282872648"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account."
@@ -203,6 +203,78 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for a Python 2 or 3 module configuration."
+      }
+    },
+    "sourceControlConfigurationType": {
+      "type": "object",
+      "properties": {
+        "sourceType": {
+          "type": "string",
+          "allowedValues": [
+            "GitHub",
+            "VsoGit",
+            "VsoTfvc"
+          ],
+          "metadata": {
+            "description": "Required. Type of source control mechanism."
+          }
+        },
+        "autoSync": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Setting that turns on or off automatic synchronization when a commit is made in the source control repository or GitHub repo. Defaults to `false`."
+          }
+        },
+        "repoUrl": {
+          "type": "string",
+          "maxLength": 2000,
+          "metadata": {
+            "description": "Required. The repo url of the source control."
+          }
+        },
+        "branch": {
+          "type": "string",
+          "maxLength": 255,
+          "metadata": {
+            "description": "Required. The repo branch of the source control. Include branch as empty string for VsoTfvc."
+          }
+        },
+        "folderPath": {
+          "type": "string",
+          "maxLength": 255,
+          "metadata": {
+            "description": "Required. The folder path of the source control. Path must be relative."
+          }
+        },
+        "publishRunbook": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The auto publish of the source control. Defaults to `true`."
+          }
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 512,
+          "metadata": {
+            "description": "Required. The user description of the source control."
+          }
+        },
+        "securityToken": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Automation/automationAccounts/sourceControls@2024-10-23#properties/properties/properties/securityToken"
+            },
+            "description": "Optional. The authorization token for the repo of the source control."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a source control configuration."
       }
     },
     "_1.lockType": {
@@ -1109,6 +1181,16 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "sourceControlConfigurations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/sourceControlConfigurationType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The source control configurations."
       }
     }
   },
@@ -2733,6 +2815,193 @@
               "type": "string",
               "metadata": {
                 "description": "The resource group of the deployed variable."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "automationAccount"
+      ]
+    },
+    "automationAccount_sourceControlConfigurations": {
+      "copy": {
+        "name": "automationAccount_sourceControlConfigurations",
+        "count": "[length(coalesce(parameters('sourceControlConfigurations'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-AutoAccount-Variable-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "automationAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "branch": {
+            "value": "[coalesce(parameters('sourceControlConfigurations'), createArray())[copyIndex()].branch]"
+          },
+          "description": {
+            "value": "[coalesce(parameters('sourceControlConfigurations'), createArray())[copyIndex()].description]"
+          },
+          "folderPath": {
+            "value": "[coalesce(parameters('sourceControlConfigurations'), createArray())[copyIndex()].folderPath]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('sourceControlConfigurations'), createArray())[copyIndex()].name]"
+          },
+          "repoUrl": {
+            "value": "[coalesce(parameters('sourceControlConfigurations'), createArray())[copyIndex()].repoUrl]"
+          },
+          "sourceType": {
+            "value": "[coalesce(parameters('sourceControlConfigurations'), createArray())[copyIndex()].sourceType]"
+          },
+          "securityToken": {
+            "value": "[tryGet(coalesce(parameters('sourceControlConfigurations'), createArray())[copyIndex()], 'securityToken')]"
+          },
+          "autoSync": {
+            "value": "[tryGet(coalesce(parameters('sourceControlConfigurations'), createArray())[copyIndex()], 'autoSync')]"
+          },
+          "publishRunbook": {
+            "value": "[tryGet(coalesce(parameters('sourceControlConfigurations'), createArray())[copyIndex()], 'publishRunbook')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.37.4.10188",
+              "templateHash": "4710674832973366577"
+            },
+            "name": "Automation Account Source Controls",
+            "description": "This module deploys an Azure Automation Account Source Control."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. A friendly name for the source control. This name must contain only letters and numbers."
+              }
+            },
+            "automationAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Automation Account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "sourceType": {
+              "type": "string",
+              "allowedValues": [
+                "GitHub",
+                "VsoGit",
+                "VsoTfvc"
+              ],
+              "metadata": {
+                "description": "Required. Type of source control mechanism."
+              }
+            },
+            "autoSync": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Setting that turns on or off automatic synchronization when a commit is made in the source control repository or GitHub repo. Defaults to `false`."
+              }
+            },
+            "repoUrl": {
+              "type": "string",
+              "maxLength": 2000,
+              "metadata": {
+                "description": "Required. The repo url of the source control."
+              }
+            },
+            "branch": {
+              "type": "string",
+              "maxLength": 255,
+              "metadata": {
+                "description": "Required. The repo branch of the source control. Include branch as empty string for VsoTfvc."
+              }
+            },
+            "folderPath": {
+              "type": "string",
+              "maxLength": 255,
+              "metadata": {
+                "description": "Required. The folder path of the source control. Path must be relative."
+              }
+            },
+            "publishRunbook": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. The auto publish of the source control. Defaults to `true`."
+              }
+            },
+            "description": {
+              "type": "string",
+              "maxLength": 512,
+              "metadata": {
+                "description": "Required. The user description of the source control."
+              }
+            },
+            "securityToken": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Automation/automationAccounts/sourceControls@2024-10-23#properties/properties/properties/securityToken"
+                },
+                "description": "Optional. The authorization token for the repo of the source control."
+              },
+              "nullable": true
+            }
+          },
+          "resources": {
+            "automationAccount": {
+              "existing": true,
+              "type": "Microsoft.Automation/automationAccounts",
+              "apiVersion": "2024-10-23",
+              "name": "[parameters('automationAccountName')]"
+            },
+            "sourceControl": {
+              "type": "Microsoft.Automation/automationAccounts/sourceControls",
+              "apiVersion": "2024-10-23",
+              "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
+              "properties": {
+                "sourceType": "[parameters('sourceType')]",
+                "autoSync": "[parameters('autoSync')]",
+                "repoUrl": "[parameters('repoUrl')]",
+                "branch": "[parameters('branch')]",
+                "folderPath": "[parameters('folderPath')]",
+                "publishRunbook": "[parameters('publishRunbook')]",
+                "description": "[parameters('description')]",
+                "securityToken": "[parameters('securityToken')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed source control."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed source control."
+              },
+              "value": "[resourceId('Microsoft.Automation/automationAccounts/sourceControls', parameters('automationAccountName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed source control."
               },
               "value": "[resourceGroup().name]"
             }
