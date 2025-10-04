@@ -637,7 +637,6 @@ param vpnSiteLinks = [
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`o365Policy`](#parameter-o365policy) | object | The Office365 breakout policy. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`siteKey`](#parameter-sitekey) | string | The key for vpn-site that can be used for connections. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`vpnSiteLinks`](#parameter-vpnsitelinks) | array | List of all VPN site links. |
 
@@ -862,13 +861,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-
-### Parameter: `siteKey`
-
-The key for vpn-site that can be used for connections.
-
-- Required: No
-- Type: string
 
 ### Parameter: `tags`
 

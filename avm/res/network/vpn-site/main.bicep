@@ -45,9 +45,6 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-@description('Optional. The key for vpn-site that can be used for connections.')
-param siteKey string?
-
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   'Network Contributor': subscriptionResourceId(
@@ -118,7 +115,6 @@ resource vpnSite 'Microsoft.Network/vpnSites@2024-10-01' = {
       id: virtualWanResourceId
     }
     vpnSiteLinks: vpnSiteLinks
-    siteKey: siteKey
   }
 }
 

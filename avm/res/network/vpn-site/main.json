@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.5.1644",
-      "templateHash": "11761492109597645876"
+      "templateHash": "15228393793792748444"
     },
     "name": "VPN Sites",
     "description": "This module deploys a VPN Site."
@@ -242,13 +242,6 @@
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
-    },
-    "siteKey": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The key for vpn-site that can be used for connections."
-      }
     }
   },
   "variables": {
@@ -305,8 +298,7 @@
         "virtualWan": {
           "id": "[parameters('virtualWanResourceId')]"
         },
-        "vpnSiteLinks": "[parameters('vpnSiteLinks')]",
-        "siteKey": "[parameters('siteKey')]"
+        "vpnSiteLinks": "[parameters('vpnSiteLinks')]"
       }
     },
     "vpnSite_lock": {

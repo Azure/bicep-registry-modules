@@ -15,7 +15,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
   - `vpnSiteLinks`
   <p>parameters
 - Updated LockType to 'avm-common-types version' `0.6.1`, enabling custom notes for locks.
-- Added support for `siteKey` property
 
 ### Breaking Changes
 
