@@ -4,10 +4,13 @@ param location string = resourceGroup().location
 @description('Required. The name of the Public IP to create.')
 param publicIPName string
 
+@description('Required. The name of the Virtual Network to create.')
+param virtualNetworkName string
+
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
-resource publicIP 'Microsoft.Network/publicIPAddresses@2024-10-01' = {
+resource publicIP 'Microsoft.Network/publicIPAddresses@2024-07-01' = {
   name: publicIPName
   location: location
   sku: {
@@ -24,6 +27,33 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2024-10-01' = {
   ]
 }
 
+var addressPrefix = '10.0.0.0/16'
+
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
+  name: virtualNetworkName
+  location: location
+  properties: {
+    addressSpace: {
+      addressPrefixes: [
+        addressPrefix
+      ]
+    }
+    subnets: [
+      {
+        name: 'defaultSubnet'
+        properties: {
+          addressPrefix: cidrSubnet(addressPrefix, 16, 0)
+          serviceEndpoints: [
+            {
+              service: 'Microsoft.KeyVault'
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
   location: location
@@ -34,3 +64,6 @@ output publicIPResourceId string = publicIP.id
 
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
+
+@description('The resource ID of the created Virtual Network.')
+output virtualNetworkResourceId string = virtualNetwork.id
