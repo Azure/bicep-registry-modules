@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.5.1644",
-      "templateHash": "5590778685809118204"
+      "templateHash": "4553350904850364444"
     },
     "name": "NAT Gateways",
     "description": "This module deploys a NAT Gateway."
@@ -25,7 +25,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix."
+            "description": "Optional. Resource ID of the Public IP Prefix. This is only needed if you want your Public IPs created in a PIP Prefix."
           }
         },
         "publicIPAllocationMethod": {
@@ -241,10 +241,13 @@
         },
         "customIPPrefix": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/publicIPPrefixes@2024-10-01#properties/properties/properties/customIPPrefix"
+            },
             "description": "Optional. The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range."
-          }
+          },
+          "nullable": true
         },
         "ipTags": {
           "type": "array",
@@ -660,6 +663,9 @@
     },
     "publicIpResourceIds": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. Existing Public IP Address resource IDs to use for the NAT Gateway."
@@ -667,6 +673,9 @@
     },
     "publicIPPrefixResourceIds": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. Existing Public IP Prefixes resource IDs to use for the NAT Gateway."

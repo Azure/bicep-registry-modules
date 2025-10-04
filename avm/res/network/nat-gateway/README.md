@@ -846,7 +846,7 @@ Specifies the properties of the Public IPs to create and be used by the NAT Gate
 | [`lock`](#parameter-publicipaddresseslock) | object | The lock settings of the service. |
 | [`publicIPAddressVersion`](#parameter-publicipaddressespublicipaddressversion) | string | IP address version. |
 | [`publicIPAllocationMethod`](#parameter-publicipaddressespublicipallocationmethod) | string | The public IP address allocation method. |
-| [`publicIpPrefixResourceId`](#parameter-publicipaddressespublicipprefixresourceid) | string | Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix. |
+| [`publicIpPrefixResourceId`](#parameter-publicipaddressespublicipprefixresourceid) | string | Resource ID of the Public IP Prefix. This is only needed if you want your Public IPs created in a PIP Prefix. |
 | [`roleAssignments`](#parameter-publicipaddressesroleassignments) | array | Array of role assignments to create. |
 | [`skuName`](#parameter-publicipaddressesskuname) | string | Name of a public IP address SKU. |
 | [`skuTier`](#parameter-publicipaddressesskutier) | string | Tier of a public IP address SKU. |
@@ -1246,7 +1246,7 @@ The public IP address allocation method.
 
 ### Parameter: `publicIPAddresses.publicIpPrefixResourceId`
 
-Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix.
+Resource ID of the Public IP Prefix. This is only needed if you want your Public IPs created in a PIP Prefix.
 
 - Required: No
 - Type: string

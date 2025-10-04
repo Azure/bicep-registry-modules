@@ -17,10 +17,10 @@ param availabilityZone int
 param idleTimeoutInMinutes int = 5
 
 @description('Optional. Existing Public IP Address resource IDs to use for the NAT Gateway.')
-param publicIpResourceIds array = []
+param publicIpResourceIds string[] = []
 
 @description('Optional. Existing Public IP Prefixes resource IDs to use for the NAT Gateway.')
-param publicIPPrefixResourceIds array = []
+param publicIPPrefixResourceIds string[] = []
 
 @description('Optional. Specifies the properties of the Public IPs to create and be used by the NAT Gateway.')
 param publicIPAddresses publicIpType[]?
@@ -99,26 +99,26 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 module natGateway_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.9.0' = [
-  for (publicIPAddressObject, index) in (publicIPAddresses ?? []): {
+  for (publicIPAddress, index) in (publicIPAddresses ?? []): {
     name: '${uniqueString(deployment().name, location)}-NatGw-PIP-${index}'
     params: {
-      name: publicIPAddressObject.?name ?? '${name}-pip'
+      name: publicIPAddress.?name ?? '${name}-pip'
       location: location
-      lock: publicIPAddressObject.?lock ?? lock
-      diagnosticSettings: publicIPAddressObject.?diagnosticSettings
-      publicIPAddressVersion: publicIPAddressObject.?publicIPAddressVersion
+      lock: publicIPAddress.?lock ?? lock
+      diagnosticSettings: publicIPAddress.?diagnosticSettings
+      publicIPAddressVersion: publicIPAddress.?publicIPAddressVersion
       publicIPAllocationMethod: 'Static'
-      publicIpPrefixResourceId: publicIPAddressObject.?publicIPPrefixResourceId
-      roleAssignments: publicIPAddressObject.?roleAssignments
+      publicIpPrefixResourceId: publicIPAddress.?publicIPPrefixResourceId
+      roleAssignments: publicIPAddress.?roleAssignments
       skuName: 'Standard' // Must be standard
-      skuTier: publicIPAddressObject.?skuTier
-      tags: publicIPAddressObject.?tags ?? tags
-      availabilityZones: publicIPAddressObject.?availabilityZones ?? (availabilityZone != -1 ? [availabilityZone] : null)
+      skuTier: publicIPAddress.?skuTier
+      tags: publicIPAddress.?tags ?? tags
+      availabilityZones: publicIPAddress.?availabilityZones ?? (availabilityZone != -1 ? [availabilityZone] : null)
       enableTelemetry: enableReferencedModulesTelemetry
-      ddosSettings: publicIPAddressObject.?ddosSettings
-      dnsSettings: publicIPAddressObject.?dnsSettings
-      idleTimeoutInMinutes: publicIPAddressObject.?idleTimeoutInMinutes
-      ipTags: publicIPAddressObject.?ipTags
+      ddosSettings: publicIPAddress.?ddosSettings
+      dnsSettings: publicIPAddress.?dnsSettings
+      idleTimeoutInMinutes: publicIPAddress.?idleTimeoutInMinutes
+      ipTags: publicIPAddress.?ipTags
     }
   }
 ]
@@ -134,21 +134,21 @@ module formattedPublicIpResourceIds 'modules/formatResourceId.bicep' = {
 }
 
 module natGateway_publicIPPrefixes 'br/public:avm/res/network/public-ip-prefix:0.7.0' = [
-  for (publicIPPrefixObject, index) in (publicIPPrefixes ?? []): {
+  for (publicIPPrefix, index) in (publicIPPrefixes ?? []): {
     name: '${uniqueString(deployment().name, location)}-NatGw-Prefix-PIP-${index}'
     params: {
-      name: publicIPPrefixObject.?name ?? '${name}-pip'
+      name: publicIPPrefix.?name ?? '${name}-pip'
       location: location
-      lock: publicIPPrefixObject.?lock ?? lock
-      prefixLength: publicIPPrefixObject.prefixLength
-      customIPPrefix: publicIPPrefixObject.?customIPPrefix
-      roleAssignments: publicIPPrefixObject.?roleAssignments
-      tags: publicIPPrefixObject.?tags ?? tags
+      lock: publicIPPrefix.?lock ?? lock
+      prefixLength: publicIPPrefix.prefixLength
+      customIPPrefix: publicIPPrefix.?customIPPrefix
+      roleAssignments: publicIPPrefix.?roleAssignments
+      tags: publicIPPrefix.?tags ?? tags
       enableTelemetry: enableReferencedModulesTelemetry
-      availabilityZones: publicIPPrefixObject.?availabilityZones ?? (availabilityZone != -1 ? [availabilityZone] : null)
-      ipTags: publicIPPrefixObject.?ipTags
-      publicIPAddressVersion: publicIPPrefixObject.?publicIPAddressVersion
-      tier: publicIPPrefixObject.?tier
+      availabilityZones: publicIPPrefix.?availabilityZones ?? (availabilityZone != -1 ? [availabilityZone] : null)
+      ipTags: publicIPPrefix.?ipTags
+      publicIPAddressVersion: publicIPPrefix.?publicIPAddressVersion
+      tier: publicIPPrefix.?tier
     }
   }
 ]
@@ -231,7 +231,7 @@ type publicIpType = {
   @description('Required. The name of the Public IP Address.')
   name: string
 
-  @description('Optional. Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix.')
+  @description('Optional. Resource ID of the Public IP Prefix. This is only needed if you want your Public IPs created in a PIP Prefix.')
   publicIpPrefixResourceId: string?
 
   @description('Optional. The public IP address allocation method.')
@@ -310,7 +310,7 @@ type publicIPPrefixType = {
   tags: resourceInput<'Microsoft.Network/publicIPPrefixes@2024-10-01'>.tags?
 
   @description('Optional. The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range.')
-  customIPPrefix: object?
+  customIPPrefix: resourceInput<'Microsoft.Network/publicIPPrefixes@2024-10-01'>.properties.customIPPrefix?
 
   @description('Optional. The list of tags associated with the public IP prefix.')
   ipTags: prefixIpTagType[]?
