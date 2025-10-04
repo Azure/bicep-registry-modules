@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "9277089994275321905"
+      "templateHash": "4341435923657449536"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile."
@@ -1092,10 +1092,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Cdn/profiles@2025-06-01#properties/tags"
+        },
         "description": "Optional. Endpoint tags."
-      }
+      },
+      "nullable": true
     },
     "managedIdentities": {
       "$ref": "#/definitions/managedIdentityAllType",

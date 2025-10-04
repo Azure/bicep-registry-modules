@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cdn/profile/CHANGELOG.md).
 
+## 0.15.1
+
+### Changes
+
+- Added type for `tags` parameter
+
+### Breaking Changes
+
+- None
+
 ## 0.15.0
 
 ### Changes

@@ -47,7 +47,7 @@ param storageProfile storageProfileType?
 param organizationProfile resourceInput<'Microsoft.DevOpsInfrastructure/pools@2025-01-21'>.properties.organizationProfile
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.DevOpsInfrastructure/pools@2025-09-20'>.tags?
 
 @description('Optional. The lock settings of the service.')
 param lock lockType?
