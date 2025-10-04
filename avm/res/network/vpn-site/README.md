@@ -18,7 +18,7 @@ This module deploys a VPN Site.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.Network/vpnSites` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_vpnsites.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/vpnSites)</li></ul> |
+| `Microsoft.Network/vpnSites` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_vpnsites.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/vpnSites)</li></ul> |
 
 ## Usage examples
 
@@ -47,7 +47,7 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
   params: {
     // Required parameters
     name: 'nvsmin'
-    virtualWanId: '<virtualWanId>'
+    virtualWanResourceId: '<virtualWanResourceId>'
     // Non-required parameters
     addressPrefixes: [
       '10.0.0.0/16'
@@ -73,8 +73,8 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
     "name": {
       "value": "nvsmin"
     },
-    "virtualWanId": {
-      "value": "<virtualWanId>"
+    "virtualWanResourceId": {
+      "value": "<virtualWanResourceId>"
     },
     // Non-required parameters
     "addressPrefixes": {
@@ -101,7 +101,7 @@ using 'br/public:avm/res/network/vpn-site:<version>'
 
 // Required parameters
 param name = 'nvsmin'
-param virtualWanId = '<virtualWanId>'
+param virtualWanResourceId = '<virtualWanResourceId>'
 // Non-required parameters
 param addressPrefixes = [
   '10.0.0.0/16'
@@ -127,7 +127,7 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
   params: {
     // Required parameters
     name: 'nvsmax'
-    virtualWanId: '<virtualWanId>'
+    virtualWanResourceId: '<virtualWanResourceId>'
     // Non-required parameters
     deviceProperties: {
       linkSpeedInMbps: 0
@@ -218,8 +218,8 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
     "name": {
       "value": "nvsmax"
     },
-    "virtualWanId": {
-      "value": "<virtualWanId>"
+    "virtualWanResourceId": {
+      "value": "<virtualWanResourceId>"
     },
     // Non-required parameters
     "deviceProperties": {
@@ -321,7 +321,7 @@ using 'br/public:avm/res/network/vpn-site:<version>'
 
 // Required parameters
 param name = 'nvsmax'
-param virtualWanId = '<virtualWanId>'
+param virtualWanResourceId = '<virtualWanResourceId>'
 // Non-required parameters
 param deviceProperties = {
   linkSpeedInMbps: 0
@@ -412,7 +412,7 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
   params: {
     // Required parameters
     name: 'nvswaf'
-    virtualWanId: '<virtualWanId>'
+    virtualWanResourceId: '<virtualWanResourceId>'
     // Non-required parameters
     deviceProperties: {
       linkSpeedInMbps: 0
@@ -480,8 +480,8 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
     "name": {
       "value": "nvswaf"
     },
-    "virtualWanId": {
-      "value": "<virtualWanId>"
+    "virtualWanResourceId": {
+      "value": "<virtualWanResourceId>"
     },
     // Non-required parameters
     "deviceProperties": {
@@ -556,7 +556,7 @@ using 'br/public:avm/res/network/vpn-site:<version>'
 
 // Required parameters
 param name = 'nvswaf'
-param virtualWanId = '<virtualWanId>'
+param virtualWanResourceId = '<virtualWanResourceId>'
 // Non-required parameters
 param deviceProperties = {
   linkSpeedInMbps: 0
@@ -616,7 +616,7 @@ param vpnSiteLinks = [
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the VPN Site. |
-| [`virtualWanId`](#parameter-virtualwanid) | string | Resource ID of the virtual WAN to link to. |
+| [`virtualWanResourceId`](#parameter-virtualwanresourceid) | string | Resource ID of the virtual WAN to link to. |
 
 **Conditional parameters**
 
@@ -637,6 +637,7 @@ param vpnSiteLinks = [
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`o365Policy`](#parameter-o365policy) | object | The Office365 breakout policy. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`siteKey`](#parameter-sitekey) | string | The key for vpn-site that can be used for connections. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`vpnSiteLinks`](#parameter-vpnsitelinks) | array | List of all VPN site links. |
 
@@ -647,7 +648,7 @@ Name of the VPN Site.
 - Required: Yes
 - Type: string
 
-### Parameter: `virtualWanId`
+### Parameter: `virtualWanResourceId`
 
 Resource ID of the virtual WAN to link to.
 
@@ -660,7 +661,6 @@ An array of IP address ranges that can be used by subnets of the virtual network
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `bgpProperties`
 
@@ -668,7 +668,6 @@ BGP settings details. Note: This is a deprecated property, please use the corres
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `deviceProperties`
 
@@ -676,7 +675,6 @@ List of properties of the device.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `enableTelemetry`
 
@@ -760,7 +758,6 @@ The Office365 breakout policy.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `roleAssignments`
 
@@ -866,6 +863,13 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `siteKey`
+
+The key for vpn-site that can be used for connections.
+
+- Required: No
+- Type: string
+
 ### Parameter: `tags`
 
 Tags of the resource.
@@ -879,7 +883,6 @@ List of all VPN site links.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ## Outputs
 
@@ -896,8 +899,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Notes
 
