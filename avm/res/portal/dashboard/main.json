@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "16061723789826639670"
+      "version": "0.38.5.1644",
+      "templateHash": "13484851042060286099"
     },
     "name": "Portal Dashboards",
     "description": "This module deploys a Portal Dashboard."
@@ -148,10 +148,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Portal/dashboards@2020-09-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "roleAssignments": {
       "type": "array",
