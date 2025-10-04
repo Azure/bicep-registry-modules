@@ -8,7 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Updated LockType to 'avm-common-types version' `0.6.1`, enabling custom notes for locks.
 - Updated `avm/res/network/public-ip-prefix` module reference to `0.7.0`, exposing additional other parameters
-- Added type for parameters `publicIPPrefixes` & `publicIPAddresses`
+- Added type for parameters `publicIPPrefixes`, `publicIPAddresses`, `publicIpResourceIds` & `publicIPPrefixResourceIds`
 
 ### Breaking Changes
 
