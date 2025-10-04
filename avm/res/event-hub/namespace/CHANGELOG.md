@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/event-hub/namespace/CHANGELOG.md).
 
+## 0.13.0
+
+### Changes
+
+- Added type for `eventhubs` & `networkRuleSets` parameters
+- Added `identity` support to `eventhubs.captureDescription.destination` parameter
+
+### Breaking Changes
+
+- Aligned `eventhubs.captureDescription` properties with resource provider format. For example, the `eventhubs` parameter `captureDescriptionIntervalInSeconds` was moved to the parameter `captureDescription` as `captureDescription.intervalInSeconds`.
+- Adjusted `identity` parameter type to support only a single user-assigned identity (`userAssignedResourceId`) instead of a list, as per the resource provider's API
+
 ## 0.12.5
 
 ### Changes
