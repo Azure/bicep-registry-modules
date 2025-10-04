@@ -43,7 +43,7 @@ param disableLocalAuthentication bool = true
 param enableAnalyticalStorage bool = false
 
 @description('Optional. Enable automatic failover for regions. Defaults to true.')
-param automaticFailover bool = true
+param enableAutomaticFailover bool = true
 
 @description('Optional. Flag to indicate whether "Free Tier" is enabled. Defaults to false.')
 param enableFreeTier bool = false
@@ -176,6 +176,29 @@ param networkRestrictions networkRestrictionType = {
 @description('Optional. Setting that indicates the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later. Defaults to "Tls12" (TLS 1.2).')
 param minimumTlsVersion string = 'Tls12'
 
+@description('Optional. Flag to indicate enabling/disabling of PerRegionPerPartitionAutoscale feature on the account.')
+param enablePerRegionPerPartitionAutoscale bool = false
+
+@description('Optional. Flag to indicate enabling/disabling of Partition Merge feature on the account.')
+param enablePartitionMerge bool = false
+
+@description('Optional. Enables the cassandra connector on the Cosmos DB C* account.')
+param enableCassandraConnector bool = false
+
+@description('Optional. The CORS policy for the Cosmos DB database account.')
+param cors resourceInput<'Microsoft.DocumentDB/databaseAccounts@2025-04-15'>.properties.cors?
+
+@description('Optional. Analytical storage specific properties.')
+param analyticalStorageConfiguration resourceInput<'Microsoft.DocumentDB/databaseAccounts@2025-04-15'>.properties.analyticalStorageConfiguration?
+
+@description('Optional. The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users.')
+param defaultIdentity defaultIdentityType = {
+  name: 'FirstPartyIdentity'
+}
+
+@description('Optional. The customer managed key definition. If specified, the parameter `defaultIdentity` must be configured as well.')
+param customerManagedKey customerManagedKeyType?
+
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
@@ -257,7 +280,19 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableT
   }
 }
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey)) {
+  name: last(split((customerManagedKey!.keyVaultResourceId!), '/'))
+  scope: resourceGroup(
+    split(customerManagedKey!.keyVaultResourceId!, '/')[2],
+    split(customerManagedKey!.keyVaultResourceId!, '/')[4]
+  )
+
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey)) {
+    name: customerManagedKey!.keyName
+  }
+}
+
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
   name: name
   location: location
   tags: tags
@@ -265,6 +300,14 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
   kind: !empty(mongodbDatabases) ? 'MongoDB' : 'GlobalDocumentDB'
   properties: {
     databaseAccountOfferType: databaseAccountOfferType
+    analyticalStorageConfiguration: analyticalStorageConfiguration
+    defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
+      ? defaultIdentity!.name
+      : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
+    keyVaultKeyUri: !empty(customerManagedKey) ? cMKKeyVault::cMKKey!.properties.keyUri : null
+    cors: cors
+    enablePartitionMerge: enablePartitionMerge
+    enablePerRegionPerPartitionAutoscale: enablePerRegionPerPartitionAutoscale
     backupPolicy: {
       #disable-next-line BCP225 // Value has a default
       type: backupPolicyType
@@ -293,6 +336,12 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
       totalThroughputLimit: totalThroughputLimit
     }
     publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Disabled'
+    ...(contains(capabilitiesToAdd ?? [], 'EnableCassandra')
+      ? {
+          connectorOffer: enableCassandraConnector ? 'Small' : null
+          enableCassandraConnector: enableCassandraConnector
+        }
+      : {})
     ...((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables))
       ? {
           // NoSQL, MongoDB RU, Table, and Apache Gremlin common properties
@@ -327,9 +376,10 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
             ignoreMissingVNetServiceEndpoint: false
           })
           networkAclBypass: networkRestrictions.?networkAclBypass ?? 'None'
+          networkAclBypassResourceIds: networkRestrictions.?networkAclBypassResourceIds
           isVirtualNetworkFilterEnabled: !empty(networkRestrictions.?ipRules) || !empty(networkRestrictions.?virtualNetworkRules)
           enableFreeTier: enableFreeTier
-          enableAutomaticFailover: automaticFailover
+          enableAutomaticFailover: enableAutomaticFailover
           enableAnalyticalStorage: enableAnalyticalStorage
         }
       : {})
@@ -766,4 +816,40 @@ type networkRestrictionType = {
     @description('Required. Resource ID of a subnet.')
     subnetResourceId: string
   }[]?
+
+  @description('Optional. An array that contains the Resource Ids for Network Acl Bypass for the Cosmos DB account.')
+  networkAclBypassResourceIds: string[]?
+}
+
+@export()
+@description('The type of a customer-managed key configuration.')
+type customerManagedKeyType = {
+  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
+  keyVaultResourceId: string
+
+  @description('Required. The name of the customer managed key to use for encryption.')
+  keyName: string
+}
+
+@export()
+@discriminator('name')
+@description('The type for the default identity.')
+type defaultIdentityType =
+  | defaultIdentityFirstPartyType
+  | defaultIdentitySystemAssignedType
+  | defaultIdentityUserAssignedType
+type defaultIdentityFirstPartyType = {
+  @description('Required. The type of default identity to use.')
+  name: 'FirstPartyIdentity'
+}
+type defaultIdentitySystemAssignedType = {
+  @description('Required. The type of default identity to use.')
+  name: 'SystemAssignedIdentity'
+}
+type defaultIdentityUserAssignedType = {
+  @description('Required. The type of default identity to use.')
+  name: 'UserAssignedIdentity'
+
+  @description('Required. The resource ID of the user assigned identity to use as the default identity.')
+  resourceId: string
 }
