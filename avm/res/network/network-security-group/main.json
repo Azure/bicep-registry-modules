@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "16912511606199266813"
+      "version": "0.38.5.1644",
+      "templateHash": "12695549657570928229"
     },
     "name": "Network Security Groups",
     "description": "This module deploys a Network security Group (NSG)."
@@ -442,10 +442,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/networkSecurityGroups@2024-07-01#properties/tags"
+        },
         "description": "Optional. Tags of the NSG resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",

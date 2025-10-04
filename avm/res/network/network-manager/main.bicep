@@ -18,7 +18,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4
 param roleAssignments roleAssignmentType[]?
 
 @sys.description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/networkManagers@2024-07-01'>.tags?
 
 @maxLength(500)
 @sys.description('Optional. A description of the Network Manager.')
