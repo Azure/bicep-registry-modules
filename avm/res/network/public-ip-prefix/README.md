@@ -523,7 +523,6 @@ The custom IP address prefix that this prefix is associated with. A custom IP ad
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `enableTelemetry`
 
