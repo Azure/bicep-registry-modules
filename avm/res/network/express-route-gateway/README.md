@@ -46,9 +46,7 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
   params: {
     // Required parameters
     name: 'nergmin002'
-    virtualHubId: '<virtualHubId>'
-    // Non-required parameters
-    location: '<location>'
+    virtualHubResourceId: '<virtualHubResourceId>'
   }
 }
 ```
@@ -69,12 +67,8 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
     "name": {
       "value": "nergmin002"
     },
-    "virtualHubId": {
-      "value": "<virtualHubId>"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
+    "virtualHubResourceId": {
+      "value": "<virtualHubResourceId>"
     }
   }
 }
@@ -92,9 +86,7 @@ using 'br/public:avm/res/network/express-route-gateway:<version>'
 
 // Required parameters
 param name = 'nergmin002'
-param virtualHubId = '<virtualHubId>'
-// Non-required parameters
-param location = '<location>'
+param virtualHubResourceId = '<virtualHubResourceId>'
 ```
 
 </details>
@@ -115,7 +107,7 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
   params: {
     // Required parameters
     name: 'nergmax001'
-    virtualHubId: '<virtualHubId>'
+    virtualHubResourceId: '<virtualHubResourceId>'
     // Non-required parameters
     autoScaleConfigurationBoundsMax: 3
     autoScaleConfigurationBoundsMin: 2
@@ -167,8 +159,8 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
     "name": {
       "value": "nergmax001"
     },
-    "virtualHubId": {
-      "value": "<virtualHubId>"
+    "virtualHubResourceId": {
+      "value": "<virtualHubResourceId>"
     },
     // Non-required parameters
     "autoScaleConfigurationBoundsMax": {
@@ -229,7 +221,7 @@ using 'br/public:avm/res/network/express-route-gateway:<version>'
 
 // Required parameters
 param name = 'nergmax001'
-param virtualHubId = '<virtualHubId>'
+param virtualHubResourceId = '<virtualHubResourceId>'
 // Non-required parameters
 param autoScaleConfigurationBoundsMax = 3
 param autoScaleConfigurationBoundsMin = 2
@@ -281,15 +273,10 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
   params: {
     // Required parameters
     name: 'nergwaf001'
-    virtualHubId: '<virtualHubId>'
+    virtualHubResourceId: '<virtualHubResourceId>'
     // Non-required parameters
     autoScaleConfigurationBoundsMax: 3
     autoScaleConfigurationBoundsMin: 2
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     tags: {
       hello: 'world'
       'hidden-title': 'This is visible in the resource name'
@@ -314,8 +301,8 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
     "name": {
       "value": "nergwaf001"
     },
-    "virtualHubId": {
-      "value": "<virtualHubId>"
+    "virtualHubResourceId": {
+      "value": "<virtualHubResourceId>"
     },
     // Non-required parameters
     "autoScaleConfigurationBoundsMax": {
@@ -323,15 +310,6 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
     },
     "autoScaleConfigurationBoundsMin": {
       "value": 2
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "tags": {
       "value": {
@@ -355,15 +333,10 @@ using 'br/public:avm/res/network/express-route-gateway:<version>'
 
 // Required parameters
 param name = 'nergwaf001'
-param virtualHubId = '<virtualHubId>'
+param virtualHubResourceId = '<virtualHubResourceId>'
 // Non-required parameters
 param autoScaleConfigurationBoundsMax = 3
 param autoScaleConfigurationBoundsMin = 2
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param tags = {
   hello: 'world'
   'hidden-title': 'This is visible in the resource name'
@@ -380,7 +353,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the Express Route Gateway. |
-| [`virtualHubId`](#parameter-virtualhubid) | string | Resource ID of the Virtual Wan Hub. |
+| [`virtualHubResourceId`](#parameter-virtualhubresourceid) | string | Resource ID of the Virtual Wan Hub. |
 
 **Optional parameters**
 
@@ -403,7 +376,7 @@ Name of the Express Route Gateway.
 - Required: Yes
 - Type: string
 
-### Parameter: `virtualHubId`
+### Parameter: `virtualHubResourceId`
 
 Resource ID of the Virtual Wan Hub.
 

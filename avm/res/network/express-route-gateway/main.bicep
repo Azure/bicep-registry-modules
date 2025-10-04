@@ -23,7 +23,7 @@ param autoScaleConfigurationBoundsMin int = 2
 param expressRouteConnections array = []
 
 @description('Required. Resource ID of the Virtual Wan Hub.')
-param virtualHubId string
+param virtualHubResourceId string
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Array of role assignments to create.')
@@ -98,7 +98,7 @@ resource expressRouteGateway 'Microsoft.Network/expressRouteGateways@2024-07-01'
     }
     expressRouteConnections: expressRouteConnections
     virtualHub: {
-      id: virtualHubId
+      id: virtualHubResourceId
     }
   }
 }

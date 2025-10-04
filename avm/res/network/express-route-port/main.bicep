@@ -46,7 +46,7 @@ param managedIdentities managedIdentityOnlyUserAssignedType?
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/ExpressRoutePorts@2024-05-01'>.tags?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
