@@ -102,13 +102,13 @@ module testDeployment '../../../main.bicep' = [
 ]
 
 // Custom module call to remove locking dependencies that can cause errors during the resource removal step
-module removeLockingDependencies '../../shared/removeLockingDependencies.bicep' = if (removeLockingDependencyAfterDeployment) {
-  name: take('module.removeLockingDependencies.${workloadName}', 64)
-  scope: resourceGroup
-  dependsOn: [testDeployment]
-  params: {
-    accountName: testDeployment[0].outputs.aiServicesName
-    projectName: testDeployment[0].outputs.aiProjectName
-    location: enforcedLocation
-  }
-}
+// module removeLockingDependencies '../../shared/removeLockingDependencies.bicep' = if (removeLockingDependencyAfterDeployment) {
+//   name: take('module.removeLockingDependencies.${workloadName}', 64)
+//   scope: resourceGroup
+//   dependsOn: [testDeployment]
+//   params: {
+//     accountName: testDeployment[0].outputs.aiServicesName
+//     projectName: testDeployment[0].outputs.aiProjectName
+//     location: enforcedLocation
+//   }
+// }
