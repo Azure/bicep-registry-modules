@@ -41,7 +41,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
 }
 
 module dependencies 'dependencies.bicep' = {
-  name: take('module.dependencies.${workloadName}', 64)
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   scope: resourceGroup
   params: {
     workloadName: workloadName

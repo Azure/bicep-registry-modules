@@ -8,7 +8,7 @@ param location string
 param tags object = {}
 
 // NOTE: Foundry currently requires an address space of 192.168.0.0/16 for agent vnet integration
-var addressPrefix = '10.0.0.0/16'
+var addressPrefix = '192.168.0.0/16'
 
 resource vnet 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   name: 'vnet-${workloadName}'
