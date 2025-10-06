@@ -30,7 +30,7 @@ param httpPort int = 80
 param httpsPort int = 443
 
 @description('Optional. The host header value sent to the origin with each request. If you leave this blank, the request hostname determines this value. Azure Front Door origins, such as Web Apps, Blob Storage, and Cloud Services require this host header value to match the origin hostname by default. This overrides the host header defined at Endpoint.')
-param originHostHeader string = ''
+param originHostHeader string?
 
 @description('Optional. Priority of origin in given origin group for load balancing. Higher priorities will not be used for load balancing if any lower priority origin is healthy.Must be between 1 and 5.')
 param priority int = 1
