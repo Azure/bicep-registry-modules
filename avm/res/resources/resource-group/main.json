@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "12500996682389707562"
+      "version": "0.38.5.1644",
+      "templateHash": "17393300527260382729"
     },
     "name": "Resource Groups",
     "description": "This module deploys a Resource Group."
@@ -158,10 +158,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Resources/resourceGroups@2021-04-01#properties/tags"
+        },
         "description": "Optional. Tags of the storage account resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -204,7 +207,7 @@
     "resourceGroup_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-RG-Lock', uniqueString(deployment().name, parameters('location')))]",
       "resourceGroup": "[parameters('name')]",
       "properties": {
@@ -227,8 +230,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "1151162167586949793"
+              "version": "0.38.5.1644",
+              "templateHash": "15152717549103930153"
             }
           },
           "definitions": {
@@ -293,7 +296,7 @@
     "resourceGroup_roleAssignments": {
       "condition": "[not(empty(coalesce(parameters('roleAssignments'), createArray())))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-RG-RoleAssignments', uniqueString(deployment().name, parameters('location')))]",
       "resourceGroup": "[parameters('name')]",
       "properties": {
@@ -313,8 +316,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "14440207268145434566"
+              "version": "0.38.5.1644",
+              "templateHash": "13403722769849471903"
             }
           },
           "definitions": {
