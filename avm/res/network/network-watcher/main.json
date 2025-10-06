@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.5.1644",
-      "templateHash": "1398151508538177764"
+      "templateHash": "10593926005855712519"
     },
     "name": "Network Watchers",
     "description": "This module deploys a Network Watcher."
@@ -95,6 +95,13 @@
           "metadata": {
             "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
           }
+        },
+        "enabledFilteringCriteria": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Field to filter network traffic logs based on SrcIP, SrcPort, DstIP, DstPort, Protocol, Encryption, Direction and Action. If not specified, all network traffic will be logged."
+          }
         }
       },
       "metadata": {
@@ -164,6 +171,49 @@
           "metadata": {
             "description": "Optional. Specify the Log Analytics Workspace Resource ID."
           }
+        },
+        "autoStart": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Determines if the connection monitor will start automatically once created."
+          }
+        },
+        "destination": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/networkWatchers/connectionMonitors@2024-05-01#properties/properties/properties/destination"
+            },
+            "description": "Optional. Describes the destination of connection monitor."
+          },
+          "nullable": true
+        },
+        "monitoringIntervalInSeconds": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 30,
+          "maxValue": 1800,
+          "metadata": {
+            "description": "Optional. Monitoring interval in seconds."
+          }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Notes to be associated with the connection monitor."
+          }
+        },
+        "source": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/networkWatchers/connectionMonitors@2024-05-01#properties/properties/properties/source"
+            },
+            "description": "Optional. Describes the source of connection monitor."
+          },
+          "nullable": true
         }
       },
       "metadata": {
@@ -395,7 +445,7 @@
     },
     "networkWatcher": {
       "type": "Microsoft.Network/networkWatchers",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2024-10-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -474,6 +524,21 @@
           },
           "workspaceResourceId": {
             "value": "[tryGet(coalesce(parameters('connectionMonitors'), createArray())[copyIndex()], 'workspaceResourceId')]"
+          },
+          "autoStart": {
+            "value": "[tryGet(coalesce(parameters('connectionMonitors'), createArray())[copyIndex()], 'autoStart')]"
+          },
+          "destination": {
+            "value": "[tryGet(coalesce(parameters('connectionMonitors'), createArray())[copyIndex()], 'destination')]"
+          },
+          "monitoringIntervalInSeconds": {
+            "value": "[tryGet(coalesce(parameters('connectionMonitors'), createArray())[copyIndex()], 'monitoringIntervalInSeconds')]"
+          },
+          "notes": {
+            "value": "[tryGet(coalesce(parameters('connectionMonitors'), createArray())[copyIndex()], 'notes')]"
+          },
+          "source": {
+            "value": "[tryGet(coalesce(parameters('connectionMonitors'), createArray())[copyIndex()], 'source')]"
           }
         },
         "template": {
@@ -484,7 +549,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.5.1644",
-              "templateHash": "8435110440648926991"
+              "templateHash": "9988153364509308698"
             },
             "name": "Network Watchers Connection Monitors",
             "description": "This module deploys a Network Watcher Connection Monitor."
@@ -556,18 +621,61 @@
               "metadata": {
                 "description": "Optional. Specify the Log Analytics Workspace Resource ID."
               }
+            },
+            "autoStart": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Determines if the connection monitor will start automatically once created."
+              }
+            },
+            "destination": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/networkWatchers/connectionMonitors@2024-05-01#properties/properties/properties/destination"
+                },
+                "description": "Optional. Describes the destination of connection monitor."
+              },
+              "nullable": true
+            },
+            "monitoringIntervalInSeconds": {
+              "type": "int",
+              "nullable": true,
+              "minValue": 30,
+              "maxValue": 1800,
+              "metadata": {
+                "description": "Optional. Monitoring interval in seconds."
+              }
+            },
+            "notes": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Notes to be associated with the connection monitor."
+              }
+            },
+            "source": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/networkWatchers/connectionMonitors@2024-05-01#properties/properties/properties/source"
+                },
+                "description": "Optional. Describes the source of connection monitor."
+              },
+              "nullable": true
             }
           },
           "resources": {
             "networkWatcher": {
               "existing": true,
               "type": "Microsoft.Network/networkWatchers",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2024-10-01",
               "name": "[parameters('networkWatcherName')]"
             },
             "connectionMonitor": {
               "type": "Microsoft.Network/networkWatchers/connectionMonitors",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2024-10-01",
               "name": "[format('{0}/{1}', parameters('networkWatcherName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "location": "[parameters('location')]",
@@ -575,6 +683,11 @@
                 "endpoints": "[parameters('endpoints')]",
                 "testConfigurations": "[parameters('testConfigurations')]",
                 "testGroups": "[parameters('testGroups')]",
+                "autoStart": "[parameters('autoStart')]",
+                "destination": "[parameters('destination')]",
+                "monitoringIntervalInSeconds": "[parameters('monitoringIntervalInSeconds')]",
+                "notes": "[parameters('notes')]",
+                "source": "[parameters('source')]",
                 "outputs": "[if(not(empty(parameters('workspaceResourceId'))), createArray(createObject('type', 'Workspace', 'workspaceSettings', createObject('workspaceResourceId', parameters('workspaceResourceId')))), null())]"
               }
             }
@@ -606,7 +719,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('connectionMonitor', '2024-05-01', 'full').location]"
+              "value": "[reference('connectionMonitor', '2024-10-01', 'full').location]"
             }
           }
         }
@@ -661,6 +774,9 @@
           },
           "workspaceResourceId": {
             "value": "[tryGet(coalesce(parameters('flowLogs'), createArray())[copyIndex()], 'workspaceResourceId')]"
+          },
+          "enabledFilteringCriteria": {
+            "value": "[tryGet(coalesce(parameters('flowLogs'), createArray())[copyIndex()], 'enabledFilteringCriteria')]"
           }
         },
         "template": {
@@ -671,7 +787,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.5.1644",
-              "templateHash": "12532620337201118446"
+              "templateHash": "7643257579849162716"
             },
             "name": "NSG Flow Logs",
             "description": "This module controls the Network Security Group Flow Logs and analytics settings.\n**Note: this module must be run on the Resource Group where Network Watcher is deployed**"
@@ -764,18 +880,25 @@
               "metadata": {
                 "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
               }
+            },
+            "enabledFilteringCriteria": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Field to filter network traffic logs based on SrcIP, SrcPort, DstIP, DstPort, Protocol, Encryption, Direction and Action. If not specified, all network traffic will be logged."
+              }
             }
           },
           "resources": {
             "networkWatcher": {
               "existing": true,
               "type": "Microsoft.Network/networkWatchers",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2024-10-01",
               "name": "[parameters('networkWatcherName')]"
             },
             "flowLog": {
               "type": "Microsoft.Network/networkWatchers/flowLogs",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2024-10-01",
               "name": "[format('{0}/{1}', parameters('networkWatcherName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "location": "[parameters('location')]",
@@ -783,6 +906,7 @@
                 "targetResourceId": "[parameters('targetResourceId')]",
                 "storageId": "[parameters('storageResourceId')]",
                 "enabled": "[parameters('enabled')]",
+                "enabledFilteringCriteria": "[parameters('enabledFilteringCriteria')]",
                 "retentionPolicy": {
                   "days": "[parameters('retentionInDays')]",
                   "enabled": "[if(equals(parameters('retentionInDays'), 0), false(), true())]"
@@ -822,7 +946,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('flowLog', '2024-05-01', 'full').location]"
+              "value": "[reference('flowLog', '2024-10-01', 'full').location]"
             }
           }
         }
@@ -859,7 +983,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('networkWatcher', '2024-05-01', 'full').location]"
+      "value": "[reference('networkWatcher', '2024-10-01', 'full').location]"
     }
   }
 }

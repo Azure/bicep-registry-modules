@@ -13,7 +13,7 @@ This module controls the Network Security Group Flow Logs and analytics settings
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Network/networkWatchers/flowLogs` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkwatchers_flowlogs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkWatchers/flowLogs)</li></ul> |
+| `Microsoft.Network/networkWatchers/flowLogs` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkwatchers_flowlogs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/networkWatchers/flowLogs)</li></ul> |
 
 ## Parameters
 
@@ -29,6 +29,7 @@ This module controls the Network Security Group Flow Logs and analytics settings
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enabled`](#parameter-enabled) | bool | If the flow log should be enabled. |
+| [`enabledFilteringCriteria`](#parameter-enabledfilteringcriteria) | string | Field to filter network traffic logs based on SrcIP, SrcPort, DstIP, DstPort, Protocol, Encryption, Direction and Action. If not specified, all network traffic will be logged. |
 | [`formatVersion`](#parameter-formatversion) | int | The flow log format version. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`name`](#parameter-name) | string | Name of the resource. |
@@ -59,6 +60,13 @@ If the flow log should be enabled.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `enabledFilteringCriteria`
+
+Field to filter network traffic logs based on SrcIP, SrcPort, DstIP, DstPort, Protocol, Encryption, Direction and Action. If not specified, all network traffic will be logged.
+
+- Required: No
+- Type: string
 
 ### Parameter: `formatVersion`
 

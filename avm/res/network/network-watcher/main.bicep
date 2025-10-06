@@ -76,7 +76,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource networkWatcher 'Microsoft.Network/networkWatchers@2024-05-01' = {
+resource networkWatcher 'Microsoft.Network/networkWatchers@2024-10-01' = {
   name: name
   location: location
   tags: tags
@@ -122,6 +122,11 @@ module networkWatcher_connectionMonitors 'connection-monitor/main.bicep' = [
       testConfigurations: connectionMonitor.?testConfigurations
       testGroups: connectionMonitor.?testGroups
       workspaceResourceId: connectionMonitor.?workspaceResourceId
+      autoStart: connectionMonitor.?autoStart
+      destination: connectionMonitor.?destination
+      monitoringIntervalInSeconds: connectionMonitor.?monitoringIntervalInSeconds
+      notes: connectionMonitor.?notes
+      source: connectionMonitor.?source
     }
   }
 ]
@@ -141,6 +146,7 @@ module networkWatcher_flowLogs 'flow-log/main.bicep' = [
       targetResourceId: flowLog.targetResourceId
       trafficAnalyticsInterval: flowLog.?trafficAnalyticsInterval
       workspaceResourceId: flowLog.?workspaceResourceId
+      enabledFilteringCriteria: flowLog.?enabledFilteringCriteria
     }
   }
 ]
@@ -194,6 +200,9 @@ type flowLogType = {
   @minValue(0)
   @maxValue(365)
   retentionInDays: int?
+
+  @description('Optional. Field to filter network traffic logs based on SrcIP, SrcPort, DstIP, DstPort, Protocol, Encryption, Direction and Action. If not specified, all network traffic will be logged.')
+  enabledFilteringCriteria: string?
 }
 
 @export()
@@ -219,4 +228,21 @@ type connectionMonitorType = {
 
   @description('Optional. Specify the Log Analytics Workspace Resource ID.')
   workspaceResourceId: string?
+
+  @description('Optional. Determines if the connection monitor will start automatically once created.')
+  autoStart: bool?
+
+  @description('Optional. Describes the destination of connection monitor.')
+  destination: resourceInput<'Microsoft.Network/networkWatchers/connectionMonitors@2024-05-01'>.properties.destination?
+
+  @description('Optional. Monitoring interval in seconds.')
+  @minValue(30)
+  @maxValue(1800)
+  monitoringIntervalInSeconds: int?
+
+  @description('Optional. Notes to be associated with the connection monitor.')
+  notes: string?
+
+  @description('Optional. Describes the source of connection monitor.')
+  source: resourceInput<'Microsoft.Network/networkWatchers/connectionMonitors@2024-05-01'>.properties.source?
 }

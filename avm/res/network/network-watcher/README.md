@@ -17,9 +17,9 @@ This module deploys a Network Watcher.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.Network/networkWatchers` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkwatchers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkWatchers)</li></ul> |
-| `Microsoft.Network/networkWatchers/connectionMonitors` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkwatchers_connectionmonitors.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkWatchers/connectionMonitors)</li></ul> |
-| `Microsoft.Network/networkWatchers/flowLogs` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkwatchers_flowlogs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkWatchers/flowLogs)</li></ul> |
+| `Microsoft.Network/networkWatchers` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkwatchers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/networkWatchers)</li></ul> |
+| `Microsoft.Network/networkWatchers/connectionMonitors` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkwatchers_connectionmonitors.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/networkWatchers/connectionMonitors)</li></ul> |
+| `Microsoft.Network/networkWatchers/flowLogs` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkwatchers_flowlogs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/networkWatchers/flowLogs)</li></ul> |
 
 ## Usage examples
 
@@ -740,8 +740,13 @@ Array that contains the Connection Monitors.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`autoStart`](#parameter-connectionmonitorsautostart) | bool | Determines if the connection monitor will start automatically once created. |
+| [`destination`](#parameter-connectionmonitorsdestination) | object | Describes the destination of connection monitor. |
 | [`endpoints`](#parameter-connectionmonitorsendpoints) | array | List of connection monitor endpoints. |
 | [`location`](#parameter-connectionmonitorslocation) | string | Location for all resources. |
+| [`monitoringIntervalInSeconds`](#parameter-connectionmonitorsmonitoringintervalinseconds) | int | Monitoring interval in seconds. |
+| [`notes`](#parameter-connectionmonitorsnotes) | string | Notes to be associated with the connection monitor. |
+| [`source`](#parameter-connectionmonitorssource) | object | Describes the source of connection monitor. |
 | [`tags`](#parameter-connectionmonitorstags) | object | Tags of the resource. |
 | [`testConfigurations`](#parameter-connectionmonitorstestconfigurations) | array | List of connection monitor test configurations. |
 | [`testGroups`](#parameter-connectionmonitorstestgroups) | array | List of connection monitor test groups. |
@@ -753,6 +758,20 @@ Name of the resource.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `connectionMonitors.autoStart`
+
+Determines if the connection monitor will start automatically once created.
+
+- Required: No
+- Type: bool
+
+### Parameter: `connectionMonitors.destination`
+
+Describes the destination of connection monitor.
+
+- Required: No
+- Type: object
 
 ### Parameter: `connectionMonitors.endpoints`
 
@@ -767,6 +786,29 @@ Location for all resources.
 
 - Required: No
 - Type: string
+
+### Parameter: `connectionMonitors.monitoringIntervalInSeconds`
+
+Monitoring interval in seconds.
+
+- Required: No
+- Type: int
+- MinValue: 30
+- MaxValue: 1800
+
+### Parameter: `connectionMonitors.notes`
+
+Notes to be associated with the connection monitor.
+
+- Required: No
+- Type: string
+
+### Parameter: `connectionMonitors.source`
+
+Describes the source of connection monitor.
+
+- Required: No
+- Type: object
 
 ### Parameter: `connectionMonitors.tags`
 
@@ -823,6 +865,7 @@ Array that contains the Flow Logs.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enabled`](#parameter-flowlogsenabled) | bool | If the flow log should be enabled. |
+| [`enabledFilteringCriteria`](#parameter-flowlogsenabledfilteringcriteria) | string | Field to filter network traffic logs based on SrcIP, SrcPort, DstIP, DstPort, Protocol, Encryption, Direction and Action. If not specified, all network traffic will be logged. |
 | [`formatVersion`](#parameter-flowlogsformatversion) | int | The flow log format version. |
 | [`location`](#parameter-flowlogslocation) | string | Location for all resources. |
 | [`name`](#parameter-flowlogsname) | string | Name of the resource. |
@@ -851,6 +894,13 @@ If the flow log should be enabled.
 
 - Required: No
 - Type: bool
+
+### Parameter: `flowLogs.enabledFilteringCriteria`
+
+Field to filter network traffic logs based on SrcIP, SrcPort, DstIP, DstPort, Protocol, Encryption, Direction and Action. If not specified, all network traffic will be logged.
+
+- Required: No
+- Type: string
 
 ### Parameter: `flowLogs.formatVersion`
 

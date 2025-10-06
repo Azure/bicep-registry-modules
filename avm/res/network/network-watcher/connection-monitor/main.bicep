@@ -25,11 +25,28 @@ param testGroups resourceInput<'Microsoft.Network/networkWatchers/connectionMoni
 @description('Optional. Specify the Log Analytics Workspace Resource ID.')
 param workspaceResourceId string?
 
-resource networkWatcher 'Microsoft.Network/networkWatchers@2024-05-01' existing = {
+@description('Optional. Determines if the connection monitor will start automatically once created.')
+param autoStart bool?
+
+@description('Optional. Describes the destination of connection monitor.')
+param destination resourceInput<'Microsoft.Network/networkWatchers/connectionMonitors@2024-05-01'>.properties.destination?
+
+@description('Optional. Monitoring interval in seconds.')
+@minValue(30)
+@maxValue(1800)
+param monitoringIntervalInSeconds int?
+
+@description('Optional. Notes to be associated with the connection monitor.')
+param notes string?
+
+@description('Optional. Describes the source of connection monitor.')
+param source resourceInput<'Microsoft.Network/networkWatchers/connectionMonitors@2024-05-01'>.properties.source?
+
+resource networkWatcher 'Microsoft.Network/networkWatchers@2024-10-01' existing = {
   name: networkWatcherName
 }
 
-resource connectionMonitor 'Microsoft.Network/networkWatchers/connectionMonitors@2024-05-01' = {
+resource connectionMonitor 'Microsoft.Network/networkWatchers/connectionMonitors@2024-10-01' = {
   name: name
   parent: networkWatcher
   tags: tags
@@ -38,6 +55,11 @@ resource connectionMonitor 'Microsoft.Network/networkWatchers/connectionMonitors
     endpoints: endpoints
     testConfigurations: testConfigurations
     testGroups: testGroups
+    autoStart: autoStart
+    destination: destination
+    monitoringIntervalInSeconds: monitoringIntervalInSeconds
+    notes: notes
+    source: source
     outputs: !empty(workspaceResourceId)
       ? [
           {

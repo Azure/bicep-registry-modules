@@ -45,11 +45,14 @@ param trafficAnalyticsInterval int = 60
 @maxValue(365)
 param retentionInDays int = 365
 
-resource networkWatcher 'Microsoft.Network/networkWatchers@2024-05-01' existing = {
+@description('Optional. Field to filter network traffic logs based on SrcIP, SrcPort, DstIP, DstPort, Protocol, Encryption, Direction and Action. If not specified, all network traffic will be logged.')
+param enabledFilteringCriteria string?
+
+resource networkWatcher 'Microsoft.Network/networkWatchers@2024-10-01' existing = {
   name: networkWatcherName
 }
 
-resource flowLog 'Microsoft.Network/networkWatchers/flowLogs@2024-05-01' = {
+resource flowLog 'Microsoft.Network/networkWatchers/flowLogs@2024-10-01' = {
   name: name
   parent: networkWatcher
   tags: tags
@@ -58,6 +61,7 @@ resource flowLog 'Microsoft.Network/networkWatchers/flowLogs@2024-05-01' = {
     targetResourceId: targetResourceId
     storageId: storageResourceId
     enabled: enabled
+    enabledFilteringCriteria: enabledFilteringCriteria
     retentionPolicy: {
       days: retentionInDays
       enabled: retentionInDays == 0 ? false : true
