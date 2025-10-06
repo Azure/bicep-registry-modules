@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.expressroutecircuits
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = '#_namePrefix_#'
+param serviceShort string = 'nercmax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'

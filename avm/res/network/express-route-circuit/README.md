@@ -125,7 +125,7 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
   name: 'expressRouteCircuitDeployment'
   params: {
     // Required parameters
-    name: '#_namePrefix_#001'
+    name: 'nercmax001'
     // Non-required parameters
     allowClassicOperations: true
     bandwidthInMbps: 50
@@ -238,7 +238,7 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
   "parameters": {
     // Required parameters
     "name": {
-      "value": "#_namePrefix_#001"
+      "value": "nercmax001"
     },
     // Non-required parameters
     "allowClassicOperations": {
@@ -377,7 +377,7 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
 using 'br/public:avm/res/network/express-route-circuit:<version>'
 
 // Required parameters
-param name = '#_namePrefix_#001'
+param name = 'nercmax001'
 // Non-required parameters
 param allowClassicOperations = true
 param bandwidthInMbps = 50
