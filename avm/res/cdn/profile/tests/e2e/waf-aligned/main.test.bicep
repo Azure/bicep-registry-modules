@@ -72,54 +72,54 @@ module testDeployment '../../../main.bicep' = [
       originResponseTimeoutSeconds: 60 // WAF: Reasonable timeout for reliability
 
       // WAF: Security - Resource locking to prevent accidental deletion
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'waf-protection-lock'
-        notes: 'WAF: Protected against accidental deletion for business continuity'
-      }
+      // lock: {
+      //   kind: 'CanNotDelete'
+      //   name: 'waf-protection-lock'
+      //   notes: 'WAF: Protected against accidental deletion for business continuity'
+      // }
 
       // WAF: Cost Optimization & Operational Excellence - Comprehensive tagging
-      tags: {
-        Environment: 'Production'
-        Application: 'CDN-WAF-Aligned'
-        CostCenter: 'IT-Infrastructure'
-        Owner: 'Platform-Team'
-        BusinessUnit: 'Digital-Services'
-        Criticality: 'High'
-        DataClassification: 'Internal'
-        BackupRequired: 'Yes'
-        MonitoringRequired: 'Yes'
-        'WAF-Pillar': 'All'
-        // 'Last-Review': utcNow('yyyy-MM-dd')
-      }
+      // tags: {
+      //   Environment: 'Production'
+      //   Application: 'CDN-WAF-Aligned'
+      //   CostCenter: 'IT-Infrastructure'
+      //   Owner: 'Platform-Team'
+      //   BusinessUnit: 'Digital-Services'
+      //   Criticality: 'High'
+      //   DataClassification: 'Internal'
+      //   BackupRequired: 'Yes'
+      //   MonitoringRequired: 'Yes'
+      //   'WAF-Pillar': 'All'
+      //   // 'Last-Review': utcNow('yyyy-MM-dd')
+      // }
 
       // WAF: Security - Custom domains with strong TLS configuration
-      customDomains: [
-        {
-          name: 'dep-${namePrefix}-waf-primary-${serviceShort}-domain'
-          hostName: 'dep-${namePrefix}-waf-primary-${serviceShort}.example.com'
-          certificateType: 'ManagedCertificate'
-          minimumTlsVersion: 'TLS12' // WAF: Security - Use latest TLS version
-          cipherSuiteSetType: 'TLS12_2023' // WAF: Security - Modern cipher suites
-        }
-        {
-          name: 'dep-${namePrefix}-waf-api-${serviceShort}-domain'
-          hostName: 'api-dep-${namePrefix}-waf-${serviceShort}.example.com'
-          certificateType: 'ManagedCertificate'
-          minimumTlsVersion: 'TLS13' // WAF: Security - Use latest TLS version
-          cipherSuiteSetType: 'Customized' // WAF: Security - Custom cipher suite for enhanced security
-          customizedCipherSuiteSet: {
-            // cipherSuiteSetForTls12: [
-            //   'ECDHE_RSA_AES256_GCM_SHA384' // Strong encryption
-            //   'ECDHE_RSA_AES128_GCM_SHA256' // Performance balance
-            // ]
-            cipherSuiteSetForTls13: [
-              'TLS_AES_256_GCM_SHA384' // Strong TLS 1.3 cipher
-              'TLS_AES_128_GCM_SHA256' // Performance balance
-            ]
-          }
-        }
-      ]
+      // customDomains: [
+      //   {
+      //     name: 'dep-${namePrefix}-waf-primary-${serviceShort}-domain'
+      //     hostName: 'dep-${namePrefix}-waf-primary-${serviceShort}.example.com'
+      //     certificateType: 'ManagedCertificate'
+      //     minimumTlsVersion: 'TLS12' // WAF: Security - Use latest TLS version
+      //     cipherSuiteSetType: 'TLS12_2023' // WAF: Security - Modern cipher suites
+      //   }
+      //   {
+      //     name: 'dep-${namePrefix}-waf-api-${serviceShort}-domain'
+      //     hostName: 'api-dep-${namePrefix}-waf-${serviceShort}.example.com'
+      //     certificateType: 'ManagedCertificate'
+      //     minimumTlsVersion: 'TLS13' // WAF: Security - Use latest TLS version
+      //     cipherSuiteSetType: 'Customized' // WAF: Security - Custom cipher suite for enhanced security
+      //     customizedCipherSuiteSet: {
+      //       // cipherSuiteSetForTls12: [
+      //       //   'ECDHE_RSA_AES256_GCM_SHA384' // Strong encryption
+      //       //   'ECDHE_RSA_AES128_GCM_SHA256' // Performance balance
+      //       // ]
+      //       cipherSuiteSetForTls13: [
+      //         'TLS_AES_256_GCM_SHA384' // Strong TLS 1.3 cipher
+      //         'TLS_AES_128_GCM_SHA256' // Performance balance
+      //       ]
+      //     }
+      //   }
+      // ]
 
       // WAF: Reliability & Performance - Multi-origin setup with health probes
       originGroups: [
@@ -154,203 +154,203 @@ module testDeployment '../../../main.bicep' = [
       ]
 
       // WAF: Security & Performance - Comprehensive routing rules
-      ruleSets: [
-        {
-          name: 'dep${namePrefix}wafsecurityrules${serviceShort}'
-          rules: [
-            {
-              name: 'HTTPSRedirectRule'
-              order: 1
-              matchProcessingBehavior: 'Stop' // WAF: Security - Force HTTPS immediately
-              conditions: [
-                {
-                  name: 'RequestScheme'
-                  parameters: {
-                    typeName: 'DeliveryRuleRequestSchemeConditionParameters'
-                    operator: 'Equal'
-                    negateCondition: false
-                    matchValues: ['HTTP']
-                  }
-                }
-              ]
-              actions: [
-                {
-                  name: 'UrlRedirect'
-                  parameters: {
-                    typeName: 'DeliveryRuleUrlRedirectActionParameters'
-                    redirectType: 'PermanentRedirect' // WAF: Security - Permanent HTTPS enforcement
-                    destinationProtocol: 'Https'
-                  }
-                }
-              ]
-            }
-            {
-              name: 'SecurityHeadersRule'
-              order: 2
-              matchProcessingBehavior: 'Continue'
-              conditions: [
-                {
-                  name: 'RequestScheme'
-                  parameters: {
-                    typeName: 'DeliveryRuleRequestSchemeConditionParameters'
-                    operator: 'Equal'
-                    negateCondition: false
-                    matchValues: ['HTTPS']
-                  }
-                }
-              ]
-              actions: [
-                {
-                  name: 'ModifyResponseHeader'
-                  parameters: {
-                    typeName: 'DeliveryRuleHeaderActionParameters'
-                    headerAction: 'Overwrite'
-                    headerName: 'Strict-Transport-Security'
-                    value: 'max-age=31536000; includeSubDomains; preload' // WAF: Security - HSTS
-                  }
-                }
-                {
-                  name: 'ModifyResponseHeader'
-                  parameters: {
-                    typeName: 'DeliveryRuleHeaderActionParameters'
-                    headerAction: 'Overwrite'
-                    headerName: 'X-Content-Type-Options'
-                    value: 'nosniff' // WAF: Security - MIME type sniffing protection
-                  }
-                }
-                {
-                  name: 'ModifyResponseHeader'
-                  parameters: {
-                    typeName: 'DeliveryRuleHeaderActionParameters'
-                    headerAction: 'Overwrite'
-                    headerName: 'X-Frame-Options'
-                    value: 'DENY' // WAF: Security - Clickjacking protection
-                  }
-                }
-                {
-                  name: 'ModifyResponseHeader'
-                  parameters: {
-                    typeName: 'DeliveryRuleHeaderActionParameters'
-                    headerAction: 'Overwrite'
-                    headerName: 'X-XSS-Protection'
-                    value: '1; mode=block' // WAF: Security - XSS protection
-                  }
-                }
-                {
-                  name: 'ModifyResponseHeader'
-                  parameters: {
-                    typeName: 'DeliveryRuleHeaderActionParameters'
-                    headerAction: 'Overwrite'
-                    headerName: 'Referrer-Policy'
-                    value: 'strict-origin-when-cross-origin' // WAF: Security - Referrer policy
-                  }
-                }
-              ]
-            }
-            {
-              name: 'APIRateLimitRule'
-              order: 3
-              matchProcessingBehavior: 'Continue'
-              conditions: [
-                {
-                  name: 'RequestUri'
-                  parameters: {
-                    typeName: 'DeliveryRuleRequestUriConditionParameters'
-                    operator: 'BeginsWith'
-                    negateCondition: false
-                    matchValues: ['/api/']
-                    transforms: ['Lowercase']
-                  }
-                }
-              ]
-              actions: [
-                {
-                  name: 'ModifyResponseHeader'
-                  parameters: {
-                    typeName: 'DeliveryRuleHeaderActionParameters'
-                    headerAction: 'Overwrite'
-                    headerName: 'X-RateLimit-Limit'
-                    value: '1000' // WAF: Reliability - Rate limiting for APIs
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      // ruleSets: [
+      //   {
+      //     name: 'dep${namePrefix}wafsecurityrules${serviceShort}'
+      //     rules: [
+      //       {
+      //         name: 'HTTPSRedirectRule'
+      //         order: 1
+      //         matchProcessingBehavior: 'Stop' // WAF: Security - Force HTTPS immediately
+      //         conditions: [
+      //           {
+      //             name: 'RequestScheme'
+      //             parameters: {
+      //               typeName: 'DeliveryRuleRequestSchemeConditionParameters'
+      //               operator: 'Equal'
+      //               negateCondition: false
+      //               matchValues: ['HTTP']
+      //             }
+      //           }
+      //         ]
+      //         actions: [
+      //           {
+      //             name: 'UrlRedirect'
+      //             parameters: {
+      //               typeName: 'DeliveryRuleUrlRedirectActionParameters'
+      //               redirectType: 'PermanentRedirect' // WAF: Security - Permanent HTTPS enforcement
+      //               destinationProtocol: 'Https'
+      //             }
+      //           }
+      //         ]
+      //       }
+      //       {
+      //         name: 'SecurityHeadersRule'
+      //         order: 2
+      //         matchProcessingBehavior: 'Continue'
+      //         conditions: [
+      //           {
+      //             name: 'RequestScheme'
+      //             parameters: {
+      //               typeName: 'DeliveryRuleRequestSchemeConditionParameters'
+      //               operator: 'Equal'
+      //               negateCondition: false
+      //               matchValues: ['HTTPS']
+      //             }
+      //           }
+      //         ]
+      //         actions: [
+      //           {
+      //             name: 'ModifyResponseHeader'
+      //             parameters: {
+      //               typeName: 'DeliveryRuleHeaderActionParameters'
+      //               headerAction: 'Overwrite'
+      //               headerName: 'Strict-Transport-Security'
+      //               value: 'max-age=31536000; includeSubDomains; preload' // WAF: Security - HSTS
+      //             }
+      //           }
+      //           {
+      //             name: 'ModifyResponseHeader'
+      //             parameters: {
+      //               typeName: 'DeliveryRuleHeaderActionParameters'
+      //               headerAction: 'Overwrite'
+      //               headerName: 'X-Content-Type-Options'
+      //               value: 'nosniff' // WAF: Security - MIME type sniffing protection
+      //             }
+      //           }
+      //           {
+      //             name: 'ModifyResponseHeader'
+      //             parameters: {
+      //               typeName: 'DeliveryRuleHeaderActionParameters'
+      //               headerAction: 'Overwrite'
+      //               headerName: 'X-Frame-Options'
+      //               value: 'DENY' // WAF: Security - Clickjacking protection
+      //             }
+      //           }
+      //           {
+      //             name: 'ModifyResponseHeader'
+      //             parameters: {
+      //               typeName: 'DeliveryRuleHeaderActionParameters'
+      //               headerAction: 'Overwrite'
+      //               headerName: 'X-XSS-Protection'
+      //               value: '1; mode=block' // WAF: Security - XSS protection
+      //             }
+      //           }
+      //           {
+      //             name: 'ModifyResponseHeader'
+      //             parameters: {
+      //               typeName: 'DeliveryRuleHeaderActionParameters'
+      //               headerAction: 'Overwrite'
+      //               headerName: 'Referrer-Policy'
+      //               value: 'strict-origin-when-cross-origin' // WAF: Security - Referrer policy
+      //             }
+      //           }
+      //         ]
+      //       }
+      //       {
+      //         name: 'APIRateLimitRule'
+      //         order: 3
+      //         matchProcessingBehavior: 'Continue'
+      //         conditions: [
+      //           {
+      //             name: 'RequestUri'
+      //             parameters: {
+      //               typeName: 'DeliveryRuleRequestUriConditionParameters'
+      //               operator: 'BeginsWith'
+      //               negateCondition: false
+      //               matchValues: ['/api/']
+      //               transforms: ['Lowercase']
+      //             }
+      //           }
+      //         ]
+      //         actions: [
+      //           {
+      //             name: 'ModifyResponseHeader'
+      //             parameters: {
+      //               typeName: 'DeliveryRuleHeaderActionParameters'
+      //               headerAction: 'Overwrite'
+      //               headerName: 'X-RateLimit-Limit'
+      //               value: '1000' // WAF: Reliability - Rate limiting for APIs
+      //             }
+      //           }
+      //         ]
+      //       }
+      //     ]
+      //   }
+      // ]
 
-      // WAF: Performance & Reliability - Optimized AFD endpoints
-      afdEndpoints: [
-        {
-          name: 'dep-${namePrefix}-waf-primary-endpoint'
-          autoGeneratedDomainNameLabelScope: 'TenantReuse' // WAF: Cost Optimization - Reuse domains
-          enabledState: 'Enabled'
-          routes: [
-            {
-              name: 'dep-${namePrefix}-waf-api-route'
-              originGroupName: 'dep-${namePrefix}-waf-api-origin-group'
-              customDomainNames: [
-                'dep-${namePrefix}-waf-api-${serviceShort}-domain'
-              ]
-              enabledState: 'Enabled'
-              forwardingProtocol: 'HttpsOnly' // WAF: Security - HTTPS only for APIs
-              httpsRedirect: 'Enabled'
-              linkToDefaultDomain: 'Disabled' // WAF: Security - Custom domain only for APIs
-              patternsToMatch: ['/api/*', '/v1/*', '/v2/*']
-              supportedProtocols: ['Https'] // WAF: Security - HTTPS only
-              cacheConfiguration: {
-                queryStringCachingBehavior: 'IgnoreSpecifiedQueryStrings' // WAF: Performance - API-specific caching
-                queryParameters: 'timestamp,nonce' // WAF: Performance - Ignore security parameters
-                compressionSettings: {
-                  contentTypesToCompress: [
-                    'application/json'
-                    'application/xml'
-                    'text/xml'
-                  ]
-                  isCompressionEnabled: true // WAF: Performance - API response compression
-                }
-              }
-              ruleSets: [
-                {
-                  name: 'dep${namePrefix}wafsecurityrules${serviceShort}'
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      // // WAF: Performance & Reliability - Optimized AFD endpoints
+      // afdEndpoints: [
+      //   {
+      //     name: 'dep-${namePrefix}-waf-primary-endpoint'
+      //     autoGeneratedDomainNameLabelScope: 'TenantReuse' // WAF: Cost Optimization - Reuse domains
+      //     enabledState: 'Enabled'
+      //     routes: [
+      //       {
+      //         name: 'dep-${namePrefix}-waf-api-route'
+      //         originGroupName: 'dep-${namePrefix}-waf-api-origin-group'
+      //         customDomainNames: [
+      //           'dep-${namePrefix}-waf-api-${serviceShort}-domain'
+      //         ]
+      //         enabledState: 'Enabled'
+      //         forwardingProtocol: 'HttpsOnly' // WAF: Security - HTTPS only for APIs
+      //         httpsRedirect: 'Enabled'
+      //         linkToDefaultDomain: 'Disabled' // WAF: Security - Custom domain only for APIs
+      //         patternsToMatch: ['/api/*', '/v1/*', '/v2/*']
+      //         supportedProtocols: ['Https'] // WAF: Security - HTTPS only
+      //         cacheConfiguration: {
+      //           queryStringCachingBehavior: 'IgnoreSpecifiedQueryStrings' // WAF: Performance - API-specific caching
+      //           queryParameters: 'timestamp,nonce' // WAF: Performance - Ignore security parameters
+      //           compressionSettings: {
+      //             contentTypesToCompress: [
+      //               'application/json'
+      //               'application/xml'
+      //               'text/xml'
+      //             ]
+      //             isCompressionEnabled: true // WAF: Performance - API response compression
+      //           }
+      //         }
+      //         ruleSets: [
+      //           {
+      //             name: 'dep${namePrefix}wafsecurityrules${serviceShort}'
+      //           }
+      //         ]
+      //       }
+      //     ]
+      //   }
+      // ]
 
-      // WAF: Operational Excellence - Comprehensive diagnostics and monitoring
-      diagnosticSettings: [
-        {
-          name: 'waf-comprehensive-diagnostics'
-          logCategoriesAndGroups: [
-            {
-              categoryGroup: 'allLogs'
-              enabled: true
-            }
-          ]
-          metricCategories: [
-            {
-              category: 'AllMetrics'
-              enabled: true
-            }
-          ]
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-        }
-      ]
+      // // WAF: Operational Excellence - Comprehensive diagnostics and monitoring
+      // diagnosticSettings: [
+      //   {
+      //     name: 'waf-comprehensive-diagnostics'
+      //     logCategoriesAndGroups: [
+      //       {
+      //         categoryGroup: 'allLogs'
+      //         enabled: true
+      //       }
+      //     ]
+      //     metricCategories: [
+      //       {
+      //         category: 'AllMetrics'
+      //         enabled: true
+      //       }
+      //     ]
+      //     eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+      //     eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+      //     storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+      //     workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+      //   }
+      // ]
 
-      // WAF: Security - Role-based access control
-      roleAssignments: [
-        {
-          roleDefinitionIdOrName: 'CDN Profile Reader' // WAF: Security - Principle of least privilege
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-      ]
+      // // WAF: Security - Role-based access control
+      // roleAssignments: [
+      //   {
+      //     roleDefinitionIdOrName: 'CDN Profile Reader' // WAF: Security - Principle of least privilege
+      //     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+      //     principalType: 'ServicePrincipal'
+      //   }
+      // ]
 
       // WAF: Reliability - Enable managed identities for secure access
       managedIdentities: {
