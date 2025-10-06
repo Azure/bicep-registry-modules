@@ -358,10 +358,10 @@ type peeringConfigType = {
 @description('The resource ID of express route circuit.')
 output resourceId string = expressRouteCircuit.id
 
-@description('The resource group the express route curcuit was deployed into.')
+@description('The resource group the express route circuit was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
-@description('The name of express route curcuit.')
+@description('The name of express route circuit.')
 output name string = expressRouteCircuit.name
 
 @description('The service key of the express route circuit.')

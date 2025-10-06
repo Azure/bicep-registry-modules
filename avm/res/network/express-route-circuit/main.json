@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.3.11034",
-      "templateHash": "11388754536950421814"
+      "templateHash": "9971549026973971369"
     },
     "name": "ExpressRoute Circuits",
     "description": "This module deploys an Express Route Circuit."
@@ -903,14 +903,14 @@
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group the express route curcuit was deployed into."
+        "description": "The resource group the express route circuit was deployed into."
       },
       "value": "[resourceGroup().name]"
     },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of express route curcuit."
+        "description": "The name of express route circuit."
       },
       "value": "[parameters('name')]"
     },
