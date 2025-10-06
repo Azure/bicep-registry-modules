@@ -1063,6 +1063,7 @@ IPv6 peering configuration.
 | :-- | :-- | :-- |
 | [`microsoftPeeringConfig`](#parameter-peeringsipv6peeringconfigmicrosoftpeeringconfig) | object | The Microsoft peering configuration for IPv6. |
 | [`primaryPeerAddressPrefix`](#parameter-peeringsipv6peeringconfigprimarypeeraddressprefix) | string | A /125 subnet used to configure IPv6 addresses for interfaces on Link1. |
+| [`routeFilter`](#parameter-peeringsipv6peeringconfigroutefilter) | object | The route filter resource ID for IPv6. |
 | [`secondaryPeerAddressPrefix`](#parameter-peeringsipv6peeringconfigsecondarypeeraddressprefix) | string | A /125 subnet used to configure IPv6 addresses for interfaces on Link2. |
 
 ### Parameter: `peerings.ipv6PeeringConfig.microsoftPeeringConfig`
@@ -1078,6 +1079,7 @@ The Microsoft peering configuration for IPv6.
 | :-- | :-- | :-- |
 | [`advertisedCommunities`](#parameter-peeringsipv6peeringconfigmicrosoftpeeringconfigadvertisedcommunities) | array | The communities to be advertised through BGP. |
 | [`advertisedPublicPrefixes`](#parameter-peeringsipv6peeringconfigmicrosoftpeeringconfigadvertisedpublicprefixes) | array | The IPv6 prefixes to be advertised through BGP. |
+| [`advertisedPublicPrefixInfo`](#parameter-peeringsipv6peeringconfigmicrosoftpeeringconfigadvertisedpublicprefixinfo) | array | The IPv6 prefix information to be advertised through BGP. |
 | [`customerASN`](#parameter-peeringsipv6peeringconfigmicrosoftpeeringconfigcustomerasn) | int | The customer ASN for the peering. |
 | [`legacyMode`](#parameter-peeringsipv6peeringconfigmicrosoftpeeringconfiglegacymode) | int | The legacy mode for the peering. |
 | [`routingRegistryName`](#parameter-peeringsipv6peeringconfigmicrosoftpeeringconfigroutingregistryname) | string | The routing registry name. |
@@ -1095,6 +1097,47 @@ The IPv6 prefixes to be advertised through BGP.
 
 - Required: No
 - Type: array
+
+### Parameter: `peerings.ipv6PeeringConfig.microsoftPeeringConfig.advertisedPublicPrefixInfo`
+
+The IPv6 prefix information to be advertised through BGP.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`prefix`](#parameter-peeringsipv6peeringconfigmicrosoftpeeringconfigadvertisedpublicprefixinfoprefix) | string | The IPv6 prefix. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`signature`](#parameter-peeringsipv6peeringconfigmicrosoftpeeringconfigadvertisedpublicprefixinfosignature) | string | The signature for the prefix. |
+| [`validationId`](#parameter-peeringsipv6peeringconfigmicrosoftpeeringconfigadvertisedpublicprefixinfovalidationid) | string | The validation ID for the prefix. |
+
+### Parameter: `peerings.ipv6PeeringConfig.microsoftPeeringConfig.advertisedPublicPrefixInfo.prefix`
+
+The IPv6 prefix.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `peerings.ipv6PeeringConfig.microsoftPeeringConfig.advertisedPublicPrefixInfo.signature`
+
+The signature for the prefix.
+
+- Required: No
+- Type: string
+
+### Parameter: `peerings.ipv6PeeringConfig.microsoftPeeringConfig.advertisedPublicPrefixInfo.validationId`
+
+The validation ID for the prefix.
+
+- Required: No
+- Type: string
 
 ### Parameter: `peerings.ipv6PeeringConfig.microsoftPeeringConfig.customerASN`
 
@@ -1122,6 +1165,26 @@ The routing registry name.
 A /125 subnet used to configure IPv6 addresses for interfaces on Link1.
 
 - Required: No
+- Type: string
+
+### Parameter: `peerings.ipv6PeeringConfig.routeFilter`
+
+The route filter resource ID for IPv6.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-peeringsipv6peeringconfigroutefilterid) | string | The resource ID of the route filter. |
+
+### Parameter: `peerings.ipv6PeeringConfig.routeFilter.id`
+
+The resource ID of the route filter.
+
+- Required: Yes
 - Type: string
 
 ### Parameter: `peerings.ipv6PeeringConfig.secondaryPeerAddressPrefix`

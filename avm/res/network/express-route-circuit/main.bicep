@@ -163,7 +163,7 @@ resource expressRouteCircuit 'Microsoft.Network/expressRouteCircuits@2024-07-01'
           ipv6PeeringConfig: peering.?ipv6PeeringConfig
           microsoftPeeringConfig: peering.?microsoftPeeringConfig
           routeFilter: peering.?routeFilter
-          state: peering.?ipv4State
+          state: peering.?state
         }
       }
     ]
@@ -230,51 +230,6 @@ resource expressRouteCircuit_roleAssignments 'Microsoft.Authorization/roleAssign
   }
 ]
 
-// Define the IPv6 peering configuration type
-type ipv6PeeringConfigType = {
-  @description('Optional. The primary IPv6 prefix for the peering.')
-  primaryPeerAddressPrefix: string?
-
-  @description('Optional. The secondary IPv6 prefix for the peering.')
-  secondaryPeerAddressPrefix: string?
-
-  @description('Optional. The Microsoft peering configuration for IPv6.')
-  microsoftPeeringConfig: {
-    @description('Optional. The communities to be advertised through BGP.')
-    advertisedCommunities: string[]?
-
-    @description('Optional. The IPv6 prefixes to be advertised through BGP.')
-    advertisedPublicPrefixes: string[]?
-
-    @description('Optional. The IPv6 prefix information to be advertised through BGP.')
-    advertisedPublicPrefixInfo: {
-      @description('Required. The IPv6 prefix.')
-      prefix: string
-
-      @description('Optional. The signature for the prefix.')
-      signature: string?
-
-      @description('Optional. The validation ID for the prefix.')
-      validationId: string?
-    }[]?
-
-    @description('Optional. The customer ASN for the peering.')
-    customerASN: int?
-
-    @description('Optional. The legacy mode for the peering.')
-    legacyMode: int?
-
-    @description('Optional. The routing registry name.')
-    routingRegistryName: string?
-  }?
-
-  @description('Optional. The route filter resource ID.')
-  routeFilter: {
-    @description('Required. The resource ID of the route filter.')
-    id: string
-  }?
-}
-
 type peeringConfigType = {
   @description('Required. The name of the peering.')
   name: string
@@ -316,6 +271,18 @@ type peeringConfigType = {
       @description('Optional. The IPv6 prefixes to be advertised through BGP.')
       advertisedPublicPrefixes: string[]?
 
+      @description('Optional. The IPv6 prefix information to be advertised through BGP.')
+      advertisedPublicPrefixInfo: {
+        @description('Required. The IPv6 prefix.')
+        prefix: string
+
+        @description('Optional. The signature for the prefix.')
+        signature: string?
+
+        @description('Optional. The validation ID for the prefix.')
+        validationId: string?
+      }[]?
+
       @description('Optional. The customer ASN for the peering.')
       customerASN: int?
 
@@ -324,6 +291,12 @@ type peeringConfigType = {
 
       @description('Optional. The routing registry name.')
       routingRegistryName: string?
+    }?
+
+    @description('Optional. The route filter resource ID for IPv6.')
+    routeFilter: {
+      @description('Required. The resource ID of the route filter.')
+      id: string
     }?
   }?
 
