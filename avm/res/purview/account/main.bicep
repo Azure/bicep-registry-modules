@@ -10,7 +10,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Purview/accounts@2021-12-01'>.tags?
 
 import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')

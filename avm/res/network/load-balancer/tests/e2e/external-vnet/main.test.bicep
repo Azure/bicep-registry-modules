@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.loadbalancers-${serv
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'nlbext'
+param serviceShort string = 'nlbnet'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -37,7 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: resourceLocation
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }
 
@@ -66,7 +66,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       frontendIPConfigurations: [
         {
           name: 'publicIPConfig1'
@@ -76,6 +75,21 @@ module testDeployment '../../../main.bicep' = [
       backendAddressPools: [
         {
           name: 'backendAddressPool1'
+          virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
+          loadBalancerBackendAddresses: [
+            {
+              name: 'beAddress1'
+              properties: {
+                ipAddress: '10.0.0.15'
+              }
+            }
+            {
+              name: 'beAddress2'
+              properties: {
+                ipAddress: '10.0.0.16'
+              }
+            }
+          ]
         }
         {
           name: 'backendAddressPool2'
@@ -194,3 +208,5 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+output vnetResourceId string = nestedDependencies.outputs.virtualNetworkResourceId

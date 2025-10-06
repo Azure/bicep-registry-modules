@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "10813177492193580592"
+      "version": "0.38.5.1644",
+      "templateHash": "11525087181173354943"
     },
     "name": "Private Link Services",
     "description": "This module deploys a Private Link Service."
@@ -148,10 +148,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/privateLinkServices@2024-10-01#properties/tags"
+        },
         "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
-      }
+      },
+      "nullable": true
     },
     "ipConfigurations": {
       "type": "array",
