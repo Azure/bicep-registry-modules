@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "4843839658644031164"
+      "version": "0.38.5.1644",
+      "templateHash": "8435110440648926991"
     },
     "name": "Network Watchers Connection Monitors",
     "description": "This module deploys a Network Watcher Connection Monitor."
@@ -27,10 +27,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/networkWatchers/connectionMonitors@2024-05-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "location": {
       "type": "string",
@@ -41,28 +44,37 @@
     },
     "endpoints": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/networkWatchers/connectionMonitors@2024-05-01#properties/properties/properties/endpoints"
+        },
         "description": "Optional. List of connection monitor endpoints."
-      }
+      },
+      "defaultValue": []
     },
     "testConfigurations": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/networkWatchers/connectionMonitors@2024-05-01#properties/properties/properties/testConfigurations"
+        },
         "description": "Optional. List of connection monitor test configurations."
-      }
+      },
+      "defaultValue": []
     },
     "testGroups": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/networkWatchers/connectionMonitors@2024-05-01#properties/properties/properties/testGroups"
+        },
         "description": "Optional. List of connection monitor test groups."
-      }
+      },
+      "defaultValue": []
     },
     "workspaceResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Specify the Log Analytics Workspace Resource ID."
       }

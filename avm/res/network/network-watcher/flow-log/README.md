@@ -21,7 +21,7 @@ This module controls the Network Security Group Flow Logs and analytics settings
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`storageId`](#parameter-storageid) | string | Resource ID of the diagnostic storage account. |
+| [`storageResourceId`](#parameter-storageresourceid) | string | Resource ID of the diagnostic storage account. |
 | [`targetResourceId`](#parameter-targetresourceid) | string | Resource ID of the NSG that must be enabled for Flow Logs. |
 
 **Optional parameters**
@@ -38,7 +38,7 @@ This module controls the Network Security Group Flow Logs and analytics settings
 | [`trafficAnalyticsInterval`](#parameter-trafficanalyticsinterval) | int | The interval in minutes which would decide how frequently TA service should do flow analytics. |
 | [`workspaceResourceId`](#parameter-workspaceresourceid) | string | Specify the Log Analytics Workspace Resource ID. |
 
-### Parameter: `storageId`
+### Parameter: `storageResourceId`
 
 Resource ID of the diagnostic storage account.
 
@@ -137,7 +137,6 @@ Specify the Log Analytics Workspace Resource ID.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ## Outputs
 

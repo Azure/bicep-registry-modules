@@ -9,7 +9,7 @@ param networkWatcherName string = 'NetworkWatcher_${resourceGroup().location}'
 param name string = '${last(split(targetResourceId, '/'))}-${split(targetResourceId, '/')[4]}-flowlog'
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/networkWatchers/flowLogs@2024-05-01'>.tags?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -18,7 +18,7 @@ param location string = resourceGroup().location
 param targetResourceId string
 
 @description('Required. Resource ID of the diagnostic storage account.')
-param storageId string
+param storageResourceId string
 
 @description('Optional. If the flow log should be enabled.')
 param enabled bool = true
@@ -31,7 +31,7 @@ param enabled bool = true
 param formatVersion int = 2
 
 @description('Optional. Specify the Log Analytics Workspace Resource ID.')
-param workspaceResourceId string = ''
+param workspaceResourceId string?
 
 @description('Optional. The interval in minutes which would decide how frequently TA service should do flow analytics.')
 @allowed([
@@ -45,20 +45,6 @@ param trafficAnalyticsInterval int = 60
 @maxValue(365)
 param retentionInDays int = 365
 
-var flowAnalyticsConfiguration = !empty(workspaceResourceId) && enabled == true
-  ? {
-      networkWatcherFlowAnalyticsConfiguration: {
-        enabled: true
-        workspaceResourceId: workspaceResourceId
-        trafficAnalyticsInterval: trafficAnalyticsInterval
-      }
-    }
-  : {
-      networkWatcherFlowAnalyticsConfiguration: {
-        enabled: false
-      }
-    }
-
 resource networkWatcher 'Microsoft.Network/networkWatchers@2024-05-01' existing = {
   name: networkWatcherName
 }
@@ -70,7 +56,7 @@ resource flowLog 'Microsoft.Network/networkWatchers/flowLogs@2024-05-01' = {
   location: location
   properties: {
     targetResourceId: targetResourceId
-    storageId: storageId
+    storageId: storageResourceId
     enabled: enabled
     retentionPolicy: {
       days: retentionInDays
@@ -80,7 +66,19 @@ resource flowLog 'Microsoft.Network/networkWatchers/flowLogs@2024-05-01' = {
       type: 'JSON'
       version: formatVersion
     }
-    flowAnalyticsConfiguration: flowAnalyticsConfiguration
+    flowAnalyticsConfiguration: !empty(workspaceResourceId) && enabled
+      ? {
+          networkWatcherFlowAnalyticsConfiguration: {
+            enabled: true
+            workspaceResourceId: workspaceResourceId
+            trafficAnalyticsInterval: trafficAnalyticsInterval
+          }
+        }
+      : {
+          networkWatcherFlowAnalyticsConfiguration: {
+            enabled: false
+          }
+        }
   }
 }
 @description('The name of the flow log.')

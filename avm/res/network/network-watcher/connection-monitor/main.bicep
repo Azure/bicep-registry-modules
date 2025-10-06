@@ -8,22 +8,22 @@ param networkWatcherName string = 'NetworkWatcher_${resourceGroup().location}'
 param name string
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/networkWatchers/connectionMonitors@2024-05-01'>.tags?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
 @description('Optional. List of connection monitor endpoints.')
-param endpoints array = []
+param endpoints resourceInput<'Microsoft.Network/networkWatchers/connectionMonitors@2024-05-01'>.properties.endpoints = []
 
 @description('Optional. List of connection monitor test configurations.')
-param testConfigurations array = []
+param testConfigurations resourceInput<'Microsoft.Network/networkWatchers/connectionMonitors@2024-05-01'>.properties.testConfigurations = []
 
 @description('Optional. List of connection monitor test groups.')
-param testGroups array = []
+param testGroups resourceInput<'Microsoft.Network/networkWatchers/connectionMonitors@2024-05-01'>.properties.testGroups = []
 
 @description('Optional. Specify the Log Analytics Workspace Resource ID.')
-param workspaceResourceId string = ''
+param workspaceResourceId string?
 
 resource networkWatcher 'Microsoft.Network/networkWatchers@2024-05-01' existing = {
   name: networkWatcherName

@@ -9,16 +9,16 @@ param name string = 'NetworkWatcher_${location}'
 param location string = resourceGroup().location
 
 @description('Optional. Array that contains the Connection Monitors.')
-param connectionMonitors array = []
+param connectionMonitors connectionMonitorType[]?
 
 @description('Optional. Array that contains the Flow Logs.')
-param flowLogs array = []
+param flowLogs flowLogType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -111,36 +111,36 @@ resource networkWatcher_roleAssignments 'Microsoft.Authorization/roleAssignments
 ]
 
 module networkWatcher_connectionMonitors 'connection-monitor/main.bicep' = [
-  for (connectionMonitor, index) in connectionMonitors: {
+  for (connectionMonitor, index) in (connectionMonitors ?? []): {
     name: '${uniqueString(deployment().name, location)}-NW-ConnectionMonitor-${index}'
     params: {
       tags: tags
-      endpoints: connectionMonitor.?endpoints ?? []
+      endpoints: connectionMonitor.?endpoints
       name: connectionMonitor.name
       location: location
       networkWatcherName: networkWatcher.name
-      testConfigurations: connectionMonitor.?testConfigurations ?? []
-      testGroups: connectionMonitor.?testGroups ?? []
-      workspaceResourceId: connectionMonitor.?workspaceResourceId ?? ''
+      testConfigurations: connectionMonitor.?testConfigurations
+      testGroups: connectionMonitor.?testGroups
+      workspaceResourceId: connectionMonitor.?workspaceResourceId
     }
   }
 ]
 
 module networkWatcher_flowLogs 'flow-log/main.bicep' = [
-  for (flowLog, index) in flowLogs: {
+  for (flowLog, index) in (flowLogs ?? []): {
     name: '${uniqueString(deployment().name, location)}-NW-FlowLog-${index}'
     params: {
       tags: tags
-      enabled: flowLog.?enabled ?? true
-      formatVersion: flowLog.?formatVersion ?? 2
-      location: flowLog.?location ?? location
-      name: flowLog.?name ?? '${last(split(flowLog.targetResourceId, '/'))}-${split(flowLog.targetResourceId, '/')[4]}-flowlog'
+      enabled: flowLog.?enabled
+      formatVersion: flowLog.?formatVersion
+      location: flowLog.?location
+      name: flowLog.?name
       networkWatcherName: networkWatcher.name
-      retentionInDays: flowLog.?retentionInDays ?? 365
-      storageId: flowLog.storageId
+      retentionInDays: flowLog.?retentionInDays
+      storageResourceId: flowLog.storageResourceId
       targetResourceId: flowLog.targetResourceId
-      trafficAnalyticsInterval: flowLog.?trafficAnalyticsInterval ?? 60
-      workspaceResourceId: flowLog.?workspaceResourceId ?? ''
+      trafficAnalyticsInterval: flowLog.?trafficAnalyticsInterval
+      workspaceResourceId: flowLog.?workspaceResourceId
     }
   }
 ]
@@ -156,3 +156,67 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = networkWatcher.location
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@description('The type of a flow log.')
+type flowLogType = {
+  @description('Optional. Name of the resource.')
+  name: string?
+  @description('Optional. Tags of the resource.')
+  tags: resourceInput<'Microsoft.Network/networkWatchers/flowLogs@2024-05-01'>.tags?
+
+  @description('Optional. Location for all resources.')
+  location: string?
+
+  @description('Required. Resource ID of the NSG that must be enabled for Flow Logs.')
+  targetResourceId: string
+
+  @description('Required. Resource ID of the diagnostic storage account.')
+  storageResourceId: string
+
+  @description('Optional. If the flow log should be enabled.')
+  enabled: bool?
+
+  @description('Optional. The flow log format version.')
+  formatVersion: (1 | 2)?
+
+  @description('Optional. Specify the Log Analytics Workspace Resource ID.')
+  workspaceResourceId: string?
+
+  @description('Optional. The interval in minutes which would decide how frequently TA service should do flow analytics.')
+  trafficAnalyticsInterval: (10 | 60)?
+
+  @description('Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely.')
+  @minValue(0)
+  @maxValue(365)
+  retentionInDays: int?
+}
+
+@export()
+@description('The type of a connection monitor.')
+type connectionMonitorType = {
+  @description('Required. Name of the resource.')
+  name: string
+
+  @description('Optional. Tags of the resource.')
+  tags: resourceInput<'Microsoft.Network/networkWatchers/connectionMonitors@2024-05-01'>.tags?
+
+  @description('Optional. Location for all resources.')
+  location: string?
+
+  @description('Optional. List of connection monitor endpoints.')
+  endpoints: resourceInput<'Microsoft.Network/networkWatchers/connectionMonitors@2024-05-01'>.properties.endpoints?
+
+  @description('Optional. List of connection monitor test configurations.')
+  testConfigurations: resourceInput<'Microsoft.Network/networkWatchers/connectionMonitors@2024-05-01'>.properties.testConfigurations?
+
+  @description('Optional. List of connection monitor test groups.')
+  testGroups: resourceInput<'Microsoft.Network/networkWatchers/connectionMonitors@2024-05-01'>.properties.testGroups?
+
+  @description('Optional. Specify the Log Analytics Workspace Resource ID.')
+  workspaceResourceId: string?
+}

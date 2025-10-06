@@ -94,7 +94,6 @@ Specify the Log Analytics Workspace Resource ID.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ## Outputs
 
