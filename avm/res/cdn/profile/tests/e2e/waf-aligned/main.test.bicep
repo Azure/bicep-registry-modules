@@ -333,9 +333,7 @@ module testDeployment '../../../main.bicep' = [
                 }
               }
               ruleSets: [
-                {
-                  name: 'dep${namePrefix}wafsecurityrules${serviceShort}'
-                }
+                'dep${namePrefix}wafsecurityrules${serviceShort}'
               ]
             }
           ]

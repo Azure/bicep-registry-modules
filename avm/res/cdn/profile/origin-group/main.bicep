@@ -8,10 +8,10 @@ param name string
 param profileName string
 
 @description('Optional. Health probe settings to the origin that is used to determine the health of the origin.')
-param healthProbeSettings object?
+param healthProbeSettings resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-04-15'>.properties.healthProbeSettings?
 
 @description('Required. Load balancing settings for a backend pool.')
-param loadBalancingSettings object
+param loadBalancingSettings resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-04-15'>.properties.loadBalancingSettings
 
 @allowed([
   'Disabled'
@@ -24,7 +24,7 @@ param sessionAffinityState string = 'Disabled'
 param trafficRestorationTimeToHealedOrNewEndpointsInMinutes int = 10
 
 @description('Required. The list of origins within the origin group.')
-param origins array
+param origins originType[]
 
 resource profile 'Microsoft.Cdn/profiles@2025-04-15' existing = {
   name: profileName
@@ -53,7 +53,7 @@ module originGroup_origins 'origin/main.bicep' = [
       enforceCertificateNameCheck: origin.?enforceCertificateNameCheck
       httpPort: origin.?httpPort
       httpsPort: origin.?httpsPort
-      originHostHeader: origin.?originHostHeader ?? origin.originHostHeader != '' ? origin.hostName : null
+      originHostHeader: origin.?originHostHeader ?? (origin.originHostHeader! != '' ? origin.hostName : null)
       priority: origin.?priority
       weight: origin.?weight
       sharedPrivateLinkResource: origin.?sharedPrivateLinkResource
@@ -76,29 +76,6 @@ output location string = profile.location
 // =============== //
 //   Definitions   //
 // =============== //
-
-import { originType } from './origin/main.bicep'
-@export()
-@description('The type of the origin group.')
-type originGroupType = {
-  @description('Required. The name of the origin group.')
-  name: string
-
-  @description('Required. Load balancing settings for a backend pool.')
-  loadBalancingSettings: loadBalancingSettingsType
-
-  @description('Optional. Health probe settings to the origin that is used to determine the health of the origin.')
-  healthProbeSettings: healthProbeSettingsType?
-
-  @description('Optional. Whether to allow session affinity on this host.')
-  sessionAffinityState: 'Enabled' | 'Disabled' | null
-
-  @description('Optional. Time in minutes to shift the traffic to the endpoint gradually when an unhealthy endpoint comes healthy or a new endpoint is added. Default is 10 mins.')
-  trafficRestorationTimeToHealedOrNewEndpointsInMinutes: int?
-
-  @description('Required. The list of origins within the origin group.')
-  origins: originType[]
-}
 
 @export()
 @description('The type of the load balancing settings.')
@@ -127,4 +104,38 @@ type healthProbeSettingsType = {
 
   @description('Optional. The number of seconds between health probes.Default is 240sec.')
   probeIntervalInSeconds: int?
+}
+
+@export()
+@description('The name of the origin type.')
+type originType = {
+  @description('Required. The name of the origion.')
+  name: string
+
+  @description('Required. The address of the origin. Domain names, IPv4 addresses, and IPv6 addresses are supported.This should be unique across all origins in an endpoint.')
+  hostName: string
+
+  @description('Optional. Whether to enable health probes to be made against backends defined under backendPools. Health probes can only be disabled if there is a single enabled backend in single enabled backend pool.')
+  enabledState: 'Enabled' | 'Disabled' | null
+
+  @description('Optional. Whether to enable certificate name check at origin level.')
+  enforceCertificateNameCheck: bool?
+
+  @description('Optional. The value of the HTTP port. Must be between 1 and 65535.')
+  httpPort: int?
+
+  @description('Optional. The value of the HTTPS port. Must be between 1 and 65535.')
+  httpsPort: int?
+
+  @description('Optional. The host header value sent to the origin with each request. If you leave this blank, the request hostname determines this value. Azure Front Door origins, such as Web Apps, Blob Storage, and Cloud Services require this host header value to match the origin hostname by default. This overrides the host header defined at Endpoint.')
+  originHostHeader: string?
+
+  @description('Optional. Priority of origin in given origin group for load balancing. Higher priorities will not be used for load balancing if any lower priority origin is healthy.Must be between 1 and 5.')
+  priority: int?
+
+  @description('Optional. Weight of the origin in given origin group for load balancing. Must be between 1 and 1000.')
+  weight: int?
+
+  @description('Optional. The properties of the private link resource for private origin.')
+  sharedPrivateLinkResource: resourceInput<'Microsoft.Cdn/profiles/originGroups/origins@2025-04-15'>.properties.sharedPrivateLinkResource?
 }
