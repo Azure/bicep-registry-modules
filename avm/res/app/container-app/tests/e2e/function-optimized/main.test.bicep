@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Without ingress enabled'
-metadata description = 'This instance deploys the module with ingress traffic completely disabled.'
+metadata name = 'Support for Azure Functions'
+metadata description = 'This instance is configured to be able to host Azure Functions'
 
 // ========== //
 // Parameters //

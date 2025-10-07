@@ -15,7 +15,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-01-01' = {
   }
 }
 
-resource vnet 'Microsoft.Network/virtualNetworks@2024-05-01' = {
+resource vnet 'Microsoft.Network/virtualNetworks@2024-10-01' = {
   name: '${managedEnvironmentName}-vnet'
   location: location
   properties: {
@@ -27,7 +27,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   }
 }
 
-resource subnet 'Microsoft.Network/virtualNetworks/subnets@2024-05-01' = {
+resource subnet 'Microsoft.Network/virtualNetworks/subnets@2024-10-01' = {
   name: 'default'
   parent: vnet
   properties: {

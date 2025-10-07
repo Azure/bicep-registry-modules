@@ -111,7 +111,7 @@ param trafficLabel string = 'label-1'
 param trafficLatestRevision bool = true
 
 @description('Optional. Name of a revision.')
-param trafficRevisionName string = ''
+param trafficRevisionName string?
 
 @description('Optional. Traffic weight assigned to a revision.')
 param trafficWeight int = 100
@@ -131,6 +131,9 @@ param runtime resourceInput<'Microsoft.App/containerApps@2025-01-01'>.properties
 @description('Required. List of container definitions for the Container App.')
 param containers containerType[]
 
+@description('Optional. The termination grace period for the container app.')
+param terminationGracePeriodSeconds int?
+
 @description('Optional. List of specialized containers that run before app containers.')
 param initContainersTemplate resourceInput<'Microsoft.App/containerApps@2025-01-01'>.properties.template.initContainers?
 
@@ -138,13 +141,13 @@ param initContainersTemplate resourceInput<'Microsoft.App/containerApps@2025-01-
 param secrets secretType[]?
 
 @description('Optional. User friendly suffix that is appended to the revision name.')
-param revisionSuffix string = ''
+param revisionSuffix string?
 
 @description('Optional. List of volume definitions for the Container App.')
 param volumes resourceInput<'Microsoft.App/containerApps@2025-01-01'>.properties.template.volumes?
 
 @description('Optional. Workload profile name to pin for container app execution.')
-param workloadProfileName string = ''
+param workloadProfileName string?
 
 @description('Optional. The name of the Container App Auth configs.')
 param authConfig authConfigType?
@@ -226,6 +229,7 @@ resource containerApp 'Microsoft.App/containerApps@2025-01-01' = {
     workloadProfileName: workloadProfileName
     template: {
       containers: containers
+      terminationGracePeriodSeconds: terminationGracePeriodSeconds
       initContainers: !empty(initContainersTemplate) ? initContainersTemplate : null
       revisionSuffix: revisionSuffix
       scale: scaleSettings
