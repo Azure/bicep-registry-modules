@@ -149,6 +149,16 @@ module testDeployment '../../../main.bicep' = [
               enabledState: 'Enabled'
               enforceCertificateNameCheck: true // WAF: Security - Certificate validation
             }
+            {
+              name: 'dep-${namePrefix}-waf-api-origin-no-2'
+              hostName: '${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}'
+              httpPort: 80
+              httpsPort: 443
+              priority: 1
+              weight: 1000
+              enabledState: 'Enabled'
+              enforceCertificateNameCheck: true // WAF: Security - Certificate validation
+            }
           ]
         }
       ]
