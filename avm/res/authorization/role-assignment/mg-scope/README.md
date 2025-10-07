@@ -1,6 +1,6 @@
 # Role Assignments (Management Group scope) `[Microsoft.Authorization/roleAssignments]`
 
-This module deploys a Role Assignment to a Management Group scope.
+This module deploys a Role Assignment at a Management Group scope.
 
 ## Navigation
 

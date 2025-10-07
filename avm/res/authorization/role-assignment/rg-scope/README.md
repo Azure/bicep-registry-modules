@@ -1,6 +1,6 @@
 # Role Assignments (Resource Group scope) `[Microsoft.Authorization/roleAssignments]`
 
-This module deploys a Role Assignment to a Resource Group scope.
+This module deploys a Role Assignment at a Resource Group scope.
 
 ## Navigation
 

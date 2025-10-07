@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "8441284361954821444"
+      "version": "0.38.5.1644",
+      "templateHash": "3957935550918406226"
     },
     "name": "Public DNS Zone CAA record",
     "description": "This module deploys a Public DNS Zone CAA record."
@@ -103,17 +103,23 @@
     },
     "metadata": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/dnsZones/CAA@2018-05-01#properties/properties/properties/metadata"
+        },
         "description": "Optional. The metadata attached to the record set."
-      }
+      },
+      "nullable": true
     },
     "caaRecords": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/dnsZones/CAA@2018-05-01#properties/properties/properties/caaRecords"
+        },
         "description": "Optional. The list of CAA records in the record set."
-      }
+      },
+      "nullable": true
     },
     "ttl": {
       "type": "int",

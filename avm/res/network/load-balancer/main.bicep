@@ -235,7 +235,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource loadBalancer 'Microsoft.Network/loadBalancers@2023-11-01' = {
+resource loadBalancer 'Microsoft.Network/loadBalancers@2024-07-01' = {
   name: name
   location: location
   tags: tags
@@ -260,6 +260,7 @@ module loadBalancer_backendAddressPools 'backend-address-pool/main.bicep' = [
       tunnelInterfaces: backendAddressPool.?tunnelInterfaces
       loadBalancerBackendAddresses: backendAddressPool.?loadBalancerBackendAddresses
       drainPeriodInSeconds: backendAddressPool.?drainPeriodInSeconds
+      virtualNetworkResourceId: backendAddressPool.?virtualNetworkResourceId
     }
   }
 ]
@@ -336,7 +337,7 @@ resource loadBalancer_roleAssignments 'Microsoft.Authorization/roleAssignments@2
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
       condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condition is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
     scope: loadBalancer
