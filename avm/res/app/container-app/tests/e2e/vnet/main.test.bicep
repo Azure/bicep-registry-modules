@@ -67,7 +67,7 @@ module testDeployment '../../../main.bicep' = [
       containers: [
         {
           name: 'simple-hello-world-container'
-          image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+          image: 'mcr.microsoft.com/k8se/quickstart:latest'
           resources: {
             // workaround as 'float' values are not supported in Bicep, yet the resource providers expects them. Related issue: https://github.com/Azure/bicep/issues/1386
             cpu: json('0.25')

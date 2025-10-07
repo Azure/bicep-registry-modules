@@ -52,7 +52,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     // Required parameters
     containers: [
       {
-        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        image: 'mcr.microsoft.com/k8se/quickstart:latest'
         name: 'simple-hello-world-container'
         resources: {
           cpu: '<cpu>'
@@ -82,7 +82,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     "containers": {
       "value": [
         {
-          "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+          "image": "mcr.microsoft.com/k8se/quickstart:latest",
           "name": "simple-hello-world-container",
           "resources": {
             "cpu": "<cpu>",
@@ -114,7 +114,7 @@ using 'br/public:avm/res/app/container-app:<version>'
 // Required parameters
 param containers = [
   {
-    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    image: 'mcr.microsoft.com/k8se/quickstart:latest'
     name: 'simple-hello-world-container'
     resources: {
       cpu: '<cpu>'
@@ -145,7 +145,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     // Required parameters
     containers: [
       {
-        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        image: 'mcr.microsoft.com/k8se/quickstart:latest'
         name: 'simple-hello-world-container'
         resources: {
           cpu: '<cpu>'
@@ -177,7 +177,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     "containers": {
       "value": [
         {
-          "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+          "image": "mcr.microsoft.com/k8se/quickstart:latest",
           "name": "simple-hello-world-container",
           "resources": {
             "cpu": "<cpu>",
@@ -213,7 +213,7 @@ using 'br/public:avm/res/app/container-app:<version>'
 // Required parameters
 param containers = [
   {
-    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    image: 'mcr.microsoft.com/k8se/quickstart:latest'
     name: 'simple-hello-world-container'
     resources: {
       cpu: '<cpu>'
@@ -397,7 +397,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
             secretRef: 'keyvaultstoredsecret'
           }
         ]
-        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        image: 'mcr.microsoft.com/k8se/quickstart:latest'
         name: 'simple-hello-world-container'
         probes: [
           {
@@ -445,7 +445,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     ]
     initContainersTemplate: [
       {
-        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        image: 'mcr.microsoft.com/k8se/quickstart:latest'
         name: 'init-container'
         resources: {
           cpu: '<cpu>'
@@ -541,7 +541,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
               "secretRef": "keyvaultstoredsecret"
             }
           ],
-          "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+          "image": "mcr.microsoft.com/k8se/quickstart:latest",
           "name": "simple-hello-world-container",
           "probes": [
             {
@@ -601,7 +601,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     "initContainersTemplate": {
       "value": [
         {
-          "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+          "image": "mcr.microsoft.com/k8se/quickstart:latest",
           "name": "init-container",
           "resources": {
             "cpu": "<cpu>",
@@ -713,7 +713,7 @@ param containers = [
         secretRef: 'keyvaultstoredsecret'
       }
     ]
-    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    image: 'mcr.microsoft.com/k8se/quickstart:latest'
     name: 'simple-hello-world-container'
     probes: [
       {
@@ -761,7 +761,7 @@ param identitySettings = [
 ]
 param initContainersTemplate = [
   {
-    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    image: 'mcr.microsoft.com/k8se/quickstart:latest'
     name: 'init-container'
     resources: {
       cpu: '<cpu>'
@@ -848,7 +848,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     // Required parameters
     containers: [
       {
-        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        image: 'mcr.microsoft.com/k8se/quickstart:latest'
         name: 'simple-hello-world-container'
         resources: {
           cpu: '<cpu>'
@@ -890,7 +890,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     "containers": {
       "value": [
         {
-          "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+          "image": "mcr.microsoft.com/k8se/quickstart:latest",
           "name": "simple-hello-world-container",
           "resources": {
             "cpu": "<cpu>",
@@ -944,7 +944,7 @@ using 'br/public:avm/res/app/container-app:<version>'
 // Required parameters
 param containers = [
   {
-    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    image: 'mcr.microsoft.com/k8se/quickstart:latest'
     name: 'simple-hello-world-container'
     resources: {
       cpu: '<cpu>'
@@ -987,7 +987,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     // Required parameters
     containers: [
       {
-        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        image: 'mcr.microsoft.com/k8se/quickstart:latest'
         name: 'simple-hello-world-container'
         probes: [
           {
@@ -1060,7 +1060,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     "containers": {
       "value": [
         {
-          "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+          "image": "mcr.microsoft.com/k8se/quickstart:latest",
           "name": "simple-hello-world-container",
           "probes": [
             {
@@ -1145,7 +1145,7 @@ using 'br/public:avm/res/app/container-app:<version>'
 // Required parameters
 param containers = [
   {
-    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    image: 'mcr.microsoft.com/k8se/quickstart:latest'
     name: 'simple-hello-world-container'
     probes: [
       {
