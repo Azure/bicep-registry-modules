@@ -29,7 +29,7 @@ param skuTier string = 'Standard'
 param skuFamily string = 'MeteredData'
 
 @description('Optional. Array of peering configurations for the ExpressRoute circuit.')
-param peerings peeringConfigType[]?
+param peerings resourceInput<'Microsoft.Network/expressRouteCircuits@2024-07-01'>.properties.peerings?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -153,17 +153,17 @@ resource expressRouteCircuit 'Microsoft.Network/expressRouteCircuits@2024-07-01'
       for peering in (peerings ?? []): {
         name: peering.name
         properties: {
-          peeringType: peering.peeringType
-          sharedKey: peering.?sharedKey
-          azureASN: peering.?azureASN ?? 12076
-          peerASN: peering.?peerASN
-          primaryPeerAddressPrefix: peering.?primaryPeerAddressPrefix
-          secondaryPeerAddressPrefix: peering.?secondaryPeerAddressPrefix
-          vlanId: peering.?vlanId
-          ipv6PeeringConfig: peering.?ipv6PeeringConfig
-          microsoftPeeringConfig: peering.?microsoftPeeringConfig
-          routeFilter: peering.?routeFilter
-          state: peering.?state
+          peeringType: peering.properties.?peeringType
+          sharedKey: peering.properties.?sharedKey
+          azureASN: peering.properties.?azureASN ?? 12076
+          peerASN: peering.properties.?peerASN
+          primaryPeerAddressPrefix: peering.properties.?primaryPeerAddressPrefix
+          secondaryPeerAddressPrefix: peering.properties.?secondaryPeerAddressPrefix
+          vlanId: peering.properties.?vlanId
+          ipv6PeeringConfig: peering.properties.?ipv6PeeringConfig
+          microsoftPeeringConfig: peering.properties.?microsoftPeeringConfig
+          routeFilter: peering.properties.?routeFilter
+          state: peering.properties.?state
         }
       }
     ]
@@ -229,104 +229,6 @@ resource expressRouteCircuit_roleAssignments 'Microsoft.Authorization/roleAssign
     scope: expressRouteCircuit
   }
 ]
-
-type peeringConfigType = {
-  @description('Required. The name of the peering.')
-  name: string
-
-  @description('Required. BGP peering type for the Circuit.')
-  peeringType: 'AzurePrivatePeering' | 'AzurePublicPeering' | 'MicrosoftPeering'
-
-  @description('Optional. The shared key for peering configuration.')
-  sharedKey: string?
-
-  @description('Optional. The Azure ASN.')
-  azureASN: int?
-
-  @description('Required. The autonomous system number of the customer/connectivity provider.')
-  peerASN: int
-
-  @description('Required. A /30 subnet used to configure IP addresses for interfaces on Link1.')
-  primaryPeerAddressPrefix: string
-
-  @description('Required. A /30 subnet used to configure IP addresses for interfaces on Link2.')
-  secondaryPeerAddressPrefix: string
-
-  @description('Required. Specifies the identifier that is used to identify the customer.')
-  vlanId: int
-
-  @description('Optional. IPv6 peering configuration.')
-  ipv6PeeringConfig: {
-    @description('Optional. A /125 subnet used to configure IPv6 addresses for interfaces on Link1.')
-    primaryPeerAddressPrefix: string?
-
-    @description('Optional. A /125 subnet used to configure IPv6 addresses for interfaces on Link2.')
-    secondaryPeerAddressPrefix: string?
-
-    @description('Optional. The Microsoft peering configuration for IPv6.')
-    microsoftPeeringConfig: {
-      @description('Optional. The communities to be advertised through BGP.')
-      advertisedCommunities: string[]?
-
-      @description('Optional. The IPv6 prefixes to be advertised through BGP.')
-      advertisedPublicPrefixes: string[]?
-
-      @description('Optional. The IPv6 prefix information to be advertised through BGP.')
-      advertisedPublicPrefixInfo: {
-        @description('Required. The IPv6 prefix.')
-        prefix: string
-
-        @description('Optional. The signature for the prefix.')
-        signature: string?
-
-        @description('Optional. The validation ID for the prefix.')
-        validationId: string?
-      }[]?
-
-      @description('Optional. The customer ASN for the peering.')
-      customerASN: int?
-
-      @description('Optional. The legacy mode for the peering.')
-      legacyMode: int?
-
-      @description('Optional. The routing registry name.')
-      routingRegistryName: string?
-    }?
-
-    @description('Optional. The route filter resource ID for IPv6.')
-    routeFilter: {
-      @description('Required. The resource ID of the route filter.')
-      id: string
-    }?
-  }?
-
-  @description('Optional. Microsoft peering configuration for IPv4.')
-  microsoftPeeringConfig: {
-    @description('Optional. The communities to be advertised through BGP.')
-    advertisedCommunities: string[]?
-
-    @description('Optional. The public prefixes to be advertised through BGP.')
-    advertisedPublicPrefixes: string[]?
-
-    @description('Optional. The customer ASN for the peering.')
-    customerASN: int?
-
-    @description('Optional. The legacy mode for the peering.')
-    legacyMode: int?
-
-    @description('Optional. The routing registry name.')
-    routingRegistryName: string?
-  }?
-
-  @description('Optional. The route filter resource ID.')
-  routeFilter: {
-    @description('Required. The resource ID of the route filter.')
-    id: string
-  }?
-
-  @description('Optional. The state of the peering.')
-  state: ('Disabled' | 'Enabled')?
-}
 
 @description('The resource ID of express route circuit.')
 output resourceId string = expressRouteCircuit.id

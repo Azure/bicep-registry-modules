@@ -71,41 +71,45 @@ module testDeployment '../../../main.bicep' = [
       peerings: [
         {
           name: 'AzurePrivatePeering'
-          peeringType: 'AzurePrivatePeering'
-          peerASN: 65001
-          primaryPeerAddressPrefix: '10.0.0.0/30'
-          secondaryPeerAddressPrefix: '10.0.0.4/30'
-          vlanId: 100
-          state: 'Enabled'
-          ipv6PeeringConfig: {
-            primaryPeerAddressPrefix: '2001:db8::/126'
-            secondaryPeerAddressPrefix: '2001:db8::8/126'
+          properties: {
+            peeringType: 'AzurePrivatePeering'
+            peerASN: 65001
+            primaryPeerAddressPrefix: '10.0.0.0/30'
+            secondaryPeerAddressPrefix: '10.0.0.4/30'
+            vlanId: 100
+            state: 'Enabled'
+            ipv6PeeringConfig: {
+              primaryPeerAddressPrefix: '2001:db8::/126'
+              secondaryPeerAddressPrefix: '2001:db8::8/126'
+            }
           }
         }
         {
           name: 'MicrosoftPeering'
-          peeringType: 'MicrosoftPeering'
-          peerASN: 65002
-          primaryPeerAddressPrefix: '192.168.1.0/30'
-          secondaryPeerAddressPrefix: '192.168.1.4/30'
-          vlanId: 200
-          state: 'Disabled'
-          microsoftPeeringConfig: {
-            advertisedPublicPrefixes: [
-              '203.0.113.0/24'
-            ]
-            customerASN: 65002
-            routingRegistryName: 'ARIN'
-          }
-          ipv6PeeringConfig: {
-            primaryPeerAddressPrefix: '2001:db8:1::/126'
-            secondaryPeerAddressPrefix: '2001:db8:1::8/126'
+          properties: {
+            peeringType: 'MicrosoftPeering'
+            peerASN: 65002
+            primaryPeerAddressPrefix: '203.0.113.0/30'
+            secondaryPeerAddressPrefix: '203.0.113.4/30'
+            vlanId: 200
+            state: 'Disabled'
             microsoftPeeringConfig: {
               advertisedPublicPrefixes: [
-                '2001:db8:2::/48'
+                '203.0.113.0/24'
               ]
               customerASN: 65002
               routingRegistryName: 'ARIN'
+            }
+            ipv6PeeringConfig: {
+              primaryPeerAddressPrefix: '2001:db8:100::/126'
+              secondaryPeerAddressPrefix: '2001:db8:100::8/126'
+              microsoftPeeringConfig: {
+                advertisedPublicPrefixes: [
+                  '2001:db8:200::/48'
+                ]
+                customerASN: 65002
+                routingRegistryName: 'ARIN'
+              }
             }
           }
         }
