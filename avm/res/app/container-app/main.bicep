@@ -8,11 +8,12 @@ param name string
 param location string = resourceGroup().location
 
 @allowed([
+  'containerapps'
   'workflowapp'
   'functionapp'
 ])
 @description('Optional. Metadata used to render different experiences for resources of the same type.')
-param kind string = 'workflowapp'
+param kind string = 'containerapps'
 
 @description('Optional. Bool to disable all ingress traffic for the container app.')
 param disableIngress bool = false

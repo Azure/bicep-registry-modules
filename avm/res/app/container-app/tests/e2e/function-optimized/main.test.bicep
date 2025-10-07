@@ -53,7 +53,6 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       kind: 'functionapp'
       environmentResourceId: nestedDependencies.outputs.managedEnvironmentResourceId
-      workloadProfileName: 'Consumption'
       activeRevisionsMode: 'Single'
       ingressTargetPort: 80
       ingressTransport:'auto'

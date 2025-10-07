@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.5.1644",
-      "templateHash": "31096555339108109"
+      "templateHash": "15481566295715466719"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App."
@@ -794,8 +794,9 @@
     },
     "kind": {
       "type": "string",
-      "defaultValue": "workflowapp",
+      "defaultValue": "containerapps",
       "allowedValues": [
+        "containerapps",
         "workflowapp",
         "functionapp"
       ],

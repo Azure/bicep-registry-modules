@@ -266,7 +266,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     maxInactiveRevisions: 100
     trafficLatestRevision: true
     trafficWeight: 100
-    workloadProfileName: 'Consumption'
   }
 }
 ```
@@ -329,9 +328,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     },
     "trafficWeight": {
       "value": 100
-    },
-    "workloadProfileName": {
-      "value": "Consumption"
     }
   }
 }
@@ -370,7 +366,6 @@ param kind = 'functionapp'
 param maxInactiveRevisions = 100
 param trafficLatestRevision = true
 param trafficWeight = 100
-param workloadProfileName = 'Consumption'
 ```
 
 </details>
@@ -1700,10 +1695,11 @@ Metadata used to render different experiences for resources of the same type.
 
 - Required: No
 - Type: string
-- Default: `'workflowapp'`
+- Default: `'containerapps'`
 - Allowed:
   ```Bicep
   [
+    'containerapps'
     'functionapp'
     'workflowapp'
   ]
