@@ -51,12 +51,21 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      kind: 'functionapp'
       environmentResourceId: nestedDependencies.outputs.managedEnvironmentResourceId
-      disableIngress: true
+      workloadProfileName: 'Consumption'
+      activeRevisionsMode: 'Single'
+      ingressTargetPort: 80
+      ingressTransport:'auto'
+      ingressAllowInsecure: false
+      exposedPort: 0
+      trafficWeight: 100
+      trafficLatestRevision: true
+      maxInactiveRevisions: 100
       containers: [
         {
-          name: 'simple-hello-world-container'
-          image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+          name: 'azure-function-container'
+          image: 'mcr.microsoft.com/azure-functions/dotnet8-quickstart-demo:latest'
           resources: {
             // workaround as 'float' values are not supported in Bicep, yet the resource providers expects them. Related issue: https://github.com/Azure/bicep/issues/1386
             cpu: json('0.25')

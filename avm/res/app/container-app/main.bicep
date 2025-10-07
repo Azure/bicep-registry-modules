@@ -7,6 +7,13 @@ param name string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
+@allowed([
+  'workflowapp'
+  'functionapp'
+])
+@description('Optional. Metadata used to render different experiences for resources of the same type.')
+param kind string = 'workflowapp'
+
 @description('Optional. Bool to disable all ingress traffic for the container app.')
 param disableIngress bool = false
 
@@ -129,7 +136,7 @@ param maxInactiveRevisions int = 0
 param runtime resourceInput<'Microsoft.App/containerApps@2025-01-01'>.properties.configuration.runtime?
 
 @description('Required. List of container definitions for the Container App.')
-param containers containerType[]
+param containers resourceInput<'Microsoft.App/containerApps@2025-01-01'>.properties.template.containers
 
 @description('Optional. The termination grace period for the container app.')
 param terminationGracePeriodSeconds int?
@@ -219,9 +226,10 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource containerApp 'Microsoft.App/containerApps@2025-01-01' = {
+resource containerApp 'Microsoft.App/containerApps@2025-02-02-preview' = {
   name: name
   tags: tags
+  kind: kind
   location: location
   identity: identity
   properties: {
@@ -369,34 +377,6 @@ output location string = containerApp.location
 // =============== //
 //   Definitions   //
 // =============== //
-
-@export()
-@description('The type for a container.')
-type containerType = {
-  @description('Optional. Container start command arguments.')
-  args: string[]?
-
-  @description('Optional. Container start command.')
-  command: string[]?
-
-  @description('Optional. Container environment variables.')
-  env: environmentVarType[]?
-
-  @description('Required. Container image tag.')
-  image: string
-
-  @description('Optional. Custom container name.')
-  name: string?
-
-  @description('Optional. List of probes for the container.')
-  probes: containerAppProbeType[]?
-
-  @description('Required. Container resource requirements.')
-  resources: object
-
-  @description('Optional. Container volume mounts.')
-  volumeMounts: volumeMountType[]?
-}
 
 @export()
 @description('The type for an ingress port mapping.')

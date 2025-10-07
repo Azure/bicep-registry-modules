@@ -5,91 +5,13 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "1703022341603476803"
+      "version": "0.38.5.1644",
+      "templateHash": "1033387025117364426"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App."
   },
   "definitions": {
-    "containerType": {
-      "type": "object",
-      "properties": {
-        "args": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Container start command arguments."
-          }
-        },
-        "command": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Container start command."
-          }
-        },
-        "env": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/environmentVarType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Container environment variables."
-          }
-        },
-        "image": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Container image tag."
-          }
-        },
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Custom container name."
-          }
-        },
-        "probes": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/containerAppProbeType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. List of probes for the container."
-          }
-        },
-        "resources": {
-          "type": "object",
-          "metadata": {
-            "description": "Required. Container resource requirements."
-          }
-        },
-        "volumeMounts": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/volumeMountType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Container volume mounts."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for a container."
-      }
-    },
     "ingressPortMappingType": {
       "type": "object",
       "properties": {
@@ -870,6 +792,17 @@
         "description": "Optional. Location for all Resources."
       }
     },
+    "kind": {
+      "type": "string",
+      "defaultValue": "workflowapp",
+      "allowedValues": [
+        "workflowapp",
+        "functionapp"
+      ],
+      "metadata": {
+        "description": "Optional. Metadata used to render different experiences for resources of the same type."
+      }
+    },
     "disableIngress": {
       "type": "bool",
       "defaultValue": false,
@@ -1099,7 +1032,7 @@
     },
     "trafficRevisionName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Name of a revision."
       }
@@ -1150,11 +1083,18 @@
     },
     "containers": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/containerType"
-      },
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/containerApps@2025-01-01#properties/properties/properties/template/properties/containers"
+        },
         "description": "Required. List of container definitions for the Container App."
+      }
+    },
+    "terminationGracePeriodSeconds": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The termination grace period for the container app."
       }
     },
     "initContainersTemplate": {
@@ -1179,7 +1119,7 @@
     },
     "revisionSuffix": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. User friendly suffix that is appended to the revision name."
       }
@@ -1196,7 +1136,7 @@
     },
     "workloadProfileName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Workload profile name to pin for container app execution."
       }
@@ -1261,9 +1201,10 @@
     },
     "containerApp": {
       "type": "Microsoft.App/containerApps",
-      "apiVersion": "2025-01-01",
+      "apiVersion": "2025-02-02-preview",
       "name": "[parameters('name')]",
       "tags": "[parameters('tags')]",
+      "kind": "[parameters('kind')]",
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
       "properties": {
@@ -1271,6 +1212,7 @@
         "workloadProfileName": "[parameters('workloadProfileName')]",
         "template": {
           "containers": "[parameters('containers')]",
+          "terminationGracePeriodSeconds": "[parameters('terminationGracePeriodSeconds')]",
           "initContainers": "[if(not(empty(parameters('initContainersTemplate'))), parameters('initContainersTemplate'), null())]",
           "revisionSuffix": "[parameters('revisionSuffix')]",
           "scale": "[parameters('scaleSettings')]",
@@ -1361,7 +1303,7 @@
     "containerAppAuthConfigs": {
       "condition": "[not(empty(parameters('authConfig')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-auth-config', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1398,8 +1340,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "10571024989724677426"
+              "version": "0.38.5.1644",
+              "templateHash": "5889402441597052915"
             },
             "name": "Container App Auth Configs",
             "description": "This module deploys Container App Auth Configs."
@@ -1558,14 +1500,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('containerApp', '2025-01-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('containerApp', '2025-02-02-preview', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('containerApp', '2025-01-01', 'full').location]"
+      "value": "[reference('containerApp', '2025-02-02-preview', 'full').location]"
     }
   }
 }
