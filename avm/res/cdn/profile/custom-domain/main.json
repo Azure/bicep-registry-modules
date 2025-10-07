@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "4152856745534187528"
+      "version": "0.37.4.10188",
+      "templateHash": "1486369118418758330"
     },
     "name": "CDN Profiles Custom Domains",
     "description": "This module deploys a CDN Profile Custom Domains."
@@ -63,7 +63,8 @@
           "type": "string",
           "allowedValues": [
             "TLS10",
-            "TLS12"
+            "TLS12",
+            "TLS13"
           ],
           "nullable": true,
           "metadata": {
@@ -184,7 +185,8 @@
       "defaultValue": "TLS12",
       "allowedValues": [
         "TLS10",
-        "TLS12"
+        "TLS12",
+        "TLS13"
       ],
       "metadata": {
         "description": "Optional. The minimum TLS version required for the custom domain. Default value: TLS12."
@@ -228,7 +230,7 @@
     },
     "customDomain": {
       "type": "Microsoft.Cdn/profiles/customDomains",
-      "apiVersion": "2025-04-15",
+      "apiVersion": "2025-06-01",
       "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
       "properties": {
         "azureDnsZone": "[if(not(empty(parameters('azureDnsZoneResourceId'))), createObject('id', parameters('azureDnsZoneResourceId')), null())]",

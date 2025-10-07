@@ -1457,7 +1457,57 @@ The Azure AD administrators when AAD authentication enabled.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`objectId`](#parameter-administratorsobjectid) | string | The objectId of the Active Directory administrator. |
+| [`principalName`](#parameter-administratorsprincipalname) | string | Active Directory administrator principal name. |
+| [`principalType`](#parameter-administratorsprincipaltype) | string | The principal type used to represent the type of Active Directory Administrator. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`tenantId`](#parameter-administratorstenantid) | string | The tenantId of the Active Directory administrator. |
+
+### Parameter: `administrators.objectId`
+
+The objectId of the Active Directory administrator.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `administrators.principalName`
+
+Active Directory administrator principal name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `administrators.principalType`
+
+The principal type used to represent the type of Active Directory Administrator.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Group'
+    'ServicePrincipal'
+    'Unknown'
+    'User'
+  ]
+  ```
+
+### Parameter: `administrators.tenantId`
+
+The tenantId of the Active Directory administrator.
+
+- Required: No
+- Type: string
 
 ### Parameter: `autoGrow`
 
@@ -1742,7 +1792,35 @@ The firewall rules to create in the PostgreSQL flexible server.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endIpAddress`](#parameter-firewallrulesendipaddress) | string | The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses. |
+| [`name`](#parameter-firewallrulesname) | string | The name of the PostgreSQL flexible server Firewall Rule. |
+| [`startIpAddress`](#parameter-firewallrulesstartipaddress) | string | The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses. |
+
+### Parameter: `firewallRules.endIpAddress`
+
+The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `firewallRules.name`
+
+The name of the PostgreSQL flexible server Firewall Rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `firewallRules.startIpAddress`
+
+The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `geoRedundantBackup`
 
@@ -2047,6 +2125,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -2066,6 +2145,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2548,6 +2634,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 

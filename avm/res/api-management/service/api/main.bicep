@@ -104,11 +104,35 @@ param value string?
 @sys.description('Optional. Criteria to limit import of WSDL to a subset of the document.')
 param wsdlSelector resourceInput<'Microsoft.ApiManagement/service/apis@2024-05-01'>.properties.wsdlSelector?
 
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+var enableReferencedModulesTelemetry bool = false
+
 resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 
   resource apiVersionSet 'apiVersionSets@2024-05-01' existing = if (!empty(apiVersionSetName)) {
     name: apiVersionSetName!
+  }
+}
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.apimgmt-api.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
   }
 }
 
@@ -147,6 +171,7 @@ module api_policies 'policy/main.bicep' = [
       apiName: api.name
       format: policy.?format ?? 'xml'
       value: policy.value
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -168,6 +193,7 @@ module api_diagnostics 'diagnostics/main.bicep' = [
       operationNameFormat: diagnostic.?operationNameFormat
       samplingPercentage: diagnostic.?samplingPercentage
       verbosity: diagnostic.?verbosity
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

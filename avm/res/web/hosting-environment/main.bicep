@@ -11,13 +11,13 @@ param location string = resourceGroup().location
 param enableTelemetry bool = true
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Web/hostingEnvironments@2024-11-01'>.tags?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -28,7 +28,7 @@ param roleAssignments roleAssignmentType[]?
 param kind string = 'ASEv3'
 
 @description('Optional. Custom settings for changing the behavior of the App Service Environment.')
-param clusterSettings array = [
+param clusterSettings resourceInput<'Microsoft.Web/hostingEnvironments@2024-11-01'>.properties.clusterSettings = [
   {
     name: 'DisableTls1.0'
     value: '1'

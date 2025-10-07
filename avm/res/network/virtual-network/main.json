@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "8944129688641045930"
+      "templateHash": "14342900544155358994"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet)."
@@ -112,6 +112,9 @@
             "description": "Optional. If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "subnetType": {
@@ -285,6 +288,9 @@
             "description": "Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "diagnosticSettingFullType": {

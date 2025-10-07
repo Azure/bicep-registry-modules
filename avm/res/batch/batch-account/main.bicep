@@ -30,17 +30,16 @@ param poolAllocationMode string = 'BatchService'
 @description('Conditional. The key vault to associate with the Batch account. Required if the \'poolAllocationMode\' is set to \'UserSubscription\' and requires the service principal \'Microsoft Azure Batch\' to be granted contributor permissions on this key vault.')
 param keyVaultReferenceResourceId string?
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkProfile is not set.')
 @allowed([
-  ''
   'Enabled'
   'Disabled'
 ])
-param publicNetworkAccess string = ''
+param publicNetworkAccess string?
 
 @description('Optional. Network access profile. It is only applicable when publicNetworkAccess is not explicitly disabled.')
 param networkProfile networkProfileType?
@@ -191,17 +190,17 @@ resource batchAccount 'Microsoft.Batch/batchAccounts@2022-06-01' = {
           keySource: 'Microsoft.KeyVault'
           keyVaultProperties: {
             keyIdentifier: !empty(customerManagedKey.?keyVersion)
-              ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+              ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
               : (customerManagedKey.?autoRotationEnabled ?? true)
-                  ? cMKKeyVault::cMKKey.properties.keyUri
-                  : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+                  ? cMKKeyVault::cMKKey!.properties.keyUri
+                  : cMKKeyVault::cMKKey!.properties.keyUriWithVersion
           }
         }
       : null
     keyVaultReference: poolAllocationMode == 'UserSubscription'
       ? {
           id: batchKeyVaultReference.id
-          url: batchKeyVaultReference.properties.vaultUri
+          url: batchKeyVaultReference!.properties.vaultUri
         }
       : null
     networkProfile: !empty(networkProfile ?? {})

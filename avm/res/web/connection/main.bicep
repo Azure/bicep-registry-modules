@@ -24,17 +24,17 @@ param enableTelemetry bool = true
   }
 '''
 })
-param api object?
+param api resourceInput<'Microsoft.Web/connections@2016-06-01'>.properties.api?
 
 @description('Optional. Dictionary of custom parameter values for specific connections.')
-param customParameterValues object?
+param customParameterValues resourceInput<'Microsoft.Web/connections@2016-06-01'>.properties.customParameterValues?
 
 @description('Required. Display name connection. Example: `blobconnection` when using blobs. It can change depending on the resource.')
 param displayName string
 
 @description('Optional. Dictionary of nonsecret parameter values.')
 #disable-next-line secure-secrets-in-params // Not a secret
-param nonSecretParameterValues object?
+param nonSecretParameterValues resourceInput<'Microsoft.Web/connections@2016-06-01'>.properties.nonSecretParameterValues?
 
 @description('Optional. Connection strings or access keys for connection. Example: `accountName` and `accessKey` when using blobs. It can change depending on the resource.')
 @secure()
@@ -57,7 +57,7 @@ param nonSecretParameterValues object?
     }
   '''
 })
-param parameterValues object?
+param parameterValues resourceInput<'Microsoft.Web/connections@2016-06-01'>.properties.parameterValues?
 
 @description('Optional. Additional parameter value set used for authentication settings.')
 @metadata({
@@ -98,7 +98,7 @@ param lock lockType?
 param tags resourceInput<'Microsoft.Web/connections@2016-06-01'>.tags?
 
 @description('Optional. Links to test the API connection.')
-param testLinks object[]?
+param testLinks resourceInput<'Microsoft.Web/connections@2016-06-01'>.properties.testLinks?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')

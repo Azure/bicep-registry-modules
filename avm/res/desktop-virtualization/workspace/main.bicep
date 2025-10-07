@@ -22,7 +22,7 @@ param friendlyName string = name
 @sys.description('Optional. Public network access for the workspace.')
 param publicNetworkAccess string?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @sys.description('Optional. Configuration details for private endpoints.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 

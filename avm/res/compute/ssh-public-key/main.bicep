@@ -13,7 +13,7 @@ param location string = resourceGroup().location
 param publicKey string?
 
 @description('Optional. Tags of the availability set resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Compute/sshPublicKeys@2024-11-01'>.tags?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')

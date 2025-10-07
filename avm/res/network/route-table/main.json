@@ -6,62 +6,12 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "13481230587503076895"
+      "templateHash": "12575490737143262358"
     },
     "name": "Route Tables",
     "description": "This module deploys a User Defined Route Table (UDR)."
   },
   "definitions": {
-    "routeType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Name of the route."
-          }
-        },
-        "properties": {
-          "type": "object",
-          "properties": {
-            "nextHopType": {
-              "type": "string",
-              "allowedValues": [
-                "Internet",
-                "None",
-                "VirtualAppliance",
-                "VirtualNetworkGateway",
-                "VnetLocal"
-              ],
-              "metadata": {
-                "description": "Required. The type of Azure hop the packet should be sent to."
-              }
-            },
-            "addressPrefix": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The destination CIDR to which the route applies."
-              }
-            },
-            "nextHopIpAddress": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance."
-              }
-            }
-          },
-          "metadata": {
-            "description": "Required. Properties of the route."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for a route."
-      }
-    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -170,7 +120,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     }
@@ -191,13 +141,13 @@
     },
     "routes": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/routeType"
-      },
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/routeTables@2024-07-01#properties/properties/properties/routes"
+        },
         "description": "Optional. An array of routes to be established within the hub route table."
-      }
+      },
+      "nullable": true
     },
     "disableBgpRoutePropagation": {
       "type": "bool",
@@ -225,10 +175,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/routeTables@2024-07-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -278,7 +231,7 @@
     },
     "routeTable": {
       "type": "Microsoft.Network/routeTables",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-07-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -351,7 +304,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('routeTable', '2023-04-01', 'full').location]"
+      "value": "[reference('routeTable', '2024-07-01', 'full').location]"
     }
   }
 }

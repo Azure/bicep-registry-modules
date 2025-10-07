@@ -14,15 +14,15 @@ param virtualNetworkResourceId string
 param bastionSubnetPublicIpResourceId string = ''
 
 @description('Optional. Specifies the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided. This parameter is ignored when enablePrivateOnlyBastion is true.')
-param publicIPAddressObject object = {
+param publicIPAddressObject publicIPAddressObjectType = {
   name: '${name}-pip'
 }
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -59,12 +59,12 @@ param enablePrivateOnlyBastion bool = false
 @description('Optional. The scale units for the Bastion Host resource. The Basic and Developer SKU only support 2 scale units.')
 param scaleUnits int = 2
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/bastionHosts@2024-07-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -75,7 +75,7 @@ param enableTelemetry bool = true
   2
   3
 ])
-param availabilityZones int[] = [1, 2, 3]
+param availabilityZones int[] = [] // Availability Zones are currently in preview (August 2025, see https://learn.microsoft.com/en-us/azure/bastion/configuration-settings#az) and only available in certain regions, therefore the default is an empty array.
 
 var enableReferencedModulesTelemetry = false
 
@@ -101,7 +101,7 @@ var ipConfigurations = skuName == 'Developer'
                 publicIPAddress: {
                   id: !empty(bastionSubnetPublicIpResourceId)
                     ? bastionSubnetPublicIpResourceId
-                    : publicIPAddress.outputs.resourceId
+                    : publicIPAddress!.outputs.resourceId
                 }
               }
             : {})
@@ -155,7 +155,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.8.0' = if (empty(bastionSubnetPublicIpResourceId) && (skuName != 'Developer') && (!enablePrivateOnlyBastion)) {
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.9.0' = if (empty(bastionSubnetPublicIpResourceId) && (skuName != 'Developer') && (!enablePrivateOnlyBastion)) {
   name: '${uniqueString(deployment().name, location)}-Bastion-PIP'
   params: {
     name: publicIPAddressObject.name
@@ -163,14 +163,18 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.8.0' = if 
     location: location
     lock: lock
     diagnosticSettings: publicIPAddressObject.?diagnosticSettings
+    ddosSettings: publicIPAddressObject.?ddosSettings
+    dnsSettings: publicIPAddressObject.?dnsSettings
+    idleTimeoutInMinutes: publicIPAddressObject.?idleTimeoutInMinutes
+    ipTags: publicIPAddressObject.?ipTags
     publicIPAddressVersion: publicIPAddressObject.?publicIPAddressVersion
     publicIPAllocationMethod: publicIPAddressObject.?publicIPAllocationMethod
-    publicIpPrefixResourceId: publicIPAddressObject.?publicIPPrefixResourceId
+    publicIpPrefixResourceId: publicIPAddressObject.?publicIpPrefixResourceId
     roleAssignments: publicIPAddressObject.?roleAssignments
     skuName: publicIPAddressObject.?skuName
     skuTier: publicIPAddressObject.?skuTier
     tags: publicIPAddressObject.?tags ?? tags
-    zones: publicIPAddressObject.?zones ?? (!empty(availabilityZones) ? availabilityZones : null) // if zones of the Public IP is empty, use the zones from the bastion host only if not empty (if empty, the default of the public IP will be used)
+    availabilityZones: publicIPAddressObject.?availabilityZones ?? (!empty(availabilityZones) ? availabilityZones : null) // if zones of the Public IP is empty, use the zones from the bastion host only if not empty (if empty, the default of the public IP will be used)
   }
 }
 
@@ -208,7 +212,7 @@ var bastionpropertiesVar = union(
     : {})
 )
 
-resource azureBastion 'Microsoft.Network/bastionHosts@2024-05-01' = {
+resource azureBastion 'Microsoft.Network/bastionHosts@2024-07-01' = {
   name: name
   location: location
   tags: tags ?? {} // The empty object is a workaround for error when deploying with the Developer SKU. The error seems unrelated to the tags, but it is resolved by adding the empty object.
@@ -282,3 +286,65 @@ output location string = azureBastion.location
 
 @description('The Public IPconfiguration object for the AzureBastionSubnet.')
 output ipConfAzureBastionSubnet object = skuName == 'Developer' ? {} : azureBastion.properties.ipConfigurations[0]
+
+// ================ //
+// Definitions      //
+// ================ //
+
+import { dnsSettingsType, ipTagType, ddosSettingsType } from 'br/public:avm/res/network/public-ip-address:0.9.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+
+@export()
+@description('The type for the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided.')
+type publicIPAddressObjectType = {
+  @description('Required. The name of the Public IP Address.')
+  name: string
+
+  @description('Optional. Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix.')
+  publicIpPrefixResourceId: string?
+
+  @description('Optional. The public IP address allocation method.')
+  publicIPAllocationMethod: 'Dynamic' | 'Static'?
+
+  @description('Optional. A list of availability zones denoting the IP allocated for the resource needs to come from.')
+  availabilityZones: int[]?
+
+  @description('Optional. IP address version.')
+  publicIPAddressVersion: 'IPv4' | 'IPv6'?
+
+  @description('Optional. The DNS settings of the public IP address.')
+  dnsSettings: dnsSettingsType?
+
+  @description('Optional. The list of tags associated with the public IP address.')
+  ipTags: ipTagType[]?
+
+  @description('Optional. The lock settings of the service.')
+  lock: lockType?
+
+  @description('Optional. Name of a public IP address SKU.')
+  skuName: 'Basic' | 'Standard'?
+
+  @description('Optional. Tier of a public IP address SKU.')
+  skuTier: 'Global' | 'Regional'?
+
+  @description('Optional. The DDoS protection plan configuration associated with the public IP address.')
+  ddosSettings: ddosSettingsType?
+
+  @description('Optional. Location for the Public IP resource.')
+  location: string?
+
+  @description('Optional. Array of role assignments to create for the Public IP resource.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. Enable or disable usage telemetry for the Public IP module.')
+  enableTelemetry: bool?
+
+  @description('Optional. Idle timeout in minutes for the Public IP resource.')
+  idleTimeoutInMinutes: int?
+
+  @description('Optional. Tags to apply to the Public IP resource.')
+  tags: resourceInput<'Microsoft.Network/publicIPAddresses@2024-07-01'>.tags?
+
+  @description('Optional. Diagnostic settings for the Public IP resource.')
+  diagnosticSettings: diagnosticSettingFullType[]?
+}

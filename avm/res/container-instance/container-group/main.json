@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "16189039832342364109"
+      "templateHash": "10202559695628197530"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group."
@@ -564,7 +564,7 @@
         "description": "The type for an IP address."
       }
     },
-    "containerGroupSubnetIdType": {
+    "containerGroupSubnetType": {
       "type": "object",
       "properties": {
         "subnetResourceId": {
@@ -584,38 +584,6 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for a container group subnet."
-      }
-    },
-    "dnsConfigType": {
-      "type": "object",
-      "properties": {
-        "nameServers": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "metadata": {
-            "description": "Required. \tThe DNS servers for the container group."
-          }
-        },
-        "options": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The DNS options for the container group."
-          }
-        },
-        "searchDomains": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The DNS search domains for hostname lookup in the container group."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for a DNS configuration."
       }
     },
     "containerGpuType": {
@@ -721,7 +689,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -749,7 +717,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -821,11 +789,14 @@
       }
     },
     "dnsConfig": {
-      "$ref": "#/definitions/dnsConfigType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerInstance/containerGroups@2023-05-01#properties/properties/properties/dnsConfig"
+        },
         "description": "Optional. The DNS config information for a container group."
-      }
+      },
+      "nullable": true
     },
     "initContainers": {
       "type": "array",
@@ -840,7 +811,7 @@
     "subnets": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/containerGroupSubnetIdType"
+        "$ref": "#/definitions/containerGroupSubnetType"
       },
       "nullable": true,
       "metadata": {

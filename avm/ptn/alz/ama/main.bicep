@@ -12,7 +12,7 @@ param lockConfig lockType?
 param userAssignedIdentityName string
 
 @description('Required. The resource ID of the Log Analytics Workspace.')
-param logAnalyticsWorkspaceId string
+param logAnalyticsWorkspaceResourceId string
 
 @description('Required. The name of the data collection rule for VM Insights.')
 param dataCollectionRuleVMInsightsName string
@@ -81,7 +81,7 @@ resource dataCollectionRuleVMInsightsPerfAndMap 'Microsoft.Insights/dataCollecti
     destinations: {
       logAnalytics: [
         {
-          workspaceResourceId: logAnalyticsWorkspaceId
+          workspaceResourceId: logAnalyticsWorkspaceResourceId
           name: 'VMInsightsPerf-Logs-Dest'
         }
       ]
@@ -131,7 +131,7 @@ resource dataCollectionRuleVMInsightsPerfOnly 'Microsoft.Insights/dataCollection
     destinations: {
       logAnalytics: [
         {
-          workspaceResourceId: logAnalyticsWorkspaceId
+          workspaceResourceId: logAnalyticsWorkspaceResourceId
           name: 'VMInsightsPerf-Logs-Dest'
         }
       ]
@@ -149,7 +149,7 @@ resource dataCollectionRuleVMInsightsPerfOnly 'Microsoft.Insights/dataCollection
   }
 }
 
-resource dataCollectionRuleVMInsightsPerfandMapLock 'Microsoft.Authorization/locks@2020-05-01' = if (lockConfig.?kind != 'None' && dataCollectionRuleVMInsightsExperience == 'PerfAndMap') {
+resource dataCollectionRuleVMInsightsPerfandMapLock 'Microsoft.Authorization/locks@2020-05-01' = if (lockConfig.?kind != 'None' && !(empty(lockConfig.?name)) && dataCollectionRuleVMInsightsExperience == 'PerfAndMap') {
   scope: dataCollectionRuleVMInsightsPerfAndMap
   name: lockConfig.?name ?? '${dataCollectionRuleVMInsightsPerfAndMap.name}-lock'
   properties: {
@@ -157,7 +157,7 @@ resource dataCollectionRuleVMInsightsPerfandMapLock 'Microsoft.Authorization/loc
   }
 }
 
-resource dataCollectionRuleVMInsightsPerfOnlyLock 'Microsoft.Authorization/locks@2020-05-01' = if (lockConfig.?kind != 'None' && dataCollectionRuleVMInsightsExperience == 'PerfOnly') {
+resource dataCollectionRuleVMInsightsPerfOnlyLock 'Microsoft.Authorization/locks@2020-05-01' = if (lockConfig.?kind != 'None' && !(empty(lockConfig.?name)) && dataCollectionRuleVMInsightsExperience == 'PerfOnly') {
   scope: dataCollectionRuleVMInsightsPerfOnly
   name: lockConfig.?name ?? '${dataCollectionRuleVMInsightsPerfOnly.name}-lock'
   properties: {
@@ -408,7 +408,7 @@ resource dataCollectionRuleChangeTracking 'Microsoft.Insights/dataCollectionRule
     destinations: {
       logAnalytics: [
         {
-          workspaceResourceId: logAnalyticsWorkspaceId
+          workspaceResourceId: logAnalyticsWorkspaceResourceId
           name: 'Microsoft-CT-Dest'
         }
       ]
@@ -428,7 +428,7 @@ resource dataCollectionRuleChangeTracking 'Microsoft.Insights/dataCollectionRule
   }
 }
 
-resource dataCollectionRuleChangeTrackingLock 'Microsoft.Authorization/locks@2020-05-01' = if (lockConfig.?kind != 'None') {
+resource dataCollectionRuleChangeTrackingLock 'Microsoft.Authorization/locks@2020-05-01' = if (lockConfig.?kind != 'None' && !(empty(lockConfig.?name))) {
   scope: dataCollectionRuleChangeTracking
   name: lockConfig.?name ?? '${dataCollectionRuleChangeTracking.name}-lock'
   properties: {
@@ -464,7 +464,7 @@ resource resDataCollectionRuleMDFCSQL 'Microsoft.Insights/dataCollectionRules@20
     destinations: {
       logAnalytics: [
         {
-          workspaceResourceId: logAnalyticsWorkspaceId
+          workspaceResourceId: logAnalyticsWorkspaceResourceId
           name: 'Microsoft-DefenderForSQL-Dest'
         }
       ]
@@ -486,7 +486,7 @@ resource resDataCollectionRuleMDFCSQL 'Microsoft.Insights/dataCollectionRules@20
   }
 }
 
-resource dataCollectionRuleMDFCSQLLock 'Microsoft.Authorization/locks@2020-05-01' = if (lockConfig.?kind != 'None') {
+resource dataCollectionRuleMDFCSQLLock 'Microsoft.Authorization/locks@2020-05-01' = if (lockConfig.?kind != 'None' && !(empty(lockConfig.?name))) {
   scope: resDataCollectionRuleMDFCSQL
   name: lockConfig.?name ?? '${resDataCollectionRuleMDFCSQL.name}-lock'
   properties: {

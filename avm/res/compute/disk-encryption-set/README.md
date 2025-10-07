@@ -643,7 +643,6 @@ The version of the customer managed key to reference for encryption. If not prov
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `location`
 

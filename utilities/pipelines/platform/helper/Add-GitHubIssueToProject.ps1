@@ -5,17 +5,25 @@ Adds an existing GitHub issue to an existing GitHub project (the new type, not t
 .DESCRIPTION
 Adds an existing GitHub issue to an existing GitHub project (the new type, not the classic ones)
 
-.PARAMETER Repo
-Mandatory. The name of the respository to scan. Needs to have the structure "<owner>/<repositioryName>", like 'Azure/bicep-registry-modules/'
+.PARAMETER RepositoryOwner
+Mandatory. The repository's organization.
+
+.PARAMETER RepositoryName
+Mandatory. The name of the repository.
 
 .PARAMETER ProjectNumber
 Mandatory. The GitHub project number (see last part of project URL, for example 538 for https://github.com/orgs/Azure/projects/538)
 
 .PARAMETER IssueUrl
-Mandatory. The URL of the GitHub issue, like 'https://github.com/Azure/bicep-registry-modules/issues/757'
+Condtional. The URL of the GitHub issue, like 'https://github.com/Azure/bicep-registry-modules/issues/757' . Required if IssueId is not specified.
+
+.PARAMETER IssueId
+Condtional. The GH issue ID, like '3154954746'. Note: This is not the same as the issue number. Required if IssueUrl is not specified.
 
 .EXAMPLE
-Add-GitHubIssueToProject -Repo 'Azure/bicep-registry-modules' -ProjectNumber 538 -IssueUrl 'https://github.com/Azure/bicep-registry-modules/issues/757'
+Add-GitHubIssueToProject -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules' -ProjectNumber 538 -IssueUrl 'https://github.com/Azure/bicep-registry-modules/issues/757'
+
+Add the issue 757 to proejct 538.
 
 .NOTES
 Needs to run under a context with the permissions to read/write organization projects
@@ -23,16 +31,20 @@ Needs to run under a context with the permissions to read/write organization pro
 function Add-GitHubIssueToProject {
     param (
         [Parameter(Mandatory = $true)]
-        [string] $Repo,
+        [string] $RepositoryOwner,
+
+        [Parameter(Mandatory = $true)]
+        [string] $RepositoryName,
 
         [Parameter(Mandatory = $true)]
         [int] $ProjectNumber,
 
-        [Parameter(Mandatory = $true)]
-        [string] $IssueUrl
-    )
+        [Parameter(Mandatory = $true, ParameterSetName = 'ByUrl')]
+        [string] $IssueUrl,
 
-    $Organization = $Repo.Split('/')[0]
+        [Parameter(Mandatory = $true, ParameterSetName = 'ById')]
+        [string] $IssueId
+    )
 
     $Project = gh api graphql -f query='
   query($organization: String! $number: Int!){
@@ -41,10 +53,12 @@ function Add-GitHubIssueToProject {
         id
       }
     }
-  }' -f organization=$Organization -F number=$ProjectNumber | ConvertFrom-Json -Depth 10
+  }' -f organization=$RepositoryOwner -F number=$ProjectNumber | ConvertFrom-Json -Depth 10
 
     $ProjectId = $Project.data.organization.projectV2.id
-    $IssueId = (gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --repo $Repo --json 'id' | ConvertFrom-Json -Depth 100).id
+    if ([String]::IsNullOrEmpty($IssueId)) {
+        $IssueId = (gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --repo "$RepositoryOwner/$RepositoryName" --json 'id' | ConvertFrom-Json -Depth 100).id
+    }
 
     $null = gh api graphql -f query='
   mutation($project:ID!, $issue:ID!) {

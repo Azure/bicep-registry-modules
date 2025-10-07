@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/alz/empty/CHANGELOG.md).
 
+## 0.3.1
+
+### Changes
+
+- Wrapped deployment names in `take()` to ensure they do not exceed the 64 character limit. This prevents deployment failures when using long management group names. Closing [#5895](https://github.com/Azure/bicep-registry-modules/issues/5895).
+
+### Breaking Changes
+
+- None
+
 ## 0.3.0
 
 ### Changes

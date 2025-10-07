@@ -30,8 +30,14 @@ param sku string = 'S0'
 @description('Required. Whether to allow project management in AI Foundry. This is required to enable the AI Foundry UI and project management features.')
 param allowProjectManagement bool
 
-@description('Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with \'privateDnsZoneId\' to establish private endpoints.')
-param privateEndpointSubnetId string?
+@description('Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with \'privateDnsZoneResourceIds\' to establish private endpoints.')
+param privateEndpointSubnetResourceId string?
+
+@description('Optional. Resource Id of an existing subnet to use for agent connectivity. This is required when using agents with private endpoints.')
+param agentSubnetResourceId string?
+
+@description('Required. Allow only Azure AD authentication. Should be enabled for security reasons.')
+param disableLocalAuth bool
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Specifies the role assignments for the AI Foundry resource.')
@@ -59,9 +65,9 @@ var privateDnsZoneResourceIdValues = [
     privateDnsZoneResourceId: id
   }
 ]
-var privateNetworkingEnabled = !empty(privateDnsZoneResourceIdValues) && !empty(privateEndpointSubnetId)
+var privateNetworkingEnabled = !empty(privateDnsZoneResourceIdValues) && !empty(privateEndpointSubnetResourceId)
 
-module foundryAccount 'br/public:avm/res/cognitive-services/account:0.12.0' = {
+module foundryAccount 'br/public:avm/res/cognitive-services/account:0.13.2' = {
   name: take('avm.res.cognitive-services.account.${name}', 64)
   params: {
     name: name
@@ -76,19 +82,27 @@ module foundryAccount 'br/public:avm/res/cognitive-services/account:0.12.0' = {
     }
     deployments: aiModelDeployments
     customSubDomainName: name
-    disableLocalAuth: privateNetworkingEnabled
+    disableLocalAuth: disableLocalAuth
     publicNetworkAccess: privateNetworkingEnabled ? 'Disabled' : 'Enabled'
     networkAcls: {
-      defaultAction: privateNetworkingEnabled ? 'Deny' : 'Allow'
+      defaultAction: 'Allow'
       bypass: 'AzureServices'
     }
+    // NOTE: When supplying an agent subnet, the AI Foundry Account will automatically create a capability host for the agent service.
+    networkInjections: privateNetworkingEnabled && !empty(agentSubnetResourceId)
+      ? {
+          scenario: 'agent'
+          subnetResourceId: agentSubnetResourceId!
+          useMicrosoftManagedNetwork: false
+        }
+      : null
     privateEndpoints: privateNetworkingEnabled
       ? [
           {
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: privateDnsZoneResourceIdValues
             }
-            subnetResourceId: privateEndpointSubnetId!
+            subnetResourceId: privateEndpointSubnetResourceId!
           }
         ]
       : []

@@ -12,7 +12,7 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 param lock lockType?
 
 @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/privateLinkServices@2024-10-01'>.tags?
 
 @description('Required. An array of private link service IP configurations. At least one IP configuration is required on the private link service.')
 param ipConfigurations array

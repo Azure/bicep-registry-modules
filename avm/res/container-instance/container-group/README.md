@@ -2377,40 +2377,6 @@ The DNS config information for a container group.
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`nameServers`](#parameter-dnsconfignameservers) | array | 	The DNS servers for the container group. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`options`](#parameter-dnsconfigoptions) | string | The DNS options for the container group. |
-| [`searchDomains`](#parameter-dnsconfigsearchdomains) | string | The DNS search domains for hostname lookup in the container group. |
-
-### Parameter: `dnsConfig.nameServers`
-
-	The DNS servers for the container group.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `dnsConfig.options`
-
-The DNS options for the container group.
-
-- Required: No
-- Type: string
-
-### Parameter: `dnsConfig.searchDomains`
-
-The DNS search domains for hostname lookup in the container group.
-
-- Required: No
-- Type: string
-
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -2824,9 +2790,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 

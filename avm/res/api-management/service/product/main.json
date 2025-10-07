@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "7427869826758534329"
+      "version": "0.37.4.10188",
+      "templateHash": "16064108269009620660"
     },
     "name": "API Management Service Products",
     "description": "This module deploys an API Management Service Product."
@@ -40,16 +41,22 @@
     },
     "apis": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Array of Product APIs."
+        "description": "Optional. Names of Product APIs."
       }
     },
     "groups": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Array of Product Groups."
+        "description": "Optional. Names of Product Groups."
       }
     },
     "name": {
@@ -85,12 +92,48 @@
       "metadata": {
         "description": "Optional. Product terms of use. Developers trying to subscribe to the product will be presented and required to accept these terms before they can complete the subscription process."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
-  "resources": [
-    {
+  "variables": {
+    "enableReferencedModulesTelemetry": false
+  },
+  "resources": {
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2024-05-01",
+      "name": "[parameters('apiManagementServiceName')]"
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.apimgmt-product.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "product": {
       "type": "Microsoft.ApiManagement/service/products",
-      "apiVersion": "2022-08-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "description": "[parameters('description')]",
@@ -102,10 +145,10 @@
         "state": "[parameters('state')]"
       }
     },
-    {
+    "product_apis": {
       "copy": {
         "name": "product_apis",
-        "count": "[length(parameters('apis'))]"
+        "count": "[length(coalesce(parameters('apis'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -120,10 +163,13 @@
             "value": "[parameters('apiManagementServiceName')]"
           },
           "name": {
-            "value": "[parameters('apis')[copyIndex()].name]"
+            "value": "[coalesce(parameters('apis'), createArray())[copyIndex()]]"
           },
           "productName": {
             "value": "[parameters('name')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -132,8 +178,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "6881101310103461222"
+              "version": "0.37.4.10188",
+              "templateHash": "5465704654489665391"
             },
             "name": "API Management Service Products APIs",
             "description": "This module deploys an API Management Service Product API."
@@ -156,12 +202,39 @@
               "metadata": {
                 "description": "Required. Name of the product API."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
             {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.apimgmt-productapi.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            {
               "type": "Microsoft.ApiManagement/service/products/apis",
-              "apiVersion": "2022-08-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
             }
           ],
@@ -191,10 +264,10 @@
         }
       }
     },
-    {
+    "product_groups": {
       "copy": {
         "name": "product_groups",
-        "count": "[length(parameters('groups'))]"
+        "count": "[length(coalesce(parameters('groups'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -209,10 +282,13 @@
             "value": "[parameters('apiManagementServiceName')]"
           },
           "name": {
-            "value": "[parameters('groups')[copyIndex()].name]"
+            "value": "[coalesce(parameters('groups'), createArray())[copyIndex()]]"
           },
           "productName": {
             "value": "[parameters('name')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -221,8 +297,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "7173352386317054073"
+              "version": "0.37.4.10188",
+              "templateHash": "13523839423669576454"
             },
             "name": "API Management Service Products Groups",
             "description": "This module deploys an API Management Service Product Group."
@@ -245,12 +321,39 @@
               "metadata": {
                 "description": "Required. Name of the product group."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
             {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.apimgmt-productgroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            {
               "type": "Microsoft.ApiManagement/service/products/groups",
-              "apiVersion": "2022-08-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
             }
           ],
@@ -280,7 +383,7 @@
         }
       }
     }
-  ],
+  },
   "outputs": {
     "resourceId": {
       "type": "string",
@@ -309,8 +412,8 @@
         "description": "The Resources IDs of the API management service product APIs."
       },
       "copy": {
-        "count": "[length(range(0, length(parameters('apis'))))]",
-        "input": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-Api-{1}', deployment().name, range(0, length(parameters('apis')))[copyIndex()])), '2022-09-01').outputs.resourceId.value]"
+        "count": "[length(range(0, length(coalesce(parameters('apis'), createArray()))))]",
+        "input": "[reference(format('product_apis[{0}]', range(0, length(coalesce(parameters('apis'), createArray())))[copyIndex()])).outputs.resourceId.value]"
       }
     },
     "groupResourceIds": {
@@ -319,8 +422,8 @@
         "description": "The Resources IDs of the API management service product groups."
       },
       "copy": {
-        "count": "[length(range(0, length(parameters('groups'))))]",
-        "input": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-Group-{1}', deployment().name, range(0, length(parameters('groups')))[copyIndex()])), '2022-09-01').outputs.resourceId.value]"
+        "count": "[length(range(0, length(coalesce(parameters('groups'), createArray()))))]",
+        "input": "[reference(format('product_groups[{0}]', range(0, length(coalesce(parameters('groups'), createArray())))[copyIndex()])).outputs.resourceId.value]"
       }
     }
   }
