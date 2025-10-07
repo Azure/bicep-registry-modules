@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "6838012101997832470"
+      "version": "0.38.5.1644",
+      "templateHash": "7350186746391045588"
     },
     "name": "IP Groups",
     "description": "This module deploys an IP Group."
@@ -166,10 +166,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/ipGroups@2024-05-01#properties/tags"
+        },
         "description": "Optional. Resource tags."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
