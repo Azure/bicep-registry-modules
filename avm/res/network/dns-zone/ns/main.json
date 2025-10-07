@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "14315870150258270228"
+      "version": "0.38.5.1644",
+      "templateHash": "9325149274068376789"
     },
     "name": "Public DNS Zone NS record",
     "description": "This module deploys a Public DNS Zone NS record."
@@ -103,17 +103,23 @@
     },
     "metadata": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/dnsZones/NS@2018-05-01#properties/properties/properties/metadata"
+        },
         "description": "Optional. The metadata attached to the record set."
-      }
+      },
+      "nullable": true
     },
     "nsRecords": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/dnsZones/NS@2018-05-01#properties/properties/properties/NSRecords"
+        },
         "description": "Optional. The list of NS records in the record set."
-      }
+      },
+      "nullable": true
     },
     "ttl": {
       "type": "int",

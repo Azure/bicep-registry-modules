@@ -6,6 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
+- Added type for `tags` parameter
 - Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
 - Updated API version for `Microsoft.Network/expressRouteCircuits` to 2024-07-01.
 - Added support for `globalReachEnabled` parameter in the module.
