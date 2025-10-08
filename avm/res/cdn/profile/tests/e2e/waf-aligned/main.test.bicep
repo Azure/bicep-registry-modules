@@ -142,7 +142,7 @@ module testDeployment '../../../main.bicep' = [
             {
               name: 'dep-${namePrefix}-waf-api-origin'
               hostName: '${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}'
-              originHostHeader: 'https://azure.github.io/Azure-Verified-Modules/' // Should be 'https://azure.github.io/Azure-Verified-Modules/'
+              originHostHeader: 'www.aka.ms/avm' // Should be 'www.aka.ms/avm'
               httpPort: 80
               httpsPort: 443
               priority: 1
@@ -156,7 +156,7 @@ module testDeployment '../../../main.bicep' = [
               originHostHeader: '' // Should have the RP calculate the name
               httpPort: 80
               httpsPort: 443
-              priority: 1
+              priority: 2
               weight: 1000
               enabledState: 'Enabled'
               enforceCertificateNameCheck: true // WAF: Security - Certificate validation
@@ -166,7 +166,7 @@ module testDeployment '../../../main.bicep' = [
               hostName: '${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}'
               httpPort: 80
               httpsPort: 443
-              priority: 1
+              priority: 3
               weight: 1000
               enabledState: 'Enabled'
               enforceCertificateNameCheck: true // WAF: Security - Certificate validation
