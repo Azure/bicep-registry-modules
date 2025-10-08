@@ -162,7 +162,7 @@ module testDeployment '../../../main.bicep' = [
               enforceCertificateNameCheck: true // WAF: Security - Certificate validation
             }
             {
-              name: 'dep-${namePrefix}-waf-api-origin-no-2'
+              name: 'dep-${namePrefix}-waf-api-origin-no-3'
               hostName: '${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}'
               httpPort: 80
               httpsPort: 443
@@ -398,6 +398,9 @@ output dnsValidationRecords array = testDeployment[0].outputs.dnsValidation
 
 @description('The AFD endpoint host names.')
 output afdEndpointNames array = testDeployment[0].outputs.frontDoorEndpointHostNames
+
+@description('The user\'s name prefix. Required for post-deployment tests.')
+output namePrefix string = namePrefix
 
 @description('The name of the resource. Required for post-deployment tests.')
 output name string = testDeployment[0].outputs.name
