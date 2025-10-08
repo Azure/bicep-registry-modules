@@ -54,7 +54,7 @@ param vpnGatewayScaleUnit int?
 param vpnServerConfigurationResourceId string?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/p2svpnGateways@2024-01-01'>.tags?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
