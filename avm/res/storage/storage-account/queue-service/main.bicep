@@ -3,7 +3,7 @@ metadata description = 'This module deploys a Storage Account Queue Service.'
 
 @maxLength(24)
 @description('Conditional. The name of the parent Storage Account. Required if the template is used in a standalone deployment.')
-param storageAccountName string?
+param storageAccountName string
 
 @description('Optional. Queues to create.')
 param queues array?
