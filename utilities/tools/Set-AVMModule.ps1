@@ -106,13 +106,22 @@ function Set-AVMModule {
     if ($InvokeForDiff) {
         . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
 
-        $relevantTemplatePaths = Get-GitDiff -PathOnly | Where-Object { $_ -match '[\/|\\]main\.bicep$' }
+        $relevantTemplatePaths = Get-GitDiff -PathOnly -SkipStats | Where-Object { $_ -match '[\/|\\]main\.bicep$' }
+        Write-Verbose ('Found [{0}] files in diff' -f $relevantTemplatePaths.Count) -Verbose
+
         # Handling relevant parent modules that would be affected by a diff in a child
-        $parentTemplatePaths = Get-ParentFolderPathList -Path (Split-Path $filePath) -Filter 'OnlyModules' | ForEach-Object { Join-Path $_ 'main.bicep' } | Where-Object { Test-Path $_ }
+        $parentTemplatePaths = $relevantTemplatePaths | ForEach-Object {
+            Get-ParentFolderPathList -Path (Split-Path $_) -Filter 'OnlyModules'
+        } | ForEach-Object { Join-Path $_ 'main.bicep' } | Where-Object { Test-Path $_ } | Select-Object -Unique
         Write-Verbose ('Union with [{0}] relevant parent folder template files' -f $parentTemplatePaths.Count) -Verbose
-        $relevantTemplatePaths += $parentTemplatePaths | Select-Object -Unique
+        $relevantTemplatePaths += $parentTemplatePaths
+        $relevantTemplatePaths = $relevantTemplatePaths | Sort-Object -Unique
 
         Write-Verbose ('Running for [{0}] relevant files' -f $relevantTemplatePaths.Count) -Verbose
+        $relevantTemplatePaths | ForEach-Object {
+            $RelPath = (($_ -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
+            Write-Verbose " - $RelPath" -Verbose
+        }
     } else {
         $resolvedPath = (Resolve-Path $ModuleFolderPath).Path
 

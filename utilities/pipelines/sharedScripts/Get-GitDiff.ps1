@@ -38,6 +38,9 @@ Optional. If specified, returns only the paths of the modified files.
 .PARAMETER PathFilter
 Optional. If specified, filters the modified files by the provided path pattern.
 
+.PARAMETER SkipStats
+Optional. Skip the output of statistics
+
 .EXAMPLE
 Get-GitDiff -PathOnly
 
@@ -81,7 +84,11 @@ function Get-GitDiff {
         [switch] $PathOnly,
 
         [Parameter()]
-        [string] $PathFilter
+        [string] $PathFilter,
+
+        [Parameter()]
+        [switch] $SkipStats
+
     )
 
     $currentBranch = Get-GitBranchName
@@ -107,15 +114,17 @@ function Get-GitDiff {
         Write-Verbose ('Fetching changes of latest upstream [main] commit [{0}] against current commit [{1}].' -f $compareFromCommit, $compareWithCommit) -Verbose
     }
 
-    $statsInput = @(
-        '--diff-filter=AM',
-        $compareFromCommit,
-        $compareWithCommit,
-        ((-not [String]::IsNullOrEmpty($PathFilter)) ? '--' : $null),
-        ((-not [String]::IsNullOrEmpty($PathFilter)) ? $PathFilter : $null)
-    ) | Where-Object { $_ }
-    $stats = git diff --stat $statsInput
-    Write-Verbose ("Diff found:`n{0}" -f ($stats | Out-String)) -Verbose
+    if (-not $SkipStats) {
+        $statsInput = @(
+            '--diff-filter=AM',
+            $compareFromCommit,
+            $compareWithCommit,
+            ((-not [String]::IsNullOrEmpty($PathFilter)) ? '--' : $null),
+            ((-not [String]::IsNullOrEmpty($PathFilter)) ? $PathFilter : $null)
+        ) | Where-Object { $_ }
+        $stats = git diff --stat $statsInput
+        Write-Verbose ("Diff found:`n{0}" -f ($stats | Out-String)) -Verbose
+    }
 
     $diffInput = @(
         '--diff-filter=AM',
