@@ -55,7 +55,7 @@ module originGroup_origins 'origin/main.bicep' = [
       httpsPort: origin.?httpsPort
       originHostHeader: !empty(origin.?originHostHeader)
         ? origin.?originHostHeader
-        : (origin.originHostHeader! == '' ? null : origin.hostName)
+        : (origin.?originHostHeader == '' ? null : origin.hostName)
       priority: origin.?priority
       weight: origin.?weight
       sharedPrivateLinkResource: origin.?sharedPrivateLinkResource
