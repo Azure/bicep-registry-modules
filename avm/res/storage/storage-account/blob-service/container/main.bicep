@@ -185,6 +185,9 @@ output resourceId string = container.id
 @description('The resource group of the deployed container.')
 output resourceGroupName string = resourceGroup().name
 
+// =============== //
+//   Definitions   //
+// =============== //
 @export()
 @description('The type for an immutability policy.')
 type immutabilityPolicyType = {

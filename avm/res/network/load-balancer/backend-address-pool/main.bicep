@@ -24,17 +24,21 @@ param drainPeriodInSeconds int = 0
 @description('Optional. Backend address synchronous mode for the backend pool.')
 param syncMode string = ''
 
-resource loadBalancer 'Microsoft.Network/loadBalancers@2023-11-01' existing = {
+@description('Optional. The resource Id of the virtual network.')
+param virtualNetworkResourceId string = ''
+
+resource loadBalancer 'Microsoft.Network/loadBalancers@2024-10-01' existing = {
   name: loadBalancerName
 }
 
-resource backendAddressPool 'Microsoft.Network/loadBalancers/backendAddressPools@2023-11-01' = {
+resource backendAddressPool 'Microsoft.Network/loadBalancers/backendAddressPools@2024-10-01' = {
   name: name
   properties: {
     loadBalancerBackendAddresses: loadBalancerBackendAddresses
     tunnelInterfaces: tunnelInterfaces
     drainPeriodInSeconds: drainPeriodInSeconds != 0 ? drainPeriodInSeconds : null
     syncMode: !empty(syncMode) ? syncMode : null
+    virtualNetwork: !empty(virtualNetworkResourceId) ? { id: virtualNetworkResourceId } : null
   }
   parent: loadBalancer
 }

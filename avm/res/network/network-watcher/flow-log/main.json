@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "152927297469547499"
+      "version": "0.38.5.1644",
+      "templateHash": "7643257579849162716"
     },
     "name": "NSG Flow Logs",
     "description": "This module controls the Network Security Group Flow Logs and analytics settings.\n**Note: this module must be run on the Resource Group where Network Watcher is deployed**"
@@ -28,10 +28,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/networkWatchers/flowLogs@2024-05-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "location": {
       "type": "string",
@@ -46,7 +49,7 @@
         "description": "Required. Resource ID of the NSG that must be enabled for Flow Logs."
       }
     },
-    "storageId": {
+    "storageResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. Resource ID of the diagnostic storage account."
@@ -72,7 +75,7 @@
     },
     "workspaceResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Specify the Log Analytics Workspace Resource ID."
       }
@@ -96,28 +99,33 @@
       "metadata": {
         "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
       }
+    },
+    "enabledFilteringCriteria": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Field to filter network traffic logs based on SrcIP, SrcPort, DstIP, DstPort, Protocol, Encryption, Direction and Action. If not specified, all network traffic will be logged."
+      }
     }
-  },
-  "variables": {
-    "flowAnalyticsConfiguration": "[if(and(not(empty(parameters('workspaceResourceId'))), equals(parameters('enabled'), true())), createObject('networkWatcherFlowAnalyticsConfiguration', createObject('enabled', true(), 'workspaceResourceId', parameters('workspaceResourceId'), 'trafficAnalyticsInterval', parameters('trafficAnalyticsInterval'))), createObject('networkWatcherFlowAnalyticsConfiguration', createObject('enabled', false())))]"
   },
   "resources": {
     "networkWatcher": {
       "existing": true,
       "type": "Microsoft.Network/networkWatchers",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2024-10-01",
       "name": "[parameters('networkWatcherName')]"
     },
     "flowLog": {
       "type": "Microsoft.Network/networkWatchers/flowLogs",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2024-10-01",
       "name": "[format('{0}/{1}', parameters('networkWatcherName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "location": "[parameters('location')]",
       "properties": {
         "targetResourceId": "[parameters('targetResourceId')]",
-        "storageId": "[parameters('storageId')]",
+        "storageId": "[parameters('storageResourceId')]",
         "enabled": "[parameters('enabled')]",
+        "enabledFilteringCriteria": "[parameters('enabledFilteringCriteria')]",
         "retentionPolicy": {
           "days": "[parameters('retentionInDays')]",
           "enabled": "[if(equals(parameters('retentionInDays'), 0), false(), true())]"
@@ -126,7 +134,7 @@
           "type": "JSON",
           "version": "[parameters('formatVersion')]"
         },
-        "flowAnalyticsConfiguration": "[variables('flowAnalyticsConfiguration')]"
+        "flowAnalyticsConfiguration": "[if(and(not(empty(parameters('workspaceResourceId'))), parameters('enabled')), createObject('networkWatcherFlowAnalyticsConfiguration', createObject('enabled', true(), 'workspaceResourceId', parameters('workspaceResourceId'), 'trafficAnalyticsInterval', parameters('trafficAnalyticsInterval'))), createObject('networkWatcherFlowAnalyticsConfiguration', createObject('enabled', false())))]"
       }
     }
   },
@@ -157,7 +165,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('flowLog', '2024-05-01', 'full').location]"
+      "value": "[reference('flowLog', '2024-10-01', 'full').location]"
     }
   }
 }
