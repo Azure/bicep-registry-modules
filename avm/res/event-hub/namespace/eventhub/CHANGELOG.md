@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added `identity` support to `captureDescription.destination`  parameter
+- Added `identity` support to `captureDescription.destination` parameter
 
 ### Breaking Changes
 
