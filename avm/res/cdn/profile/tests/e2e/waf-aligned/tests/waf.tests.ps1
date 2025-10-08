@@ -25,7 +25,7 @@ Describe 'Validate resource deployment' {
             foreach ($originGroup in $expectedOriginGroups) {
 
                 $originGroupTestCases += @{
-                    ExpectedOriginGroupName = $originGroup.name
+                    ExpectedOriginGroupName = $originGroup
                     ResourceGroupName       = $resourceGroupName
                     ProfileName             = $cdnProfileName
                 }
@@ -54,23 +54,20 @@ Describe 'Validate resource deployment' {
             $resourceGroupName = $TestInputData.DeploymentOutputs.resourceGroupName.Value
             $cdnProfileName = $TestInputData.DeploymentOutputs.name.Value
             $namePrefix = $TestInputData.DeploymentOutputs.namePrefix.Value
-            $expectedOriginGroups = @(
-                @{
-                    name    = "dep-$namePrefix-waf-api-origin-group"
-                    origins = @(
-                        "dep-$namePrefix-waf-api-origin",
-                        "dep-$namePrefix-waf-api-origin-no-2",
-                        "dep-$namePrefix-waf-api-origin-no-3"
-                    )
-                }
-            )
+            $expectedOriginGroups = @{
+                "dep-$namePrefix-waf-api-origin-group" = @(
+                    "dep-$namePrefix-waf-api-origin",
+                    "dep-$namePrefix-waf-api-origin-no-2",
+                    "dep-$namePrefix-waf-api-origin-no-3"
+                )
+            }
 
             $originTestCases = [System.Collections.ArrayList]@()
-            foreach ($originGroup in $expectedOriginGroups) {
-                foreach ($origin in $originGroup.origins) {
+            foreach ($originGroup in $expectedOriginGroups.Keys) {
+                foreach ($origin in $expectedOriginGroups[$originGroup]) {
                     $originTestCases += @{
-                        ExpectedOriginName = $origin.name
-                        OriginGroupName    = $originGroup.name
+                        OriginGroupName    = $originGroup
+                        ExpectedOriginName = $origin
                         ResourceGroupName  = $resourceGroupName
                         ProfileName        = $cdnProfileName
                     }
