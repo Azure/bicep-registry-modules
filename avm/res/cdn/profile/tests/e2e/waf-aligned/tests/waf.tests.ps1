@@ -21,10 +21,10 @@ Describe 'Validate resource deployment' {
             $namePrefix = $TestInputData.DeploymentOutputs.namePrefix.Value
             $expectedOriginGroups = @("dep-$namePrefix-waf-api-origin-group")
 
-            $testCases = [System.Collections.ArrayList]@()
+            $originGroupTestCases = [System.Collections.ArrayList]@()
             foreach ($originGroup in $expectedOriginGroups) {
 
-                $testCases += @{
+                $originGroupTestCases += @{
                     ExpectedOriginGroupName = $originGroup.name
                     ResourceGroupName       = $resourceGroupName
                     ProfileName             = $cdnProfileName
@@ -32,7 +32,7 @@ Describe 'Validate resource deployment' {
             }
         }
 
-        It 'Should have all expected origin group [<ExpectedOriginGroupName>] deployed' -TestCases $testCases {
+        It 'Should have all expected origin group [<ExpectedOriginGroupName>] deployed' -TestCases $originGroupTestCases {
 
             param (
                 [string] $ExpectedOriginGroupName,
@@ -65,10 +65,10 @@ Describe 'Validate resource deployment' {
                 }
             )
 
-            $testCases = [System.Collections.ArrayList]@()
+            $originTestCases = [System.Collections.ArrayList]@()
             foreach ($originGroup in $expectedOriginGroups) {
                 foreach ($origin in $originGroup.origins) {
-                    $testCases += @{
+                    $originTestCases += @{
                         ExpectedOriginName = $origin.name
                         OriginGroupName    = $originGroup.name
                         ResourceGroupName  = $resourceGroupName
@@ -78,7 +78,7 @@ Describe 'Validate resource deployment' {
             }
         }
 
-        It 'Origin group [<OriginGroupName>] should have expected origin [<ExpectedOriginName>] deployed' -TestCases $testCases {
+        It 'Origin group [<OriginGroupName>] should have expected origin [<ExpectedOriginName>] deployed' -TestCases $originTestCases {
 
             param (
                 [string] $ExpectedOriginName,
