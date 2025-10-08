@@ -146,7 +146,7 @@ module testDeployment '../../../main.bicep' = [
               httpPort: 80
               httpsPort: 443
               priority: 1
-              weight: 1000
+              weight: 100
               enabledState: 'Enabled'
               enforceCertificateNameCheck: true // WAF: Security - Certificate validation
             }
@@ -157,7 +157,7 @@ module testDeployment '../../../main.bicep' = [
               httpPort: 80
               httpsPort: 443
               priority: 2
-              weight: 1001
+              weight: 200
               enabledState: 'Enabled'
               enforceCertificateNameCheck: true // WAF: Security - Certificate validation
             }
@@ -167,7 +167,7 @@ module testDeployment '../../../main.bicep' = [
               httpPort: 80
               httpsPort: 443
               priority: 3
-              weight: 1002
+              weight: 300
               enabledState: 'Enabled'
               enforceCertificateNameCheck: true // WAF: Security - Certificate validation
             }
