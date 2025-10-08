@@ -19,12 +19,12 @@ Describe 'Validate resource deployment' {
 
             Write-Verbose ($TestInputData | ConvertTo-Json) -Verbose
 
-            $resourceGroupName = $TestInputData.DeploymentOutputs.resourceGroupName.value
-            $cdnProfileName = $TestInputData.DeploymentOutputs.name.value
+            $resourceGroupName = $TestInputData.DeploymentOutputs.resourceGroupName.Value
+            $cdnProfileName = $TestInputData.DeploymentOutputs.name.Value
             $moduleTestFolderPath = $TestInputData.ModuleTestFolderPath
             $templateData = bicep build (Join-Path $moduleTestFolderPath 'main.test.bicep') --stdout | ConvertFrom-Json -AsHashtable
             $templateParameters = ($templateData.resources | Where-Object { $_.name -like '*-test-*' }).properties.parameters
-            $expectedOriginGroups = $templateParameters.originGroups.value
+            $expectedOriginGroups = $templateParameters.originGroups.Value
 
             foreach ($originGroup in $expectedOriginGroups) {
                 $fetchedOriginGroup = Get-AzFrontDoorCdnOriginGroup -ResourceGroupName $resourceGroupName -ProfileName $cdnProfileName -OriginGroupName $originGroup.name
