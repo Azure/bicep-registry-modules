@@ -142,7 +142,7 @@ module testDeployment '../../../main.bicep' = [
             {
               name: 'dep-${namePrefix}-waf-api-origin'
               hostName: '${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}'
-              originHostHeader: 'myheader' // Should be 'myheader'
+              originHostHeader: 'https://azure.github.io/Azure-Verified-Modules/' // Should be 'https://azure.github.io/Azure-Verified-Modules/'
               httpPort: 80
               httpsPort: 443
               priority: 1
