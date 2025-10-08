@@ -74,6 +74,9 @@ function Set-AVMModule {
         [Parameter(ParameterSetName = 'Path', Mandatory = $false)]
         [switch] $Recurse,
 
+        [Parameter(ParameterSetName = 'Path', Mandatory = $false)]
+        [switch] $SkipFileAndFolderSetup,
+
         [Parameter(ParameterSetName = 'Diff', Mandatory = $false)]
         [switch] $InvokeForDiff,
 
@@ -85,9 +88,6 @@ function Set-AVMModule {
 
         [Parameter(Mandatory = $false)]
         [switch] $SkipReadMe,
-
-        [Parameter(Mandatory = $false)]
-        [switch] $SkipFileAndFolderSetup,
 
         [Parameter(Mandatory = $false)]
         [switch] $SkipVersionCheck,
@@ -110,6 +110,13 @@ function Set-AVMModule {
     } else {
         $resolvedPath = (Resolve-Path $ModuleFolderPath).Path
 
+        # Build up module file & folder structure if not yet existing. Should only run if an actual module path was provided (and not any of their parent paths)
+        if (-not $SkipFileAndFolderSetup -and (($resolvedPath -split '[\\|\/]avm[\\|\/](res|ptn|utl)[\\|\/].+?[\\|\/].+').count -gt 1)) {
+            if ($PSCmdlet.ShouldProcess("File & folder structure for path [$resolvedPath]", 'Setup')) {
+                Set-ModuleFileAndFolderSetup -FullModuleFolderPath $resolvedPath
+            }
+        }
+
         if ($Recurse) {
             $childInput = @{
                 Path    = $resolvedPath
@@ -131,15 +138,6 @@ function Set-AVMModule {
         return
     }
 
-    # Build up module file & folder structure if not yet existing. Should only run if an actual module path was provided (and not any of their parent paths)
-    foreach ($path in $relevantTemplatePaths) {
-        $folderPath = Split-Path $path
-        if (-not $SkipFileAndFolderSetup -and (($folderPath -split '[\\|\/]avm[\\|\/](res|ptn|utl)[\\|\/].+?[\\|\/].+').count -gt 1)) {
-            if ($PSCmdlet.ShouldProcess("File & folder structure for path [$folderPath]", 'Setup')) {
-                Set-ModuleFileAndFolderSetup -FullModuleFolderPath $folderPath
-            }
-        }
-    }
 
     if (-not $SkipVersionCheck) {
 
