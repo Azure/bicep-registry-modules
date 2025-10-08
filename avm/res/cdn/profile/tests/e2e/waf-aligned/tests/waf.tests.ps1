@@ -17,6 +17,8 @@ Describe 'Validate resource deployment' {
 
         It 'Should have all expected origins deployed' {
 
+            Write-Verbose ($TestInputData | ConvertTo-Json) -Verbose
+
             $resourceGroupName = $TestInputData.DeploymentOutputs.resourceGroupName.value
             $cdnProfileName = $TestInputData.DeploymentOutputs.name.value
             $moduleTestFolderPath = $TestInputData.ModuleTestFolderPath
