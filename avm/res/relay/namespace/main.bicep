@@ -4,7 +4,7 @@ metadata description = 'This module deploys a Relay Namespace'
 @description('Required. Name of the Relay Namespace.')
 @minLength(6)
 @maxLength(50)
-param name string
+param name string?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location

@@ -18,7 +18,7 @@ param defaultEncryptionScope string?
 param denyEncryptionScopeOverride bool?
 
 @description('Optional. Enable NFSv3 all squash on blob container.')
-param enableNfsV3AllSquash bool = false
+param enableNfsV3AllSquash bool = true
 
 @description('Optional. Enable NFSv3 root squash on blob container.')
 param enableNfsV3RootSquash bool = false
