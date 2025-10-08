@@ -13,7 +13,7 @@ Get-AvmCsvData -ModuleIndex 'Bicep-Resource'
 
 Parse the AVM Bicep modules
 #>
-Function Get-AvmCsvData {
+function Get-AvmCsvData {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
@@ -59,7 +59,10 @@ Function Get-AvmCsvData {
         # Remove '@Azure/' from the ModuleOwnersGHTeam property
         $item.ModuleOwnersGHTeam = $item.ModuleOwnersGHTeam -replace '@Azure\/', ''
         # Remove '@Azure/' from the ModuleContributorsGHTeam property
+
+        <# Assuming the CSV file will have data and then commenting below code will not work as expected. Alternatice is remove data from CSV and this code even if it stays will not do anything. I have commented below and require review.
         $item.ModuleContributorsGHTeam = $item.ModuleContributorsGHTeam -replace '@Azure\/', ''
+        #>
     }
 
     # Return the modified data
