@@ -255,7 +255,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       }
     ]
     environmentResourceId: '<environmentResourceId>'
-    name: 'acapriv001'
+    name: 'acafunc001'
     // Non-required parameters
     activeRevisionsMode: 'Single'
     exposedPort: 0
@@ -299,7 +299,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       "value": "<environmentResourceId>"
     },
     "name": {
-      "value": "acapriv001"
+      "value": "acafunc001"
     },
     // Non-required parameters
     "activeRevisionsMode": {
@@ -355,7 +355,7 @@ param containers = [
   }
 ]
 param environmentResourceId = '<environmentResourceId>'
-param name = 'acapriv001'
+param name = 'acafunc001'
 // Non-required parameters
 param activeRevisionsMode = 'Single'
 param exposedPort = 0
