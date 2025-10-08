@@ -2,12 +2,10 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/express-route-circuit/CHANGELOG.md).
 
-## 0.6.1
+## 0.7.0
 
 ### Changes
 
-- Added type for `tags` parameter
-- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
 - Updated API version for `Microsoft.Network/expressRouteCircuits` to 2024-07-01.
 - Added support for `globalReachEnabled` parameter in the module.
 - Introduced detailed peering configurations including IPv6 settings.
@@ -40,6 +38,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+- Added type for `tags` parameter
 
 ### Breaking Changes
 
