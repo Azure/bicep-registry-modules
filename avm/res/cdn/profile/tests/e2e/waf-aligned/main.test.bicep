@@ -142,7 +142,7 @@ module testDeployment '../../../main.bicep' = [
             {
               name: 'dep-${namePrefix}-waf-api-origin'
               hostName: '${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}'
-              originHostHeader: 'www.aka.ms/avm' // Should be 'www.aka.ms/avm'
+              originHostHeader: 'www.bing.com' // Should be 'www.bing.com'
               httpPort: 80
               httpsPort: 443
               priority: 1
