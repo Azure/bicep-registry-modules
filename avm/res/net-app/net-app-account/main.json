@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "718944121361636096"
+      "templateHash": "4664297620370737732"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp Files Account and the associated resource types such as backups, capacity pools and volumes."
@@ -1266,10 +1266,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.NetApp/netAppAccounts@2025-01-01#properties/tags"
+        },
         "description": "Optional. Tags for all resources."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
