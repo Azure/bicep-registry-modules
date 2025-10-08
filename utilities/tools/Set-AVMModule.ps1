@@ -36,7 +36,7 @@ Optional. Do not check for the latest Bicep CLI version.
 .PARAMETER InvokeForDiff
 Optional. Build files only for those modules who's files have changed (based on diff of branch to origin/main)
 
-.PARAMETER RepoRoot
+.PARAMETER RepoRootPath
 Optional. Path to the root of the repository.
 
 .EXAMPLE
@@ -81,7 +81,7 @@ function Set-AVMModule {
         [switch] $InvokeForDiff,
 
         [Parameter(ParameterSetName = 'Diff', Mandatory = $false)]
-        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.FullName,
+        [string] $RepoRootPath = (Get-Item -Path $PSScriptRoot).parent.parent.FullName,
 
         [Parameter(Mandatory = $false)]
         [switch] $SkipBuild,
@@ -100,12 +100,18 @@ function Set-AVMModule {
     )
 
     # # Load helper scripts
-    . (Join-Path $PSScriptRoot 'helper' 'Set-ModuleFileAndFolderSetup.ps1')
+    . (Join-Path $RepoRootPath 'utilities' 'tools' 'helper' 'Set-ModuleFileAndFolderSetup.ps1')
+    . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-ParentFolderPathList.ps1')
 
     if ($InvokeForDiff) {
-        . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
+        . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
 
         $relevantTemplatePaths = Get-GitDiff -PathOnly | Where-Object { $_ -match '[\/|\\]main\.bicep$' }
+        # Handling relevant parent modules that would be affected by a diff in a child
+        $parentTemplatePaths = Get-ParentFolderPathList -Path (Split-Path $filePath) -Filter 'OnlyModules' | ForEach-Object { Join-Path $_ 'main.bicep' } | Where-Object { Test-Path $_ }
+        Write-Verbose ('Union with [{0}] relevant parent folder template files' -f $parentTemplatePaths.Count) -Verbose
+        $relevantTemplatePaths += $parentTemplatePaths | Select-Object -Unique
+
         Write-Verbose ('Running for [{0}] relevant files' -f $relevantTemplatePaths.Count) -Verbose
     } else {
         $resolvedPath = (Resolve-Path $ModuleFolderPath).Path
