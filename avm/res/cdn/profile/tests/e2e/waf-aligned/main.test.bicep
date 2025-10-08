@@ -399,7 +399,10 @@ output dnsValidationRecords array = testDeployment[0].outputs.dnsValidation
 @description('The AFD endpoint host names.')
 output afdEndpointNames array = testDeployment[0].outputs.frontDoorEndpointHostNames
 
-@description('The resource group name.')
+@description('The name of the resource. Required for post-deployment tests.')
+output name string = testDeployment[0].outputs.name
+
+@description('The resource group name. Required for post-deployment tests.')
 output resourceGroupName string = resourceGroup.name
 
 @description('WAF compliance summary.')
