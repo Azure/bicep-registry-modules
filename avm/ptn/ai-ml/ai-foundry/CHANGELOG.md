@@ -4,6 +4,12 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ## 0.3.0
 
+### Breaking Changes
+
+- Changed ids of role assignments performed on Azure AI Project identity
+
+## 0.3.0
+
 ### Changes
 
 - Added Capability Hosts support
