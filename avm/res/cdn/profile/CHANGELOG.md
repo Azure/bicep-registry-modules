@@ -2,6 +2,52 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cdn/profile/CHANGELOG.md).
 
+## 0.16.0
+
+### Changes
+
+- Added type parameters
+  - `endpoint`
+  - `secrets`
+- Added type for `afdEndpoints` parameters
+  - `cacheConfiguration`
+  - `patternsToMatch`
+  - `supportedProtocols`
+  - `ruleSets`
+- Added type for `customDomains` parameters
+  - `extendedProperties`
+  - `customizedCipherSuiteSet`
+- Added type for `endpoints` parameters
+  - `properties`
+  - `tags`
+- Added type for `originGroups.origins.sharedPrivateLinkResource` parameters
+- Added type for `originGroups` parameters
+  - `healthProbeSettings`
+  - `loadBalancingSettings`
+  - `origins`
+- Added type for `rulesets.rules` parameters
+  - `actions`
+  - `conditions`
+- Updated references of `avm-common-types` to latest `0.6.1`
+- Added export for types
+  - `originGroupType`
+  - `ruleSetType`
+  - `afdEndpointType`
+  - `customDomainType`
+  - `endpointType`
+  - `secretType`
+
+### Breaking Changes
+
+- Renamed parameter `endpointProperties` to `endpoint`
+- Changed type for outputs `endpointName`, `endpointId` & `uri` from `''` to `null`
+- Changed type of `secret.subjectAlternativeNames` from `array` to `string[]` as per the resource provider interface
+- Changed type of `afdEndpoints.routes.ruleSets` from `{ name: string }[]` to simply `string[]`
+- Changed behavior of `originGroups.origins.originHostHeader` property so that
+  - If you specify a value other than `''`, the value is used
+  - If you specify `''`as the value, the service calculates a `originHostHeader` for you
+  - If you don't specify anything, or `null`, the origin's `hostName` is used instead
+
 ## 0.15.1
 
 ### Changes
