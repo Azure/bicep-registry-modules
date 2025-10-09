@@ -56,14 +56,14 @@ function Sync-AvmModulesList {
 
     $body = ''
 
-    $missingModules = $targetModules | Where-Object { $listedModules -NotContains $_ }
-    $unexpectedModules = $listedModules | Where-Object { $targetModules -NotContains $_ }
+    $missingModules = $targetModules | Where-Object { $listedModules -notcontains $_ }
+    $unexpectedModules = $listedModules | Where-Object { $targetModules -notcontains $_ }
 
-    $missingPatterns = $targetPatterns | Where-Object { $listedPatterns -NotContains $_ }
-    $unexpectedPatterns = $listedPatterns | Where-Object { $targetPatterns -NotContains $_ }
+    $missingPatterns = $targetPatterns | Where-Object { $listedPatterns -notcontains $_ }
+    $unexpectedPatterns = $listedPatterns | Where-Object { $targetPatterns -notcontains $_ }
 
-    $missingUtilities = $targetUtilities | Where-Object { $listedUtilities -NotContains $_ }
-    $unexpectedUtilities = $listedUtilities | Where-Object { $targetUtilities -NotContains $_ }
+    $missingUtilities = $targetUtilities | Where-Object { $listedUtilities -notcontains $_ }
+    $unexpectedUtilities = $listedUtilities | Where-Object { $targetUtilities -notcontains $_ }
 
     # Resource modules
     # ----------------
@@ -186,7 +186,7 @@ $([Environment]::NewLine)
 
     $issuesFound = $body -ne ''
 
-    $title = '[AVM core] AVM Module Issue template is not in sync with published resource modules and pattern modules list'
+    $title = '[AVM CI Environment Issue] AVM Module Issue template is not in sync with published resource modules and pattern modules list'
     $label = 'Type: AVM :a: :v: :m:,Type: Hygiene :broom:'
     $issues = gh issue list --state open --limit 500 --label $label --json 'title,url' --repo $Repo | ConvertFrom-Json -Depth 100
 
@@ -202,15 +202,13 @@ $([Environment]::NewLine)
             $issueUrl = gh issue create --title $title --body $body --label $label --repo $Repo
             # add issue to project
             $ProjectNumber = 538 # AVM - Issue Triage
-            Add-GitHubIssueToProject -Repo $Repo -ProjectNumber $ProjectNumber -IssueUrl $issueUrl
+            Add-GitHubIssueToProject -RepositoryOwner $Repo.Split('/')[0] -RepositoryName $Repo.Split('/')[1] -ProjectNumber $ProjectNumber -IssueUrl $issueUrl
         }
-    }
-    else {
+    } else {
         if ($issuesFound) {
             # update body
             gh issue edit $issues[0].url --body $body --repo $Repo
-        }
-        else {
+        } else {
             # close issue
             gh issue close $issues[0].url --repo $Repo
         }

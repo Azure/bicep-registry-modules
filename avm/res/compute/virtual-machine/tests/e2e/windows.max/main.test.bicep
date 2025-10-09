@@ -35,7 +35,7 @@ param backupManagementServiceEnterpriseApplicationObjectId string = ''
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -88,7 +88,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: enforcedLocation
       name: '${namePrefix}${serviceShort}'
-      computerName: '${namePrefix}winvm1'
+      computerName: take('m${namePrefix}${serviceShort}', 15)
       adminUsername: 'VMAdmin'
       imageReference: {
         publisher: 'MicrosoftWindowsServer'
@@ -284,22 +284,20 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       extensionCustomScriptConfig: {
-        enabled: true
         name: 'myCustomScript'
-        fileData: [
-          {
-            storageAccountId: nestedDependencies.outputs.storageAccountResourceId
-            uri: nestedDependencies.outputs.storageAccountCSEFileUrl
-          }
-        ]
+        settings: {
+          commandToExecute: 'powershell -ExecutionPolicy Unrestricted -Command "& ./${nestedDependencies.outputs.storageAccountCSEFileName}"'
+        }
+        protectedSettings: {
+          fileUris: [
+            '${nestedDependencies.outputs.storageAccountCSEFileUrl}?${nestedDependencies.outputs.storageAccountContainerCSFileSasToken}'
+          ]
+        }
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
-      }
-      extensionCustomScriptProtectedSetting: {
-        commandToExecute: 'powershell -ExecutionPolicy Unrestricted -Command "& ./${nestedDependencies.outputs.storageAccountCSEFileName}"'
       }
       extensionDependencyAgentConfig: {
         enabled: true
@@ -333,6 +331,9 @@ module testDeployment '../../../main.bicep' = [
       extensionAadJoinConfig: {
         enabled: true
         name: 'myAADLogin'
+        settings: {
+          mdmId: '' // '0000000a-0000-0000-c000-000000000000'
+        }
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'

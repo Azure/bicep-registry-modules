@@ -79,7 +79,7 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 param lock lockType?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.App/containerApps@2025-01-01'>.tags?
 
 @description('Optional. Collection of private container registry credentials for containers used by the Container app.')
 param registries resourceInput<'Microsoft.App/containerApps@2025-01-01'>.properties.configuration.registries?

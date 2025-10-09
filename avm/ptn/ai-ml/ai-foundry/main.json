@@ -143,6 +143,13 @@
             "description": "Optional. Whether to create Capability Hosts for the AI Agent Service. If true, the AI Foundry Account and default Project will be created with the capability host for the associated resources. Can only be true if 'includeAssociatedResources' is true. Defaults to false."
           }
         },
+        "disableLocalAuth": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Allow only Azure AD authentication. Should be enabled for security reasons. Defaults to true."
+          }
+        },
         "allowProjectManagement": {
           "type": "bool",
           "nullable": true,
@@ -605,6 +612,9 @@
           "name": "[if(not(empty(tryGet(parameters('aiFoundryConfiguration'), 'accountName'))), createObject('value', parameters('aiFoundryConfiguration').accountName), createObject('value', format('ai{0}', variables('resourcesName'))))]",
           "location": "[if(not(empty(tryGet(parameters('aiFoundryConfiguration'), 'location'))), createObject('value', parameters('aiFoundryConfiguration').location), createObject('value', parameters('location')))]",
           "sku": "[if(not(empty(tryGet(parameters('aiFoundryConfiguration'), 'sku'))), createObject('value', parameters('aiFoundryConfiguration').sku), createObject('value', 'S0'))]",
+          "disableLocalAuth": {
+            "value": "[coalesce(tryGet(parameters('aiFoundryConfiguration'), 'disableLocalAuth'), true())]"
+          },
           "allowProjectManagement": {
             "value": "[coalesce(tryGet(parameters('aiFoundryConfiguration'), 'allowProjectManagement'), true())]"
           },
@@ -917,6 +927,12 @@
                 "description": "Optional. Resource Id of an existing subnet to use for agent connectivity. This is required when using agents with private endpoints."
               }
             },
+            "disableLocalAuth": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Allow only Azure AD authentication. Should be enabled for security reasons."
+              }
+            },
             "roleAssignments": {
               "type": "array",
               "items": {
@@ -1028,7 +1044,7 @@
                     "value": "[parameters('name')]"
                   },
                   "disableLocalAuth": {
-                    "value": false
+                    "value": "[parameters('disableLocalAuth')]"
                   },
                   "publicNetworkAccess": "[if(variables('privateNetworkingEnabled'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                   "networkAcls": {
@@ -21496,6 +21512,7 @@
             }
           },
           "variables": {
+            "hasConnection": "[or(or(not(empty(parameters('cosmosDbConnection'))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]",
             "createProjectCapabilityHostInternal": "[and(and(and(parameters('createProjectCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]",
             "createAccountCapabilityHostInternal": "[and(and(and(parameters('createAccountCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]"
           },
@@ -21676,6 +21693,7 @@
               ]
             },
             "waitForProjectScript": {
+              "condition": "[variables('hasConnection')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
               "name": "[take(format('module.project.waitDeploymentScript.waitForProject.{0}', parameters('name')), 64)]",
@@ -21951,6 +21969,7 @@
               ]
             },
             "waitForConnectionsScript": {
+              "condition": "[and(variables('hasConnection'), or(variables('createAccountCapabilityHostInternal'), variables('createProjectCapabilityHostInternal')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
               "name": "[take(format('module.project.waitDeploymentScript.waitForConn.{0}', parameters('name')), 64)]",

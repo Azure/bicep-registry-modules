@@ -12,7 +12,7 @@ This module deploys a Virtual Machine Scale Set Extension.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Compute/virtualMachineScaleSets/extensions` | 2023-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachinescalesets_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-09-01/virtualMachineScaleSets/extensions)</li></ul> |
+| `Microsoft.Compute/virtualMachineScaleSets/extensions` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachinescalesets_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-11-01/virtualMachineScaleSets/extensions)</li></ul> |
 
 ## Parameters
 
@@ -39,6 +39,8 @@ This module deploys a Virtual Machine Scale Set Extension.
 | :-- | :-- | :-- |
 | [`forceUpdateTag`](#parameter-forceupdatetag) | string | How the extension handler should be forced to update even if the extension configuration has not changed. |
 | [`protectedSettings`](#parameter-protectedsettings) | secureObject | Any object that contains the extension specific protected settings. |
+| [`protectedSettingsFromKeyVault`](#parameter-protectedsettingsfromkeyvault) | object | The extensions protected settings that are passed by reference, and consumed from key vault. |
+| [`provisionAfterExtensions`](#parameter-provisionafterextensions) | array | Collection of extension names after which this extension needs to be provisioned. |
 | [`settings`](#parameter-settings) | object | Any object that contains the extension specific settings. |
 | [`supressFailures`](#parameter-supressfailures) | bool | Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false. |
 
@@ -97,7 +99,6 @@ How the extension handler should be forced to update even if the extension confi
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `protectedSettings`
 
@@ -105,7 +106,20 @@ Any object that contains the extension specific protected settings.
 
 - Required: No
 - Type: secureObject
-- Default: `{}`
+
+### Parameter: `protectedSettingsFromKeyVault`
+
+The extensions protected settings that are passed by reference, and consumed from key vault.
+
+- Required: No
+- Type: object
+
+### Parameter: `provisionAfterExtensions`
+
+Collection of extension names after which this extension needs to be provisioned.
+
+- Required: No
+- Type: array
 
 ### Parameter: `settings`
 
@@ -113,7 +127,6 @@ Any object that contains the extension specific settings.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `supressFailures`
 
