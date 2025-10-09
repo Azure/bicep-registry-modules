@@ -4,6 +4,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ## 0.5.0
 
+### Changes
+
 - Updates of dependent resources
 
 ### Breaking Changes
