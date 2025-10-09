@@ -45,7 +45,7 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
   name: 'ipGroupDeployment'
   params: {
     // Required parameters
-    name: 'nigmin001'
+    name: 'nigmin002'
     // Non-required parameters
     location: '<location>'
   }
@@ -66,7 +66,7 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "nigmin001"
+      "value": "nigmin002"
     },
     // Non-required parameters
     "location": {
@@ -87,7 +87,7 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
 using 'br/public:avm/res/network/ip-group:<version>'
 
 // Required parameters
-param name = 'nigmin001'
+param name = 'nigmin002'
 // Non-required parameters
 param location = '<location>'
 ```
