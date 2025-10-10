@@ -65,6 +65,28 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
     name: 'Standard_LRS'
   }
   kind: 'StorageV2'
+
+  resource blobServices 'blobServices@2025-01-01' = {
+    name: 'default'
+
+    resource container 'containers@2025-01-01' = {
+      name: 'eventhub'
+    }
+  }
+}
+
+// Assign Storage Blob Data Contributor RBAC role required for the event hub capture feature
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('${storageAccount.id}-${managedIdentity.id}-Storage-Blob-Data-Contributor')
+  scope: storageAccount
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'ba92f5b4-2d11-453d-a403-e96b0029c9fe' // Storage Blob Data Contributor
+    )
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
 }
 
 @description('The resource ID of the created Virtual Network Subnet.')
@@ -81,3 +103,6 @@ output privateDNSZoneResourceId string = privateDNSZone.id
 
 @description('The resource ID of the created Storage Account.')
 output storageAccountResourceId string = storageAccount.id
+
+@description('The name of the created Storage Account Container.')
+output storageAccountContainerName string = storageAccount::blobServices::container.name
