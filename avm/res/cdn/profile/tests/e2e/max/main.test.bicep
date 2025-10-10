@@ -253,9 +253,7 @@ module testDeployment '../../../main.bicep' = [
                 }
               }
               ruleSets: [
-                {
-                  name: 'dep${namePrefix}test${serviceShort}ruleset1'
-                }
+                'dep${namePrefix}test${serviceShort}ruleset1'
               ]
             }
           ]

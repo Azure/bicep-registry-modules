@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.5.1644",
-      "templateHash": "11256231043383711107"
+      "version": "0.38.3.11034",
+      "templateHash": "9792753550084605248"
     },
     "name": "ExpressRoute Circuits",
     "description": "This module deploys an Express Route Circuit."
@@ -298,58 +298,15 @@
         "description": "Optional. Chosen SKU family of ExpressRoute circuit. Choose from MeteredData or UnlimitedData SKU families."
       }
     },
-    "peering": {
-      "type": "bool",
-      "defaultValue": false,
+    "peerings": {
+      "type": "array",
       "metadata": {
-        "description": "Optional. Enabled BGP peering type for the Circuit."
-      }
-    },
-    "peeringType": {
-      "type": "string",
-      "defaultValue": "AzurePrivatePeering",
-      "allowedValues": [
-        "AzurePrivatePeering",
-        "MicrosoftPeering"
-      ],
-      "metadata": {
-        "description": "Optional. BGP peering type for the Circuit. Choose from AzurePrivatePeering, AzurePublicPeering or MicrosoftPeering."
-      }
-    },
-    "sharedKey": {
-      "type": "securestring",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The shared key for peering configuration. Router does MD5 hash comparison to validate the packets sent by BGP connection. This parameter is optional and can be removed from peering configuration if not required."
-      }
-    },
-    "peerASN": {
-      "type": "int",
-      "defaultValue": 0,
-      "metadata": {
-        "description": "Optional. The autonomous system number of the customer/connectivity provider."
-      }
-    },
-    "primaryPeerAddressPrefix": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. A /30 subnet used to configure IP addresses for interfaces on Link1."
-      }
-    },
-    "secondaryPeerAddressPrefix": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. A /30 subnet used to configure IP addresses for interfaces on Link2."
-      }
-    },
-    "vlanId": {
-      "type": "int",
-      "defaultValue": 0,
-      "metadata": {
-        "description": "Optional. Specifies the identifier that is used to identify the customer."
-      }
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/expressRouteCircuits@2024-07-01#properties/properties/properties/peerings"
+        },
+        "description": "Optional. Array of peering configurations for the ExpressRoute circuit."
+      },
+      "nullable": true
     },
     "location": {
       "type": "string",
@@ -488,7 +445,7 @@
     },
     "expressRouteCircuit": {
       "type": "Microsoft.Network/expressRouteCircuits",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2024-07-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -505,6 +462,26 @@
             "input": {
               "name": "[parameters('authorizationNames')[copyIndex('authorizations')]]"
             }
+          },
+          {
+            "name": "peerings",
+            "count": "[length(coalesce(parameters('peerings'), createArray()))]",
+            "input": {
+              "name": "[coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].name]",
+              "properties": {
+                "peeringType": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'peeringType')]",
+                "sharedKey": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'sharedKey')]",
+                "azureASN": "[coalesce(tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'azureASN'), 12076)]",
+                "peerASN": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'peerASN')]",
+                "primaryPeerAddressPrefix": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'primaryPeerAddressPrefix')]",
+                "secondaryPeerAddressPrefix": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'secondaryPeerAddressPrefix')]",
+                "vlanId": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'vlanId')]",
+                "ipv6PeeringConfig": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'ipv6PeeringConfig')]",
+                "microsoftPeeringConfig": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'microsoftPeeringConfig')]",
+                "routeFilter": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'routeFilter')]",
+                "state": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'state')]"
+              }
+            }
           }
         ],
         "allowClassicOperations": "[parameters('allowClassicOperations')]",
@@ -512,8 +489,7 @@
         "bandwidthInGbps": "[if(not(equals(parameters('bandwidthInGbps'), 0)), parameters('bandwidthInGbps'), null())]",
         "enableDirectPortRateLimit": "[parameters('enableDirectPortRateLimit')]",
         "expressRoutePort": "[if(not(empty(parameters('expressRoutePortResourceId'))), createObject('id', parameters('expressRoutePortResourceId')), null())]",
-        "serviceProviderProperties": "[if(empty(parameters('expressRoutePortResourceId')), createObject('serviceProviderName', parameters('serviceProviderName'), 'peeringLocation', parameters('peeringLocation'), 'bandwidthInMbps', parameters('bandwidthInMbps')), null())]",
-        "peerings": "[if(parameters('peering'), createArray(createObject('name', parameters('peeringType'), 'properties', createObject('peeringType', parameters('peeringType'), 'sharedKey', parameters('sharedKey'), 'peerASN', parameters('peerASN'), 'primaryPeerAddressPrefix', parameters('primaryPeerAddressPrefix'), 'secondaryPeerAddressPrefix', parameters('secondaryPeerAddressPrefix'), 'vlanId', parameters('vlanId')))), null())]"
+        "serviceProviderProperties": "[if(empty(parameters('expressRoutePortResourceId')), createObject('serviceProviderName', parameters('serviceProviderName'), 'peeringLocation', parameters('peeringLocation'), 'bandwidthInMbps', parameters('bandwidthInMbps')), null())]"
       }
     },
     "expressRouteCircuit_lock": {
@@ -598,21 +574,21 @@
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of express route curcuit."
+        "description": "The resource ID of express route circuit."
       },
       "value": "[resourceId('Microsoft.Network/expressRouteCircuits', parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group the express route curcuit was deployed into."
+        "description": "The resource group the express route circuit was deployed into."
       },
       "value": "[resourceGroup().name]"
     },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of express route curcuit."
+        "description": "The name of express route circuit."
       },
       "value": "[parameters('name')]"
     },
@@ -635,7 +611,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('expressRouteCircuit', '2024-05-01', 'full').location]"
+      "value": "[reference('expressRouteCircuit', '2024-07-01', 'full').location]"
     }
   }
 }

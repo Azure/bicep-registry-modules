@@ -461,10 +461,6 @@ param storageAccountConfiguration = {
 
 This instance deploys the module with most of its features enabled.
 
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-Ignoring this test due to issues in the order of operations when removing resources that include networkInjections on the Cognitive Services Account. The Account resource locks the "agents" subnet and the link is not able to be removed. Workarounds are available but are not reliable in the automated testing process. See the "removeLockingDependencyAfterDeployment" parameter on this test and the associated "/tests/shared/removeLockingDependencies.bicep" module as a sample workaround.
-```
 
 <details>
 
@@ -839,10 +835,6 @@ param tags = {
 
 Creates an AI Foundry account and project with Standard Agent Services with private networking.
 
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-Ignoring this test due to issues in the order of operations when removing resources that include networkInjections on the Cognitive Services Account. The Account resource locks the "agents" subnet and the link is not able to be removed. Workarounds are available but are not reliable in the automated testing process. See the "removeLockingDependencyAfterDeployment" parameter on this test and the associated "/tests/shared/removeLockingDependencies.bicep" module as a sample workaround.
-```
 
 <details>
 
