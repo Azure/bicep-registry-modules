@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "601516314831460935"
+      "version": "0.38.3.11034",
+      "templateHash": "4110175612829934276"
     },
     "name": "Load Balancer Backend Address Pools",
     "description": "This module deploys a Load Balancer Backend Address Pools."
@@ -55,18 +55,26 @@
       "metadata": {
         "description": "Optional. Backend address synchronous mode for the backend pool."
       }
+    },
+    "virtualNetworkResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The resource Id of the virtual network."
+      }
     }
   },
   "resources": [
     {
       "type": "Microsoft.Network/loadBalancers/backendAddressPools",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2024-10-01",
       "name": "[format('{0}/{1}', parameters('loadBalancerName'), parameters('name'))]",
       "properties": {
         "loadBalancerBackendAddresses": "[parameters('loadBalancerBackendAddresses')]",
         "tunnelInterfaces": "[parameters('tunnelInterfaces')]",
         "drainPeriodInSeconds": "[if(not(equals(parameters('drainPeriodInSeconds'), 0)), parameters('drainPeriodInSeconds'), null())]",
-        "syncMode": "[if(not(empty(parameters('syncMode'))), parameters('syncMode'), null())]"
+        "syncMode": "[if(not(empty(parameters('syncMode'))), parameters('syncMode'), null())]",
+        "virtualNetwork": "[if(not(empty(parameters('virtualNetworkResourceId'))), createObject('id', parameters('virtualNetworkResourceId')), null())]"
       }
     }
   ],

@@ -24,49 +24,46 @@ param sku string
 @description('Optional. Send and receive timeout on forwarding request to the origin.')
 param originResponseTimeoutSeconds int = 60
 
-@description('Optional. Name of the endpoint under the profile which is unique globally.')
-param endpointName string?
-
 @description('Optional. Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details).')
-param endpointProperties object?
+param endpoint endpointType?
 
 @description('Optional. Array of secret objects.')
-param secrets array = []
+param secrets secretType[]?
 
 @description('Optional. Array of custom domain objects.')
-param customDomains customDomainType[] = []
+param customDomains customDomainType[]?
 
 @description('Conditional. Array of origin group objects. Required if the afdEndpoints is specified.')
-param originGroups originGroupType[] = []
+param originGroups originGroupType[]?
 
 @description('Optional. Array of rule set objects.')
-param ruleSets ruleSetType[] = []
+param ruleSets ruleSetType[]?
 
 @description('Optional. Array of AFD endpoint objects.')
-param afdEndpoints afdEndpointType[] = []
+param afdEndpoints afdEndpointType[]?
 
 @description('Optional. Array of Security Policy objects (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/securitypolicies for details).')
-param securityPolicies securityPolicyType[] = []
+param securityPolicies securityPolicyType[]?
 
 @description('Optional. Endpoint tags.')
-param tags object?
+param tags resourceInput<'Microsoft.Cdn/profiles@2025-06-01'>.tags?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -145,7 +142,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource profile 'Microsoft.Cdn/profiles@2025-04-15' = {
+resource profile 'Microsoft.Cdn/profiles@2025-06-01' = {
   name: name
   location: location
   identity: identity
@@ -214,18 +211,19 @@ resource profile_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-
   }
 ]
 
-module profile_endpoint 'endpoint/main.bicep' = if (!empty(endpointProperties)) {
+module profile_endpoint 'endpoint/main.bicep' = if (!empty(endpoint)) {
   name: '${uniqueString(deployment().name, location)}-Profile-Endpoint'
   params: {
-    name: endpointName ?? '${profile.name}-endpoint'
-    properties: endpointProperties ?? {}
-    location: location
     profileName: profile.name
+    name: endpoint.?name ?? '${profile.name}-endpoint'
+    properties: endpoint!.properties
+    location: location
+    tags: endpoint.?tags ?? tags
   }
 }
 
 module profile_secrets 'secret/main.bicep' = [
-  for (secret, index) in secrets: {
+  for (secret, index) in (secrets ?? []): {
     name: '${uniqueString(deployment().name)}-Profile-Secret-${index}'
     params: {
       name: secret.name
@@ -240,7 +238,7 @@ module profile_secrets 'secret/main.bicep' = [
 ]
 
 module profile_customDomains 'custom-domain/main.bicep' = [
-  for (customDomain, index) in customDomains: {
+  for (customDomain, index) in (customDomains ?? []): {
     name: '${uniqueString(deployment().name)}-CustomDomain-${index}'
     dependsOn: [
       profile_secrets
@@ -262,7 +260,7 @@ module profile_customDomains 'custom-domain/main.bicep' = [
 ]
 
 module profile_originGroups 'origin-group/main.bicep' = [
-  for (origingroup, index) in originGroups: {
+  for (origingroup, index) in (originGroups ?? []): {
     name: '${uniqueString(deployment().name)}-Profile-OriginGroup-${index}'
     params: {
       name: origingroup.name
@@ -277,7 +275,7 @@ module profile_originGroups 'origin-group/main.bicep' = [
 ]
 
 module profile_ruleSets 'rule-set/main.bicep' = [
-  for (ruleSet, index) in ruleSets: {
+  for (ruleSet, index) in (ruleSets ?? []): {
     name: '${uniqueString(deployment().name)}-Profile-RuleSet-${index}'
     params: {
       name: ruleSet.name
@@ -288,7 +286,7 @@ module profile_ruleSets 'rule-set/main.bicep' = [
 ]
 
 module profile_afdEndpoints 'afd-endpoint/main.bicep' = [
-  for (afdEndpoint, index) in afdEndpoints: {
+  for (afdEndpoint, index) in (afdEndpoints ?? []): {
     name: '${uniqueString(deployment().name)}-Profile-AfdEndpoint-${index}'
     dependsOn: [
       profile_originGroups
@@ -308,7 +306,7 @@ module profile_afdEndpoints 'afd-endpoint/main.bicep' = [
 ]
 
 module profile_securityPolicies 'security-policy/main.bicep' = [
-  for (securityPolicy, index) in securityPolicies: {
+  for (securityPolicy, index) in (securityPolicies ?? []): {
     name: '${uniqueString(deployment().name)}-Profile-SecurityPolicy-${index}'
     dependsOn: [
       profile_afdEndpoints
@@ -339,38 +337,36 @@ output profileType string = profile.type
 output location string = profile.location
 
 @description('The name of the CDN profile endpoint.')
-output endpointName string = !empty(endpointProperties) ? profile_endpoint.outputs.name : ''
+output endpointName string? = profile_endpoint.?outputs.?name
 
 @description('The resource ID of the CDN profile endpoint.')
-output endpointId string = !empty(endpointProperties) ? profile_endpoint.outputs.resourceId : ''
+output endpointId string? = profile_endpoint.?outputs.?resourceId
 
 @description('The uri of the CDN profile endpoint.')
-output uri string = !empty(endpointProperties) ? profile_endpoint.outputs.uri : ''
+output uri string? = profile_endpoint.?outputs.?uri
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = profile.?identity.?principalId
 
 @description('The list of records required for custom domains validation.')
 output dnsValidation dnsValidationOutputType[] = [
-  for (customDomain, index) in customDomains: profile_customDomains[index].outputs.dnsValidation
+  for (customDomain, index) in (customDomains ?? []): profile_customDomains[index].outputs.dnsValidation
 ]
 
 @description('The list of AFD endpoint host names.')
-output frontDoorEndpointHostNames array = [
-  for (afdEndpoint, index) in afdEndpoints: profile_afdEndpoints[index].outputs.frontDoorEndpointHostName
+output frontDoorEndpointHostNames string[] = [
+  for (afdEndpoint, index) in (afdEndpoints ?? []): profile_afdEndpoints[index].outputs.frontDoorEndpointHostName
 ]
 
 // =============== //
 //   Definitions   //
 // =============== //
 
-import { afdEndpointType } from 'afd-endpoint/main.bicep'
-import { customDomainType, dnsValidationOutputType } from 'custom-domain/main.bicep'
-import { originGroupType } from 'origin-group/main.bicep'
-import { originType } from 'origin-group/origin/main.bicep'
+import { routeType } from 'afd-endpoint/main.bicep'
+import { dnsValidationOutputType } from 'custom-domain/main.bicep'
+import { originType } from 'origin-group/main.bicep'
 import { associationsType } from 'security-policy/main.bicep'
-import { ruleSetType } from 'rule-set/main.bicep'
-import { ruleType } from 'rule-set/rule/main.bicep'
+import { ruleType } from 'rule-set/main.bicep'
 
 @export()
 type securityPolicyType = {
@@ -382,4 +378,125 @@ type securityPolicyType = {
 
   @description('Required. Resource ID of WAF policy.')
   wafPolicyResourceId: string
+}
+
+@export()
+@description('The type of the origin group.')
+type originGroupType = {
+  @description('Required. The name of the origin group.')
+  name: string
+
+  @description('Optional. Health probe settings to the origin that is used to determine the health of the origin.')
+  healthProbeSettings: resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-04-15'>.properties.healthProbeSettings?
+
+  @description('Required. Load balancing settings for a backend pool.')
+  loadBalancingSettings: resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-04-15'>.properties.loadBalancingSettings
+
+  @description('Optional. Whether to allow session affinity on this host.')
+  sessionAffinityState: 'Enabled' | 'Disabled' | null
+
+  @description('Optional. Time in minutes to shift the traffic to the endpoint gradually when an unhealthy endpoint comes healthy or a new endpoint is added. Default is 10 mins.')
+  trafficRestorationTimeToHealedOrNewEndpointsInMinutes: int?
+
+  @description('Required. The list of origins within the origin group.')
+  origins: originType[]
+}
+
+@export()
+@description('The type of the rule set.')
+type ruleSetType = {
+  @description('Required. Name of the rule set.')
+  name: string
+
+  @description('Optional. Array of rules.')
+  rules: ruleType[]?
+}
+
+@export()
+@description('The type of the AFD Endpoint.')
+type afdEndpointType = {
+  @description('Required. The name of the AFD Endpoint.')
+  name: string
+
+  @description('Optional. The list of routes for this AFD Endpoint.')
+  routes: routeType[]?
+
+  @description('Optional. The tags for the AFD Endpoint.')
+  tags: object?
+
+  @description('Optional. The scope of the auto-generated domain name label.')
+  autoGeneratedDomainNameLabelScope: 'NoReuse' | 'ResourceGroupReuse' | 'SubscriptionReuse' | 'TenantReuse' | null
+
+  @description('Optional. The state of the AFD Endpoint.')
+  enabledState: 'Enabled' | 'Disabled' | null
+}
+
+@export()
+@description('The type of the custom domain.')
+type customDomainType = {
+  @description('Required. The name of the custom domain.')
+  name: string
+
+  @description('Required. The host name of the custom domain.')
+  hostName: string
+
+  @description('Required. The type of the certificate.')
+  certificateType: 'AzureFirstPartyManagedCertificate' | 'CustomerCertificate' | 'ManagedCertificate'
+
+  @description('Optional. The resource ID of the Azure DNS zone.')
+  azureDnsZoneResourceId: string?
+
+  @description('Optional. The resource ID of the pre-validated custom domain.')
+  preValidatedCustomDomainResourceId: string?
+
+  @description('Optional. The name of the secret.')
+  secretName: string?
+
+  @description('Optional. The minimum TLS version.')
+  minimumTlsVersion: 'TLS10' | 'TLS12' | 'TLS13' | null
+
+  @description('Optional. Extended properties.')
+  extendedProperties: resourceInput<'Microsoft.Cdn/profiles/customDomains@2025-06-01'>.properties.extendedProperties?
+
+  @description('Optional. The cipher suite set type that will be used for Https.')
+  cipherSuiteSetType: string?
+
+  @description('Optional. The customized cipher suite set that will be used for Https.')
+  customizedCipherSuiteSet: resourceInput<'Microsoft.Cdn/profiles/customDomains@2025-06-01'>.properties.tlsSettings.customizedCipherSuiteSet?
+}
+
+@export()
+@description('The type of and endpoint.')
+type endpointType = {
+  @description('Required. Name of the endpoint under the profile which is unique globally.')
+  name: string
+
+  @description('Required. Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details).')
+  properties: resourceInput<'microsoft.cdn/profiles/endpoints@2025-04-15'>.properties
+
+  @description('Optional. Endpoint tags.')
+  tags: resourceInput<'microsoft.cdn/profiles/endpoints@2025-04-15'>.tags?
+}
+
+@export()
+@description('The type of a secret.')
+type secretType = {
+  @description('Required. The name of the secret.')
+  name: string
+
+  @description('Optional. The type of the secret.')
+  type: ('AzureFirstPartyManagedCertificate' | 'CustomerCertificate' | 'ManagedCertificate' | 'UrlSigningKey')?
+
+  @description('Conditional. The resource ID of the secret source. Required if the `type` is "CustomerCertificate".')
+  #disable-next-line secure-secrets-in-params
+  secretSourceResourceId: string?
+
+  @description('Optional. The version of the secret.')
+  secretVersion: string?
+
+  @description('Optional. The subject alternative names of the secret.')
+  subjectAlternativeNames: string[]?
+
+  @description('Optional. Indicates whether to use the latest version of the secret.')
+  useLatestVersion: bool?
 }

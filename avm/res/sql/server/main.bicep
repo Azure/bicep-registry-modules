@@ -337,6 +337,7 @@ module server_databases 'database/main.bicep' = [
       diagnosticSettings: database.?diagnosticSettings
       backupShortTermRetentionPolicy: database.?backupShortTermRetentionPolicy
       backupLongTermRetentionPolicy: database.?backupLongTermRetentionPolicy
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       server_elasticPools // Enables us to add databases to existing elastic pools

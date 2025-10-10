@@ -11,7 +11,7 @@ param location string = resourceGroup().location
 param enableTelemetry bool = true
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.PowerBIDedicated/capacities@2021-01-01'>.tags?
 
 @description('Required. Sku configuration of the resource.')
 param sku skuType
