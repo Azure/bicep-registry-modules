@@ -309,11 +309,11 @@ type captureDescriptionType = {
 }
 
 @export()
-@description('An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.')
+@description('An AVM-aligned type for a managed identity configuration. Supports a muturally exclusive system- & user-assigned identity.')
 type managedIdentityType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
+  @description('Optional. Enables system assigned managed identity on the resource. Mutually exclusive with `userAssignedResourceId`.')
   systemAssigned: bool?
 
-  @description('Optional. The resource ID to assign to the resource.')
+  @description('Optional. The resource ID to assign to the resource. Mutually exclusive with `systemAssigned`.')
   userAssignedResourceId: string?
 }

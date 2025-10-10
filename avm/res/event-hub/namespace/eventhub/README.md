@@ -159,19 +159,19 @@ The identity used for the capture destination.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`systemAssigned`](#parameter-capturedescriptiondestinationidentitysystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceId`](#parameter-capturedescriptiondestinationidentityuserassignedresourceid) | string | The resource ID to assign to the resource. |
+| [`systemAssigned`](#parameter-capturedescriptiondestinationidentitysystemassigned) | bool | Enables system assigned managed identity on the resource. Mutually exclusive with `userAssignedResourceId`. |
+| [`userAssignedResourceId`](#parameter-capturedescriptiondestinationidentityuserassignedresourceid) | string | The resource ID to assign to the resource. Mutually exclusive with `systemAssigned`. |
 
 ### Parameter: `captureDescription.destination.identity.systemAssigned`
 
-Enables system assigned managed identity on the resource.
+Enables system assigned managed identity on the resource. Mutually exclusive with `userAssignedResourceId`.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `captureDescription.destination.identity.userAssignedResourceId`
 
-The resource ID to assign to the resource.
+The resource ID to assign to the resource. Mutually exclusive with `systemAssigned`.
 
 - Required: No
 - Type: string

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.5.1644",
-      "templateHash": "15251137032125188979"
+      "version": "0.38.33.27573",
+      "templateHash": "18347120350961804627"
     },
     "name": "Event Hub Namespaces",
     "description": "This module deploys an Event Hub Namespace."
@@ -813,19 +813,19 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Enables system assigned managed identity on the resource."
+            "description": "Optional. Enables system assigned managed identity on the resource. Mutually exclusive with `userAssignedResourceId`."
           }
         },
         "userAssignedResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The resource ID to assign to the resource."
+            "description": "Optional. The resource ID to assign to the resource. Mutually exclusive with `systemAssigned`."
           }
         }
       },
       "metadata": {
-        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "description": "An AVM-aligned type for a managed identity configuration. Supports a muturally exclusive system- & user-assigned identity.",
         "__bicep_imported_from!": {
           "sourceTemplate": "eventhub/main.bicep"
         }
@@ -1517,8 +1517,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "13585293332022093189"
+              "version": "0.38.33.27573",
+              "templateHash": "3521437171523329718"
             },
             "name": "Event Hub Namespace Authorization Rule",
             "description": "This module deploys an Event Hub Namespace Authorization Rule."
@@ -1615,8 +1615,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "826661506370683816"
+              "version": "0.38.33.27573",
+              "templateHash": "2531448599378855086"
             },
             "name": "Event Hub Namespace Disaster Recovery Configs",
             "description": "This module deploys an Event Hub Namespace Disaster Recovery Config."
@@ -1748,8 +1748,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "14184353870040573454"
+              "version": "0.38.33.27573",
+              "templateHash": "11753625464382465575"
             },
             "name": "Event Hub Namespace Event Hubs",
             "description": "This module deploys an Event Hub Namespace Event Hub."
@@ -1895,20 +1895,20 @@
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Enables system assigned managed identity on the resource."
+                    "description": "Optional. Enables system assigned managed identity on the resource. Mutually exclusive with `userAssignedResourceId`."
                   }
                 },
                 "userAssignedResourceId": {
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. The resource ID to assign to the resource."
+                    "description": "Optional. The resource ID to assign to the resource. Mutually exclusive with `systemAssigned`."
                   }
                 }
               },
               "metadata": {
                 "__bicep_export!": true,
-                "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider."
+                "description": "An AVM-aligned type for a managed identity configuration. Supports a muturally exclusive system- & user-assigned identity."
               }
             },
             "lockType": {
@@ -2288,8 +2288,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.5.1644",
-                      "templateHash": "16903855692504058773"
+                      "version": "0.38.33.27573",
+                      "templateHash": "1703588134773580957"
                     },
                     "name": "Event Hub Namespace Event Hub Consumer Groups",
                     "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group."
@@ -2394,8 +2394,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.5.1644",
-                      "templateHash": "12252274361962622681"
+                      "version": "0.38.33.27573",
+                      "templateHash": "10412216932613982313"
                     },
                     "name": "Event Hub Namespace Event Hub Authorization Rules",
                     "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule."
@@ -2538,8 +2538,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "18063561592362170330"
+              "version": "0.38.33.27573",
+              "templateHash": "11263423164382295710"
             },
             "name": "Event Hub Namespace Network Rule Sets",
             "description": "This module deploys an Event Hub Namespace Network Rule Set."
@@ -3477,8 +3477,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "7188206751842103058"
+              "version": "0.38.33.27573",
+              "templateHash": "2732081719805108762"
             }
           },
           "definitions": {

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.5.1644",
-      "templateHash": "14184353870040573454"
+      "version": "0.38.33.27573",
+      "templateHash": "11753625464382465575"
     },
     "name": "Event Hub Namespace Event Hubs",
     "description": "This module deploys an Event Hub Namespace Event Hub."
@@ -152,20 +152,20 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Enables system assigned managed identity on the resource."
+            "description": "Optional. Enables system assigned managed identity on the resource. Mutually exclusive with `userAssignedResourceId`."
           }
         },
         "userAssignedResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The resource ID to assign to the resource."
+            "description": "Optional. The resource ID to assign to the resource. Mutually exclusive with `systemAssigned`."
           }
         }
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider."
+        "description": "An AVM-aligned type for a managed identity configuration. Supports a muturally exclusive system- & user-assigned identity."
       }
     },
     "lockType": {
@@ -545,8 +545,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "16903855692504058773"
+              "version": "0.38.33.27573",
+              "templateHash": "1703588134773580957"
             },
             "name": "Event Hub Namespace Event Hub Consumer Groups",
             "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group."
@@ -651,8 +651,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "12252274361962622681"
+              "version": "0.38.33.27573",
+              "templateHash": "10412216932613982313"
             },
             "name": "Event Hub Namespace Event Hub Authorization Rules",
             "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule."

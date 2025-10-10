@@ -1865,19 +1865,19 @@ The identity used for the capture destination.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`systemAssigned`](#parameter-eventhubscapturedescriptiondestinationidentitysystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceId`](#parameter-eventhubscapturedescriptiondestinationidentityuserassignedresourceid) | string | The resource ID to assign to the resource. |
+| [`systemAssigned`](#parameter-eventhubscapturedescriptiondestinationidentitysystemassigned) | bool | Enables system assigned managed identity on the resource. Mutually exclusive with `userAssignedResourceId`. |
+| [`userAssignedResourceId`](#parameter-eventhubscapturedescriptiondestinationidentityuserassignedresourceid) | string | The resource ID to assign to the resource. Mutually exclusive with `systemAssigned`. |
 
 ### Parameter: `eventhubs.captureDescription.destination.identity.systemAssigned`
 
-Enables system assigned managed identity on the resource.
+Enables system assigned managed identity on the resource. Mutually exclusive with `userAssignedResourceId`.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `eventhubs.captureDescription.destination.identity.userAssignedResourceId`
 
-The resource ID to assign to the resource.
+The resource ID to assign to the resource. Mutually exclusive with `systemAssigned`.
 
 - Required: No
 - Type: string
@@ -2268,19 +2268,19 @@ The managed identity definition for this resource.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceId`](#parameter-managedidentitiesuserassignedresourceid) | string | The resource ID to assign to the resource. |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. Mutually exclusive with `userAssignedResourceId`. |
+| [`userAssignedResourceId`](#parameter-managedidentitiesuserassignedresourceid) | string | The resource ID to assign to the resource. Mutually exclusive with `systemAssigned`. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
-Enables system assigned managed identity on the resource.
+Enables system assigned managed identity on the resource. Mutually exclusive with `userAssignedResourceId`.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `managedIdentities.userAssignedResourceId`
 
-The resource ID to assign to the resource.
+The resource ID to assign to the resource. Mutually exclusive with `systemAssigned`.
 
 - Required: No
 - Type: string
