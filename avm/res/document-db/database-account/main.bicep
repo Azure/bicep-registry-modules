@@ -10,7 +10,7 @@ param location string = resourceGroup().location
 @description('Optional. Tags for the resource.')
 param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts@2024-11-15'>.tags?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -94,11 +94,11 @@ param enableTelemetry bool = true
 @description('Optional. The total throughput limit imposed on this account in request units per second (RU/s). Default to unlimited throughput.')
 param totalThroughputLimit int = -1
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. An array of control plane Azure role-based access control assignments.')
 param roleAssignments roleAssignmentType[]?
 
@@ -108,7 +108,7 @@ param dataPlaneRoleDefinitions dataPlaneRoleDefinitionType[]?
 @description('Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments.')
 param dataPlaneRoleAssignments dataPlaneRoleAssignmentType[]?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings for the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -434,6 +434,7 @@ module databaseAccount_sqlRoleDefinitions 'sql-role-definition/main.bicep' = [
       roleName: nosqlRoleDefinition.roleName
       assignableScopes: nosqlRoleDefinition.?assignableScopes
       sqlRoleAssignments: nosqlRoleDefinition.?assignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -446,6 +447,7 @@ module databaseAccount_sqlRoleAssignments 'sql-role-assignment/main.bicep' = [
       roleDefinitionId: nosqlRoleAssignment.roleDefinitionId
       principalId: nosqlRoleAssignment.principalId
       name: nosqlRoleAssignment.?name
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -490,7 +492,7 @@ module databaseAccount_tables 'table/main.bicep' = [
   }
 ]
 
-module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-dbAccount-PrivateEndpoint-${index}'
     scope: resourceGroup(

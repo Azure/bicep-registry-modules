@@ -37,7 +37,7 @@ This module deploys a CDN Profile AFD Endpoint route.
 | [`linkToDefaultDomain`](#parameter-linktodefaultdomain) | string | Whether this route will be linked to the default endpoint domain. |
 | [`originPath`](#parameter-originpath) | string | A directory path on the origin that AzureFrontDoor can use to retrieve content from, e.g. contoso.cloudapp.net/originpath. |
 | [`patternsToMatch`](#parameter-patternstomatch) | array | The route patterns of the rule. |
-| [`ruleSets`](#parameter-rulesets) | array | The rule sets of the rule. The rule sets must be defined in the profile ruleSets. |
+| [`ruleSets`](#parameter-rulesets) | array | The names of the rule sets of the rule. The rule sets must be defined in the profile ruleSets. |
 | [`supportedProtocols`](#parameter-supportedprotocols) | array | The supported protocols of the rule. |
 
 ### Parameter: `afdEndpointName`
@@ -159,11 +159,10 @@ The route patterns of the rule.
 
 ### Parameter: `ruleSets`
 
-The rule sets of the rule. The rule sets must be defined in the profile ruleSets.
+The names of the rule sets of the rule. The rule sets must be defined in the profile ruleSets.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `supportedProtocols`
 

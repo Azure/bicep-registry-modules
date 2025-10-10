@@ -1373,15 +1373,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     name: 'nvger002'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
-    domainNameLabel: [
-      'dm-nvger'
-    ]
-    primaryPublicIPName: 'pip-nvger'
-    publicIpAvailabilityZones: [
-      1
-      2
-      3
-    ]
     skuName: 'ErGw1AZ'
   }
 }
@@ -1415,21 +1406,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "<virtualNetworkResourceId>"
     },
     // Non-required parameters
-    "domainNameLabel": {
-      "value": [
-        "dm-nvger"
-      ]
-    },
-    "primaryPublicIPName": {
-      "value": "pip-nvger"
-    },
-    "publicIpAvailabilityZones": {
-      "value": [
-        1,
-        2,
-        3
-      ]
-    },
     "skuName": {
       "value": "ErGw1AZ"
     }
@@ -1455,15 +1431,6 @@ param gatewayType = 'ExpressRoute'
 param name = 'nvger002'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
-param domainNameLabel = [
-  'dm-nvger'
-]
-param primaryPublicIPName = 'pip-nvger'
-param publicIpAvailabilityZones = [
-  1
-  2
-  3
-]
 param skuName = 'ErGw1AZ'
 ```
 
@@ -3855,7 +3822,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.9.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 

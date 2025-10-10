@@ -7,7 +7,7 @@ param publicIPName string
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
-resource publicIP 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
+resource publicIP 'Microsoft.Network/publicIPAddresses@2024-10-01' = {
   name: publicIPName
   location: location
   sku: {
