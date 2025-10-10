@@ -84,7 +84,6 @@ The cipher suite set type that will be used for Https.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `customizedCipherSuiteSet`
 
@@ -92,7 +91,6 @@ The customized cipher suite set that will be used for Https. Required if cipherS
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `extendedProperties`
 
@@ -100,7 +98,6 @@ Key-Value pair representing migration properties for domains.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `minimumTlsVersion`
 

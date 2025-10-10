@@ -114,7 +114,7 @@ param version string = '17'
 @description('Optional. The mode to create a new PostgreSQL server.')
 param createMode string = 'Default'
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Conditional. The managed identity definition for this resource. Required if \'cMKKeyName\' is not empty.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
 
@@ -125,9 +125,9 @@ param managedIdentities managedIdentityOnlyUserAssignedType?
 @description('Optional. Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server.')
 param serverThreatProtection string = 'Enabled'
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType?
+param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Optional. Properties for the maintenence window. If provided, \'customWindow\' property must exist and set to \'Enabled\'.')
 param maintenanceWindow resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01'>.properties.maintenanceWindow = {
@@ -165,7 +165,7 @@ param databases array = []
 @description('Optional. The configurations to create in the server.')
 param configurations array = []
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -175,7 +175,7 @@ param replica replicaType?
 @description('Optional. Enable/Disable advanced threat protection.')
 param enableAdvancedThreatProtection bool = true
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -185,7 +185,7 @@ param tags resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01'>
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -310,7 +310,9 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' =
       ? {
           primaryKeyURI: !empty(customerManagedKey.?keyVersion)
             ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
-            : cMKKeyVault::cMKKey!.properties.keyUriWithVersion
+            : (customerManagedKey.?autoRotationEnabled ?? true)
+                ? cMKKeyVault::cMKKey!.properties.keyUri
+                : cMKKeyVault::cMKKey!.properties.keyUriWithVersion
           primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
           type: 'AzureKeyVault'
         }
@@ -472,7 +474,7 @@ resource flexibleServer_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
   }
 ]
 
-module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): if (empty(delegatedSubnetResourceId)) {
     name: '${uniqueString(deployment().name, location)}-PostgreSQL-PrivateEndpoint-${index}'
     scope: resourceGroup(
