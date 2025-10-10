@@ -2,17 +2,6 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/db-for-postgre-sql/flexible-server/CHANGELOG.md).
 
-## 0.13.2
-
-### Changes
-
-- Changed the type and implementation for customer managed keys to enable the now possible auto-key rotation. Parameter `customerManagedKey`.
-- Updated references to 'avm-common-types version' to latest `0.6.1`
-
-### Breaking Changes
-
-- None
-
 ## 0.13.1
 
 ### Changes
