@@ -146,6 +146,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     // Non-required parameters
     backendAddressPools: [
       {
+        backendMembershipMode: 'BackendAddress'
         loadBalancerBackendAddresses: [
           {
             name: 'beAddress1'
@@ -306,6 +307,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     "backendAddressPools": {
       "value": [
         {
+          "backendMembershipMode": "BackendAddress",
           "loadBalancerBackendAddresses": [
             {
               "name": "beAddress1",
@@ -476,6 +478,7 @@ param name = 'nlbnet001'
 // Non-required parameters
 param backendAddressPools = [
   {
+    backendMembershipMode: 'BackendAddress'
     loadBalancerBackendAddresses: [
       {
         name: 'beAddress1'
