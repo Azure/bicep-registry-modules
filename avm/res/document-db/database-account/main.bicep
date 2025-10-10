@@ -80,10 +80,10 @@ param serverVersion string = '4.2'
 param sqlDatabases sqlDatabaseType[]?
 
 @description('Optional. Configuration for databases when using Azure Cosmos DB for MongoDB RU.')
-param mongodbDatabases array?
+param mongodbDatabases mongoDbType[]?
 
 @description('Optional. Configuration for databases when using Azure Cosmos DB for Apache Gremlin.')
-param gremlinDatabases array?
+param gremlinDatabases gremlinDatabaseType[]?
 
 @description('Optional. Configuration for databases when using Azure Cosmos DB for Table.')
 param tables array?
@@ -492,7 +492,7 @@ module databaseAccount_tables 'table/main.bicep' = [
   }
 ]
 
-module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-dbAccount-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -684,72 +684,6 @@ type dataPlaneRoleDefinitionType = {
 }
 
 @export()
-@description('The type for an Azure Cosmos DB for NoSQL database.')
-type sqlDatabaseType = {
-  @description('Required. Name of the database .')
-  name: string
-
-  @description('Optional. Request units per second. Will be ignored if `autoscaleSettingsMaxThroughput` is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. Defaults to 400.')
-  throughput: int?
-
-  @description('Optional. Specifies the autoscale settings and represents maximum throughput the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If the value is not set, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.')
-  autoscaleSettingsMaxThroughput: int?
-
-  @description('Optional. Set of containers to deploy in the database.')
-  containers: {
-    @description('Required. Name of the container.')
-    name: string
-
-    @maxLength(3)
-    @minLength(1)
-    @description('Required. List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1.')
-    paths: string[]
-
-    @description('Optional. Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store.')
-    analyticalStorageTtl: int?
-
-    @maxValue(1000000)
-    @description('Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level.')
-    autoscaleSettingsMaxThroughput: int?
-
-    @description('Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions.')
-    conflictResolutionPolicy: {
-      @description('Conditional. The conflict resolution path in the case of LastWriterWins mode. Required if `mode` is set to \'LastWriterWins\'.')
-      conflictResolutionPath: string?
-
-      @description('Conditional. The procedure to resolve conflicts in the case of custom mode. Required if `mode` is set to \'Custom\'.')
-      conflictResolutionProcedure: string?
-
-      @description('Required. Indicates the conflict resolution mode.')
-      mode: ('Custom' | 'LastWriterWins')
-    }?
-
-    @maxValue(2147483647)
-    @minValue(-1)
-    @description('Optional. Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don\'t expire by default.')
-    defaultTtl: int?
-
-    @description('Optional. Indexing policy of the container.')
-    indexingPolicy: object?
-
-    @description('Optional. Default to Hash. Indicates the kind of algorithm used for partitioning.')
-    kind: ('Hash' | 'MultiHash')?
-
-    @description('Optional. Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition.')
-    version: (1 | 2)?
-
-    @description('Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.')
-    throughput: int?
-
-    @description('Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.')
-    uniqueKeyPolicyKeys: {
-      @description('Required. List of paths must be unique for each document in the Azure Cosmos DB service.')
-      paths: string[]
-    }[]?
-  }[]?
-}
-
-@export()
 @description('The type for the network restriction.')
 type networkRestrictionType = {
   @description('Optional. A single IPv4 address or a single IPv4 address range in Classless Inter-Domain Routing (CIDR) format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: `10.0.0.0/8`, `100.64.0.0/10`, `172.16.0.0/12`, `192.168.0.0/16`, since these are not enforceable by the IP address filter. Example of valid inputs: `23.40.210.245` or `23.40.210.0/8`.')
@@ -766,4 +700,61 @@ type networkRestrictionType = {
     @description('Required. Resource ID of a subnet.')
     subnetResourceId: string
   }[]?
+}
+
+import { graphType } from 'gremlin-database/main.bicep'
+@export()
+@description('The type for a gremlin databae.')
+type gremlinDatabaseType = {
+  @description('Required. Name of the Gremlin database.')
+  name: string
+
+  @description('Optional. Tags of the Gremlin database resource.')
+  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases@2024-11-15'>.tags?
+
+  @description('Optional. Array of graphs to deploy in the Gremlin database.')
+  graphs: graphType[]?
+
+  @description('Optional. Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored. Setting throughput at the database level is only recommended for development/test or when workload across all graphs in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the graph level and not at the database level.')
+  maxThroughput: int?
+
+  @description('Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`. Setting throughput at the database level is only recommended for development/test or when workload across all graphs in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the graph level and not at the database level.')
+  throughput: int?
+}
+
+import { collectionType } from 'mongodb-database/main.bicep'
+@export()
+@description('The type for a mongo databae.')
+type mongoDbType = {
+  @description('Required. Name of the mongodb database.')
+  name: string
+
+  @description('Optional. Request Units per second. Setting throughput at the database level is only recommended for development/test or when workload across all collections in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level.')
+  throughput: int?
+
+  @description('Optional. Collections in the mongodb database.')
+  collections: collectionType[]?
+
+  @description('Optional. Tags of the resource.')
+  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15'>.tags?
+}
+
+import { containerType } from 'sql-database/main.bicep'
+@export()
+@description('The type for a sql database.')
+type sqlDatabaseType = {
+  @description('Required. Name of the SQL database .')
+  name: string
+
+  @description('Optional. Array of containers to deploy in the SQL database.')
+  containers: containerType[]?
+
+  @description('Optional. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.')
+  throughput: int?
+
+  @description('Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.')
+  autoscaleSettingsMaxThroughput: int?
+
+  @description('Optional. Tags of the SQL database resource.')
+  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2025-04-15'>.tags?
 }
