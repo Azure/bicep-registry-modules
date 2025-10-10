@@ -75,6 +75,7 @@ module testDeployment '../../../main.bicep' = [
       backendAddressPools: [
         {
           name: 'backendAddressPool1'
+          backendMembershipMode: 'BackendAddress'
           virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
           loadBalancerBackendAddresses: [
             {

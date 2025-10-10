@@ -252,11 +252,12 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2024-07-01' = {
 }
 
 module loadBalancer_backendAddressPools 'backend-address-pool/main.bicep' = [
-  for (backendAddressPool, index) in backendAddressPools ?? []: {
+  for (backendAddressPool, index) in backendAddressPools ?? []: if (backendAddressPool.?backendMembershipMode != 'NIC') {
     name: '${uniqueString(deployment().name, location)}-loadBalancer-backendAddPools-${index}'
     params: {
       loadBalancerName: loadBalancer.name
       name: backendAddressPool.name
+      backendMembershipMode: backendAddressPool.?backendMembershipMode
       tunnelInterfaces: backendAddressPool.?tunnelInterfaces
       loadBalancerBackendAddresses: backendAddressPool.?loadBalancerBackendAddresses
       drainPeriodInSeconds: backendAddressPool.?drainPeriodInSeconds
