@@ -307,6 +307,7 @@ param configurationProfile string = ''
 @description('Optional. Capacity reservation group resource id that should be used for allocating the virtual machine vm instances provided enough capacity has been reserved.')
 param capacityReservationGroupResourceId string = ''
 
+
 @allowed([
   'AllowAll'
   'AllowPrivate'
@@ -566,7 +567,11 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         : null
     }
     storageProfile: {
-      imageReference: imageReference
+      imageReference:
+        contains(imageReference, 'id')
+        ? {
+            id: imageReference.id
+          }
       osDisk: {
         name: osDisk.?name ?? '${name}-disk-os-01'
         createOption: osDisk.?createOption ?? 'FromImage'
@@ -584,6 +589,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
           diskEncryptionSet: {
             id: osDisk.managedDisk.?diskEncryptionSetResourceId
           }
+          id: osDisk.managedDisk.?id
         }
       }
       dataDisks: [
@@ -637,6 +643,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         }
       ]
     }
+
     capacityReservation: !empty(capacityReservationGroupResourceId)
       ? {
           capacityReservationGroup: {
@@ -954,9 +961,6 @@ module vm_customScriptExtension 'extension/main.bicep' = if (!empty(extensionCus
         : {})
     }
   }
-  dependsOn: [
-    vm_desiredStateConfigurationExtension
-  ]
 }
 
 module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzureDiskEncryptionConfig.enabled) {
