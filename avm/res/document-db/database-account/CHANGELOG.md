@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/document-db/database-account/CHANGELOG.md).
 
+## 0.17.0
+
+### Changes
+
+- Added user- and resource-derived types for all module parameters
+
+### Breaking Changes
+
+- None
+
 ## 0.16.0
 
 ### Changes
