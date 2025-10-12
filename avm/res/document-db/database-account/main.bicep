@@ -86,7 +86,7 @@ param mongodbDatabases mongoDbType[]?
 param gremlinDatabases gremlinDatabaseType[]?
 
 @description('Optional. Configuration for databases when using Azure Cosmos DB for Table.')
-param tables array?
+param tables tableType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -757,4 +757,20 @@ type sqlDatabaseType = {
 
   @description('Optional. Tags of the SQL database resource.')
   tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2025-04-15'>.tags?
+}
+
+@export()
+@description('The type for a table.')
+type tableType = {
+  @description('Required. Name of the table.')
+  name: string
+
+  @description('Optional. Tags for the table.')
+  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/tables@2025-04-15'>.tags?
+
+  @description('Optional. Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored.')
+  maxThroughput: int?
+
+  @description('Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`.')
+  throughput: int?
 }

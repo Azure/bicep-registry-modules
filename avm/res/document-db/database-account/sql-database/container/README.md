@@ -13,7 +13,7 @@ This module deploys a SQL Database Container in a CosmosDB Account.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlDatabases/containers)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/sqlDatabases/containers)</li></ul> |
 
 ## Parameters
 
@@ -96,7 +96,6 @@ The conflict resolution policy for the container. Conflicts and conflict resolut
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `defaultTtl`
 
@@ -114,7 +113,6 @@ Indexing policy of the container.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `kind`
 
@@ -152,7 +150,6 @@ The unique key policy configuration containing a list of unique keys that enforc
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `version`
 
