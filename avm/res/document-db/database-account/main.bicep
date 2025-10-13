@@ -289,7 +289,7 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
   properties: {
     enableBurstCapacity: enableBurstCapacity
     analyticalStorageConfiguration: analyticalStorageConfiguration
-    // cors: cors <= Only provide if != null/empty?
+    cors: cors
     defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
       ? defaultIdentity!.name
       : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
