@@ -16,7 +16,7 @@ param collections collectionType[]?
 @description('Optional. Tags of the resource.')
 param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15'>.tags?
 
-@description('Optional.Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both.')
+@description('Optional. Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both.')
 param autoscaleSettings resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15'>.properties.options.autoscaleSettings?
 
 resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {

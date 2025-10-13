@@ -33,6 +33,7 @@ This module deploys a MongoDB Database within a CosmosDB Account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`autoscaleSettings`](#parameter-autoscalesettings) | object | Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both. |
 | [`collections`](#parameter-collections) | array | Collections in the mongodb database. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`throughput`](#parameter-throughput) | int | Request Units per second. Setting throughput at the database level is only recommended for development/test or when workload across all collections in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level. |
@@ -50,6 +51,13 @@ The name of the parent Cosmos DB database account. Required if the template is u
 
 - Required: Yes
 - Type: string
+
+### Parameter: `autoscaleSettings`
+
+Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both.
+
+- Required: No
+- Type: object
 
 ### Parameter: `collections`
 

@@ -3146,7 +3146,7 @@ param zoneRedundant = true
 | [`disableLocalAuthentication`](#parameter-disablelocalauthentication) | bool | Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true. |
 | [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Flag to indicate whether to enable storage analytics. Defaults to false. |
 | [`enableAutomaticFailover`](#parameter-enableautomaticfailover) | bool | Enable automatic failover for regions. Defaults to true. |
-| [`enableBurstCapacity`](#parameter-enableburstcapacity) | bool | Flag to indicate enabling/disabling of Burst Capacity feature on the account |
+| [`enableBurstCapacity`](#parameter-enableburstcapacity) | bool | Flag to indicate enabling/disabling of Burst Capacity feature on the account. |
 | [`enableCassandraConnector`](#parameter-enablecassandraconnector) | bool | Enables the cassandra connector on the Cosmos DB C* account. |
 | [`enableFreeTier`](#parameter-enablefreetier) | bool | Flag to indicate whether "Free Tier" is enabled. Defaults to false. |
 | [`enableMultipleWriteLocations`](#parameter-enablemultiplewritelocations) | bool | Enables the account to write in multiple locations. Periodic backup must be used if enabled. Defaults to false. |
@@ -3735,7 +3735,7 @@ Enable automatic failover for regions. Defaults to true.
 
 ### Parameter: `enableBurstCapacity`
 
-Flag to indicate enabling/disabling of Burst Capacity feature on the account
+Flag to indicate enabling/disabling of Burst Capacity feature on the account.
 
 - Required: No
 - Type: bool

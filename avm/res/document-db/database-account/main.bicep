@@ -176,7 +176,7 @@ param networkRestrictions networkRestrictionType = {
 @description('Optional. Setting that indicates the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later. Defaults to "Tls12" (TLS 1.2).')
 param minimumTlsVersion string = 'Tls12'
 
-@description('Optional. Flag to indicate enabling/disabling of Burst Capacity feature on the account')
+@description('Optional. Flag to indicate enabling/disabling of Burst Capacity feature on the account.')
 param enableBurstCapacity bool = true
 
 @description('Optional. Enables the cassandra connector on the Cosmos DB C* account.')
