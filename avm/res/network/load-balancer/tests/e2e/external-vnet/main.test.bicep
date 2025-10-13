@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using external load balancer parameter'
-metadata description = 'This instance deploys the module with an externally facing load balancer.'
+metadata name = 'Using external load balancer parameter - VNet backend addresses'
+metadata description = 'This instance deploys the module with an externally facing load balancer with a public IP address and VNet backend address pool.'
 
 // ========== //
 // Parameters //
