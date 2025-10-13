@@ -287,12 +287,12 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
   identity: identity
   kind: !empty(mongodbDatabases) ? 'MongoDB' : 'GlobalDocumentDB'
   properties: {
-    // enableBurstCapacity: enableBurstCapacity
+    enableBurstCapacity: enableBurstCapacity
     analyticalStorageConfiguration: analyticalStorageConfiguration
     cors: cors
-    defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
-      ? defaultIdentity!.name
-      : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
+    // defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
+    //   ? defaultIdentity!.name
+    //   : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
     enablePartitionMerge: enablePartitionMerge
     enablePerRegionPerPartitionAutoscale: enablePerRegionPerPartitionAutoscale
     databaseAccountOfferType: databaseAccountOfferType
