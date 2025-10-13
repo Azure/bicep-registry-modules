@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "8512107156440998825"
+      "templateHash": "3545797757576808375"
     },
     "name": "DocumentDB Database Account MongoDB Databases",
     "description": "This module deploys a MongoDB Database within a CosmosDB Account."
@@ -92,6 +92,16 @@
         "description": "Optional. Tags of the resource."
       },
       "nullable": true
+    },
+    "autoscaleSettings": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15#properties/properties/properties/options/properties/autoscaleSettings"
+        },
+        "description": "Optional.Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both."
+      },
+      "nullable": true
     }
   },
   "resources": {
@@ -110,7 +120,7 @@
         "resource": {
           "id": "[parameters('name')]"
         },
-        "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]"
+        "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput'), 'autoscaleSettings', parameters('autoscaleSettings')))]"
       },
       "dependsOn": [
         "databaseAccount"

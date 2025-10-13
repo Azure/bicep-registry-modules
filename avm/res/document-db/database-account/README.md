@@ -2518,7 +2518,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   name: 'databaseAccountDeployment'
   params: {
     // Required parameters
-    name: 'role-ref'
+    name: 'dddarole001'
     // Non-required parameters
     dataPlaneRoleAssignments: [
       {
@@ -2539,7 +2539,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     dataPlaneRoleDefinitions: [
       {
         assignableScopes: [
-          '<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref'
+          '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
         ]
         assignments: [
           {
@@ -2551,12 +2551,12 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
         ]
-        name: 'optional-role-identifier'
+        name: '<name>'
         roleName: 'cosmos-sql-role-test'
       }
       {
         assignableScopes: [
-          '<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref'
+          '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
         ]
         dataActions: [
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
@@ -2564,6 +2564,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         roleName: 'cosmos-sql-role-test-2'
       }
       {
+        dataActions: [
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+        ]
         roleName: 'cosmos-sql-role-test-3'
       }
     ]
@@ -2602,7 +2605,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "role-ref"
+      "value": "dddarole001"
     },
     // Non-required parameters
     "dataPlaneRoleAssignments": {
@@ -2627,7 +2630,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": [
         {
           "assignableScopes": [
-            "<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref"
+            "<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001"
           ],
           "assignments": [
             {
@@ -2639,12 +2642,12 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*",
             "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
           ],
-          "name": "optional-role-identifier",
+          "name": "<name>",
           "roleName": "cosmos-sql-role-test"
         },
         {
           "assignableScopes": [
-            "<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref"
+            "<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001"
           ],
           "dataActions": [
             "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
@@ -2652,6 +2655,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "roleName": "cosmos-sql-role-test-2"
         },
         {
+          "dataActions": [
+            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
+          ],
           "roleName": "cosmos-sql-role-test-3"
         }
       ]
@@ -2692,7 +2698,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'role-ref'
+param name = 'dddarole001'
 // Non-required parameters
 param dataPlaneRoleAssignments = [
   {
@@ -2713,7 +2719,7 @@ param dataPlaneRoleAssignments = [
 param dataPlaneRoleDefinitions = [
   {
     assignableScopes: [
-      '<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref'
+      '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
     ]
     assignments: [
       {
@@ -2725,12 +2731,12 @@ param dataPlaneRoleDefinitions = [
       'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
       'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
     ]
-    name: 'optional-role-identifier'
+    name: '<name>'
     roleName: 'cosmos-sql-role-test'
   }
   {
     assignableScopes: [
-      '<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref'
+      '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
     ]
     dataActions: [
       'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
@@ -2738,6 +2744,9 @@ param dataPlaneRoleDefinitions = [
     roleName: 'cosmos-sql-role-test-2'
   }
   {
+    dataActions: [
+      'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+    ]
     roleName: 'cosmos-sql-role-test-3'
   }
 ]
@@ -3346,6 +3355,7 @@ Configurations for Azure Cosmos DB for NoSQL native role-based access control de
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`dataActions`](#parameter-dataplaneroledefinitionsdataactions) | array | An array of data actions that are allowed. |
 | [`roleName`](#parameter-dataplaneroledefinitionsrolename) | string | A user-friendly name for the role-based access control definition. This must be unique within the database account. |
 
 **Optional parameters**
@@ -3354,8 +3364,14 @@ Configurations for Azure Cosmos DB for NoSQL native role-based access control de
 | :-- | :-- | :-- |
 | [`assignableScopes`](#parameter-dataplaneroledefinitionsassignablescopes) | array | A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope. |
 | [`assignments`](#parameter-dataplaneroledefinitionsassignments) | array | An array of role-based access control assignments to be created for the definition. |
-| [`dataActions`](#parameter-dataplaneroledefinitionsdataactions) | array | An array of data actions that are allowed. |
 | [`name`](#parameter-dataplaneroledefinitionsname) | string | The unique identifier of the role-based access control definition. |
+
+### Parameter: `dataPlaneRoleDefinitions.dataActions`
+
+An array of data actions that are allowed.
+
+- Required: Yes
+- Type: array
 
 ### Parameter: `dataPlaneRoleDefinitions.roleName`
 
@@ -3411,13 +3427,6 @@ The data plane resource id for which access is being granted through this Role A
 
 - Required: No
 - Type: string
-
-### Parameter: `dataPlaneRoleDefinitions.dataActions`
-
-An array of data actions that are allowed.
-
-- Required: No
-- Type: array
 
 ### Parameter: `dataPlaneRoleDefinitions.name`
 

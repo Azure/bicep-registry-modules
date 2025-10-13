@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "2786393018992504515"
+      "templateHash": "1005439058963058082"
     },
     "name": "DocumentDB Database Account SQL Database Containers",
     "description": "This module deploys a SQL Database Container in a CosmosDB Account."
@@ -163,7 +163,7 @@
       "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('sqlDatabaseName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "resource": "[shallowMerge(createArray(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'defaultTtl', parameters('defaultTtl'), 'id', parameters('name'), 'indexingPolicy', parameters('indexingPolicy'), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version'))), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject())))]",
+        "resource": "[shallowMerge(createArray(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'id', parameters('name'), 'indexingPolicy', parameters('indexingPolicy'), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version'))), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()), if(not(equals(parameters('defaultTtl'), null())), createObject('defaultTtl', parameters('defaultTtl')), createObject())))]",
         "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', if(and(equals(parameters('autoscaleSettingsMaxThroughput'), null()), not(equals(parameters('throughput'), -1))), parameters('throughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleSettingsMaxThroughput'), null())), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null())))]"
       },
       "dependsOn": [
