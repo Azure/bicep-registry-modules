@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "10779100174677074096"
+      "templateHash": "6231866558028214790"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall."
@@ -1126,13 +1126,13 @@
             "value": "[parameters('availabilityZones')]"
           },
           "ipTags": {
-            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'ipTags'), createArray())]"
+            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'ipTags'), null())]"
           },
           "ddosSettings": {
-            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'ddosSettings'), createObject())]"
+            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'ddosSettings'), null())]"
           },
           "dnsSettings": {
-            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'dnsSettings'), createObject())]"
+            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'dnsSettings'), null())]"
           },
           "idleTimeoutInMinutes": {
             "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'idleTimeoutInMinutes'), null())]"
@@ -1860,13 +1860,13 @@
             "value": "[parameters('availabilityZones')]"
           },
           "ipTags": {
-            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'ipTags'), createArray())]"
+            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'ipTags'), null())]"
           },
           "ddosSettings": {
-            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'ddosSettings'), createObject())]"
+            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'ddosSettings'), null())]"
           },
           "dnsSettings": {
-            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'dnsSettings'), createObject())]"
+            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'dnsSettings'), null())]"
           },
           "idleTimeoutInMinutes": {
             "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'idleTimeoutInMinutes'), null())]"

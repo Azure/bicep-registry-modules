@@ -233,9 +233,9 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.9.1' = if 
     location: location
     tags: publicIPAddressObject.?tags ?? tags
     availabilityZones: availabilityZones
-    ipTags: publicIPAddressObject.?ipTags ?? []
-    ddosSettings: publicIPAddressObject.?ddosSettings ?? {}
-    dnsSettings: publicIPAddressObject.?dnsSettings ?? {}
+    ipTags: publicIPAddressObject.?ipTags ?? null
+    ddosSettings: publicIPAddressObject.?ddosSettings ?? null
+    dnsSettings: publicIPAddressObject.?dnsSettings ?? null
     idleTimeoutInMinutes: publicIPAddressObject.?idleTimeoutInMinutes ?? null
     publicIPAddressVersion: publicIPAddressObject.?publicIPAddressVersion ?? null
     lock: lock
@@ -273,9 +273,9 @@ module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.9.1' =
     location: location
     tags: managementIPAddressObject.?tags ?? tags
     availabilityZones: availabilityZones
-    ipTags: publicIPAddressObject.?ipTags ?? []
-    ddosSettings: publicIPAddressObject.?ddosSettings ?? {}
-    dnsSettings: publicIPAddressObject.?dnsSettings ?? {}
+    ipTags: publicIPAddressObject.?ipTags ?? null
+    ddosSettings: publicIPAddressObject.?ddosSettings ?? null
+    dnsSettings: publicIPAddressObject.?dnsSettings ?? null
     idleTimeoutInMinutes: publicIPAddressObject.?idleTimeoutInMinutes ?? null
     publicIPAddressVersion: publicIPAddressObject.?publicIPAddressVersion ?? null
     lock: lock
