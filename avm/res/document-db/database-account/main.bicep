@@ -287,14 +287,14 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
   identity: identity
   kind: !empty(mongodbDatabases) ? 'MongoDB' : 'GlobalDocumentDB'
   properties: {
-    enableBurstCapacity: enableBurstCapacity
-    analyticalStorageConfiguration: analyticalStorageConfiguration
-    cors: cors
-    // defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
-    //   ? defaultIdentity!.name
-    //   : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
-    enablePartitionMerge: enablePartitionMerge
-    enablePerRegionPerPartitionAutoscale: enablePerRegionPerPartitionAutoscale
+    enableBurstCapacity: enableBurstCapacity // not it
+    // analyticalStorageConfiguration: analyticalStorageConfiguration
+    // cors: cors
+    defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity' // Not it
+      ? defaultIdentity!.name
+      : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
+    // enablePartitionMerge: enablePartitionMerge
+    // enablePerRegionPerPartitionAutoscale: enablePerRegionPerPartitionAutoscale
     databaseAccountOfferType: databaseAccountOfferType
     backupPolicy: {
       #disable-next-line BCP225 // Value has a default
@@ -319,12 +319,12 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
     capabilities: map(capabilitiesToAdd ?? [], capability => {
       name: capability
     })
-    ...(contains(capabilitiesToAdd ?? [], 'EnableCassandra')
-      ? {
-          connectorOffer: enableCassandraConnector ? 'Small' : null
-          enableCassandraConnector: enableCassandraConnector
-        }
-      : {})
+    // ...(contains(capabilitiesToAdd ?? [], 'EnableCassandra')
+    //   ? {
+    //       connectorOffer: enableCassandraConnector ? 'Small' : null
+    //       enableCassandraConnector: enableCassandraConnector
+    //     }
+    //   : {})
     minimalTlsVersion: minimumTlsVersion
     capacity: {
       totalThroughputLimit: totalThroughputLimit
