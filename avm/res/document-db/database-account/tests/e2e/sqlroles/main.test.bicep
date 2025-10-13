@@ -51,7 +51,7 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}${serviceShort}001'
     dataPlaneRoleDefinitions: [
       {
-        name: 'optional-role-identifier'
+        name: guid('optional-role-identifier') // MUST be a guid
         roleName: 'cosmos-sql-role-test'
         dataActions: [
           'Microsoft.DocumentDB/databaseAccounts/readMetadata'
