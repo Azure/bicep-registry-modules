@@ -62,7 +62,7 @@ module testDeployment '../../../main.bicep' = [
       backendAddressPools: [
         {
           name: 'servers'
-          backendMembershipMode: 'Nic'
+          backendMembershipMode: 'NIC'
         }
       ]
       inboundNatRules: [

@@ -76,7 +76,7 @@ module testDeployment '../../../main.bicep' = [
       backendAddressPools: [
         {
           name: 'backendAddressPool1'
-          backendMembershipMode: 'Nic'
+          backendMembershipMode: 'NIC'
         }
         {
           name: 'backendAddressPool2'

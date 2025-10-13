@@ -636,7 +636,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     // Non-required parameters
     backendAddressPools: [
       {
-        backendMembershipMode: 'Nic'
+        backendMembershipMode: 'NIC'
         name: 'backendAddressPool1'
       }
       {
@@ -784,7 +784,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     "backendAddressPools": {
       "value": [
         {
-          "backendMembershipMode": "Nic",
+          "backendMembershipMode": "NIC",
           "name": "backendAddressPool1"
         },
         {
@@ -944,7 +944,7 @@ param name = 'nlbext001'
 // Non-required parameters
 param backendAddressPools = [
   {
-    backendMembershipMode: 'Nic'
+    backendMembershipMode: 'NIC'
     name: 'backendAddressPool1'
   }
   {
@@ -1089,7 +1089,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     // Non-required parameters
     backendAddressPools: [
       {
-        backendMembershipMode: 'Nic'
+        backendMembershipMode: 'NIC'
         name: 'servers'
       }
     ]
@@ -1192,7 +1192,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     "backendAddressPools": {
       "value": [
         {
-          "backendMembershipMode": "Nic",
+          "backendMembershipMode": "NIC",
           "name": "servers"
         }
       ]
@@ -1303,7 +1303,7 @@ param name = 'nlbint001'
 // Non-required parameters
 param backendAddressPools = [
   {
-    backendMembershipMode: 'Nic'
+    backendMembershipMode: 'NIC'
     name: 'servers'
   }
 ]
