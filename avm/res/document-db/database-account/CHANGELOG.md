@@ -24,6 +24,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Renamed `automaticFailover` to API-aligned `enableAutomaticFailover`
 - Renamed `nosqlRoleAssignment` to `noSqlRoleAssignment`
 - Adjusted `dataPlaneRoleAssignments.roleDefinitionId` to `roleDefinitionIdOrName` that supports full definition Ids, only the GUIDs and selected built-in roles. For a reference, please refer to the `/tests/e2e/sqlroles` deployment test template.
+- Fixed a bug where the a static string is used for the `dataPlaneRoleDefinitions.name`, as opposed to being dependent on a dynamic component like the `roleName`. Now, if no explicit `name` is given, its identifier will use the `roleName` instead of set static string to ensure roles don't overwrite each other
+- Changed default of `sqlDatabases.containers.defaultTtl` to nullable instead of `-1` to allow passing no value (which would translate to 'Off' in the portal)
 
 ## 0.16.0
 

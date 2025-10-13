@@ -103,7 +103,6 @@ Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azur
 
 - Required: No
 - Type: int
-- Default: `-1`
 - MinValue: -1
 - MaxValue: 2147483647
 

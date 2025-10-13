@@ -51,6 +51,7 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}-role-ref'
     dataPlaneRoleDefinitions: [
       {
+        name: 'optional-role-identifier'
         roleName: 'cosmos-sql-role-test'
         dataActions: [
           'Microsoft.DocumentDB/databaseAccounts/readMetadata'
@@ -65,6 +66,18 @@ module testDeployment '../../../main.bicep' = {
             principalId: nestedDependencies.outputs.identityPrincipalId
           }
         ]
+      }
+      {
+        roleName: 'cosmos-sql-role-test-2'
+        dataActions: [
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+        ]
+        assignableScopes: [
+          '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref'
+        ]
+      }
+      {
+        roleName: 'cosmos-sql-role-test-3'
       }
     ]
     zoneRedundant: false

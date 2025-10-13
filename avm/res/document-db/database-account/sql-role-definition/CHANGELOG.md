@@ -7,10 +7,11 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added user- and resource-derived types for all module parameters
+- Added support for the `sqlRoleAssignments.scope` property. Continues to default to the account itself.
 
 ### Breaking Changes
 
-- None
+- Fixed a bug where the a static string is used for the `name` of a role's default value, as opposed to being dependent on a dynamic component like the `roleName`. Now, if no explicit `name` is given, its identifier will use the `roleName` instead of set static string to ensure roles don't overwrite each other
 
 ## 0.1.0
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "18246649426287291645"
+      "templateHash": "2786393018992504515"
     },
     "name": "DocumentDB Database Account SQL Database Containers",
     "description": "This module deploys a SQL Database Container in a CosmosDB Account."
@@ -49,7 +49,7 @@
     },
     "defaultTtl": {
       "type": "int",
-      "defaultValue": -1,
+      "nullable": true,
       "minValue": -1,
       "maxValue": 2147483647,
       "metadata": {
@@ -142,8 +142,7 @@
         "count": "[length(parameters('paths'))]",
         "input": "[if(startsWith(parameters('paths')[copyIndex('partitionKeyPaths')], '/'), parameters('paths')[copyIndex('partitionKeyPaths')], format('/{0}', parameters('paths')[copyIndex('partitionKeyPaths')]))]"
       }
-    ],
-    "containerResourceParams": "[union(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'defaultTtl', parameters('defaultTtl'), 'id', parameters('name'), 'indexingPolicy', parameters('indexingPolicy'), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version'))), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()))]"
+    ]
   },
   "resources": {
     "databaseAccount::sqlDatabase": {
@@ -164,7 +163,7 @@
       "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('sqlDatabaseName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "resource": "[variables('containerResourceParams')]",
+        "resource": "[shallowMerge(createArray(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'defaultTtl', parameters('defaultTtl'), 'id', parameters('name'), 'indexingPolicy', parameters('indexingPolicy'), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version'))), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject())))]",
         "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', if(and(equals(parameters('autoscaleSettingsMaxThroughput'), null()), not(equals(parameters('throughput'), -1))), parameters('throughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleSettingsMaxThroughput'), null())), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null())))]"
       },
       "dependsOn": [

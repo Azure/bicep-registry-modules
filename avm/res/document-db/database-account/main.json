@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "11895115553250425510"
+      "templateHash": "3499154280389076001"
     },
     "name": "Azure Cosmos DB account",
     "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -1847,7 +1847,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "15728391606398990313"
+              "templateHash": "9754283429289021283"
             },
             "name": "DocumentDB Database Account SQL Databases",
             "description": "This module deploys a SQL Database in a CosmosDB Account."
@@ -2103,7 +2103,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.38.33.27573",
-                      "templateHash": "18246649426287291645"
+                      "templateHash": "2786393018992504515"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
                     "description": "This module deploys a SQL Database Container in a CosmosDB Account."
@@ -2146,7 +2146,7 @@
                     },
                     "defaultTtl": {
                       "type": "int",
-                      "defaultValue": -1,
+                      "nullable": true,
                       "minValue": -1,
                       "maxValue": 2147483647,
                       "metadata": {
@@ -2239,8 +2239,7 @@
                         "count": "[length(parameters('paths'))]",
                         "input": "[if(startsWith(parameters('paths')[copyIndex('partitionKeyPaths')], '/'), parameters('paths')[copyIndex('partitionKeyPaths')], format('/{0}', parameters('paths')[copyIndex('partitionKeyPaths')]))]"
                       }
-                    ],
-                    "containerResourceParams": "[union(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'defaultTtl', parameters('defaultTtl'), 'id', parameters('name'), 'indexingPolicy', parameters('indexingPolicy'), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version'))), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()))]"
+                    ]
                   },
                   "resources": {
                     "databaseAccount::sqlDatabase": {
@@ -2261,7 +2260,7 @@
                       "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('sqlDatabaseName'), parameters('name'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
-                        "resource": "[variables('containerResourceParams')]",
+                        "resource": "[shallowMerge(createArray(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'defaultTtl', parameters('defaultTtl'), 'id', parameters('name'), 'indexingPolicy', parameters('indexingPolicy'), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version'))), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject())))]",
                         "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', if(and(equals(parameters('autoscaleSettingsMaxThroughput'), null()), not(equals(parameters('throughput'), -1))), parameters('throughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleSettingsMaxThroughput'), null())), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null())))]"
                       },
                       "dependsOn": [
@@ -2372,7 +2371,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "8382144958441431041"
+              "templateHash": "14257659612776756993"
             },
             "name": "DocumentDB Database Account SQL Role Definitions.",
             "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
@@ -2499,7 +2498,7 @@
             "sqlRoleDefinition": {
               "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
               "apiVersion": "2024-11-15",
-              "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role')))]",
+              "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName'))))]",
               "properties": {
                 "assignableScopes": "[coalesce(parameters('assignableScopes'), createArray(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))))]",
                 "permissions": [
@@ -2529,7 +2528,7 @@
                     "value": "[parameters('databaseAccountName')]"
                   },
                   "roleDefinitionIdOrName": {
-                    "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role')))]"
+                    "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName'))))]"
                   },
                   "principalId": {
                     "value": "[coalesce(parameters('sqlRoleAssignments'), createArray())[copyIndex()].principalId]"
@@ -2676,14 +2675,14 @@
               "metadata": {
                 "description": "The name of the SQL Role Definition."
               },
-              "value": "[coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role'))]"
+              "value": "[coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName')))]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the SQL Role Definition."
               },
-              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role')))]"
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName'))))]"
             },
             "resourceGroupName": {
               "type": "string",

@@ -2551,7 +2551,20 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
         ]
+        name: 'optional-role-identifier'
         roleName: 'cosmos-sql-role-test'
+      }
+      {
+        assignableScopes: [
+          '<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref'
+        ]
+        dataActions: [
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+        ]
+        roleName: 'cosmos-sql-role-test-2'
+      }
+      {
+        roleName: 'cosmos-sql-role-test-3'
       }
     ]
     sqlDatabases: [
@@ -2626,7 +2639,20 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*",
             "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
           ],
+          "name": "optional-role-identifier",
           "roleName": "cosmos-sql-role-test"
+        },
+        {
+          "assignableScopes": [
+            "<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref"
+          ],
+          "dataActions": [
+            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
+          ],
+          "roleName": "cosmos-sql-role-test-2"
+        },
+        {
+          "roleName": "cosmos-sql-role-test-3"
         }
       ]
     },
@@ -2699,7 +2725,20 @@ param dataPlaneRoleDefinitions = [
       'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
       'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
     ]
+    name: 'optional-role-identifier'
     roleName: 'cosmos-sql-role-test'
+  }
+  {
+    assignableScopes: [
+      '<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref'
+    ]
+    dataActions: [
+      'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+    ]
+    roleName: 'cosmos-sql-role-test-2'
+  }
+  {
+    roleName: 'cosmos-sql-role-test-3'
   }
 ]
 param sqlDatabases = [

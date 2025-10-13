@@ -53,7 +53,7 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' exis
 
 resource sqlRoleDefinition 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions@2024-11-15' = {
   parent: databaseAccount
-  name: name ?? guid(databaseAccount.id, databaseAccountName, 'sql-role')
+  name: name ?? guid(databaseAccount.id, databaseAccountName, roleName)
   properties: {
     assignableScopes: assignableScopes ?? [
       databaseAccount.id

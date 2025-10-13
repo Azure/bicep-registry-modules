@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "8382144958441431041"
+      "templateHash": "14257659612776756993"
     },
     "name": "DocumentDB Database Account SQL Role Definitions.",
     "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
@@ -133,7 +133,7 @@
     "sqlRoleDefinition": {
       "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
       "apiVersion": "2024-11-15",
-      "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role')))]",
+      "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName'))))]",
       "properties": {
         "assignableScopes": "[coalesce(parameters('assignableScopes'), createArray(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))))]",
         "permissions": [
@@ -163,7 +163,7 @@
             "value": "[parameters('databaseAccountName')]"
           },
           "roleDefinitionIdOrName": {
-            "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role')))]"
+            "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName'))))]"
           },
           "principalId": {
             "value": "[coalesce(parameters('sqlRoleAssignments'), createArray())[copyIndex()].principalId]"
@@ -310,14 +310,14 @@
       "metadata": {
         "description": "The name of the SQL Role Definition."
       },
-      "value": "[coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role'))]"
+      "value": "[coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName')))]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the SQL Role Definition."
       },
-      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role')))]"
+      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName'))))]"
     },
     "resourceGroupName": {
       "type": "string",
