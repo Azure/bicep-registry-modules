@@ -97,6 +97,7 @@ module testDeployment '../../../main.bicep' = [
               paths: [
                 '/myPartitionKey'
               ]
+              defaultTtl: -1 // null?
             }
           ]
         }

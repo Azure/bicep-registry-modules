@@ -287,10 +287,10 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
   identity: identity
   kind: !empty(mongodbDatabases) ? 'MongoDB' : 'GlobalDocumentDB'
   properties: {
-    enableBurstCapacity: enableBurstCapacity // not it
+    enableBurstCapacity: enableBurstCapacity
     analyticalStorageConfiguration: analyticalStorageConfiguration
-    // cors: cors
-    defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity' // Not it
+    // cors: cors <= Only provide if != null/empty?
+    defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
       ? defaultIdentity!.name
       : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
     enablePartitionMerge: enablePartitionMerge
