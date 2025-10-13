@@ -7,10 +7,20 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added user- and resource-derived types for all module parameters
+- Added support for the parameters
+  - `enableBurstCapacity`
+  - `defaultIdentity`
+  - `cors`
+  - `connectorOffer`
+  - `enableCassandraConnector`
+  - `enablePartitionMerge`
+  - `enablePerRegionPerPartitionAutoscale`
+  - `analyticalStorageConfiguration`
+  - `networkRestrictions.networkAclBypassResourceIds`
 
 ### Breaking Changes
 
-- None
+- Renamed `automaticFailover` to API-aligned `enableAutomaticFailover`
 
 ## 0.16.0
 
