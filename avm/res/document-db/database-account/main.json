@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "11436135242959090106"
+      "templateHash": "13255473245416505705"
     },
     "name": "Azure Cosmos DB account",
     "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -341,7 +341,7 @@
             "__bicep_resource_derived_type!": {
               "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15#properties/properties/properties/options/properties/autoscaleSettings"
             },
-            "description": "Optional.Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both."
+            "description": "Optional. Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both."
           },
           "nullable": true
         },

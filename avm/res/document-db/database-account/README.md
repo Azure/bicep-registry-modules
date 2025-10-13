@@ -4060,6 +4060,7 @@ Configuration for databases when using Azure Cosmos DB for MongoDB RU.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`autoscaleSettings`](#parameter-mongodbdatabasesautoscalesettings) | object | Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both. |
 | [`collections`](#parameter-mongodbdatabasescollections) | array | Collections in the mongodb database. |
 | [`tags`](#parameter-mongodbdatabasestags) | object | Tags of the resource. |
 | [`throughput`](#parameter-mongodbdatabasesthroughput) | int | Request Units per second. Setting throughput at the database level is only recommended for development/test or when workload across all collections in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level. |
@@ -4070,6 +4071,13 @@ Name of the mongodb database.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `mongodbDatabases.autoscaleSettings`
+
+Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both.
+
+- Required: No
+- Type: object
 
 ### Parameter: `mongodbDatabases.collections`
 

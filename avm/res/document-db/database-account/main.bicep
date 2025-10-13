@@ -785,7 +785,7 @@ type mongoDbType = {
   @description('Optional. Collections in the mongodb database.')
   collections: collectionType[]?
 
-  @description('Optional.Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both.')
+  @description('Optional. Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both.')
   autoscaleSettings: resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15'>.properties.options.autoscaleSettings?
 
   @description('Optional. Tags of the resource.')
