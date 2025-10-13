@@ -17,14 +17,13 @@ The latest version of the changelog can be found [here](https://github.com/Azure
   - `enablePerRegionPerPartitionAutoscale`
   - `analyticalStorageConfiguration`
   - `networkRestrictions.networkAclBypassResourceIds`
-- Added support for an explicit `dataPlaneRoleAssignments.scope` definition, to also allow a scoping to a specific container or database. Continues to default to the account root.
-
+- Added support for an explicit `dataPlaneRoleAssignments.scope` definition, to also allow a scoping to a specific container or database. Continues to default to the account root. For a reference, please refer to the `/tests/e2e/sqlroles` deployment test template.
 
 ### Breaking Changes
 
 - Renamed `automaticFailover` to API-aligned `enableAutomaticFailover`
 - Renamed `nosqlRoleAssignment` to `noSqlRoleAssignment`
-- Adjusted `dataPlaneRoleAssignments.roleDefinitionId` to `roleDefinitionIdOrName` that supports full definition Ids, only the GUIDs and selected built-in roles
+- Adjusted `dataPlaneRoleAssignments.roleDefinitionId` to `roleDefinitionIdOrName` that supports full definition Ids, only the GUIDs and selected built-in roles. For a reference, please refer to the `/tests/e2e/sqlroles` deployment test template.
 
 ## 0.16.0
 
