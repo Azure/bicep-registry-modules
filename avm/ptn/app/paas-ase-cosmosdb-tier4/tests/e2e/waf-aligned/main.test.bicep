@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -43,7 +43,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       // Required parameters
       name: '${namePrefix}${serviceShort}001'
-      
+
       // Optional parameters with custom values for WAF-aligned testing
       suffix: 'waf'
       tags: {
@@ -51,7 +51,7 @@ module testDeployment '../../../main.bicep' = [
         Purpose: 'WAF-Aligned-Testing'
         Module: 'avm/ptn/app/paas-ase-cosmosdb-tier4'
       }
-      
+
       // Network parameters (using defaults but can be customized)
       vNetAddressPrefix: '192.168.250.0/23'
       defaultSubnetAddressPrefix: '192.168.250.0/24'
