@@ -10,9 +10,9 @@ This module deploys an Azure Stack HCI Cluster Deployment Settings resource.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.AzureStackHCI/clusters/deploymentSettings` | [2024-09-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/clusters/deploymentSettings) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.AzureStackHCI/clusters/deploymentSettings` | 2024-09-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_clusters_deploymentsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/clusters/deploymentSettings)</li></ul> |
 
 ## Parameters
 

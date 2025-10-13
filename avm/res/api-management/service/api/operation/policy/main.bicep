@@ -37,7 +37,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   }
 }
 
-resource policy 'Microsoft.ApiManagement/service/apis/operations/policies@2022-08-01' = {
+resource policy 'Microsoft.ApiManagement/service/apis/operations/policies@2024-05-01' = {
   name: name
   parent: service::api::operation
   properties: {

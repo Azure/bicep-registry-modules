@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "3314478573253003022"
+      "version": "0.38.5.1644",
+      "templateHash": "10791887988890944383"
     },
     "name": "Express Route Gateways",
     "description": "This module deploys an Express Route Gateway."
@@ -177,7 +177,7 @@
         "description": "Optional. List of ExpressRoute connections to the ExpressRoute gateway. **Note:** This parameter will overwrite existing connections, including deleting any that are not provided. This is by-design behavior of the resource provider."
       }
     },
-    "virtualHubId": {
+    "virtualHubResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. Resource ID of the Virtual Wan Hub."
@@ -262,7 +262,7 @@
         },
         "expressRouteConnections": "[parameters('expressRouteConnections')]",
         "virtualHub": {
-          "id": "[parameters('virtualHubId')]"
+          "id": "[parameters('virtualHubResourceId')]"
         }
       }
     },
@@ -274,7 +274,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "expressRouteGateway"

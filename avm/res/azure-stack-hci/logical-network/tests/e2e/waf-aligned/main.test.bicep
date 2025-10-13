@@ -186,8 +186,12 @@ module testDeployment '../../../main.bicep' = {
     vmSwitchName: azlocal.outputs.vSwitchName
     ipAllocationMethod: 'Static'
     addressPrefix: '192.168.1.0/24'
-    startingAddress: '192.168.1.171'
-    endingAddress: '192.168.1.190'
+    ipPools: [
+      {
+        start: '192.168.1.171'
+        end: '192.168.1.190'
+      }
+    ]
     defaultGateway: '192.168.1.1'
     dnsServers: ['192.168.1.254']
     routeName: 'default'

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "2965327909324492070"
+      "version": "0.37.4.10188",
+      "templateHash": "9000652758413772388"
     },
     "name": "Network Application Gateways",
     "description": "This module deploys a Network Application Gateway."
@@ -76,6 +76,43 @@
         "description": "The type for the private endpoint output."
       }
     },
+    "_1.lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
     "_1.privateEndpointCustomDnsConfigType": {
       "type": "object",
       "properties": {
@@ -98,7 +135,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -140,7 +177,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -181,7 +218,82 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "_1.roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -328,12 +440,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -461,7 +580,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/lockType",
+          "$ref": "#/definitions/_1.lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -470,7 +589,7 @@
         "roleAssignments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/roleAssignmentType"
+            "$ref": "#/definitions/_1.roleAssignmentType"
           },
           "nullable": true,
           "metadata": {
@@ -481,6 +600,9 @@
           "type": "object",
           "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+            },
             "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
           }
         },
@@ -495,7 +617,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -599,10 +721,13 @@
     },
     "authenticationCertificates": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/authenticationCertificates"
+        },
         "description": "Optional. Authentication certificates of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "autoscaleMaxCapacity": {
       "type": "int",
@@ -620,24 +745,33 @@
     },
     "backendAddressPools": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/backendAddressPools"
+        },
         "description": "Optional. Backend address pool of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "backendHttpSettingsCollection": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/backendHttpSettingsCollection"
+        },
         "description": "Optional. Backend http settings of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "customErrorConfigurations": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/customErrorConfigurations"
+        },
         "description": "Optional. Custom error configurations of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "enableFips": {
       "type": "bool",
@@ -662,24 +796,33 @@
     },
     "frontendIPConfigurations": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/frontendIPConfigurations"
+        },
         "description": "Optional. Frontend IP addresses of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "frontendPorts": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/frontendPorts"
+        },
         "description": "Optional. Frontend ports of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "gatewayIPConfigurations": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/gatewayIPConfigurations"
+        },
         "description": "Optional. Subnets of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "enableRequestBuffering": {
       "type": "bool",
@@ -697,17 +840,23 @@
     },
     "httpListeners": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/httpListeners"
+        },
         "description": "Optional. Http listeners of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "loadDistributionPolicies": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/loadDistributionPolicies"
+        },
         "description": "Optional. Load distribution policies of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "privateEndpoints": {
       "type": "array",
@@ -721,38 +870,53 @@
     },
     "privateLinkConfigurations": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/privateLinkConfigurations"
+        },
         "description": "Optional. PrivateLink configurations on application gateway."
-      }
+      },
+      "defaultValue": []
     },
     "probes": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/probes"
+        },
         "description": "Optional. Probes of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "redirectConfigurations": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/redirectConfigurations"
+        },
         "description": "Optional. Redirect configurations of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "requestRoutingRules": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/requestRoutingRules"
+        },
         "description": "Optional. Request routing rules of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "rewriteRuleSets": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/rewriteRuleSets"
+        },
         "description": "Optional. Rewrite rules for the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "sku": {
       "type": "string",
@@ -777,50 +941,26 @@
     },
     "sslCertificates": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/sslCertificates"
+        },
         "description": "Optional. SSL certificates of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "sslPolicyCipherSuites": {
       "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/sslPolicy/properties/cipherSuites"
+        },
+        "description": "Optional. Ssl cipher suites to be enabled in the specified order to application gateway."
+      },
       "defaultValue": [
         "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
         "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
-      ],
-      "allowedValues": [
-        "TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA",
-        "TLS_DHE_DSS_WITH_AES_128_CBC_SHA",
-        "TLS_DHE_DSS_WITH_AES_128_CBC_SHA256",
-        "TLS_DHE_DSS_WITH_AES_256_CBC_SHA",
-        "TLS_DHE_DSS_WITH_AES_256_CBC_SHA256",
-        "TLS_DHE_RSA_WITH_AES_128_CBC_SHA",
-        "TLS_DHE_RSA_WITH_AES_128_GCM_SHA256",
-        "TLS_DHE_RSA_WITH_AES_256_CBC_SHA",
-        "TLS_DHE_RSA_WITH_AES_256_GCM_SHA384",
-        "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
-        "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
-        "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
-        "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
-        "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",
-        "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
-        "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
-        "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
-        "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
-        "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
-        "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",
-        "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
-        "TLS_RSA_WITH_3DES_EDE_CBC_SHA",
-        "TLS_RSA_WITH_AES_128_CBC_SHA",
-        "TLS_RSA_WITH_AES_128_CBC_SHA256",
-        "TLS_RSA_WITH_AES_128_GCM_SHA256",
-        "TLS_RSA_WITH_AES_256_CBC_SHA",
-        "TLS_RSA_WITH_AES_256_CBC_SHA256",
-        "TLS_RSA_WITH_AES_256_GCM_SHA384"
-      ],
-      "metadata": {
-        "description": "Optional. Ssl cipher suites to be enabled in the specified order to application gateway."
-      }
+      ]
     },
     "sslPolicyMinProtocolVersion": {
       "type": "string",
@@ -864,31 +1004,43 @@
     },
     "sslProfiles": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/sslProfiles"
+        },
         "description": "Optional. SSL profiles of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "trustedClientCertificates": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/trustedClientCertificates"
+        },
         "description": "Optional. Trusted client certificates of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "trustedRootCertificates": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/trustedRootCertificates"
+        },
         "description": "Optional. Trusted Root certificates of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "urlPathMaps": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/urlPathMaps"
+        },
         "description": "Optional. URL path map of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "availabilityZones": {
       "type": "array",
@@ -938,31 +1090,43 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/tags"
+        },
         "description": "Optional. Resource tags."
-      }
+      },
+      "nullable": true
     },
     "backendSettingsCollection": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/backendSettingsCollection"
+        },
         "description": "Optional. Backend settings of the application gateway resource. For default limits, see [Application Gateway limits](https://learn.microsoft.com/en-us/azure/azure-subscription-service-limits#application-gateway-limits)."
-      }
+      },
+      "defaultValue": []
     },
     "listeners": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/listeners"
+        },
         "description": "Optional. Listeners of the application gateway resource. For default limits, see [Application Gateway limits](https://learn.microsoft.com/en-us/azure/azure-subscription-service-limits#application-gateway-limits)."
-      }
+      },
+      "defaultValue": []
     },
     "routingRules": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2024-07-01#properties/properties/properties/routingRules"
+        },
         "description": "Optional. Routing rules of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "enableTelemetry": {
       "type": "bool",
@@ -981,7 +1145,7 @@
       }
     ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None'), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -1014,7 +1178,7 @@
     },
     "applicationGateway": {
       "type": "Microsoft.Network/applicationGateways",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2024-10-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1030,7 +1194,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "applicationGateway"
@@ -1884,7 +2048,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('applicationGateway', '2024-05-01', 'full').location]"
+      "value": "[reference('applicationGateway', '2024-10-01', 'full').location]"
     },
     "privateEndpoints": {
       "type": "array",

@@ -10,9 +10,9 @@ This module deploys a Network Watcher Connection Monitor.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Network/networkWatchers/connectionMonitors` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkWatchers/connectionMonitors) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Network/networkWatchers/connectionMonitors` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkwatchers_connectionmonitors.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/networkWatchers/connectionMonitors)</li></ul> |
 
 ## Parameters
 
@@ -26,9 +26,14 @@ This module deploys a Network Watcher Connection Monitor.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`autoStart`](#parameter-autostart) | bool | Determines if the connection monitor will start automatically once created. |
+| [`destination`](#parameter-destination) | object | Describes the destination of connection monitor. |
 | [`endpoints`](#parameter-endpoints) | array | List of connection monitor endpoints. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+| [`monitoringIntervalInSeconds`](#parameter-monitoringintervalinseconds) | int | Monitoring interval in seconds. |
 | [`networkWatcherName`](#parameter-networkwatchername) | string | Name of the network watcher resource. Must be in the resource group where the Flow log will be created and same region as the NSG. |
+| [`notes`](#parameter-notes) | string | Notes to be associated with the connection monitor. |
+| [`source`](#parameter-source) | object | Describes the source of connection monitor. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`testConfigurations`](#parameter-testconfigurations) | array | List of connection monitor test configurations. |
 | [`testGroups`](#parameter-testgroups) | array | List of connection monitor test groups. |
@@ -40,6 +45,20 @@ Name of the resource.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `autoStart`
+
+Determines if the connection monitor will start automatically once created.
+
+- Required: No
+- Type: bool
+
+### Parameter: `destination`
+
+Describes the destination of connection monitor.
+
+- Required: No
+- Type: object
 
 ### Parameter: `endpoints`
 
@@ -57,6 +76,15 @@ Location for all resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
+### Parameter: `monitoringIntervalInSeconds`
+
+Monitoring interval in seconds.
+
+- Required: No
+- Type: int
+- MinValue: 30
+- MaxValue: 1800
+
 ### Parameter: `networkWatcherName`
 
 Name of the network watcher resource. Must be in the resource group where the Flow log will be created and same region as the NSG.
@@ -64,6 +92,20 @@ Name of the network watcher resource. Must be in the resource group where the Fl
 - Required: No
 - Type: string
 - Default: `[format('NetworkWatcher_{0}', resourceGroup().location)]`
+
+### Parameter: `notes`
+
+Notes to be associated with the connection monitor.
+
+- Required: No
+- Type: string
+
+### Parameter: `source`
+
+Describes the source of connection monitor.
+
+- Required: No
+- Type: object
 
 ### Parameter: `tags`
 
@@ -94,7 +136,6 @@ Specify the Log Analytics Workspace Resource ID.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ## Outputs
 

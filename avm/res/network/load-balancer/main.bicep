@@ -35,7 +35,7 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -235,7 +235,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource loadBalancer 'Microsoft.Network/loadBalancers@2023-11-01' = {
+resource loadBalancer 'Microsoft.Network/loadBalancers@2024-07-01' = {
   name: name
   location: location
   tags: tags
@@ -260,6 +260,7 @@ module loadBalancer_backendAddressPools 'backend-address-pool/main.bicep' = [
       tunnelInterfaces: backendAddressPool.?tunnelInterfaces
       loadBalancerBackendAddresses: backendAddressPool.?loadBalancerBackendAddresses
       drainPeriodInSeconds: backendAddressPool.?drainPeriodInSeconds
+      virtualNetworkResourceId: backendAddressPool.?virtualNetworkResourceId
     }
   }
 ]
@@ -291,9 +292,9 @@ resource loadBalancer_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!emp
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: loadBalancer
 }
@@ -336,7 +337,7 @@ resource loadBalancer_roleAssignments 'Microsoft.Authorization/roleAssignments@2
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
       condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condition is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
     scope: loadBalancer

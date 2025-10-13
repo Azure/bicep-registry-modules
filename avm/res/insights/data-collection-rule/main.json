@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "17290257983994746236"
+      "version": "0.37.4.10188",
+      "templateHash": "8608727180008596705"
     },
     "name": "Data Collection Rules",
     "description": "This module deploys a Data Collection Rule."
@@ -348,12 +348,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -603,8 +610,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "17062698556609624183"
+              "version": "0.37.4.10188",
+              "templateHash": "17540106431216926584"
             }
           },
           "definitions": {
@@ -629,12 +636,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             },
@@ -789,7 +803,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('dataCollectionRuleName')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               }
             }
           }
@@ -837,6 +851,26 @@
         "description": "The principal ID of the system assigned identity."
       },
       "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), tryGet(tryGet(if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), reference('dataCollectionRuleAll', '2023-03-11', 'full'), null()), 'identity'), 'principalId'), tryGet(tryGet(if(not(equals(parameters('dataCollectionRuleProperties').kind, 'All')), reference('dataCollectionRule', '2023-03-11', 'full'), null()), 'identity'), 'principalId'))]"
+    },
+    "endpoints": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/dataCollectionRules@2023-03-11#properties/properties/properties/endpoints",
+          "output": true
+        },
+        "description": "The endpoints of the dataCollectionRule, if created."
+      },
+      "nullable": true,
+      "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), tryGet(reference('dataCollectionRuleAll'), 'endpoints'), tryGet(reference('dataCollectionRule'), 'endpoints'))]"
+    },
+    "immutableId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The ImmutableId of the dataCollectionRule."
+      },
+      "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), tryGet(reference('dataCollectionRuleAll'), 'immutableId'), tryGet(reference('dataCollectionRule'), 'immutableId'))]"
     }
   }
 }

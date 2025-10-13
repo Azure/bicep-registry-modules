@@ -11,9 +11,9 @@ This module controls the Network Security Group Flow Logs and analytics settings
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Network/networkWatchers/flowLogs` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkWatchers/flowLogs) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Network/networkWatchers/flowLogs` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkwatchers_flowlogs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/networkWatchers/flowLogs)</li></ul> |
 
 ## Parameters
 
@@ -21,7 +21,7 @@ This module controls the Network Security Group Flow Logs and analytics settings
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`storageId`](#parameter-storageid) | string | Resource ID of the diagnostic storage account. |
+| [`storageResourceId`](#parameter-storageresourceid) | string | Resource ID of the diagnostic storage account. |
 | [`targetResourceId`](#parameter-targetresourceid) | string | Resource ID of the NSG that must be enabled for Flow Logs. |
 
 **Optional parameters**
@@ -29,6 +29,7 @@ This module controls the Network Security Group Flow Logs and analytics settings
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enabled`](#parameter-enabled) | bool | If the flow log should be enabled. |
+| [`enabledFilteringCriteria`](#parameter-enabledfilteringcriteria) | string | Field to filter network traffic logs based on SrcIP, SrcPort, DstIP, DstPort, Protocol, Encryption, Direction and Action. If not specified, all network traffic will be logged. |
 | [`formatVersion`](#parameter-formatversion) | int | The flow log format version. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`name`](#parameter-name) | string | Name of the resource. |
@@ -38,7 +39,7 @@ This module controls the Network Security Group Flow Logs and analytics settings
 | [`trafficAnalyticsInterval`](#parameter-trafficanalyticsinterval) | int | The interval in minutes which would decide how frequently TA service should do flow analytics. |
 | [`workspaceResourceId`](#parameter-workspaceresourceid) | string | Specify the Log Analytics Workspace Resource ID. |
 
-### Parameter: `storageId`
+### Parameter: `storageResourceId`
 
 Resource ID of the diagnostic storage account.
 
@@ -59,6 +60,13 @@ If the flow log should be enabled.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `enabledFilteringCriteria`
+
+Field to filter network traffic logs based on SrcIP, SrcPort, DstIP, DstPort, Protocol, Encryption, Direction and Action. If not specified, all network traffic will be logged.
+
+- Required: No
+- Type: string
 
 ### Parameter: `formatVersion`
 
@@ -137,7 +145,6 @@ Specify the Log Analytics Workspace Resource ID.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ## Outputs
 

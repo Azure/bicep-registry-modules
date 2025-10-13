@@ -13,13 +13,13 @@ This module deploys a DNS Resolver.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/dnsResolvers` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-07-01/dnsResolvers) |
-| `Microsoft.Network/dnsResolvers/inboundEndpoints` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-07-01/dnsResolvers/inboundEndpoints) |
-| `Microsoft.Network/dnsResolvers/outboundEndpoints` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-07-01/dnsResolvers/outboundEndpoints) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Network/dnsResolvers` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_dnsresolvers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/dnsResolvers)</li></ul> |
+| `Microsoft.Network/dnsResolvers/inboundEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_dnsresolvers_inboundendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/dnsResolvers/inboundEndpoints)</li></ul> |
+| `Microsoft.Network/dnsResolvers/outboundEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_dnsresolvers_outboundendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/dnsResolvers/outboundEndpoints)</li></ul> |
 
 ## Usage examples
 
@@ -49,8 +49,6 @@ module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
     // Required parameters
     name: 'ndrmin001'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -73,10 +71,6 @@ module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
     },
     "virtualNetworkResourceId": {
       "value": "<virtualNetworkResourceId>"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -95,8 +89,6 @@ using 'br/public:avm/res/network/dns-resolver:<version>'
 // Required parameters
 param name = 'ndrmin001'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -324,7 +316,6 @@ module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
         subnetResourceId: '<subnetResourceId>'
       }
     ]
-    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -372,9 +363,6 @@ module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "lock": {
       "value": {
         "kind": "CanNotDelete",
@@ -420,7 +408,6 @@ param inboundEndpoints = [
     subnetResourceId: '<subnetResourceId>'
   }
 ]
-param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
@@ -577,6 +564,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -596,6 +584,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -781,7 +776,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 

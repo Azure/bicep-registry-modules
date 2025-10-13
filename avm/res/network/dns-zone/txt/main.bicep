@@ -8,13 +8,13 @@ param dnsZoneName string
 param name string
 
 @description('Optional. The metadata attached to the record set.')
-param metadata object?
+param metadata resourceInput<'Microsoft.Network/dnsZones/TXT@2018-05-01'>.properties.metadata?
 
 @description('Optional. The TTL (time-to-live) of the records in the record set.')
 param ttl int = 3600
 
 @description('Optional. The list of TXT records in the record set.')
-param txtRecords array?
+param txtRecords resourceInput<'Microsoft.Network/dnsZones/TXT@2018-05-01'>.properties.TXTRecords?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')

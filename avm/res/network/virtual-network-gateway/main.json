@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "17973519096655922373"
+      "version": "0.37.4.10188",
+      "templateHash": "9720848511307190061"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
@@ -566,12 +566,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -1044,9 +1051,9 @@
     "existingTertiaryPublicIPResourceIdVar": "[if(variables('isActiveActive'), tryGet(parameters('clusterSettings'), 'existingTertiaryPublicIPResourceId'), null())]",
     "secondaryPublicIPNameVar": "[if(variables('isActiveActive'), coalesce(tryGet(parameters('clusterSettings'), 'secondPipName'), format('{0}-pip2', parameters('name'))), null())]",
     "tertiaryPublicIPNameVar": "[if(and(variables('isActiveActive'), not(empty(parameters('vpnClientAddressPoolPrefix')))), format('{0}-pip3', parameters('name')), null())]",
-    "arrayPipNameVar": "[if(and(variables('isActiveActive'), not(empty(parameters('vpnClientAddressPoolPrefix')))), concat(if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), createArray(), createArray(parameters('primaryPublicIPName'))), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), createArray(), createArray(variables('secondaryPublicIPNameVar'))), if(not(empty(variables('existingTertiaryPublicIPResourceIdVar'))), createArray(), createArray(variables('tertiaryPublicIPNameVar')))), if(variables('isActiveActive'), concat(if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), createArray(), createArray(parameters('primaryPublicIPName'))), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), createArray(), createArray(variables('secondaryPublicIPNameVar')))), concat(if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), createArray(), createArray(parameters('primaryPublicIPName'))))))]",
+    "arrayPipNameVar": "[if(variables('isExpressRoute'), createArray(), if(and(variables('isActiveActive'), not(empty(parameters('vpnClientAddressPoolPrefix')))), concat(if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), createArray(), createArray(parameters('primaryPublicIPName'))), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), createArray(), createArray(variables('secondaryPublicIPNameVar'))), if(not(empty(variables('existingTertiaryPublicIPResourceIdVar'))), createArray(), createArray(variables('tertiaryPublicIPNameVar')))), if(variables('isActiveActive'), concat(if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), createArray(), createArray(parameters('primaryPublicIPName'))), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), createArray(), createArray(variables('secondaryPublicIPNameVar')))), concat(if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), createArray(), createArray(parameters('primaryPublicIPName')))))))]",
     "bgpSettingsVar": "[if(variables('isActiveActive'), createObject('asn', coalesce(tryGet(parameters('clusterSettings'), 'asn'), 65515), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'customBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))), createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'secondCustomBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig2', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))))), createObject('asn', coalesce(tryGet(parameters('clusterSettings'), 'asn'), 65515), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'customBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))))))]",
-    "ipConfiguration": "[if(and(variables('isActiveActive'), not(empty(parameters('vpnClientAddressPoolPrefix')))), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName'))))), 'name', 'vNetGatewayConfig1'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(variables('isActiveActive'), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), variables('existingSecondaryPublicIPResourceIdVar'), resourceId('Microsoft.Network/publicIPAddresses', variables('secondaryPublicIPNameVar'))), if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName')))))), 'name', 'vNetGatewayConfig2'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(variables('existingTertiaryPublicIPResourceIdVar'))), variables('existingTertiaryPublicIPResourceIdVar'), resourceId('Microsoft.Network/publicIPAddresses', variables('tertiaryPublicIPNameVar'))))), 'name', 'vNetGatewayConfig3')), if(variables('isActiveActive'), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName'))))), 'name', 'vNetGatewayConfig1'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(variables('isActiveActive'), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), variables('existingSecondaryPublicIPResourceIdVar'), resourceId('Microsoft.Network/publicIPAddresses', variables('secondaryPublicIPNameVar'))), if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName')))))), 'name', 'vNetGatewayConfig2')), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName'))))), 'name', 'vNetGatewayConfig1'))))]",
+    "ipConfiguration": "[if(and(variables('isActiveActive'), not(empty(parameters('vpnClientAddressPoolPrefix')))), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', if(variables('isExpressRoute'), null(), createObject('id', if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName')))))), 'name', 'vNetGatewayConfig1'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', if(variables('isExpressRoute'), null(), createObject('id', if(variables('isActiveActive'), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), variables('existingSecondaryPublicIPResourceIdVar'), resourceId('Microsoft.Network/publicIPAddresses', variables('secondaryPublicIPNameVar'))), if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName'))))))), 'name', 'vNetGatewayConfig2'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', if(variables('isExpressRoute'), null(), createObject('id', if(not(empty(variables('existingTertiaryPublicIPResourceIdVar'))), variables('existingTertiaryPublicIPResourceIdVar'), resourceId('Microsoft.Network/publicIPAddresses', variables('tertiaryPublicIPNameVar')))))), 'name', 'vNetGatewayConfig3')), if(variables('isActiveActive'), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', if(variables('isExpressRoute'), null(), createObject('id', if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName')))))), 'name', 'vNetGatewayConfig1'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', if(variables('isExpressRoute'), null(), createObject('id', if(variables('isActiveActive'), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), variables('existingSecondaryPublicIPResourceIdVar'), resourceId('Microsoft.Network/publicIPAddresses', variables('secondaryPublicIPNameVar'))), if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName'))))))), 'name', 'vNetGatewayConfig2')), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', if(variables('isExpressRoute'), null(), createObject('id', if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName')))))), 'name', 'vNetGatewayConfig1'))))]",
     "vpnClientConfiguration": "[if(not(empty(parameters('clientRootCertData'))), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray(parameters('vpnClientAddressPoolPrefix'))), 'vpnClientRootCertificates', createArray(createObject('name', 'RootCert1', 'properties', createObject('publicCertData', parameters('clientRootCertData')))), 'vpnClientRevokedCertificates', if(not(empty(parameters('clientRevokedCertThumbprint'))), createArray(createObject('name', 'RevokedCert1', 'properties', createObject('thumbprint', parameters('clientRevokedCertThumbprint')))), null())), if(not(empty(parameters('vpnClientAadConfiguration'))), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray(parameters('vpnClientAddressPoolPrefix'))), 'aadTenant', parameters('vpnClientAadConfiguration').aadTenant, 'aadAudience', parameters('vpnClientAadConfiguration').aadAudience, 'aadIssuer', parameters('vpnClientAadConfiguration').aadIssuer, 'vpnAuthenticationTypes', parameters('vpnClientAadConfiguration').vpnAuthenticationTypes, 'vpnClientProtocols', parameters('vpnClientAadConfiguration').vpnClientProtocols), null()))]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -1129,7 +1136,7 @@
           "name": "[parameters('skuName')]",
           "tier": "[parameters('skuName')]"
         },
-        "vpnType": "[if(not(variables('isExpressRoute')), parameters('vpnType'), 'PolicyBased')]",
+        "vpnType": "[if(variables('isExpressRoute'), 'RouteBased', parameters('vpnType'))]",
         "vpnClientConfiguration": "[if(not(empty(parameters('vpnClientAddressPoolPrefix'))), variables('vpnClientConfiguration'), null())]",
         "vpnGatewayGeneration": "[if(equals(parameters('gatewayType'), 'Vpn'), parameters('vpnGatewayGeneration'), 'None')]",
         "customRoutes": "[parameters('customRoutes')]",
@@ -1163,7 +1170,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "virtualNetworkGateway"
@@ -1266,7 +1273,7 @@
             "value": "[parameters('tags')]"
           },
           "skuName": "[if(equals(parameters('skuName'), 'Basic'), createObject('value', 'Basic'), createObject('value', 'Standard'))]",
-          "zones": "[if(contains(parameters('skuName'), 'AZ'), createObject('value', parameters('publicIpAvailabilityZones')), createObject('value', createArray()))]",
+          "availabilityZones": "[if(contains(parameters('skuName'), 'AZ'), createObject('value', parameters('publicIpAvailabilityZones')), createObject('value', createArray()))]",
           "dnsSettings": {
             "value": {
               "domainNameLabel": "[if(equals(length(variables('arrayPipNameVar')), length(parameters('domainNameLabel'))), parameters('domainNameLabel')[copyIndex()], variables('arrayPipNameVar')[copyIndex()])]",
@@ -1284,8 +1291,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "5168739580767459761"
+              "version": "0.36.177.2456",
+              "templateHash": "14921988046704902194"
             },
             "name": "Public IP Addresses",
             "description": "This module deploys a Public IP Address."
@@ -1637,7 +1644,7 @@
                 "description": "Optional. The public IP address allocation method."
               }
             },
-            "zones": {
+            "availabilityZones": {
               "type": "array",
               "items": {
                 "type": "int"
@@ -1795,7 +1802,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.8.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.9.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1821,7 +1828,7 @@
                 "name": "[parameters('skuName')]",
                 "tier": "[parameters('skuTier')]"
               },
-              "zones": "[map(parameters('zones'), lambda('zone', string(lambdaVariables('zone'))))]",
+              "zones": "[map(parameters('availabilityZones'), lambda('zone', string(lambdaVariables('zone'))))]",
               "properties": {
                 "ddosSettings": "[parameters('ddosSettings')]",
                 "dnsSettings": "[parameters('dnsSettings')]",
@@ -1993,8 +2000,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "17174012563137266411"
+              "version": "0.37.4.10188",
+              "templateHash": "13603322121776909548"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a Virtual Network Gateway NAT Rule."
@@ -2193,10 +2200,11 @@
     },
     "primaryPublicIpAddress": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The primary public IP address of the virtual network gateway."
       },
-      "value": "[if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), reference('primaryPublicIP').ipAddress, reference(format('publicIPAddress[{0}]', 0)).outputs.ipAddress.value)]"
+      "value": "[if(variables('isExpressRoute'), null(), if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), reference('primaryPublicIP').ipAddress, reference(format('publicIPAddress[{0}]', 0)).outputs.ipAddress.value))]"
     },
     "defaultBgpIpAddresses": {
       "type": "string",

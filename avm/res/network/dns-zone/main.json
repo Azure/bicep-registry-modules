@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "13694499984980659314"
+      "version": "0.38.5.1644",
+      "templateHash": "8581096208756460794"
     },
     "name": "Public DNS Zones",
     "description": "This module deploys a Public DNS zone."
@@ -23,10 +23,13 @@
         },
         "metadata": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsZones/A@2018-05-01#properties/properties/properties/metadata"
+            },
             "description": "Optional. The metadata of the record."
-          }
+          },
+          "nullable": true
         },
         "ttl": {
           "type": "int",
@@ -54,22 +57,18 @@
         },
         "aRecords": {
           "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "ipv4Address": {
-                "type": "string",
-                "metadata": {
-                  "description": "Required. The IPv4 address of this A record."
-                }
-              }
-            }
-          },
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsZones/A@2018-05-01#properties/properties/properties/ARecords"
+            },
             "description": "Optional. The list of A records in the record set."
-          }
+          },
+          "nullable": true
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for an A record."
       }
     },
     "aaaaType": {
@@ -83,10 +82,13 @@
         },
         "metadata": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsZones/AAAA@2018-05-01#properties/properties/properties/metadata"
+            },
             "description": "Optional. The metadata of the record."
-          }
+          },
+          "nullable": true
         },
         "ttl": {
           "type": "int",
@@ -114,22 +116,18 @@
         },
         "aaaaRecords": {
           "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "ipv6Address": {
-                "type": "string",
-                "metadata": {
-                  "description": "Required. The IPv6 address of this AAAA record."
-                }
-              }
-            }
-          },
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsZones/AAAA@2018-05-01#properties/properties/properties/AAAARecords"
+            },
             "description": "Optional. The list of AAAA records in the record set."
-          }
+          },
+          "nullable": true
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for an AAAA record."
       }
     },
     "cnameType": {
@@ -143,10 +141,13 @@
         },
         "metadata": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsZones/CNAME@2018-05-01#properties/properties/properties/metadata"
+            },
             "description": "Optional. The metadata of the record."
-          }
+          },
+          "nullable": true
         },
         "ttl": {
           "type": "int",
@@ -174,19 +175,18 @@
         },
         "cnameRecord": {
           "type": "object",
-          "properties": {
-            "cname": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The canonical name of the CNAME record."
-              }
-            }
-          },
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsZones/CNAME@2018-05-01#properties/properties/properties/CNAMERecord"
+            },
             "description": "Optional. The CNAME record in the record set."
-          }
+          },
+          "nullable": true
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for a CNAME record."
       }
     },
     "caaType": {
@@ -200,10 +200,13 @@
         },
         "metadata": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsZones/CAA@2018-05-01#properties/properties/properties/metadata"
+            },
             "description": "Optional. The metadata of the record."
-          }
+          },
+          "nullable": true
         },
         "ttl": {
           "type": "int",
@@ -224,36 +227,18 @@
         },
         "caaRecords": {
           "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "flags": {
-                "type": "int",
-                "minValue": 0,
-                "maxValue": 255,
-                "metadata": {
-                  "description": "Required. The flags for this CAA record as an integer between 0 and 255."
-                }
-              },
-              "tag": {
-                "type": "string",
-                "metadata": {
-                  "description": "Required. The tag for this CAA record.."
-                }
-              },
-              "value": {
-                "type": "string",
-                "metadata": {
-                  "description": "Required. The value for this CAA record."
-                }
-              }
-            }
-          },
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsZones/CAA@2018-05-01#properties/properties/properties/caaRecords"
+            },
             "description": "Optional. The list of CAA records in the record set."
-          }
+          },
+          "nullable": true
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for a CAA record."
       }
     },
     "mxType": {
@@ -267,10 +252,13 @@
         },
         "metadata": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsZones/MX@2018-05-01#properties/properties/properties/metadata"
+            },
             "description": "Optional. The metadata of the record."
-          }
+          },
+          "nullable": true
         },
         "ttl": {
           "type": "int",
@@ -291,28 +279,18 @@
         },
         "mxRecords": {
           "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "exchange": {
-                "type": "string",
-                "metadata": {
-                  "description": "Required. The domain name of the mail host for this MX record."
-                }
-              },
-              "preference": {
-                "type": "int",
-                "metadata": {
-                  "description": "Required. The preference value for this MX record."
-                }
-              }
-            }
-          },
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsZones/MX@2018-05-01#properties/properties/properties/MXRecords"
+            },
             "description": "Optional. The list of MX records in the record set."
-          }
+          },
+          "nullable": true
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for an MX record."
       }
     },
     "nsType": {
@@ -326,10 +304,13 @@
         },
         "metadata": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsZones/NS@2018-05-01#properties/properties/properties/metadata"
+            },
             "description": "Optional. The metadata of the record."
-          }
+          },
+          "nullable": true
         },
         "ttl": {
           "type": "int",
@@ -350,22 +331,18 @@
         },
         "nsRecords": {
           "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "nsdname": {
-                "type": "string",
-                "metadata": {
-                  "description": "Required. The name server name for this NS record."
-                }
-              }
-            }
-          },
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsZones/NS@2018-05-01#properties/properties/properties/NSRecords"
+            },
             "description": "Optional. The list of NS records in the record set."
-          }
+          },
+          "nullable": true
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for an NS record."
       }
     },
     "ptrType": {
@@ -379,10 +356,13 @@
         },
         "metadata": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsZones/PTR@2018-05-01#properties/properties/properties/metadata"
+            },
             "description": "Optional. The metadata of the record."
-          }
+          },
+          "nullable": true
         },
         "ttl": {
           "type": "int",
@@ -403,22 +383,18 @@
         },
         "ptrRecords": {
           "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "ptrdname": {
-                "type": "string",
-                "metadata": {
-                  "description": "Required. The PTR target domain name for this PTR record."
-                }
-              }
-            }
-          },
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsZones/PTR@2018-05-01#properties/properties/properties/PTRRecords"
+            },
             "description": "Optional. The list of PTR records in the record set."
-          }
+          },
+          "nullable": true
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for a PTR record."
       }
     },
     "soaType": {
@@ -432,10 +408,13 @@
         },
         "metadata": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsZones/SOA@2018-05-01#properties/properties/properties/metadata"
+            },
             "description": "Optional. The metadata of the record."
-          }
+          },
+          "nullable": true
         },
         "ttl": {
           "type": "int",
@@ -456,55 +435,18 @@
         },
         "soaRecord": {
           "type": "object",
-          "properties": {
-            "email": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The email contact for this SOA record."
-              }
-            },
-            "expireTime": {
-              "type": "int",
-              "metadata": {
-                "description": "Required. The expire time for this SOA record."
-              }
-            },
-            "host": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The domain name of the authoritative name server for this SOA record."
-              }
-            },
-            "minimumTTL": {
-              "type": "int",
-              "metadata": {
-                "description": "Required. The minimum value for this SOA record. By convention this is used to determine the negative caching duration."
-              }
-            },
-            "refreshTime": {
-              "type": "int",
-              "metadata": {
-                "description": "Required. The refresh value for this SOA record."
-              }
-            },
-            "retryTime": {
-              "type": "int",
-              "metadata": {
-                "description": "Required. The retry time for this SOA record."
-              }
-            },
-            "serialNumber": {
-              "type": "int",
-              "metadata": {
-                "description": "Required. The serial number for this SOA record."
-              }
-            }
-          },
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsZones/SOA@2018-05-01#properties/properties/properties/SOARecord"
+            },
             "description": "Optional. The SOA record in the record set."
-          }
+          },
+          "nullable": true
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for an SOA record."
       }
     },
     "srvType": {
@@ -518,10 +460,13 @@
         },
         "metadata": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsZones/SRV@2018-05-01#properties/properties/properties/metadata"
+            },
             "description": "Optional. The metadata of the record."
-          }
+          },
+          "nullable": true
         },
         "ttl": {
           "type": "int",
@@ -542,40 +487,18 @@
         },
         "srvRecords": {
           "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "priority": {
-                "type": "int",
-                "metadata": {
-                  "description": "Required. The priority value for this SRV record."
-                }
-              },
-              "weight": {
-                "type": "int",
-                "metadata": {
-                  "description": "Required. The weight value for this SRV record."
-                }
-              },
-              "port": {
-                "type": "int",
-                "metadata": {
-                  "description": "Required. The port value for this SRV record."
-                }
-              },
-              "target": {
-                "type": "string",
-                "metadata": {
-                  "description": "Required. The target domain name for this SRV record."
-                }
-              }
-            }
-          },
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsZones/SRV@2018-05-01#properties/properties/properties/SRVRecords"
+            },
             "description": "Optional. The list of SRV records in the record set."
-          }
+          },
+          "nullable": true
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for an SRV record."
       }
     },
     "txtType": {
@@ -589,10 +512,13 @@
         },
         "metadata": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsZones/TXT@2018-05-01#properties/properties/properties/metadata"
+            },
             "description": "Optional. The metadata of the record."
-          }
+          },
+          "nullable": true
         },
         "ttl": {
           "type": "int",
@@ -613,25 +539,18 @@
         },
         "txtRecords": {
           "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "value": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "metadata": {
-                  "description": "Required. The text value of this TXT record."
-                }
-              }
-            }
-          },
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsZones/TXT@2018-05-01#properties/properties/properties/TXTRecords"
+            },
             "description": "Optional. The list of TXT records in the record set."
-          }
+          },
+          "nullable": true
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for a TXT record."
       }
     },
     "lockType": {
@@ -655,12 +574,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -735,7 +661,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -868,10 +794,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/dnsZones@2018-05-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "lock": {
       "$ref": "#/definitions/lockType",
@@ -949,7 +878,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "dnsZone"
@@ -983,7 +912,7 @@
         "count": "[length(coalesce(parameters('a'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-dnsZone-ARecord-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1020,8 +949,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "13050408210894589328"
+              "version": "0.38.5.1644",
+              "templateHash": "10574831328392487492"
             },
             "name": "Public DNS Zone A record",
             "description": "This module deploys a Public DNS Zone A record."
@@ -1118,17 +1047,23 @@
             },
             "aRecords": {
               "type": "array",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsZones/A@2018-05-01#properties/properties/properties/ARecords"
+                },
                 "description": "Optional. The list of A records in the record set. Cannot be used in conjuction with the \"targetResource\" property."
-              }
+              },
+              "nullable": true
             },
             "metadata": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsZones/A@2018-05-01#properties/properties/properties/metadata"
+                },
                 "description": "Optional. The metadata attached to the record set."
-              }
+              },
+              "nullable": true
             },
             "ttl": {
               "type": "int",
@@ -1253,7 +1188,7 @@
         "count": "[length(coalesce(parameters('aaaa'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-dnsZone-AAAARecord-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1290,8 +1225,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "15089066645661427475"
+              "version": "0.38.5.1644",
+              "templateHash": "5263567442489172556"
             },
             "name": "Public DNS Zone AAAA record",
             "description": "This module deploys a Public DNS Zone AAAA record."
@@ -1388,17 +1323,23 @@
             },
             "aaaaRecords": {
               "type": "array",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsZones/AAAA@2018-05-01#properties/properties/properties/AAAARecords"
+                },
                 "description": "Optional. The list of AAAA records in the record set. Cannot be used in conjuction with the \"targetResource\" property."
-              }
+              },
+              "nullable": true
             },
             "metadata": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsZones/AAAA@2018-05-01#properties/properties/properties/metadata"
+                },
                 "description": "Optional. The metadata attached to the record set."
-              }
+              },
+              "nullable": true
             },
             "ttl": {
               "type": "int",
@@ -1523,7 +1464,7 @@
         "count": "[length(coalesce(parameters('cname'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-dnsZone-CNAMERecord-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1560,8 +1501,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "2517212374743712090"
+              "version": "0.38.5.1644",
+              "templateHash": "10117401384216168530"
             },
             "name": "Public DNS Zone CNAME record",
             "description": "This module deploys a Public DNS Zone CNAME record."
@@ -1658,17 +1599,23 @@
             },
             "cnameRecord": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsZones/CNAME@2018-05-01#properties/properties/properties/CNAMERecord"
+                },
                 "description": "Optional. A CNAME record. Cannot be used in conjuction with the \"targetResource\" property."
-              }
+              },
+              "nullable": true
             },
             "metadata": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsZones/CNAME@2018-05-01#properties/properties/properties/metadata"
+                },
                 "description": "Optional. The metadata attached to the record set."
-              }
+              },
+              "nullable": true
             },
             "ttl": {
               "type": "int",
@@ -1793,7 +1740,7 @@
         "count": "[length(coalesce(parameters('caa'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-dnsZone-CAARecord-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1827,8 +1774,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8441284361954821444"
+              "version": "0.38.5.1644",
+              "templateHash": "3957935550918406226"
             },
             "name": "Public DNS Zone CAA record",
             "description": "This module deploys a Public DNS Zone CAA record."
@@ -1925,17 +1872,23 @@
             },
             "metadata": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsZones/CAA@2018-05-01#properties/properties/properties/metadata"
+                },
                 "description": "Optional. The metadata attached to the record set."
-              }
+              },
+              "nullable": true
             },
             "caaRecords": {
               "type": "array",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsZones/CAA@2018-05-01#properties/properties/properties/caaRecords"
+                },
                 "description": "Optional. The list of CAA records in the record set."
-              }
+              },
+              "nullable": true
             },
             "ttl": {
               "type": "int",
@@ -2052,7 +2005,7 @@
         "count": "[length(coalesce(parameters('mx'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-dnsZone-MXRecord-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2086,8 +2039,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "3558727736610302576"
+              "version": "0.38.5.1644",
+              "templateHash": "2960206334964151152"
             },
             "name": "Public DNS Zone MX record",
             "description": "This module deploys a Public DNS Zone MX record."
@@ -2184,17 +2137,23 @@
             },
             "metadata": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsZones/MX@2018-05-01#properties/properties/properties/metadata"
+                },
                 "description": "Optional. The metadata attached to the record set."
-              }
+              },
+              "nullable": true
             },
             "mxRecords": {
               "type": "array",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsZones/MX@2018-05-01#properties/properties/properties/MXRecords"
+                },
                 "description": "Optional. The list of MX records in the record set."
-              }
+              },
+              "nullable": true
             },
             "ttl": {
               "type": "int",
@@ -2311,7 +2270,7 @@
         "count": "[length(coalesce(parameters('ns'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-dnsZone-NSRecord-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2345,8 +2304,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "14315870150258270228"
+              "version": "0.38.5.1644",
+              "templateHash": "9325149274068376789"
             },
             "name": "Public DNS Zone NS record",
             "description": "This module deploys a Public DNS Zone NS record."
@@ -2443,17 +2402,23 @@
             },
             "metadata": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsZones/NS@2018-05-01#properties/properties/properties/metadata"
+                },
                 "description": "Optional. The metadata attached to the record set."
-              }
+              },
+              "nullable": true
             },
             "nsRecords": {
               "type": "array",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsZones/NS@2018-05-01#properties/properties/properties/NSRecords"
+                },
                 "description": "Optional. The list of NS records in the record set."
-              }
+              },
+              "nullable": true
             },
             "ttl": {
               "type": "int",
@@ -2570,7 +2535,7 @@
         "count": "[length(coalesce(parameters('ptr'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-dnsZone-PTRRecord-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2604,8 +2569,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "3147345432559843017"
+              "version": "0.38.5.1644",
+              "templateHash": "16609098849679399522"
             },
             "name": "Public DNS Zone PTR record",
             "description": "This module deploys a Public DNS Zone PTR record."
@@ -2702,17 +2667,23 @@
             },
             "metadata": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsZones/PTR@2018-05-01#properties/properties/properties/metadata"
+                },
                 "description": "Optional. The metadata attached to the record set."
-              }
+              },
+              "nullable": true
             },
             "ptrRecords": {
               "type": "array",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsZones/PTR@2018-05-01#properties/properties/properties/PTRRecords"
+                },
                 "description": "Optional. The list of PTR records in the record set."
-              }
+              },
+              "nullable": true
             },
             "ttl": {
               "type": "int",
@@ -2829,7 +2800,7 @@
         "count": "[length(coalesce(parameters('soa'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-dnsZone-SOARecord-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2863,8 +2834,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "17514835811263769713"
+              "version": "0.38.5.1644",
+              "templateHash": "92191034821660439"
             },
             "name": "Public DNS Zone SOA record",
             "description": "This module deploys a Public DNS Zone SOA record."
@@ -2961,17 +2932,23 @@
             },
             "metadata": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsZones/SOA@2018-05-01#properties/properties/properties/metadata"
+                },
                 "description": "Optional. The metadata attached to the record set."
-              }
+              },
+              "nullable": true
             },
             "soaRecord": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsZones/SOA@2018-05-01#properties/properties/properties/SOARecord"
+                },
                 "description": "Optional. A SOA record."
-              }
+              },
+              "nullable": true
             },
             "ttl": {
               "type": "int",
@@ -3088,7 +3065,7 @@
         "count": "[length(coalesce(parameters('srv'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-dnsZone-SRVRecord-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -3122,8 +3099,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "11224367300955558445"
+              "version": "0.38.5.1644",
+              "templateHash": "15967192989405791644"
             },
             "name": "Public DNS Zone SRV record",
             "description": "This module deploys a Public DNS Zone SRV record."
@@ -3220,17 +3197,23 @@
             },
             "metadata": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsZones/SRV@2018-05-01#properties/properties/properties/metadata"
+                },
                 "description": "Optional. The metadata attached to the record set."
-              }
+              },
+              "nullable": true
             },
             "srvRecords": {
               "type": "array",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsZones/SRV@2018-05-01#properties/properties/properties/SRVRecords"
+                },
                 "description": "Optional. The list of SRV records in the record set."
-              }
+              },
+              "nullable": true
             },
             "ttl": {
               "type": "int",
@@ -3347,7 +3330,7 @@
         "count": "[length(coalesce(parameters('txt'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-dnsZone-TXTRecord-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -3381,8 +3364,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "1999603597680394703"
+              "version": "0.38.5.1644",
+              "templateHash": "2335422075892571507"
             },
             "name": "Public DNS Zone TXT record",
             "description": "This module deploys a Public DNS Zone TXT record."
@@ -3479,10 +3462,13 @@
             },
             "metadata": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsZones/TXT@2018-05-01#properties/properties/properties/metadata"
+                },
                 "description": "Optional. The metadata attached to the record set."
-              }
+              },
+              "nullable": true
             },
             "ttl": {
               "type": "int",
@@ -3493,10 +3479,13 @@
             },
             "txtRecords": {
               "type": "array",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsZones/TXT@2018-05-01#properties/properties/properties/TXTRecords"
+                },
                 "description": "Optional. The list of TXT records in the record set."
-              }
+              },
+              "nullable": true
             },
             "roleAssignments": {
               "type": "array",

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "11955164584650609753"
+      "version": "0.37.4.10188",
+      "templateHash": "13641818839832881223"
     },
     "name": "Private DNS Zone PTR record",
     "description": "This module deploys a Private DNS Zone PTR record."
@@ -103,23 +103,36 @@
     },
     "metadata": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/privateDnsZones/PTR@2024-06-01#properties/properties/properties/metadata"
+        },
         "description": "Optional. The metadata attached to the record set."
-      }
+      },
+      "nullable": true
     },
     "ptrRecords": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/privateDnsZones/PTR@2024-06-01#properties/properties/properties/ptrRecords"
+        },
         "description": "Optional. The list of PTR records in the record set."
-      }
+      },
+      "nullable": true
     },
     "ttl": {
       "type": "int",
       "defaultValue": 3600,
       "metadata": {
         "description": "Optional. The TTL (time-to-live) of the records in the record set."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "roleAssignments": {
@@ -152,6 +165,26 @@
     }
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.nw-privdnszoneptr.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "privateDnsZone": {
       "existing": true,
       "type": "Microsoft.Network/privateDnsZones",

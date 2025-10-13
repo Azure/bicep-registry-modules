@@ -13,9 +13,9 @@ Attaching a compute is not idempotent and will fail in case you try to redeploy 
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.MachineLearningServices/workspaces/computes` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/computes) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.MachineLearningServices/workspaces/computes` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.machinelearningservices_workspaces_computes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/computes)</li></ul> |
 
 ## Parameters
 

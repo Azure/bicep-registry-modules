@@ -10,9 +10,9 @@ This module deploys a Load Balancer Backend Address Pools.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Network/loadBalancers/backendAddressPools` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/loadBalancers/backendAddressPools) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Network/loadBalancers/backendAddressPools` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_loadbalancers_backendaddresspools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/loadBalancers/backendAddressPools)</li></ul> |
 
 ## Parameters
 
@@ -36,6 +36,7 @@ This module deploys a Load Balancer Backend Address Pools.
 | [`loadBalancerBackendAddresses`](#parameter-loadbalancerbackendaddresses) | array | An array of backend addresses. |
 | [`syncMode`](#parameter-syncmode) | string | Backend address synchronous mode for the backend pool. |
 | [`tunnelInterfaces`](#parameter-tunnelinterfaces) | array | An array of gateway load balancer tunnel interfaces. |
+| [`virtualNetworkResourceId`](#parameter-virtualnetworkresourceid) | string | The resource Id of the virtual network. |
 
 ### Parameter: `name`
 
@@ -90,6 +91,14 @@ An array of gateway load balancer tunnel interfaces.
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `virtualNetworkResourceId`
+
+The resource Id of the virtual network.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ## Outputs
 

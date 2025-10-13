@@ -10,10 +10,10 @@ This module deploys a CDN Profile AFD Endpoint.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Cdn/profiles/afdEndpoints` | [2025-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/afdEndpoints) |
-| `Microsoft.Cdn/profiles/afdEndpoints/routes` | [2025-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/afdEndpoints/routes) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Cdn/profiles/afdEndpoints` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_afdendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/afdEndpoints)</li></ul> |
+| `Microsoft.Cdn/profiles/afdEndpoints/routes` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_afdendpoints_routes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/afdEndpoints/routes)</li></ul> |
 
 ## Parameters
 
@@ -119,7 +119,7 @@ The list of routes for this AFD Endpoint.
 | [`linkToDefaultDomain`](#parameter-routeslinktodefaultdomain) | string | Whether this route will be linked to the default endpoint domain. |
 | [`originPath`](#parameter-routesoriginpath) | string | A directory path on the origin that AzureFrontDoor can use to retrieve content from, e.g. contoso.cloudapp.net/originpath. |
 | [`patternsToMatch`](#parameter-routespatternstomatch) | array | The route patterns of the rule. |
-| [`ruleSets`](#parameter-routesrulesets) | array | The rule sets of the rule. |
+| [`ruleSets`](#parameter-routesrulesets) | array | The names of the rule sets of the rule. |
 | [`supportedProtocols`](#parameter-routessupportedprotocols) | array | The supported protocols of the rule. |
 
 ### Parameter: `routes.name`
@@ -142,70 +142,6 @@ The caching configuration for this route. To disable caching, do not provide a c
 
 - Required: No
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`compressionSettings`](#parameter-routescacheconfigurationcompressionsettings) | object | Compression settings. |
-| [`queryParameters`](#parameter-routescacheconfigurationqueryparameters) | string | Query parameters to include or exclude (comma separated). |
-| [`queryStringCachingBehavior`](#parameter-routescacheconfigurationquerystringcachingbehavior) | string | Defines how Frontdoor caches requests that include query strings. |
-
-### Parameter: `routes.cacheConfiguration.compressionSettings`
-
-Compression settings.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`contentTypesToCompress`](#parameter-routescacheconfigurationcompressionsettingscontenttypestocompress) | array | List of content types on which compression applies. The value should be a valid MIME type. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`isCompressionEnabled`](#parameter-routescacheconfigurationcompressionsettingsiscompressionenabled) | bool | Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won't be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB. |
-
-### Parameter: `routes.cacheConfiguration.compressionSettings.contentTypesToCompress`
-
-List of content types on which compression applies. The value should be a valid MIME type.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `routes.cacheConfiguration.compressionSettings.isCompressionEnabled`
-
-Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won't be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB.
-
-- Required: No
-- Type: bool
-
-### Parameter: `routes.cacheConfiguration.queryParameters`
-
-Query parameters to include or exclude (comma separated).
-
-- Required: Yes
-- Type: string
-
-### Parameter: `routes.cacheConfiguration.queryStringCachingBehavior`
-
-Defines how Frontdoor caches requests that include query strings.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'IgnoreQueryString'
-    'IgnoreSpecifiedQueryStrings'
-    'IncludeSpecifiedQueryStrings'
-    'UseQueryString'
-  ]
-  ```
 
 ### Parameter: `routes.customDomainNames`
 
@@ -287,7 +223,7 @@ The route patterns of the rule.
 
 ### Parameter: `routes.ruleSets`
 
-The rule sets of the rule.
+The names of the rule sets of the rule.
 
 - Required: No
 - Type: array

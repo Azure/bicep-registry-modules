@@ -193,7 +193,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -256,18 +256,21 @@ var secondaryPublicIPNameVar = isActiveActive ? (clusterSettings.?secondPipName 
 
 var tertiaryPublicIPNameVar = isActiveActive && !empty(vpnClientAddressPoolPrefix) ? '${name}-pip3' : null
 
-var arrayPipNameVar = isActiveActive && !empty(vpnClientAddressPoolPrefix)
-  ? concat(
-      !empty(existingPrimaryPublicIPResourceId) ? [] : [primaryPublicIPName],
-      !empty(existingSecondaryPublicIPResourceIdVar) ? [] : [secondaryPublicIPNameVar],
-      !empty(existingTertiaryPublicIPResourceIdVar) ? [] : [tertiaryPublicIPNameVar]
-    )
-  : isActiveActive
+var arrayPipNameVar = isExpressRoute
+  ? []
+  : isActiveActive && !empty(vpnClientAddressPoolPrefix)
       ? concat(
           !empty(existingPrimaryPublicIPResourceId) ? [] : [primaryPublicIPName],
-          !empty(existingSecondaryPublicIPResourceIdVar) ? [] : [secondaryPublicIPNameVar]
+          !empty(existingSecondaryPublicIPResourceIdVar) ? [] : [secondaryPublicIPNameVar],
+          !empty(existingTertiaryPublicIPResourceIdVar) ? [] : [tertiaryPublicIPNameVar]
         )
-      : concat(!empty(existingPrimaryPublicIPResourceId) ? [] : [primaryPublicIPName])
+      : isActiveActive
+          ? concat(
+              !empty(existingPrimaryPublicIPResourceId) ? [] : [primaryPublicIPName],
+              !empty(existingSecondaryPublicIPResourceIdVar) ? [] : [secondaryPublicIPNameVar]
+            )
+          : concat(!empty(existingPrimaryPublicIPResourceId) ? [] : [primaryPublicIPName])
+
 
 // Potential BGP configurations (Active-Active vs Active-Passive)
 var bgpSettingsVar = isActiveActive
@@ -304,7 +307,8 @@ var ipConfiguration = isActiveActive && !empty(vpnClientAddressPoolPrefix)
             id: '${virtualNetworkResourceId}/subnets/GatewaySubnet'
           }
           // Use existing Public IP, new Public IP created in this module
-          publicIPAddress: {
+          // For ExpressRoute gateways, Azure manages the Public IP automatically, so set to null
+          publicIPAddress: isExpressRoute ? null : {
             id: !empty(existingPrimaryPublicIPResourceId)
               ? existingPrimaryPublicIPResourceId
               : az.resourceId('Microsoft.Network/publicIPAddresses', primaryPublicIPName)
@@ -318,7 +322,7 @@ var ipConfiguration = isActiveActive && !empty(vpnClientAddressPoolPrefix)
           subnet: {
             id: '${virtualNetworkResourceId}/subnets/GatewaySubnet'
           }
-          publicIPAddress: {
+          publicIPAddress: isExpressRoute ? null : {
             id: isActiveActive
               ? !empty(existingSecondaryPublicIPResourceIdVar)
                   ? existingSecondaryPublicIPResourceIdVar
@@ -336,7 +340,7 @@ var ipConfiguration = isActiveActive && !empty(vpnClientAddressPoolPrefix)
           subnet: {
             id: '${virtualNetworkResourceId}/subnets/GatewaySubnet'
           }
-          publicIPAddress: {
+          publicIPAddress: isExpressRoute ? null : {
             id: !empty(existingTertiaryPublicIPResourceIdVar)
               ? existingTertiaryPublicIPResourceIdVar
               : az.resourceId('Microsoft.Network/publicIPAddresses', tertiaryPublicIPNameVar!)
@@ -353,7 +357,7 @@ var ipConfiguration = isActiveActive && !empty(vpnClientAddressPoolPrefix)
               subnet: {
                 id: '${virtualNetworkResourceId}/subnets/GatewaySubnet'
               }
-              publicIPAddress: {
+              publicIPAddress: isExpressRoute ? null : {
                 id: !empty(existingPrimaryPublicIPResourceId)
                   ? existingPrimaryPublicIPResourceId
                   : az.resourceId('Microsoft.Network/publicIPAddresses', primaryPublicIPName)
@@ -367,7 +371,7 @@ var ipConfiguration = isActiveActive && !empty(vpnClientAddressPoolPrefix)
               subnet: {
                 id: '${virtualNetworkResourceId}/subnets/GatewaySubnet'
               }
-              publicIPAddress: {
+              publicIPAddress: isExpressRoute ? null : {
                 id: isActiveActive
                   ? !empty(existingSecondaryPublicIPResourceIdVar)
                       ? existingSecondaryPublicIPResourceIdVar
@@ -387,7 +391,7 @@ var ipConfiguration = isActiveActive && !empty(vpnClientAddressPoolPrefix)
               subnet: {
                 id: '${virtualNetworkResourceId}/subnets/GatewaySubnet'
               }
-              publicIPAddress: {
+              publicIPAddress: isExpressRoute ? null : {
                 id: !empty(existingPrimaryPublicIPResourceId)
                   ? existingPrimaryPublicIPResourceId
                   : az.resourceId('Microsoft.Network/publicIPAddresses', primaryPublicIPName)
@@ -519,7 +523,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 
 // Public IPs
 @batchSize(1)
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.8.0' = [
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.9.0' = [
   for (virtualGatewayPublicIpName, index) in arrayPipNameVar: {
     name: virtualGatewayPublicIpName
     params: {
@@ -531,7 +535,7 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.8.0' = [
       publicIpPrefixResourceId: !empty(publicIPPrefixResourceId) ? publicIPPrefixResourceId : ''
       tags: tags
       skuName: skuName == 'Basic' ? 'Basic' : 'Standard'
-      zones: contains(skuName, 'AZ') ? publicIpAvailabilityZones : []
+      availabilityZones: contains(skuName, 'AZ') ? publicIpAvailabilityZones : []
       dnsSettings: {
         domainNameLabel: length(arrayPipNameVar) == length(domainNameLabel)
           ? domainNameLabel[index]
@@ -586,7 +590,7 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2024-05
       name: skuName
       tier: skuName
     }
-    vpnType: !isExpressRoute ? vpnType : 'PolicyBased'
+    vpnType: isExpressRoute ? 'RouteBased' : vpnType
     vpnClientConfiguration: !empty(vpnClientAddressPoolPrefix) ? vpnClientConfiguration : null
     vpnGatewayGeneration: gatewayType == 'Vpn' ? vpnGatewayGeneration : 'None'
     customRoutes: customRoutes
@@ -627,9 +631,9 @@ resource virtualNetworkGateway_lock 'Microsoft.Authorization/locks@2020-05-01' =
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: virtualNetworkGateway
 }
@@ -708,9 +712,11 @@ output asn int? = virtualNetworkGateway.properties.?bgpSettings.?asn
 output ipConfigurations object[]? = virtualNetworkGateway.properties.?ipConfigurations
 
 @description('The primary public IP address of the virtual network gateway.')
-output primaryPublicIpAddress string = !empty(existingPrimaryPublicIPResourceId)
-  ? primaryPublicIP!.properties.ipAddress
-  : publicIPAddress[0].outputs.ipAddress
+output primaryPublicIpAddress string? = isExpressRoute
+  ? null
+  : (!empty(existingPrimaryPublicIPResourceId)
+      ? primaryPublicIP!.properties.ipAddress
+      : publicIPAddress[0].outputs.ipAddress)
 
 @description('The primary default Azure BGP peer IP address.')
 output defaultBgpIpAddresses string? = join(

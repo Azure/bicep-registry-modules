@@ -13,14 +13,14 @@ This module deploys a Network Application Gateway.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/applicationGateways` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/applicationGateways) |
-| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Network/applicationGateways` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_applicationgateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/applicationGateways)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -4377,6 +4377,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -4396,6 +4397,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -4606,6 +4614,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -4625,6 +4634,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -5019,39 +5035,6 @@ Ssl cipher suites to be enabled in the specified order to application gateway.
     'TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384'
   ]
   ```
-- Allowed:
-  ```Bicep
-  [
-    'TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA'
-    'TLS_DHE_DSS_WITH_AES_128_CBC_SHA'
-    'TLS_DHE_DSS_WITH_AES_128_CBC_SHA256'
-    'TLS_DHE_DSS_WITH_AES_256_CBC_SHA'
-    'TLS_DHE_DSS_WITH_AES_256_CBC_SHA256'
-    'TLS_DHE_RSA_WITH_AES_128_CBC_SHA'
-    'TLS_DHE_RSA_WITH_AES_128_GCM_SHA256'
-    'TLS_DHE_RSA_WITH_AES_256_CBC_SHA'
-    'TLS_DHE_RSA_WITH_AES_256_GCM_SHA384'
-    'TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA'
-    'TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256'
-    'TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256'
-    'TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA'
-    'TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384'
-    'TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384'
-    'TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA'
-    'TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256'
-    'TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256'
-    'TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA'
-    'TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384'
-    'TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384'
-    'TLS_RSA_WITH_3DES_EDE_CBC_SHA'
-    'TLS_RSA_WITH_AES_128_CBC_SHA'
-    'TLS_RSA_WITH_AES_128_CBC_SHA256'
-    'TLS_RSA_WITH_AES_128_GCM_SHA256'
-    'TLS_RSA_WITH_AES_256_CBC_SHA'
-    'TLS_RSA_WITH_AES_256_CBC_SHA256'
-    'TLS_RSA_WITH_AES_256_GCM_SHA384'
-  ]
-  ```
 
 ### Parameter: `sslPolicyMinProtocolVersion`
 
@@ -5162,6 +5145,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 

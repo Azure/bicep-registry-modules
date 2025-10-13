@@ -23,7 +23,7 @@ param autoScaleConfigurationBoundsMin int = 2
 param expressRouteConnections array = []
 
 @description('Required. Resource ID of the Virtual Wan Hub.')
-param virtualHubId string
+param virtualHubResourceId string
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. Array of role assignments to create.')
@@ -98,7 +98,7 @@ resource expressRouteGateway 'Microsoft.Network/expressRouteGateways@2024-07-01'
     }
     expressRouteConnections: expressRouteConnections
     virtualHub: {
-      id: virtualHubId
+      id: virtualHubResourceId
     }
   }
 }
@@ -107,9 +107,9 @@ resource expressRouteGateway_lock 'Microsoft.Authorization/locks@2020-05-01' = i
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: expressRouteGateway
 }

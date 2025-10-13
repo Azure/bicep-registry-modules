@@ -28,10 +28,11 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.network.trafficmanagerprofile"
+      - ".github/workflows/avm.res.network.trafficmanagerprofile.yml"
       - "avm/res/network/trafficmanagerprofile/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
+      - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:
