@@ -48,7 +48,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-role-${serviceShort}'
   params: {
-    name: '${namePrefix}-role-ref'
+    name: '${namePrefix}${serviceShort}001'
     dataPlaneRoleDefinitions: [
       {
         name: 'optional-role-identifier'
