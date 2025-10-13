@@ -10,8 +10,9 @@ param name string?
 @description('Required. A user-friendly name for the Role Definition. Must be unique for the database account.')
 param roleName string
 
-@description('Optional. An array of data actions that are allowed.')
-param dataActions string[] = []
+@description('Required. An array of data actions that are allowed.')
+@minLength(1)
+param dataActions string[]
 
 @description('Optional. A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Collection. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account.')
 param assignableScopes string[]?

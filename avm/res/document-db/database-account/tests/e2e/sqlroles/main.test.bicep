@@ -78,6 +78,9 @@ module testDeployment '../../../main.bicep' = {
       }
       {
         roleName: 'cosmos-sql-role-test-3'
+        dataActions: [
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+        ]
       }
     ]
     zoneRedundant: false

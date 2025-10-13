@@ -468,7 +468,7 @@ module databaseAccount_sqlRoleDefinitions 'sql-role-definition/main.bicep' = [
     params: {
       databaseAccountName: databaseAccount.name
       name: nosqlRoleDefinition.?name
-      dataActions: nosqlRoleDefinition.?dataActions
+      dataActions: nosqlRoleDefinition.dataActions
       roleName: nosqlRoleDefinition.roleName
       assignableScopes: nosqlRoleDefinition.?assignableScopes
       sqlRoleAssignments: nosqlRoleDefinition.?assignments
@@ -716,8 +716,9 @@ type dataPlaneRoleDefinitionType = {
   @description('Required. A user-friendly name for the role-based access control definition. This must be unique within the database account.')
   roleName: string
 
-  @description('Optional. An array of data actions that are allowed.')
-  dataActions: string[]?
+  @description('Required. An array of data actions that are allowed.')
+  @minLength(1)
+  dataActions: string[]
 
   @description('Optional. A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope.')
   assignableScopes: string[]?
