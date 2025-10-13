@@ -488,6 +488,9 @@ module databaseAccount_sqlRoleAssignments 'sql-role-assignment/main.bicep' = [
       scope: noSqlRoleAssignment.?scope
       enableTelemetry: enableReferencedModulesTelemetry
     }
+    dependsOn: [
+      databaseAccount_sqlDatabases
+    ]
   }
 ]
 
