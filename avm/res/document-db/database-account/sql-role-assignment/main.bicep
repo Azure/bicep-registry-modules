@@ -31,6 +31,9 @@ var formattedRoleDefinition = builtInDataPlaneRoleNames[?roleDefinitionIdOrName]
   ? roleDefinitionIdOrName
   : '${databaseAccount.id}/sqlRoleDefinitions/${roleDefinitionIdOrName}')
 
+// The internal naming differs from the resource ID
+var formattedScope = replace(replace(scope ?? databaseAccount.id, '/sqlDatabases/', '/dbs/'), '/containers/', '/colls/')
+
 // ============== //
 // Resources      //
 // ============== //
@@ -60,11 +63,11 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' exis
 
 resource sqlRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-11-15' = {
   parent: databaseAccount
-  name: name ?? guid(formattedRoleDefinition, principalId, (scope ?? databaseAccount.id))
+  name: name ?? guid(formattedRoleDefinition, principalId, formattedScope)
   properties: {
     principalId: principalId
     roleDefinitionId: formattedRoleDefinition
-    scope: scope ?? databaseAccount.id
+    scope: formattedScope
   }
 }
 

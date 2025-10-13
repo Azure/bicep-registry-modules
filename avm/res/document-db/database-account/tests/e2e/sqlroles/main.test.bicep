@@ -105,12 +105,12 @@ module testDeployment '../../../main.bicep' = {
       {
         principalId: nestedDependencies.outputs.identityPrincipalId
         roleDefinitionId: '00000000-0000-0000-0000-000000000001' // 'Cosmos DB Built-in Data Reader'
-        scope: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref/sqlDatabases/simple-db'
+        scope: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref/dbs/simple-db'
       }
       {
         principalId: nestedDependencies.outputs.identityPrincipalId
         roleDefinitionId: 'Cosmos DB Built-in Data Reader'
-        scope: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref/sqlDatabases/simple-db/containers/container-001'
+        scope: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref/dbs/simple-db/colls/container-001'
       }
     ]
   }

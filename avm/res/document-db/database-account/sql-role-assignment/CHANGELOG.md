@@ -7,7 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added user- and resource-derived types for all module parameters
-- Added support for a custom `scope` definition, to also allow a scoping to a specific container or database.
+- Added support for a custom `scope` definition, to also allow a scoping to a specific container or database. The provided resource ID will be automatically translated to the DB internal naming using `dbs` & `colls` for databases & containers respectively.
 
 ### Breaking Changes
 
