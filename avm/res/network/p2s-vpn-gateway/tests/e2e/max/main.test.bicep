@@ -20,14 +20,13 @@ param serviceShort string = 'npvgmax'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-
 // ============ //
 // Dependencies //
 // ============ //
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -60,8 +59,6 @@ module testDeployment '../../../main.bicep' = [
       isRoutingPreferenceInternet: false
       enableInternetSecurity: false
       associatedRouteTableName: 'noneRouteTable'
-      inboundRouteMapResourceId: nestedDependencies.outputs.hubRouteMapResourceId
-      outboundRouteMapResourceId: nestedDependencies.outputs.hubRouteMapResourceId
       propagatedRouteTableNames: [
         nestedDependencies.outputs.hubRouteTableName
       ]
