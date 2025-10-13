@@ -176,7 +176,7 @@ param networkRestrictions networkRestrictionType = {
 @description('Optional. Setting that indicates the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later. Defaults to "Tls12" (TLS 1.2).')
 param minimumTlsVersion string = 'Tls12'
 
-@description('Optional. Flag to indicate enabling/disabling of Burst Capacity feature on the account.')
+@description('Optional. Flag to indicate enabling/disabling of Burst Capacity feature on the account. Cannot be enabled for serverless accounts.')
 param enableBurstCapacity bool = true
 
 @description('Optional. Enables the cassandra connector on the Cosmos DB C* account.')
@@ -287,7 +287,7 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
   identity: identity
   kind: !empty(mongodbDatabases) ? 'MongoDB' : 'GlobalDocumentDB'
   properties: {
-    enableBurstCapacity: enableBurstCapacity
+    enableBurstCapacity: !contains((capabilitiesToAdd ?? []), 'EnableServerless') ? enableBurstCapacity : false
     analyticalStorageConfiguration: analyticalStorageConfiguration
     defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
       ? defaultIdentity!.name
