@@ -192,7 +192,7 @@ param enablePerRegionPerPartitionAutoscale bool = false
 param analyticalStorageConfiguration resourceInput<'Microsoft.DocumentDB/databaseAccounts@2025-04-15'>.properties.analyticalStorageConfiguration?
 
 @description('Optional. The CORS policy for the Cosmos DB database account.')
-param cors resourceInput<'Microsoft.DocumentDB/databaseAccounts@2025-04-15'>.properties.cors = {}
+param cors resourceInput<'Microsoft.DocumentDB/databaseAccounts@2025-04-15'>.properties.cors?
 
 @description('Optional. The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users.')
 param defaultIdentity defaultIdentityType = {
@@ -293,7 +293,6 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
       ? defaultIdentity!.name
       : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
     enablePartitionMerge: enablePartitionMerge
-    cors: cors
     enablePerRegionPerPartitionAutoscale: enablePerRegionPerPartitionAutoscale
     databaseAccountOfferType: databaseAccountOfferType
     backupPolicy: {
@@ -319,7 +318,7 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
     capabilities: map(capabilitiesToAdd ?? [], capability => {
       name: capability
     })
-    // ...(!empty(cors) ? { cors: cors } : {}) // Cors can only be provided if not null/empty
+    ...(!empty(cors) ? { cors: cors } : {}) // Cors can only be provided if not null/empty
     ...(contains(capabilitiesToAdd ?? [], 'EnableCassandra')
       ? {
           connectorOffer: enableCassandraConnector ? 'Small' : null
