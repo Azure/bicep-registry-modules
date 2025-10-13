@@ -38,7 +38,7 @@ body:
       description: |
         Which existing AVM module is this issue related to?
 
-        > **NOTE**: Issues related to child modules must be submitted under the corresponding parent module.
+        > **NOTE**: Issues related to child modules and multi-scope modules must be submitted under the corresponding parent module.
       options:
         - ""
         - "avm/ptn/aca-lza/hosting-environment"
