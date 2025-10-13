@@ -2525,6 +2525,16 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         principalId: '<principalId>'
         roleDefinitionId: '<roleDefinitionId>'
       }
+      {
+        principalId: '<principalId>'
+        roleDefinitionId: '00000000-0000-0000-0000-000000000001'
+        scope: '<scope>'
+      }
+      {
+        principalId: '<principalId>'
+        roleDefinitionId: 'Cosmos DB Built-in Data Reader'
+        scope: '<scope>'
+      }
     ]
     dataPlaneRoleDefinitions: [
       {
@@ -2542,6 +2552,22 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
         ]
         roleName: 'cosmos-sql-role-test'
+      }
+    ]
+    sqlDatabases: [
+      {
+        containers: [
+          {
+            indexingPolicy: {
+              automatic: true
+            }
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'simple-db'
       }
     ]
     zoneRedundant: false
@@ -2571,6 +2597,16 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "principalId": "<principalId>",
           "roleDefinitionId": "<roleDefinitionId>"
+        },
+        {
+          "principalId": "<principalId>",
+          "roleDefinitionId": "00000000-0000-0000-0000-000000000001",
+          "scope": "<scope>"
+        },
+        {
+          "principalId": "<principalId>",
+          "roleDefinitionId": "Cosmos DB Built-in Data Reader",
+          "scope": "<scope>"
         }
       ]
     },
@@ -2591,6 +2627,24 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
           ],
           "roleName": "cosmos-sql-role-test"
+        }
+      ]
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "containers": [
+            {
+              "indexingPolicy": {
+                "automatic": true
+              },
+              "name": "container-001",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "simple-db"
         }
       ]
     },
@@ -2619,6 +2673,16 @@ param dataPlaneRoleAssignments = [
     principalId: '<principalId>'
     roleDefinitionId: '<roleDefinitionId>'
   }
+  {
+    principalId: '<principalId>'
+    roleDefinitionId: '00000000-0000-0000-0000-000000000001'
+    scope: '<scope>'
+  }
+  {
+    principalId: '<principalId>'
+    roleDefinitionId: 'Cosmos DB Built-in Data Reader'
+    scope: '<scope>'
+  }
 ]
 param dataPlaneRoleDefinitions = [
   {
@@ -2636,6 +2700,22 @@ param dataPlaneRoleDefinitions = [
       'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
     ]
     roleName: 'cosmos-sql-role-test'
+  }
+]
+param sqlDatabases = [
+  {
+    containers: [
+      {
+        indexingPolicy: {
+          automatic: true
+        }
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'simple-db'
   }
 ]
 param zoneRedundant = false
@@ -3186,6 +3266,7 @@ Configurations for Azure Cosmos DB for NoSQL native role-based access control as
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-dataplaneroleassignmentsname) | string | The unique name of the role assignment. |
+| [`scope`](#parameter-dataplaneroleassignmentsscope) | string | The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level. |
 
 ### Parameter: `dataPlaneRoleAssignments.principalId`
 
@@ -3204,6 +3285,13 @@ The unique identifier of the Azure Cosmos DB for NoSQL native role-based access 
 ### Parameter: `dataPlaneRoleAssignments.name`
 
 The unique name of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataPlaneRoleAssignments.scope`
+
+The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level.
 
 - Required: No
 - Type: string
@@ -3262,6 +3350,7 @@ An array of role-based access control assignments to be created for the definiti
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-dataplaneroledefinitionsassignmentsname) | string | Name unique identifier of the SQL Role Assignment. |
+| [`scope`](#parameter-dataplaneroledefinitionsassignmentsscope) | string | The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level. |
 
 ### Parameter: `dataPlaneRoleDefinitions.assignments.principalId`
 
@@ -3273,6 +3362,13 @@ The unique identifier for the associated AAD principal in the AAD graph to which
 ### Parameter: `dataPlaneRoleDefinitions.assignments.name`
 
 Name unique identifier of the SQL Role Assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataPlaneRoleDefinitions.assignments.scope`
+
+The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level.
 
 - Required: No
 - Type: string

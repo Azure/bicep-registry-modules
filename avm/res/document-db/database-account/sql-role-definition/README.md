@@ -103,6 +103,7 @@ An array of SQL Role Assignments to be created for the SQL Role Definition.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-sqlroleassignmentsname) | string | Name unique identifier of the SQL Role Assignment. |
+| [`scope`](#parameter-sqlroleassignmentsscope) | string | The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level. |
 
 ### Parameter: `sqlRoleAssignments.principalId`
 
@@ -114,6 +115,13 @@ The unique identifier for the associated AAD principal in the AAD graph to which
 ### Parameter: `sqlRoleAssignments.name`
 
 Name unique identifier of the SQL Role Assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlRoleAssignments.scope`
+
+The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level.
 
 - Required: No
 - Type: string

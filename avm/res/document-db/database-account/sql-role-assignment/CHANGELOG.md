@@ -7,10 +7,11 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added user- and resource-derived types for all module parameters
+- Added support for a custom `scope` definition, to also allow a scoping to a specific container or database.
 
 ### Breaking Changes
 
-- None
+- Adjusted `roleDefinitionId` to `roleDefinitionIdOrName` that supports full definition Ids, only the GUIDs and selected built-in roles
 
 ## 0.1.0
 

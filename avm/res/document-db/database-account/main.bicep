@@ -478,13 +478,14 @@ module databaseAccount_sqlRoleDefinitions 'sql-role-definition/main.bicep' = [
 ]
 
 module databaseAccount_sqlRoleAssignments 'sql-role-assignment/main.bicep' = [
-  for (nosqlRoleAssignment, index) in (dataPlaneRoleAssignments ?? []): {
+  for (noSqlRoleAssignment, index) in (dataPlaneRoleAssignments ?? []): {
     name: '${uniqueString(deployment().name)}-sqlra-${index}'
     params: {
       databaseAccountName: databaseAccount.name
-      roleDefinitionId: nosqlRoleAssignment.roleDefinitionId
-      principalId: nosqlRoleAssignment.principalId
-      name: nosqlRoleAssignment.?name
+      roleDefinitionIdOrName: noSqlRoleAssignment.roleDefinitionId
+      principalId: noSqlRoleAssignment.principalId
+      name: noSqlRoleAssignment.?name
+      scope: noSqlRoleAssignment.?scope
       enableTelemetry: enableReferencedModulesTelemetry
     }
   }
@@ -699,6 +700,9 @@ type dataPlaneRoleAssignmentType = {
 
   @description('Required. The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription.')
   principalId: string
+
+  @description('Optional. The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level.')
+  scope: string?
 }
 
 import { sqlRoleAssignmentType } from 'sql-role-definition/main.bicep'

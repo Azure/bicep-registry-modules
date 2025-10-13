@@ -67,12 +67,38 @@ module testDeployment '../../../main.bicep' = {
         ]
       }
     ]
+    zoneRedundant: false
+    sqlDatabases: [
+      {
+        name: 'simple-db'
+        containers: [
+          {
+            name: 'container-001'
+            indexingPolicy: {
+              automatic: true
+            }
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+      }
+    ]
     dataPlaneRoleAssignments: [
       {
         principalId: nestedDependencies.outputs.identityPrincipalId
         roleDefinitionId: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001' // 'Cosmos DB Built-in Data Reader'
       }
+      {
+        principalId: nestedDependencies.outputs.identityPrincipalId
+        roleDefinitionId: '00000000-0000-0000-0000-000000000001' // 'Cosmos DB Built-in Data Reader'
+        scope: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref/sqlDatabases/simple-db'
+      }
+      {
+        principalId: nestedDependencies.outputs.identityPrincipalId
+        roleDefinitionId: 'Cosmos DB Built-in Data Reader'
+        scope: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref/sqlDatabases/simple-db/containers/container-001'
+      }
     ]
-    zoneRedundant: false
   }
 }
