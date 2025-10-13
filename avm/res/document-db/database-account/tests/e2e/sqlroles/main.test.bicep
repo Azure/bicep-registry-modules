@@ -36,7 +36,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     appName: 'dep-${namePrefix}-app-${serviceShort}'
     appServicePlanName: 'dep-${namePrefix}-asp-${serviceShort}'
-    location: enforcedLocation
   }
 }
 
@@ -97,7 +96,9 @@ module testDeployment '../../../main.bicep' = [
               paths: [
                 '/myPartitionKey'
               ]
-              defaultTtl: -1 // null?
+              // defaultTtl: - // = Off if not provided at all?
+              // defaultTtl: -1 // = On (no default)
+              // defaultTtl: 10 // = On with 10 seconds
             }
           ]
         }

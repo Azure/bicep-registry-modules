@@ -70,7 +70,6 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
   properties: {
     resource: {
       conflictResolutionPolicy: conflictResolutionPolicy
-      defaultTtl: defaultTtl
       id: name
       indexingPolicy: indexingPolicy
       partitionKey: {
@@ -88,6 +87,7 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
             analyticalStorageTtl: analyticalStorageTtl // please note that this property is not idempotent
           }
         : {})
+      ...(defaultTtl != null ? { defaultTtl: defaultTtl } : {}) // Not passing the value sets it to 'Off'. Setting it with any value sets it to 'On'
     }
 
     options: contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' })
