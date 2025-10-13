@@ -18,6 +18,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
   - `analyticalStorageConfiguration`
   - `networkRestrictions.networkAclBypassResourceIds`
 - Added support for an explicit `dataPlaneRoleAssignments.scope` definition, to also allow a scoping to a specific container or database. Continues to default to the account root. For a reference, please refer to the `/tests/e2e/sqlroles` deployment test template. The provided resource ID will be automatically translated to the DB internal naming using `dbs` & `colls` for databases & containers respectively.
+- Added support for `mongodbDatabases.autoscaleSettings`
 
 ### Breaking Changes
 

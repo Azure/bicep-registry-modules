@@ -500,6 +500,7 @@ module databaseAccount_mongodbDatabases 'mongodb-database/main.bicep' = [
       tags: mongodbDatabase.?tags ?? tags
       collections: mongodbDatabase.?collections
       throughput: mongodbDatabase.?throughput
+      autoscaleSettings: mongodbDatabase.?autoscaleSettings
     }
   }
 ]
@@ -779,6 +780,9 @@ type mongoDbType = {
 
   @description('Optional. Collections in the mongodb database.')
   collections: collectionType[]?
+
+  @description('Optional.Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both.')
+  autoscaleSettings: resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15'>.properties.options.autoscaleSettings?
 
   @description('Optional. Tags of the resource.')
   tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15'>.tags?
