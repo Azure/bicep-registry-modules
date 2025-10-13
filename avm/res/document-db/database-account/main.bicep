@@ -288,7 +288,7 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
   kind: !empty(mongodbDatabases) ? 'MongoDB' : 'GlobalDocumentDB'
   properties: {
     enableBurstCapacity: enableBurstCapacity // not it
-    // analyticalStorageConfiguration: analyticalStorageConfiguration
+    analyticalStorageConfiguration: analyticalStorageConfiguration
     // cors: cors
     defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity' // Not it
       ? defaultIdentity!.name
