@@ -59,7 +59,7 @@ module testDeployment '../../../main.bicep' = [
             'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
           ]
           assignableScopes: [
-            '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref'
+            '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}${serviceShort}001'
           ]
           assignments: [
             {
@@ -73,7 +73,7 @@ module testDeployment '../../../main.bicep' = [
             'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
           ]
           assignableScopes: [
-            '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref'
+            '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}${serviceShort}001'
           ]
         }
         {
@@ -106,17 +106,17 @@ module testDeployment '../../../main.bicep' = [
       dataPlaneRoleAssignments: [
         {
           principalId: nestedDependencies.outputs.identityPrincipalId
-          roleDefinitionId: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001' // 'Cosmos DB Built-in Data Reader'
+          roleDefinitionId: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}${serviceShort}001/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001' // 'Cosmos DB Built-in Data Reader'
         }
         {
           principalId: nestedDependencies.outputs.identityPrincipalId
           roleDefinitionId: '00000000-0000-0000-0000-000000000001' // 'Cosmos DB Built-in Data Reader'
-          scope: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref/dbs/simple-db'
+          scope: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}${serviceShort}001/dbs/simple-db'
         }
         {
           principalId: nestedDependencies.outputs.identityPrincipalId
           roleDefinitionId: 'Cosmos DB Built-in Data Reader'
-          scope: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref/dbs/simple-db/colls/container-001'
+          scope: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}${serviceShort}001/dbs/simple-db/colls/container-001'
         }
       ]
     }
