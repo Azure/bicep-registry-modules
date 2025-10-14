@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.3.11034",
-      "templateHash": "9411798349745688469"
+      "templateHash": "8943275705446718462"
     },
     "name": "Load Balancer Inbound NAT Rules",
     "description": "This module deploys a Load Balancer Inbound NAT Rules."
@@ -74,7 +74,7 @@
       "minValue": 0,
       "maxValue": 65534,
       "metadata": {
-        "description": "Conditonal. The port range end for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeStart. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. Required if FrontendPort is not specified."
+        "description": "Conditional. The port range end for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeStart. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. Required if FrontendPort is not specified."
       }
     },
     "frontendPortRangeStart": {
