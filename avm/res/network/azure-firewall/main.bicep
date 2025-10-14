@@ -273,11 +273,11 @@ module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.9.1' =
     location: location
     tags: managementIPAddressObject.?tags ?? tags
     availabilityZones: availabilityZones
-    ipTags: publicIPAddressObject.?ipTags ?? null
-    ddosSettings: publicIPAddressObject.?ddosSettings ?? null
-    dnsSettings: publicIPAddressObject.?dnsSettings ?? null
-    idleTimeoutInMinutes: publicIPAddressObject.?idleTimeoutInMinutes ?? null
-    publicIPAddressVersion: publicIPAddressObject.?publicIPAddressVersion ?? null
+    ipTags: publicIPAddressObject.?ipTags 
+    ddosSettings: publicIPAddressObject.?ddosSettings 
+    dnsSettings: publicIPAddressObject.?dnsSettings 
+    idleTimeoutInMinutes: publicIPAddressObject.?idleTimeoutInMinutes 
+    publicIPAddressVersion: publicIPAddressObject.?publicIPAddressVersion 
     lock: lock
     enableTelemetry: enableReferencedModulesTelemetry
   }
