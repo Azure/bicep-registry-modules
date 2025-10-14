@@ -32,8 +32,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/load-balancer:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using external load balancer parameter](#example-2-using-external-load-balancer-parameter)
-- [Using external load balancer parameter](#example-3-using-external-load-balancer-parameter)
+- [Using external load balancer parameter - VNet backend addresses](#example-2-using-external-load-balancer-parameter---vnet-backend-addresses)
+- [Using external load balancer parameter - NIC backend addresses](#example-3-using-external-load-balancer-parameter---nic-backend-addresses)
 - [Using internal load balancer parameter](#example-4-using-internal-load-balancer-parameter)
 - [Using large parameter set](#example-5-using-large-parameter-set)
 - [WAF-aligned](#example-6-waf-aligned)
@@ -122,9 +122,9 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Using external load balancer parameter_
+### Example 2: _Using external load balancer parameter - VNet backend addresses_
 
-This instance deploys the module with an externally facing load balancer.
+This instance deploys the module with an externally facing load balancer with a public IP address and VNet backend address pool.
 
 
 <details>
@@ -146,6 +146,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     // Non-required parameters
     backendAddressPools: [
       {
+        backendMembershipMode: 'BackendAddress'
         loadBalancerBackendAddresses: [
           {
             name: 'beAddress1'
@@ -306,6 +307,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     "backendAddressPools": {
       "value": [
         {
+          "backendMembershipMode": "BackendAddress",
           "loadBalancerBackendAddresses": [
             {
               "name": "beAddress1",
@@ -476,6 +478,7 @@ param name = 'nlbnet001'
 // Non-required parameters
 param backendAddressPools = [
   {
+    backendMembershipMode: 'BackendAddress'
     loadBalancerBackendAddresses: [
       {
         name: 'beAddress1'
@@ -609,9 +612,9 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _Using external load balancer parameter_
+### Example 3: _Using external load balancer parameter - NIC backend addresses_
 
-This instance deploys the module with an externally facing load balancer.
+This instance deploys the module with an externally facing load balancer with a public IP address and NIC backend address pool.
 
 
 <details>
@@ -633,9 +636,11 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     // Non-required parameters
     backendAddressPools: [
       {
+        backendMembershipMode: 'NIC'
         name: 'backendAddressPool1'
       }
       {
+        backendMembershipMode: 'None'
         name: 'backendAddressPool2'
       }
     ]
@@ -779,9 +784,11 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     "backendAddressPools": {
       "value": [
         {
+          "backendMembershipMode": "NIC",
           "name": "backendAddressPool1"
         },
         {
+          "backendMembershipMode": "None",
           "name": "backendAddressPool2"
         }
       ]
@@ -937,9 +944,11 @@ param name = 'nlbext001'
 // Non-required parameters
 param backendAddressPools = [
   {
+    backendMembershipMode: 'NIC'
     name: 'backendAddressPool1'
   }
   {
+    backendMembershipMode: 'None'
     name: 'backendAddressPool2'
   }
 ]
@@ -1058,7 +1067,7 @@ param tags = {
 
 ### Example 4: _Using internal load balancer parameter_
 
-This instance deploys the module with the minimum set of required parameters to deploy an internal load balancer.
+This instance deploys the module with the minimum set of required parameters to deploy an internal load balancer with a private IP address and empty backend address pool.
 
 
 <details>
@@ -1080,6 +1089,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     // Non-required parameters
     backendAddressPools: [
       {
+        backendMembershipMode: 'NIC'
         name: 'servers'
       }
     ]
@@ -1182,6 +1192,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     "backendAddressPools": {
       "value": [
         {
+          "backendMembershipMode": "NIC",
           "name": "servers"
         }
       ]
@@ -1292,6 +1303,7 @@ param name = 'nlbint001'
 // Non-required parameters
 param backendAddressPools = [
   {
+    backendMembershipMode: 'NIC'
     name: 'servers'
   }
 ]
@@ -2593,43 +2605,13 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ### Parameter Usage: `backendAddressPools`
 
-<details>
+The following example represents three different configurations for backendAddressPools:
 
-<summary>Parameter JSON format</summary>
+- `BackendNICPool` - Network Interface deployments.
+- `BackendIPPool` - Represents the assignment of IP addresses to a backend address pool.
+- `BackendUnassociatedPool` - Represents a backend address pool that doesn't currently have any resources like a backend address or Network Interface assigned.
 
-```json
-"backendAddressPools": {
-    "value": [
-        {
-            "name": "p_hub-bfw-server-bepool",
-            "properties": {
-                "loadBalancerBackendAddresses": [
-                    {
-                        "name": "iacs-sh-main-pd-01-euw-rg-network_awefwa01p-nic-int-01ipconfig-internal",
-                        "properties": {
-                            "virtualNetwork": {
-                                "id": "[reference(variables('deploymentVNET')).outputs.vNetResourceId.value]"
-                            },
-                            "ipAddress": "172.22.232.5"
-                        }
-                    },
-                    {
-                        "name": "iacs-sh-main-pd-01-euw-rg-network_awefwa01p-ha-nic-int-01ipconfig-internal",
-                        "properties": {
-                            "virtualNetwork": {
-                                "id": "[reference(variables('deploymentVNET')).outputs.vNetResourceId.value]"
-                            },
-                            "ipAddress": "172.22.232.6"
-                        }
-                    }
-                ]
-            }
-        }
-    ]
-}
-```
-
-</details>
+`NOTE` - Each of the backend address pools have a new parameter called `backendMembershipMode` which is used with the AVM module to assist in resolving idempotency issues.
 
 <details>
 
@@ -2637,32 +2619,39 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ```bicep
 backendAddressPools: [
-    {
-        name: 'p_hub-bfw-server-bepool'
-        properties: {
-            loadBalancerBackendAddresses: [
-                {
-                    name: 'iacs-sh-main-pd-01-euw-rg-network_awefwa01p-nic-int-01ipconfig-internal'
-                    properties: {
-                        virtualNetwork: {
-                            id: '[reference(variables('deploymentVNET')).outputs.vNetResourceId.value]'
-                        }
-                        ipAddress: '172.22.232.5'
-                    }
-                }
-                {
-                    name: 'iacs-sh-main-pd-01-euw-rg-network_awefwa01p-ha-nic-int-01ipconfig-internal'
-                    properties: {
-                        virtualNetwork: {
-                            id: '[reference(variables('deploymentVNET')).outputs.vNetResourceId.value]'
-                        }
-                        ipAddress: '172.22.232.6'
-                    }
-                }
-            ]
-        }
-    }
-]
+      {
+        name: 'BackendNICPool'
+        backendMembershipMode: 'NIC'
+      }
+      {
+        name: 'BackendIPPool'
+        backendMembershipMode: 'BackendAddress'
+        loadBalancerBackendAddresses: [
+          {
+            name: 'addr1'
+            properties: {
+              virtualNetwork: {
+                id: virtualNetwork.id
+              }
+              ipAddress: '10.0.2.52'
+            }
+          }
+          {
+            name: 'addr2'
+            properties: {
+              virtualNetwork: {
+                id: virtualNetwork.id
+              }
+              ipAddress: '10.0.2.53'
+            }
+          }
+        ]
+      }
+      {
+        name: 'BackendUnassociatedPool'
+        backendMembershipMode: 'None'
+      }
+    ]
 ```
 
 </details>

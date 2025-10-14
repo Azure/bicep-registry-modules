@@ -44,7 +44,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/loadBalancers@2024-10-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -252,11 +252,12 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2024-07-01' = {
 }
 
 module loadBalancer_backendAddressPools 'backend-address-pool/main.bicep' = [
-  for (backendAddressPool, index) in backendAddressPools ?? []: {
+  for (backendAddressPool, index) in backendAddressPools ?? []: if (backendAddressPool.?backendMembershipMode != 'NIC') {
     name: '${uniqueString(deployment().name, location)}-loadBalancer-backendAddPools-${index}'
     params: {
       loadBalancerName: loadBalancer.name
       name: backendAddressPool.name
+      backendMembershipMode: backendAddressPool.?backendMembershipMode
       tunnelInterfaces: backendAddressPool.?tunnelInterfaces
       loadBalancerBackendAddresses: backendAddressPool.?loadBalancerBackendAddresses
       drainPeriodInSeconds: backendAddressPool.?drainPeriodInSeconds
