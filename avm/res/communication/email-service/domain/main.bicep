@@ -70,11 +70,11 @@ var formattedRoleAssignments = [
 // Resources      //
 // ============== //
 
-resource emailService 'Microsoft.Communication/emailServices@2023-04-01' existing = {
+resource emailService 'Microsoft.Communication/emailServices@2025-05-01' existing = {
   name: emailServiceName
 }
 
-resource domain 'Microsoft.Communication/emailServices/domains@2023-04-01' = {
+resource domain 'Microsoft.Communication/emailServices/domains@2025-05-01' = {
   name: name
   location: location
   tags: tags
@@ -138,6 +138,9 @@ output resourceId string = domain.id
 @description('The name of the resource group the domain was created in.')
 output resourceGroupName string = resourceGroup().name
 
+@description('The verification records for the domain.')
+output verificationRecords verificationRecordsOutputType = domain.properties.verificationRecords
+
 // =========== //
 // Definitions //
 // =========== //
@@ -153,4 +156,31 @@ type senderUsernameType = {
 
   @description('Optional. The display name for the senderUsername.')
   displayName: string?
+}
+
+@export()
+@description('Custom type definition for verification records as output.')
+type verificationRecordsOutputType = {
+  @description('Required. The properties for the DKIM DNS record.')
+  DKIM: dnsRecordOutputType
+  @description('Required. The properties for the DKIM2 DNS record.')
+  DKIM2: dnsRecordOutputType
+  @description('Required. The properties for the DMARC DNS record.')
+  DMARC: dnsRecordOutputType
+  @description('Required. The properties for the Domain DNS record.')
+  Domain: dnsRecordOutputType
+  @description('Required. The properties for the SPF DNS record.')
+  SPF: dnsRecordOutputType
+}
+
+@description('Custom type definition for DNS records as output.')
+type dnsRecordOutputType = {
+  @description('Required. The type of DNS record.')
+  type: string
+  @description('Required. The name of the DNS record.')
+  name: string
+  @description('Required. The value of the DNS record.')
+  value: string
+  @description('Required. The time to live for the DNS record.')
+  ttl: int
 }

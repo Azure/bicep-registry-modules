@@ -15,8 +15,8 @@ This module deploys an Email Service Domain
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.Communication/emailServices/domains` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.communication_emailservices_domains.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2023-04-01/emailServices/domains)</li></ul> |
-| `Microsoft.Communication/emailServices/domains/senderUsernames` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.communication_emailservices_domains_senderusernames.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2023-04-01/emailServices/domains/senderUsernames)</li></ul> |
+| `Microsoft.Communication/emailServices/domains` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.communication_emailservices_domains.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2025-05-01/emailServices/domains)</li></ul> |
+| `Microsoft.Communication/emailServices/domains/senderUsernames` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.communication_emailservices_domains_senderusernames.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2025-05-01/emailServices/domains/senderUsernames)</li></ul> |
 
 ## Parameters
 
@@ -299,6 +299,7 @@ Describes whether user engagement tracking is enabled or disabled.
 | `name` | string | The name of the domain. |
 | `resourceGroupName` | string | The name of the resource group the domain was created in. |
 | `resourceId` | string | The resource ID of the domain. |
+| `verificationRecords` |  | The verification records for the domain. |
 
 ## Cross-referenced modules
 
