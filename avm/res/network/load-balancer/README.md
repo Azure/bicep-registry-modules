@@ -148,11 +148,6 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
           name: 'nlbpip-pip-001'
           skuName: 'Standard'
           skuTier: 'Regional'
-          zones: [
-            '1'
-            '2'
-            '3'
-          ]
         }
       }
       {
@@ -162,17 +157,10 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
           name: 'nlbpip-pip-002'
           skuName: 'Standard'
           skuTier: 'Regional'
-          zones: [
-            '1'
-            '2'
-            '3'
-          ]
         }
       }
     ]
     name: 'nlbpip001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -198,12 +186,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
             "allocationMethod": "Static",
             "name": "nlbpip-pip-001",
             "skuName": "Standard",
-            "skuTier": "Regional",
-            "zones": [
-              "1",
-              "2",
-              "3"
-            ]
+            "skuTier": "Regional"
           }
         },
         {
@@ -212,22 +195,13 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
             "allocationMethod": "Static",
             "name": "nlbpip-pip-002",
             "skuName": "Standard",
-            "skuTier": "Regional",
-            "zones": [
-              "1",
-              "2",
-              "3"
-            ]
+            "skuTier": "Regional"
           }
         }
       ]
     },
     "name": {
       "value": "nlbpip001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -252,11 +226,6 @@ param frontendIPConfigurations = [
       name: 'nlbpip-pip-001'
       skuName: 'Standard'
       skuTier: 'Regional'
-      zones: [
-        '1'
-        '2'
-        '3'
-      ]
     }
   }
   {
@@ -266,17 +235,10 @@ param frontendIPConfigurations = [
       name: 'nlbpip-pip-002'
       skuName: 'Standard'
       skuTier: 'Regional'
-      zones: [
-        '1'
-        '2'
-        '3'
-      ]
     }
   }
 ]
 param name = 'nlbpip001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -304,17 +266,10 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
           prefixLength: 28
           publicIPAddressVersion: 'IPv4'
           skuName: 'Standard'
-          zones: [
-            '1'
-            '2'
-            '3'
-          ]
         }
       }
     ]
     name: 'nlbpipfix001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -340,22 +295,13 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
             "name": "nlbpipfix-pipfix-001",
             "prefixLength": 28,
             "publicIPAddressVersion": "IPv4",
-            "skuName": "Standard",
-            "zones": [
-              "1",
-              "2",
-              "3"
-            ]
+            "skuName": "Standard"
           }
         }
       ]
     },
     "name": {
       "value": "nlbpipfix001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -380,17 +326,10 @@ param frontendIPConfigurations = [
       prefixLength: 28
       publicIPAddressVersion: 'IPv4'
       skuName: 'Standard'
-      zones: [
-        '1'
-        '2'
-        '3'
-      ]
     }
   }
 ]
 param name = 'nlbpipfix001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>

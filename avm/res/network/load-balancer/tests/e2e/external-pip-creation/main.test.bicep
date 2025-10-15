@@ -18,25 +18,11 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'nlbpip'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'nga'
 
 // ============ //
 // Dependencies //
 // ============ //
-
-// Diagnostics
-// ===========
-module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
-  params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
-    location: resourceLocation
-  }
-}
 
 // General resources
 // =================
@@ -56,7 +42,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       frontendIPConfigurations: [
         {
           name: 'publicIPConfig1'
@@ -65,11 +50,6 @@ module testDeployment '../../../main.bicep' = [
             skuName: 'Standard'
             skuTier: 'Regional'
             allocationMethod: 'Static'
-            zones: [
-              '1'
-              '2'
-              '3'
-            ]
           }
         }
         {
@@ -79,11 +59,6 @@ module testDeployment '../../../main.bicep' = [
             skuName: 'Standard'
             skuTier: 'Regional'
             allocationMethod: 'Static'
-            zones: [
-              '1'
-              '2'
-              '3'
-            ]
           }
         }
       ]
