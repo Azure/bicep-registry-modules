@@ -49,6 +49,9 @@ param tags resourceInput<'Microsoft.Network/loadBalancers@2024-10-01'>.tags?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. Enable/Disable usage telemetry for referenced modules.')
+param enableReferencedModulesTelemetry bool = true
+
 @description('Optional. Collection of inbound NAT Rules used by a load balancer. Defining inbound NAT rules on your load balancer is mutually exclusive with defining an inbound NAT pool. Inbound NAT pools are referenced from virtual machine scale sets. NICs that are associated with individual virtual machines cannot reference an Inbound NAT pool. They have to reference individual inbound NAT rules.')
 param inboundNatRules array = []
 
@@ -278,6 +281,7 @@ module loadBalancer_publicIPAddresses 'br/public:avm/res/network/public-ip-addre
       skuTier: frontendIPConfiguration.?pipConfiguration.?skuTier
       tags: frontendIPConfiguration.?tags ?? tags
       availabilityZones: frontendIPConfiguration.?pipConfiguration.?availabilityZones
+      enableTelemetry: frontendIPConfiguration.?pipConfiguration.?enableTelemetry ?? enableReferencedModulesTelemetry
       ipTags: frontendIPConfiguration.?pipConfiguration.?ipTags
     }
   }
@@ -294,6 +298,7 @@ module loadBalancer_publicIPPrefixes 'br/public:avm/res/network/public-ip-prefix
       customIPPrefix: frontendIPConfiguration.?pipPrefixConfiguration.?customIPPrefix
       roleAssignments: frontendIPConfiguration.?pipPrefixConfiguration.?roleAssignments
       tags: frontendIPConfiguration.?pipPrefixConfiguration.?tags ?? tags
+      enableTelemetry: frontendIPConfiguration.?pipPrefixConfiguration.?enableTelemetry ?? enableReferencedModulesTelemetry
       availabilityZones: frontendIPConfiguration.?pipPrefixConfiguration.?availabilityZones
       ipTags: frontendIPConfiguration.?pipPrefixConfiguration.?ipTags
       publicIPAddressVersion: frontendIPConfiguration.?pipPrefixConfiguration.?publicIPAddressVersion
