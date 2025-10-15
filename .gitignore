@@ -5,5 +5,3 @@ last-moduleIndex.json
 generated-moduleIndex.json
 .DS_Store
 .idea
-# Skip managedIdentity test in fork (permission limitations)
-avm/res/document-db/database-account/tests/e2e/managedIdentity/.e2eignore
