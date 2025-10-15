@@ -112,7 +112,7 @@ resource p2sVpnGateway 'Microsoft.Network/p2svpnGateways@2024-10-01' = {
                 '${associatedRouteTableName}'
               )
             }
-            inboundRouteMap: (!empty(inboundRouteMapResourceId ?? ''))
+            inboundRouteMap: (!empty(inboundRouteMapResourceId))
               ? {
                   id: inboundRouteMapResourceId
                 }
