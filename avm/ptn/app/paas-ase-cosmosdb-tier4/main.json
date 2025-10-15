@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "18103651647294332131"
+      "templateHash": "9677410372218378940"
     },
     "name": "PaaS ASE with CosmosDB Tier 4",
     "description": "Creates a PaaS ASE with CosmosDB Tier 4 resiliency configuration."
@@ -14013,7 +14013,7 @@
             "value": "S1"
           },
           "skuCapacity": {
-            "value": 1
+            "value": 2
           },
           "appServiceEnvironmentResourceId": {
             "value": "[reference('ase').outputs.resourceId.value]"

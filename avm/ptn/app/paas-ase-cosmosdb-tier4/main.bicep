@@ -200,7 +200,7 @@ module asp 'br/public:avm/res/web/serverfarm:0.5.0' = {
     tags: tags
     kind: 'linux'
     skuName: 'S1'
-    skuCapacity: 1
+    skuCapacity: 2 // Required for WAF-reliability
     appServiceEnvironmentResourceId: ase.outputs.resourceId
     enableTelemetry: enableTelemetry
   }
