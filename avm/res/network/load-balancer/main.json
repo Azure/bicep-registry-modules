@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.3.11034",
-      "templateHash": "13871504752168755968"
+      "templateHash": "7887498613623448984"
     },
     "name": "Load Balancers",
     "description": "This module deploys a Load Balancer."
@@ -452,6 +452,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
@@ -641,7 +642,7 @@
             "value": "[tryGet(tryGet(parameters('frontendIPConfigurations')[copyIndex()], 'pipConfiguration'), 'availabilityZones')]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(tryGet(parameters('frontendIPConfigurations')[copyIndex()], 'pipConfiguration'), 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           },
           "ipTags": {
             "value": "[tryGet(tryGet(parameters('frontendIPConfigurations')[copyIndex()], 'pipConfiguration'), 'ipTags')]"
@@ -1367,7 +1368,7 @@
             "value": "[coalesce(tryGet(tryGet(parameters('frontendIPConfigurations')[copyIndex()], 'pipPrefixConfiguration'), 'tags'), parameters('tags'))]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(tryGet(parameters('frontendIPConfigurations')[copyIndex()], 'pipPrefixConfiguration'), 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           },
           "availabilityZones": {
             "value": "[tryGet(tryGet(parameters('frontendIPConfigurations')[copyIndex()], 'pipPrefixConfiguration'), 'availabilityZones')]"
