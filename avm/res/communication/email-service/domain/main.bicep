@@ -163,12 +163,16 @@ type senderUsernameType = {
 type verificationRecordsOutputType = {
   @description('Required. The properties for the DKIM DNS record.')
   DKIM: dnsRecordOutputType
+
   @description('Required. The properties for the DKIM2 DNS record.')
   DKIM2: dnsRecordOutputType
+
   @description('Required. The properties for the DMARC DNS record.')
   DMARC: dnsRecordOutputType
+
   @description('Required. The properties for the Domain DNS record.')
   Domain: dnsRecordOutputType
+
   @description('Required. The properties for the SPF DNS record.')
   SPF: dnsRecordOutputType
 }
@@ -177,10 +181,13 @@ type verificationRecordsOutputType = {
 type dnsRecordOutputType = {
   @description('Required. The type of DNS record.')
   type: string
+
   @description('Required. The name of the DNS record.')
   name: string
+
   @description('Required. The value of the DNS record.')
   value: string
+
   @description('Required. The time to live for the DNS record.')
   ttl: int
 }
