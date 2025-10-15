@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "6231866558028214790"
+      "templateHash": "9304460541754482290"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall."
@@ -1126,19 +1126,19 @@
             "value": "[parameters('availabilityZones')]"
           },
           "ipTags": {
-            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'ipTags'), null())]"
+            "value": "[tryGet(parameters('publicIPAddressObject'), 'ipTags')]"
           },
           "ddosSettings": {
-            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'ddosSettings'), null())]"
+            "value": "[tryGet(parameters('publicIPAddressObject'), 'ddosSettings')]"
           },
           "dnsSettings": {
-            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'dnsSettings'), null())]"
+            "value": "[tryGet(parameters('publicIPAddressObject'), 'dnsSettings')]"
           },
           "idleTimeoutInMinutes": {
-            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'idleTimeoutInMinutes'), null())]"
+            "value": "[tryGet(parameters('publicIPAddressObject'), 'idleTimeoutInMinutes')]"
           },
           "publicIPAddressVersion": {
-            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'publicIPAddressVersion'), null())]"
+            "value": "[tryGet(parameters('publicIPAddressObject'), 'publicIPAddressVersion')]"
           },
           "lock": {
             "value": "[parameters('lock')]"
@@ -1860,19 +1860,19 @@
             "value": "[parameters('availabilityZones')]"
           },
           "ipTags": {
-            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'ipTags'), null())]"
+            "value": "[tryGet(parameters('publicIPAddressObject'), 'ipTags')]"
           },
           "ddosSettings": {
-            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'ddosSettings'), null())]"
+            "value": "[tryGet(parameters('publicIPAddressObject'), 'ddosSettings')]"
           },
           "dnsSettings": {
-            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'dnsSettings'), null())]"
+            "value": "[tryGet(parameters('publicIPAddressObject'), 'dnsSettings')]"
           },
           "idleTimeoutInMinutes": {
-            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'idleTimeoutInMinutes'), null())]"
+            "value": "[tryGet(parameters('publicIPAddressObject'), 'idleTimeoutInMinutes')]"
           },
           "publicIPAddressVersion": {
-            "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'publicIPAddressVersion'), null())]"
+            "value": "[tryGet(parameters('publicIPAddressObject'), 'publicIPAddressVersion')]"
           },
           "lock": {
             "value": "[parameters('lock')]"
