@@ -4,12 +4,12 @@ param virtualWANName string
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-resource virtualWan 'Microsoft.Network/virtualWans@2024-01-01' = {
+resource virtualWan 'Microsoft.Network/virtualWans@2024-10-01' = {
   name: virtualWANName
   location: location
 }
 
-resource vpnServerConfiguration 'Microsoft.Network/vpnServerConfigurations@2024-01-01' = {
+resource vpnServerConfiguration 'Microsoft.Network/vpnServerConfigurations@2024-10-01' = {
   name: '${virtualWANName}-${location}-vpnServerConfiguration'
   location: location
   properties: {
@@ -27,7 +27,7 @@ resource vpnServerConfiguration 'Microsoft.Network/vpnServerConfigurations@2024-
   }
 }
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2024-01-01' = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2024-10-01' = {
   name: '${virtualWANName}-${location}-hub'
   location: location
   properties: {
@@ -38,7 +38,7 @@ resource virtualHub 'Microsoft.Network/virtualHubs@2024-01-01' = {
   }
 }
 
-resource hubRouteTable 'Microsoft.Network/virtualHubs/hubRouteTables@2024-01-01' = {
+resource hubRouteTable 'Microsoft.Network/virtualHubs/hubRouteTables@2024-10-01' = {
   name: 'VPNRouteTable'
   parent: virtualHub
   properties: {
@@ -59,42 +59,7 @@ resource hubRouteTable 'Microsoft.Network/virtualHubs/hubRouteTables@2024-01-01'
   }
 }
 
-resource hubRouteMap 'Microsoft.Network/virtualHubs/routeMaps@2024-01-01' = {
-  name: 'VPNRouteMap'
-  parent: virtualHub
-  dependsOn: [
-    hubRouteTable
-  ]
-  properties: {
-    rules: [
-      {
-        actions: [
-          {
-            parameters: [
-              {
-                asPath: [
-                  '22334'
-                ]
-              }
-            ]
-            type: 'Add'
-          }
-        ]
-        matchCriteria: [
-          {
-            asPath: [
-              '22334'
-            ]
-            matchCondition: 'Equals'
-          }
-        ]
-        name: 'TestVPNRouteMap'
-        nextStepIfMatched: 'Continue'
-      }
-    ]
-  }
-}
-resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-01-01' = {
+resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-10-01' = {
   name: '${virtualWANName}-${location}-hub'
   location: location
   properties: {
@@ -148,9 +113,3 @@ output hubRouteTableResourceId string = hubRouteTable.id
 
 @description('The labels for the created hub route table')
 output hubRouteTableLabels string[] = hubRouteTable.properties.labels
-
-@description('The resource ID of the created hub route map')
-output hubRouteMapResourceId string = hubRouteMap.id
-
-@description('The name of the created hub route map')
-output hubRouteMapName string = hubRouteMap.name

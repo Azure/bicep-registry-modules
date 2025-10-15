@@ -36,7 +36,7 @@ on:
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/ptn/app/iaas-vm-cosmosdb-tier4"
+  modulePath: "avm/ptn/app/paas-ase-cosmosdb-tier4"
   workflowPath: ".github/workflows/avm.ptn.app.paas-ase-cosmosdb-tier4.yml"
 
 concurrency:

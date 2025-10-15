@@ -36,7 +36,6 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
-    location: resourceLocation
   }
 }
 
