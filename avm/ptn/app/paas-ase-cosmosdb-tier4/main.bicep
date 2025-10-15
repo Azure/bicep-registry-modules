@@ -19,7 +19,7 @@ param suffix string?
 // Common Parameters
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Network/networkSecurityGroups@2024-07-01'>.tags?
+param tags resourceInput<'Microsoft.Network/networkSecurityGroups@2024-10-01'>.tags?
 
 // Network Parameters
 
