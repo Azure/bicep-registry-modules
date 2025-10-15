@@ -278,7 +278,6 @@ module loadBalancer_publicIPAddresses 'br/public:avm/res/network/public-ip-addre
       skuTier: frontendIPConfiguration.?pipConfiguration.?skuTier
       tags: frontendIPConfiguration.?tags ?? tags
       availabilityZones: frontendIPConfiguration.?pipConfiguration.?availabilityZones
-      enableTelemetry: frontendIPConfiguration.?pipConfiguration.?enableTelemetry ?? enableTelemetry
       ipTags: frontendIPConfiguration.?pipConfiguration.?ipTags
     }
   }
@@ -295,7 +294,6 @@ module loadBalancer_publicIPPrefixes 'br/public:avm/res/network/public-ip-prefix
       customIPPrefix: frontendIPConfiguration.?pipPrefixConfiguration.?customIPPrefix
       roleAssignments: frontendIPConfiguration.?pipPrefixConfiguration.?roleAssignments
       tags: frontendIPConfiguration.?pipPrefixConfiguration.?tags ?? tags
-      enableTelemetry: frontendIPConfiguration.?pipPrefixConfiguration.?enableTelemetry ?? enableTelemetry
       availabilityZones: frontendIPConfiguration.?pipPrefixConfiguration.?availabilityZones
       ipTags: frontendIPConfiguration.?pipPrefixConfiguration.?ipTags
       publicIPAddressVersion: frontendIPConfiguration.?pipPrefixConfiguration.?publicIPAddressVersion
