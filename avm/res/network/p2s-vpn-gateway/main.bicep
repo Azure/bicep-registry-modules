@@ -117,7 +117,7 @@ resource p2sVpnGateway 'Microsoft.Network/p2svpnGateways@2024-10-01' = {
                   id: inboundRouteMapResourceId
                 }
               : null
-            outboundRouteMap: (!empty(outboundRouteMapResourceId ?? ''))
+            outboundRouteMap: (!empty(outboundRouteMapResourceId))
               ? {
                   id: outboundRouteMapResourceId
                 }
