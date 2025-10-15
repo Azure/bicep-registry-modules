@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Forced tunneling'
-metadata description = 'This instance deploys the module and sets up forced tunneling.'
+metadata name = 'Management nic'
+metadata description = 'This instance deploys the module and sets up a Firewall management nic to support features such as Forced Tunneling and Packet Capture.'
 
 // ========== //
 // Parameters //
@@ -61,7 +61,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       azureSkuTier: 'Standard'
-      enableForcedTunneling: true
+      enableManagementNic: true
       managementIPAddressObject: {
         publicIPAllocationMethod: 'Static'
       }
