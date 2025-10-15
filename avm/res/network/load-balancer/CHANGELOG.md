@@ -2,6 +2,15 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/load-balancer/CHANGELOG.md).
 
+## 0.5.1
+
+### Changes
+
+- Added functionality to support the creation of public IP addresses and public IP prefixes in load balancer `frontendIPconfigurations`. This new functionality utilizes the AVM modules for `public-ip-address` and `public-ip-prefix`
+- Introduced new test cases for public IP address and public IP prefix creation in the load balancer module.
+
+### Breaking Changes
+
 ## 0.5.0
 
 ### Changes

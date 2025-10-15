@@ -68,11 +68,23 @@ var frontendIPConfigurationsVar = [
             id: frontendIPConfiguration.subnetId
           }
         : null
-      publicIPAddress: contains(frontendIPConfiguration, 'publicIPAddressId') && !empty(frontendIPConfiguration.publicIPAddressId)
-        ? {
-            id: frontendIPConfiguration.publicIPAddressId
-          }
-        : null
+      // MODIFIED: Handle three scenarios - existing ID, newly created, or none
+      publicIPAddress: !empty(frontendIPConfiguration.?pipConfiguration)
+        ? (!empty(frontendIPConfiguration.?publicIPAddressId)
+            ? {
+                id: frontendIPConfiguration.publicIPAddressId
+              }
+            : {
+                id: resourceId(
+                  'Microsoft.Network/publicIPAddresses',
+                  frontendIPConfiguration.?pipConfiguration.?name ?? '${name}-pip-${index}'
+                )
+              })
+        : (contains(frontendIPConfiguration, 'publicIPAddressId') && !empty(frontendIPConfiguration.publicIPAddressId)
+            ? {
+                id: frontendIPConfiguration.publicIPAddressId
+              }
+            : null)
       privateIPAddress: contains(frontendIPConfiguration, 'privateIPAddress') && !empty(frontendIPConfiguration.privateIPAddress)
         ? frontendIPConfiguration.privateIPAddress
         : null
@@ -85,11 +97,23 @@ var frontendIPConfigurationsVar = [
             id: frontendIPConfiguration.gatewayLoadBalancer
           }
         : null
-      publicIPPrefix: contains(frontendIPConfiguration, 'publicIPPrefix') && !empty(frontendIPConfiguration.publicIPPrefix)
-        ? {
-            id: frontendIPConfiguration.publicIPPrefix
-          }
-        : null
+      // MODIFIED: Handle three scenarios for public IP prefix - existing ID, newly created, or none
+      publicIPPrefix: !empty(frontendIPConfiguration.?pipPrefixConfiguration)
+        ? (!empty(frontendIPConfiguration.?publicIPPrefix)
+            ? {
+                id: frontendIPConfiguration.publicIPPrefix
+              }
+            : {
+                id: resourceId(
+                  'Microsoft.Network/publicIPPrefixes',
+                  frontendIPConfiguration.?pipPrefixConfiguration.?name ?? '${name}-pip-prefix-${index}'
+                )
+              })
+        : (contains(frontendIPConfiguration, 'publicIPPrefix') && !empty(frontendIPConfiguration.publicIPPrefix)
+            ? {
+                id: frontendIPConfiguration.publicIPPrefix
+              }
+            : null)
     }
     zones: contains(frontendIPConfiguration, 'zones')
       ? map(frontendIPConfiguration.zones, zone => string(zone))
@@ -235,6 +259,51 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
+module loadBalancer_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.9.1' = [
+  for (frontendIPConfiguration, index) in frontendIPConfigurations: if (!empty(frontendIPConfiguration.?pipConfiguration) && empty(frontendIPConfiguration.?publicIPAddressId)) {
+    name: '${deployment().name}-publicIP-${index}'
+    params: {
+      name: frontendIPConfiguration.?pipConfiguration.?name ?? '${name}-pip-${index}'
+      location: location
+      lock: lock
+      diagnosticSettings: frontendIPConfiguration.?pipConfiguration.?diagnosticSettings
+      idleTimeoutInMinutes: frontendIPConfiguration.?pipConfiguration.?idleTimeoutInMinutes
+      ddosSettings: frontendIPConfiguration.?pipConfiguration.?ddosSettings
+      dnsSettings: frontendIPConfiguration.?pipConfiguration.?dnsSettings
+      publicIPAddressVersion: frontendIPConfiguration.?pipConfiguration.?publicIPAddressVersion
+      publicIPAllocationMethod: frontendIPConfiguration.?pipConfiguration.?publicIPAllocationMethod
+      publicIpPrefixResourceId: frontendIPConfiguration.?pipConfiguration.?publicIpPrefixResourceId
+      roleAssignments: frontendIPConfiguration.?pipConfiguration.?roleAssignments
+      skuName: frontendIPConfiguration.?pipConfiguration.?skuName ?? skuName
+      skuTier: frontendIPConfiguration.?pipConfiguration.?skuTier
+      tags: frontendIPConfiguration.?tags ?? tags
+      availabilityZones: frontendIPConfiguration.?pipConfiguration.?availabilityZones
+      enableTelemetry: frontendIPConfiguration.?pipConfiguration.?enableTelemetry ?? enableTelemetry
+      ipTags: frontendIPConfiguration.?pipConfiguration.?ipTags
+    }
+  }
+]
+
+module loadBalancer_publicIPPrefixes 'br/public:avm/res/network/public-ip-prefix:0.7.1' = [
+  for (frontendIPConfiguration, index) in frontendIPConfigurations: if (!empty(frontendIPConfiguration.?pipPrefixConfiguration) && empty(frontendIPConfiguration.?publicIPPrefix)) {
+    name: '${uniqueString(deployment().name, location)}-LoadBalancer-PIPPrefix-${index}'
+    params: {
+      name: frontendIPConfiguration.?pipPrefixConfiguration.?name ?? '${name}-pip-prefix-${index}'
+      location: location
+      lock: frontendIPConfiguration.?pipPrefixConfiguration.?lock ?? lock
+      prefixLength: frontendIPConfiguration.?pipPrefixConfiguration.?prefixLength
+      customIPPrefix: frontendIPConfiguration.?pipPrefixConfiguration.?customIPPrefix
+      roleAssignments: frontendIPConfiguration.?pipPrefixConfiguration.?roleAssignments
+      tags: frontendIPConfiguration.?pipPrefixConfiguration.?tags ?? tags
+      enableTelemetry: frontendIPConfiguration.?pipPrefixConfiguration.?enableTelemetry ?? enableTelemetry
+      availabilityZones: frontendIPConfiguration.?pipPrefixConfiguration.?availabilityZones
+      ipTags: frontendIPConfiguration.?pipPrefixConfiguration.?ipTags
+      publicIPAddressVersion: frontendIPConfiguration.?pipPrefixConfiguration.?publicIPAddressVersion
+      tier: frontendIPConfiguration.?pipPrefixConfiguration.?tier
+    }
+  }
+]
+
 resource loadBalancer 'Microsoft.Network/loadBalancers@2024-07-01' = {
   name: name
   location: location
@@ -249,6 +318,10 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2024-07-01' = {
     outboundRules: outboundRulesVar
     probes: probesVar
   }
+  dependsOn: [
+    loadBalancer_publicIPAddresses
+    loadBalancer_publicIPPrefixes
+  ]
 }
 
 module loadBalancer_backendAddressPools 'backend-address-pool/main.bicep' = [

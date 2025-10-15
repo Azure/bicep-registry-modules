@@ -22,6 +22,8 @@ This module deploys a Load Balancer.
 | `Microsoft.Network/loadBalancers` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_loadbalancers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/loadBalancers)</li></ul> |
 | `Microsoft.Network/loadBalancers/backendAddressPools` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_loadbalancers_backendaddresspools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/loadBalancers/backendAddressPools)</li></ul> |
 | `Microsoft.Network/loadBalancers/inboundNatRules` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_loadbalancers_inboundnatrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/loadBalancers/inboundNatRules)</li></ul> |
+| `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
+| `Microsoft.Network/publicIPPrefixes` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipprefixes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/publicIPPrefixes)</li></ul> |
 
 ## Usage examples
 
@@ -32,11 +34,13 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/load-balancer:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using external load balancer parameter - VNet backend addresses](#example-2-using-external-load-balancer-parameter---vnet-backend-addresses)
-- [Using external load balancer parameter - NIC backend addresses](#example-3-using-external-load-balancer-parameter---nic-backend-addresses)
-- [Using internal load balancer parameter](#example-4-using-internal-load-balancer-parameter)
-- [Using large parameter set](#example-5-using-large-parameter-set)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using public IP load balancer parameter - public IP addresses](#example-2-using-public-ip-load-balancer-parameter---public-ip-addresses)
+- [Using public IP load balancer parameter - public IP address prefixes](#example-3-using-public-ip-load-balancer-parameter---public-ip-address-prefixes)
+- [Using external load balancer parameter - VNet backend addresses](#example-4-using-external-load-balancer-parameter---vnet-backend-addresses)
+- [Using external load balancer parameter - NIC backend addresses](#example-5-using-external-load-balancer-parameter---nic-backend-addresses)
+- [Using internal load balancer parameter](#example-6-using-internal-load-balancer-parameter)
+- [Using large parameter set](#example-7-using-large-parameter-set)
+- [WAF-aligned](#example-8-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -122,7 +126,277 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Using external load balancer parameter - VNet backend addresses_
+### Example 2: _Using public IP load balancer parameter - public IP addresses_
+
+This instance deploys the module with the minimum set of required parameters and creates an external public IP for the frontend.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
+  name: 'loadBalancerDeployment'
+  params: {
+    // Required parameters
+    frontendIPConfigurations: [
+      {
+        name: 'publicIPConfig1'
+        pipConfiguration: {
+          allocationMethod: 'Static'
+          name: 'nlbpip-pip-001'
+          skuName: 'Standard'
+          skuTier: 'Regional'
+          zones: [
+            '1'
+            '2'
+            '3'
+          ]
+        }
+      }
+      {
+        name: 'publicIPConfig2'
+        pipConfiguration: {
+          allocationMethod: 'Static'
+          name: 'nlbpip-pip-002'
+          skuName: 'Standard'
+          skuTier: 'Regional'
+          zones: [
+            '1'
+            '2'
+            '3'
+          ]
+        }
+      }
+    ]
+    name: 'nlbpip001'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "frontendIPConfigurations": {
+      "value": [
+        {
+          "name": "publicIPConfig1",
+          "pipConfiguration": {
+            "allocationMethod": "Static",
+            "name": "nlbpip-pip-001",
+            "skuName": "Standard",
+            "skuTier": "Regional",
+            "zones": [
+              "1",
+              "2",
+              "3"
+            ]
+          }
+        },
+        {
+          "name": "publicIPConfig2",
+          "pipConfiguration": {
+            "allocationMethod": "Static",
+            "name": "nlbpip-pip-002",
+            "skuName": "Standard",
+            "skuTier": "Regional",
+            "zones": [
+              "1",
+              "2",
+              "3"
+            ]
+          }
+        }
+      ]
+    },
+    "name": {
+      "value": "nlbpip001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/load-balancer:<version>'
+
+// Required parameters
+param frontendIPConfigurations = [
+  {
+    name: 'publicIPConfig1'
+    pipConfiguration: {
+      allocationMethod: 'Static'
+      name: 'nlbpip-pip-001'
+      skuName: 'Standard'
+      skuTier: 'Regional'
+      zones: [
+        '1'
+        '2'
+        '3'
+      ]
+    }
+  }
+  {
+    name: 'publicIPConfig2'
+    pipConfiguration: {
+      allocationMethod: 'Static'
+      name: 'nlbpip-pip-002'
+      skuName: 'Standard'
+      skuTier: 'Regional'
+      zones: [
+        '1'
+        '2'
+        '3'
+      ]
+    }
+  }
+]
+param name = 'nlbpip001'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 3: _Using public IP load balancer parameter - public IP address prefixes_
+
+This instance deploys the module with the minimum set of required parameters and creates an external public IP prefix for the frontend.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
+  name: 'loadBalancerDeployment'
+  params: {
+    // Required parameters
+    frontendIPConfigurations: [
+      {
+        name: 'publicIPprefix1'
+        pipPrefixConfiguration: {
+          name: 'nlbpipfix-pipfix-001'
+          prefixLength: 28
+          publicIPAddressVersion: 'IPv4'
+          skuName: 'Standard'
+          zones: [
+            '1'
+            '2'
+            '3'
+          ]
+        }
+      }
+    ]
+    name: 'nlbpipfix001'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "frontendIPConfigurations": {
+      "value": [
+        {
+          "name": "publicIPprefix1",
+          "pipPrefixConfiguration": {
+            "name": "nlbpipfix-pipfix-001",
+            "prefixLength": 28,
+            "publicIPAddressVersion": "IPv4",
+            "skuName": "Standard",
+            "zones": [
+              "1",
+              "2",
+              "3"
+            ]
+          }
+        }
+      ]
+    },
+    "name": {
+      "value": "nlbpipfix001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/load-balancer:<version>'
+
+// Required parameters
+param frontendIPConfigurations = [
+  {
+    name: 'publicIPprefix1'
+    pipPrefixConfiguration: {
+      name: 'nlbpipfix-pipfix-001'
+      prefixLength: 28
+      publicIPAddressVersion: 'IPv4'
+      skuName: 'Standard'
+      zones: [
+        '1'
+        '2'
+        '3'
+      ]
+    }
+  }
+]
+param name = 'nlbpipfix001'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 4: _Using external load balancer parameter - VNet backend addresses_
 
 This instance deploys the module with an externally facing load balancer with a public IP address and VNet backend address pool.
 
@@ -612,7 +886,7 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _Using external load balancer parameter - NIC backend addresses_
+### Example 5: _Using external load balancer parameter - NIC backend addresses_
 
 This instance deploys the module with an externally facing load balancer with a public IP address and NIC backend address pool.
 
@@ -1065,7 +1339,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _Using internal load balancer parameter_
+### Example 6: _Using internal load balancer parameter_
 
 This instance deploys the module with the minimum set of required parameters to deploy an internal load balancer with a private IP address and empty backend address pool.
 
@@ -1379,7 +1653,7 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _Using large parameter set_
+### Example 7: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1844,7 +2118,7 @@ param tags = {
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 8: _WAF-aligned_
 
 This instance deploys the module with the minimum set of required parameters to deploy a WAF-aligned internal load balancer.
 
@@ -2598,6 +2872,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
+| `br/public:avm/res/network/public-ip-address:0.9.1` | Remote reference |
+| `br/public:avm/res/network/public-ip-prefix:0.7.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
