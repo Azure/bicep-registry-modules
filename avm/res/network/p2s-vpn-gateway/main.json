@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "1665939156411445826"
+      "templateHash": "11197143220978327830"
     },
     "name": "P2S VPN Gateway",
     "description": "This module deploys a Virtual Hub P2S Gateway."
@@ -299,8 +299,8 @@
                 "associatedRouteTable": {
                   "id": "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', format('{0}', variables('virtualHubName')), format('{0}', parameters('associatedRouteTableName')))]"
                 },
-                "inboundRouteMap": "[if(not(empty(coalesce(parameters('inboundRouteMapResourceId'), ''))), createObject('id', parameters('inboundRouteMapResourceId')), null())]",
-                "outboundRouteMap": "[if(not(empty(coalesce(parameters('outboundRouteMapResourceId'), ''))), createObject('id', parameters('outboundRouteMapResourceId')), null())]",
+                "inboundRouteMap": "[if(not(empty(parameters('inboundRouteMapResourceId'))), createObject('id', parameters('inboundRouteMapResourceId')), null())]",
+                "outboundRouteMap": "[if(not(empty(parameters('outboundRouteMapResourceId'))), createObject('id', parameters('outboundRouteMapResourceId')), null())]",
                 "propagatedRouteTables": {
                   "copy": [
                     {
