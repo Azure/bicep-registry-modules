@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/synapse/workspace/CHANGELOG.md).
 
+## 0.14.2
+
+### Changes
+
+- Updated API versions
+
+### Breaking Changes
+
+- None
+
 ## 0.14.1
 
 ### Changes
