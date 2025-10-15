@@ -1,0 +1,4 @@
+Requires Owner role permissions for role assignment testing.
+Skipped in fork due to ABAC restrictions preventing User Access Administrator role assignment.
+Test requires ability to assign Owner role which exceeds Contributor permissions.
+Will be validated in upstream Azure/bicep-registry-modules repo with proper Owner-level credentials.
