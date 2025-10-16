@@ -217,23 +217,32 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.7.1' = {
 ```
 
 ## Fetching Schemas, API versions and existing Published AVM Modules
+You have two options:
+1. Use tools from Bicep VS Code extension: `#list_az_resource_types_for_provider`, `#get_az_resource_type_schema`, `#list_avm_metadata`.
+2. Use the `fetch` tool to get information from related URLs.
 
-### Fetching Bicep Schemas
+> [!IMPORTANT]
+> Use only the tools above to retrieve the schema documentation for Bicep for specific versions. Do not use any other method or tool to do this, because `azure_get_schema_for_Bicep` tool does not reliably return the latest stable version.
+
+### Use Bicep VS Code Extension Tools (Preferred)
+- `#list_az_resource_types_for_provider` takes a resource provider (e.g. `Microsoft.Storage`) as input and outputs a list of resource types including their API versions.
+- `#get_az_resource_type_schema` takes a resource type (e.g. `Microsoft.Storage/storageAccounts`) and an API version (e.g. `2023-01-01`) as input and outputs the schema for that resource type and API version.
+- `#list_avm_metadata` lists up-to-date metadata for all published AVM modules. The return value is a newline-separated list of AVM metadata. Each line includes the module name, description, versions, and documentation URI for a specific module.
+
+### Use Fetch Tool (When Bicep VS Code Extension Tools Are Not Available)
+#### Fetching Bicep Schemas
 Use the `fetch` tool to get the Bicep schema for specific resources:
 
 - **URL for specific version**: `https://learn.microsoft.com/azure/templates/{resourceType}/{resourceName}?pivots=deployment-language-bicep`
 - **Example**: `https://learn.microsoft.com/azure/templates/Microsoft.Storage/storageAccounts?pivots=deployment-language-bicep`
 
-### Fetching Bicep Schemas with API Version
+#### Fetching Bicep Schemas with API Version
 Use the `fetch` tool to get the Bicep schema for specific resources and explicit API version:
 
 - **URL for specific version**: `https://learn.microsoft.com/azure/templates/{resourceType}/{apiVersion}/{resourceName}`
 - **Example**: `https://learn.microsoft.com/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts?pivots=deployment-language-bicep`
 
-> [!IMPORTANT]
-> Use the `fetch` tool to retrieve the schema documentation for Bicep for specific versions. Do not use any other method or tool to do this, because `azure_get_schema_for_Bicep` tool does not reliably return the latest stable version.
-
-### Fetching AVM Resource Module Versions
+#### Fetching AVM Resource Module Versions
 Use the `fetch` tool to get the AVM Resource module versions published in the MCR:
 
 - **URL for specific module**: `https://mcr.microsoft.com/v2/bicep/avm/res/{service}/{resource}/tags/list`
@@ -264,7 +273,10 @@ Use the `fetch` tool to get the AVM Resource module versions published in the MC
 
 - `#azure_get_deployment_best_practices` to ensure meeting deployment best practices.
 - `#microsoft.docs.mcp` to fetch Microsoft documentation.
-- `#fetch` to get schemas and documentation.
+- `#list_az_resource_types_for_provider` to list resource types for an Azure resource provider.
+- `#get_az_resource_type_schema` to get the schema for a resource type.
+- `#list_avm_metadata` to list AVM module metadata.
+- `#fetch` to get related documentation from a URL.
 - `#todos` to track outstanding tasks.
 - `#think` to think more deeply about the problem at hand (especially when making breaking changes or security-related changes).
 
