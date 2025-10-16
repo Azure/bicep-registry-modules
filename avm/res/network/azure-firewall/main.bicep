@@ -281,62 +281,58 @@ resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-05-01' = {
   zones: map(availabilityZones, zone => '${zone}')
   tags: tags
   properties: azureSkuName == 'AZFW_VNet'
-    ? union(
-        {
-          threatIntelMode: threatIntelMode
-          firewallPolicy: !empty(firewallPolicyId)
-            ? {
-                id: firewallPolicyId
-              }
-            : null
-          ipConfigurations: ipConfigurations
-          managementIpConfiguration: requiresManagementIp ? managementIPConfiguration : null
-          sku: {
-            name: azureSkuName
-            tier: azureSkuTier
-          }
-          applicationRuleCollections: applicationRuleCollections ?? []
-          natRuleCollections: natRuleCollections ?? []
-          networkRuleCollections: networkRuleCollections ?? []
-        },
-        enableDnsProxy
+    ? {
+        threatIntelMode: threatIntelMode
+        firewallPolicy: !empty(firewallPolicyId)
+          ? {
+              id: firewallPolicyId
+            }
+          : null
+        ipConfigurations: ipConfigurations
+        managementIpConfiguration: requiresManagementIp ? managementIPConfiguration : null
+        sku: {
+          name: azureSkuName
+          tier: azureSkuTier
+        }
+        applicationRuleCollections: applicationRuleCollections ?? []
+        natRuleCollections: natRuleCollections ?? []
+        networkRuleCollections: networkRuleCollections ?? []
+        ...(enableDnsProxy
           ? {
               additionalProperties: {
                 'Network.DNS.EnableProxy': 'true'
               }
             }
-          : {}
-      )
-    : union(
-        {
-          autoscaleConfiguration: {
-            maxCapacity: autoscaleMaxCapacity
-            minCapacity: autoscaleMinCapacity
-          }
-          firewallPolicy: !empty(firewallPolicyId)
-            ? {
-                id: firewallPolicyId
-              }
-            : null
-          sku: {
-            name: azureSkuName
-            tier: azureSkuTier
-          }
-          hubIPAddresses: !empty(hubIPAddresses) ? hubIPAddresses : null
-          virtualHub: !empty(virtualHubResourceId)
-            ? {
-                id: virtualHubResourceId
-              }
-            : null
-        },
-        enableDnsProxy
+          : {})
+      }
+    : {
+        autoscaleConfiguration: {
+          maxCapacity: autoscaleMaxCapacity
+          minCapacity: autoscaleMinCapacity
+        }
+        firewallPolicy: !empty(firewallPolicyId)
+          ? {
+              id: firewallPolicyId
+            }
+          : null
+        sku: {
+          name: azureSkuName
+          tier: azureSkuTier
+        }
+        hubIPAddresses: !empty(hubIPAddresses) ? hubIPAddresses : null
+        virtualHub: !empty(virtualHubResourceId)
+          ? {
+              id: virtualHubResourceId
+            }
+          : null
+        ...(enableDnsProxy
           ? {
               additionalProperties: {
                 'Network.DNS.EnableProxy': 'true'
               }
             }
-          : {}
-      )
+          : {})
+      }
 }
 
 resource azureFirewall_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
