@@ -12,8 +12,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Breaking Changes
 
 - Changed the following parameter names to comply with AVM naming standards for resource IDs:
-  - publicIPAddressId changed to publicIPAddressResourceId
-  - subnetId changed to subnetResourceId
+- publicIPAddressId changed to publicIPAddressResourceId
+- subnetId changed to subnetResourceId
 
 ## 0.5.0
 
