@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using internal load balancer parameter'
-metadata description = 'This instance deploys the module with the minimum set of required parameters to deploy an internal load balancer.'
+metadata description = 'This instance deploys the module with the minimum set of required parameters to deploy an internal load balancer with a private IP address and empty backend address pool.'
 
 // ========== //
 // Parameters //
@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -62,6 +62,7 @@ module testDeployment '../../../main.bicep' = [
       backendAddressPools: [
         {
           name: 'servers'
+          backendMembershipMode: 'NIC'
         }
       ]
       inboundNatRules: [

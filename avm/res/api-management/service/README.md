@@ -1,5 +1,10 @@
 # API Management Services `[Microsoft.ApiManagement/service]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.
 
 ## Navigation
@@ -3577,7 +3582,7 @@ Named values.
 | [`keyVault`](#parameter-namedvalueskeyvault) | object | KeyVault location details of the namedValue. |
 | [`secret`](#parameter-namedvaluessecret) | bool | Determines whether the value is a secret and should be encrypted or not. Default value is false. |
 | [`tags`](#parameter-namedvaluestags) | array | Tags that when provided can be used to filter the NamedValue list. - string. |
-| [`value`](#parameter-namedvaluesvalue) | string | Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value. |
+| [`value`](#parameter-namedvaluesvalue) | securestring | Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value. |
 
 ### Parameter: `namedValues.displayName`
 
@@ -3619,7 +3624,7 @@ Tags that when provided can be used to filter the NamedValue list. - string.
 Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `newGuidValue`
 

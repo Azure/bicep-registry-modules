@@ -7,7 +7,7 @@ param managedIdentityName string
 @description('Required. The name of the DNS Zone to create.')
 param dnsZoneName string
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }

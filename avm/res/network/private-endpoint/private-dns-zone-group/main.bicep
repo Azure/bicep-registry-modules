@@ -12,24 +12,22 @@ param privateDnsZoneConfigs privateDnsZoneGroupConfigType[]
 @description('Optional. The name of the private DNS zone group.')
 param name string = 'default'
 
-var privateDnsZoneConfigsVar = [
-  for privateDnsZoneConfig in privateDnsZoneConfigs: {
-    name: privateDnsZoneConfig.?name ?? last(split(privateDnsZoneConfig.privateDnsZoneResourceId, '/'))
-    properties: {
-      privateDnsZoneId: privateDnsZoneConfig.privateDnsZoneResourceId
-    }
-  }
-]
-
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2024-05-01' existing = {
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2024-10-01' existing = {
   name: privateEndpointName
 }
 
-resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2024-05-01' = {
+resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2024-10-01' = {
   name: name
   parent: privateEndpoint
   properties: {
-    privateDnsZoneConfigs: privateDnsZoneConfigsVar
+    privateDnsZoneConfigs: [
+      for privateDnsZoneConfig in privateDnsZoneConfigs: {
+        name: privateDnsZoneConfig.?name ?? last(split(privateDnsZoneConfig.privateDnsZoneResourceId, '/'))
+        properties: {
+          privateDnsZoneId: privateDnsZoneConfig.privateDnsZoneResourceId
+        }
+      }
+    ]
   }
 }
 
@@ -47,6 +45,7 @@ output resourceGroupName string = resourceGroup().name
 // ================ //
 
 @export()
+@description('The type of a private DNS zone group configuration.')
 type privateDnsZoneGroupConfigType = {
   @description('Optional. The name of the private DNS zone group config.')
   name: string?

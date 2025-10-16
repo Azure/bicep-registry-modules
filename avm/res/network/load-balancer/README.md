@@ -19,9 +19,9 @@ This module deploys a Load Balancer.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/loadBalancers` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_loadbalancers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/loadBalancers)</li></ul> |
-| `Microsoft.Network/loadBalancers/backendAddressPools` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_loadbalancers_backendaddresspools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/loadBalancers/backendAddressPools)</li></ul> |
-| `Microsoft.Network/loadBalancers/inboundNatRules` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_loadbalancers_inboundnatrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/loadBalancers/inboundNatRules)</li></ul> |
+| `Microsoft.Network/loadBalancers` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_loadbalancers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/loadBalancers)</li></ul> |
+| `Microsoft.Network/loadBalancers/backendAddressPools` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_loadbalancers_backendaddresspools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/loadBalancers/backendAddressPools)</li></ul> |
+| `Microsoft.Network/loadBalancers/inboundNatRules` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_loadbalancers_inboundnatrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/loadBalancers/inboundNatRules)</li></ul> |
 
 ## Usage examples
 
@@ -32,10 +32,11 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/load-balancer:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using external load balancer parameter](#example-2-using-external-load-balancer-parameter)
-- [Using internal load balancer parameter](#example-3-using-internal-load-balancer-parameter)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using external load balancer parameter - VNet backend addresses](#example-2-using-external-load-balancer-parameter---vnet-backend-addresses)
+- [Using external load balancer parameter - NIC backend addresses](#example-3-using-external-load-balancer-parameter---nic-backend-addresses)
+- [Using internal load balancer parameter](#example-4-using-internal-load-balancer-parameter)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -121,9 +122,499 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Using external load balancer parameter_
+### Example 2: _Using external load balancer parameter - VNet backend addresses_
 
-This instance deploys the module with an externally facing load balancer.
+This instance deploys the module with an externally facing load balancer with a public IP address and VNet backend address pool.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
+  name: 'loadBalancerDeployment'
+  params: {
+    // Required parameters
+    frontendIPConfigurations: [
+      {
+        name: 'publicIPConfig1'
+        publicIPAddressId: '<publicIPAddressId>'
+      }
+    ]
+    name: 'nlbnet001'
+    // Non-required parameters
+    backendAddressPools: [
+      {
+        backendMembershipMode: 'BackendAddress'
+        loadBalancerBackendAddresses: [
+          {
+            name: 'beAddress1'
+            properties: {
+              ipAddress: '10.0.0.15'
+            }
+          }
+          {
+            name: 'beAddress2'
+            properties: {
+              ipAddress: '10.0.0.16'
+            }
+          }
+        ]
+        name: 'backendAddressPool1'
+        virtualNetworkResourceId: '<virtualNetworkResourceId>'
+      }
+      {
+        name: 'backendAddressPool2'
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    inboundNatRules: [
+      {
+        backendPort: 443
+        enableFloatingIP: false
+        enableTcpReset: false
+        frontendIPConfigurationName: 'publicIPConfig1'
+        frontendPort: 443
+        idleTimeoutInMinutes: 4
+        name: 'inboundNatRule1'
+        protocol: 'Tcp'
+      }
+      {
+        backendPort: 3389
+        frontendIPConfigurationName: 'publicIPConfig1'
+        frontendPort: 3389
+        name: 'inboundNatRule2'
+      }
+    ]
+    loadBalancingRules: [
+      {
+        backendAddressPoolName: 'backendAddressPool1'
+        backendPort: 80
+        disableOutboundSnat: true
+        enableFloatingIP: false
+        enableTcpReset: false
+        frontendIPConfigurationName: 'publicIPConfig1'
+        frontendPort: 80
+        idleTimeoutInMinutes: 5
+        loadDistribution: 'Default'
+        name: 'publicIPLBRule1'
+        probeName: 'probe1'
+        protocol: 'Tcp'
+      }
+      {
+        backendAddressPoolName: 'backendAddressPool2'
+        backendPort: 8080
+        frontendIPConfigurationName: 'publicIPConfig1'
+        frontendPort: 8080
+        loadDistribution: 'Default'
+        name: 'publicIPLBRule2'
+        probeName: 'probe2'
+      }
+    ]
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    outboundRules: [
+      {
+        allocatedOutboundPorts: 63984
+        backendAddressPoolName: 'backendAddressPool1'
+        frontendIPConfigurationName: 'publicIPConfig1'
+        name: 'outboundRule1'
+      }
+    ]
+    probes: [
+      {
+        intervalInSeconds: 10
+        name: 'probe1'
+        numberOfProbes: 5
+        port: 80
+        protocol: 'Http'
+        requestPath: '/http-probe'
+      }
+      {
+        name: 'probe2'
+        port: 443
+        protocol: 'Https'
+        requestPath: '/https-probe'
+      }
+    ]
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "frontendIPConfigurations": {
+      "value": [
+        {
+          "name": "publicIPConfig1",
+          "publicIPAddressId": "<publicIPAddressId>"
+        }
+      ]
+    },
+    "name": {
+      "value": "nlbnet001"
+    },
+    // Non-required parameters
+    "backendAddressPools": {
+      "value": [
+        {
+          "backendMembershipMode": "BackendAddress",
+          "loadBalancerBackendAddresses": [
+            {
+              "name": "beAddress1",
+              "properties": {
+                "ipAddress": "10.0.0.15"
+              }
+            },
+            {
+              "name": "beAddress2",
+              "properties": {
+                "ipAddress": "10.0.0.16"
+              }
+            }
+          ],
+          "name": "backendAddressPool1",
+          "virtualNetworkResourceId": "<virtualNetworkResourceId>"
+        },
+        {
+          "name": "backendAddressPool2"
+        }
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "inboundNatRules": {
+      "value": [
+        {
+          "backendPort": 443,
+          "enableFloatingIP": false,
+          "enableTcpReset": false,
+          "frontendIPConfigurationName": "publicIPConfig1",
+          "frontendPort": 443,
+          "idleTimeoutInMinutes": 4,
+          "name": "inboundNatRule1",
+          "protocol": "Tcp"
+        },
+        {
+          "backendPort": 3389,
+          "frontendIPConfigurationName": "publicIPConfig1",
+          "frontendPort": 3389,
+          "name": "inboundNatRule2"
+        }
+      ]
+    },
+    "loadBalancingRules": {
+      "value": [
+        {
+          "backendAddressPoolName": "backendAddressPool1",
+          "backendPort": 80,
+          "disableOutboundSnat": true,
+          "enableFloatingIP": false,
+          "enableTcpReset": false,
+          "frontendIPConfigurationName": "publicIPConfig1",
+          "frontendPort": 80,
+          "idleTimeoutInMinutes": 5,
+          "loadDistribution": "Default",
+          "name": "publicIPLBRule1",
+          "probeName": "probe1",
+          "protocol": "Tcp"
+        },
+        {
+          "backendAddressPoolName": "backendAddressPool2",
+          "backendPort": 8080,
+          "frontendIPConfigurationName": "publicIPConfig1",
+          "frontendPort": 8080,
+          "loadDistribution": "Default",
+          "name": "publicIPLBRule2",
+          "probeName": "probe2"
+        }
+      ]
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "outboundRules": {
+      "value": [
+        {
+          "allocatedOutboundPorts": 63984,
+          "backendAddressPoolName": "backendAddressPool1",
+          "frontendIPConfigurationName": "publicIPConfig1",
+          "name": "outboundRule1"
+        }
+      ]
+    },
+    "probes": {
+      "value": [
+        {
+          "intervalInSeconds": 10,
+          "name": "probe1",
+          "numberOfProbes": 5,
+          "port": 80,
+          "protocol": "Http",
+          "requestPath": "/http-probe"
+        },
+        {
+          "name": "probe2",
+          "port": 443,
+          "protocol": "Https",
+          "requestPath": "/https-probe"
+        }
+      ]
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/load-balancer:<version>'
+
+// Required parameters
+param frontendIPConfigurations = [
+  {
+    name: 'publicIPConfig1'
+    publicIPAddressId: '<publicIPAddressId>'
+  }
+]
+param name = 'nlbnet001'
+// Non-required parameters
+param backendAddressPools = [
+  {
+    backendMembershipMode: 'BackendAddress'
+    loadBalancerBackendAddresses: [
+      {
+        name: 'beAddress1'
+        properties: {
+          ipAddress: '10.0.0.15'
+        }
+      }
+      {
+        name: 'beAddress2'
+        properties: {
+          ipAddress: '10.0.0.16'
+        }
+      }
+    ]
+    name: 'backendAddressPool1'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
+  }
+  {
+    name: 'backendAddressPool2'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param inboundNatRules = [
+  {
+    backendPort: 443
+    enableFloatingIP: false
+    enableTcpReset: false
+    frontendIPConfigurationName: 'publicIPConfig1'
+    frontendPort: 443
+    idleTimeoutInMinutes: 4
+    name: 'inboundNatRule1'
+    protocol: 'Tcp'
+  }
+  {
+    backendPort: 3389
+    frontendIPConfigurationName: 'publicIPConfig1'
+    frontendPort: 3389
+    name: 'inboundNatRule2'
+  }
+]
+param loadBalancingRules = [
+  {
+    backendAddressPoolName: 'backendAddressPool1'
+    backendPort: 80
+    disableOutboundSnat: true
+    enableFloatingIP: false
+    enableTcpReset: false
+    frontendIPConfigurationName: 'publicIPConfig1'
+    frontendPort: 80
+    idleTimeoutInMinutes: 5
+    loadDistribution: 'Default'
+    name: 'publicIPLBRule1'
+    probeName: 'probe1'
+    protocol: 'Tcp'
+  }
+  {
+    backendAddressPoolName: 'backendAddressPool2'
+    backendPort: 8080
+    frontendIPConfigurationName: 'publicIPConfig1'
+    frontendPort: 8080
+    loadDistribution: 'Default'
+    name: 'publicIPLBRule2'
+    probeName: 'probe2'
+  }
+]
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param outboundRules = [
+  {
+    allocatedOutboundPorts: 63984
+    backendAddressPoolName: 'backendAddressPool1'
+    frontendIPConfigurationName: 'publicIPConfig1'
+    name: 'outboundRule1'
+  }
+]
+param probes = [
+  {
+    intervalInSeconds: 10
+    name: 'probe1'
+    numberOfProbes: 5
+    port: 80
+    protocol: 'Http'
+    requestPath: '/http-probe'
+  }
+  {
+    name: 'probe2'
+    port: 443
+    protocol: 'Https'
+    requestPath: '/https-probe'
+  }
+]
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using external load balancer parameter - NIC backend addresses_
+
+This instance deploys the module with an externally facing load balancer with a public IP address and NIC backend address pool.
 
 
 <details>
@@ -145,9 +636,11 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     // Non-required parameters
     backendAddressPools: [
       {
+        backendMembershipMode: 'NIC'
         name: 'backendAddressPool1'
       }
       {
+        backendMembershipMode: 'None'
         name: 'backendAddressPool2'
       }
     ]
@@ -291,9 +784,11 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     "backendAddressPools": {
       "value": [
         {
+          "backendMembershipMode": "NIC",
           "name": "backendAddressPool1"
         },
         {
+          "backendMembershipMode": "None",
           "name": "backendAddressPool2"
         }
       ]
@@ -449,9 +944,11 @@ param name = 'nlbext001'
 // Non-required parameters
 param backendAddressPools = [
   {
+    backendMembershipMode: 'NIC'
     name: 'backendAddressPool1'
   }
   {
+    backendMembershipMode: 'None'
     name: 'backendAddressPool2'
   }
 ]
@@ -568,9 +1065,9 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _Using internal load balancer parameter_
+### Example 4: _Using internal load balancer parameter_
 
-This instance deploys the module with the minimum set of required parameters to deploy an internal load balancer.
+This instance deploys the module with the minimum set of required parameters to deploy an internal load balancer with a private IP address and empty backend address pool.
 
 
 <details>
@@ -592,6 +1089,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     // Non-required parameters
     backendAddressPools: [
       {
+        backendMembershipMode: 'NIC'
         name: 'servers'
       }
     ]
@@ -694,6 +1192,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     "backendAddressPools": {
       "value": [
         {
+          "backendMembershipMode": "NIC",
           "name": "servers"
         }
       ]
@@ -804,6 +1303,7 @@ param name = 'nlbint001'
 // Non-required parameters
 param backendAddressPools = [
   {
+    backendMembershipMode: 'NIC'
     name: 'servers'
   }
 ]
@@ -879,7 +1379,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1344,7 +1844,7 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module with the minimum set of required parameters to deploy a WAF-aligned internal load balancer.
 
@@ -2105,43 +2605,13 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ### Parameter Usage: `backendAddressPools`
 
-<details>
+The following example represents three different configurations for backendAddressPools:
 
-<summary>Parameter JSON format</summary>
+- `BackendNICPool` - Network Interface deployments.
+- `BackendIPPool` - Represents the assignment of IP addresses to a backend address pool.
+- `BackendUnassociatedPool` - Represents a backend address pool that doesn't currently have any resources like a backend address or Network Interface assigned.
 
-```json
-"backendAddressPools": {
-    "value": [
-        {
-            "name": "p_hub-bfw-server-bepool",
-            "properties": {
-                "loadBalancerBackendAddresses": [
-                    {
-                        "name": "iacs-sh-main-pd-01-euw-rg-network_awefwa01p-nic-int-01ipconfig-internal",
-                        "properties": {
-                            "virtualNetwork": {
-                                "id": "[reference(variables('deploymentVNET')).outputs.vNetResourceId.value]"
-                            },
-                            "ipAddress": "172.22.232.5"
-                        }
-                    },
-                    {
-                        "name": "iacs-sh-main-pd-01-euw-rg-network_awefwa01p-ha-nic-int-01ipconfig-internal",
-                        "properties": {
-                            "virtualNetwork": {
-                                "id": "[reference(variables('deploymentVNET')).outputs.vNetResourceId.value]"
-                            },
-                            "ipAddress": "172.22.232.6"
-                        }
-                    }
-                ]
-            }
-        }
-    ]
-}
-```
-
-</details>
+`NOTE` - Each of the backend address pools have a new parameter called `backendMembershipMode` which is used with the AVM module to assist in resolving idempotency issues.
 
 <details>
 
@@ -2149,32 +2619,39 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ```bicep
 backendAddressPools: [
-    {
-        name: 'p_hub-bfw-server-bepool'
-        properties: {
-            loadBalancerBackendAddresses: [
-                {
-                    name: 'iacs-sh-main-pd-01-euw-rg-network_awefwa01p-nic-int-01ipconfig-internal'
-                    properties: {
-                        virtualNetwork: {
-                            id: '[reference(variables('deploymentVNET')).outputs.vNetResourceId.value]'
-                        }
-                        ipAddress: '172.22.232.5'
-                    }
-                }
-                {
-                    name: 'iacs-sh-main-pd-01-euw-rg-network_awefwa01p-ha-nic-int-01ipconfig-internal'
-                    properties: {
-                        virtualNetwork: {
-                            id: '[reference(variables('deploymentVNET')).outputs.vNetResourceId.value]'
-                        }
-                        ipAddress: '172.22.232.6'
-                    }
-                }
-            ]
-        }
-    }
-]
+      {
+        name: 'BackendNICPool'
+        backendMembershipMode: 'NIC'
+      }
+      {
+        name: 'BackendIPPool'
+        backendMembershipMode: 'BackendAddress'
+        loadBalancerBackendAddresses: [
+          {
+            name: 'addr1'
+            properties: {
+              virtualNetwork: {
+                id: virtualNetwork.id
+              }
+              ipAddress: '10.0.2.52'
+            }
+          }
+          {
+            name: 'addr2'
+            properties: {
+              virtualNetwork: {
+                id: virtualNetwork.id
+              }
+              ipAddress: '10.0.2.53'
+            }
+          }
+        ]
+      }
+      {
+        name: 'BackendUnassociatedPool'
+        backendMembershipMode: 'None'
+      }
+    ]
 ```
 
 </details>

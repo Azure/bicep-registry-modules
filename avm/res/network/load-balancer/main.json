@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "9127452593912249537"
+      "version": "0.38.3.11034",
+      "templateHash": "17411499380867712816"
     },
     "name": "Load Balancers",
     "description": "This module deploys a Load Balancer."
@@ -329,10 +329,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/loadBalancers@2024-10-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -481,7 +484,7 @@
     },
     "loadBalancer": {
       "type": "Microsoft.Network/loadBalancers",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2024-07-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -578,8 +581,9 @@
         "name": "loadBalancer_backendAddressPools",
         "count": "[length(coalesce(parameters('backendAddressPools'), createArray()))]"
       },
+      "condition": "[not(equals(tryGet(coalesce(parameters('backendAddressPools'), createArray())[copyIndex()], 'backendMembershipMode'), 'NIC'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-loadBalancer-backendAddPools-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -593,6 +597,9 @@
           "name": {
             "value": "[coalesce(parameters('backendAddressPools'), createArray())[copyIndex()].name]"
           },
+          "backendMembershipMode": {
+            "value": "[tryGet(coalesce(parameters('backendAddressPools'), createArray())[copyIndex()], 'backendMembershipMode')]"
+          },
           "tunnelInterfaces": {
             "value": "[tryGet(coalesce(parameters('backendAddressPools'), createArray())[copyIndex()], 'tunnelInterfaces')]"
           },
@@ -601,6 +608,9 @@
           },
           "drainPeriodInSeconds": {
             "value": "[tryGet(coalesce(parameters('backendAddressPools'), createArray())[copyIndex()], 'drainPeriodInSeconds')]"
+          },
+          "virtualNetworkResourceId": {
+            "value": "[tryGet(coalesce(parameters('backendAddressPools'), createArray())[copyIndex()], 'virtualNetworkResourceId')]"
           }
         },
         "template": {
@@ -609,8 +619,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "11953034715462090353"
+              "version": "0.38.3.11034",
+              "templateHash": "10670439602612325976"
             },
             "name": "Load Balancer Backend Address Pools",
             "description": "This module deploys a Load Balancer Backend Address Pools."
@@ -660,18 +670,39 @@
               "metadata": {
                 "description": "Optional. Backend address synchronous mode for the backend pool."
               }
+            },
+            "virtualNetworkResourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The resource Id of the virtual network."
+              }
+            },
+            "backendMembershipMode": {
+              "type": "string",
+              "defaultValue": "None",
+              "allowedValues": [
+                "NIC",
+                "BackendAddress",
+                "None"
+              ],
+              "metadata": {
+                "description": "Optional. How backend pool members are managed. NIC = via NIC IP configs, BackendAddress = via backend addresses, None = empty pool."
+              }
             }
           },
           "resources": [
             {
+              "condition": "[not(equals(parameters('backendMembershipMode'), 'NIC'))]",
               "type": "Microsoft.Network/loadBalancers/backendAddressPools",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-10-01",
               "name": "[format('{0}/{1}', parameters('loadBalancerName'), parameters('name'))]",
               "properties": {
-                "loadBalancerBackendAddresses": "[parameters('loadBalancerBackendAddresses')]",
+                "loadBalancerBackendAddresses": "[if(equals(parameters('backendMembershipMode'), 'BackendAddress'), parameters('loadBalancerBackendAddresses'), null())]",
                 "tunnelInterfaces": "[parameters('tunnelInterfaces')]",
                 "drainPeriodInSeconds": "[if(not(equals(parameters('drainPeriodInSeconds'), 0)), parameters('drainPeriodInSeconds'), null())]",
-                "syncMode": "[if(not(empty(parameters('syncMode'))), parameters('syncMode'), null())]"
+                "syncMode": "[if(not(empty(parameters('syncMode'))), parameters('syncMode'), null())]",
+                "virtualNetwork": "[if(not(empty(parameters('virtualNetworkResourceId'))), createObject('id', parameters('virtualNetworkResourceId')), null())]"
               }
             }
           ],
@@ -681,14 +712,14 @@
               "metadata": {
                 "description": "The name of the backend address pool."
               },
-              "value": "[parameters('name')]"
+              "value": "[if(not(equals(parameters('backendMembershipMode'), 'NIC')), parameters('name'), parameters('name'))]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the backend address pool."
               },
-              "value": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', parameters('loadBalancerName'), parameters('name'))]"
+              "value": "[if(not(equals(parameters('backendMembershipMode'), 'NIC')), resourceId('Microsoft.Network/loadBalancers/backendAddressPools', parameters('loadBalancerName'), parameters('name')), format('{0}/backendAddressPools/{1}', resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancerName')), parameters('name')))]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -710,7 +741,7 @@
         "count": "[length(parameters('inboundNatRules'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-LoadBalancer-inboundNatRules-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -762,8 +793,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "14295078087708766878"
+              "version": "0.38.3.11034",
+              "templateHash": "8943275705446718462"
             },
             "name": "Load Balancer Inbound NAT Rules",
             "description": "This module deploys a Load Balancer Inbound NAT Rules."
@@ -831,7 +862,7 @@
               "minValue": 0,
               "maxValue": 65534,
               "metadata": {
-                "description": "Conditonal. The port range end for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeStart. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. Required if FrontendPort is not specified."
+                "description": "Conditional. The port range end for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeStart. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. Required if FrontendPort is not specified."
               }
             },
             "frontendPortRangeStart": {
@@ -867,12 +898,12 @@
             "loadBalancer": {
               "existing": true,
               "type": "Microsoft.Network/loadBalancers",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-10-01",
               "name": "[parameters('loadBalancerName')]"
             },
             "inboundNatRule": {
               "type": "Microsoft.Network/loadBalancers/inboundNatRules",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-10-01",
               "name": "[format('{0}/{1}', parameters('loadBalancerName'), parameters('name'))]",
               "properties": {
                 "frontendPort": "[parameters('frontendPort')]",
@@ -955,7 +986,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('loadBalancer', '2023-11-01', 'full').location]"
+      "value": "[reference('loadBalancer', '2024-07-01', 'full').location]"
     }
   }
 }
