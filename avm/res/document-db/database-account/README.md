@@ -1,5 +1,14 @@
 # Azure Cosmos DB account `[Microsoft.DocumentDB/databaseAccounts]`
 
+> # ⚠️ THIS MODULE IS CURRENTLY ORPHANED ⚠️
+> 
+> This module is currently orphaned and is being maintained by the AVM Core Team on a best-effort basis.
+> 
+> - Only **security** and **bug** fixes are being handled by the AVM core team at present.
+> - If you're interested in becoming the module owner of this orphaned module (must be **Microsoft FTE**), please look for the related **"orphaned module"** GitHub issue in this repository: [https://aka.ms/AVM/OrphanedModule](https://aka.ms/AVM/OrphanedModule)
+> 
+> Thank you for your understanding and patience.
+
 This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed.
 
 ## Navigation
@@ -18,6 +27,11 @@ This module deploys an Azure Cosmos DB account. The API used for the account is 
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandrakeyspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/cassandraKeyspaces)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandrakeyspaces_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/cassandraKeyspaces/tables)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandrakeyspaces_views.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-05-01-preview/databaseAccounts/cassandraKeyspaces/views)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraRoleAssignments` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandraroleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-05-01-preview/databaseAccounts/cassandraRoleAssignments)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandraroledefinitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-05-01-preview/databaseAccounts/cassandraRoleDefinitions)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/gremlinDatabases)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases_graphs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/gremlinDatabases/graphs)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_mongodbdatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/mongodbDatabases)</li></ul> |
@@ -41,17 +55,19 @@ The following section provides usage examples for the module, which were used to
 
 - [Using analytical storage](#example-1-using-analytical-storage)
 - [Using bounded consistency](#example-2-using-bounded-consistency)
-- [Using only defaults](#example-3-using-only-defaults)
-- [Gremlin Database](#example-4-gremlin-database)
-- [Deploying with Managed identities](#example-5-deploying-with-managed-identities)
-- [Mongo Database](#example-6-mongo-database)
-- [Deploying multiple regions](#example-7-deploying-multiple-regions)
-- [Plain](#example-8-plain)
-- [Public network restricted access with ACL](#example-9-public-network-restricted-access-with-acl)
-- [SQL Database](#example-10-sql-database)
-- [Deploying with a sql role definition and assignment](#example-11-deploying-with-a-sql-role-definition-and-assignment)
-- [API for Table](#example-12-api-for-table)
-- [WAF-aligned](#example-13-waf-aligned)
+- [Cassandra Keyspaces - WAF-aligned](#example-3-cassandra-keyspaces---waf-aligned)
+- [Cassandra Keyspaces](#example-4-cassandra-keyspaces)
+- [Using only defaults](#example-5-using-only-defaults)
+- [Gremlin Database](#example-6-gremlin-database)
+- [Deploying with Managed identities](#example-7-deploying-with-managed-identities)
+- [Mongo Database](#example-8-mongo-database)
+- [Deploying multiple regions](#example-9-deploying-multiple-regions)
+- [Plain](#example-10-plain)
+- [Public network restricted access with ACL](#example-11-public-network-restricted-access-with-acl)
+- [SQL Database](#example-12-sql-database)
+- [Deploying with a sql role definition and assignment](#example-13-deploying-with-a-sql-role-definition-and-assignment)
+- [API for Table](#example-14-api-for-table)
+- [WAF-aligned](#example-15-waf-aligned)
 
 ### Example 1: _Using analytical storage_
 
@@ -235,7 +251,1094 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 3: _Using only defaults_
+### Example 3: _Cassandra Keyspaces - WAF-aligned_
+
+This instance deploys the module with Cassandra Keyspaces in alignment with the best-practices of the Azure Well-Architected Framework.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: 'databaseAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'dddacswaf001'
+    // Non-required parameters
+    automaticFailover: true
+    backupPolicyType: 'Periodic'
+    capabilitiesToAdd: [
+      'EnableCassandra'
+    ]
+    cassandraKeyspaces: [
+      {
+        name: 'cks-dddacswaf-001'
+        tables: [
+          {
+            analyticalStorageTtl: 86400
+            defaultTtl: 7200
+            name: 'secure_orders'
+            schema: {
+              clusterKeys: [
+                {
+                  name: 'order_date'
+                  orderBy: 'desc'
+                }
+                {
+                  name: 'order_id'
+                  orderBy: 'asc'
+                }
+              ]
+              columns: [
+                {
+                  name: 'order_id'
+                  type: 'uuid'
+                }
+                {
+                  name: 'customer_id'
+                  type: 'uuid'
+                }
+                {
+                  name: 'order_date'
+                  type: 'timestamp'
+                }
+                {
+                  name: 'total_amount'
+                  type: 'decimal'
+                }
+                {
+                  name: 'status'
+                  type: 'text'
+                }
+              ]
+              partitionKeys: [
+                {
+                  name: 'customer_id'
+                }
+              ]
+            }
+          }
+        ]
+        throughput: 1000
+      }
+      {
+        autoscaleSettingsMaxThroughput: 4000
+        name: 'cks-dddacswaf-002'
+        tables: [
+          {
+            analyticalStorageTtl: -1
+            name: 'secure_users'
+            schema: {
+              clusterKeys: [
+                {
+                  name: 'created_at'
+                  orderBy: 'desc'
+                }
+              ]
+              columns: [
+                {
+                  name: 'user_id'
+                  type: 'uuid'
+                }
+                {
+                  name: 'email'
+                  type: 'text'
+                }
+                {
+                  name: 'created_at'
+                  type: 'timestamp'
+                }
+              ]
+              partitionKeys: [
+                {
+                  name: 'user_id'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    disableKeyBasedMetadataWriteAccess: true
+    disableLocalAuthentication: true
+    enableAnalyticalStorage: true
+    failoverLocations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+      {
+        failoverPriority: 1
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    minimumTlsVersion: 'Tls12'
+    networkRestrictions: {
+      networkAclBypass: 'None'
+      publicNetworkAccess: 'Disabled'
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'Cassandra'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    tags: {
+      environment: 'production'
+      role: 'validation'
+      type: 'waf-aligned-cassandra'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddacswaf001"
+    },
+    // Non-required parameters
+    "automaticFailover": {
+      "value": true
+    },
+    "backupPolicyType": {
+      "value": "Periodic"
+    },
+    "capabilitiesToAdd": {
+      "value": [
+        "EnableCassandra"
+      ]
+    },
+    "cassandraKeyspaces": {
+      "value": [
+        {
+          "name": "cks-dddacswaf-001",
+          "tables": [
+            {
+              "analyticalStorageTtl": 86400,
+              "defaultTtl": 7200,
+              "name": "secure_orders",
+              "schema": {
+                "clusterKeys": [
+                  {
+                    "name": "order_date",
+                    "orderBy": "desc"
+                  },
+                  {
+                    "name": "order_id",
+                    "orderBy": "asc"
+                  }
+                ],
+                "columns": [
+                  {
+                    "name": "order_id",
+                    "type": "uuid"
+                  },
+                  {
+                    "name": "customer_id",
+                    "type": "uuid"
+                  },
+                  {
+                    "name": "order_date",
+                    "type": "timestamp"
+                  },
+                  {
+                    "name": "total_amount",
+                    "type": "decimal"
+                  },
+                  {
+                    "name": "status",
+                    "type": "text"
+                  }
+                ],
+                "partitionKeys": [
+                  {
+                    "name": "customer_id"
+                  }
+                ]
+              }
+            }
+          ],
+          "throughput": 1000
+        },
+        {
+          "autoscaleSettingsMaxThroughput": 4000,
+          "name": "cks-dddacswaf-002",
+          "tables": [
+            {
+              "analyticalStorageTtl": -1,
+              "name": "secure_users",
+              "schema": {
+                "clusterKeys": [
+                  {
+                    "name": "created_at",
+                    "orderBy": "desc"
+                  }
+                ],
+                "columns": [
+                  {
+                    "name": "user_id",
+                    "type": "uuid"
+                  },
+                  {
+                    "name": "email",
+                    "type": "text"
+                  },
+                  {
+                    "name": "created_at",
+                    "type": "timestamp"
+                  }
+                ],
+                "partitionKeys": [
+                  {
+                    "name": "user_id"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "disableKeyBasedMetadataWriteAccess": {
+      "value": true
+    },
+    "disableLocalAuthentication": {
+      "value": true
+    },
+    "enableAnalyticalStorage": {
+      "value": true
+    },
+    "failoverLocations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        },
+        {
+          "failoverPriority": 1,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "minimumTlsVersion": {
+      "value": "Tls12"
+    },
+    "networkRestrictions": {
+      "value": {
+        "networkAclBypass": "None",
+        "publicNetworkAccess": "Disabled"
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "Cassandra",
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "environment": "production",
+        "role": "validation",
+        "type": "waf-aligned-cassandra"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddacswaf001'
+// Non-required parameters
+param automaticFailover = true
+param backupPolicyType = 'Periodic'
+param capabilitiesToAdd = [
+  'EnableCassandra'
+]
+param cassandraKeyspaces = [
+  {
+    name: 'cks-dddacswaf-001'
+    tables: [
+      {
+        analyticalStorageTtl: 86400
+        defaultTtl: 7200
+        name: 'secure_orders'
+        schema: {
+          clusterKeys: [
+            {
+              name: 'order_date'
+              orderBy: 'desc'
+            }
+            {
+              name: 'order_id'
+              orderBy: 'asc'
+            }
+          ]
+          columns: [
+            {
+              name: 'order_id'
+              type: 'uuid'
+            }
+            {
+              name: 'customer_id'
+              type: 'uuid'
+            }
+            {
+              name: 'order_date'
+              type: 'timestamp'
+            }
+            {
+              name: 'total_amount'
+              type: 'decimal'
+            }
+            {
+              name: 'status'
+              type: 'text'
+            }
+          ]
+          partitionKeys: [
+            {
+              name: 'customer_id'
+            }
+          ]
+        }
+      }
+    ]
+    throughput: 1000
+  }
+  {
+    autoscaleSettingsMaxThroughput: 4000
+    name: 'cks-dddacswaf-002'
+    tables: [
+      {
+        analyticalStorageTtl: -1
+        name: 'secure_users'
+        schema: {
+          clusterKeys: [
+            {
+              name: 'created_at'
+              orderBy: 'desc'
+            }
+          ]
+          columns: [
+            {
+              name: 'user_id'
+              type: 'uuid'
+            }
+            {
+              name: 'email'
+              type: 'text'
+            }
+            {
+              name: 'created_at'
+              type: 'timestamp'
+            }
+          ]
+          partitionKeys: [
+            {
+              name: 'user_id'
+            }
+          ]
+        }
+      }
+    ]
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableKeyBasedMetadataWriteAccess = true
+param disableLocalAuthentication = true
+param enableAnalyticalStorage = true
+param failoverLocations = [
+  {
+    failoverPriority: 0
+    isZoneRedundant: false
+    locationName: '<locationName>'
+  }
+  {
+    failoverPriority: 1
+    isZoneRedundant: false
+    locationName: '<locationName>'
+  }
+]
+param minimumTlsVersion = 'Tls12'
+param networkRestrictions = {
+  networkAclBypass: 'None'
+  publicNetworkAccess: 'Disabled'
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'Cassandra'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param tags = {
+  environment: 'production'
+  role: 'validation'
+  type: 'waf-aligned-cassandra'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Cassandra Keyspaces_
+
+This instance deploys the module with Cassandra Keyspaces.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: 'databaseAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'dddacsk001'
+    // Non-required parameters
+    backupPolicyType: 'Periodic'
+    capabilitiesToAdd: [
+      'EnableCassandra'
+    ]
+    cassandraKeyspaces: [
+      {
+        name: 'cks-dddacsk-001'
+        tables: [
+          {
+            analyticalStorageTtl: 86400
+            defaultTtl: 3600
+            name: 'orders'
+            schema: {
+              clusterKeys: [
+                {
+                  name: 'order_date'
+                  orderBy: 'desc'
+                }
+                {
+                  name: 'order_id'
+                  orderBy: 'asc'
+                }
+              ]
+              columns: [
+                {
+                  name: 'order_id'
+                  type: 'uuid'
+                }
+                {
+                  name: 'customer_id'
+                  type: 'uuid'
+                }
+                {
+                  name: 'order_date'
+                  type: 'timestamp'
+                }
+                {
+                  name: 'total_amount'
+                  type: 'decimal'
+                }
+                {
+                  name: 'status'
+                  type: 'text'
+                }
+              ]
+              partitionKeys: [
+                {
+                  name: 'customer_id'
+                }
+              ]
+            }
+          }
+          {
+            analyticalStorageTtl: -1
+            autoscaleSettingsMaxThroughput: 1000
+            name: 'products'
+            schema: {
+              clusterKeys: [
+                {
+                  name: 'name'
+                  orderBy: 'asc'
+                }
+              ]
+              columns: [
+                {
+                  name: 'product_id'
+                  type: 'uuid'
+                }
+                {
+                  name: 'category'
+                  type: 'text'
+                }
+                {
+                  name: 'name'
+                  type: 'text'
+                }
+                {
+                  name: 'price'
+                  type: 'decimal'
+                }
+              ]
+              partitionKeys: [
+                {
+                  name: 'category'
+                }
+              ]
+            }
+          }
+        ]
+        throughput: 800
+        views: [
+          {
+            name: 'completed_orders_view'
+            throughput: 400
+            viewDefinition: 'SELECT order_id, customer_id, order_date, total_amount FROM cks-dddacsk-001.orders WHERE status = \'completed\''
+          }
+        ]
+      }
+      {
+        autoscaleSettingsMaxThroughput: 4000
+        name: 'cks-dddacsk-002'
+        tables: [
+          {
+            analyticalStorageTtl: -1
+            name: 'users'
+            schema: {
+              clusterKeys: [
+                {
+                  name: 'created_at'
+                  orderBy: 'desc'
+                }
+              ]
+              columns: [
+                {
+                  name: 'user_id'
+                  type: 'uuid'
+                }
+                {
+                  name: 'email'
+                  type: 'text'
+                }
+                {
+                  name: 'created_at'
+                  type: 'timestamp'
+                }
+              ]
+              partitionKeys: [
+                {
+                  name: 'user_id'
+                }
+              ]
+            }
+          }
+          {
+            analyticalStorageTtl: -1
+            defaultTtl: 3600
+            name: 'sessions'
+            schema: {
+              clusterKeys: [
+                {
+                  name: 'session_id'
+                  orderBy: 'asc'
+                }
+              ]
+              columns: [
+                {
+                  name: 'session_id'
+                  type: 'uuid'
+                }
+                {
+                  name: 'user_id'
+                  type: 'uuid'
+                }
+                {
+                  name: 'created_at'
+                  type: 'timestamp'
+                }
+              ]
+              partitionKeys: [
+                {
+                  name: 'user_id'
+                }
+              ]
+            }
+            throughput: 600
+          }
+        ]
+      }
+    ]
+    enableAnalyticalStorage: true
+    zoneRedundant: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddacsk001"
+    },
+    // Non-required parameters
+    "backupPolicyType": {
+      "value": "Periodic"
+    },
+    "capabilitiesToAdd": {
+      "value": [
+        "EnableCassandra"
+      ]
+    },
+    "cassandraKeyspaces": {
+      "value": [
+        {
+          "name": "cks-dddacsk-001",
+          "tables": [
+            {
+              "analyticalStorageTtl": 86400,
+              "defaultTtl": 3600,
+              "name": "orders",
+              "schema": {
+                "clusterKeys": [
+                  {
+                    "name": "order_date",
+                    "orderBy": "desc"
+                  },
+                  {
+                    "name": "order_id",
+                    "orderBy": "asc"
+                  }
+                ],
+                "columns": [
+                  {
+                    "name": "order_id",
+                    "type": "uuid"
+                  },
+                  {
+                    "name": "customer_id",
+                    "type": "uuid"
+                  },
+                  {
+                    "name": "order_date",
+                    "type": "timestamp"
+                  },
+                  {
+                    "name": "total_amount",
+                    "type": "decimal"
+                  },
+                  {
+                    "name": "status",
+                    "type": "text"
+                  }
+                ],
+                "partitionKeys": [
+                  {
+                    "name": "customer_id"
+                  }
+                ]
+              }
+            },
+            {
+              "analyticalStorageTtl": -1,
+              "autoscaleSettingsMaxThroughput": 1000,
+              "name": "products",
+              "schema": {
+                "clusterKeys": [
+                  {
+                    "name": "name",
+                    "orderBy": "asc"
+                  }
+                ],
+                "columns": [
+                  {
+                    "name": "product_id",
+                    "type": "uuid"
+                  },
+                  {
+                    "name": "category",
+                    "type": "text"
+                  },
+                  {
+                    "name": "name",
+                    "type": "text"
+                  },
+                  {
+                    "name": "price",
+                    "type": "decimal"
+                  }
+                ],
+                "partitionKeys": [
+                  {
+                    "name": "category"
+                  }
+                ]
+              }
+            }
+          ],
+          "throughput": 800,
+          "views": [
+            {
+              "name": "completed_orders_view",
+              "throughput": 400,
+              "viewDefinition": "SELECT order_id, customer_id, order_date, total_amount FROM cks-dddacsk-001.orders WHERE status = \"completed\""
+            }
+          ]
+        },
+        {
+          "autoscaleSettingsMaxThroughput": 4000,
+          "name": "cks-dddacsk-002",
+          "tables": [
+            {
+              "analyticalStorageTtl": -1,
+              "name": "users",
+              "schema": {
+                "clusterKeys": [
+                  {
+                    "name": "created_at",
+                    "orderBy": "desc"
+                  }
+                ],
+                "columns": [
+                  {
+                    "name": "user_id",
+                    "type": "uuid"
+                  },
+                  {
+                    "name": "email",
+                    "type": "text"
+                  },
+                  {
+                    "name": "created_at",
+                    "type": "timestamp"
+                  }
+                ],
+                "partitionKeys": [
+                  {
+                    "name": "user_id"
+                  }
+                ]
+              }
+            },
+            {
+              "analyticalStorageTtl": -1,
+              "defaultTtl": 3600,
+              "name": "sessions",
+              "schema": {
+                "clusterKeys": [
+                  {
+                    "name": "session_id",
+                    "orderBy": "asc"
+                  }
+                ],
+                "columns": [
+                  {
+                    "name": "session_id",
+                    "type": "uuid"
+                  },
+                  {
+                    "name": "user_id",
+                    "type": "uuid"
+                  },
+                  {
+                    "name": "created_at",
+                    "type": "timestamp"
+                  }
+                ],
+                "partitionKeys": [
+                  {
+                    "name": "user_id"
+                  }
+                ]
+              },
+              "throughput": 600
+            }
+          ]
+        }
+      ]
+    },
+    "enableAnalyticalStorage": {
+      "value": true
+    },
+    "zoneRedundant": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddacsk001'
+// Non-required parameters
+param backupPolicyType = 'Periodic'
+param capabilitiesToAdd = [
+  'EnableCassandra'
+]
+param cassandraKeyspaces = [
+  {
+    name: 'cks-dddacsk-001'
+    tables: [
+      {
+        analyticalStorageTtl: 86400
+        defaultTtl: 3600
+        name: 'orders'
+        schema: {
+          clusterKeys: [
+            {
+              name: 'order_date'
+              orderBy: 'desc'
+            }
+            {
+              name: 'order_id'
+              orderBy: 'asc'
+            }
+          ]
+          columns: [
+            {
+              name: 'order_id'
+              type: 'uuid'
+            }
+            {
+              name: 'customer_id'
+              type: 'uuid'
+            }
+            {
+              name: 'order_date'
+              type: 'timestamp'
+            }
+            {
+              name: 'total_amount'
+              type: 'decimal'
+            }
+            {
+              name: 'status'
+              type: 'text'
+            }
+          ]
+          partitionKeys: [
+            {
+              name: 'customer_id'
+            }
+          ]
+        }
+      }
+      {
+        analyticalStorageTtl: -1
+        autoscaleSettingsMaxThroughput: 1000
+        name: 'products'
+        schema: {
+          clusterKeys: [
+            {
+              name: 'name'
+              orderBy: 'asc'
+            }
+          ]
+          columns: [
+            {
+              name: 'product_id'
+              type: 'uuid'
+            }
+            {
+              name: 'category'
+              type: 'text'
+            }
+            {
+              name: 'name'
+              type: 'text'
+            }
+            {
+              name: 'price'
+              type: 'decimal'
+            }
+          ]
+          partitionKeys: [
+            {
+              name: 'category'
+            }
+          ]
+        }
+      }
+    ]
+    throughput: 800
+    views: [
+      {
+        name: 'completed_orders_view'
+        throughput: 400
+        viewDefinition: 'SELECT order_id, customer_id, order_date, total_amount FROM cks-dddacsk-001.orders WHERE status = \'completed\''
+      }
+    ]
+  }
+  {
+    autoscaleSettingsMaxThroughput: 4000
+    name: 'cks-dddacsk-002'
+    tables: [
+      {
+        analyticalStorageTtl: -1
+        name: 'users'
+        schema: {
+          clusterKeys: [
+            {
+              name: 'created_at'
+              orderBy: 'desc'
+            }
+          ]
+          columns: [
+            {
+              name: 'user_id'
+              type: 'uuid'
+            }
+            {
+              name: 'email'
+              type: 'text'
+            }
+            {
+              name: 'created_at'
+              type: 'timestamp'
+            }
+          ]
+          partitionKeys: [
+            {
+              name: 'user_id'
+            }
+          ]
+        }
+      }
+      {
+        analyticalStorageTtl: -1
+        defaultTtl: 3600
+        name: 'sessions'
+        schema: {
+          clusterKeys: [
+            {
+              name: 'session_id'
+              orderBy: 'asc'
+            }
+          ]
+          columns: [
+            {
+              name: 'session_id'
+              type: 'uuid'
+            }
+            {
+              name: 'user_id'
+              type: 'uuid'
+            }
+            {
+              name: 'created_at'
+              type: 'timestamp'
+            }
+          ]
+          partitionKeys: [
+            {
+              name: 'user_id'
+            }
+          ]
+        }
+        throughput: 600
+      }
+    ]
+  }
+]
+param enableAnalyticalStorage = true
+param zoneRedundant = false
+```
+
+</details>
+<p>
+
+### Example 5: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -299,7 +1402,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 4: _Gremlin Database_
+### Example 6: _Gremlin Database_
 
 This instance deploys the module with a Gremlin Database.
 
@@ -523,7 +1626,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 5: _Deploying with Managed identities_
+### Example 7: _Deploying with Managed identities_
 
 This instance deploys the module with an system and user assigned managed identity.
 
@@ -663,7 +1766,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 6: _Mongo Database_
+### Example 8: _Mongo Database_
 
 This instance deploys the module with a Mongo Database.
 
@@ -1287,7 +2390,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 7: _Deploying multiple regions_
+### Example 9: _Deploying multiple regions_
 
 This instance deploys the module in multiple regions with configs specific of multi region scenarios.
 
@@ -1431,7 +2534,7 @@ param sqlDatabases = [
 </details>
 <p>
 
-### Example 8: _Plain_
+### Example 10: _Plain_
 
 This instance deploys the module without a Database.
 
@@ -1556,7 +2659,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 9: _Public network restricted access with ACL_
+### Example 11: _Public network restricted access with ACL_
 
 This instance deploys the module with public network access enabled but restricted to IPs, CIDRS or subnets.
 
@@ -1678,7 +2781,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 10: _SQL Database_
+### Example 12: _SQL Database_
 
 This instance deploys the module with a SQL Database.
 
@@ -2499,7 +3602,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 11: _Deploying with a sql role definition and assignment_
+### Example 13: _Deploying with a sql role definition and assignment_
 
 This instance deploys the module with sql role definition and assignment
 
@@ -2639,7 +3742,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 12: _API for Table_
+### Example 14: _API for Table_
 
 This instance deploys the module for an Azure Cosmos DB for Table account with two example tables.
 
@@ -2746,7 +3849,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 13: _WAF-aligned_
+### Example 15: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -3002,6 +4105,9 @@ param zoneRedundant = true
 | [`backupRetentionIntervalInHours`](#parameter-backupretentionintervalinhours) | int | An integer representing the time (in hours) that each backup is retained. This setting only applies to the periodic backup type. Defaults to 8. |
 | [`backupStorageRedundancy`](#parameter-backupstorageredundancy) | string | Setting that indicates the type of backup residency. This setting only applies to the periodic backup type. Defaults to "Local". |
 | [`capabilitiesToAdd`](#parameter-capabilitiestoadd) | array | A list of Azure Cosmos DB specific capabilities for the account. |
+| [`cassandraKeyspaces`](#parameter-cassandrakeyspaces) | array | Configuration for keyspaces when using Azure Cosmos DB for Apache Cassandra. |
+| [`cassandraRoleAssignments`](#parameter-cassandraroleassignments) | array | Azure Cosmos DB for Apache Cassandra native data plane role-based access control assignments. Each assignment references a role definition unique identifier and a principal identifier. |
+| [`cassandraRoleDefinitions`](#parameter-cassandraroledefinitions) | array | Configurations for Azure Cosmos DB for Apache Cassandra native role-based access control definitions. Allows the creations of custom role definitions. |
 | [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | The offer type for the account. Defaults to "Standard". |
 | [`dataPlaneRoleAssignments`](#parameter-dataplaneroleassignments) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments. |
 | [`dataPlaneRoleDefinitions`](#parameter-dataplaneroledefinitions) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions. |
@@ -3134,6 +4240,420 @@ A list of Azure Cosmos DB specific capabilities for the account.
     'EnableTable'
   ]
   ```
+
+### Parameter: `cassandraKeyspaces`
+
+Configuration for keyspaces when using Azure Cosmos DB for Apache Cassandra.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-cassandrakeyspacesname) | string | Name of the Cassandra keyspace. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoscaleSettingsMaxThroughput`](#parameter-cassandrakeyspacesautoscalesettingsmaxthroughput) | int | Maximum autoscale throughput for the keyspace. If not set, autoscale will be disabled. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level. |
+| [`tables`](#parameter-cassandrakeyspacestables) | array | Array of Cassandra tables to deploy in the keyspace. |
+| [`throughput`](#parameter-cassandrakeyspacesthroughput) | int | Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level. |
+| [`views`](#parameter-cassandrakeyspacesviews) | array | Array of Cassandra views (materialized views) to deploy in the keyspace. |
+
+### Parameter: `cassandraKeyspaces.name`
+
+Name of the Cassandra keyspace.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cassandraKeyspaces.autoscaleSettingsMaxThroughput`
+
+Maximum autoscale throughput for the keyspace. If not set, autoscale will be disabled. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level.
+
+- Required: No
+- Type: int
+
+### Parameter: `cassandraKeyspaces.tables`
+
+Array of Cassandra tables to deploy in the keyspace.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-cassandrakeyspacestablesname) | string | Name of the Cassandra table. |
+| [`schema`](#parameter-cassandrakeyspacestablesschema) | object | Schema definition for the Cassandra table. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`analyticalStorageTtl`](#parameter-cassandrakeyspacestablesanalyticalstoragettl) | int | Analytical TTL for the table. Default to 0 (disabled). Analytical store is enabled when set to a value other than 0. If set to -1, analytical store retains all historical data. |
+| [`autoscaleSettingsMaxThroughput`](#parameter-cassandrakeyspacestablesautoscalesettingsmaxthroughput) | int | Maximum autoscale throughput for the table. Cannot be used with throughput. If not specified, the table will inherit throughput from the keyspace. |
+| [`defaultTtl`](#parameter-cassandrakeyspacestablesdefaultttl) | int | Default time to live in seconds. Default to 0 (disabled). If set to -1, items do not expire. |
+| [`throughput`](#parameter-cassandrakeyspacestablesthroughput) | int | Request units per second. Cannot be used with autoscaleSettingsMaxThroughput. If not specified, the table will inherit throughput from the keyspace. |
+
+### Parameter: `cassandraKeyspaces.tables.name`
+
+Name of the Cassandra table.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cassandraKeyspaces.tables.schema`
+
+Schema definition for the Cassandra table.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`columns`](#parameter-cassandrakeyspacestablesschemacolumns) | array | List of Cassandra table columns. |
+| [`partitionKeys`](#parameter-cassandrakeyspacestablesschemapartitionkeys) | array | List of partition key columns. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`clusterKeys`](#parameter-cassandrakeyspacestablesschemaclusterkeys) | array | List of cluster key columns with sort order. |
+
+### Parameter: `cassandraKeyspaces.tables.schema.columns`
+
+List of Cassandra table columns.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-cassandrakeyspacestablesschemacolumnsname) | string | Name of the Cassandra column. |
+| [`type`](#parameter-cassandrakeyspacestablesschemacolumnstype) | string | Type of the Cassandra column. Valid types: ascii, bigint, blob, boolean, counter, date, decimal, double, duration, float, inet, int, smallint, text, time, timestamp, timeuuid, tinyint, uuid, varchar, varint. |
+
+### Parameter: `cassandraKeyspaces.tables.schema.columns.name`
+
+Name of the Cassandra column.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cassandraKeyspaces.tables.schema.columns.type`
+
+Type of the Cassandra column. Valid types: ascii, bigint, blob, boolean, counter, date, decimal, double, duration, float, inet, int, smallint, text, time, timestamp, timeuuid, tinyint, uuid, varchar, varint.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cassandraKeyspaces.tables.schema.partitionKeys`
+
+List of partition key columns.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-cassandrakeyspacestablesschemapartitionkeysname) | string | Name of the partition key column. |
+
+### Parameter: `cassandraKeyspaces.tables.schema.partitionKeys.name`
+
+Name of the partition key column.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cassandraKeyspaces.tables.schema.clusterKeys`
+
+List of cluster key columns with sort order.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-cassandrakeyspacestablesschemaclusterkeysname) | string | Name of the cluster key column. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`orderBy`](#parameter-cassandrakeyspacestablesschemaclusterkeysorderby) | string | Sort order for the cluster key. Defaults to "asc". |
+
+### Parameter: `cassandraKeyspaces.tables.schema.clusterKeys.name`
+
+Name of the cluster key column.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cassandraKeyspaces.tables.schema.clusterKeys.orderBy`
+
+Sort order for the cluster key. Defaults to "asc".
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'asc'
+    'desc'
+  ]
+  ```
+
+### Parameter: `cassandraKeyspaces.tables.analyticalStorageTtl`
+
+Analytical TTL for the table. Default to 0 (disabled). Analytical store is enabled when set to a value other than 0. If set to -1, analytical store retains all historical data.
+
+- Required: No
+- Type: int
+
+### Parameter: `cassandraKeyspaces.tables.autoscaleSettingsMaxThroughput`
+
+Maximum autoscale throughput for the table. Cannot be used with throughput. If not specified, the table will inherit throughput from the keyspace.
+
+- Required: No
+- Type: int
+
+### Parameter: `cassandraKeyspaces.tables.defaultTtl`
+
+Default time to live in seconds. Default to 0 (disabled). If set to -1, items do not expire.
+
+- Required: No
+- Type: int
+
+### Parameter: `cassandraKeyspaces.tables.throughput`
+
+Request units per second. Cannot be used with autoscaleSettingsMaxThroughput. If not specified, the table will inherit throughput from the keyspace.
+
+- Required: No
+- Type: int
+
+### Parameter: `cassandraKeyspaces.throughput`
+
+Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level.
+
+- Required: No
+- Type: int
+
+### Parameter: `cassandraKeyspaces.views`
+
+Array of Cassandra views (materialized views) to deploy in the keyspace.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-cassandrakeyspacesviewsname) | string | Name of the Cassandra view. |
+| [`viewDefinition`](#parameter-cassandrakeyspacesviewsviewdefinition) | string | View definition of the Cassandra view. This is the CQL statement that defines the materialized view. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoscaleSettingsMaxThroughput`](#parameter-cassandrakeyspacesviewsautoscalesettingsmaxthroughput) | int | Maximum autoscale throughput for the view. Cannot be used with throughput. |
+| [`tags`](#parameter-cassandrakeyspacesviewstags) | object | Tags of the Cassandra view resource. |
+| [`throughput`](#parameter-cassandrakeyspacesviewsthroughput) | int | Request units per second. Cannot be used with autoscaleSettingsMaxThroughput. |
+
+### Parameter: `cassandraKeyspaces.views.name`
+
+Name of the Cassandra view.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cassandraKeyspaces.views.viewDefinition`
+
+View definition of the Cassandra view. This is the CQL statement that defines the materialized view.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cassandraKeyspaces.views.autoscaleSettingsMaxThroughput`
+
+Maximum autoscale throughput for the view. Cannot be used with throughput.
+
+- Required: No
+- Type: int
+
+### Parameter: `cassandraKeyspaces.views.tags`
+
+Tags of the Cassandra view resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `cassandraKeyspaces.views.throughput`
+
+Request units per second. Cannot be used with autoscaleSettingsMaxThroughput.
+
+- Required: No
+- Type: int
+
+### Parameter: `cassandraRoleAssignments`
+
+Azure Cosmos DB for Apache Cassandra native data plane role-based access control assignments. Each assignment references a role definition unique identifier and a principal identifier.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-cassandraroleassignmentsprincipalid) | string | The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription. |
+| [`roleDefinitionId`](#parameter-cassandraroleassignmentsroledefinitionid) | string | The unique identifier of the Azure Cosmos DB for Apache Cassandra native role-based access control definition. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-cassandraroleassignmentsname) | string | The unique name of the role assignment. |
+| [`scope`](#parameter-cassandraroleassignmentsscope) | string | The data plane resource path for which access is being granted. Defaults to the current account. |
+
+### Parameter: `cassandraRoleAssignments.principalId`
+
+The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cassandraRoleAssignments.roleDefinitionId`
+
+The unique identifier of the Azure Cosmos DB for Apache Cassandra native role-based access control definition.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cassandraRoleAssignments.name`
+
+The unique name of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `cassandraRoleAssignments.scope`
+
+The data plane resource path for which access is being granted. Defaults to the current account.
+
+- Required: No
+- Type: string
+
+### Parameter: `cassandraRoleDefinitions`
+
+Configurations for Azure Cosmos DB for Apache Cassandra native role-based access control definitions. Allows the creations of custom role definitions.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`roleName`](#parameter-cassandraroledefinitionsrolename) | string | A user-friendly name for the role-based access control definition. This must be unique within the database account. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`assignableScopes`](#parameter-cassandraroledefinitionsassignablescopes) | array | A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope. |
+| [`assignments`](#parameter-cassandraroledefinitionsassignments) | array | An array of role-based access control assignments to be created for the definition. |
+| [`dataActions`](#parameter-cassandraroledefinitionsdataactions) | array | An array of data actions that are allowed. |
+| [`name`](#parameter-cassandraroledefinitionsname) | string | The unique identifier of the role-based access control definition. |
+| [`notDataActions`](#parameter-cassandraroledefinitionsnotdataactions) | array | An array of data actions that are denied. |
+
+### Parameter: `cassandraRoleDefinitions.roleName`
+
+A user-friendly name for the role-based access control definition. This must be unique within the database account.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cassandraRoleDefinitions.assignableScopes`
+
+A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope.
+
+- Required: No
+- Type: array
+
+### Parameter: `cassandraRoleDefinitions.assignments`
+
+An array of role-based access control assignments to be created for the definition.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-cassandraroledefinitionsassignmentsprincipalid) | string | The unique identifier for the associated AAD principal. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-cassandraroledefinitionsassignmentsname) | string | The unique identifier of the role assignment. |
+| [`scope`](#parameter-cassandraroledefinitionsassignmentsscope) | string | The data plane resource path for which access is being granted. Defaults to the current account. |
+
+### Parameter: `cassandraRoleDefinitions.assignments.principalId`
+
+The unique identifier for the associated AAD principal.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cassandraRoleDefinitions.assignments.name`
+
+The unique identifier of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `cassandraRoleDefinitions.assignments.scope`
+
+The data plane resource path for which access is being granted. Defaults to the current account.
+
+- Required: No
+- Type: string
+
+### Parameter: `cassandraRoleDefinitions.dataActions`
+
+An array of data actions that are allowed.
+
+- Required: No
+- Type: array
+
+### Parameter: `cassandraRoleDefinitions.name`
+
+The unique identifier of the role-based access control definition.
+
+- Required: No
+- Type: string
+
+### Parameter: `cassandraRoleDefinitions.notDataActions`
+
+An array of data actions that are denied.
+
+- Required: No
+- Type: array
 
 ### Parameter: `databaseAccountOfferType`
 

@@ -88,6 +88,9 @@ param gremlinDatabases array?
 @description('Optional. Configuration for databases when using Azure Cosmos DB for Table.')
 param tables array?
 
+@description('Optional. Configuration for keyspaces when using Azure Cosmos DB for Apache Cassandra.')
+param cassandraKeyspaces cassandraKeyspaceType[]?
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -107,6 +110,12 @@ param dataPlaneRoleDefinitions dataPlaneRoleDefinitionType[]?
 
 @description('Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments.')
 param dataPlaneRoleAssignments dataPlaneRoleAssignmentType[]?
+
+@description('Optional. Configurations for Azure Cosmos DB for Apache Cassandra native role-based access control definitions. Allows the creations of custom role definitions.')
+param cassandraRoleDefinitions cassandraRoleDefinitionType[]?
+
+@description('Optional. Azure Cosmos DB for Apache Cassandra native data plane role-based access control assignments. Each assignment references a role definition unique identifier and a principal identifier.')
+param cassandraRoleAssignments cassandraStandaloneRoleAssignmentType[]?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings for the service.')
@@ -293,9 +302,9 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
       totalThroughputLimit: totalThroughputLimit
     }
     publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Disabled'
-    ...((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables))
+    ...((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables) || !empty(cassandraKeyspaces))
       ? {
-          // NoSQL, MongoDB RU, Table, and Apache Gremlin common properties
+          // NoSQL, MongoDB RU, Table, Apache Gremlin, and Apache Cassandra common properties
           consistencyPolicy: {
             defaultConsistencyLevel: defaultConsistencyLevel
             ...(defaultConsistencyLevel == 'BoundedStaleness'
@@ -333,9 +342,9 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
           enableAnalyticalStorage: enableAnalyticalStorage
         }
       : {})
-    ...((!empty(mongodbDatabases) || !empty(gremlinDatabases))
+    ...((!empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(cassandraKeyspaces))
       ? {
-          // Key-based authentication is the only allowed authentication method with Azure Cosmos DB for MongoDB RU and Apache Gremlin.
+          // Key-based authentication is the only allowed authentication method with Azure Cosmos DB for MongoDB RU, Apache Gremlin, and Apache Cassandra.
           disableLocalAuth: false
           disableKeyBasedMetadataWriteAccess: false
         }
@@ -452,6 +461,37 @@ module databaseAccount_sqlRoleAssignments 'sql-role-assignment/main.bicep' = [
   }
 ]
 
+module databaseAccount_cassandraRoleDefinitions 'cassandra-role-definition/main.bicep' = [
+  for (cassandraRoleDefinition, index) in (cassandraRoleDefinitions ?? []): {
+    name: '${uniqueString(deployment().name, location)}-cassandra-rd-${index}'
+    params: {
+      databaseAccountName: databaseAccount.name
+      name: cassandraRoleDefinition.?name
+      roleName: cassandraRoleDefinition.roleName
+      dataActions: cassandraRoleDefinition.?dataActions
+      notDataActions: cassandraRoleDefinition.?notDataActions
+      assignableScopes: cassandraRoleDefinition.?assignableScopes
+      cassandraRoleAssignments: cassandraRoleDefinition.?assignments
+    }
+  }
+]
+
+module databaseAccount_cassandraRoleAssignments 'cassandra-role-assignment/main.bicep' = [
+  for (cassandraRoleAssignment, index) in (cassandraRoleAssignments ?? []): {
+    name: '${uniqueString(deployment().name)}-cassandra-ra-${index}'
+    params: {
+      databaseAccountName: databaseAccount.name
+      roleDefinitionId: cassandraRoleAssignment.roleDefinitionId
+      principalId: cassandraRoleAssignment.principalId
+      name: cassandraRoleAssignment.?name
+      scope: cassandraRoleAssignment.?scope
+    }
+    dependsOn: [
+      databaseAccount_cassandraKeyspaces
+    ]
+  }
+]
+
 module databaseAccount_mongodbDatabases 'mongodb-database/main.bicep' = [
   for mongodbDatabase in (mongodbDatabases ?? []): {
     name: '${uniqueString(deployment().name, location)}-mongodb-${mongodbDatabase.name}'
@@ -488,6 +528,20 @@ module databaseAccount_tables 'table/main.bicep' = [
       tags: table.?tags ?? tags
       maxThroughput: table.?maxThroughput
       throughput: table.?throughput
+    }
+  }
+]
+
+module databaseAccount_cassandraKeyspaces 'cassandra-keyspace/main.bicep' = [
+  for cassandraKeyspace in (cassandraKeyspaces ?? []): {
+    name: '${uniqueString(deployment().name, location)}-cassandradb-${cassandraKeyspace.name}'
+    params: {
+      databaseAccountName: databaseAccount.name
+      name: cassandraKeyspace.name
+      tags: cassandraKeyspace.?tags ?? tags
+      tables: cassandraKeyspace.?tables
+      autoscaleSettingsMaxThroughput: cassandraKeyspace.?autoscaleSettingsMaxThroughput
+      throughput: cassandraKeyspace.?throughput
     }
   }
 ]
@@ -683,6 +737,45 @@ type dataPlaneRoleDefinitionType = {
   assignments: sqlRoleAssignmentType[]?
 }
 
+import { cassandraRoleAssignmentType } from 'cassandra-role-definition/main.bicep'
+@export()
+@description('The type for an Azure Cosmos DB for Apache Cassandra native role-based access control assignment.')
+type cassandraStandaloneRoleAssignmentType = {
+  @description('Optional. The unique name of the role assignment.')
+  name: string?
+
+  @description('Required. The unique identifier of the Azure Cosmos DB for Apache Cassandra native role-based access control definition.')
+  roleDefinitionId: string
+
+  @description('Required. The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription.')
+  principalId: string
+
+  @description('Optional. The data plane resource path for which access is being granted. Defaults to the current account.')
+  scope: string?
+}
+
+@export()
+@description('The type for an Azure Cosmos DB for Apache Cassandra native role-based access control definition.')
+type cassandraRoleDefinitionType = {
+  @description('Optional. The unique identifier of the role-based access control definition.')
+  name: string?
+
+  @description('Required. A user-friendly name for the role-based access control definition. This must be unique within the database account.')
+  roleName: string
+
+  @description('Optional. An array of data actions that are allowed.')
+  dataActions: string[]?
+
+  @description('Optional. An array of data actions that are denied.')
+  notDataActions: string[]?
+
+  @description('Optional. A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope.')
+  assignableScopes: string[]?
+
+  @description('Optional. An array of role-based access control assignments to be created for the definition.')
+  assignments: cassandraRoleAssignmentType[]?
+}
+
 @export()
 @description('The type for an Azure Cosmos DB for NoSQL database.')
 type sqlDatabaseType = {
@@ -766,4 +859,104 @@ type networkRestrictionType = {
     @description('Required. Resource ID of a subnet.')
     subnetResourceId: string
   }[]?
+}
+
+@export()
+@description('The type for a Cassandra column definition.')
+type cassandraColumnType = {
+  @description('Required. Name of the Cassandra column.')
+  name: string
+
+  @description('Required. Type of the Cassandra column. Valid types: ascii, bigint, blob, boolean, counter, date, decimal, double, duration, float, inet, int, smallint, text, time, timestamp, timeuuid, tinyint, uuid, varchar, varint.')
+  type: string
+}
+
+@export()
+@description('The type for a Cassandra partition key definition.')
+type cassandraPartitionKeyType = {
+  @description('Required. Name of the partition key column.')
+  name: string
+}
+
+@export()
+@description('The type for a Cassandra cluster key definition.')
+type cassandraClusterKeyType = {
+  @description('Required. Name of the cluster key column.')
+  name: string
+
+  @description('Optional. Sort order for the cluster key. Defaults to "asc".')
+  orderBy: ('asc' | 'desc')?
+}
+
+@export()
+@description('The type for a Cassandra table schema definition.')
+type cassandraSchemaType = {
+  @description('Required. List of Cassandra table columns.')
+  columns: cassandraColumnType[]
+
+  @description('Required. List of partition key columns.')
+  partitionKeys: cassandraPartitionKeyType[]
+
+  @description('Optional. List of cluster key columns with sort order.')
+  clusterKeys: cassandraClusterKeyType[]?
+}
+
+@export()
+@description('The type for a Cassandra table.')
+type cassandraTableType = {
+  @description('Required. Name of the Cassandra table.')
+  name: string
+
+  @description('Required. Schema definition for the Cassandra table.')
+  schema: cassandraSchemaType
+
+  @description('Optional. Analytical TTL for the table. Default to 0 (disabled). Analytical store is enabled when set to a value other than 0. If set to -1, analytical store retains all historical data.')
+  analyticalStorageTtl: int?
+
+  @description('Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput. If not specified, the table will inherit throughput from the keyspace.')
+  throughput: int?
+
+  @description('Optional. Maximum autoscale throughput for the table. Cannot be used with throughput. If not specified, the table will inherit throughput from the keyspace.')
+  autoscaleSettingsMaxThroughput: int?
+
+  @description('Optional. Default time to live in seconds. Default to 0 (disabled). If set to -1, items do not expire.')
+  defaultTtl: int?
+}
+
+@export()
+@description('The type for a Cassandra view (materialized view).')
+type cassandraViewType = {
+  @description('Required. Name of the Cassandra view.')
+  name: string
+
+  @description('Required. View definition of the Cassandra view. This is the CQL statement that defines the materialized view.')
+  viewDefinition: string
+
+  @description('Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput.')
+  throughput: int?
+
+  @description('Optional. Maximum autoscale throughput for the view. Cannot be used with throughput.')
+  autoscaleSettingsMaxThroughput: int?
+
+  @description('Optional. Tags of the Cassandra view resource.')
+  tags: object?
+}
+
+@export()
+@description('The type for an Azure Cosmos DB Cassandra keyspace.')
+type cassandraKeyspaceType = {
+  @description('Required. Name of the Cassandra keyspace.')
+  name: string
+
+  @description('Optional. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level.')
+  throughput: int?
+
+  @description('Optional. Maximum autoscale throughput for the keyspace. If not set, autoscale will be disabled. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level.')
+  autoscaleSettingsMaxThroughput: int?
+
+  @description('Optional. Array of Cassandra tables to deploy in the keyspace.')
+  tables: cassandraTableType[]?
+
+  @description('Optional. Array of Cassandra views (materialized views) to deploy in the keyspace.')
+  views: cassandraViewType[]?
 }
