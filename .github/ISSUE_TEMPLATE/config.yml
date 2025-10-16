@@ -3,3 +3,6 @@ contact_links:
   - name: New AVM Module Proposal 📝
     url: https://aka.ms/AVM/ModuleProposal
     about: Want a new AVM Module to exist? Let us know!
+  - name: New Bicep Child Module Proposal 🗒️
+    url: https://aka.ms/AVM/???
+    about: Want to publish the child module of a Bicep resource module? Let us know!
