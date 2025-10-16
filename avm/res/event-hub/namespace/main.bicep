@@ -72,7 +72,7 @@ import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-co
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Configure networking options. This object contains IPs/Subnets to allow or restrict access to private endpoints only. For security reasons, it is recommended to configure this object on the Namespace.')
-param networkRuleSets object = {}
+param networkRuleSets networkRuleSetType?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
@@ -82,9 +82,9 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { managedIdentityType } from 'eventhub/main.bicep'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentityAllType?
+param managedIdentities managedIdentityType?
 
 import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The customer managed key definition.')
@@ -104,7 +104,7 @@ param tags resourceInput<'Microsoft.EventHub/namespaces@2024-01-01'>.tags?
 param enableTelemetry bool = true
 
 @description('Optional. The event hubs to deploy into this namespace.')
-param eventhubs array = []
+param eventhubs eventHubType[]?
 
 @description('Optional. The disaster recovery config for this namespace.')
 param disasterRecoveryConfig disasterRecoveryConfigType?
@@ -116,18 +116,14 @@ var enableReferencedModulesTelemetry = false
 
 var maximumThroughputUnitsVar = !isAutoInflateEnabled ? 0 : maximumThroughputUnits
 
-var formattedUserAssignedIdentities = reduce(
-  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
-  {},
-  (cur, next) => union(cur, next)
-) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
-
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
-      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+        ? (!empty(managedIdentities.?userAssignedResourceId) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceId) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(managedIdentities.?userAssignedResourceId)
+        ? { '${managedIdentities.?userAssignedResourceId}': {} }
+        : null
     }
   : null
 
@@ -273,22 +269,14 @@ module eventHubNamespace_disasterRecoveryConfig 'disaster-recovery-config/main.b
 }
 
 module eventHubNamespace_eventhubs 'eventhub/main.bicep' = [
-  for (eventHub, index) in eventhubs: {
+  for (eventHub, index) in (eventhubs ?? []): {
     name: '${uniqueString(deployment().name, location)}-EvhbNamespace-EventHub-${index}'
     params: {
       namespaceName: eventHubNamespace.name
       name: eventHub.name
       enableTelemetry: enableReferencedModulesTelemetry
       authorizationRules: eventHub.?authorizationRules
-      captureDescriptionDestinationArchiveNameFormat: eventHub.?captureDescriptionDestinationArchiveNameFormat
-      captureDescriptionDestinationBlobContainer: eventHub.?captureDescriptionDestinationBlobContainer
-      captureDescriptionDestinationName: eventHub.?captureDescriptionDestinationName
-      captureDescriptionDestinationStorageAccountResourceId: eventHub.?captureDescriptionDestinationStorageAccountResourceId
-      captureDescriptionEnabled: eventHub.?captureDescriptionEnabled
-      captureDescriptionEncoding: eventHub.?captureDescriptionEncoding
-      captureDescriptionIntervalInSeconds: eventHub.?captureDescriptionIntervalInSeconds
-      captureDescriptionSizeLimitInBytes: eventHub.?captureDescriptionSizeLimitInBytes
-      captureDescriptionSkipEmptyArchives: eventHub.?captureDescriptionSkipEmptyArchives
+      captureDescription: eventHub.?captureDescription
       consumergroups: eventHub.?consumergroups ?? []
       lock: eventHub.?lock ?? lock
       messageRetentionInDays: eventHub.?messageRetentionInDays
@@ -596,4 +584,80 @@ type secretsExportConfigurationType = {
 
   @description('Optional. The rootSecondaryKeyName secret name to create.')
   rootSecondaryKeyName: string?
+}
+
+import { consumerGroupType, eventHubAuthorizationRuleType, captureDescriptionType } from 'eventhub/main.bicep'
+
+@export()
+@description('The type of an event hub.')
+type eventHubType = {
+  @description('Required. The name of the Event Hub.')
+  name: string
+
+  @description('Optional. Authorization Rules for the Event Hub.')
+  authorizationRules: eventHubAuthorizationRuleType[]?
+
+  @description('Optional. Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Will be automatically set to infinite retention if cleanup policy is set to "Compact".')
+  @minValue(1)
+  @maxValue(90)
+  messageRetentionInDays: int?
+
+  @description('Optional. Number of partitions created for the Event Hub, allowed values are from 1 to 32 partitions.')
+  @minValue(1)
+  @maxValue(32)
+  partitionCount: int?
+
+  @description('Optional. Enumerates the possible values for the status of the Event Hub.')
+  status: resourceInput<'Microsoft.EventHub/namespaces/eventhubs@2024-01-01'>.properties.status?
+
+  @description('Optional. The consumer groups to create in this Event Hub instance.')
+  consumergroups: consumerGroupType[]?
+
+  @description('Optional. The lock settings of the service.')
+  lock: lockType?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. Properties of capture description.')
+  captureDescription: captureDescriptionType?
+
+  @description('Optional. A value that indicates whether to enable retention description properties. If it is set to true the messageRetentionInDays property is ignored.')
+  retentionDescriptionEnabled: bool?
+
+  @description('Optional. Retention cleanup policy. Enumerates the possible values for cleanup policy.')
+  retentionDescriptionCleanupPolicy: ('Compact' | 'Delete')?
+
+  @minValue(1)
+  @maxValue(2160)
+  @description('Optional. Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageRetentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue.')
+  retentionDescriptionRetentionTimeInHours: int?
+
+  @minValue(1)
+  @maxValue(2160)
+  @description('Optional. Retention cleanup policy. Number of hours to retain the tombstone markers of a compacted Event Hub. This value is only used when cleanupPolicy is Compact. Consumer must complete reading the tombstone marker within this specified amount of time if consumer begins from starting offset to ensure they get a valid snapshot for the specific key described by the tombstone marker within the compacted Event Hub.')
+  retentionDescriptionTombstoneRetentionTimeInHours: int?
+}
+
+import { networkRuleType } from 'network-rule-set/main.bicep'
+@export()
+@description('The type of a network rule set.')
+type networkRuleSetType = {
+  @description('Optional. This determines if traffic is allowed over public network. Default is "Enabled". If set to "Disabled", traffic to this namespace will be restricted over Private Endpoints only and network rules will not be applied.')
+  publicNetworkAccess: ('Enabled' | 'Disabled')?
+
+  @description('Optional. Default Action for Network Rule Set. Default is "Allow". It will not be set if publicNetworkAccess is "Disabled". Otherwise, it will be set to "Deny" if ipRules or virtualNetworkRules are being used.')
+  defaultAction: ('Allow' | 'Deny')?
+
+  @description('Optional. Value that indicates whether Trusted Service Access is enabled or not.')
+  trustedServiceAccessEnabled: bool?
+
+  @description('Optional. An array of subnet resource ID objects that this Event Hub Namespace is exposed to via Service Endpoints. You can enable the `ignoreMissingVnetServiceEndpoint` if you wish to add this virtual network to Event Hub Namespace but do not have an existing service endpoint. It will not be set if publicNetworkAccess is "Disabled". Otherwise, when used, defaultAction will be set to "Deny".')
+  virtualNetworkRules: networkRuleType[]?
+
+  @description('Optional. An array of objects for the public IP ranges you want to allow via the Event Hub Namespace firewall. Supports IPv4 address or CIDR. It will not be set if publicNetworkAccess is "Disabled". Otherwise, when used, defaultAction will be set to "Deny".')
+  ipRules: resourceInput<'Microsoft.EventHub/namespaces/networkRuleSets@2024-01-01'>.properties.ipRules?
+
+  @description('Optional. The name of the network ruleset. Defaults to \'default\'.')
+  networkRuleSetName: string?
 }

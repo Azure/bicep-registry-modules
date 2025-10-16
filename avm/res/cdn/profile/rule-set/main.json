@@ -5,38 +5,13 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "2563031334159492138"
+      "version": "0.38.33.27573",
+      "templateHash": "592453402231164630"
     },
     "name": "CDN Profiles Rule Sets",
     "description": "This module deploys a CDN Profile rule set."
   },
   "definitions": {
-    "ruleSetType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Name of the rule set."
-          }
-        },
-        "rules": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ruleType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Array of rules."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type of the rule set."
-      }
-    },
     "ruleType": {
       "type": "object",
       "properties": {
@@ -54,17 +29,23 @@
         },
         "actions": {
           "type": "array",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. A list of actions that are executed when all the conditions of a rule are satisfied.."
-          }
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Cdn/profiles/ruleSets/rules@2025-04-15#properties/properties/properties/actions"
+            },
+            "description": "Optional. A list of actions that are executed when all the conditions of a rule are satisfied."
+          },
+          "nullable": true
         },
         "conditions": {
           "type": "array",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Cdn/profiles/ruleSets/rules@2025-04-15#properties/properties/properties/conditions"
+            },
             "description": "Optional. A list of conditions that must be matched for the actions to be executed."
-          }
+          },
+          "nullable": true
         },
         "matchProcessingBehavior": {
           "type": "string",
@@ -79,10 +60,8 @@
         }
       },
       "metadata": {
-        "description": "The type of the rule.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "rule/main.bicep"
-        }
+        "__bicep_export!": true,
+        "description": "The type of the rule."
       }
     }
   },
@@ -128,7 +107,7 @@
         "count": "[length(coalesce(parameters('rules'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-RuleSet-Rule-{1}-{2}', uniqueString(deployment().name), coalesce(parameters('rules'), createArray())[copyIndex()].name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -165,59 +144,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "14802510232650562515"
+              "version": "0.38.33.27573",
+              "templateHash": "6984936093254190035"
             },
             "name": "CDN Profiles Rules",
             "description": "This module deploys a CDN Profile rule."
-          },
-          "definitions": {
-            "ruleType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the rule."
-                  }
-                },
-                "order": {
-                  "type": "int",
-                  "metadata": {
-                    "description": "Required. The order in which the rules are applied for the endpoint."
-                  }
-                },
-                "actions": {
-                  "type": "array",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. A list of actions that are executed when all the conditions of a rule are satisfied.."
-                  }
-                },
-                "conditions": {
-                  "type": "array",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. A list of conditions that must be matched for the actions to be executed."
-                  }
-                },
-                "matchProcessingBehavior": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Continue",
-                    "Stop"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type of the rule."
-              }
-            }
           },
           "parameters": {
             "name": {
@@ -246,17 +177,23 @@
             },
             "actions": {
               "type": "array",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Cdn/profiles/ruleSets/rules@2025-04-15#properties/properties/properties/actions"
+                },
                 "description": "Optional. A list of actions that are executed when all the conditions of a rule are satisfied."
-              }
+              },
+              "nullable": true
             },
             "conditions": {
               "type": "array",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Cdn/profiles/ruleSets/rules@2025-04-15#properties/properties/properties/conditions"
+                },
                 "description": "Optional. A list of conditions that must be matched for the actions to be executed."
-              }
+              },
+              "nullable": true
             },
             "matchProcessingBehavior": {
               "type": "string",
