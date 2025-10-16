@@ -82,12 +82,12 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           {
             name: 'ipconfig01'
             pipConfiguration: {
-              publicIpNameSuffix: '-pip-01'
-              zones: [
+              availabilityZones: [
                 1
                 2
                 3
               ]
+              publicIpNameSuffix: '-pip-01'
             }
             subnetResourceId: '<subnetResourceId>'
           }
@@ -154,12 +154,12 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             {
               "name": "ipconfig01",
               "pipConfiguration": {
-                "publicIpNameSuffix": "-pip-01",
-                "zones": [
+                "availabilityZones": [
                   1,
                   2,
                   3
-                ]
+                ],
+                "publicIpNameSuffix": "-pip-01"
               },
               "subnetResourceId": "<subnetResourceId>"
             }
@@ -230,12 +230,12 @@ param nicConfigurations = [
       {
         name: 'ipconfig01'
         pipConfiguration: {
-          publicIpNameSuffix: '-pip-01'
-          zones: [
+          availabilityZones: [
             1
             2
             3
           ]
+          publicIpNameSuffix: '-pip-01'
         }
         subnetResourceId: '<subnetResourceId>'
       }
@@ -2734,8 +2734,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           {
             name: 'ipconfig01'
             pipConfiguration: {
+              availabilityZones: []
               publicIpNameSuffix: '-pip-01'
-              zones: []
             }
             subnetResourceId: '<subnetResourceId>'
           }
@@ -2825,8 +2825,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             {
               "name": "ipconfig01",
               "pipConfiguration": {
-                "publicIpNameSuffix": "-pip-01",
-                "zones": []
+                "availabilityZones": [],
+                "publicIpNameSuffix": "-pip-01"
               },
               "subnetResourceId": "<subnetResourceId>"
             }
@@ -2922,8 +2922,8 @@ param nicConfigurations = [
       {
         name: 'ipconfig01'
         pipConfiguration: {
+          availabilityZones: []
           publicIpNameSuffix: '-pip-01'
-          zones: []
         }
         subnetResourceId: '<subnetResourceId>'
       }
@@ -4549,6 +4549,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         diskSizeGB: 128
         managedDisk: {
           diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
+          diskEncryptionType: 'EncryptionAtRestWithPlatformAndCustomerKeys'
           storageAccountType: 'Premium_LRS'
         }
       }
@@ -4626,6 +4627,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "diskSizeGB": 128,
           "managedDisk": {
             "diskEncryptionSetResourceId": "<diskEncryptionSetResourceId>",
+            "diskEncryptionType": "EncryptionAtRestWithPlatformAndCustomerKeys",
             "storageAccountType": "Premium_LRS"
           }
         }
@@ -4685,6 +4687,7 @@ param dataDisks = [
     diskSizeGB: 128
     managedDisk: {
       diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
+      diskEncryptionType: 'EncryptionAtRestWithPlatformAndCustomerKeys'
       storageAccountType: 'Premium_LRS'
     }
   }
@@ -7344,12 +7347,20 @@ The managed disk parameters.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diskEncryptionSetResourceId`](#parameter-datadisksmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
+| [`diskEncryptionType`](#parameter-datadisksmanageddiskdiskencryptiontype) | string | The type of key used to encrypt the data of the disk. |
 | [`id`](#parameter-datadisksmanageddiskid) | string | Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty. |
 | [`storageAccountType`](#parameter-datadisksmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. Ignored when attaching a pre-existing disk. |
 
 ### Parameter: `dataDisks.managedDisk.diskEncryptionSetResourceId`
 
 Specifies the customer managed disk encryption set resource id for the managed disk.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataDisks.managedDisk.diskEncryptionType`
+
+The type of key used to encrypt the data of the disk.
 
 - Required: No
 - Type: string
