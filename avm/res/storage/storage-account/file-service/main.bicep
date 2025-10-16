@@ -25,7 +25,7 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. File shares to create.')
-param shares array?
+param shares fileShareType[]?
 
 var enableReferencedModulesTelemetry = false
 
@@ -125,4 +125,28 @@ type corsRuleType = {
 
   @description('Required. The number of seconds that the client/browser should cache a preflight response.')
   maxAgeInSeconds: int
+}
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+
+@export()
+@description('The type for a file share.')
+type fileShareType = {
+  @description('Required. The name of the file share.')
+  name: string
+
+  @description('Optional. Access tier for specific share. Required if the Storage Account kind is set to FileStorage (should be set to "Premium"). GpV2 account can choose between TransactionOptimized (default), Hot, and Cool.')
+  accessTier: null | 'Premium' | 'Hot' | 'Cool' | 'TransactionOptimized'
+
+  @description('Optional. The authentication protocol that is used for the file share. Can only be specified when creating a share.')
+  enabledProtocols: null | 'NFS' | 'SMB'
+
+  @description('Optional. Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares.')
+  rootSquash: null | 'AllSquash' | 'NoRootSquash' | 'RootSquash'
+
+  @description('Optional. The maximum size of the share, in gigabytes. Must be greater than 0, and less than or equal to 5120 (5TB). For Large File Shares, the maximum size is 102400 (100TB).')
+  shareQuota: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
 }

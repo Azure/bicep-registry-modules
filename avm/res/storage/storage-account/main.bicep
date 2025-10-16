@@ -8,11 +8,11 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -110,7 +110,7 @@ param blobServices blobServiceType = kind != 'FileStorage'
   : {}
 
 @description('Optional. File service and shares to deploy.')
-param fileServices object = {}
+param fileServices fileServiceType = {}
 
 @description('Optional. Queue service and queues to create.')
 param queueServices object = {}
@@ -142,11 +142,11 @@ param isLocalUserEnabled bool = false
 @description('Optional. If true, enables NFS 3.0 support for the storage account. Requires enableHierarchicalNamespace to be true.')
 param enableNfsV3 bool = false
 
-import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingMetricsOnlyType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -173,7 +173,7 @@ param publicNetworkAccess string?
 @description('Optional. Allows HTTPS traffic only to storage service if sets to true.')
 param supportsHttpsTrafficOnly bool = true
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
@@ -516,7 +516,7 @@ resource storageAccount_roleAssignments 'Microsoft.Authorization/roleAssignments
   }
 ]
 
-module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-sa-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -634,7 +634,7 @@ module storageAccount_fileServices 'file-service/main.bicep' = if (!empty(fileSe
     protocolSettings: fileServices.?protocolSettings
     shareDeleteRetentionPolicy: fileServices.?shareDeleteRetentionPolicy
     shares: fileServices.?shares
-    corsRules: queueServices.?corsRules
+    corsRules: fileServices.?corsRules
   }
 }
 
@@ -740,7 +740,7 @@ output privateEndpoints privateEndpointOutputType[] = [
   }
 ]
 
-import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
   ? toObject(secretsExport!.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
@@ -869,7 +869,7 @@ type localUserType = {
   sshAuthorizedKeys: sshAuthorizedKeyType[]?
 }
 
-import { containerType, corsRuleType } from 'blob-service/main.bicep'
+import { containerType, corsRuleType as blobCorsRuleType } from 'blob-service/main.bicep'
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 
 @export()
@@ -898,7 +898,7 @@ type blobServiceType = {
   containerDeleteRetentionPolicyAllowPermanentDelete: bool?
 
   @description('Optional. The List of CORS rules. You can include up to five CorsRule elements in the request.')
-  corsRules: corsRuleType[]?
+  corsRules: blobCorsRuleType[]?
 
   @description('Optional. Indicates the default version to use for requests to the Blob service if an incoming request\'s version is not specified. Possible values include version 2008-10-27 and all more recent versions.')
   defaultServiceVersion: string?
@@ -929,6 +929,27 @@ type blobServiceType = {
 
   @description('Optional. Blob containers to create.')
   containers: containerType[]?
+
+  @description('Optional. The diagnostic settings of the service.')
+  diagnosticSettings: diagnosticSettingFullType[]?
+}
+
+import { corsRuleType as fileCorsRuleType, fileShareType } from 'file-service/main.bicep'
+
+@export()
+@description('The type of a file service.')
+type fileServiceType = {
+  @description('Optional. Protocol settings for file service.')
+  protocolSettings: resourceInput<'Microsoft.Storage/storageAccounts/fileServices@2024-01-01'>.properties.protocolSettings?
+
+  @description('Optional. The service properties for soft delete.')
+  shareDeleteRetentionPolicy: resourceInput<'Microsoft.Storage/storageAccounts/fileServices@2024-01-01'>.properties.shareDeleteRetentionPolicy?
+
+  @description('Optional. File shares to create.')
+  shares: fileShareType[]?
+
+  @description('Optional. The List of CORS rules. You can include up to five CorsRule elements in the request.')
+  corsRules: fileCorsRuleType[]?
 
   @description('Optional. The diagnostic settings of the service.')
   diagnosticSettings: diagnosticSettingFullType[]?
