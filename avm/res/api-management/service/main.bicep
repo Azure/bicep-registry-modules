@@ -160,6 +160,9 @@ param enableDeveloperPortal bool = false
 
 var enableReferencedModulesTelemetry bool = false
 
+@description('Optional. Whether or not public endpoint access is allowed for this API Management service. If set to \'Disabled\', private endpoints are the exclusive access method. MUST be enabled during service creation.')
+param publicNetworkAccess resourceInput<'Microsoft.ApiManagement/service@2024-05-01'>.properties.publicNetworkAccess?
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -250,6 +253,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' = {
     publisherName: publisherName
     notificationSenderEmail: notificationSenderEmail
     hostnameConfigurations: hostnameConfigurations
+    publicNetworkAccess: publicNetworkAccess
     additionalLocations: contains(sku, 'Premium') && !empty(additionalLocations)
       ? map((additionalLocations ?? []), additLoc => {
           location: additLoc.location

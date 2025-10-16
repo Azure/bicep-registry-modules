@@ -466,6 +466,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       }
     ]
     publicIpAddressResourceId: '<publicIpAddressResourceId>'
+    publicNetworkAccess: 'Enabled'
     roleAssignments: [
       {
         name: '6352c3e3-ac6b-43d5-ac43-1077ff373721'
@@ -732,6 +733,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "publicIpAddressResourceId": {
       "value": "<publicIpAddressResourceId>"
     },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
     "roleAssignments": {
       "value": [
         {
@@ -964,6 +968,7 @@ param products = [
   }
 ]
 param publicIpAddressResourceId = '<publicIpAddressResourceId>'
+param publicNetworkAccess = 'Enabled'
 param roleAssignments = [
   {
     name: '6352c3e3-ac6b-43d5-ac43-1077ff373721'
@@ -1784,6 +1789,7 @@ param tags = {
 | [`portalsettings`](#parameter-portalsettings) | array | Portal settings. |
 | [`products`](#parameter-products) | array | Products. |
 | [`publicIpAddressResourceId`](#parameter-publicipaddressresourceid) | string | Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public endpoint access is allowed for this API Management service. If set to 'Disabled', private endpoints are the exclusive access method. MUST be enabled during service creation. |
 | [`restore`](#parameter-restore) | bool | Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-sku) | string | The pricing tier of this API Management service. |
@@ -4030,6 +4036,13 @@ Product terms of use. Developers trying to subscribe to the product will be pres
 ### Parameter: `publicIpAddressResourceId`
 
 Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network.
+
+- Required: No
+- Type: string
+
+### Parameter: `publicNetworkAccess`
+
+Whether or not public endpoint access is allowed for this API Management service. If set to 'Disabled', private endpoints are the exclusive access method. MUST be enabled during service creation.
 
 - Required: No
 - Type: string
