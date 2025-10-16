@@ -2,14 +2,20 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/load-balancer/CHANGELOG.md).
 
-## 0.5.1
+## 0.6.0
 
 ### Changes
 
 - Added functionality to support the creation of public IP addresses and public IP prefixes in load balancer `frontendIPconfigurations`. This new functionality utilizes the AVM modules for `public-ip-address` and `public-ip-prefix`
 - Introduced new test cases for public IP address and public IP prefix creation in the load balancer module.
+- publicIPAddressId changed to publicIPAddressResourceId to meet AVM standards for naming resource IDs.
+- subnetId changed to subnetResourceId to meet AVM standards for naming resource IDs.
 
 ### Breaking Changes
+
+- Changed the following parameter names to comply with AVM naming standards for resource IDs:
+  - publicIPAddressId changed to publicIPAddressResourceId
+  - subnetId changed to subnetResourceId
 
 ## 0.5.0
 

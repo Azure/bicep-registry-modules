@@ -18,7 +18,7 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'nlbpip'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = 'nga'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -45,20 +45,20 @@ module testDeployment '../../../main.bicep' = [
       frontendIPConfigurations: [
         {
           name: 'publicIPConfig1'
-          pipConfiguration: {
+          publicIPAddressConfiguration: {
             name: '${namePrefix}${serviceShort}-pip-001'
             skuName: 'Standard'
             skuTier: 'Regional'
-            allocationMethod: 'Static'
+            publicIPAllocationMethod: 'Static'
           }
         }
         {
           name: 'publicIPConfig2'
-          pipConfiguration: {
+          publicIPAddressConfiguration: {
             name: '${namePrefix}${serviceShort}-pip-002'
             skuName: 'Standard'
             skuTier: 'Regional'
-            allocationMethod: 'Static'
+            publicIPAllocationMethod: 'Static'
           }
         }
       ]

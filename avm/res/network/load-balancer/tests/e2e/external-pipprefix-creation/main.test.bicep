@@ -45,9 +45,9 @@ module testDeployment '../../../main.bicep' = [
       frontendIPConfigurations: [
         {
           name: 'publicIPprefix1'
-          pipPrefixConfiguration: {
+          publicIPPrefixConfiguration: {
             name: '${namePrefix}${serviceShort}-pipfix-001'
-            skuName: 'Standard'
+            tier: 'Regional'
             publicIPAddressVersion: 'IPv4'
             prefixLength: 28
           }
