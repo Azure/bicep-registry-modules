@@ -2073,13 +2073,13 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     // Required parameters
     frontendIPConfigurations: [
       {
-        name: 'privateIPConfig1'
-        subnetId: '<subnetId>'
-        zones: [
+        availabilityZones: [
           1
           2
           3
         ]
+        name: 'privateIPConfig1'
+        subnetResourceId: '<subnetResourceId>'
       }
     ]
     name: 'nlbwaf001'
@@ -2177,13 +2177,13 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     "frontendIPConfigurations": {
       "value": [
         {
-          "name": "privateIPConfig1",
-          "subnetId": "<subnetId>",
-          "zones": [
+          "availabilityZones": [
             1,
             2,
             3
-          ]
+          ],
+          "name": "privateIPConfig1",
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -2297,13 +2297,13 @@ using 'br/public:avm/res/network/load-balancer:<version>'
 // Required parameters
 param frontendIPConfigurations = [
   {
-    name: 'privateIPConfig1'
-    subnetId: '<subnetId>'
-    zones: [
+    availabilityZones: [
       1
       2
       3
     ]
+    name: 'privateIPConfig1'
+    subnetResourceId: '<subnetResourceId>'
   }
 ]
 param name = 'nlbwaf001'
