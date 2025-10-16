@@ -486,6 +486,9 @@ module databaseAccount_cassandraRoleAssignments 'cassandra-role-assignment/main.
       name: cassandraRoleAssignment.?name
       scope: cassandraRoleAssignment.?scope
     }
+    dependsOn: [
+      databaseAccount_cassandraKeyspaces
+    ]
   }
 ]
 
