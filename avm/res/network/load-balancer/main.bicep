@@ -276,15 +276,15 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2024-07-01' = {
               }
             : null
         }
-        zones: !empty(frontendIPConfiguration.?availabilityZones)
+        zones: contains(frontendIPConfiguration, 'availabilityZones')
           ? map(frontendIPConfiguration.?availabilityZones ?? [], zone => string(zone))
-          : (skuName == 'Standard' && !empty(frontendIPConfiguration.?subnetResourceId)
+          : !empty(frontendIPConfiguration.?subnetResourceId)
               ? [
                   '1'
                   '2'
                   '3'
                 ]
-              : null)
+              : null
       }
     ]
     loadBalancingRules: loadBalancingRulesVar
