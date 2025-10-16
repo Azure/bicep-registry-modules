@@ -22,33 +22,9 @@ param assignableScopes string[]?
 @description('Optional. An array of Cassandra Role Assignments to be created for the Cassandra Role Definition.')
 param cassandraRoleAssignments cassandraRoleAssignmentType[]?
 
-@description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
-
-var enableReferencedModulesTelemetry = false
-
 // ============== //
 // Resources      //
 // ============== //
-
-#disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.doctdb-dbacct-cassandraroledefinition.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-        }
-      }
-    }
-  }
-}
 
 resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
   name: databaseAccountName
@@ -56,7 +32,7 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' exis
 
 resource cassandraRoleDefinition 'Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions@2025-05-01-preview' = {
   parent: databaseAccount
-  name: name ?? guid(databaseAccount.id, databaseAccountName, 'cassandra-role')
+  name: name ?? guid(databaseAccount.id, databaseAccountName, roleName)
   properties: {
     assignableScopes: assignableScopes ?? [
       databaseAccount.id
@@ -81,7 +57,6 @@ module databaseAccount_cassandraRoleAssignments '../cassandra-role-assignment/ma
       principalId: cassandraRoleAssignment.principalId
       name: cassandraRoleAssignment.?name
       scope: cassandraRoleAssignment.?scope
-      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

@@ -11,10 +11,10 @@ param tags object?
 param databaseAccountName string
 
 @description('Optional. Array of Cassandra tables to deploy in the keyspace.')
-param tables array = []
+param tables tableType[] = []
 
 @description('Optional. Array of Cassandra views (materialized views) to deploy in the keyspace.')
-param views array = []
+param views viewType[] = []
 
 @description('Optional. Maximum autoscale throughput for the keyspace. If not set, autoscale will be disabled. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level.')
 param autoscaleSettingsMaxThroughput int = 4000
@@ -25,9 +25,6 @@ param throughput int?
 resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
   name: databaseAccountName
 }
-
-// Telemetry Deployment
-var enableReferencedModulesTelemetry = false
 
 var keyspaceOptions = contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' })
   ? {}
@@ -80,7 +77,6 @@ module cassandraKeyspace_views 'view/main.bicep' = [
       throughput: view.?throughput
       autoscaleSettingsMaxThroughput: view.?autoscaleSettingsMaxThroughput
       tags: view.?tags ?? tags
-      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -93,3 +89,75 @@ output resourceId string = cassandraKeyspace.id
 
 @description('The name of the resource group the Cassandra keyspace was created in.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+// Definitions     //
+// =============== //
+
+@export()
+@description('The type of a Cassandra table.')
+type tableType = {
+  @description('Required. Name of the table.')
+  name: string
+
+  @description('Required. Schema definition for the table.')
+  schema: {
+    @description('Required. List of columns in the table.')
+    columns: {
+      @description('Required. Name of the column.')
+      name: string
+
+      @description('Required. Data type of the column.')
+      type: string
+    }[]
+
+    @description('Required. List of partition key columns.')
+    partitionKeys: {
+      @description('Required. Name of the partition key column.')
+      name: string
+    }[]
+
+    @description('Optional. List of clustering key columns.')
+    clusterKeys: {
+      @description('Required. Name of the clustering key column.')
+      name: string
+
+      @description('Optional. Sort order for the clustering key (asc or desc).')
+      orderBy: ('asc' | 'desc')?
+    }[]?
+  }
+
+  @description('Optional. Tags for the table.')
+  tags: object?
+
+  @description('Optional. Default TTL (Time To Live) in seconds for data in the table.')
+  defaultTtl: int?
+
+  @description('Optional. Analytical TTL for the table.')
+  analyticalStorageTtl: int?
+
+  @description('Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput.')
+  throughput: int?
+
+  @description('Optional. Maximum autoscale throughput for the table. Cannot be used with throughput.')
+  autoscaleSettingsMaxThroughput: int?
+}
+
+@export()
+@description('The type of a Cassandra view (materialized view).')
+type viewType = {
+  @description('Required. Name of the view.')
+  name: string
+
+  @description('Required. View definition (CQL statement).')
+  viewDefinition: string
+
+  @description('Optional. Tags for the view.')
+  tags: object?
+
+  @description('Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput.')
+  throughput: int?
+
+  @description('Optional. Maximum autoscale throughput for the view. Cannot be used with throughput.')
+  autoscaleSettingsMaxThroughput: int?
+}

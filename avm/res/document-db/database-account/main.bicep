@@ -472,7 +472,6 @@ module databaseAccount_cassandraRoleDefinitions 'cassandra-role-definition/main.
       notDataActions: cassandraRoleDefinition.?notDataActions
       assignableScopes: cassandraRoleDefinition.?assignableScopes
       cassandraRoleAssignments: cassandraRoleDefinition.?assignments
-      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -486,7 +485,6 @@ module databaseAccount_cassandraRoleAssignments 'cassandra-role-assignment/main.
       principalId: cassandraRoleAssignment.principalId
       name: cassandraRoleAssignment.?name
       scope: cassandraRoleAssignment.?scope
-      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

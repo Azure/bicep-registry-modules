@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "17062971271501145755"
+      "templateHash": "8762344645220587266"
     },
     "name": "Azure Cosmos DB account",
     "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -2747,9 +2747,6 @@
           },
           "cassandraRoleAssignments": {
             "value": "[tryGet(coalesce(parameters('cassandraRoleDefinitions'), createArray())[copyIndex()], 'assignments')]"
-          },
-          "enableTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2760,7 +2757,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "11719174324757945913"
+              "templateHash": "99309908042085968"
             },
             "name": "DocumentDB Database Account Cassandra Role Definitions.",
             "description": "This module deploys a Cassandra Role Definition in a CosmosDB Account."
@@ -2854,39 +2851,9 @@
               "metadata": {
                 "description": "Optional. An array of Cassandra Role Assignments to be created for the Cassandra Role Definition."
               }
-            },
-            "enableTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable/Disable usage telemetry for module."
-              }
             }
           },
-          "variables": {
-            "enableReferencedModulesTelemetry": false
-          },
           "resources": {
-            "avmTelemetry": {
-              "condition": "[parameters('enableTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.doctdb-dbacct-cassandraroledefinition.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": [],
-                  "outputs": {
-                    "telemetry": {
-                      "type": "String",
-                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-                    }
-                  }
-                }
-              }
-            },
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -2896,7 +2863,7 @@
             "cassandraRoleDefinition": {
               "type": "Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions",
               "apiVersion": "2025-05-01-preview",
-              "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'cassandra-role')))]",
+              "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName'))))]",
               "properties": {
                 "assignableScopes": "[coalesce(parameters('assignableScopes'), createArray(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))))]",
                 "permissions": [
@@ -2927,7 +2894,7 @@
                     "value": "[parameters('databaseAccountName')]"
                   },
                   "roleDefinitionId": {
-                    "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'cassandra-role')))]"
+                    "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName'))))]"
                   },
                   "principalId": {
                     "value": "[coalesce(parameters('cassandraRoleAssignments'), createArray())[copyIndex()].principalId]"
@@ -2937,9 +2904,6 @@
                   },
                   "scope": {
                     "value": "[tryGet(coalesce(parameters('cassandraRoleAssignments'), createArray())[copyIndex()], 'scope')]"
-                  },
-                  "enableTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -2950,7 +2914,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "2528040635514023800"
+                      "templateHash": "12997964814695335271"
                     },
                     "name": "DocumentDB Database Account Cassandra Role Assignments.",
                     "description": "This module deploys a Cassandra Role Assignment in a CosmosDB Account."
@@ -2987,36 +2951,9 @@
                       "metadata": {
                         "description": "Optional. The data plane resource path for which access is being granted through this Cassandra Role Assignment. Defaults to the current account."
                       }
-                    },
-                    "enableTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable/Disable usage telemetry for module."
-                      }
                     }
                   },
                   "resources": {
-                    "avmTelemetry": {
-                      "condition": "[parameters('enableTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.doctdb-dbacct-cassandraroleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": [],
-                          "outputs": {
-                            "telemetry": {
-                              "type": "String",
-                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-                            }
-                          }
-                        }
-                      }
-                    },
                     "databaseAccount": {
                       "existing": true,
                       "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -3070,14 +3007,14 @@
               "metadata": {
                 "description": "The name of the cassandra role definition."
               },
-              "value": "[coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'cassandra-role'))]"
+              "value": "[coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName')))]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the cassandra role definition."
               },
-              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'cassandra-role')))]"
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName'))))]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -3121,9 +3058,6 @@
           },
           "scope": {
             "value": "[tryGet(coalesce(parameters('cassandraRoleAssignments'), createArray())[copyIndex()], 'scope')]"
-          },
-          "enableTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -3134,7 +3068,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "2528040635514023800"
+              "templateHash": "12997964814695335271"
             },
             "name": "DocumentDB Database Account Cassandra Role Assignments.",
             "description": "This module deploys a Cassandra Role Assignment in a CosmosDB Account."
@@ -3171,36 +3105,9 @@
               "metadata": {
                 "description": "Optional. The data plane resource path for which access is being granted through this Cassandra Role Assignment. Defaults to the current account."
               }
-            },
-            "enableTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable/Disable usage telemetry for module."
-              }
             }
           },
           "resources": {
-            "avmTelemetry": {
-              "condition": "[parameters('enableTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.doctdb-dbacct-cassandraroleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": [],
-                  "outputs": {
-                    "telemetry": {
-                      "type": "String",
-                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-                    }
-                  }
-                }
-              }
-            },
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -3956,10 +3863,181 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "1594229455591329412"
+              "templateHash": "269737052643905225"
             },
             "name": "DocumentDB Database Account Cassandra Keyspaces",
             "description": "This module deploys a Cassandra Keyspace within a CosmosDB Account."
+          },
+          "definitions": {
+            "tableType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Name of the table."
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "columns": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. Name of the column."
+                            }
+                          },
+                          "type": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. Data type of the column."
+                            }
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "Required. List of columns in the table."
+                      }
+                    },
+                    "partitionKeys": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. Name of the partition key column."
+                            }
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "Required. List of partition key columns."
+                      }
+                    },
+                    "clusterKeys": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. Name of the clustering key column."
+                            }
+                          },
+                          "orderBy": {
+                            "type": "string",
+                            "allowedValues": [
+                              "asc",
+                              "desc"
+                            ],
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. Sort order for the clustering key (asc or desc)."
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. List of clustering key columns."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Schema definition for the table."
+                  }
+                },
+                "tags": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Tags for the table."
+                  }
+                },
+                "defaultTtl": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Default TTL (Time To Live) in seconds for data in the table."
+                  }
+                },
+                "analyticalStorageTtl": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Analytical TTL for the table."
+                  }
+                },
+                "throughput": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput."
+                  }
+                },
+                "autoscaleSettingsMaxThroughput": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Maximum autoscale throughput for the table. Cannot be used with throughput."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type of a Cassandra table."
+              }
+            },
+            "viewType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Name of the view."
+                  }
+                },
+                "viewDefinition": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. View definition (CQL statement)."
+                  }
+                },
+                "tags": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Tags for the view."
+                  }
+                },
+                "throughput": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput."
+                  }
+                },
+                "autoscaleSettingsMaxThroughput": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Maximum autoscale throughput for the view. Cannot be used with throughput."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type of a Cassandra view (materialized view)."
+              }
+            }
           },
           "parameters": {
             "name": {
@@ -3983,6 +4061,9 @@
             },
             "tables": {
               "type": "array",
+              "items": {
+                "$ref": "#/definitions/tableType"
+              },
               "defaultValue": [],
               "metadata": {
                 "description": "Optional. Array of Cassandra tables to deploy in the keyspace."
@@ -3990,6 +4071,9 @@
             },
             "views": {
               "type": "array",
+              "items": {
+                "$ref": "#/definitions/viewType"
+              },
               "defaultValue": [],
               "metadata": {
                 "description": "Optional. Array of Cassandra views (materialized views) to deploy in the keyspace."
@@ -4009,9 +4093,6 @@
                 "description": "Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level."
               }
             }
-          },
-          "variables": {
-            "enableReferencedModulesTelemetry": false
           },
           "resources": {
             "databaseAccount": {
@@ -4085,10 +4166,111 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "4241878097223511975"
+                      "templateHash": "5902157137078958757"
                     },
                     "name": "DocumentDB Database Account Cassandra Keyspaces Tables",
                     "description": "This module deploys a Cassandra Table within a Cassandra Keyspace in a CosmosDB Account."
+                  },
+                  "definitions": {
+                    "columnType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. Name of the column."
+                          }
+                        },
+                        "type": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. Data type of the column."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "The type of a column in a Cassandra table."
+                      }
+                    },
+                    "partitionKeyType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. Name of the partition key column."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "The type of a partition key."
+                      }
+                    },
+                    "clusterKeyType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. Name of the clustering key column."
+                          }
+                        },
+                        "orderBy": {
+                          "type": "string",
+                          "allowedValues": [
+                            "asc",
+                            "desc"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Sort order for the clustering key (asc or desc)."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "The type of a clustering key."
+                      }
+                    },
+                    "schemaType": {
+                      "type": "object",
+                      "properties": {
+                        "columns": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/definitions/columnType"
+                          },
+                          "metadata": {
+                            "description": "Required. List of columns in the table."
+                          }
+                        },
+                        "partitionKeys": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/definitions/partitionKeyType"
+                          },
+                          "metadata": {
+                            "description": "Required. List of partition key columns."
+                          }
+                        },
+                        "clusterKeys": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/definitions/clusterKeyType"
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. List of clustering key columns."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "The type of a Cassandra table schema."
+                      }
+                    }
                   },
                   "parameters": {
                     "name": {
@@ -4117,7 +4299,7 @@
                       }
                     },
                     "schema": {
-                      "type": "object",
+                      "$ref": "#/definitions/schemaType",
                       "metadata": {
                         "description": "Required. Schema definition for the Cassandra table."
                       }
@@ -4246,9 +4428,6 @@
                   },
                   "tags": {
                     "value": "[coalesce(tryGet(parameters('views')[copyIndex()], 'tags'), parameters('tags'))]"
-                  },
-                  "enableTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -4259,7 +4438,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "6161256708876711339"
+                      "templateHash": "14044267170743040264"
                     },
                     "name": "DocumentDB Database Account Cassandra Keyspaces Views",
                     "description": "This module deploys a Cassandra View (Materialized View) within a Cassandra Keyspace in a CosmosDB Account."
@@ -4316,13 +4495,6 @@
                       "metadata": {
                         "description": "Optional. Location for all resources."
                       }
-                    },
-                    "enableTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable/Disable usage telemetry for module."
-                      }
                     }
                   },
                   "resources": {
@@ -4354,26 +4526,6 @@
                       "dependsOn": [
                         "databaseAccount"
                       ]
-                    },
-                    "telemetry": {
-                      "condition": "[parameters('enableTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.doctdb-dbacct-cassandrakeyspaceview.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": [],
-                          "outputs": {
-                            "telemetry": {
-                              "type": "String",
-                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-                            }
-                          }
-                        }
-                      }
                     }
                   },
                   "outputs": {
