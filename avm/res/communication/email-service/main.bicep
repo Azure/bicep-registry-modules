@@ -153,7 +153,7 @@ output domainResourceIds string[] = [for (domain, index) in (domains ?? []): ema
 output domainNames string[] = [for (domain, index) in (domains ?? []): email_domains[index].outputs.name]
 
 @description('The list of verification records for each domain.')
-output domainVerificationRecords verificationRecordsOutputType[] = [
+output domainVerificationRecords resourceOutput<'Microsoft.Communication/emailServices/domains@2025-05-01'>.properties.verificationRecords[] = [
   for (domain, index) in (domains ?? []): email_domains[index].outputs.verificationRecords
 ]
 
@@ -161,7 +161,7 @@ output domainVerificationRecords verificationRecordsOutputType[] = [
 // Definitions //
 // =========== //
 
-import { senderUsernameType, verificationRecordsOutputType } from 'domain/main.bicep'
+import { senderUsernameType } from 'domain/main.bicep'
 
 @export()
 @description('The type of domain to create.')

@@ -139,7 +139,7 @@ output resourceId string = domain.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The verification records for the domain.')
-output verificationRecords verificationRecordsOutputType = domain.properties.verificationRecords
+output verificationRecords resourceOutput<'Microsoft.Communication/emailServices/domains@2025-05-01'>.properties.verificationRecords = domain.properties.verificationRecords
 
 // =========== //
 // Definitions //
@@ -156,38 +156,4 @@ type senderUsernameType = {
 
   @description('Optional. The display name for the senderUsername.')
   displayName: string?
-}
-
-@export()
-@description('Custom type definition for verification records as output.')
-type verificationRecordsOutputType = {
-  @description('Required. The properties for the DKIM DNS record.')
-  DKIM: dnsRecordOutputType
-
-  @description('Required. The properties for the DKIM2 DNS record.')
-  DKIM2: dnsRecordOutputType
-
-  @description('Required. The properties for the DMARC DNS record.')
-  DMARC: dnsRecordOutputType
-
-  @description('Required. The properties for the Domain DNS record.')
-  Domain: dnsRecordOutputType
-
-  @description('Required. The properties for the SPF DNS record.')
-  SPF: dnsRecordOutputType
-}
-
-@description('Custom type definition for DNS records as output.')
-type dnsRecordOutputType = {
-  @description('Required. The type of DNS record.')
-  type: string
-
-  @description('Required. The name of the DNS record.')
-  name: string
-
-  @description('Required. The value of the DNS record.')
-  value: string
-
-  @description('Required. The time to live for the DNS record.')
-  ttl: int
 }
