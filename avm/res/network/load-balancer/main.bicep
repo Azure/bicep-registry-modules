@@ -255,24 +255,16 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2024-07-01' = {
           privateIPAllocationMethod: !empty(frontendIPConfiguration.?subnetResourceId)
             ? (contains(frontendIPConfiguration, 'privateIPAddress') ? 'Static' : 'Dynamic')
             : null
-          publicIPAddress: !empty(frontendIPConfiguration.?publicIPAddressConfiguration)
-            ? (!empty(frontendIPConfiguration.?publicIPAddressResourceId)
-                ? {
-                    id: frontendIPConfiguration.?publicIPAddressResourceId
-                  }
-                : {
-                    id: loadBalancer_publicIPAddresses[index]!.outputs.resourceId
-                  })
-            : null
-          publicIPPrefix: !empty(frontendIPConfiguration.?publicIPPrefixConfiguration)
-            ? (!empty(frontendIPConfiguration.?publicIPPrefixResourceId)
-                ? {
-                    id: frontendIPConfiguration.?publicIPPrefixResourceId
-                  }
-                : {
-                    id: loadBalancer_publicIPPrefixes[index]!.outputs.resourceId
-                  })
-            : null
+          publicIPAddress: !empty(frontendIPConfiguration.?publicIPAddressResourceId)
+            ? { id: frontendIPConfiguration.?publicIPAddressResourceId }
+            : (!empty(frontendIPConfiguration.?publicIPAddressConfiguration)
+                ? { id: loadBalancer_publicIPAddresses[index]!.outputs.resourceId }
+                : null)
+          publicIPPrefix: !empty(frontendIPConfiguration.?publicIPPrefixResourceId)
+            ? { id: frontendIPConfiguration.?publicIPPrefixResourceId }
+            : (!empty(frontendIPConfiguration.?publicIPPrefixConfiguration)
+                ? { id: loadBalancer_publicIPPrefixes[index]!.outputs.resourceId }
+                : null)
           gatewayLoadBalancer: !empty(frontendIPConfiguration.?gatewayLoadBalancerResourceId)
             ? {
                 id: frontendIPConfiguration.?gatewayLoadBalancerResourceId
@@ -286,7 +278,7 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2024-07-01' = {
         }
         zones: !empty(frontendIPConfiguration.?availabilityZones)
           ? map(frontendIPConfiguration.?availabilityZones ?? [], zone => string(zone))
-          : (skuName == 'Standard'
+          : (skuName == 'Standard' && !empty(frontendIPConfiguration.?subnetResourceId)
               ? [
                   '1'
                   '2'
