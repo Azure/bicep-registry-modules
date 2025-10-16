@@ -3146,7 +3146,7 @@ The name of the Public IP Prefix. If not provided, a default name will be genera
 
 Length of the Public IP Prefix.
 
-- Required: Yes
+- Required: No
 - Type: int
 - MinValue: 28
 - MaxValue: 127

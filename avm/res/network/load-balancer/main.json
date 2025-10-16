@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.3.11034",
-      "templateHash": "8149426579151396979"
+      "templateHash": "5197639403763956260"
     },
     "name": "Load Balancers",
     "description": "This module deploys a Load Balancer."
@@ -182,6 +182,7 @@
         },
         "prefixLength": {
           "type": "int",
+          "nullable": true,
           "minValue": 28,
           "maxValue": 127,
           "metadata": {
@@ -973,7 +974,7 @@
                 "gatewayLoadBalancer": "[if(not(empty(tryGet(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurations')], 'gatewayLoadBalancerResourceId'))), createObject('id', tryGet(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurations')], 'gatewayLoadBalancerResourceId')), null())]",
                 "subnet": "[if(not(empty(tryGet(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurations')], 'subnetResourceId'))), createObject('id', tryGet(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurations')], 'subnetResourceId')), null())]"
               },
-              "zones": "[if(contains(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurations')], 'availabilityZones'), map(coalesce(tryGet(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurations')], 'availabilityZones'), createArray()), lambda('zone', string(lambdaVariables('zone')))), if(not(empty(tryGet(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurations')], 'subnetResourceId'))), createArray('1', '2', '3'), null()))]"
+              "zones": "[if(not(empty(tryGet(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurations')], 'availabilityZones'))), map(coalesce(tryGet(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurations')], 'availabilityZones'), createArray()), lambda('zone', string(lambdaVariables('zone')))), if(equals(parameters('skuName'), 'Standard'), createArray('1', '2', '3'), null()))]"
             }
           }
         ],

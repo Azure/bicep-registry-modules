@@ -255,7 +255,6 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2024-07-01' = {
           privateIPAllocationMethod: !empty(frontendIPConfiguration.?subnetResourceId)
             ? (contains(frontendIPConfiguration, 'privateIPAddress') ? 'Static' : 'Dynamic')
             : null
-          // MODIFIED: Handle three scenarios - existing ID, newly created, or none
           publicIPAddress: !empty(frontendIPConfiguration.?publicIPAddressConfiguration)
             ? (!empty(frontendIPConfiguration.?publicIPAddressResourceId)
                 ? {
@@ -265,7 +264,6 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2024-07-01' = {
                     id: loadBalancer_publicIPAddresses[index]!.outputs.resourceId
                   })
             : null
-          // MODIFIED: Handle three scenarios for public IP prefix - existing ID, newly created, or none
           publicIPPrefix: !empty(frontendIPConfiguration.?publicIPPrefixConfiguration)
             ? (!empty(frontendIPConfiguration.?publicIPPrefixResourceId)
                 ? {
@@ -286,15 +284,15 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2024-07-01' = {
               }
             : null
         }
-        zones: contains(frontendIPConfiguration, 'availabilityZones')
+        zones: !empty(frontendIPConfiguration.?availabilityZones)
           ? map(frontendIPConfiguration.?availabilityZones ?? [], zone => string(zone))
-          : !empty(frontendIPConfiguration.?subnetResourceId)
+          : (skuName == 'Standard'
               ? [
                   '1'
                   '2'
                   '3'
                 ]
-              : null
+              : null)
       }
     ]
     loadBalancingRules: loadBalancingRulesVar
@@ -486,7 +484,7 @@ type publicIPPrefixConfigurationType = {
   @description('Optional. Length of the Public IP Prefix.')
   @minValue(28)
   @maxValue(127)
-  prefixLength: int
+  prefixLength: int?
 
   @description('Optional. The public IP address version.')
   publicIPAddressVersion: ('IPv4' | 'IPv6')?
