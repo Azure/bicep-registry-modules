@@ -5,7 +5,7 @@ metadata description = 'This module deploys a Cassandra Table within a Cassandra
 param name string
 
 @description('Optional. Tags of the Cassandra table resource.')
-param tags object?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15'>.tags?
 
 @description('Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment.')
 param databaseAccountName string
@@ -14,7 +14,7 @@ param databaseAccountName string
 param cassandraKeyspaceName string
 
 @description('Required. Schema definition for the Cassandra table.')
-param schema schemaType
+param schema resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15'>.properties.resource.schema
 
 @description('Optional. Analytical TTL for the table. Default to 0 (disabled). Analytical store is enabled when set to a value other than 0. If set to -1, analytical store retains all historical data.')
 param analyticalStorageTtl int = 0
@@ -70,47 +70,3 @@ output resourceId string = cassandraTable.id
 
 @description('The name of the resource group the Cassandra table was created in.')
 output resourceGroupName string = resourceGroup().name
-
-// =============== //
-// Definitions     //
-// =============== //
-
-@export()
-@description('The type of a column in a Cassandra table.')
-type columnType = {
-  @description('Required. Name of the column.')
-  name: string
-
-  @description('Required. Data type of the column.')
-  type: string
-}
-
-@export()
-@description('The type of a partition key.')
-type partitionKeyType = {
-  @description('Required. Name of the partition key column.')
-  name: string
-}
-
-@export()
-@description('The type of a clustering key.')
-type clusterKeyType = {
-  @description('Required. Name of the clustering key column.')
-  name: string
-
-  @description('Optional. Sort order for the clustering key (asc or desc).')
-  orderBy: ('asc' | 'desc')?
-}
-
-@export()
-@description('The type of a Cassandra table schema.')
-type schemaType = {
-  @description('Required. List of columns in the table.')
-  columns: columnType[]
-
-  @description('Required. List of partition key columns.')
-  partitionKeys: partitionKeyType[]
-
-  @description('Optional. List of clustering key columns.')
-  clusterKeys: clusterKeyType[]?
-}

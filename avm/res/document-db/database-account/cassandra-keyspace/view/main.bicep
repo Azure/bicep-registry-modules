@@ -5,7 +5,7 @@ metadata description = 'This module deploys a Cassandra View (Materialized View)
 param name string
 
 @description('Optional. Tags of the Cassandra view resource.')
-param tags object?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2025-05-01-preview'>.tags?
 
 @description('Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment.')
 param databaseAccountName string

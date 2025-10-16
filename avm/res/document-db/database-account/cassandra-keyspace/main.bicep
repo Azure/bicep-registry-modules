@@ -5,7 +5,7 @@ metadata description = 'This module deploys a Cassandra Keyspace within a Cosmos
 param name string
 
 @description('Optional. Tags of the Cassandra keyspace resource.')
-param tags object?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces@2024-11-15'>.tags?
 
 @description('Conditional. The name of the parent Cosmos DB account. Required if the template is used in a standalone deployment.')
 param databaseAccountName string
@@ -101,34 +101,10 @@ type tableType = {
   name: string
 
   @description('Required. Schema definition for the table.')
-  schema: {
-    @description('Required. List of columns in the table.')
-    columns: {
-      @description('Required. Name of the column.')
-      name: string
-
-      @description('Required. Data type of the column.')
-      type: string
-    }[]
-
-    @description('Required. List of partition key columns.')
-    partitionKeys: {
-      @description('Required. Name of the partition key column.')
-      name: string
-    }[]
-
-    @description('Optional. List of clustering key columns.')
-    clusterKeys: {
-      @description('Required. Name of the clustering key column.')
-      name: string
-
-      @description('Optional. Sort order for the clustering key (asc or desc).')
-      orderBy: ('asc' | 'desc')?
-    }[]?
-  }
+  schema: resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15'>.properties.resource.schema
 
   @description('Optional. Tags for the table.')
-  tags: object?
+  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15'>.tags?
 
   @description('Optional. Default TTL (Time To Live) in seconds for data in the table.')
   defaultTtl: int?
@@ -153,7 +129,7 @@ type viewType = {
   viewDefinition: string
 
   @description('Optional. Tags for the view.')
-  tags: object?
+  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2025-05-01-preview'>.tags?
 
   @description('Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput.')
   throughput: int?
