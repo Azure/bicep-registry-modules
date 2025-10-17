@@ -113,7 +113,7 @@ param blobServices blobServiceType = kind != 'FileStorage'
 param fileServices fileServiceType = {}
 
 @description('Optional. Queue service and queues to create.')
-param queueServices object = {}
+param queueServices queueServiceType = {}
 
 @description('Optional. Table service and tables to create.')
 param tableServices object = {}
@@ -950,6 +950,21 @@ type fileServiceType = {
 
   @description('Optional. The List of CORS rules. You can include up to five CorsRule elements in the request.')
   corsRules: fileCorsRuleType[]?
+
+  @description('Optional. The diagnostic settings of the service.')
+  diagnosticSettings: diagnosticSettingFullType[]?
+}
+
+import { corsRuleType as queueCorsRuleType, queueType } from 'queue-service/main.bicep'
+
+@export()
+@description('The type of a queue service.')
+type queueServiceType = {
+  @description('Optional. Queues to create.')
+  queues: queueType[]?
+
+  @description('Optional. The List of CORS rules. You can include up to five CorsRule elements in the request.')
+  corsRules: queueCorsRuleType[]?
 
   @description('Optional. The diagnostic settings of the service.')
   diagnosticSettings: diagnosticSettingFullType[]?
