@@ -80,7 +80,7 @@ resource fileServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
 
 module fileServices_shares 'share/main.bicep' = [
   for (share, index) in (shares ?? []): {
-    name: '${deployment().name}-shares-${index}'
+    name: '${deployment().name}-FileShare-${index}'
     params: {
       storageAccountName: storageAccount.name
       fileServicesName: fileServices.name

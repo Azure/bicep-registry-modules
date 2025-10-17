@@ -116,7 +116,7 @@ param fileServices fileServiceType = {}
 param queueServices queueServiceType = {}
 
 @description('Optional. Table service and tables to create.')
-param tableServices object = {}
+param tableServices tableServiceType = {}
 
 @description('Optional. Indicates whether public access is enabled for all blobs or containers in the storage account. For security reasons, it is recommended to set it to false.')
 param allowBlobPublicAccess bool = false
@@ -965,6 +965,21 @@ type queueServiceType = {
 
   @description('Optional. The List of CORS rules. You can include up to five CorsRule elements in the request.')
   corsRules: queueCorsRuleType[]?
+
+  @description('Optional. The diagnostic settings of the service.')
+  diagnosticSettings: diagnosticSettingFullType[]?
+}
+
+import { corsRuleType as tableCorsRuleType, tableType } from 'table-service/main.bicep'
+
+@export()
+@description('The type of a table service.')
+type tableServiceType = {
+  @description('Optional. Tables to create.')
+  tables: tableType[]?
+
+  @description('Optional. The List of CORS rules. You can include up to five CorsRule elements in the request.')
+  corsRules: tableCorsRuleType[]?
 
   @description('Optional. The diagnostic settings of the service.')
   diagnosticSettings: diagnosticSettingFullType[]?

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "9651254428903693329"
+      "templateHash": "14182881463294123311"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -306,7 +306,7 @@
         "corsRules": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/corsRuleType"
+            "$ref": "#/definitions/blobCorsRuleType"
           },
           "nullable": true,
           "metadata": {
@@ -398,6 +398,143 @@
         "description": "The type of a blob service."
       }
     },
+    "fileServiceType": {
+      "type": "object",
+      "properties": {
+        "protocolSettings": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Storage/storageAccounts/fileServices@2024-01-01#properties/properties/properties/protocolSettings"
+            },
+            "description": "Optional. Protocol settings for file service."
+          },
+          "nullable": true
+        },
+        "shareDeleteRetentionPolicy": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Storage/storageAccounts/fileServices@2024-01-01#properties/properties/properties/shareDeleteRetentionPolicy"
+            },
+            "description": "Optional. The service properties for soft delete."
+          },
+          "nullable": true
+        },
+        "shares": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/fileShareType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. File shares to create."
+          }
+        },
+        "corsRules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/fileCorsRuleType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The List of CORS rules. You can include up to five CorsRule elements in the request."
+          }
+        },
+        "diagnosticSettings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/diagnosticSettingFullType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The diagnostic settings of the service."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a file service."
+      }
+    },
+    "queueServiceType": {
+      "type": "object",
+      "properties": {
+        "queues": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/queueType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Queues to create."
+          }
+        },
+        "corsRules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/queueCorsRuleType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The List of CORS rules. You can include up to five CorsRule elements in the request."
+          }
+        },
+        "diagnosticSettings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/diagnosticSettingFullType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The diagnostic settings of the service."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a queue service."
+      }
+    },
+    "tableServiceType": {
+      "type": "object",
+      "properties": {
+        "tables": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/tableType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tables to create."
+          }
+        },
+        "corsRules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/tableCorsRuleType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The List of CORS rules. You can include up to five CorsRule elements in the request."
+          }
+        },
+        "diagnosticSettings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/diagnosticSettingFullType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The diagnostic settings of the service."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a table service."
+      }
+    },
     "_1.immutabilityPolicyType": {
       "type": "object",
       "properties": {
@@ -430,73 +567,7 @@
         }
       }
     },
-    "_2.secretSetOutputType": {
-      "type": "object",
-      "properties": {
-        "secretResourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "The resourceId of the exported secret."
-          }
-        },
-        "secretUri": {
-          "type": "string",
-          "metadata": {
-            "description": "The secret URI of the exported secret."
-          }
-        },
-        "secretUriWithVersion": {
-          "type": "string",
-          "metadata": {
-            "description": "The secret URI with version of the exported secret."
-          }
-        }
-      },
-      "metadata": {
-        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
-        }
-      }
-    },
-    "_3.lockType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the name of lock."
-          }
-        },
-        "kind": {
-          "type": "string",
-          "allowedValues": [
-            "CanNotDelete",
-            "None",
-            "ReadOnly"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the type of lock."
-          }
-        },
-        "notes": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the notes of the lock."
-          }
-        }
-      },
-      "metadata": {
-        "description": "An AVM-aligned type for a lock.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
-        }
-      }
-    },
-    "_3.privateEndpointCustomDnsConfigType": {
+    "_2.privateEndpointCustomDnsConfigType": {
       "type": "object",
       "properties": {
         "fqdn": {
@@ -522,7 +593,7 @@
         }
       }
     },
-    "_3.privateEndpointIpConfigurationType": {
+    "_2.privateEndpointIpConfigurationType": {
       "type": "object",
       "properties": {
         "name": {
@@ -564,7 +635,7 @@
         }
       }
     },
-    "_3.privateEndpointPrivateDnsZoneGroupType": {
+    "_2.privateEndpointPrivateDnsZoneGroupType": {
       "type": "object",
       "properties": {
         "name": {
@@ -605,78 +676,95 @@
         }
       }
     },
-    "_3.roleAssignmentType": {
+    "_2.secretSetOutputType": {
       "type": "object",
       "properties": {
-        "name": {
+        "secretResourceId": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+            "description": "The resourceId of the exported secret."
           }
         },
-        "roleDefinitionIdOrName": {
+        "secretUri": {
           "type": "string",
           "metadata": {
-            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+            "description": "The secret URI of the exported secret."
           }
         },
-        "principalId": {
+        "secretUriWithVersion": {
           "type": "string",
           "metadata": {
-            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-          }
-        },
-        "principalType": {
-          "type": "string",
-          "allowedValues": [
-            "Device",
-            "ForeignGroup",
-            "Group",
-            "ServicePrincipal",
-            "User"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The principal type of the assigned principal ID."
-          }
-        },
-        "description": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The description of the role assignment."
-          }
-        },
-        "condition": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-          }
-        },
-        "conditionVersion": {
-          "type": "string",
-          "allowedValues": [
-            "2.0"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Version of the condition."
-          }
-        },
-        "delegatedManagedIdentityResourceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The Resource Id of the delegated managed identity resource."
+            "description": "The secret URI with version of the exported secret."
           }
         }
       },
       "metadata": {
-        "description": "An AVM-aligned type for a role assignment.",
+        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "blobCorsRuleType": {
+      "type": "object",
+      "properties": {
+        "allowedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of headers allowed to be part of the cross-origin request."
+          }
+        },
+        "allowedMethods": {
+          "type": "array",
+          "allowedValues": [
+            "CONNECT",
+            "DELETE",
+            "GET",
+            "HEAD",
+            "MERGE",
+            "OPTIONS",
+            "PATCH",
+            "POST",
+            "PUT",
+            "TRACE"
+          ],
+          "metadata": {
+            "description": "Required. A list of HTTP methods that are allowed to be executed by the origin."
+          }
+        },
+        "allowedOrigins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains."
+          }
+        },
+        "exposedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of response headers to expose to CORS clients."
+          }
+        },
+        "maxAgeInSeconds": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The number of seconds that the client/browser should cache a preflight response."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a cors rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "blob-service/main.bicep",
+          "originalIdentifier": "corsRuleType"
         }
       }
     },
@@ -756,7 +844,7 @@
         "roleAssignments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_3.roleAssignmentType"
+            "$ref": "#/definitions/roleAssignmentType"
           },
           "nullable": true,
           "metadata": {
@@ -766,68 +854,6 @@
       },
       "metadata": {
         "description": "The type of a storage container.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "blob-service/main.bicep"
-        }
-      }
-    },
-    "corsRuleType": {
-      "type": "object",
-      "properties": {
-        "allowedHeaders": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "metadata": {
-            "description": "Required. A list of headers allowed to be part of the cross-origin request."
-          }
-        },
-        "allowedMethods": {
-          "type": "array",
-          "allowedValues": [
-            "CONNECT",
-            "DELETE",
-            "GET",
-            "HEAD",
-            "MERGE",
-            "OPTIONS",
-            "PATCH",
-            "POST",
-            "PUT",
-            "TRACE"
-          ],
-          "metadata": {
-            "description": "Required. A list of HTTP methods that are allowed to be executed by the origin."
-          }
-        },
-        "allowedOrigins": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "metadata": {
-            "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains."
-          }
-        },
-        "exposedHeaders": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "metadata": {
-            "description": "Required. A list of response headers to expose to CORS clients."
-          }
-        },
-        "maxAgeInSeconds": {
-          "type": "int",
-          "metadata": {
-            "description": "Required. The number of seconds that the client/browser should cache a preflight response."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for a cors rule.",
         "__bicep_imported_from!": {
           "sourceTemplate": "blob-service/main.bicep"
         }
@@ -873,7 +899,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1084,7 +1110,140 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if only metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "fileCorsRuleType": {
+      "type": "object",
+      "properties": {
+        "allowedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of headers allowed to be part of the cross-origin request."
+          }
+        },
+        "allowedMethods": {
+          "type": "array",
+          "allowedValues": [
+            "CONNECT",
+            "DELETE",
+            "GET",
+            "HEAD",
+            "MERGE",
+            "OPTIONS",
+            "PATCH",
+            "POST",
+            "PUT",
+            "TRACE"
+          ],
+          "metadata": {
+            "description": "Required. A list of HTTP methods that are allowed to be executed by the origin."
+          }
+        },
+        "allowedOrigins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains."
+          }
+        },
+        "exposedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of response headers to expose to CORS clients."
+          }
+        },
+        "maxAgeInSeconds": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The number of seconds that the client/browser should cache a preflight response."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a cors rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "file-service/main.bicep",
+          "originalIdentifier": "corsRuleType"
+        }
+      }
+    },
+    "fileShareType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the file share."
+          }
+        },
+        "accessTier": {
+          "type": "string",
+          "allowedValues": [
+            "Cool",
+            "Hot",
+            "Premium",
+            "TransactionOptimized"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Access tier for specific share. Required if the Storage Account kind is set to FileStorage (should be set to \"Premium\"). GpV2 account can choose between TransactionOptimized (default), Hot, and Cool."
+          }
+        },
+        "enabledProtocols": {
+          "type": "string",
+          "allowedValues": [
+            "NFS",
+            "SMB"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The authentication protocol that is used for the file share. Can only be specified when creating a share."
+          }
+        },
+        "rootSquash": {
+          "type": "string",
+          "allowedValues": [
+            "AllSquash",
+            "NoRootSquash",
+            "RootSquash"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares."
+          }
+        },
+        "shareQuota": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The maximum size of the share, in gigabytes. Must be greater than 0, and less than or equal to 5120 (5TB). For Large File Shares, the maximum size is 102400 (100TB)."
+          }
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of role assignments to create."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a file share.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "file-service/main.bicep"
         }
       }
     },
@@ -1121,7 +1280,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1149,7 +1308,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1225,7 +1384,7 @@
           }
         },
         "privateDnsZoneGroup": {
-          "$ref": "#/definitions/_3.privateEndpointPrivateDnsZoneGroupType",
+          "$ref": "#/definitions/_2.privateEndpointPrivateDnsZoneGroupType",
           "nullable": true,
           "metadata": {
             "description": "Optional. The private DNS zone group to configure for the private endpoint."
@@ -1249,7 +1408,7 @@
         "customDnsConfigs": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_3.privateEndpointCustomDnsConfigType"
+            "$ref": "#/definitions/_2.privateEndpointCustomDnsConfigType"
           },
           "nullable": true,
           "metadata": {
@@ -1259,7 +1418,7 @@
         "ipConfigurations": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_3.privateEndpointIpConfigurationType"
+            "$ref": "#/definitions/_2.privateEndpointIpConfigurationType"
           },
           "nullable": true,
           "metadata": {
@@ -1284,7 +1443,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/_3.lockType",
+          "$ref": "#/definitions/lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -1293,7 +1452,7 @@
         "roleAssignments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_3.roleAssignmentType"
+            "$ref": "#/definitions/roleAssignmentType"
           },
           "nullable": true,
           "metadata": {
@@ -1322,6 +1481,106 @@
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...).",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "queueCorsRuleType": {
+      "type": "object",
+      "properties": {
+        "allowedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of headers allowed to be part of the cross-origin request."
+          }
+        },
+        "allowedMethods": {
+          "type": "array",
+          "allowedValues": [
+            "CONNECT",
+            "DELETE",
+            "GET",
+            "HEAD",
+            "MERGE",
+            "OPTIONS",
+            "PATCH",
+            "POST",
+            "PUT",
+            "TRACE"
+          ],
+          "metadata": {
+            "description": "Required. A list of HTTP methods that are allowed to be executed by the origin."
+          }
+        },
+        "allowedOrigins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains."
+          }
+        },
+        "exposedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of response headers to expose to CORS clients."
+          }
+        },
+        "maxAgeInSeconds": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The number of seconds that the client/browser should cache a preflight response."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a cors rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "queue-service/main.bicep",
+          "originalIdentifier": "corsRuleType"
+        }
+      }
+    },
+    "queueType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the queue."
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Storage/storageAccounts/queueServices/queues@2024-01-01#properties/properties/properties/metadata"
+            },
+            "description": "Optional. Metadata to set on the queue."
+          },
+          "nullable": true
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of role assignments to create."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a queue.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "queue-service/main.bicep"
         }
       }
     },
@@ -1396,7 +1655,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1412,7 +1671,7 @@
       "metadata": {
         "description": "A map of the exported secrets",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1436,6 +1695,96 @@
       "metadata": {
         "__bicep_imported_from!": {
           "sourceTemplate": "local-user/main.bicep"
+        }
+      }
+    },
+    "tableCorsRuleType": {
+      "type": "object",
+      "properties": {
+        "allowedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of headers allowed to be part of the cross-origin request."
+          }
+        },
+        "allowedMethods": {
+          "type": "array",
+          "allowedValues": [
+            "CONNECT",
+            "DELETE",
+            "GET",
+            "HEAD",
+            "MERGE",
+            "OPTIONS",
+            "PATCH",
+            "POST",
+            "PUT",
+            "TRACE"
+          ],
+          "metadata": {
+            "description": "Required. A list of HTTP methods that are allowed to be executed by the origin."
+          }
+        },
+        "allowedOrigins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains."
+          }
+        },
+        "exposedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of response headers to expose to CORS clients."
+          }
+        },
+        "maxAgeInSeconds": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The number of seconds that the client/browser should cache a preflight response."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a cors rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "table-service/main.bicep",
+          "originalIdentifier": "corsRuleType"
+        }
+      }
+    },
+    "tableType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the table."
+          }
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of role assignments to create."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a table.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "table-service/main.bicep"
         }
       }
     }
@@ -1628,21 +1977,21 @@
       }
     },
     "fileServices": {
-      "type": "object",
+      "$ref": "#/definitions/fileServiceType",
       "defaultValue": {},
       "metadata": {
         "description": "Optional. File service and shares to deploy."
       }
     },
     "queueServices": {
-      "type": "object",
+      "$ref": "#/definitions/queueServiceType",
       "defaultValue": {},
       "metadata": {
         "description": "Optional. Queue service and queues to create."
       }
     },
     "tableServices": {
-      "type": "object",
+      "$ref": "#/definitions/tableServiceType",
       "defaultValue": {},
       "metadata": {
         "description": "Optional. Table service and tables to create."
@@ -2056,8 +2405,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "12389807800450456797"
+              "version": "0.38.5.1644",
+              "templateHash": "16604612898799598358"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -2084,115 +2433,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "ipConfigurationType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the resource that is unique within a resource group."
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "groupId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
-                      }
-                    },
-                    "memberName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
-                      }
-                    },
-                    "privateIPAddress": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. Properties of private endpoint IP configurations."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "privateLinkServiceConnectionType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the private link service connection."
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "groupIds": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "metadata": {
-                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
-                      }
-                    },
-                    "privateLinkServiceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The resource id of private link service."
-                      }
-                    },
-                    "requestMessage": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. Properties of private link service connection."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "customDnsConfigType": {
-              "type": "object",
-              "properties": {
-                "fqdn": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. FQDN that resolves to private endpoint IP address."
-                  }
-                },
-                "ipAddresses": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "metadata": {
-                    "description": "Required. A list of private IP addresses of the private endpoint."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of a private dns zone group."
               }
             },
             "lockType": {
@@ -2216,12 +2458,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -2243,6 +2492,7 @@
                 }
               },
               "metadata": {
+                "description": "The type of a private DNS zone group configuration.",
                 "__bicep_imported_from!": {
                   "sourceTemplate": "private-dns-zone-group/main.bicep"
                 }
@@ -2319,7 +2569,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -2356,13 +2606,13 @@
             },
             "ipConfigurations": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/ipConfigurationType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/ipConfigurations"
+                },
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
-              }
+              },
+              "nullable": true
             },
             "privateDnsZoneGroup": {
               "$ref": "#/definitions/privateDnsZoneGroupType",
@@ -2397,40 +2647,43 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/tags"
+                },
                 "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
-              }
+              },
+              "nullable": true
             },
             "customDnsConfigs": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/customDnsConfigType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs"
+                },
                 "description": "Optional. Custom DNS configurations."
-              }
+              },
+              "nullable": true
             },
             "manualPrivateLinkServiceConnections": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/privateLinkServiceConnectionType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/manualPrivateLinkServiceConnections"
+                },
                 "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
-              }
+              },
+              "nullable": true
             },
             "privateLinkServiceConnections": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/privateLinkServiceConnectionType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/privateLinkServiceConnections"
+                },
                 "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
-              }
+              },
+              "nullable": true
             },
             "enableTelemetry": {
               "type": "bool",
@@ -2465,8 +2718,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2484,7 +2737,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2024-10-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -2516,7 +2769,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "privateEndpoint"
@@ -2547,7 +2800,7 @@
             "privateEndpoint_privateDnsZoneGroup": {
               "condition": "[not(empty(parameters('privateDnsZoneGroup')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-PrivateEndpoint-PrivateDnsZoneGroup', uniqueString(deployment().name))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -2572,8 +2825,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "13997305779829540948"
+                      "version": "0.38.5.1644",
+                      "templateHash": "24141742673128945"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -2597,7 +2850,8 @@
                         }
                       },
                       "metadata": {
-                        "__bicep_export!": true
+                        "__bicep_export!": true,
+                        "description": "The type of a private DNS zone group configuration."
                       }
                     }
                   },
@@ -2627,33 +2881,30 @@
                       }
                     }
                   },
-                  "variables": {
-                    "copy": [
-                      {
-                        "name": "privateDnsZoneConfigsVar",
-                        "count": "[length(parameters('privateDnsZoneConfigs'))]",
-                        "input": {
-                          "name": "[coalesce(tryGet(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')], 'name'), last(split(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId, '/')))]",
-                          "properties": {
-                            "privateDnsZoneId": "[parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId]"
-                          }
-                        }
-                      }
-                    ]
-                  },
                   "resources": {
                     "privateEndpoint": {
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2024-10-01",
                       "name": "[parameters('privateEndpointName')]"
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2024-10-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
-                        "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
+                        "copy": [
+                          {
+                            "name": "privateDnsZoneConfigs",
+                            "count": "[length(parameters('privateDnsZoneConfigs'))]",
+                            "input": {
+                              "name": "[coalesce(tryGet(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')], 'name'), last(split(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')].privateDnsZoneResourceId, '/')))]",
+                              "properties": {
+                                "privateDnsZoneId": "[parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')].privateDnsZoneResourceId]"
+                              }
+                            }
+                          }
+                        ]
                       }
                     }
                   },
@@ -2714,14 +2965,15 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2024-10-01', 'full').location]"
             },
             "customDnsConfigs": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/customDnsConfigType"
-              },
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs",
+                  "output": true
+                },
                 "description": "The custom DNS configurations of the private endpoint."
               },
               "value": "[reference('privateEndpoint').customDnsConfigs]"
@@ -3126,7 +3378,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "9925173705553594819"
+              "templateHash": "3165360298138002099"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service."
@@ -3796,7 +4048,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "5026123498979497429"
+                      "templateHash": "12839785925381630557"
                     },
                     "name": "Storage Account Blob Containers",
                     "description": "This module deploys a Storage Account Blob Container."
@@ -3903,7 +4155,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     }
@@ -4310,7 +4562,7 @@
             "value": "[tryGet(parameters('fileServices'), 'shares')]"
           },
           "corsRules": {
-            "value": "[tryGet(parameters('queueServices'), 'corsRules')]"
+            "value": "[tryGet(parameters('fileServices'), 'corsRules')]"
           }
         },
         "template": {
@@ -4321,7 +4573,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "2735186993322606805"
+              "templateHash": "1671507306458261123"
             },
             "name": "Storage Account File Share Services",
             "description": "This module deploys a Storage Account File Share Service."
@@ -4385,6 +4637,74 @@
               "metadata": {
                 "__bicep_export!": true,
                 "description": "The type for a cors rule."
+              }
+            },
+            "fileShareType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the file share."
+                  }
+                },
+                "accessTier": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Cool",
+                    "Hot",
+                    "Premium",
+                    "TransactionOptimized"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Access tier for specific share. Required if the Storage Account kind is set to FileStorage (should be set to \"Premium\"). GpV2 account can choose between TransactionOptimized (default), Hot, and Cool."
+                  }
+                },
+                "enabledProtocols": {
+                  "type": "string",
+                  "allowedValues": [
+                    "NFS",
+                    "SMB"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The authentication protocol that is used for the file share. Can only be specified when creating a share."
+                  }
+                },
+                "rootSquash": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AllSquash",
+                    "NoRootSquash",
+                    "RootSquash"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares."
+                  }
+                },
+                "shareQuota": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The maximum size of the share, in gigabytes. Must be greater than 0, and less than or equal to 5120 (5TB). For Large File Shares, the maximum size is 102400 (100TB)."
+                  }
+                },
+                "roleAssignments": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/roleAssignmentType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Array of role assignments to create."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a file share."
               }
             },
             "diagnosticSettingFullType": {
@@ -4508,6 +4828,81 @@
                   "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                }
+              }
             }
           },
           "parameters": {
@@ -4570,6 +4965,9 @@
             },
             "shares": {
               "type": "array",
+              "items": {
+                "$ref": "#/definitions/fileShareType"
+              },
               "nullable": true,
               "metadata": {
                 "description": "Optional. File shares to create."
@@ -4644,7 +5042,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-shares-{1}', deployment().name, copyIndex())]",
+              "name": "[format('{0}-FileShare-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -4687,7 +5085,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "15881640847294537074"
+                      "templateHash": "6754179847383809905"
                     },
                     "name": "Storage Account File Shares",
                     "description": "This module deploys a Storage Account File Share."
@@ -4764,7 +5162,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     }
@@ -5149,7 +5547,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "1100093319443502715"
+              "templateHash": "13367872914511260606"
             },
             "name": "Storage Account Queue Services",
             "description": "This module deploys a Storage Account Queue Service."
@@ -5213,6 +5611,41 @@
               "metadata": {
                 "__bicep_export!": true,
                 "description": "The type for a cors rule."
+              }
+            },
+            "queueType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the queue."
+                  }
+                },
+                "metadata": {
+                  "type": "object",
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Storage/storageAccounts/queueServices/queues@2024-01-01#properties/properties/properties/metadata"
+                    },
+                    "description": "Optional. Metadata to set on the queue."
+                  },
+                  "nullable": true
+                },
+                "roleAssignments": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/roleAssignmentType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Array of role assignments to create."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a queue."
               }
             },
             "diagnosticSettingFullType": {
@@ -5333,7 +5766,82 @@
               "metadata": {
                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -5348,7 +5856,10 @@
             },
             "queues": {
               "type": "array",
-              "nullable": true,
+              "items": {
+                "$ref": "#/definitions/queueType"
+              },
+              "defaultValue": [],
               "metadata": {
                 "description": "Optional. Queues to create."
               }
@@ -5468,7 +5979,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "17963799770990303971"
+                      "templateHash": "4448170894827599119"
                     },
                     "name": "Storage Account Queues",
                     "description": "This module deploys a Storage Account Queue."
@@ -5545,7 +6056,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     }
@@ -5684,21 +6195,21 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "The name of the deployed file share service."
+                "description": "The name of the deployed queue service."
               },
               "value": "[variables('name')]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
-                "description": "The resource ID of the deployed file share service."
+                "description": "The resource ID of the deployed queue service."
               },
               "value": "[resourceId('Microsoft.Storage/storageAccounts/queueServices', parameters('storageAccountName'), variables('name'))]"
             },
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The resource group of the deployed file share service."
+                "description": "The resource group of the deployed queue service."
               },
               "value": "[resourceGroup().name]"
             }
@@ -5741,7 +6252,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "13069389074590786512"
+              "templateHash": "5514349227222330762"
             },
             "name": "Storage Account Table Services",
             "description": "This module deploys a Storage Account Table Service."
@@ -5805,6 +6316,31 @@
               "metadata": {
                 "__bicep_export!": true,
                 "description": "The type for a cors rule."
+              }
+            },
+            "tableType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the table."
+                  }
+                },
+                "roleAssignments": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/roleAssignmentType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Array of role assignments to create."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a table."
               }
             },
             "diagnosticSettingFullType": {
@@ -5925,7 +6461,82 @@
               "metadata": {
                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -5940,9 +6551,12 @@
             },
             "tables": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "$ref": "#/definitions/tableType"
+              },
+              "nullable": true,
               "metadata": {
-                "description": "Optional. tables to create."
+                "description": "Optional. Tables to create."
               }
             },
             "corsRules": {
@@ -6028,7 +6642,7 @@
             "tableServices_tables": {
               "copy": {
                 "name": "tableServices_tables",
-                "count": "[length(parameters('tables'))]"
+                "count": "[length(coalesce(parameters('tables'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -6040,13 +6654,13 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[parameters('tables')[copyIndex()].name]"
+                    "value": "[coalesce(parameters('tables'), createArray())[copyIndex()].name]"
                   },
                   "storageAccountName": {
                     "value": "[parameters('storageAccountName')]"
                   },
                   "roleAssignments": {
-                    "value": "[tryGet(parameters('tables')[copyIndex()], 'roleAssignments')]"
+                    "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'roleAssignments')]"
                   }
                 },
                 "template": {
@@ -6057,7 +6671,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "10905926757212375091"
+                      "templateHash": "9679349276447021656"
                     },
                     "name": "Storage Account Table",
                     "description": "This module deploys a Storage Account Table."
@@ -6134,7 +6748,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     }
@@ -6231,21 +6845,21 @@
                     "name": {
                       "type": "string",
                       "metadata": {
-                        "description": "The name of the deployed file share service."
+                        "description": "The name of the deployed table."
                       },
                       "value": "[parameters('name')]"
                     },
                     "resourceId": {
                       "type": "string",
                       "metadata": {
-                        "description": "The resource ID of the deployed file share service."
+                        "description": "The resource ID of the deployed table."
                       },
                       "value": "[resourceId('Microsoft.Storage/storageAccounts/tableServices/tables', parameters('storageAccountName'), 'default', parameters('name'))]"
                     },
                     "resourceGroupName": {
                       "type": "string",
                       "metadata": {
-                        "description": "The resource group of the deployed file share service."
+                        "description": "The resource group of the deployed table."
                       },
                       "value": "[resourceGroup().name]"
                     }
