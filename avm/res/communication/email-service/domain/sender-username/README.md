@@ -12,7 +12,7 @@ This module deploys an Sender
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Communication/emailServices/domains/senderUsernames` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.communication_emailservices_domains_senderusernames.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2025-05-01/emailServices/domains/senderUsernames)</li></ul> |
+| `Microsoft.Communication/emailServices/domains/senderUsernames` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.communication_emailservices_domains_senderusernames.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2025-05-01-preview/emailServices/domains/senderUsernames)</li></ul> |
 
 ## Parameters
 
