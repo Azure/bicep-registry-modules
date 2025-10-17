@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "1777849391732308112"
+      "templateHash": "5297191234004454630"
     },
     "name": "Email Services",
     "description": "This module deploys an Email Service"
@@ -94,41 +94,6 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type of domain to create."
-      }
-    },
-    "_1.dnsRecordOutputType": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The type of DNS record."
-          }
-        },
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the DNS record."
-          }
-        },
-        "value": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The value of the DNS record."
-          }
-        },
-        "ttl": {
-          "type": "int",
-          "metadata": {
-            "description": "Required. The time to live for the DNS record."
-          }
-        }
-      },
-      "metadata": {
-        "description": "Custom type definition for DNS records as output.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "domain/main.bicep"
-        }
       }
     },
     "lockType": {
@@ -268,47 +233,6 @@
       },
       "metadata": {
         "description": "The type of sender username to create.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "domain/main.bicep"
-        }
-      }
-    },
-    "verificationRecordsOutputType": {
-      "type": "object",
-      "properties": {
-        "DKIM": {
-          "$ref": "#/definitions/_1.dnsRecordOutputType",
-          "metadata": {
-            "description": "Required. The properties for the DKIM DNS record."
-          }
-        },
-        "DKIM2": {
-          "$ref": "#/definitions/_1.dnsRecordOutputType",
-          "metadata": {
-            "description": "Required. The properties for the DKIM2 DNS record."
-          }
-        },
-        "DMARC": {
-          "$ref": "#/definitions/_1.dnsRecordOutputType",
-          "metadata": {
-            "description": "Required. The properties for the DMARC DNS record."
-          }
-        },
-        "Domain": {
-          "$ref": "#/definitions/_1.dnsRecordOutputType",
-          "metadata": {
-            "description": "Required. The properties for the Domain DNS record."
-          }
-        },
-        "SPF": {
-          "$ref": "#/definitions/_1.dnsRecordOutputType",
-          "metadata": {
-            "description": "Required. The properties for the SPF DNS record."
-          }
-        }
-      },
-      "metadata": {
-        "description": "Custom type definition for verification records as output.",
         "__bicep_imported_from!": {
           "sourceTemplate": "domain/main.bicep"
         }
@@ -515,7 +439,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "12491956923757639206"
+              "templateHash": "3684985488286454218"
             },
             "name": "Email Services Domains",
             "description": "This module deploys an Email Service Domain"
@@ -547,77 +471,6 @@
               "metadata": {
                 "__bicep_export!": true,
                 "description": "The type of sender username to create."
-              }
-            },
-            "verificationRecordsOutputType": {
-              "type": "object",
-              "properties": {
-                "DKIM": {
-                  "$ref": "#/definitions/dnsRecordOutputType",
-                  "metadata": {
-                    "description": "Required. The properties for the DKIM DNS record."
-                  }
-                },
-                "DKIM2": {
-                  "$ref": "#/definitions/dnsRecordOutputType",
-                  "metadata": {
-                    "description": "Required. The properties for the DKIM2 DNS record."
-                  }
-                },
-                "DMARC": {
-                  "$ref": "#/definitions/dnsRecordOutputType",
-                  "metadata": {
-                    "description": "Required. The properties for the DMARC DNS record."
-                  }
-                },
-                "Domain": {
-                  "$ref": "#/definitions/dnsRecordOutputType",
-                  "metadata": {
-                    "description": "Required. The properties for the Domain DNS record."
-                  }
-                },
-                "SPF": {
-                  "$ref": "#/definitions/dnsRecordOutputType",
-                  "metadata": {
-                    "description": "Required. The properties for the SPF DNS record."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "Custom type definition for verification records as output."
-              }
-            },
-            "dnsRecordOutputType": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The type of DNS record."
-                  }
-                },
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the DNS record."
-                  }
-                },
-                "value": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The value of the DNS record."
-                  }
-                },
-                "ttl": {
-                  "type": "int",
-                  "metadata": {
-                    "description": "Required. The time to live for the DNS record."
-                  }
-                }
-              },
-              "metadata": {
-                "description": "Custom type definition for DNS records as output."
               }
             },
             "lockType": {
@@ -1025,8 +878,12 @@
               "value": "[resourceGroup().name]"
             },
             "verificationRecords": {
-              "$ref": "#/definitions/verificationRecordsOutputType",
+              "type": "object",
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Communication/emailServices/domains@2025-05-01#properties/properties/properties/verificationRecords",
+                  "output": true
+                },
                 "description": "The verification records for the domain."
               },
               "value": "[reference('domain').verificationRecords]"
@@ -1097,7 +954,13 @@
     "domainVerificationRecords": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/verificationRecordsOutputType"
+        "type": "object",
+        "metadata": {
+          "__bicep_resource_derived_type!": {
+            "source": "Microsoft.Communication/emailServices/domains@2025-05-01#properties/properties/properties/verificationRecords",
+            "output": true
+          }
+        }
       },
       "metadata": {
         "description": "The list of verification records for each domain."
