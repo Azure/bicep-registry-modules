@@ -198,7 +198,7 @@ param secretsExportConfiguration secretsExportConfigurationType?
 param immutableStorageWithVersioning resourceInput<'Microsoft.Storage/storageAccounts@2025-01-01'>.properties.immutableStorageWithVersioning?
 
 @description('Optional. Enable or disable Advanced Threat Protection.')
-param enableAdvancedThreatProtection bool = true
+param enableAdvancedThreatProtection bool = false
 
 var enableReferencedModulesTelemetry = false
 

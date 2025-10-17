@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "17454128416935655400"
+      "templateHash": "4553012605652056292"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -2170,7 +2170,7 @@
     },
     "enableAdvancedThreatProtection": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Enable or disable Advanced Threat Protection."
       }

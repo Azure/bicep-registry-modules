@@ -4412,7 +4412,7 @@ Enable or disable Advanced Threat Protection.
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 ### Parameter: `enableNfsV3`
 
