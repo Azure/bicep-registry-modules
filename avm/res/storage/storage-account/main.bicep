@@ -197,9 +197,6 @@ param secretsExportConfiguration secretsExportConfigurationType?
 @description('Optional. The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default. Cannot be enabled for ADLS Gen2 storage accounts.')
 param immutableStorageWithVersioning resourceInput<'Microsoft.Storage/storageAccounts@2025-01-01'>.properties.immutableStorageWithVersioning?
 
-@description('Optional. Enable or disable Advanced Threat Protection.')
-param enableAdvancedThreatProtection bool = false
-
 var enableReferencedModulesTelemetry = false
 
 #disable-next-line no-unused-vars
@@ -584,14 +581,6 @@ module storageAccount_managementPolicies 'management-policy/main.bicep' = if (!e
   dependsOn: [
     storageAccount_blobServices // To ensure the lastAccessTimeTrackingPolicy is set first (if used in rule)
   ]
-}
-
-resource storageAccount_advThreatProtect 'Microsoft.Security/advancedThreatProtectionSettings@2019-01-01' = if (enableAdvancedThreatProtection) {
-  name: 'current'
-  scope: storageAccount
-  properties: {
-    isEnabled: true
-  }
 }
 
 // SFTP user settings

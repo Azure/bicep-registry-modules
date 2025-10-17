@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "4553012605652056292"
+      "templateHash": "14182881463294123311"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -2167,13 +2167,6 @@
         "description": "Optional. The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default. Cannot be enabled for ADLS Gen2 storage accounts."
       },
       "nullable": true
-    },
-    "enableAdvancedThreatProtection": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Enable or disable Advanced Threat Protection."
-      }
     }
   },
   "variables": {
@@ -2345,19 +2338,6 @@
         "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
         "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
         "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
-      },
-      "dependsOn": [
-        "storageAccount"
-      ]
-    },
-    "storageAccount_advThreatProtect": {
-      "condition": "[parameters('enableAdvancedThreatProtection')]",
-      "type": "Microsoft.Security/advancedThreatProtectionSettings",
-      "apiVersion": "2019-01-01",
-      "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('name'))]",
-      "name": "current",
-      "properties": {
-        "isEnabled": true
       },
       "dependsOn": [
         "storageAccount"
