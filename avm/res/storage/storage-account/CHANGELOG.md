@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added strict types for `fileServices`, `queueServices`, and `tableServices`
+- Added optional input parameter `advancedThreatProtectionEnabled` for enabling Advanced Threat Protection through Microsoft Defender
 
 ### Breaking Changes
 
