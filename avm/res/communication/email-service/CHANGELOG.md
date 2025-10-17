@@ -8,10 +8,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Added output for `domainVerificationRecords`
 - Added output type for `verificationRecords` from the domains child module
-- Updated `Microsoft.Communication/emailServices` API version from `2023-04-01` to `2025-05-01`
-- Updated `Microsoft.Communication/emailServices/domains` API version from `2023-04-01` to `2025-05-01`
-- Updated `Microsoft.Communication/emailServices/domains/senderUsernaems` API version from `2023-04-01` to `2025-05-01`
-
 
 ### Breaking Changes
 
