@@ -14,7 +14,7 @@ param lock lockType?
 @description('Required. Resource ID of the KeyVault containing the key or secret.')
 param keyVaultResourceId string
 
-@description('Required. Key URL (with version) pointing to a key or secret in KeyVault.')
+@description('Required. The name of the key used for encryption.')
 param keyName string
 
 @description('Optional. The version of the customer managed key to reference for encryption. If not provided, the latest key version is used.')
