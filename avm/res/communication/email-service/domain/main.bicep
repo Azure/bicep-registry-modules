@@ -70,11 +70,11 @@ var formattedRoleAssignments = [
 // Resources      //
 // ============== //
 
-resource emailService 'Microsoft.Communication/emailServices@2023-04-01' existing = {
+resource emailService 'Microsoft.Communication/emailServices@2025-05-01' existing = {
   name: emailServiceName
 }
 
-resource domain 'Microsoft.Communication/emailServices/domains@2023-04-01' = {
+resource domain 'Microsoft.Communication/emailServices/domains@2025-05-01' = {
   name: name
   location: location
   tags: tags
@@ -137,6 +137,9 @@ output resourceId string = domain.id
 
 @description('The name of the resource group the domain was created in.')
 output resourceGroupName string = resourceGroup().name
+
+@description('The verification records for the domain.')
+output verificationRecords resourceOutput<'Microsoft.Communication/emailServices/domains@2025-05-01'>.properties.verificationRecords = domain.properties.verificationRecords
 
 // =========== //
 // Definitions //

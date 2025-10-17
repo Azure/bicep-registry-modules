@@ -77,7 +77,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource email 'Microsoft.Communication/emailServices@2023-04-01' = {
+resource email 'Microsoft.Communication/emailServices@2025-05-01' = {
   name: name
   location: location
   tags: tags
@@ -151,6 +151,11 @@ output domainResourceIds string[] = [for (domain, index) in (domains ?? []): ema
 
 @description('The list of the email domain names.')
 output domainNames string[] = [for (domain, index) in (domains ?? []): email_domains[index].outputs.name]
+
+@description('The list of verification records for each domain.')
+output domainVerificationRecords resourceOutput<'Microsoft.Communication/emailServices/domains@2025-05-01'>.properties.verificationRecords[] = [
+  for (domain, index) in (domains ?? []): email_domains[index].outputs.verificationRecords
+]
 
 // =========== //
 // Definitions //
