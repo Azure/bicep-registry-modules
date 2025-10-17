@@ -20,15 +20,15 @@ param displayName string = username
 // Resources      //
 // ============== //
 
-resource emailService 'Microsoft.Communication/emailServices@2025-05-01' existing = {
+resource emailService 'Microsoft.Communication/emailServices@2025-05-01-preview' existing = {
   name: emailServiceName
 
-  resource domain 'domains@2025-05-01' existing = {
+  resource domain 'domains@2025-05-01-preview' existing = {
     name: domainName
   }
 }
 
-resource senderUsername 'Microsoft.Communication/emailServices/domains/senderUsernames@2025-05-01' = {
+resource senderUsername 'Microsoft.Communication/emailServices/domains/senderUsernames@2025-05-01-preview' = {
   name: name
   parent: emailService::domain
   properties: {

@@ -70,11 +70,11 @@ var formattedRoleAssignments = [
 // Resources      //
 // ============== //
 
-resource emailService 'Microsoft.Communication/emailServices@2025-05-01' existing = {
+resource emailService 'Microsoft.Communication/emailServices@2025-05-01-preview' existing = {
   name: emailServiceName
 }
 
-resource domain 'Microsoft.Communication/emailServices/domains@2025-05-01' = {
+resource domain 'Microsoft.Communication/emailServices/domains@2025-05-01-preview' = {
   name: name
   location: location
   tags: tags
