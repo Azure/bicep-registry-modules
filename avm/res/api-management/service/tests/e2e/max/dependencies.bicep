@@ -30,11 +30,13 @@ param logAnalyticsWorkspaceName string
 
 var addressPrefix = '10.0.0.0/16'
 
+#disable-next-line use-recent-api-versions
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: locationRegion1
 }
 
+#disable-next-line use-recent-api-versions
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
   name: logAnalyticsWorkspaceName
   location: locationRegion1
@@ -52,6 +54,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02
   }
 }
 
+#disable-next-line use-recent-api-versions
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: applicationInsightsName
   location: locationRegion1
@@ -62,6 +65,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
+#disable-next-line use-recent-api-versions
 resource vnetRegion1 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   name: '${virtualNetworkNamePrefix}-${locationRegion1}'
   location: locationRegion1
@@ -99,6 +103,7 @@ resource vnetRegion1 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   }
 }
 
+#disable-next-line use-recent-api-versions
 resource vnetRegion2 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   name: '${virtualNetworkNamePrefix}-${locationRegion2}'
   location: locationRegion2
@@ -136,6 +141,7 @@ resource vnetRegion2 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   }
 }
 
+#disable-next-line use-recent-api-versions
 resource routeTableRegion1 'Microsoft.Network/routeTables@2024-07-01' = {
   name: '${routeTableNamePrefix}-${locationRegion1}'
   location: locationRegion1
@@ -153,6 +159,7 @@ resource routeTableRegion1 'Microsoft.Network/routeTables@2024-07-01' = {
   }
 }
 
+#disable-next-line use-recent-api-versions
 resource routeTableRegion2 'Microsoft.Network/routeTables@2024-07-01' = {
   name: '${routeTableNamePrefix}-${locationRegion2}'
   location: locationRegion2
@@ -170,6 +177,7 @@ resource routeTableRegion2 'Microsoft.Network/routeTables@2024-07-01' = {
   }
 }
 
+#disable-next-line use-recent-api-versions
 resource nsgRegion1 'Microsoft.Network/networkSecurityGroups@2024-07-01' = {
   name: '${networkSecurityGroupNamePrefix}-${locationRegion1}'
   location: locationRegion1
@@ -289,6 +297,7 @@ resource nsgRegion1 'Microsoft.Network/networkSecurityGroups@2024-07-01' = {
   }
 }
 
+#disable-next-line use-recent-api-versions
 resource nsgRegion2 'Microsoft.Network/networkSecurityGroups@2024-07-01' = {
   name: '${networkSecurityGroupNamePrefix}-${locationRegion2}'
   location: locationRegion2
@@ -408,6 +417,7 @@ resource nsgRegion2 'Microsoft.Network/networkSecurityGroups@2024-07-01' = {
   }
 }
 
+#disable-next-line use-recent-api-versions
 resource publicIpRegion1 'Microsoft.Network/publicIPAddresses@2024-07-01' = {
   name: '${publicIPNamePrefix}-${locationRegion1}'
   location: locationRegion1
@@ -424,6 +434,7 @@ resource publicIpRegion1 'Microsoft.Network/publicIPAddresses@2024-07-01' = {
   }
 }
 
+#disable-next-line use-recent-api-versions
 resource publicIpRegion2 'Microsoft.Network/publicIPAddresses@2024-07-01' = {
   name: '${publicIPNamePrefix}-${locationRegion2}'
   location: locationRegion2
