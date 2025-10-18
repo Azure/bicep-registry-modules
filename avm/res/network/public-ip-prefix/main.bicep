@@ -36,10 +36,10 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/publicIPPrefixes@2024-10-01'>.tags?
 
 @description('Optional. The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range.')
-param customIPPrefix object = {}
+param customIPPrefix resourceInput<'Microsoft.Network/publicIPPrefixes@2024-01-01'>.properties.customIPPrefix?
 
 @description('Optional. The list of tags associated with the public IP prefix.')
 param ipTags ipTagType[]?
@@ -117,7 +117,7 @@ resource publicIpPrefix 'Microsoft.Network/publicIPPrefixes@2024-01-01' = {
   }
   zones: map(availabilityZones, zone => string(zone))
   properties: {
-    customIPPrefix: !empty(customIPPrefix) ? customIPPrefix : null
+    customIPPrefix: customIPPrefix
     publicIPAddressVersion: publicIPAddressVersion
     prefixLength: prefixLength
     ipTags: ipTags

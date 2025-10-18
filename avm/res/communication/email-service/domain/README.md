@@ -299,6 +299,7 @@ Describes whether user engagement tracking is enabled or disabled.
 | `name` | string | The name of the domain. |
 | `resourceGroupName` | string | The name of the resource group the domain was created in. |
 | `resourceId` | string | The resource ID of the domain. |
+| `verificationRecords` | object | The verification records for the domain. |
 
 ## Cross-referenced modules
 

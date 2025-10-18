@@ -21,9 +21,11 @@ To view all available AVM Bicep modules, go to AVM Bicep Module Index ([https://
 
 ## Contributing
 
-Only [Microsoft employees](https://azure.github.io/Azure-Verified-Modules/faq/#can-i-be-an-avm-module-owner-if-im-not-a-microsoft-fte) can be module owners at this time. Teams within Microsoft can refer to [AVM Bicep Contribution Guide](https://aka.ms/AVM/Contribute/Bicep) for information on contributing modules.
+Everyone in the world can contribute towards the AVM modules wheteher that is by creating [issues](https://aka.ms/AVM/Bicep/ModuleIssue) and/or by creating [pull requests](https://azure.github.io/Azure-Verified-Modules/contributing/bicep/bicep-contribution-flow/) on **any existing AVM Bicep Module.**
 
-External customers can propose new modules via [AVM Module Proposals](https://aka.ms/AVM/ModuleProposal), submit feature requests or report bugs via [AVM Module Issues](https://aka.ms/AVM/Bicep/ModuleIssue) and can also [contribute to modules](https://azure.github.io/Azure-Verified-Modules/faq/#how-can-i-contribute-to-avm-without-being-a-module-owner) via working with a Microsoft module owner.
+However, **only [Microsoft employees](https://azure.github.io/Azure-Verified-Modules/faq/#can-i-be-an-avm-module-owner-if-im-not-a-microsoft-fte) can be module owners at this time**. Teams within Microsoft can refer to [AVM Bicep Contribution Guide](https://aka.ms/AVM/Contribute/Bicep) for information on contributing modules.
+
+External customers can propose new modules via [AVM Module Proposals](https://aka.ms/AVM/ModuleProposal) and can also [contribute to modules](https://azure.github.io/Azure-Verified-Modules/faq/#how-can-i-contribute-to-avm-without-being-a-module-owner) via working with a Microsoft module owner.
 
 ## Data Collection
 

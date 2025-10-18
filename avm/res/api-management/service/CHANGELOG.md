@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/CHANGELOG.md).
 
+## 0.11.2
+
+### Changes
+
+- Added support for `publicNetworkAccess` parameter
+
+### Breaking Changes
+
+- None
+
 ## 0.11.1
 
 ### Changes

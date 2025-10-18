@@ -35,7 +35,10 @@ body:
     id: module-name-dropdown
     attributes:
       label: Module Name
-      description: Which existing AVM module is this issue related to?
+      description: |
+        Which existing AVM module is this issue related to?
+
+        > **NOTE**: Issues related to child modules and multi-scope modules must be submitted under the corresponding parent module.
       options:
         - ""
         - "avm/ptn/aca-lza/hosting-environment"
@@ -178,6 +181,7 @@ body:
         - "avm/res/managed-identity/user-assigned-identity"
         - "avm/res/managed-services/registration-definition"
         - "avm/res/management/management-group"
+        - "avm/res/management/service-group"
         - "avm/res/maps/account"
         - "avm/res/net-app/net-app-account"
         - "avm/res/network/application-gateway"

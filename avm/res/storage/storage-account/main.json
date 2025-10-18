@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "4232310117466944734"
+      "templateHash": "9651254428903693329"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -347,7 +347,7 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Use versioning to automatically maintain previous versions of your blobs."
+            "description": "Optional. Use versioning to automatically maintain previous versions of your blobs. Cannot be enabled for ADLS Gen2 storage accounts."
           }
         },
         "lastAccessTimeTrackingPolicyEnabled": {
@@ -1813,9 +1813,9 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Storage/storageAccounts@2024-01-01#properties/properties/properties/immutableStorageWithVersioning"
+          "source": "Microsoft.Storage/storageAccounts@2025-01-01#properties/properties/properties/immutableStorageWithVersioning"
         },
-        "description": "Optional. The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default."
+        "description": "Optional. The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default. Cannot be enabled for ADLS Gen2 storage accounts."
       },
       "nullable": true
     }
@@ -1829,6 +1829,7 @@
       }
     ],
     "enableReferencedModulesTelemetry": false,
+    "immutabilityValidation": "[if(and(equals(parameters('enableHierarchicalNamespace'), true()), not(empty(parameters('immutableStorageWithVersioning')))), fail('Configuration error: Immutable storage with versioning cannot be enabled when hierarchical namespace is enabled.'), null())]",
     "supportsBlobService": "[or(or(or(equals(parameters('kind'), 'BlockBlobStorage'), equals(parameters('kind'), 'BlobStorage')), equals(parameters('kind'), 'StorageV2')), equals(parameters('kind'), 'Storage'))]",
     "supportsFileService": "[or(or(equals(parameters('kind'), 'FileStorage'), equals(parameters('kind'), 'StorageV2')), equals(parameters('kind'), 'Storage'))]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
@@ -3125,7 +3126,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "7119131193841840607"
+              "templateHash": "9925173705553594819"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service."
@@ -3608,7 +3609,7 @@
               "type": "bool",
               "defaultValue": false,
               "metadata": {
-                "description": "Optional. Use versioning to automatically maintain previous versions of your blobs."
+                "description": "Optional. Use versioning to automatically maintain previous versions of your blobs. Cannot be enabled for ADLS Gen2 storage accounts."
               }
             },
             "lastAccessTimeTrackingPolicyEnabled": {

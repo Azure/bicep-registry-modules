@@ -1,5 +1,10 @@
 # API Management Services `[Microsoft.ApiManagement/service]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.
 
 ## Navigation
@@ -463,6 +468,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       }
     ]
     publicIpAddressResourceId: '<publicIpAddressResourceId>'
+    publicNetworkAccess: 'Enabled'
     roleAssignments: [
       {
         name: '6352c3e3-ac6b-43d5-ac43-1077ff373721'
@@ -729,6 +735,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "publicIpAddressResourceId": {
       "value": "<publicIpAddressResourceId>"
     },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
     "roleAssignments": {
       "value": [
         {
@@ -961,6 +970,7 @@ param products = [
   }
 ]
 param publicIpAddressResourceId = '<publicIpAddressResourceId>'
+param publicNetworkAccess = 'Enabled'
 param roleAssignments = [
   {
     name: '6352c3e3-ac6b-43d5-ac43-1077ff373721'
