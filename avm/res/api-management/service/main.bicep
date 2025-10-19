@@ -629,7 +629,7 @@ module service_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11
               properties: {
                 privateLinkServiceId: service.id
                 groupIds: [
-                  privateEndpoint.?service ?? 'gateway'
+                  privateEndpoint.?service ?? 'Gateway' // Upper-case as per portal
                 ]
               }
             }
@@ -642,7 +642,7 @@ module service_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11
               properties: {
                 privateLinkServiceId: service.id
                 groupIds: [
-                  privateEndpoint.?service ?? 'gateway'
+                  privateEndpoint.?service ?? 'Gateway' // Upper-case as per portal
                 ]
                 requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
               }

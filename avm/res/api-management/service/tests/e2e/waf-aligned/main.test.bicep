@@ -272,6 +272,8 @@ module testDeployment '../../../main.bicep' = [
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
+      virtualNetworkType: 'External'
+      subnetResourceId: nestedDependencies.outputs.subnetResourceId
     }
   }
 ]
