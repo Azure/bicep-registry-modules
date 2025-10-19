@@ -35,14 +35,14 @@ param enableClientCertificate bool = false
 @description('Optional. Custom hostname configuration of the API Management service.')
 param hostnameConfigurations resourceInput<'Microsoft.ApiManagement/service@2024-05-01'>.properties.hostnameConfigurations?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -61,7 +61,7 @@ param publisherName string
 @description('Optional. Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored.')
 param restore bool = false
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -94,7 +94,7 @@ param tags resourceInput<'Microsoft.ApiManagement/service@2025-05-01'>.tags?
 ])
 param virtualNetworkType string = 'None'
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -110,7 +110,7 @@ param availabilityZones int[] = [
   3
 ]
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
