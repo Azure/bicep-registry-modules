@@ -81,7 +81,7 @@ module testDeployment '../../../main.bicep' = [
           location: secondaryEnforcedLocation
           sku: {
             name: 'Premium'
-            capacity: 3
+            capacity: 2
           }
           availabilityZones: [
             1
@@ -272,8 +272,8 @@ module testDeployment '../../../main.bicep' = [
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
-      virtualNetworkType: 'External'
-      subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      // virtualNetworkType: 'External'
+      // subnetResourceId: nestedDependencies.outputs.subnetResourceId
     }
   }
 ]
