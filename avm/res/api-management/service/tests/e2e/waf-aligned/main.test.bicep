@@ -108,7 +108,6 @@ module testDeployment '../../../main.bicep' = [
         'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA': 'False'
         'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_GCM_SHA256': 'False'
       }
-      // minApiVersion: '2022-08-01' <===== Beware
       apis: [
         {
           displayName: 'Echo API'
@@ -272,8 +271,6 @@ module testDeployment '../../../main.bicep' = [
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
-      // virtualNetworkType: 'External'
-      // subnetResourceId: nestedDependencies.outputs.subnetResourceId
     }
   }
 ]
