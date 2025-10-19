@@ -1090,9 +1090,6 @@ type loggerType = {
 @export()
 @description('The type of a named-value.')
 type namedValueType = {
-  @description('Required. The name of the named value.')
-  name: string
-
   @description('Required. Unique name of NamedValue. It may contain only letters, digits, period, dash, and underscore characters.')
   displayName: string
 
@@ -1101,6 +1098,9 @@ type namedValueType = {
 
   @description('Optional. Tags that when provided can be used to filter the NamedValue list. - string.')
   tags: resourceInput<'Microsoft.ApiManagement/service/namedValues@2024-05-01'>.properties.tags?
+
+  @description('Required. The name of the named value.')
+  name: string
 
   @description('Optional. Determines whether the value is a secret and should be encrypted or not. Default value is false.')
   #disable-next-line secure-secrets-in-params // Not a secret
