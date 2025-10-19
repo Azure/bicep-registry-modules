@@ -91,24 +91,24 @@ module testDeployment '../../../main.bicep' = [
           disableGateway: false
         }
       ]
-      // customProperties: {
-      //   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10': 'False'
-      //   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11': 'False'
-      //   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Ssl30': 'False'
-      //   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10': 'False'
-      //   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11': 'False'
-      //   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30': 'False'
-      //   'Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2': 'True'
-      //   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168': 'False'
-      //   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA': 'False'
-      //   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA': 'False'
-      //   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA256': 'False'
-      //   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA': 'False'
-      //   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA256': 'False'
-      //   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA': 'False'
-      //   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_GCM_SHA256': 'False'
-      // }
-      // minApiVersion: '2022-08-01'
+      customProperties: {
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Ssl30': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2': 'True'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA256': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA256': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_GCM_SHA256': 'False'
+      }
+      minApiVersion: '2022-08-01'
       // apis: [
       //   {
       //     displayName: 'Echo API'
@@ -207,53 +207,53 @@ module testDeployment '../../../main.bicep' = [
       //     secret: true
       //   }
       // ]
-      // policies: [
-      //   {
-      //     format: 'xml'
-      //     value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
-      //   }
-      // ]
-      // portalsettings: [
-      //   {
-      //     name: 'signin'
-      //     properties: {
-      //       enabled: false
-      //     }
-      //   }
-      //   {
-      //     name: 'signup'
-      //     properties: {
-      //       enabled: false
-      //       termsOfService: {
-      //         consentRequired: false
-      //         enabled: false
-      //       }
-      //     }
-      //   }
-      // ]
-      // products: [
-      //   {
-      //     apis: [
-      //       'echo-api'
-      //     ]
-      //     approvalRequired: true
-      //     groups: [
-      //       'developers'
-      //     ]
-      //     name: 'Starter'
-      //     subscriptionRequired: true
-      //     displayName: 'Echo API'
-      //     description: 'This is an echo API'
-      //     terms: 'By accessing or using the services provided by Echo API through Azure API Management, you agree to be bound by these Terms of Use. These terms may be updated from time to time, and your continued use of the services constitutes acceptance of any changes.'
-      //   }
-      // ]
-      // subscriptions: [
-      //   {
-      //     name: 'testArmSubscriptionAllApis'
-      //     scope: '/apis'
-      //     displayName: 'testArmSubscriptionAllApis'
-      //   }
-      // ]
+      policies: [
+        {
+          format: 'xml'
+          value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
+        }
+      ]
+      portalsettings: [
+        {
+          name: 'signin'
+          properties: {
+            enabled: false
+          }
+        }
+        {
+          name: 'signup'
+          properties: {
+            enabled: false
+            termsOfService: {
+              consentRequired: false
+              enabled: false
+            }
+          }
+        }
+      ]
+      products: [
+        {
+          apis: [
+            'echo-api'
+          ]
+          approvalRequired: true
+          groups: [
+            'developers'
+          ]
+          name: 'Starter'
+          subscriptionRequired: true
+          displayName: 'Echo API'
+          description: 'This is an echo API'
+          terms: 'By accessing or using the services provided by Echo API through Azure API Management, you agree to be bound by these Terms of Use. These terms may be updated from time to time, and your continued use of the services constitutes acceptance of any changes.'
+        }
+      ]
+      subscriptions: [
+        {
+          name: 'testArmSubscriptionAllApis'
+          scope: '/apis'
+          displayName: 'testArmSubscriptionAllApis'
+        }
+      ]
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
