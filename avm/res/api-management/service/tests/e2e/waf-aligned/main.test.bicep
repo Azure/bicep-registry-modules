@@ -81,7 +81,7 @@ module testDeployment '../../../main.bicep' = [
           location: secondaryEnforcedLocation
           sku: {
             name: 'Premium'
-            capacity: 2
+            capacity: 3
           }
           availabilityZones: [
             1
