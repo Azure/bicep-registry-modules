@@ -1096,11 +1096,11 @@ type namedValueType = {
   @description('Optional. KeyVault location details of the namedValue.')
   keyVault: resourceInput<'Microsoft.ApiManagement/service/namedValues@2024-05-01'>.properties.keyVault?
 
-  @description('Optional. Tags that when provided can be used to filter the NamedValue list. - string.')
-  tags: resourceInput<'Microsoft.ApiManagement/service/namedValues@2024-05-01'>.properties.tags?
-
   @description('Required. The name of the named value.')
   name: string
+
+  @description('Optional. Tags that when provided can be used to filter the NamedValue list. - string.')
+  tags: resourceInput<'Microsoft.ApiManagement/service/namedValues@2024-05-01'>.properties.tags?
 
   @description('Optional. Determines whether the value is a secret and should be encrypted or not. Default value is false.')
   #disable-next-line secure-secrets-in-params // Not a secret
