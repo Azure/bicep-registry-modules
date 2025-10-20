@@ -70,7 +70,7 @@ param lock lockType?
 param serverRootCACertificate string = ''
 
 @description('Optional. Tags for all resources.')
-param tags object?
+param tags resourceInput<'Microsoft.NetApp/netAppAccounts@2025-01-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true

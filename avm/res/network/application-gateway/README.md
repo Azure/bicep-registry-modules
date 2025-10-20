@@ -1,5 +1,10 @@
 # Network Application Gateways `[Microsoft.Network/applicationGateways]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys a Network Application Gateway.
 
 ## Navigation
@@ -18,7 +23,7 @@ This module deploys a Network Application Gateway.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/applicationGateways` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_applicationgateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/applicationGateways)</li></ul> |
+| `Microsoft.Network/applicationGateways` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_applicationgateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/applicationGateways)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
@@ -5033,39 +5038,6 @@ Ssl cipher suites to be enabled in the specified order to application gateway.
   [
     'TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256'
     'TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384'
-  ]
-  ```
-- Allowed:
-  ```Bicep
-  [
-    'TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA'
-    'TLS_DHE_DSS_WITH_AES_128_CBC_SHA'
-    'TLS_DHE_DSS_WITH_AES_128_CBC_SHA256'
-    'TLS_DHE_DSS_WITH_AES_256_CBC_SHA'
-    'TLS_DHE_DSS_WITH_AES_256_CBC_SHA256'
-    'TLS_DHE_RSA_WITH_AES_128_CBC_SHA'
-    'TLS_DHE_RSA_WITH_AES_128_GCM_SHA256'
-    'TLS_DHE_RSA_WITH_AES_256_CBC_SHA'
-    'TLS_DHE_RSA_WITH_AES_256_GCM_SHA384'
-    'TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA'
-    'TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256'
-    'TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256'
-    'TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA'
-    'TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384'
-    'TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384'
-    'TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA'
-    'TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256'
-    'TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256'
-    'TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA'
-    'TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384'
-    'TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384'
-    'TLS_RSA_WITH_3DES_EDE_CBC_SHA'
-    'TLS_RSA_WITH_AES_128_CBC_SHA'
-    'TLS_RSA_WITH_AES_128_CBC_SHA256'
-    'TLS_RSA_WITH_AES_128_GCM_SHA256'
-    'TLS_RSA_WITH_AES_256_CBC_SHA'
-    'TLS_RSA_WITH_AES_256_CBC_SHA256'
-    'TLS_RSA_WITH_AES_256_GCM_SHA384'
   ]
   ```
 

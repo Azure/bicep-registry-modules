@@ -1,5 +1,10 @@
 # Azure Cosmos DB account `[Microsoft.DocumentDB/databaseAccounts]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed.
 
 ## Navigation
@@ -17,19 +22,19 @@ This module deploys an Azure Cosmos DB account. The API used for the account is 
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/gremlinDatabases)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases_graphs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/gremlinDatabases/graphs)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_mongodbdatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/mongodbDatabases)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_mongodbdatabases_collections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/mongodbDatabases/collections)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlDatabases)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlDatabases/containers)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/gremlinDatabases)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases_graphs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/gremlinDatabases/graphs)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_mongodbdatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/mongodbDatabases)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_mongodbdatabases_collections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/mongodbDatabases/collections)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/sqlDatabases)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/sqlDatabases/containers)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqlroleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleAssignments)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqlroledefinitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleDefinitions)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/tables` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/tables)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/tables` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/tables)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -1303,11 +1308,11 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Required parameters
     name: 'multi-region'
     // Non-required parameters
-    automaticFailover: true
     backupIntervalInMinutes: 300
     backupPolicyType: 'Periodic'
     backupRetentionIntervalInHours: 16
     backupStorageRedundancy: 'Geo'
+    enableAutomaticFailover: true
     enableMultipleWriteLocations: true
     failoverLocations: [
       {
@@ -1347,9 +1352,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "multi-region"
     },
     // Non-required parameters
-    "automaticFailover": {
-      "value": true
-    },
     "backupIntervalInMinutes": {
       "value": 300
     },
@@ -1361,6 +1363,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     },
     "backupStorageRedundancy": {
       "value": "Geo"
+    },
+    "enableAutomaticFailover": {
+      "value": true
     },
     "enableMultipleWriteLocations": {
       "value": true
@@ -1403,11 +1408,11 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'multi-region'
 // Non-required parameters
-param automaticFailover = true
 param backupIntervalInMinutes = 300
 param backupPolicyType = 'Periodic'
 param backupRetentionIntervalInHours = 16
 param backupStorageRedundancy = 'Geo'
+param enableAutomaticFailover = true
 param enableMultipleWriteLocations = true
 param failoverLocations = [
   {
@@ -2513,18 +2518,28 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   name: 'databaseAccountDeployment'
   params: {
     // Required parameters
-    name: 'role-ref'
+    name: 'dddarole001'
     // Non-required parameters
     dataPlaneRoleAssignments: [
       {
         principalId: '<principalId>'
         roleDefinitionId: '<roleDefinitionId>'
       }
+      {
+        principalId: '<principalId>'
+        roleDefinitionId: '00000000-0000-0000-0000-000000000001'
+        scope: '<scope>'
+      }
+      {
+        principalId: '<principalId>'
+        roleDefinitionId: 'Cosmos DB Built-in Data Reader'
+        scope: '<scope>'
+      }
     ]
     dataPlaneRoleDefinitions: [
       {
         assignableScopes: [
-          '<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref'
+          '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
         ]
         assignments: [
           {
@@ -2536,7 +2551,39 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
         ]
+        name: '<name>'
         roleName: 'cosmos-sql-role-test'
+      }
+      {
+        assignableScopes: [
+          '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
+        ]
+        dataActions: [
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+        ]
+        roleName: 'cosmos-sql-role-test-2'
+      }
+      {
+        dataActions: [
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+        ]
+        roleName: 'cosmos-sql-role-test-3'
+      }
+    ]
+    sqlDatabases: [
+      {
+        containers: [
+          {
+            indexingPolicy: {
+              automatic: true
+            }
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'simple-db'
       }
     ]
     zoneRedundant: false
@@ -2558,7 +2605,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "role-ref"
+      "value": "dddarole001"
     },
     // Non-required parameters
     "dataPlaneRoleAssignments": {
@@ -2566,6 +2613,16 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "principalId": "<principalId>",
           "roleDefinitionId": "<roleDefinitionId>"
+        },
+        {
+          "principalId": "<principalId>",
+          "roleDefinitionId": "00000000-0000-0000-0000-000000000001",
+          "scope": "<scope>"
+        },
+        {
+          "principalId": "<principalId>",
+          "roleDefinitionId": "Cosmos DB Built-in Data Reader",
+          "scope": "<scope>"
         }
       ]
     },
@@ -2573,7 +2630,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": [
         {
           "assignableScopes": [
-            "<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref"
+            "<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001"
           ],
           "assignments": [
             {
@@ -2585,7 +2642,41 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*",
             "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
           ],
+          "name": "<name>",
           "roleName": "cosmos-sql-role-test"
+        },
+        {
+          "assignableScopes": [
+            "<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001"
+          ],
+          "dataActions": [
+            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
+          ],
+          "roleName": "cosmos-sql-role-test-2"
+        },
+        {
+          "dataActions": [
+            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
+          ],
+          "roleName": "cosmos-sql-role-test-3"
+        }
+      ]
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "containers": [
+            {
+              "indexingPolicy": {
+                "automatic": true
+              },
+              "name": "container-001",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "simple-db"
         }
       ]
     },
@@ -2607,18 +2698,28 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'role-ref'
+param name = 'dddarole001'
 // Non-required parameters
 param dataPlaneRoleAssignments = [
   {
     principalId: '<principalId>'
     roleDefinitionId: '<roleDefinitionId>'
   }
+  {
+    principalId: '<principalId>'
+    roleDefinitionId: '00000000-0000-0000-0000-000000000001'
+    scope: '<scope>'
+  }
+  {
+    principalId: '<principalId>'
+    roleDefinitionId: 'Cosmos DB Built-in Data Reader'
+    scope: '<scope>'
+  }
 ]
 param dataPlaneRoleDefinitions = [
   {
     assignableScopes: [
-      '<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref'
+      '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
     ]
     assignments: [
       {
@@ -2630,7 +2731,39 @@ param dataPlaneRoleDefinitions = [
       'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
       'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
     ]
+    name: '<name>'
     roleName: 'cosmos-sql-role-test'
+  }
+  {
+    assignableScopes: [
+      '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
+    ]
+    dataActions: [
+      'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+    ]
+    roleName: 'cosmos-sql-role-test-2'
+  }
+  {
+    dataActions: [
+      'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+    ]
+    roleName: 'cosmos-sql-role-test-3'
+  }
+]
+param sqlDatabases = [
+  {
+    containers: [
+      {
+        indexingPolicy: {
+          automatic: true
+        }
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'simple-db'
   }
 ]
 param zoneRedundant = false
@@ -2762,7 +2895,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Required parameters
     name: 'dddawaf001'
     // Non-required parameters
-    automaticFailover: true
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -2773,6 +2905,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     ]
     disableKeyBasedMetadataWriteAccess: true
     disableLocalAuthentication: true
+    enableAutomaticFailover: true
     failoverLocations: [
       {
         failoverPriority: 0
@@ -2835,9 +2968,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "dddawaf001"
     },
     // Non-required parameters
-    "automaticFailover": {
-      "value": true
-    },
     "diagnosticSettings": {
       "value": [
         {
@@ -2852,6 +2982,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": true
     },
     "disableLocalAuthentication": {
+      "value": true
+    },
+    "enableAutomaticFailover": {
       "value": true
     },
     "failoverLocations": {
@@ -2926,7 +3059,6 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'dddawaf001'
 // Non-required parameters
-param automaticFailover = true
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -2937,6 +3069,7 @@ param diagnosticSettings = [
 ]
 param disableKeyBasedMetadataWriteAccess = true
 param disableLocalAuthentication = true
+param enableAutomaticFailover = true
 param failoverLocations = [
   {
     failoverPriority: 0
@@ -2995,23 +3128,30 @@ param zoneRedundant = true
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`automaticFailover`](#parameter-automaticfailover) | bool | Enable automatic failover for regions. Defaults to true. |
+| [`analyticalStorageConfiguration`](#parameter-analyticalstorageconfiguration) | object | Analytical storage specific properties. |
 | [`backupIntervalInMinutes`](#parameter-backupintervalinminutes) | int | An integer representing the interval in minutes between two backups. This setting only applies to the periodic backup type. Defaults to 240. |
 | [`backupPolicyContinuousTier`](#parameter-backuppolicycontinuoustier) | string | Configuration values to specify the retention period for continuous mode backup. Default to "Continuous30Days". |
 | [`backupPolicyType`](#parameter-backuppolicytype) | string | Configures the backup mode. Periodic backup must be used if multiple write locations are used. Defaults to "Continuous". |
 | [`backupRetentionIntervalInHours`](#parameter-backupretentionintervalinhours) | int | An integer representing the time (in hours) that each backup is retained. This setting only applies to the periodic backup type. Defaults to 8. |
 | [`backupStorageRedundancy`](#parameter-backupstorageredundancy) | string | Setting that indicates the type of backup residency. This setting only applies to the periodic backup type. Defaults to "Local". |
 | [`capabilitiesToAdd`](#parameter-capabilitiestoadd) | array | A list of Azure Cosmos DB specific capabilities for the account. |
+| [`cors`](#parameter-cors) | array | The CORS policy for the Cosmos DB database account. |
 | [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | The offer type for the account. Defaults to "Standard". |
 | [`dataPlaneRoleAssignments`](#parameter-dataplaneroleassignments) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments. |
 | [`dataPlaneRoleDefinitions`](#parameter-dataplaneroledefinitions) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions. |
 | [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | The default consistency level of the account. Defaults to "Session". |
+| [`defaultIdentity`](#parameter-defaultidentity) | object | The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings for the service. |
 | [`disableKeyBasedMetadataWriteAccess`](#parameter-disablekeybasedmetadatawriteaccess) | bool | Disable write operations on metadata resources (databases, containers, throughput) via account keys. Defaults to true. |
 | [`disableLocalAuthentication`](#parameter-disablelocalauthentication) | bool | Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true. |
 | [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Flag to indicate whether to enable storage analytics. Defaults to false. |
+| [`enableAutomaticFailover`](#parameter-enableautomaticfailover) | bool | Enable automatic failover for regions. Defaults to true. |
+| [`enableBurstCapacity`](#parameter-enableburstcapacity) | bool | Flag to indicate enabling/disabling of Burst Capacity feature on the account. Cannot be enabled for serverless accounts. |
+| [`enableCassandraConnector`](#parameter-enablecassandraconnector) | bool | Enables the cassandra connector on the Cosmos DB C* account. |
 | [`enableFreeTier`](#parameter-enablefreetier) | bool | Flag to indicate whether "Free Tier" is enabled. Defaults to false. |
 | [`enableMultipleWriteLocations`](#parameter-enablemultiplewritelocations) | bool | Enables the account to write in multiple locations. Periodic backup must be used if enabled. Defaults to false. |
+| [`enablePartitionMerge`](#parameter-enablepartitionmerge) | bool | Flag to enable/disable the 'Partition Merge' feature on the account. |
+| [`enablePerRegionPerPartitionAutoscale`](#parameter-enableperregionperpartitionautoscale) | bool | Flag to enable/disable the 'PerRegionPerPartitionAutoscale' feature on the account. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`failoverLocations`](#parameter-failoverlocations) | array | The set of locations enabled for the account. Defaults to the location where the account is deployed. |
 | [`gremlinDatabases`](#parameter-gremlindatabases) | array | Configuration for databases when using Azure Cosmos DB for Apache Gremlin. |
@@ -3039,13 +3179,12 @@ The name of the account.
 - Required: Yes
 - Type: string
 
-### Parameter: `automaticFailover`
+### Parameter: `analyticalStorageConfiguration`
 
-Enable automatic failover for regions. Defaults to true.
+Analytical storage specific properties.
 
 - Required: No
-- Type: bool
-- Default: `True`
+- Type: object
 
 ### Parameter: `backupIntervalInMinutes`
 
@@ -3135,6 +3274,13 @@ A list of Azure Cosmos DB specific capabilities for the account.
   ]
   ```
 
+### Parameter: `cors`
+
+The CORS policy for the Cosmos DB database account.
+
+- Required: No
+- Type: array
+
 ### Parameter: `databaseAccountOfferType`
 
 The offer type for the account. Defaults to "Standard".
@@ -3168,6 +3314,7 @@ Configurations for Azure Cosmos DB for NoSQL native role-based access control as
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-dataplaneroleassignmentsname) | string | The unique name of the role assignment. |
+| [`scope`](#parameter-dataplaneroleassignmentsscope) | string | The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level. |
 
 ### Parameter: `dataPlaneRoleAssignments.principalId`
 
@@ -3190,6 +3337,13 @@ The unique name of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `dataPlaneRoleAssignments.scope`
+
+The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level.
+
+- Required: No
+- Type: string
+
 ### Parameter: `dataPlaneRoleDefinitions`
 
 Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions.
@@ -3201,6 +3355,7 @@ Configurations for Azure Cosmos DB for NoSQL native role-based access control de
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`dataActions`](#parameter-dataplaneroledefinitionsdataactions) | array | An array of data actions that are allowed. |
 | [`roleName`](#parameter-dataplaneroledefinitionsrolename) | string | A user-friendly name for the role-based access control definition. This must be unique within the database account. |
 
 **Optional parameters**
@@ -3209,8 +3364,14 @@ Configurations for Azure Cosmos DB for NoSQL native role-based access control de
 | :-- | :-- | :-- |
 | [`assignableScopes`](#parameter-dataplaneroledefinitionsassignablescopes) | array | A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope. |
 | [`assignments`](#parameter-dataplaneroledefinitionsassignments) | array | An array of role-based access control assignments to be created for the definition. |
-| [`dataActions`](#parameter-dataplaneroledefinitionsdataactions) | array | An array of data actions that are allowed. |
 | [`name`](#parameter-dataplaneroledefinitionsname) | string | The unique identifier of the role-based access control definition. |
+
+### Parameter: `dataPlaneRoleDefinitions.dataActions`
+
+An array of data actions that are allowed.
+
+- Required: Yes
+- Type: array
 
 ### Parameter: `dataPlaneRoleDefinitions.roleName`
 
@@ -3244,6 +3405,7 @@ An array of role-based access control assignments to be created for the definiti
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-dataplaneroledefinitionsassignmentsname) | string | Name unique identifier of the SQL Role Assignment. |
+| [`scope`](#parameter-dataplaneroledefinitionsassignmentsscope) | string | The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level. |
 
 ### Parameter: `dataPlaneRoleDefinitions.assignments.principalId`
 
@@ -3259,12 +3421,12 @@ Name unique identifier of the SQL Role Assignment.
 - Required: No
 - Type: string
 
-### Parameter: `dataPlaneRoleDefinitions.dataActions`
+### Parameter: `dataPlaneRoleDefinitions.assignments.scope`
 
-An array of data actions that are allowed.
+The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `dataPlaneRoleDefinitions.name`
 
@@ -3290,6 +3452,108 @@ The default consistency level of the account. Defaults to "Session".
     'Strong'
   ]
   ```
+
+### Parameter: `defaultIdentity`
+
+The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      name: 'FirstPartyIdentity'
+  }
+  ```
+- Discriminator: `name`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`FirstPartyIdentity`](#variant-defaultidentityname-firstpartyidentity) |  |
+| [`SystemAssignedIdentity`](#variant-defaultidentityname-systemassignedidentity) |  |
+| [`UserAssignedIdentity`](#variant-defaultidentityname-userassignedidentity) |  |
+
+### Variant: `defaultIdentity.name-FirstPartyIdentity`
+
+
+To use this variant, set the property `name` to `FirstPartyIdentity`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-defaultidentityname-firstpartyidentityname) | string | The type of default identity to use. |
+
+### Parameter: `defaultIdentity.name-FirstPartyIdentity.name`
+
+The type of default identity to use.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'FirstPartyIdentity'
+  ]
+  ```
+
+### Variant: `defaultIdentity.name-SystemAssignedIdentity`
+
+
+To use this variant, set the property `name` to `SystemAssignedIdentity`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-defaultidentityname-systemassignedidentityname) | string | The type of default identity to use. |
+
+### Parameter: `defaultIdentity.name-SystemAssignedIdentity.name`
+
+The type of default identity to use.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'SystemAssignedIdentity'
+  ]
+  ```
+
+### Variant: `defaultIdentity.name-UserAssignedIdentity`
+
+
+To use this variant, set the property `name` to `UserAssignedIdentity`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-defaultidentityname-userassignedidentityname) | string | The type of default identity to use. |
+| [`resourceId`](#parameter-defaultidentityname-userassignedidentityresourceid) | string | The resource ID of the user assigned identity to use as the default identity. |
+
+### Parameter: `defaultIdentity.name-UserAssignedIdentity.name`
+
+The type of default identity to use.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'UserAssignedIdentity'
+  ]
+  ```
+
+### Parameter: `defaultIdentity.name-UserAssignedIdentity.resourceId`
+
+The resource ID of the user assigned identity to use as the default identity.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `diagnosticSettings`
 
@@ -3461,6 +3725,30 @@ Flag to indicate whether to enable storage analytics. Defaults to false.
 - Type: bool
 - Default: `False`
 
+### Parameter: `enableAutomaticFailover`
+
+Enable automatic failover for regions. Defaults to true.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `enableBurstCapacity`
+
+Flag to indicate enabling/disabling of Burst Capacity feature on the account. Cannot be enabled for serverless accounts.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `enableCassandraConnector`
+
+Enables the cassandra connector on the Cosmos DB C* account.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `enableFreeTier`
 
 Flag to indicate whether "Free Tier" is enabled. Defaults to false.
@@ -3472,6 +3760,22 @@ Flag to indicate whether "Free Tier" is enabled. Defaults to false.
 ### Parameter: `enableMultipleWriteLocations`
 
 Enables the account to write in multiple locations. Periodic backup must be used if enabled. Defaults to false.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enablePartitionMerge`
+
+Flag to enable/disable the 'Partition Merge' feature on the account.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enablePerRegionPerPartitionAutoscale`
+
+Flag to enable/disable the 'PerRegionPerPartitionAutoscale' feature on the account.
 
 - Required: No
 - Type: bool
@@ -3532,6 +3836,98 @@ Configuration for databases when using Azure Cosmos DB for Apache Gremlin.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-gremlindatabasesname) | string | Name of the Gremlin database. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`graphs`](#parameter-gremlindatabasesgraphs) | array | Array of graphs to deploy in the Gremlin database. |
+| [`maxThroughput`](#parameter-gremlindatabasesmaxthroughput) | int | Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored. Setting throughput at the database level is only recommended for development/test or when workload across all graphs in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the graph level and not at the database level. |
+| [`tags`](#parameter-gremlindatabasestags) | object | Tags of the Gremlin database resource. |
+| [`throughput`](#parameter-gremlindatabasesthroughput) | int | Request Units per second (for example 10000). Cannot be set together with `maxThroughput`. Setting throughput at the database level is only recommended for development/test or when workload across all graphs in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the graph level and not at the database level. |
+
+### Parameter: `gremlinDatabases.name`
+
+Name of the Gremlin database.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `gremlinDatabases.graphs`
+
+Array of graphs to deploy in the Gremlin database.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-gremlindatabasesgraphsname) | string | Name of the graph. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`indexingPolicy`](#parameter-gremlindatabasesgraphsindexingpolicy) | object | Indexing policy of the graph. |
+| [`partitionKeyPaths`](#parameter-gremlindatabasesgraphspartitionkeypaths) | array | List of paths using which data within the container can be partitioned. |
+| [`tags`](#parameter-gremlindatabasesgraphstags) | object | Tags of the Gremlin graph resource. |
+
+### Parameter: `gremlinDatabases.graphs.name`
+
+Name of the graph.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `gremlinDatabases.graphs.indexingPolicy`
+
+Indexing policy of the graph.
+
+- Required: No
+- Type: object
+
+### Parameter: `gremlinDatabases.graphs.partitionKeyPaths`
+
+List of paths using which data within the container can be partitioned.
+
+- Required: No
+- Type: array
+
+### Parameter: `gremlinDatabases.graphs.tags`
+
+Tags of the Gremlin graph resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `gremlinDatabases.maxThroughput`
+
+Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored. Setting throughput at the database level is only recommended for development/test or when workload across all graphs in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the graph level and not at the database level.
+
+- Required: No
+- Type: int
+
+### Parameter: `gremlinDatabases.tags`
+
+Tags of the Gremlin database resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `gremlinDatabases.throughput`
+
+Request Units per second (for example 10000). Cannot be set together with `maxThroughput`. Setting throughput at the database level is only recommended for development/test or when workload across all graphs in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the graph level and not at the database level.
+
+- Required: No
+- Type: int
 
 ### Parameter: `location`
 
@@ -3654,6 +4050,98 @@ Configuration for databases when using Azure Cosmos DB for MongoDB RU.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-mongodbdatabasesname) | string | Name of the mongodb database. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoscaleSettings`](#parameter-mongodbdatabasesautoscalesettings) | object | Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both. |
+| [`collections`](#parameter-mongodbdatabasescollections) | array | Collections in the mongodb database. |
+| [`tags`](#parameter-mongodbdatabasestags) | object | Tags of the resource. |
+| [`throughput`](#parameter-mongodbdatabasesthroughput) | int | Request Units per second. Setting throughput at the database level is only recommended for development/test or when workload across all collections in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level. |
+
+### Parameter: `mongodbDatabases.name`
+
+Name of the mongodb database.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `mongodbDatabases.autoscaleSettings`
+
+Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both.
+
+- Required: No
+- Type: object
+
+### Parameter: `mongodbDatabases.collections`
+
+Collections in the mongodb database.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`indexes`](#parameter-mongodbdatabasescollectionsindexes) | array | Indexes for the collection. |
+| [`name`](#parameter-mongodbdatabasescollectionsname) | string | Name of the collection. |
+| [`shardKey`](#parameter-mongodbdatabasescollectionsshardkey) | object | ShardKey for the collection. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`throughput`](#parameter-mongodbdatabasescollectionsthroughput) | int | Request Units per second. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level. |
+
+### Parameter: `mongodbDatabases.collections.indexes`
+
+Indexes for the collection.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `mongodbDatabases.collections.name`
+
+Name of the collection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `mongodbDatabases.collections.shardKey`
+
+ShardKey for the collection.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `mongodbDatabases.collections.throughput`
+
+Request Units per second. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level.
+
+- Required: No
+- Type: int
+
+### Parameter: `mongodbDatabases.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `mongodbDatabases.throughput`
+
+Request Units per second. Setting throughput at the database level is only recommended for development/test or when workload across all collections in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level.
+
+- Required: No
+- Type: int
+
 ### Parameter: `networkRestrictions`
 
 The network configuration of this module. Defaults to `{ ipRules: [], virtualNetworkRules: [], publicNetworkAccess: 'Disabled' }`.
@@ -3675,6 +4163,7 @@ The network configuration of this module. Defaults to `{ ipRules: [], virtualNet
 | :-- | :-- | :-- |
 | [`ipRules`](#parameter-networkrestrictionsiprules) | array | A single IPv4 address or a single IPv4 address range in Classless Inter-Domain Routing (CIDR) format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: `10.0.0.0/8`, `100.64.0.0/10`, `172.16.0.0/12`, `192.168.0.0/16`, since these are not enforceable by the IP address filter. Example of valid inputs: `23.40.210.245` or `23.40.210.0/8`. |
 | [`networkAclBypass`](#parameter-networkrestrictionsnetworkaclbypass) | string | Specifies the network ACL bypass for Azure services. Default to "None". |
+| [`networkAclBypassResourceIds`](#parameter-networkrestrictionsnetworkaclbypassresourceids) | array | An array that contains the Resource Ids for Network Acl Bypass for the Cosmos DB account. |
 | [`publicNetworkAccess`](#parameter-networkrestrictionspublicnetworkaccess) | string | Whether requests from the public network are allowed. Default to "Disabled". |
 | [`virtualNetworkRules`](#parameter-networkrestrictionsvirtualnetworkrules) | array | List of virtual network access control list (ACL) rules configured for the account. |
 
@@ -3698,6 +4187,13 @@ Specifies the network ACL bypass for Azure services. Default to "None".
     'None'
   ]
   ```
+
+### Parameter: `networkRestrictions.networkAclBypassResourceIds`
+
+An array that contains the Resource Ids for Network Acl Bypass for the Cosmos DB account.
+
+- Required: No
+- Type: array
 
 ### Parameter: `networkRestrictions.publicNetworkAccess`
 
@@ -4269,33 +4765,34 @@ Configuration for databases when using Azure Cosmos DB for NoSQL.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-sqldatabasesname) | string | Name of the database . |
+| [`name`](#parameter-sqldatabasesname) | string | Name of the SQL database . |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`autoscaleSettingsMaxThroughput`](#parameter-sqldatabasesautoscalesettingsmaxthroughput) | int | Specifies the autoscale settings and represents maximum throughput the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If the value is not set, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
-| [`containers`](#parameter-sqldatabasescontainers) | array | Set of containers to deploy in the database. |
-| [`throughput`](#parameter-sqldatabasesthroughput) | int | Request units per second. Will be ignored if `autoscaleSettingsMaxThroughput` is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. Defaults to 400. |
+| [`autoscaleSettingsMaxThroughput`](#parameter-sqldatabasesautoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
+| [`containers`](#parameter-sqldatabasescontainers) | array | Array of containers to deploy in the SQL database. |
+| [`tags`](#parameter-sqldatabasestags) | object | Tags of the SQL database resource. |
+| [`throughput`](#parameter-sqldatabasesthroughput) | int | Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
 
 ### Parameter: `sqlDatabases.name`
 
-Name of the database .
+Name of the SQL database .
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `sqlDatabases.autoscaleSettingsMaxThroughput`
 
-Specifies the autoscale settings and represents maximum throughput the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If the value is not set, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.
+Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.
 
 - Required: No
 - Type: int
 
 ### Parameter: `sqlDatabases.containers`
 
-Set of containers to deploy in the database.
+Array of containers to deploy in the SQL database.
 
 - Required: No
 - Type: array
@@ -4312,12 +4809,13 @@ Set of containers to deploy in the database.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`analyticalStorageTtl`](#parameter-sqldatabasescontainersanalyticalstoragettl) | int | Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store. |
-| [`autoscaleSettingsMaxThroughput`](#parameter-sqldatabasescontainersautoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level. |
+| [`autoscaleSettingsMaxThroughput`](#parameter-sqldatabasescontainersautoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
 | [`conflictResolutionPolicy`](#parameter-sqldatabasescontainersconflictresolutionpolicy) | object | The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions. |
 | [`defaultTtl`](#parameter-sqldatabasescontainersdefaultttl) | int | Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don't expire by default. |
 | [`indexingPolicy`](#parameter-sqldatabasescontainersindexingpolicy) | object | Indexing policy of the container. |
 | [`kind`](#parameter-sqldatabasescontainerskind) | string | Default to Hash. Indicates the kind of algorithm used for partitioning. |
-| [`throughput`](#parameter-sqldatabasescontainersthroughput) | int | Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. |
+| [`tags`](#parameter-sqldatabasescontainerstags) | object | Tags of the SQL Database resource. |
+| [`throughput`](#parameter-sqldatabasescontainersthroughput) | int | Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
 | [`uniqueKeyPolicyKeys`](#parameter-sqldatabasescontainersuniquekeypolicykeys) | array | The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service. |
 | [`version`](#parameter-sqldatabasescontainersversion) | int | Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition. |
 
@@ -4344,7 +4842,7 @@ Default to 0. Indicates how long data should be retained in the analytical store
 
 ### Parameter: `sqlDatabases.containers.autoscaleSettingsMaxThroughput`
 
-Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level.
+Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.
 
 - Required: No
 - Type: int
@@ -4356,47 +4854,6 @@ The conflict resolution policy for the container. Conflicts and conflict resolut
 
 - Required: No
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`mode`](#parameter-sqldatabasescontainersconflictresolutionpolicymode) | string | Indicates the conflict resolution mode. |
-
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`conflictResolutionPath`](#parameter-sqldatabasescontainersconflictresolutionpolicyconflictresolutionpath) | string | The conflict resolution path in the case of LastWriterWins mode. Required if `mode` is set to 'LastWriterWins'. |
-| [`conflictResolutionProcedure`](#parameter-sqldatabasescontainersconflictresolutionpolicyconflictresolutionprocedure) | string | The procedure to resolve conflicts in the case of custom mode. Required if `mode` is set to 'Custom'. |
-
-### Parameter: `sqlDatabases.containers.conflictResolutionPolicy.mode`
-
-Indicates the conflict resolution mode.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Custom'
-    'LastWriterWins'
-  ]
-  ```
-
-### Parameter: `sqlDatabases.containers.conflictResolutionPolicy.conflictResolutionPath`
-
-The conflict resolution path in the case of LastWriterWins mode. Required if `mode` is set to 'LastWriterWins'.
-
-- Required: No
-- Type: string
-
-### Parameter: `sqlDatabases.containers.conflictResolutionPolicy.conflictResolutionProcedure`
-
-The procedure to resolve conflicts in the case of custom mode. Required if `mode` is set to 'Custom'.
-
-- Required: No
-- Type: string
 
 ### Parameter: `sqlDatabases.containers.defaultTtl`
 
@@ -4428,9 +4885,16 @@ Default to Hash. Indicates the kind of algorithm used for partitioning.
   ]
   ```
 
+### Parameter: `sqlDatabases.containers.tags`
+
+Tags of the SQL Database resource.
+
+- Required: No
+- Type: object
+
 ### Parameter: `sqlDatabases.containers.throughput`
 
-Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.
+Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.
 
 - Required: No
 - Type: int
@@ -4440,19 +4904,6 @@ Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMa
 The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.
 
 - Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`paths`](#parameter-sqldatabasescontainersuniquekeypolicykeyspaths) | array | List of paths must be unique for each document in the Azure Cosmos DB service. |
-
-### Parameter: `sqlDatabases.containers.uniqueKeyPolicyKeys.paths`
-
-List of paths must be unique for each document in the Azure Cosmos DB service.
-
-- Required: Yes
 - Type: array
 
 ### Parameter: `sqlDatabases.containers.version`
@@ -4469,9 +4920,16 @@ Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Vers
   ]
   ```
 
+### Parameter: `sqlDatabases.tags`
+
+Tags of the SQL database resource.
+
+- Required: No
+- Type: object
+
 ### Parameter: `sqlDatabases.throughput`
 
-Request units per second. Will be ignored if `autoscaleSettingsMaxThroughput` is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. Defaults to 400.
+Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.
 
 - Required: No
 - Type: int
@@ -4482,6 +4940,48 @@ Configuration for databases when using Azure Cosmos DB for Table.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-tablesname) | string | Name of the table. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`maxThroughput`](#parameter-tablesmaxthroughput) | int | Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored. |
+| [`tags`](#parameter-tablestags) | object | Tags for the table. |
+| [`throughput`](#parameter-tablesthroughput) | int | Request Units per second (for example 10000). Cannot be set together with `maxThroughput`. |
+
+### Parameter: `tables.name`
+
+Name of the table.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tables.maxThroughput`
+
+Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored.
+
+- Required: No
+- Type: int
+
+### Parameter: `tables.tags`
+
+Tags for the table.
+
+- Required: No
+- Type: object
+
+### Parameter: `tables.throughput`
+
+Request Units per second (for example 10000). Cannot be set together with `maxThroughput`.
+
+- Required: No
+- Type: int
 
 ### Parameter: `tags`
 
@@ -4532,9 +5032,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection

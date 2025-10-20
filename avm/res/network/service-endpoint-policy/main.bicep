@@ -13,10 +13,10 @@ param location string = resourceGroup().location
 param enableTelemetry bool = true
 
 @description('Optional. An Array of service endpoint policy definitions.')
-param serviceEndpointPolicyDefinitions array?
+param serviceEndpointPolicyDefinitions resourceInput<'Microsoft.Network/serviceEndpointPolicies@2024-10-01'>.properties.serviceEndpointPolicyDefinitions?
 
 @description('Optional. An Array of contextual service endpoint policy.')
-param contextualServiceEndpointPolicies array?
+param contextualServiceEndpointPolicies resourceInput<'Microsoft.Network/serviceEndpointPolicies@2024-10-01'>.properties.contextualServiceEndpointPolicies?
 
 @description('Optional. The alias indicating if the policy belongs to a service.')
 param serviceAlias string?
@@ -30,7 +30,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/serviceEndpointPolicies@2024-10-01'>.tags?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -84,7 +84,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource serviceEndpointPolicy 'Microsoft.Network/serviceEndpointPolicies@2023-04-01' = {
+resource serviceEndpointPolicy 'Microsoft.Network/serviceEndpointPolicies@2024-10-01' = {
   name: name
   location: location
   tags: tags
