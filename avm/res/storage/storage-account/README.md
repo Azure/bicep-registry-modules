@@ -1032,7 +1032,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         name: '30b99723-a3d8-4e31-8872-b80c960d62bd'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+        roleDefinitionIdOrName: 'Owner'
       }
       {
         name: '<name>'
@@ -1600,7 +1600,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           "name": "30b99723-a3d8-4e31-8872-b80c960d62bd",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Storage Blob Data Contributor"
+          "roleDefinitionIdOrName": "Owner"
         },
         {
           "name": "<name>",
@@ -2138,7 +2138,7 @@ param roleAssignments = [
     name: '30b99723-a3d8-4e31-8872-b80c960d62bd'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+    roleDefinitionIdOrName: 'Owner'
   }
   {
     name: '<name>'

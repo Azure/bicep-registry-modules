@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "5514349227222330762"
+      "version": "0.38.33.27573",
+      "templateHash": "15397070691540239144"
     },
     "name": "Storage Account Table Services",
     "description": "This module deploys a Storage Account Table Service."
@@ -399,7 +399,7 @@
         "count": "[length(coalesce(parameters('tables'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Table-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -424,8 +424,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "9679349276447021656"
+              "version": "0.38.33.27573",
+              "templateHash": "2494851345252564065"
             },
             "name": "Storage Account Table",
             "description": "This module deploys a Storage Account Table."
