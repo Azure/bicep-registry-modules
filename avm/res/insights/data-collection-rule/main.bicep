@@ -30,7 +30,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Resource tags.')
-param tags object?
+param tags resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.tags?
 
 // =============== //
 //   Deployments   //
@@ -217,19 +217,19 @@ type linuxDcrPropertiesType = {
   kind: 'Linux'
 
   @description('Required. Specification of data sources that will be collected.')
-  dataSources: object
+  dataSources: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.dataSources
 
   @description('Required. The specification of data flows.')
-  dataFlows: array
+  dataFlows: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.dataFlows
 
   @description('Required. Specification of destinations that can be used in data flows.')
-  destinations: object
+  destinations: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.destinations
 
   @description('Optional. The resource ID of the data collection endpoint that this rule can be used with.')
   dataCollectionEndpointResourceId: string?
 
   @description('Optional. Declaration of custom streams used in this rule.')
-  streamDeclarations: object?
+  streamDeclarations: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.streamDeclarations?
 
   @description('Optional. Description of the data collection rule.')
   description: string?
@@ -241,19 +241,19 @@ type windowsDcrPropertiesType = {
   kind: 'Windows'
 
   @description('Required. Specification of data sources that will be collected.')
-  dataSources: object
+  dataSources: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.dataSources
 
   @description('Required. The specification of data flows.')
-  dataFlows: array
+  dataFlows: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.dataFlows
 
   @description('Required. Specification of destinations that can be used in data flows.')
-  destinations: object
+  destinations: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.destinations
 
   @description('Optional. The resource ID of the data collection endpoint that this rule can be used with.')
   dataCollectionEndpointResourceId: string?
 
   @description('Optional. Declaration of custom streams used in this rule.')
-  streamDeclarations: object?
+  streamDeclarations: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.streamDeclarations?
 
   @description('Optional. Description of the data collection rule.')
   description: string?
@@ -265,19 +265,19 @@ type allPlatformsDcrPropertiesType = {
   kind: 'All'
 
   @description('Required. Specification of data sources that will be collected.')
-  dataSources: object
+  dataSources: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.dataSources
 
   @description('Required. The specification of data flows.')
-  dataFlows: array
+  dataFlows: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.dataFlows
 
   @description('Required. Specification of destinations that can be used in data flows.')
-  destinations: object
+  destinations: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.destinations
 
   @description('Optional. The resource ID of the data collection endpoint that this rule can be used with.')
   dataCollectionEndpointResourceId: string?
 
   @description('Optional. Declaration of custom streams used in this rule.')
-  streamDeclarations: object?
+  streamDeclarations: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.streamDeclarations?
 
   @description('Optional. Description of the data collection rule.')
   description: string?
@@ -316,16 +316,16 @@ type directDcrPropertiesType = {
   kind: 'Direct'
 
   @description('Required. The specification of data flows.')
-  dataFlows: array
+  dataFlows: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.dataFlows
 
   @description('Required. Specification of destinations that can be used in data flows.')
-  destinations: object
+  destinations: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.destinations
 
   @description('Optional. The resource ID of the data collection endpoint that this rule can be used with.')
   dataCollectionEndpointResourceId: string?
 
   @description('Required. Declaration of custom streams used in this rule.')
-  streamDeclarations: object
+  streamDeclarations: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.streamDeclarations
 
   @description('Optional. Description of the data collection rule.')
   description: string?
