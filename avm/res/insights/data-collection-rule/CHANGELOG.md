@@ -8,8 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Fixed role assignments naming issue when deploying multiple data collection rules with role assignments in the same resource group
 - Updated common types to use 'avm-common-types' version `0.6.1`.
-- Added resource-derived types for all module parameters
-- Update Add output `endpoints` to allow use of the DCR's logging & metrics endpoints, if generated
+- Added resource-derived types for all module parameters.
 
 ### Breaking Changes
 
