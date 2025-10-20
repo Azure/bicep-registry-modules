@@ -64,6 +64,17 @@ var builtInRoleNames = {
   )
 }
 
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 var dataCollectionRulePropertiesUnion = union(
   {
     description: dataCollectionRuleProperties.?description
@@ -87,6 +98,8 @@ var dataCollectionRulePropertiesUnion = union(
       }
     : {}
 )
+
+var enableReferencedModulesTelemetry = false
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -126,17 +139,30 @@ resource dataCollectionRuleAll 'Microsoft.Insights/dataCollectionRules@2023-03-1
 }
 
 // Using a module as a workaround for issues with conditional scope: https://github.com/Azure/bicep/issues/7367
-module dataCollectionRule_conditionalScopeResources 'modules/nested_conditionalScope.bicep' = if ((!empty(lock ?? {}) && lock.?kind != 'None') || (!empty(roleAssignments ?? []))) {
-  name: '${uniqueString(deployment().name, location)}-DCR-ConditionalScope'
+module dataCollectionRule_conditionalScopeLock 'modules/nested_lock.bicep' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: '${uniqueString(deployment().name, location)}-DCR-Lock'
   params: {
     dataCollectionRuleName: dataCollectionRuleProperties.kind == 'All'
       ? dataCollectionRuleAll.name
       : dataCollectionRule.name
-    builtInRoleNames: builtInRoleNames
     lock: lock
-    roleAssignments: roleAssignments
   }
 }
+
+module dataCollectionRule_roleAssignments 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = [
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: '${uniqueString(deployment().name, location)}-DCR-RoleAssignments-${index}'
+    params: {
+      resourceId: dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll.id : dataCollectionRule.id
+      name: roleAssignment.?name
+      roleDefinitionId: roleAssignment.roleDefinitionId
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      enableTelemetry: enableReferencedModulesTelemetry
+    }
+  }
+]
 
 // =========== //
 //   Outputs   //
@@ -152,7 +178,9 @@ output resourceId string = dataCollectionRuleProperties.kind == 'All' ? dataColl
 output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
-output location string = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll!.location : dataCollectionRule!.location
+output location string = dataCollectionRuleProperties.kind == 'All'
+  ? dataCollectionRuleAll!.location
+  : dataCollectionRule!.location
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = dataCollectionRuleProperties.kind == 'All'
@@ -160,10 +188,14 @@ output systemAssignedMIPrincipalId string? = dataCollectionRuleProperties.kind =
   : dataCollectionRule.?identity.?principalId
 
 @description('The endpoints of the dataCollectionRule, if created.')
-output endpoints resourceOutput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.endpoints? = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll!.properties.?endpoints : dataCollectionRule!.properties.?endpoints
+output endpoints resourceOutput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.endpoints? = dataCollectionRuleProperties.kind == 'All'
+  ? dataCollectionRuleAll!.properties.?endpoints
+  : dataCollectionRule!.properties.?endpoints
 
 @description('The ImmutableId of the dataCollectionRule.')
-output immutableId string? = dataCollectionRuleProperties.kind == 'All' ? dataCollectionRuleAll!.properties.?immutableId : dataCollectionRule!.properties.?immutableId
+output immutableId string? = dataCollectionRuleProperties.kind == 'All'
+  ? dataCollectionRuleAll!.properties.?immutableId
+  : dataCollectionRule!.properties.?immutableId
 
 // =============== //
 //   Definitions   //
