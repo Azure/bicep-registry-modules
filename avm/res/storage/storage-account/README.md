@@ -698,7 +698,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           workspaceResourceId: '<workspaceResourceId>'
         }
       ]
-      isVersioningEnabled: true
+      isVersioningEnabled: false
       lastAccessTimeTrackingPolicyEnabled: true
       versionDeletePolicyDays: 3
     }
@@ -1234,7 +1234,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             "workspaceResourceId": "<workspaceResourceId>"
           }
         ],
-        "isVersioningEnabled": true,
+        "isVersioningEnabled": false,
         "lastAccessTimeTrackingPolicyEnabled": true,
         "versionDeletePolicyDays": 3
       }
@@ -1804,7 +1804,7 @@ param blobServices = {
       workspaceResourceId: '<workspaceResourceId>'
     }
   ]
-  isVersioningEnabled: true
+  isVersioningEnabled: false
   lastAccessTimeTrackingPolicyEnabled: true
   versionDeletePolicyDays: 3
 }
@@ -2749,10 +2749,6 @@ param kind = 'Storage'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-temp
-```
 
 <details>
 

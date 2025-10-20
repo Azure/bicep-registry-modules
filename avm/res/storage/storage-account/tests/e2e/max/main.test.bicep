@@ -257,7 +257,7 @@ module testDeployment '../../../main.bicep' = [
         containerDeleteRetentionPolicyDays: 10
         deleteRetentionPolicyEnabled: true
         deleteRetentionPolicyDays: 9
-        isVersioningEnabled: true
+        isVersioningEnabled: false // cannot be true when hierarchical namespace is enabled
         versionDeletePolicyDays: 3
         corsRules: [
           {
