@@ -75,7 +75,7 @@ import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-com
 param privateEndpoints privateEndpointMultiServiceType[]?
 
 @description('Optional. The Storage Account ManagementPolicies Rules.')
-param managementPolicyRules array?
+param managementPolicyRules resourceInput<'Microsoft.Storage/storageAccounts/managementPolicies@2024-01-01'>.properties.policy.rules?
 
 @description('Optional. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
 param networkAcls networkAclsType?
@@ -322,6 +322,34 @@ var formattedRoleAssignments = [
       : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
   })
 ]
+
+var formattedManagementPolicies = union(
+  managementPolicyRules ?? [],
+  !empty(blobServices) && (blobServices.?isVersioningEnabled ?? false) && blobServices.?versionDeletePolicyDays != null
+    ? [
+        {
+          name: 'DeletePreviousVersions (auto-created)' // name matches one created via this operation in portal
+          enabled: true
+          type: 'Lifecycle'
+          definition: {
+            actions: {
+              version: {
+                delete: {
+                  daysAfterCreationGreaterThan: blobServices.versionDeletePolicyDays!
+                }
+              }
+            }
+            filters: {
+              blobTypes: [
+                'blockBlob'
+                'appendBlob'
+              ]
+            }
+          }
+        }
+      ]
+    : []
+)
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -572,14 +600,14 @@ module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoi
 ]
 
 // Lifecycle Policy
-module storageAccount_managementPolicies 'management-policy/main.bicep' = if (!empty(managementPolicyRules ?? [])) {
+module storageAccount_managementPolicies 'management-policy/main.bicep' = if (!empty(formattedManagementPolicies ?? [])) {
   name: '${uniqueString(deployment().name, location)}-Storage-ManagementPolicies'
   params: {
     storageAccountName: storageAccount.name
-    rules: managementPolicyRules!
+    rules: formattedManagementPolicies!
   }
   dependsOn: [
-    storageAccount_blobServices // To ensure the lastAccessTimeTrackingPolicy is set first (if used in rule)
+    storageAccount_blobServices // To ensure the lastAccessTimeTrackingPolicy is set first (if used in rule) as well as versioning
   ]
 }
 
@@ -916,6 +944,9 @@ type blobServiceType = {
 
   @description('Optional. Use versioning to automatically maintain previous versions of your blobs. Cannot be enabled for ADLS Gen2 storage accounts.')
   isVersioningEnabled: bool?
+
+  @description('Optional. Number of days to keep a version before deleting. If set, a lifecycle management policy will be created to handle deleting previous versions.')
+  versionDeletePolicyDays: int?
 
   @description('Optional. The blob service property to configure last access time based tracking policy. When set to true last access time based tracking is enabled.')
   lastAccessTimeTrackingPolicyEnabled: bool?

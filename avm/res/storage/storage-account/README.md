@@ -59,6 +59,10 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module as a Blob Storage account.
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+temp
+```
 
 <details>
 
@@ -128,6 +132,10 @@ param skuName = 'Standard_LRS'
 
 This instance deploys the module as a Premium Block Blob Storage account.
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+temp
+```
 
 <details>
 
@@ -197,6 +205,10 @@ param skuName = 'Premium_LRS'
 
 This instance deploys the module with the minimum set of required parameters for the changefeed configuration.
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+temp
+```
 
 <details>
 
@@ -272,6 +284,10 @@ param blobServices = {
 
 This instance deploys the module with the minimum set of required parameters.
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+temp
+```
 
 <details>
 
@@ -350,6 +366,10 @@ param networkAcls = {
 
 This instance deploys the module with the immutability policy enabled.
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+temp
+```
 
 <details>
 
@@ -504,6 +524,10 @@ param networkAcls = {
 
 This instance deploys the module saving all its secrets in a key vault.
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+temp
+```
 
 <details>
 
@@ -674,7 +698,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           workspaceResourceId: '<workspaceResourceId>'
         }
       ]
+      isVersioningEnabled: true
       lastAccessTimeTrackingPolicyEnabled: true
+      versionDeletePolicyDays: 3
     }
     diagnosticSettings: [
       {
@@ -1006,7 +1032,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         name: '30b99723-a3d8-4e31-8872-b80c960d62bd'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
       }
       {
         name: '<name>'
@@ -1208,7 +1234,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             "workspaceResourceId": "<workspaceResourceId>"
           }
         ],
-        "lastAccessTimeTrackingPolicyEnabled": true
+        "isVersioningEnabled": true,
+        "lastAccessTimeTrackingPolicyEnabled": true,
+        "versionDeletePolicyDays": 3
       }
     },
     "diagnosticSettings": {
@@ -1572,7 +1600,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           "name": "30b99723-a3d8-4e31-8872-b80c960d62bd",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Storage Blob Data Contributor"
         },
         {
           "name": "<name>",
@@ -1776,7 +1804,9 @@ param blobServices = {
       workspaceResourceId: '<workspaceResourceId>'
     }
   ]
+  isVersioningEnabled: true
   lastAccessTimeTrackingPolicyEnabled: true
+  versionDeletePolicyDays: 3
 }
 param diagnosticSettings = [
   {
@@ -2108,7 +2138,7 @@ param roleAssignments = [
     name: '30b99723-a3d8-4e31-8872-b80c960d62bd'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Storage Blob Data Contributor'
   }
   {
     name: '<name>'
@@ -2219,6 +2249,10 @@ param tags = {
 
 This instance deploys the module with a NFS File Share.
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+temp
+```
 
 <details>
 
@@ -2314,6 +2348,10 @@ param skuName = 'Premium_LRS'
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+temp
+```
 
 <details>
 
@@ -2465,6 +2503,10 @@ param privateEndpoints = [
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+temp
+```
 
 <details>
 
@@ -2639,6 +2681,10 @@ param privateEndpoints = [
 
 This instance deploys the module as Storage Account version 1.
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+temp
+```
 
 <details>
 
@@ -2703,6 +2749,10 @@ param kind = 'Storage'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+temp
+```
 
 <details>
 
@@ -2754,7 +2804,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           workspaceResourceId: '<workspaceResourceId>'
         }
       ]
+      isVersioningEnabled: true
       lastAccessTimeTrackingPolicyEnabled: true
+      versionDeletePolicyDays: 3
     }
     diagnosticSettings: [
       {
@@ -3012,7 +3064,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             "workspaceResourceId": "<workspaceResourceId>"
           }
         ],
-        "lastAccessTimeTrackingPolicyEnabled": true
+        "isVersioningEnabled": true,
+        "lastAccessTimeTrackingPolicyEnabled": true,
+        "versionDeletePolicyDays": 3
       }
     },
     "diagnosticSettings": {
@@ -3292,7 +3346,9 @@ param blobServices = {
       workspaceResourceId: '<workspaceResourceId>'
     }
   ]
+  isVersioningEnabled: true
   lastAccessTimeTrackingPolicyEnabled: true
+  versionDeletePolicyDays: 3
 }
 param diagnosticSettings = [
   {
@@ -3657,6 +3713,7 @@ Blob service and containers to deploy.
 | [`lastAccessTimeTrackingPolicyEnabled`](#parameter-blobserviceslastaccesstimetrackingpolicyenabled) | bool | The blob service property to configure last access time based tracking policy. When set to true last access time based tracking is enabled. |
 | [`restorePolicyDays`](#parameter-blobservicesrestorepolicydays) | int | How long this blob can be restored. It should be less than DeleteRetentionPolicy days. |
 | [`restorePolicyEnabled`](#parameter-blobservicesrestorepolicyenabled) | bool | The blob service properties for blob restore policy. If point-in-time restore is enabled, then versioning, change feed, and blob soft delete must also be enabled. |
+| [`versionDeletePolicyDays`](#parameter-blobservicesversiondeletepolicydays) | int | Number of days to keep a version before deleting. If set, a lifecycle management policy will be created to handle deleting previous versions. |
 
 ### Parameter: `blobServices.automaticSnapshotPolicyEnabled`
 
@@ -4199,6 +4256,13 @@ The blob service properties for blob restore policy. If point-in-time restore is
 
 - Required: No
 - Type: bool
+
+### Parameter: `blobServices.versionDeletePolicyDays`
+
+Number of days to keep a version before deleting. If set, a lifecycle management policy will be created to handle deleting previous versions.
+
+- Required: No
+- Type: int
 
 ### Parameter: `customDomainName`
 

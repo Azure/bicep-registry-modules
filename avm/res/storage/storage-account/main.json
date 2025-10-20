@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "14182881463294123311"
+      "templateHash": "2625360274363763201"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -348,6 +348,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Use versioning to automatically maintain previous versions of your blobs. Cannot be enabled for ADLS Gen2 storage accounts."
+          }
+        },
+        "versionDeletePolicyDays": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Number of days to keep a version before deleting. If set, a lifecycle management policy will be created to handle deleting previous versions."
           }
         },
         "lastAccessTimeTrackingPolicyEnabled": {
@@ -1918,10 +1925,13 @@
     },
     "managementPolicyRules": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Storage/storageAccounts/managementPolicies@2024-01-01#properties/properties/properties/policy/properties/rules"
+        },
         "description": "Optional. The Storage Account ManagementPolicies Rules."
-      }
+      },
+      "nullable": true
     },
     "networkAcls": {
       "$ref": "#/definitions/networkAclsType",
@@ -2208,7 +2218,8 @@
       "Storage Table Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')]",
       "Storage Table Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76199698-9eea-4c19-bc75-cec21354c6b6')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "formattedManagementPolicies": "[union(coalesce(parameters('managementPolicyRules'), createArray()), if(and(and(not(empty(parameters('blobServices'))), coalesce(tryGet(parameters('blobServices'), 'isVersioningEnabled'), false())), not(equals(tryGet(parameters('blobServices'), 'versionDeletePolicyDays'), null()))), createArray(createObject('name', 'DeletePreviousVersions (auto-created)', 'enabled', true(), 'type', 'Lifecycle', 'definition', createObject('actions', createObject('version', createObject('delete', createObject('daysAfterCreationGreaterThan', parameters('blobServices').versionDeletePolicyDays))), 'filters', createObject('blobTypes', createArray('blockBlob', 'appendBlob'))))), createArray()))]"
   },
   "resources": {
     "cMKKeyVault::cMKKey": {
@@ -3004,7 +3015,7 @@
       ]
     },
     "storageAccount_managementPolicies": {
-      "condition": "[not(empty(coalesce(parameters('managementPolicyRules'), createArray())))]",
+      "condition": "[not(empty(coalesce(variables('formattedManagementPolicies'), createArray())))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Storage-ManagementPolicies', uniqueString(deployment().name, parameters('location')))]",
@@ -3018,7 +3029,7 @@
             "value": "[parameters('name')]"
           },
           "rules": {
-            "value": "[parameters('managementPolicyRules')]"
+            "value": "[variables('formattedManagementPolicies')]"
           }
         },
         "template": {

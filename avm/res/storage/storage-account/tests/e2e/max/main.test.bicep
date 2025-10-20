@@ -257,6 +257,8 @@ module testDeployment '../../../main.bicep' = [
         containerDeleteRetentionPolicyDays: 10
         deleteRetentionPolicyEnabled: true
         deleteRetentionPolicyDays: 9
+        isVersioningEnabled: true
+        versionDeletePolicyDays: 3
         corsRules: [
           {
             allowedHeaders: [
@@ -522,7 +524,7 @@ module testDeployment '../../../main.bicep' = [
       roleAssignments: [
         {
           name: '30b99723-a3d8-4e31-8872-b80c960d62bd'
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Storage Blob Data Contributor'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }

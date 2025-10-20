@@ -7,6 +7,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added strict types for `fileServices`, `queueServices`, and `tableServices`
+- Updated input `managementPolicyRules` to match underlying strict type `storageAccounts/managementPolicies.properties.policy.rules`
+- Added optional input `blobServices.versionDeletePolicyDays` to provide a friendly means of including an auto-created lifecycle policy for deleting blob versions after x days.
 
 ### Breaking Changes
 
