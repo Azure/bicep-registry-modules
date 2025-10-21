@@ -42,27 +42,20 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/storage/storage-account:<version>`.
 
-- [Deploying as a Blob Storage](#example-1-deploying-as-a-blob-storage)
-- [Deploying as a Block Blob Storage](#example-2-deploying-as-a-block-blob-storage)
-- [Using only changefeed configuration](#example-3-using-only-changefeed-configuration)
-- [Using only defaults](#example-4-using-only-defaults)
-- [With immutability policy](#example-5-with-immutability-policy)
-- [Deploying with a key vault reference to save secrets](#example-6-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-7-using-large-parameter-set)
-- [Deploying with a NFS File Share](#example-8-deploying-with-a-nfs-file-share)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-9-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-10-using-customer-managed-keys-with-user-assigned-identity)
-- [Deploying as Storage Account version 1](#example-11-deploying-as-storage-account-version-1)
-- [WAF-aligned](#example-12-waf-aligned)
+- [Blob](#example-1-blob)
+- [Block](#example-2-block)
+- [Changefeed](#example-3-changefeed)
+- [Defaults](#example-4-defaults)
+- [Immutability](#example-5-immutability)
+- [Kvsecrets](#example-6-kvsecrets)
+- [Max](#example-7-max)
+- [Nfs](#example-8-nfs)
+- [System-Assigned-Cmk-Encryption](#example-9-system-assigned-cmk-encryption)
+- [User-Assigned-Cmk-Encryption](#example-10-user-assigned-cmk-encryption)
+- [V1](#example-11-v1)
+- [Waf-Aligned](#example-12-waf-aligned)
 
-### Example 1: _Deploying as a Blob Storage_
-
-This instance deploys the module as a Blob Storage account.
-
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-temp
-```
+### Example 1: _Blob_
 
 <details>
 
@@ -128,14 +121,7 @@ param skuName = 'Standard_LRS'
 </details>
 <p>
 
-### Example 2: _Deploying as a Block Blob Storage_
-
-This instance deploys the module as a Premium Block Blob Storage account.
-
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-temp
-```
+### Example 2: _Block_
 
 <details>
 
@@ -201,14 +187,7 @@ param skuName = 'Premium_LRS'
 </details>
 <p>
 
-### Example 3: _Using only changefeed configuration_
-
-This instance deploys the module with the minimum set of required parameters for the changefeed configuration.
-
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-temp
-```
+### Example 3: _Changefeed_
 
 <details>
 
@@ -280,14 +259,7 @@ param blobServices = {
 </details>
 <p>
 
-### Example 4: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-temp
-```
+### Example 4: _Defaults_
 
 <details>
 
@@ -362,14 +334,7 @@ param networkAcls = {
 </details>
 <p>
 
-### Example 5: _With immutability policy_
-
-This instance deploys the module with the immutability policy enabled.
-
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-temp
-```
+### Example 5: _Immutability_
 
 <details>
 
@@ -520,14 +485,7 @@ param networkAcls = {
 </details>
 <p>
 
-### Example 6: _Deploying with a key vault reference to save secrets_
-
-This instance deploys the module saving all its secrets in a key vault.
-
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-temp
-```
+### Example 6: _Kvsecrets_
 
 <details>
 
@@ -606,10 +564,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 7: _Using large parameter set_
-
-This instance deploys the module with most of its features enabled.
-
+### Example 7: _Max_
 
 <details>
 
@@ -2245,14 +2200,7 @@ param tags = {
 </details>
 <p>
 
-### Example 8: _Deploying with a NFS File Share_
-
-This instance deploys the module with a NFS File Share.
-
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-temp
-```
+### Example 8: _Nfs_
 
 <details>
 
@@ -2344,14 +2292,7 @@ param skuName = 'Premium_LRS'
 </details>
 <p>
 
-### Example 9: _Using Customer-Managed-Keys with System-Assigned identity_
-
-This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
-
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-temp
-```
+### Example 9: _System-Assigned-Cmk-Encryption_
 
 <details>
 
@@ -2499,14 +2440,7 @@ param privateEndpoints = [
 </details>
 <p>
 
-### Example 10: _Using Customer-Managed-Keys with User-Assigned identity_
-
-This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
-
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-temp
-```
+### Example 10: _User-Assigned-Cmk-Encryption_
 
 <details>
 
@@ -2677,14 +2611,7 @@ param privateEndpoints = [
 </details>
 <p>
 
-### Example 11: _Deploying as Storage Account version 1_
-
-This instance deploys the module as Storage Account version 1.
-
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-temp
-```
+### Example 11: _V1_
 
 <details>
 
@@ -2745,10 +2672,7 @@ param kind = 'Storage'
 </details>
 <p>
 
-### Example 12: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
+### Example 12: _Waf-Aligned_
 
 <details>
 
