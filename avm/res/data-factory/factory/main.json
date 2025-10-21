@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "13253044727713109147"
+      "version": "0.38.33.27573",
+      "templateHash": "17514468770864369464"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory."
@@ -1269,7 +1269,7 @@
     "dataFactory_managedVirtualNetwork": {
       "condition": "[not(empty(parameters('managedVirtualNetworkName')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-DataFactory-ManagedVNet', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1293,8 +1293,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "8061029640954922707"
+              "version": "0.38.33.27573",
+              "templateHash": "12325441561514257017"
             },
             "name": "Data Factory Managed Virtual Networks",
             "description": "This module deploys a Data Factory Managed Virtual Network."
@@ -1333,7 +1333,7 @@
                 "count": "[length(parameters('managedPrivateEndpoints'))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-managedPrivateEndpoint-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -1366,8 +1366,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "602279009281901787"
+                      "version": "0.38.33.27573",
+                      "templateHash": "5260630377604219104"
                     },
                     "name": "Data Factory Managed Virtual Network Managed PrivateEndpoints",
                     "description": "This module deploys a Data Factory Managed Virtual Network Managed Private Endpoint."
@@ -1487,7 +1487,7 @@
         "count": "[length(parameters('integrationRuntimes'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-DataFactory-IntegrationRuntime-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1520,8 +1520,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "12532910396221887499"
+              "version": "0.38.33.27573",
+              "templateHash": "16420718579189735251"
             },
             "name": "Data Factory Integration RunTimes",
             "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime."
@@ -1621,7 +1621,7 @@
         "count": "[length(parameters('linkedServices'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-DataFactory-LinkedServices-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1657,8 +1657,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "9403799306301101708"
+              "version": "0.38.33.27573",
+              "templateHash": "6535900002320723947"
             },
             "name": "Data Factory Linked Service",
             "description": "This module deploys a Data Factory Linked Service."
@@ -1762,7 +1762,7 @@
         "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-dataFactory-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
