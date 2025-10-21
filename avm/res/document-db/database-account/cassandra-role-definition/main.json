@@ -1,0 +1,336 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.36.1.42791",
+      "templateHash": "11719174324757945913"
+    },
+    "name": "DocumentDB Database Account Cassandra Role Definitions.",
+    "description": "This module deploys a Cassandra Role Definition in a CosmosDB Account."
+  },
+  "definitions": {
+    "cassandraRoleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The unique identifier of the role assignment."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The unique identifier for the associated AAD principal."
+          }
+        },
+        "scope": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The data plane resource path for which access is being granted. Defaults to the current account."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    }
+  },
+  "parameters": {
+    "databaseAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The unique identifier of the Role Definition."
+      }
+    },
+    "roleName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. A user-friendly name for the Role Definition. Must be unique for the database account."
+      }
+    },
+    "dataActions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. An array of data actions that are allowed."
+      }
+    },
+    "notDataActions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. An array of data actions that are denied."
+      }
+    },
+    "assignableScopes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Keyspace. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account."
+      }
+    },
+    "cassandraRoleAssignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/cassandraRoleAssignmentType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. An array of Cassandra Role Assignments to be created for the Cassandra Role Definition."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "variables": {
+    "enableReferencedModulesTelemetry": false
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.doctdb-dbacct-cassandraroledefinition.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "databaseAccount": {
+      "existing": true,
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "apiVersion": "2024-11-15",
+      "name": "[parameters('databaseAccountName')]"
+    },
+    "cassandraRoleDefinition": {
+      "type": "Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions",
+      "apiVersion": "2025-05-01-preview",
+      "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'cassandra-role')))]",
+      "properties": {
+        "assignableScopes": "[coalesce(parameters('assignableScopes'), createArray(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))))]",
+        "permissions": [
+          {
+            "dataActions": "[parameters('dataActions')]",
+            "notDataActions": "[parameters('notDataActions')]"
+          }
+        ],
+        "roleName": "[parameters('roleName')]",
+        "type": "CustomRole"
+      }
+    },
+    "databaseAccount_cassandraRoleAssignments": {
+      "copy": {
+        "name": "databaseAccount_cassandraRoleAssignments",
+        "count": "[length(coalesce(parameters('cassandraRoleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-cassandra-ra-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "databaseAccountName": {
+            "value": "[parameters('databaseAccountName')]"
+          },
+          "roleDefinitionId": {
+            "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'cassandra-role')))]"
+          },
+          "principalId": {
+            "value": "[coalesce(parameters('cassandraRoleAssignments'), createArray())[copyIndex()].principalId]"
+          },
+          "name": {
+            "value": "[tryGet(coalesce(parameters('cassandraRoleAssignments'), createArray())[copyIndex()], 'name')]"
+          },
+          "scope": {
+            "value": "[tryGet(coalesce(parameters('cassandraRoleAssignments'), createArray())[copyIndex()], 'scope')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.36.1.42791",
+              "templateHash": "2528040635514023800"
+            },
+            "name": "DocumentDB Database Account Cassandra Role Assignments.",
+            "description": "This module deploys a Cassandra Role Assignment in a CosmosDB Account."
+          },
+          "parameters": {
+            "databaseAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Name unique identifier of the Cassandra Role Assignment."
+              }
+            },
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription."
+              }
+            },
+            "roleDefinitionId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The unique identifier of the associated Cassandra Role Definition."
+              }
+            },
+            "scope": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The data plane resource path for which access is being granted through this Cassandra Role Assignment. Defaults to the current account."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            }
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.doctdb-dbacct-cassandraroleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "databaseAccount": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2024-11-15",
+              "name": "[parameters('databaseAccountName')]"
+            },
+            "cassandraRoleAssignment": {
+              "type": "Microsoft.DocumentDB/databaseAccounts/cassandraRoleAssignments",
+              "apiVersion": "2025-05-01-preview",
+              "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))))]",
+              "properties": {
+                "principalId": "[parameters('principalId')]",
+                "roleDefinitionId": "[parameters('roleDefinitionId')]",
+                "scope": "[coalesce(parameters('scope'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Cassandra Role Assignment."
+              },
+              "value": "[coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))))]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Cassandra Role Assignment."
+              },
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/cassandraRoleAssignments', parameters('databaseAccountName'), coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the Cassandra Role Assignment was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "cassandraRoleDefinition"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the cassandra role definition."
+      },
+      "value": "[coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'cassandra-role'))]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the cassandra role definition."
+      },
+      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'cassandra-role')))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the cassandra role definition was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
