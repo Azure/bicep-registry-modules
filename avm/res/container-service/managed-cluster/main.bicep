@@ -161,6 +161,12 @@ param enablePrivateClusterPublicFQDN bool = false
 @description('Optional. Private DNS Zone configuration. Set to \'system\' and AKS will create a private DNS zone in the node resource group. Set to \'\' to disable private DNS Zone creation and use public DNS. Supply the resource ID here of an existing Private DNS zone to use an existing zone.')
 param privateDNSZone string?
 
+@description('Optional. Enable API Server vnet integration. Requires subscription feature flag `EnableAPIServerVnetIntegrationPreview` to be enabled during preview.')
+param enableApiServerVnetIntegration bool = false
+
+@description('Optional.  API Server subnet resource id.')
+param apiServerSubnetResourceId string?
+
 @description('Required. Properties of the primary agent pool.')
 param primaryAgentPoolProfiles agentPoolType[]
 
@@ -315,10 +321,10 @@ param podIdentityProfileAllowNetworkPluginKubenet bool = false
 param podIdentityProfileEnable bool = false
 
 @description('Optional. The pod identities to use in the cluster.')
-param podIdentityProfileUserAssignedIdentities resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-02-preview'>.properties.podIdentityProfile.userAssignedIdentities?
+param podIdentityProfileUserAssignedIdentities resourceInput<'Microsoft.ContainerService/managedClusters@2025-07-02-preview'>.properties.podIdentityProfile.userAssignedIdentities?
 
 @description('Optional. The pod identity exceptions to allow.')
-param podIdentityProfileUserAssignedIdentityExceptions resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-02-preview'>.properties.podIdentityProfile.userAssignedIdentityExceptions?
+param podIdentityProfileUserAssignedIdentityExceptions resourceInput<'Microsoft.ContainerService/managedClusters@2025-07-02-preview'>.properties.podIdentityProfile.userAssignedIdentityExceptions?
 
 @description('Optional. Whether the The OIDC issuer profile of the Managed Cluster is enabled.')
 param enableOidcIssuerProfile bool = false
@@ -330,7 +336,7 @@ param enableWorkloadIdentity bool = false
 param enableAzureDefender bool = false
 
 @description('Optional. Microsoft Defender settings for security gating, validates container images eligibility for deployment based on Defender for Containers security findings. Using Admission Controller, it either audits or prevents the deployment of images that do not meet security standards.')
-param securityGatingConfig resourceInput<'Microsoft.containerService/managedClusters@2025-05-02-preview'>.properties.securityProfile.defender.securityGating?
+param securityGatingConfig resourceInput<'Microsoft.containerService/managedClusters@2025-07-02-preview'>.properties.securityProfile.defender.securityGating?
 
 @description('Optional. Whether to enable Image Cleaner.')
 param enableImageCleaner bool = false
@@ -389,7 +395,7 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 param lock lockType?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-02-preview'>.tags?
+param tags resourceInput<'Microsoft.ContainerService/managedClusters@2025-07-02-preview'>.tags?
 
 @description('Optional. The resource ID of the disc encryption set to apply to the cluster. For security reasons, this value should be provided.')
 param diskEncryptionSetResourceId string?
@@ -398,10 +404,10 @@ param diskEncryptionSetResourceId string?
 param fluxExtension extensionType?
 
 @description('Optional. Configurations for provisioning the cluster with HTTP proxy servers.')
-param httpProxyConfig resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-02-preview'>.properties.httpProxyConfig?
+param httpProxyConfig resourceInput<'Microsoft.ContainerService/managedClusters@2025-07-02-preview'>.properties.httpProxyConfig?
 
 @description('Optional. Identities associated with the cluster.')
-param identityProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-02-preview'>.properties.identityProfile?
+param identityProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-07-02-preview'>.properties.identityProfile?
 
 @description('Optional. Enables Kubernetes Event-driven Autoscaling (KEDA).')
 param kedaAddon bool = false
@@ -413,7 +419,7 @@ param vpaAddon bool = false
 param enableAzureMonitorProfileMetrics bool = false
 
 @description('Optional. Application Monitoring Profile for Kubernetes Application Container. Collects application logs, metrics and traces through auto-instrumentation of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview.')
-param appMonitoring resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-02-preview'>.properties.azureMonitorProfile.appMonitoring?
+param appMonitoring resourceInput<'Microsoft.ContainerService/managedClusters@2025-07-02-preview'>.properties.azureMonitorProfile.appMonitoring?
 
 @description('Optional. Indicates if Azure Monitor Container Insights Logs Addon is enabled.')
 param enableContainerInsights bool = false
@@ -577,7 +583,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 // Main Resources //
 // ============== //
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-05-02-preview' = {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-07-02-preview' = {
   name: name
   location: location
   tags: tags
@@ -836,6 +842,8 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-05-02-p
       enablePrivateCluster: enablePrivateCluster
       enablePrivateClusterPublicFQDN: enablePrivateClusterPublicFQDN
       privateDNSZone: privateDNSZone
+      enableVnetIntegration: enableApiServerVnetIntegration
+      subnetId: apiServerSubnetResourceId
     }
     azureMonitorProfile: {
       appMonitoring: appMonitoring
