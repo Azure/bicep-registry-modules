@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "11294915367324886497"
+      "templateHash": "12439828045387582596"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -934,7 +934,7 @@
       "metadata": {
         "description": "The type for the application gateway backend address pool.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
         }
       }
     },
@@ -973,7 +973,7 @@
       "metadata": {
         "description": "The type for the application security group.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
         }
       }
     },
@@ -1005,7 +1005,7 @@
       "metadata": {
         "description": "The type for a backend address pool.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
         }
       }
     },
@@ -1107,7 +1107,7 @@
       "metadata": {
         "description": "The type for the inbound NAT rule.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
         }
       }
     },
@@ -1146,7 +1146,7 @@
       "metadata": {
         "description": "The type for the virtual network tap.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
         }
       }
     },
@@ -1180,7 +1180,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.8.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.9.1"
         }
       }
     },
@@ -1223,7 +1223,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.8.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.9.1"
         }
       }
     },
@@ -1245,7 +1245,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.8.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.9.1"
         }
       }
     },
@@ -1544,7 +1544,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1725,7 +1725,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1753,7 +1753,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1782,8 +1782,9 @@
         }
       },
       "metadata": {
+        "description": "The type for the network interface IP configuration output.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
         }
       }
     },
@@ -1858,7 +1859,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1876,7 +1877,7 @@
       "metadata": {
         "description": "The type for the sub resource.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
         }
       }
     }
@@ -2920,7 +2921,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "2423122573133303029"
+              "templateHash": "4477411705774057876"
             }
           },
           "definitions": {
@@ -3297,7 +3298,7 @@
               "metadata": {
                 "description": "The type for the application gateway backend address pool.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
                 }
               }
             },
@@ -3336,7 +3337,7 @@
               "metadata": {
                 "description": "The type for the application security group.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
                 }
               }
             },
@@ -3368,7 +3369,7 @@
               "metadata": {
                 "description": "The type for a backend address pool.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
                 }
               }
             },
@@ -3402,7 +3403,7 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.8.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.9.1"
                 }
               }
             },
@@ -3524,7 +3525,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -3567,7 +3568,7 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.8.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.9.1"
                 }
               }
             },
@@ -3669,7 +3670,7 @@
               "metadata": {
                 "description": "The type for the inbound NAT rule.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
                 }
               }
             },
@@ -3691,7 +3692,7 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.8.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.9.1"
                 }
               }
             },
@@ -3728,7 +3729,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -3757,8 +3758,9 @@
                 }
               },
               "metadata": {
+                "description": "The type for the network interface IP configuration output.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
                 }
               }
             },
@@ -3833,7 +3835,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -3851,7 +3853,7 @@
               "metadata": {
                 "description": "The type for the sub resource.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
                 }
               }
             },
@@ -3890,7 +3892,7 @@
               "metadata": {
                 "description": "The type for the virtual network tap.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
                 }
               }
             }

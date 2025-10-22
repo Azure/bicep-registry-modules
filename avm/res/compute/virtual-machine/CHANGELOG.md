@@ -6,14 +6,12 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Introduced user-defined type for `extensionCustomScriptConfig` parameter that is aligned with its [official documentation](https://learn.microsoft.com/en-us/azure/virtual-machines/extensions/custom-script-windows).
-- Added parameters `provisionAfterExtensions` & `provisionAfterExtensions`  to 'extension' child module.
+- Introduced new parameter `diskControllerType ` to specify the disk controller type to allow to deploy NVME enabled virtual machines.
+- Updated to the newest versions of cross-referenced modules.
 
 ### Breaking Changes
 
-- Merged `extensionCustomScriptProtectedSetting` parameter into `extensionCustomScriptConfig`
-- Removed support for the CustomScriptExtension extension to automatically append SAS-Keys to file specified via the `extensionCustomScriptConfig.fileData` property. Instead, the SAS token must either be pre-provided with the URL, or either the settings `extensionCustomScriptConfig.protectedSettings.storageAccountKey` & `extensionCustomScriptConfig.protectedSettings.storageAccountName` or (recommended) `extensionCustomScriptConfig.protectedSettings.managedIdentityResourceId`. For the latter, you can provide either the full resource ID - or set it to `''` if you want it to use the VM's system-assigned identity (if enabled) instead. Note, in either case, the Identity must be granted access to correct Storage Account scope.
-- Adjusted the usage of the `ecryptionAtHost` property to only pass it to the resource provider if enabled
+- Fixed (removed) default values of `enableAcceleratedNetworking` and `enableIPForwarding` parameters when passing them to the cross-referenced module. Now relying on the default values of `br/public:avm/res/network/network-interface`
 
 ## 0.20.0
 
