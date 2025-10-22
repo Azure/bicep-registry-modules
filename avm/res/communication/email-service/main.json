@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "12060484464480136630"
+      "version": "0.38.33.27573",
+      "templateHash": "9404183689183350870"
     },
     "name": "Email Services",
     "description": "This module deploys an Email Service"
@@ -395,7 +395,7 @@
         "count": "[length(coalesce(parameters('domains'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-email-domain-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -438,8 +438,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "2220210057247980613"
+              "version": "0.38.33.27573",
+              "templateHash": "3112728591047420285"
             },
             "name": "Email Services Domains",
             "description": "This module deploys an Email Service Domain"
@@ -745,7 +745,7 @@
                 "count": "[length(coalesce(parameters('senderUsernames'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-domain-senderusername-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -775,8 +775,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "6263459494167295460"
+                      "version": "0.38.33.27573",
+                      "templateHash": "1385367565090764957"
                     },
                     "name": "Sender Usernames",
                     "description": "This module deploys an Sender"
@@ -876,6 +876,17 @@
                 "description": "The name of the resource group the domain was created in."
               },
               "value": "[resourceGroup().name]"
+            },
+            "verificationRecords": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Communication/emailServices/domains@2025-05-01#properties/properties/properties/verificationRecords",
+                  "output": true
+                },
+                "description": "The verification records for the domain."
+              },
+              "value": "[reference('domain').verificationRecords]"
             }
           }
         }
@@ -938,6 +949,25 @@
       "copy": {
         "count": "[length(coalesce(parameters('domains'), createArray()))]",
         "input": "[reference(format('email_domains[{0}]', copyIndex())).outputs.name.value]"
+      }
+    },
+    "domainVerificationRecords": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "metadata": {
+          "__bicep_resource_derived_type!": {
+            "source": "Microsoft.Communication/emailServices/domains@2025-05-01#properties/properties/properties/verificationRecords",
+            "output": true
+          }
+        }
+      },
+      "metadata": {
+        "description": "The list of verification records for each domain."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('domains'), createArray()))]",
+        "input": "[reference(format('email_domains[{0}]', copyIndex())).outputs.verificationRecords.value]"
       }
     }
   }
