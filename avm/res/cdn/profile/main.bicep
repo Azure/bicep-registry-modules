@@ -232,7 +232,7 @@ module profile_secrets 'secret/main.bicep' = [
       secretSourceResourceId: secret.secretSourceResourceId
       subjectAlternativeNames: secret.?subjectAlternativeNames
       useLatestVersion: secret.?useLatestVersion
-      secretVersion: secret.secretVersion
+      secretVersion: secret.?secretVersion
     }
   }
 ]
