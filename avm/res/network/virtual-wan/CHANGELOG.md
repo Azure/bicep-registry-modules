@@ -2,6 +2,14 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-wan/CHANGELOG.md).
 
+## 0.4.2
+
+### Changes
+
+- Updated API versions
+- Added `disableVpnEncryption` parameter to control VPN encryption settings.
+- Added `allowVnetToVnetTraffic` parameter to control VNet to VNet traffic settings.
+
 ## 0.4.1
 
 ### Changes
