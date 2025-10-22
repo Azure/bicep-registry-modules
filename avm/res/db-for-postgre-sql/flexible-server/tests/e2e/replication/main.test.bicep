@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Public access with private endpoints'
-metadata description = 'This instance deploys the module with public access and private endpoints.'
+metadata name = 'Primary server and Readonly Replication server'
+metadata description = 'This instance deploys a primary and readonly replication server using the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -15,14 +15,10 @@ param resourceGroupName string = 'dep-${namePrefix}-dbforpostgresql.flexibleserv
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dfpspe'
-
-@description('Optional. The password to leverage for the login.')
-@secure()
-param password string = newGuid()
+param serviceShort string = 'dfpsrep'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'nga2'
 
 // ============ //
 // Dependencies //
@@ -39,55 +35,34 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    primaryServerName: '${namePrefix}${serviceShort}pri001'
   }
 }
-
 // ============== //
 // Test Execution //
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [
+module replicationTestDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      availabilityZone: -1
-      administratorLogin: 'adminUserName'
-      administratorLoginPassword: password
+      sourceServerResourceId: nestedDependencies.outputs.serverResourceId
+      // createMode: 'Replica'
+      availabilityZone: 1
       authConfig: {
         activeDirectoryAuth: 'Enabled'
-        passwordAuth: 'Enabled'
+        passwordAuth: 'Disabled'
       }
-      skuName: 'Standard_D2ds_v5'
+      skuName: 'Standard_D2s_v3'
       tier: 'GeneralPurpose'
-      geoRedundantBackup: 'Enabled'
-      highAvailability: 'ZoneRedundant'
-      maintenanceWindow: {
-        customWindow: 'Enabled'
-        dayOfWeek: 0
-        startHour: 1
-        startMinute: 0
-      }
-      privateEndpoints: [
-        {
-          subnetResourceId: nestedDependencies.outputs.privateEndpointSubnetResourceId
-          privateDnsZoneGroup: {
-            privateDnsZoneGroupConfigs: [
-              {
-                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
-              }
-            ]
-          }
-          tags: {
-            'hidden-title': 'This is visible in the resource name'
-            Environment: 'Non-Prod'
-            Role: 'DeploymentValidation'
-          }
-        }
-      ]
+      version: '17'
+      storageSizeGB: 512
+      autoGrow: 'Enabled'
+      replicationRole: 'AsyncReplica'
     }
   }
 ]
