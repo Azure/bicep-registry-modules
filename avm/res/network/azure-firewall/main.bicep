@@ -324,7 +324,7 @@ resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-10-01' = {
           name: azureSkuName
           tier: azureSkuTier
         }
-        ipConfigurations: !empty(publicIPAddressObject) || !empty(publicIPAddressObject) ? ipConfigurations : []
+        ipConfigurations: !empty(publicIPResourceID) ? ipConfigurations : null
         hubIPAddresses: !empty(publicIPResourceID) ? null : !empty(hubIPAddresses) ? hubIPAddresses : null
         virtualHub: !empty(virtualHubResourceId)
           ? {
