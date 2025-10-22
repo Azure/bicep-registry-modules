@@ -54,10 +54,13 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       virtualHubResourceId: nestedDependencies.outputs.virtualHubResourceId
-      publicIPResourceID: nestedDependencies.outputs.publicIPResourceId
       hubIPAddresses: {
         publicIPs: {
-          count: 1
+          addresses: [
+            {
+              address: nestedDependencies.outputs.publicIPResourceId
+            }
+          ]
         }
       }
     }

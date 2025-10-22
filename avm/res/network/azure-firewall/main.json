@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "9304460541754482290"
+      "templateHash": "17839520795256698674"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall."
@@ -765,7 +765,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The Public IP resource ID to associate to the AzureFirewallSubnet. If empty, then the Public IP that is created as part of this module will be applied to the AzureFirewallSubnet."
+        "description": "Optional. The Public IP resource ID to associate to the AzureFirewallSubnet. If empty, then the Public IP that is created as part of this module will be applied to the AzureFirewallSubnet. If wanting to provide your own public IP for vWan please use `hubIPAddresses` parameter."
       }
     },
     "additionalPublicIpConfigurations": {
