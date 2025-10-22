@@ -22,7 +22,7 @@ This module deploys a SQL Role Assignment in a CosmosDB Account.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`principalId`](#parameter-principalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
-| [`roleDefinitionId`](#parameter-roledefinitionid) | string | The unique identifier of the associated SQL Role Definition. |
+| [`roleDefinitionIdOrName`](#parameter-roledefinitionidorname) | string | The unique identifier of the associated SQL Role Definition. |
 
 **Conditional parameters**
 
@@ -36,6 +36,7 @@ This module deploys a SQL Role Assignment in a CosmosDB Account.
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`name`](#parameter-name) | string | Name unique identifier of the SQL Role Assignment. |
+| [`scope`](#parameter-scope) | string | The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level. |
 
 ### Parameter: `principalId`
 
@@ -44,7 +45,7 @@ The unique identifier for the associated AAD principal in the AAD graph to which
 - Required: Yes
 - Type: string
 
-### Parameter: `roleDefinitionId`
+### Parameter: `roleDefinitionIdOrName`
 
 The unique identifier of the associated SQL Role Definition.
 
@@ -69,6 +70,13 @@ Enable/Disable usage telemetry for module.
 ### Parameter: `name`
 
 Name unique identifier of the SQL Role Assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `scope`
+
+The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level.
 
 - Required: No
 - Type: string
