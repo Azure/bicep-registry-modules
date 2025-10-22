@@ -56,7 +56,7 @@ module testDeployment '../../../main.bicep' = [
       location: enforcedLocation
       kind: 'app'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
-      
+
       // =====================================================================================
       // AZURE STORAGE ACCOUNTS CONFIGURATION EXAMPLE
       // =====================================================================================
@@ -73,16 +73,16 @@ module testDeployment '../../../main.bicep' = [
           properties: {
             // Mount 1: Configuration files storage (Azure Files)
             'config-storage': {
-              accountName: nestedDependencies.outputs.primaryStorageAccountName  // ✅ STRING field
+              accountName: nestedDependencies.outputs.primaryStorageAccountName // ✅ STRING field
               accessKey: nestedDependencies.outputs.primaryStorageAccountKey
               shareName: 'config-share'
               mountPath: '/mnt/config'
               type: 'AzureFiles'
               protocol: 'Smb'
             }
-            // Mount 2: Logs storage (Azure Files)  
+            // Mount 2: Logs storage (Azure Files)
             'logs-storage': {
-              accountName: nestedDependencies.outputs.primaryStorageAccountName  // ✅ STRING field
+              accountName: nestedDependencies.outputs.primaryStorageAccountName // ✅ STRING field
               accessKey: nestedDependencies.outputs.primaryStorageAccountKey
               shareName: 'logs-share'
               mountPath: '/mnt/logs'
@@ -91,7 +91,7 @@ module testDeployment '../../../main.bicep' = [
             }
             // Mount 3: Data storage from secondary account (Azure Files)
             'data-storage': {
-              accountName: nestedDependencies.outputs.secondaryStorageAccountName  // ✅ STRING field
+              accountName: nestedDependencies.outputs.secondaryStorageAccountName // ✅ STRING field
               accessKey: nestedDependencies.outputs.secondaryStorageAccountKey
               shareName: 'data-share'
               mountPath: '/mnt/data'
@@ -100,9 +100,9 @@ module testDeployment '../../../main.bicep' = [
             }
             // Mount 4: Temporary blob storage (Azure Blob)
             'temp-blob-storage': {
-              accountName: nestedDependencies.outputs.primaryStorageAccountName  // ✅ STRING field
+              accountName: nestedDependencies.outputs.primaryStorageAccountName // ✅ STRING field
               accessKey: nestedDependencies.outputs.primaryStorageAccountKey
-              shareName: 'temp-files'  // Container name for blob storage
+              shareName: 'temp-files' // Container name for blob storage
               mountPath: '/mnt/temp'
               type: 'AzureBlob'
               protocol: 'Http'
