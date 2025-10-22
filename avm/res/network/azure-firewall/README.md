@@ -491,15 +491,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     // Required parameters
     name: 'nafhubbyoip001'
     // Non-required parameters
-    hubIPAddresses: {
-      publicIPs: {
-        addresses: [
-          {
-            address: '<address>'
-          }
-        ]
-      }
-    }
+    publicIPResourceID: '<publicIPResourceID>'
     virtualHubResourceId: '<virtualHubResourceId>'
   }
 }
@@ -522,16 +514,8 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       "value": "nafhubbyoip001"
     },
     // Non-required parameters
-    "hubIPAddresses": {
-      "value": {
-        "publicIPs": {
-          "addresses": [
-            {
-              "address": "<address>"
-            }
-          ]
-        }
-      }
+    "publicIPResourceID": {
+      "value": "<publicIPResourceID>"
     },
     "virtualHubResourceId": {
       "value": "<virtualHubResourceId>"
@@ -553,15 +537,7 @@ using 'br/public:avm/res/network/azure-firewall:<version>'
 // Required parameters
 param name = 'nafhubbyoip001'
 // Non-required parameters
-param hubIPAddresses = {
-  publicIPs: {
-    addresses: [
-      {
-        address: '<address>'
-      }
-    ]
-  }
-}
+param publicIPResourceID = '<publicIPResourceID>'
 param virtualHubResourceId = '<virtualHubResourceId>'
 ```
 
@@ -1911,7 +1887,7 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`hubIPAddresses`](#parameter-hubipaddresses) | object | IP addresses associated with AzureFirewall. Required if `virtualHubId` is supplied. |
+| [`hubIPAddresses`](#parameter-hubipaddresses) | object | IP addresses associated with AzureFirewall. Required if `virtualHubId` is supplied & `publicIPResourceID` is empty. |
 | [`virtualHubResourceId`](#parameter-virtualhubresourceid) | string | The virtualHub resource ID to which the firewall belongs. Required if `virtualNetworkId` is empty. |
 | [`virtualNetworkResourceId`](#parameter-virtualnetworkresourceid) | string | Shared services Virtual Network resource ID. The virtual network ID containing AzureFirewallSubnet. If a Public IP is not provided, then the Public IP that is created as part of this module will be applied with the subnet provided in this variable. Required if `virtualHubId` is empty. |
 
@@ -1936,7 +1912,7 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 | [`natRuleCollections`](#parameter-natrulecollections) | array | Collection of NAT rule collections used by Azure Firewall. |
 | [`networkRuleCollections`](#parameter-networkrulecollections) | array | Collection of network rule collections used by Azure Firewall. |
 | [`publicIPAddressObject`](#parameter-publicipaddressobject) | object | Specifies the properties of the Public IP to create and be used by the Firewall, if no existing public IP was provided. |
-| [`publicIPResourceID`](#parameter-publicipresourceid) | string | The Public IP resource ID to associate to the AzureFirewallSubnet. If empty, then the Public IP that is created as part of this module will be applied to the AzureFirewallSubnet. If wanting to provide your own public IP for vWan please use `hubIPAddresses` parameter. |
+| [`publicIPResourceID`](#parameter-publicipresourceid) | string | The Public IP resource ID to associate to the Azure Firewall. If empty, then the Public IP that is created as part of this module will be applied to the Azure Firewall. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the Azure Firewall resource. |
 | [`threatIntelMode`](#parameter-threatintelmode) | string | The operation mode for Threat Intel. |
@@ -1950,7 +1926,7 @@ Name of the Azure Firewall.
 
 ### Parameter: `hubIPAddresses`
 
-IP addresses associated with AzureFirewall. Required if `virtualHubId` is supplied.
+IP addresses associated with AzureFirewall. Required if `virtualHubId` is supplied & `publicIPResourceID` is empty.
 
 - Required: No
 - Type: object
@@ -2855,7 +2831,7 @@ Specifies the properties of the Public IP to create and be used by the Firewall,
 
 ### Parameter: `publicIPResourceID`
 
-The Public IP resource ID to associate to the AzureFirewallSubnet. If empty, then the Public IP that is created as part of this module will be applied to the AzureFirewallSubnet. If wanting to provide your own public IP for vWan please use `hubIPAddresses` parameter.
+The Public IP resource ID to associate to the Azure Firewall. If empty, then the Public IP that is created as part of this module will be applied to the Azure Firewall.
 
 - Required: No
 - Type: string

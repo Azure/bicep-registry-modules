@@ -15,7 +15,7 @@ param azureSkuTier string = 'Standard'
 @description('Conditional. Shared services Virtual Network resource ID. The virtual network ID containing AzureFirewallSubnet. If a Public IP is not provided, then the Public IP that is created as part of this module will be applied with the subnet provided in this variable. Required if `virtualHubId` is empty.')
 param virtualNetworkResourceId string = ''
 
-@description('Optional. The Public IP resource ID to associate to the AzureFirewallSubnet. If empty, then the Public IP that is created as part of this module will be applied to the AzureFirewallSubnet. If wanting to provide your own public IP for vWan please use `hubIPAddresses` parameter.')
+@description('Optional. The Public IP resource ID to associate to the Azure Firewall. If empty, then the Public IP that is created as part of this module will be applied to the Azure Firewall.')
 param publicIPResourceID string = ''
 
 @description('Optional. This is to add any additional Public IP configurations on top of the Public IP with subnet IP configuration.')
@@ -44,7 +44,7 @@ param natRuleCollections natRuleCollectionType[]?
 @description('Optional. Resource ID of the Firewall Policy that should be attached.')
 param firewallPolicyId string = ''
 
-@description('Conditional. IP addresses associated with AzureFirewall. Required if `virtualHubId` is supplied.')
+@description('Conditional. IP addresses associated with AzureFirewall. Required if `virtualHubId` is supplied & `publicIPResourceID` is empty.')
 param hubIPAddresses hubIPAddressesType?
 
 @description('Conditional. The virtualHub resource ID to which the firewall belongs. Required if `virtualNetworkId` is empty.')
@@ -290,6 +290,10 @@ resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-10-01' = {
   tags: tags
   properties: azureSkuName == 'AZFW_VNet'
     ? {
+        autoscaleConfiguration: {
+          maxCapacity: autoscaleMaxCapacity
+          minCapacity: autoscaleMinCapacity
+        }
         threatIntelMode: threatIntelMode
         firewallPolicy: !empty(firewallPolicyId)
           ? {
@@ -320,7 +324,8 @@ resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-10-01' = {
           name: azureSkuName
           tier: azureSkuTier
         }
-        hubIPAddresses: !empty(hubIPAddresses) ? hubIPAddresses : null
+        ipConfigurations: !empty(publicIPAddressObject) || !empty(publicIPAddressObject) ? ipConfigurations : []
+        hubIPAddresses: !empty(publicIPResourceID) ? null : !empty(hubIPAddresses) ? hubIPAddresses : null
         virtualHub: !empty(virtualHubResourceId)
           ? {
               id: virtualHubResourceId
