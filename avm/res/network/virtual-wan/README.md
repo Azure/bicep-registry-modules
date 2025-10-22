@@ -101,8 +101,6 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
     name: 'nvwmax001'
     // Non-required parameters
     allowBranchToBranchTraffic: true
-    allowVnetToVnetTraffic: true
-    disableVpnEncryption: false
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -156,12 +154,6 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
     // Non-required parameters
     "allowBranchToBranchTraffic": {
       "value": true
-    },
-    "allowVnetToVnetTraffic": {
-      "value": true
-    },
-    "disableVpnEncryption": {
-      "value": false
     },
     "location": {
       "value": "<location>"
@@ -221,8 +213,6 @@ using 'br/public:avm/res/network/virtual-wan:<version>'
 param name = 'nvwmax001'
 // Non-required parameters
 param allowBranchToBranchTraffic = true
-param allowVnetToVnetTraffic = true
-param disableVpnEncryption = false
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -357,8 +347,6 @@ param type = 'Basic'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`allowBranchToBranchTraffic`](#parameter-allowbranchtobranchtraffic) | bool | True if branch to branch traffic is allowed. |
-| [`allowVnetToVnetTraffic`](#parameter-allowvnettovnettraffic) | bool | True if VNet to VNet traffic is allowed. |
-| [`disableVpnEncryption`](#parameter-disablevpnencryption) | bool | True if VPN encryption is disabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location where all resources will be created. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -380,22 +368,6 @@ True if branch to branch traffic is allowed.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `allowVnetToVnetTraffic`
-
-True if VNet to VNet traffic is allowed.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `disableVpnEncryption`
-
-True if VPN encryption is disabled.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `enableTelemetry`
 
