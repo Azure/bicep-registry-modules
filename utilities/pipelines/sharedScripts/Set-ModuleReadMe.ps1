@@ -97,8 +97,8 @@ function Set-ResourceTypesSection {
     } else {
         # Process content
         $SectionContent = [System.Collections.ArrayList]@(
-            '| Resource Type | API Version |',
-            '| :-- | :-- |'
+            '| Resource Type | API Version | References |',
+            '| :-- | :-- | :-- |'
         )
 
         $ProgressPreference = 'SilentlyContinue'
@@ -124,7 +124,8 @@ function Set-ResourceTypesSection {
                 }
             }
 
-            $SectionContent += ('| `{0}` | [{1}]({2}) |' -f $resourceTypeObject.type, $resourceTypeObject.apiVersion, $ResourceReferenceUrl)
+            $AzAdvertizerUrl = 'https://www.azadvertizer.net/azresourcetypes/{0}.html' -f $resourceTypeObject.type.ToLower().Replace('/', '_')
+            $SectionContent += ('| `{0}` | {1} | <ul style="padding-left: 0px;"><li>[AzAdvertizer]({3})</li><li>[Template reference]({2})</li></ul> |' -f $resourceTypeObject.type, $resourceTypeObject.apiVersion, $ResourceReferenceUrl, $AzAdvertizerUrl)
         }
         $ProgressPreference = 'Continue'
         $VerbosePreference = 'Continue'
@@ -407,7 +408,7 @@ function Set-DefinitionSection {
                     $formattedDefaultValue = @(
                         '- Default:',
                         '  ```Bicep',
-                ($defaultValue -split '\n' | ForEach-Object { "  $_" } | Out-String).TrimEnd(),
+                        ($defaultValue -split '\n' | ForEach-Object { "  $_" } | Out-String).TrimEnd(),
                         '  ```'
                     )
                 }
@@ -437,7 +438,7 @@ function Set-DefinitionSection {
                     $formattedAllowedValues = @(
                         '- Allowed:',
                         '  ```Bicep',
-                ($allowedValues -split '\n' | Where-Object { -not [String]::IsNullOrEmpty($_) } | ForEach-Object { "  $_" } | Out-String).TrimEnd(),
+                        ($allowedValues -split '\n' | Where-Object { -not [String]::IsNullOrEmpty($_) } | ForEach-Object { "  $_" } | Out-String).TrimEnd(),
                         '  ```'
                     )
                 }
@@ -509,18 +510,18 @@ function Set-DefinitionSection {
             # ===============
             $listSectionContent += @(
                 $paramHeader,
-            ($parameter.ContainsKey('metadata') ? '' : $null),
+                ($parameter.ContainsKey('metadata') ? '' : $null),
                 $description
-            ($parameter.ContainsKey('metadata') ? '' : $null),
-            ('- Required: {0}' -f $isRequired),
-            ('- Type: {0}' -f $type),
-            ((-not [String]::IsNullOrEmpty($formattedDefaultValue)) ? $formattedDefaultValue : $null),
-            ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null),
-            ((-not [String]::IsNullOrEmpty($formattedMinValue)) ? $formattedMinValue : $null),
-            ((-not [String]::IsNullOrEmpty($formattedMaxValue)) ? $formattedMaxValue : $null),
-            ((-not [String]::IsNullOrEmpty($formattedRoleNames)) ? $formattedRoleNames : $null),
-            ((-not [String]::IsNullOrEmpty($formattedExample)) ? $formattedExample : $null),
-            (($definition.discriminator.propertyName) ? ('- Discriminator: `{0}`' -f $definition.discriminator.propertyName) : $null),
+                ($parameter.ContainsKey('metadata') ? '' : $null),
+                ('- Required: {0}' -f $isRequired),
+                ('- Type: {0}' -f $type),
+                ((-not [String]::IsNullOrEmpty($formattedDefaultValue)) ? $formattedDefaultValue : $null),
+                ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null),
+                ((-not [String]::IsNullOrEmpty($formattedMinValue)) ? $formattedMinValue : $null),
+                ((-not [String]::IsNullOrEmpty($formattedMaxValue)) ? $formattedMaxValue : $null),
+                ((-not [String]::IsNullOrEmpty($formattedRoleNames)) ? $formattedRoleNames : $null),
+                ((-not [String]::IsNullOrEmpty($formattedExample)) ? $formattedExample : $null),
+                (($definition.discriminator.propertyName) ? ('- Discriminator: `{0}`' -f $definition.discriminator.propertyName) : $null),
                 ''
             ) | Where-Object { $null -ne $_ }
 
@@ -1481,6 +1482,15 @@ Optional. A switch to control whether or not to add a ARM-JSON-Parameter file ex
 .PARAMETER addBicep
 Optional. A switch to control whether or not to add a Bicep usage example. Defaults to true.
 
+.PARAMETER addBicepParametersFile
+Optional. A switch to control whether or not to add a Bicep parameter file usage example. Defaults to true.
+
+.PARAMETER IsMultiScopeParentModule
+Optional. A switch to control whether or not the module is a multi-scope parent module. Defaults to false.
+
+.PARAMETER IsMultiScopeChildModule
+Optional. A switch to control whether or not the module is a multi-scope child module. Defaults to false.
+
 .EXAMPLE
 Set-UsageExamplesSection -ModuleRoot 'C:/key-vault/vault' -FullModuleIdentifier 'key-vault/vault' -TemplateFileContent @{ resource = @{}; ... } -ReadMeFileContent @('# Title', '', '## Section 1', ...)
 
@@ -1502,6 +1512,12 @@ function Set-UsageExamplesSection {
         [Parameter(Mandatory = $true)]
         [object[]] $ReadMeFileContent,
 
+        [Parameter(Mandatory = $true)]
+        [bool] $IsMultiScopeParentModule,
+
+        [Parameter(Mandatory = $true)]
+        [bool] $IsMultiScopeChildModule,
+
         [Parameter(Mandatory = $false)]
         [bool] $addJson = $true,
 
@@ -1514,6 +1530,20 @@ function Set-UsageExamplesSection {
         [Parameter(Mandatory = $false)]
         [string] $SectionStartIdentifier = '## Usage examples'
     )
+
+    if ($IsMultiScopeParentModule) {
+        $SectionContent = @(
+            "**Note**: This is a multi-scoped module. This means, you will find the 'Usage Examples' in the documentation of the correspondingly scoped child modules:"
+        )
+        $multiScopeChildModules = (Get-ChildItem -Path $ModuleRoot -Filter '*-scope' -Directory).Name
+        $multiScopeChildModules | ForEach-Object {
+            $SectionContent += ('- `/{0}/README.md`' -f $_)
+        }
+        if ($PSCmdlet.ShouldProcess('Original file with new template references content', 'Merge')) {
+            return Merge-FileWithNewContent -oldContent $ReadMeFileContent -newContent $SectionContent -SectionStartIdentifier $SectionStartIdentifier -ContentType 'nextH2'
+        }
+        return $ReadMeFileContent
+    }
 
     $brLink = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
     $targetVersion = '<version>'
@@ -1542,11 +1572,17 @@ function Set-UsageExamplesSection {
         $moduleNameCamelCase = $specialConversionHash[$moduleName]
     } else {
         # Convert moduleName from kebab-case to camelCase
-        $First, $Rest = $moduleName -Split '-', 2
-        $moduleNameCamelCase = $First.Tolower() + (Get-Culture).TextInfo.ToTitleCase($Rest) -Replace '-'
+        $First, $Rest = $moduleName -split '-', 2
+        $moduleNameCamelCase = $First.Tolower() + (Get-Culture).TextInfo.ToTitleCase($Rest) -replace '-'
     }
-
-    $testFilePaths = (Get-ChildItem -Path $ModuleRoot -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US'
+    if ($isMultiScopeChildModule) {
+        $scopedModuleFolderName = Split-Path -Path $ModuleRoot -Leaf
+        $testFilePaths = (Get-ChildItem -Path (Split-Path $moduleRoot) -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US' | Where-Object {
+            $_ -match "[\\|\/]$scopedModuleFolderName.*[\\|\/]main\.test\.bicep$"
+        }
+    } else {
+        $testFilePaths = (Get-ChildItem -Path $moduleRoot -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US'
+    }
 
     if ($TemplateFileContent.parameters.Count -gt 0) {
         $RequiredParametersList = $TemplateFileContent.parameters.Keys | Where-Object {
@@ -1619,6 +1655,18 @@ function Set-UsageExamplesSection {
             )
         }
 
+        # If the deployment of the test is skipped, add a note
+        $e2eIgnoreFilePath = Join-Path (Split-Path -Path $testFilePath -Parent) '.e2eignore'
+        if (Test-Path $e2eIgnoreFilePath) {
+            $e2eIgnoreContent = (Get-Content $e2eIgnoreFilePath) -join "`n"
+            $testFilesContent += @(
+                '> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:',
+                '```text',
+                $e2eIgnoreContent.Trim(),
+                '```'
+            )
+        }
+
         # ------------------------- #
         #   Prepare Bicep to JSON   #
         # ------------------------- #
@@ -1659,9 +1707,9 @@ function Set-UsageExamplesSection {
                     $paramsEndIndex = $paramsStartIndex
                     do {
                         $paramsEndIndex++
-                    } while ($rawBicepExample[$paramsEndIndex] -notMatch "^\s{$paramsIndent}\}" -and
-                        $rawBicepExample[$paramsEndIndex] -notMatch "^\s{$paramsIndent}\}\]" -and
-                        $rawBicepExample[$paramsEndIndex] -notMatch "^\s{$paramsIndent}\]" -and
+                    } while ($rawBicepExample[$paramsEndIndex] -notmatch "^\s{$paramsIndent}\}" -and
+                        $rawBicepExample[$paramsEndIndex] -notmatch "^\s{$paramsIndent}\}\]" -and
+                        $rawBicepExample[$paramsEndIndex] -notmatch "^\s{$paramsIndent}\]" -and
                         $paramsEndIndex -lt $rawBicepExample.Count)
 
                     if ($paramsEndIndex -eq $rawBicepExample.Count) {
@@ -1955,10 +2003,16 @@ function Initialize-ReadMe {
         }
     } else {
         # Non-resource modules always need a custom identifier
-        $parentIdentifierName, $childIdentifierName = $FullModuleIdentifier -Split '[\/|\\]', 2 # e.g. 'lz' & 'sub-vending'
-        $formattedParentIdentifierName = (Get-Culture).TextInfo.ToTitleCase(($parentIdentifierName -Replace '[^0-9A-Z]', ' ')) -Replace ' '
-        $formattedChildIdentifierName = (Get-Culture).TextInfo.ToTitleCase(($childIdentifierName -Replace '[^0-9A-Z]', ' ')) -Replace ' '
+        $parentIdentifierName, $childIdentifierName = $FullModuleIdentifier -split '[\/|\\]', 2 # e.g. 'lz' & 'sub-vending'
+        $formattedParentIdentifierName = (Get-Culture).TextInfo.ToTitleCase(($parentIdentifierName -replace '[^0-9A-Z]', ' ')) -replace ' '
+        $formattedChildIdentifierName = (Get-Culture).TextInfo.ToTitleCase(($childIdentifierName -replace '[^0-9A-Z]', ' ')) -replace ' '
         $headerType = "$formattedParentIdentifierName/$formattedChildIdentifierName"
+    }
+
+    # Deprecation file existing?
+    $deprecatedModuleFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'DEPRECATED.md'
+    if (Test-Path $deprecatedModuleFilePath) {
+        $deprecatedModuleFileContent = Get-Content -Path $deprecatedModuleFilePath | ForEach-Object { "> $_" }
     }
 
     # Orphaned readme existing?
@@ -1976,6 +2030,8 @@ function Initialize-ReadMe {
     $initialContent = @(
         "# $moduleName ``[$headerType]``",
         '',
+        ((Test-Path $deprecatedModuleFilePath) ? $deprecatedModuleFileContent : $null),
+        ((Test-Path $deprecatedModuleFilePath) ? '' : $null),
         ((Test-Path $orphanedReadMeFilePath) ? $orphanedReadMeContent : $null),
         ((Test-Path $orphanedReadMeFilePath) ? '' : $null),
         ((Test-Path $movedReadMeFilePath) ? $movedReadMeContent : $null),
@@ -2118,6 +2174,13 @@ function Set-ModuleReadMe {
         $fullModuleIdentifier = $fullModuleIdentifier.split($customModuleSeparator)[0]
     }
 
+    # Multi-scope modules are modules having the same resource type but can be deployed to multiple scopes
+    # E.g., authorization/role-assignment/rg-scope vs authorization/role-assignment/sub-scope
+    $scopedModuleSeparator = '\/(rg|sub|mg)\-scope$'
+    if ($fullModuleIdentifier -match $scopedModuleSeparator) {
+        $fullModuleIdentifier = ($fullModuleIdentifier -split $scopedModuleSeparator)[0]
+    }
+
     # ===================== #
     #   Preparation steps   #
     # ===================== #
@@ -2165,15 +2228,22 @@ function Set-ModuleReadMe {
         $readMeFileContent = Set-ResourceTypesSection @inputObject
     }
 
-    $hasTests = (Get-ChildItem -Path $moduleRoot -Recurse -Filter 'main.test.bicep' -File -Force).count -gt 0
+    $isMultiScopeChildModule = $moduleRoot -match '[\/|\\](rg|sub|mg)\-scope$'
+    $isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleRoot) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
+
+    # If it's multi-scope child module, we need to check if its parent has tests
+    $hasTests = (Get-ChildItem -Path ($isMultiScopeChildModule ? (Split-Path $moduleRoot) : $moduleRoot) -Recurse -Filter 'main.test.bicep' -File -Force).count -gt 0
+
     if ($SectionsToRefresh -contains 'Usage examples' -and $hasTests) {
         # Handle [Usage examples] section
         # ===================================
         $inputObject = @{
-            ModuleRoot           = $ModuleRoot
-            FullModuleIdentifier = $fullModuleIdentifier
-            ReadMeFileContent    = $readMeFileContent
-            TemplateFileContent  = $templateFileContent
+            ModuleRoot               = $ModuleRoot
+            FullModuleIdentifier     = $fullModuleIdentifier
+            ReadMeFileContent        = $readMeFileContent
+            TemplateFileContent      = $templateFileContent
+            IsMultiScopeParentModule = $isMultiScopeParentModule
+            IsMultiScopeChildModule  = $isMultiScopeChildModule
         }
         $readMeFileContent = Set-UsageExamplesSection @inputObject
     }

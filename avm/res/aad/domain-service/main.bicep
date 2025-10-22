@@ -1,12 +1,12 @@
-metadata name = 'Azure Active Directory Domain Services'
-metadata description = 'This module deploys an Azure Active Directory Domain Services (AADDS) instance.'
+metadata name = 'Microsoft Entra Domain Services'
+metadata description = 'This module deploys an Microsoft Entra Domain Services (Azure AD DS) instance.'
 
 @minLength(1)
 @maxLength(19) // 15 characters for domain name + 4 characters for the suffix
-@description('Optional. The name of the AADDS resource. Defaults to the domain name specific to the Azure ADDS service. The prefix of your specified domain name (such as dscontoso in the dscontoso.com domain name) must contain 15 or fewer characters.')
+@description('Optional. The name of the Azure AD DS resource. Defaults to the domain name specific to the Azure AD DS service. The prefix of your specified domain name (such as dscontoso in the dscontoso.com domain name) must contain 15 or fewer characters.')
 param name string = domainName
 
-@description('Optional. The location to deploy the Azure ADDS Services. Uses the resource group location if not specified.')
+@description('Optional. The location to deploy the Azure AD DS Services. Uses the resource group location if not specified.')
 param location string = resourceGroup().location
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -23,27 +23,22 @@ param enableTelemetry bool = true
   - 'aaddscontoso.com'
   '''
 })
-@description('Required. The domain name specific to the Azure ADDS service.')
+@description('Required. The domain name specific to the Azure AD DS service.')
 param domainName string
 
-@description('Optional. The name of the SKU specific to Azure ADDS Services.')
-@allowed([
-  'Standard'
-  'Enterprise'
-  'Premium'
-])
-param sku string = 'Standard'
+@description('Optional. The name of the SKU specific to Azure AD DS Services. For replica set support, this defaults to Enterprise.')
+param sku ('Standard' | 'Enterprise' | 'Premium') = 'Enterprise'
 
 @description('Optional. Additional replica set for the managed domain.')
 param replicaSets replicaSetType[]?
 
 @description('Conditional. The certificate required to configure Secure LDAP. Should be a base64encoded representation of the certificate PFX file and contain the domainName as CN. Required if secure LDAP is enabled and must be valid more than 30 days.')
 @secure()
-param pfxCertificate string = ''
+param pfxCertificate string?
 
 @description('Conditional. The password to decrypt the provided Secure LDAP certificate PFX file. Required if secure LDAP is enabled.')
 @secure()
-param pfxCertificatePassword string = ''
+param pfxCertificatePassword string?
 
 @metadata({
   example: '''
@@ -55,92 +50,47 @@ param pfxCertificatePassword string = ''
 param additionalRecipients array = []
 
 @description('Optional. The value is to provide domain configuration type.')
-@allowed([
-  'FullySynced'
-  'ResourceTrusting'
-])
-param domainConfigurationType string = 'FullySynced'
+param domainConfigurationType ('FullySynced' | 'ResourceTrusting') = 'FullySynced'
 
 @description('Optional. The value is to synchronize scoped users and groups.')
-@allowed([
-  'Disabled'
-  'Enabled'
-])
-param filteredSync string = 'Enabled'
+param filteredSync ('Disabled' | 'Enabled') = 'Enabled'
 
-@description('Optional. The value is to enable clients making request using TLSv1.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param tlsV1 string = 'Disabled'
+@description('Optional. TLS 1.0 / 1.1 for Azure Domain Services has been deprecated on August 31, 2025.')
+param tlsV1 ('Disabled') = 'Disabled'
 
 @description('Optional. The value is to enable clients making request using NTLM v1.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param ntlmV1 string = 'Disabled'
+param ntlmV1 ('Disabled' | 'Enabled') = 'Disabled'
 
 @description('Optional. The value is to enable synchronized users to use NTLM authentication.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
 #disable-next-line secure-secrets-in-params // Not a secret
-param syncNtlmPasswords string = 'Enabled'
+param syncNtlmPasswords ('Disabled' | 'Enabled') = 'Enabled'
 
 @description('Optional. The value is to enable on-premises users to authenticate against managed domain.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
 #disable-next-line secure-secrets-in-params // Not a secret
-param syncOnPremPasswords string = 'Enabled'
+param syncOnPremPasswords ('Disabled' | 'Enabled') = 'Enabled'
 
 @description('Optional. The value is to enable Kerberos requests that use RC4 encryption.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param kerberosRc4Encryption string = 'Disabled'
+param kerberosRc4Encryption ('Disabled' | 'Enabled') = 'Disabled'
 
 @description('Optional. The value is to enable to provide a protected channel between the Kerberos client and the KDC.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param kerberosArmoring string = 'Enabled'
+param kerberosArmoring ('Disabled' | 'Enabled') = 'Enabled'
 
 @description('Optional. The value is to notify the DC Admins.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param notifyDcAdmins string = 'Enabled'
+param notifyDcAdmins ('Disabled' | 'Enabled') = 'Enabled'
 
 @description('Optional. The value is to notify the Global Admins.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param notifyGlobalAdmins string = 'Enabled'
+param notifyGlobalAdmins ('Disabled' | 'Enabled') = 'Enabled'
 
-@description('Optional. The value is to enable the Secure LDAP for external services of Azure ADDS Services.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param externalAccess string = 'Enabled'
+@description('Optional. The value is to enable the Secure LDAP for external services of Azure AD DS Services.')
+param externalAccess ('Disabled' | 'Enabled') = 'Enabled'
 
 @description('Optional. A flag to determine whether or not Secure LDAP is enabled or disabled.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param ldaps string = 'Enabled'
+param ldaps ('Disabled' | 'Enabled') = 'Enabled'
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. All users in AAD are synced to AAD DS domain or only users actively syncing in the cloud. Defaults to All.')
+param syncScope ('All' | 'CloudOnly') = 'All'
+
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -153,13 +103,13 @@ param diagnosticSettings diagnosticSettingFullType[]?
   '''
 })
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.AAD/domainServices@2022-12-01'>.tags?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalIds\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
 param roleAssignments roleAssignmentType[]?
 
@@ -228,8 +178,8 @@ resource domainservice 'Microsoft.AAD/domainServices@2022-12-01' = {
     ldapsSettings: {
       externalAccess: externalAccess
       ldaps: ldaps
-      pfxCertificate: !empty(pfxCertificate) ? pfxCertificate : null
-      pfxCertificatePassword: !empty(pfxCertificatePassword) ? pfxCertificatePassword : null
+      pfxCertificate: pfxCertificate
+      pfxCertificatePassword: pfxCertificatePassword
     }
     replicaSets: replicaSets
     domainSecuritySettings: {
@@ -241,9 +191,11 @@ resource domainservice 'Microsoft.AAD/domainServices@2022-12-01' = {
       kerberosArmoring: kerberosArmoring
     }
     sku: sku
+    syncScope: syncScope
   }
 }
 
+#disable-next-line use-recent-api-versions
 resource domainservice_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
@@ -277,9 +229,9 @@ resource domainservice_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!em
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: domainservice
 }
@@ -304,13 +256,13 @@ resource domainservice_roleAssignments 'Microsoft.Authorization/roleAssignments@
 // Outputs      //
 // ============ //
 
-@description('The domain name of the Azure Active Directory Domain Services(Azure ADDS).')
+@description('The domain name of the Microsoft Entra Domain Services(Azure AD DS).')
 output name string = domainservice.name
 
-@description('The name of the resource group the Azure Active Directory Domain Services(Azure ADDS) was created in.')
+@description('The name of the resource group the Microsoft Entra Domain Services(Azure AD DS) was created in.')
 output resourceGroupName string = resourceGroup().name
 
-@description('The resource ID of the Azure Active Directory Domain Services(Azure ADDS).')
+@description('The resource ID of the Microsoft Entra Domain Services(Azure AD DS).')
 output resourceId string = domainservice.id
 
 @description('The location the resource was deployed into.')

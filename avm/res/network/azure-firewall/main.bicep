@@ -15,7 +15,7 @@ param azureSkuTier string = 'Standard'
 @description('Conditional. Shared services Virtual Network resource ID. The virtual network ID containing AzureFirewallSubnet. If a Public IP is not provided, then the Public IP that is created as part of this module will be applied with the subnet provided in this variable. Required if `virtualHubId` is empty.')
 param virtualNetworkResourceId string = ''
 
-@description('Optional. The Public IP resource ID to associate to the AzureFirewallSubnet. If empty, then the Public IP that is created as part of this module will be applied to the AzureFirewallSubnet.')
+@description('Optional. The Public IP resource ID to associate to the Azure Firewall. If empty, then the Public IP that is created as part of this module will be applied to the Azure Firewall.')
 param publicIPResourceID string = ''
 
 @description('Optional. This is to add any additional Public IP configurations on top of the Public IP with subnet IP configuration.')
@@ -44,11 +44,11 @@ param natRuleCollections natRuleCollectionType[]?
 @description('Optional. Resource ID of the Firewall Policy that should be attached.')
 param firewallPolicyId string = ''
 
-@description('Conditional. IP addresses associated with AzureFirewall. Required if `virtualHubId` is supplied.')
+@description('Conditional. IP addresses associated with AzureFirewall. Required if `virtualHubId` is supplied & `publicIPResourceID` is empty.')
 param hubIPAddresses hubIPAddressesType?
 
 @description('Conditional. The virtualHub resource ID to which the firewall belongs. Required if `virtualNetworkId` is empty.')
-param virtualHubId string = ''
+param virtualHubResourceId string = ''
 
 @allowed([
   'Alert'
@@ -58,40 +58,47 @@ param virtualHubId string = ''
 @description('Optional. The operation mode for Threat Intel.')
 param threatIntelMode string = 'Deny'
 
-@description('Optional. Zone numbers e.g. 1,2,3.')
-param zones array = [
+@description('Optional. The maximum number of capacity units for this azure firewall. Use null to reset the value to the service default.')
+param autoscaleMaxCapacity int?
+
+@description('Optional. The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default.')
+param autoscaleMinCapacity int?
+
+@description('Optional. The list of Availability zones to use for the zone-redundant resources.')
+@allowed([
   1
   2
   3
-]
+])
+param availabilityZones int[] = [1, 2, 3]
 
-@description('Optional. Enable/Disable forced tunneling.')
-param enableForcedTunneling bool = false
+@description('Optional. Enable/Disable to support Forced Tunneling and Packet capture scenarios.')
+param enableManagementNic bool = false
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the Azure Firewall resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/azureFirewalls@2024-05-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 var enableReferencedModulesTelemetry = false
 var azureSkuName = empty(virtualNetworkResourceId) ? 'AZFW_Hub' : 'AZFW_VNet'
-var requiresManagementIp = (azureSkuTier == 'Basic' || enableForcedTunneling) ? true : false
+var requiresManagementIp = (azureSkuTier == 'Basic' || enableManagementNic) ? true : false
 var isCreateDefaultManagementIP = empty(managementIPResourceID) && requiresManagementIp
 
 // ----------------------------------------------------------------------------
@@ -115,18 +122,20 @@ var additionalPublicIpConfigurationsVar = [
 var ipConfigurations = concat(
   [
     {
-      name: !empty(publicIPResourceID) ? last(split(publicIPResourceID, '/')) : publicIPAddress.outputs.name
+      name: !empty(publicIPResourceID) ? last(split(publicIPResourceID, '/')) : publicIPAddress.?outputs.name
       properties: union(
-        {
-          subnet: {
-            id: '${virtualNetworkResourceId}/subnets/AzureFirewallSubnet' // The subnet name must be AzureFirewallSubnet
-          }
-        },
+        (azureSkuName == 'AZFW_VNet')
+          ? {
+              subnet: {
+                id: '${virtualNetworkResourceId}/subnets/AzureFirewallSubnet' // The subnet name must be AzureFirewallSubnet
+              }
+            }
+          : {},
         (!empty(publicIPResourceID) || !empty(publicIPAddressObject))
           ? {
               //Use existing Public IP, new Public IP created in this module, or none if neither
               publicIPAddress: {
-                id: !empty(publicIPResourceID) ? publicIPResourceID : publicIPAddress.outputs.resourceId
+                id: !empty(publicIPResourceID) ? publicIPResourceID : publicIPAddress.?outputs.resourceId
               }
             }
           : {}
@@ -142,14 +151,14 @@ var ipConfigurations = concat(
 // 2. Use new Management Public IP created in this module
 
 var managementIPConfiguration = {
-  name: !empty(managementIPResourceID) ? last(split(managementIPResourceID, '/')) : managementIPAddress.outputs.name
+  name: !empty(managementIPResourceID) ? last(split(managementIPResourceID, '/')) : managementIPAddress.?outputs.name
   properties: {
     subnet: {
       id: '${virtualNetworkResourceId}/subnets/AzureFirewallManagementSubnet' // The subnet name must be AzureFirewallManagementSubnet for a 'Basic' SKU tier firewall
     }
     // Use existing Management Public IP, new Management Public IP created in this module, or none if neither
     publicIPAddress: {
-      id: !empty(managementIPResourceID) ? managementIPResourceID : managementIPAddress.outputs.resourceId
+      id: !empty(managementIPResourceID) ? managementIPResourceID : managementIPAddress.?outputs.resourceId
     }
   }
 }
@@ -199,7 +208,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.8.0' = if (empty(publicIPResourceID) && azureSkuName == 'AZFW_VNet') {
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.9.1' = if (empty(publicIPResourceID) && azureSkuName == 'AZFW_VNet') {
   name: '${uniqueString(deployment().name, location)}-Firewall-PIP'
   params: {
     name: publicIPAddressObject.name
@@ -222,15 +231,20 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.8.0' = if 
       : []
     diagnosticSettings: publicIPAddressObject.?diagnosticSettings
     location: location
-    lock: lock
     tags: publicIPAddressObject.?tags ?? tags
-    zones: zones
+    availabilityZones: availabilityZones
+    ipTags: publicIPAddressObject.?ipTags
+    ddosSettings: publicIPAddressObject.?ddosSettings
+    dnsSettings: publicIPAddressObject.?dnsSettings
+    idleTimeoutInMinutes: publicIPAddressObject.?idleTimeoutInMinutes
+    publicIPAddressVersion: publicIPAddressObject.?publicIPAddressVersion
+    lock: lock
     enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
 // create a Management Public IP address if one is not provided and the flag is true
-module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.8.0' = if (isCreateDefaultManagementIP && azureSkuName == 'AZFW_VNet') {
+module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.9.1' = if (isCreateDefaultManagementIP && azureSkuName == 'AZFW_VNet') {
   name: '${uniqueString(deployment().name, location)}-Firewall-MIP'
   params: {
     name: contains(managementIPAddressObject, 'name')
@@ -258,18 +272,28 @@ module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.8.0' =
     diagnosticSettings: managementIPAddressObject.?diagnosticSettings
     location: location
     tags: managementIPAddressObject.?tags ?? tags
-    zones: zones
+    availabilityZones: availabilityZones
+    ipTags: publicIPAddressObject.?ipTags
+    ddosSettings: publicIPAddressObject.?ddosSettings
+    dnsSettings: publicIPAddressObject.?dnsSettings
+    idleTimeoutInMinutes: publicIPAddressObject.?idleTimeoutInMinutes
+    publicIPAddressVersion: publicIPAddressObject.?publicIPAddressVersion
+    lock: lock
     enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
-resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-05-01' = {
+resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-10-01' = {
   name: name
   location: location
-  zones: length(zones) == 0 ? null : zones
+  zones: map(availabilityZones, zone => '${zone}')
   tags: tags
   properties: azureSkuName == 'AZFW_VNet'
     ? {
+        autoscaleConfiguration: {
+          maxCapacity: autoscaleMaxCapacity
+          minCapacity: autoscaleMinCapacity
+        }
         threatIntelMode: threatIntelMode
         firewallPolicy: !empty(firewallPolicyId)
           ? {
@@ -287,6 +311,10 @@ resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-05-01' = {
         networkRuleCollections: networkRuleCollections ?? []
       }
     : {
+        autoscaleConfiguration: {
+          maxCapacity: autoscaleMaxCapacity
+          minCapacity: autoscaleMinCapacity
+        }
         firewallPolicy: !empty(firewallPolicyId)
           ? {
               id: firewallPolicyId
@@ -296,10 +324,11 @@ resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-05-01' = {
           name: azureSkuName
           tier: azureSkuTier
         }
-        hubIPAddresses: !empty(hubIPAddresses) ? hubIPAddresses : null
-        virtualHub: !empty(virtualHubId)
+        ipConfigurations: !empty(publicIPResourceID) ? ipConfigurations : null
+        hubIPAddresses: !empty(publicIPResourceID) ? null : !empty(hubIPAddresses) ? hubIPAddresses : null
+        virtualHub: !empty(virtualHubResourceId)
           ? {
-              id: virtualHubId
+              id: virtualHubResourceId
             }
           : null
       }
@@ -309,9 +338,9 @@ resource azureFirewall_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!em
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: azureFirewall
 }

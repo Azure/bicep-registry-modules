@@ -1,5 +1,10 @@
 # Network Application Gateways `[Microsoft.Network/applicationGateways]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys a Network Application Gateway.
 
 ## Navigation
@@ -13,14 +18,14 @@ This module deploys a Network Application Gateway.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/applicationGateways` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/applicationGateways) |
-| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Network/applicationGateways` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_applicationgateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/applicationGateways)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -674,6 +679,11 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     // Required parameters
     name: '<name>'
     // Non-required parameters
+    availabilityZones: [
+      1
+      2
+      3
+    ]
     backendAddressPools: [
       {
         name: 'appServiceBackendPool'
@@ -1088,11 +1098,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zones: [
-      '1'
-      '2'
-      '3'
-    ]
   }
 }
 ```
@@ -1114,6 +1119,13 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       "value": "<name>"
     },
     // Non-required parameters
+    "availabilityZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
     "backendAddressPools": {
       "value": [
         {
@@ -1573,13 +1585,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "zones": {
-      "value": [
-        "1",
-        "2",
-        "3"
-      ]
     }
   }
 }
@@ -1598,6 +1603,11 @@ using 'br/public:avm/res/network/application-gateway:<version>'
 // Required parameters
 param name = '<name>'
 // Non-required parameters
+param availabilityZones = [
+  1
+  2
+  3
+]
 param backendAddressPools = [
   {
     name: 'appServiceBackendPool'
@@ -2012,11 +2022,6 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param zones = [
-  '1'
-  '2'
-  '3'
-]
 ```
 
 </details>
@@ -3978,6 +3983,7 @@ param tags = {
 | [`authenticationCertificates`](#parameter-authenticationcertificates) | array | Authentication certificates of the application gateway resource. |
 | [`autoscaleMaxCapacity`](#parameter-autoscalemaxcapacity) | int | Upper bound on number of Application Gateway capacity. |
 | [`autoscaleMinCapacity`](#parameter-autoscalemincapacity) | int | Lower bound on number of Application Gateway capacity. |
+| [`availabilityZones`](#parameter-availabilityzones) | array | The list of Availability zones to use for the zone-redundant resources. |
 | [`backendAddressPools`](#parameter-backendaddresspools) | array | Backend address pool of the application gateway resource. |
 | [`backendHttpSettingsCollection`](#parameter-backendhttpsettingscollection) | array | Backend http settings of the application gateway resource. |
 | [`backendSettingsCollection`](#parameter-backendsettingscollection) | array | Backend settings of the application gateway resource. For default limits, see [Application Gateway limits](https://learn.microsoft.com/en-us/azure/azure-subscription-service-limits#application-gateway-limits). |
@@ -4017,7 +4023,6 @@ param tags = {
 | [`trustedClientCertificates`](#parameter-trustedclientcertificates) | array | Trusted client certificates of the application gateway resource. |
 | [`trustedRootCertificates`](#parameter-trustedrootcertificates) | array | Trusted Root certificates of the application gateway resource. |
 | [`urlPathMaps`](#parameter-urlpathmaps) | array | URL path map of the application gateway resource. |
-| [`zones`](#parameter-zones) | array | A list of availability zones denoting where the resource needs to come from. |
 
 ### Parameter: `name`
 
@@ -4056,6 +4061,29 @@ Lower bound on number of Application Gateway capacity.
 - Required: No
 - Type: int
 - Default: `-1`
+
+### Parameter: `availabilityZones`
+
+The list of Availability zones to use for the zone-redundant resources.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `backendAddressPools`
 
@@ -4354,6 +4382,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -4373,6 +4402,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -4583,6 +4619,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -4602,6 +4639,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -4996,39 +5040,6 @@ Ssl cipher suites to be enabled in the specified order to application gateway.
     'TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384'
   ]
   ```
-- Allowed:
-  ```Bicep
-  [
-    'TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA'
-    'TLS_DHE_DSS_WITH_AES_128_CBC_SHA'
-    'TLS_DHE_DSS_WITH_AES_128_CBC_SHA256'
-    'TLS_DHE_DSS_WITH_AES_256_CBC_SHA'
-    'TLS_DHE_DSS_WITH_AES_256_CBC_SHA256'
-    'TLS_DHE_RSA_WITH_AES_128_CBC_SHA'
-    'TLS_DHE_RSA_WITH_AES_128_GCM_SHA256'
-    'TLS_DHE_RSA_WITH_AES_256_CBC_SHA'
-    'TLS_DHE_RSA_WITH_AES_256_GCM_SHA384'
-    'TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA'
-    'TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256'
-    'TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256'
-    'TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA'
-    'TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384'
-    'TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384'
-    'TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA'
-    'TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256'
-    'TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256'
-    'TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA'
-    'TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384'
-    'TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384'
-    'TLS_RSA_WITH_3DES_EDE_CBC_SHA'
-    'TLS_RSA_WITH_AES_128_CBC_SHA'
-    'TLS_RSA_WITH_AES_128_CBC_SHA256'
-    'TLS_RSA_WITH_AES_128_GCM_SHA256'
-    'TLS_RSA_WITH_AES_256_CBC_SHA'
-    'TLS_RSA_WITH_AES_256_CBC_SHA256'
-    'TLS_RSA_WITH_AES_256_GCM_SHA384'
-  ]
-  ```
 
 ### Parameter: `sslPolicyMinProtocolVersion`
 
@@ -5121,21 +5132,6 @@ URL path map of the application gateway resource.
 - Type: array
 - Default: `[]`
 
-### Parameter: `zones`
-
-A list of availability zones denoting where the resource needs to come from.
-
-- Required: No
-- Type: array
-- Default:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
-
 ## Outputs
 
 | Output | Type | Description |
@@ -5154,6 +5150,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 

@@ -7,7 +7,7 @@ param trafficManagerProfileName string
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
-resource trafficManagerProfile 'Microsoft.Network/trafficmanagerprofiles@2022-04-01-preview' = {
+resource trafficManagerProfile 'Microsoft.Network/trafficmanagerprofiles@2022-04-01' = {
   name: trafficManagerProfileName
   location: 'global'
   properties: {
@@ -25,7 +25,7 @@ resource trafficManagerProfile 'Microsoft.Network/trafficmanagerprofiles@2022-04
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }

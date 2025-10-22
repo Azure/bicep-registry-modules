@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "14799612617605682724"
+      "version": "0.36.1.42791",
+      "templateHash": "5286684288587619638"
     },
     "name": "Event Grid System Topic Event Subscriptions",
     "description": "This module deploys an Event Grid System Topic Event Subscription."
@@ -26,30 +26,43 @@
     },
     "deadLetterDestination": {
       "type": "object",
-      "nullable": true,
       "metadata": {
-        "description": "Optional. Dead Letter Destination. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterdestination-objects for more information)."
-      }
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/deadLetterDestination"
+        },
+        "description": "Optional. Dead Letter Destination."
+      },
+      "nullable": true
     },
     "deadLetterWithResourceIdentity": {
       "type": "object",
-      "nullable": true,
       "metadata": {
-        "description": "Optional. Dead Letter with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterwithresourceidentity-objects for more information)."
-      }
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/deadLetterWithResourceIdentity"
+        },
+        "description": "Optional. Dead Letter with Resource Identity Configuration."
+      },
+      "nullable": true
     },
     "deliveryWithResourceIdentity": {
       "type": "object",
-      "nullable": true,
       "metadata": {
-        "description": "Optional. Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deliverywithresourceidentity-objects for more information)."
-      }
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/deliveryWithResourceIdentity"
+        },
+        "description": "Optional. Delivery with Resource Identity Configuration."
+      },
+      "nullable": true
     },
     "destination": {
       "type": "object",
       "metadata": {
-        "description": "Required. The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information)."
-      }
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/destination"
+        },
+        "description": "Conditional. Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription."
+      },
+      "nullable": true
     },
     "eventDeliverySchema": {
       "type": "string",
@@ -73,13 +86,19 @@
     },
     "filter": {
       "type": "object",
-      "nullable": true,
       "metadata": {
-        "description": "Optional. The filter for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptionfilter for more information)."
-      }
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/filter"
+        },
+        "description": "Optional. The filter for the event subscription."
+      },
+      "nullable": true
     },
     "labels": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. The list of user defined labels."
@@ -87,22 +106,25 @@
     },
     "retryPolicy": {
       "type": "object",
-      "nullable": true,
       "metadata": {
-        "description": "Optional. The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events."
-      }
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/retryPolicy"
+        },
+        "description": "Optional. The retry policy for events."
+      },
+      "nullable": true
     }
   },
   "resources": {
     "systemTopic": {
       "existing": true,
       "type": "Microsoft.EventGrid/systemTopics",
-      "apiVersion": "2023-12-15-preview",
+      "apiVersion": "2025-02-15",
       "name": "[parameters('systemTopicName')]"
     },
     "eventSubscription": {
       "type": "Microsoft.EventGrid/systemTopics/eventSubscriptions",
-      "apiVersion": "2023-12-15-preview",
+      "apiVersion": "2025-02-15",
       "name": "[format('{0}/{1}', parameters('systemTopicName'), parameters('name'))]",
       "properties": {
         "deadLetterDestination": "[parameters('deadLetterDestination')]",
@@ -144,7 +166,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('systemTopic', '2023-12-15-preview', 'full').location]"
+      "value": "[reference('systemTopic', '2025-02-15', 'full').location]"
     }
   }
 }

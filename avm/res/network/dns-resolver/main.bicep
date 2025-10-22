@@ -8,16 +8,16 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/dnsResolvers@2025-05-01'>.tags?
 
 @description('Required. ResourceId of the virtual network to attach the DNS Private Resolver to.')
 param virtualNetworkResourceId string
@@ -95,7 +95,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource dnsResolver 'Microsoft.Network/dnsResolvers@2022-07-01' = {
+resource dnsResolver 'Microsoft.Network/dnsResolvers@2025-05-01' = {
   name: name
   location: location
   tags: tags
@@ -110,9 +110,9 @@ resource dnsResolver_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empt
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: dnsResolver
 }
@@ -181,7 +181,7 @@ output outboundEndpointsObject endpointDetailsType[] = [
   }
 ]
 
-@description('The outbound endpoints object.')
+@description('The inbound endpoints object.')
 output inboundEndpointsObject endpointDetailsType[] = [
   for index in range(0, length(inboundEndpoints ?? [])): {
     name: dnsResolver_inboundEndpoints[index].outputs.name
@@ -203,7 +203,7 @@ type inboundEndpointType = {
   subnetResourceId: string
 
   @description('Optional. Tags for the resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Network/dnsResolvers/inboundEndpoints@2025-05-01'>.tags?
 
   @description('Optional. Location for all resources.')
   location: string?
@@ -225,7 +225,7 @@ type outboundEndpointType = {
   subnetResourceId: string
 
   @description('Optional. Tags of the resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Network/dnsResolvers/outboundEndpoints@2025-05-01'>.tags?
 
   @description('Optional. Location for all resources.')
   location: string?

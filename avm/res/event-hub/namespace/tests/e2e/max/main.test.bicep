@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -103,6 +103,7 @@ module testDeployment '../../../main.bicep' = [
       eventhubs: [
         {
           name: '${namePrefix}-az-evh-x-001'
+          messageRetentionInDays: 3
           roleAssignments: [
             {
               roleDefinitionIdOrName: 'Reader'
@@ -130,22 +131,29 @@ module testDeployment '../../../main.bicep' = [
               ]
             }
           ]
-          captureDescriptionDestinationArchiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
-          captureDescriptionDestinationBlobContainer: 'eventhub'
-          captureDescriptionDestinationName: 'EventHubArchive.AzureBlockBlob'
-          captureDescriptionDestinationStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-          captureDescriptionEnabled: true
-          captureDescriptionEncoding: 'Avro'
-          captureDescriptionIntervalInSeconds: 300
-          captureDescriptionSizeLimitInBytes: 314572800
-          captureDescriptionSkipEmptyArchives: true
+          captureDescription: {
+            destination: {
+              name: 'EventHubArchive.AzureBlockBlob'
+              identity: {
+                userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+              }
+              properties: {
+                archiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
+                blobContainer: nestedDependencies.outputs.storageAccountContainerName
+                storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+              }
+            }
+            intervalInSeconds: 300
+            sizeLimitInBytes: 314572800
+            skipEmptyArchives: true
+            encoding: 'Avro'
+          }
           consumergroups: [
             {
               name: 'custom'
               userMetadata: 'customMetadata'
             }
           ]
-          messageRetentionInDays: 1
           partitionCount: 2
           roleAssignments: [
             {
@@ -155,11 +163,13 @@ module testDeployment '../../../main.bicep' = [
             }
           ]
           status: 'Active'
+          retentionDescriptionEnabled: true
           retentionDescriptionCleanupPolicy: 'Delete'
           retentionDescriptionRetentionTimeInHours: 3
         }
         {
           name: '${namePrefix}-az-evh-x-003'
+          retentionDescriptionEnabled: true
           retentionDescriptionCleanupPolicy: 'Compact'
           retentionDescriptionTombstoneRetentionTimeInHours: 24
         }
@@ -167,6 +177,7 @@ module testDeployment '../../../main.bicep' = [
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
+        notes: 'This is a custom lock note.'
       }
       networkRuleSets: {
         defaultAction: 'Deny'
@@ -227,9 +238,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       managedIdentities: {
         systemAssigned: true
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
+        userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
       }
       tags: {
         'hidden-title': 'This is visible in the resource name'

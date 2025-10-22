@@ -1,0 +1,35 @@
+# Changelog
+
+The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/kusto/cluster/CHANGELOG.md).
+
+## 0.8.0
+
+### Changes
+
+- Updates RP API versions.
+
+### Breaking Changes
+
+- Removes default value requirement for capacity as it's not needed with the current auto-scale settings
+
+## 0.7.3
+
+### Changes
+
+- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+- Updated `privateEndpoints` parameter type to 'avm-common-types' `0.6.1`, adding a type to its `tags` property
+
+### Breaking Changes
+
+- None
+
+## 0.7.2
+
+### Changes
+
+- Initial version
+- Updated ReadMe with AzAdvertizer reference
+
+### Breaking Changes
+
+- None

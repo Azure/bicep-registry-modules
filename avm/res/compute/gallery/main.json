@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "14472172435175485682"
+      "version": "0.37.4.10188",
+      "templateHash": "3073759071520140278"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery)."
@@ -29,6 +29,16 @@
           "metadata": {
             "description": "Optional. The description of this gallery image definition resource. This property is updatable."
           }
+        },
+        "tags": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Compute/galleries/images@2024-03-03#properties/tags"
+            },
+            "description": "Optional. Tags for all the image."
+          },
+          "nullable": true
         },
         "allowUpdateImage": {
           "type": "bool",
@@ -100,7 +110,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`."
+            "description": "Optional. The security type of the image. Requires a hyperVGeneration V2. Note, if storing images for e.g., DevBoxes, 'TrustedLaunch' is required."
           }
         },
         "isAcceleratedNetworkSupported": {
@@ -269,10 +279,13 @@
         },
         "tags": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Compute/galleries/applications@2024-03-03#properties/tags"
+            },
             "description": "Optional. Tags for all resources."
-          }
+          },
+          "nullable": true
         }
       },
       "metadata": {
@@ -411,12 +424,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -577,7 +597,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Description of the Azure Shared Image Gallery."
+        "description": "Optional. Description of the Azure Compute Gallery."
       }
     },
     "applications": {
@@ -619,25 +639,34 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/galleries@2024-03-03#properties/tags"
+        },
         "example": "  {\n      key1: 'value1'\n      key2: 'value2'\n  }\n  ",
         "description": "Optional. Tags for all resources."
-      }
+      },
+      "nullable": true
     },
     "sharingProfile": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/galleries@2024-03-03#properties/properties/properties/sharingProfile"
+        },
         "description": "Optional. Profile for gallery sharing to subscription or tenant."
-      }
+      },
+      "nullable": true
     },
     "softDeletePolicy": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/galleries@2024-03-03#properties/properties/properties/softDeletePolicy"
+        },
         "description": "Optional. Soft deletion policy of the gallery."
-      }
+      },
+      "nullable": true
     }
   },
   "variables": {
@@ -698,7 +727,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "gallery"
@@ -784,8 +813,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "16910536206238802260"
+              "version": "0.37.4.10188",
+              "templateHash": "5904153813441817892"
             },
             "name": "Compute Galleries Applications",
             "description": "This module deploys an Azure Compute Gallery Application."
@@ -1024,10 +1053,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/galleries/applications@2024-03-03#properties/tags"
+                },
                 "description": "Optional. Tags for all resources."
-              }
+              },
+              "nullable": true
             },
             "customActions": {
               "type": "array",
@@ -1235,8 +1267,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "1996826221227397837"
+              "version": "0.37.4.10188",
+              "templateHash": "18431868674893968851"
             },
             "name": "Compute Galleries Image Definitions",
             "description": "This module deploys an Azure Compute Gallery Image Definition."
@@ -1516,7 +1548,7 @@
               ],
               "nullable": true,
               "metadata": {
-                "description": "Optional. The security type of the image. Requires a hyperVGeneration V2."
+                "description": "Optional. The security type of the image. Requires a hyperVGeneration V2. Note, if storing images for e.g., DevBoxes, 'TrustedLaunch' is required."
               }
             },
             "isAcceleratedNetworkSupported": {
@@ -1614,11 +1646,14 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/galleries/images@2024-03-03#properties/tags"
+                },
                 "example": "{\n    key1: 'value1'\n    key2: 'value2'\n}\n",
                 "description": "Optional. Tags for all the image."
-              }
+              },
+              "nullable": true
             }
           },
           "variables": {
@@ -1651,32 +1686,7 @@
               "name": "[format('{0}/{1}', parameters('galleryName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
-              "properties": {
-                "allowUpdateImage": "[if(not(equals(parameters('allowUpdateImage'), null())), parameters('allowUpdateImage'), null())]",
-                "architecture": "[parameters('architecture')]",
-                "description": "[parameters('description')]",
-                "disallowed": {
-                  "diskTypes": "[coalesce(tryGet(parameters('disallowed'), 'diskTypes'), createArray())]"
-                },
-                "endOfLifeDate": "[parameters('endOfLifeDate')]",
-                "eula": "[parameters('eula')]",
-                "features": "[union(if(not(equals(parameters('isAcceleratedNetworkSupported'), null())), createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', format('{0}', parameters('isAcceleratedNetworkSupported')))), createArray()), if(and(not(equals(parameters('securityType'), null())), not(equals(parameters('securityType'), 'Standard'))), createArray(createObject('name', 'SecurityType', 'value', format('{0}', parameters('securityType')))), createArray()), if(not(equals(parameters('isHibernateSupported'), null())), createArray(createObject('name', 'IsHibernateSupported', 'value', format('{0}', parameters('isHibernateSupported')))), createArray()), if(not(equals(parameters('diskControllerType'), null())), createArray(createObject('name', 'DiskControllerTypes', 'value', format('{0}', parameters('diskControllerType')))), createArray()))]",
-                "hyperVGeneration": "[coalesce(parameters('hyperVGeneration'), if(not(empty(coalesce(parameters('securityType'), ''))), 'V2', 'V1'))]",
-                "identifier": {
-                  "publisher": "[parameters('identifier').publisher]",
-                  "offer": "[parameters('identifier').offer]",
-                  "sku": "[parameters('identifier').sku]"
-                },
-                "osState": "[parameters('osState')]",
-                "osType": "[parameters('osType')]",
-                "privacyStatementUri": "[parameters('privacyStatementUri')]",
-                "purchasePlan": "[coalesce(parameters('purchasePlan'), null())]",
-                "recommended": {
-                  "vCPUs": "[parameters('vCPUs')]",
-                  "memory": "[parameters('memory')]"
-                },
-                "releaseNoteUri": "[parameters('releaseNoteUri')]"
-              }
+              "properties": "[shallowMerge(createArray(createObject('allowUpdateImage', if(not(equals(parameters('allowUpdateImage'), null())), parameters('allowUpdateImage'), null()), 'architecture', parameters('architecture'), 'description', parameters('description'), 'disallowed', createObject('diskTypes', coalesce(tryGet(parameters('disallowed'), 'diskTypes'), createArray())), 'endOfLifeDate', parameters('endOfLifeDate'), 'eula', parameters('eula'), 'features', union(if(not(equals(parameters('isAcceleratedNetworkSupported'), null())), createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', format('{0}', parameters('isAcceleratedNetworkSupported')))), createArray()), if(and(not(equals(parameters('securityType'), null())), not(equals(parameters('securityType'), 'Standard'))), createArray(createObject('name', 'SecurityType', 'value', format('{0}', parameters('securityType')))), createArray()), if(not(equals(parameters('isHibernateSupported'), null())), createArray(createObject('name', 'IsHibernateSupported', 'value', format('{0}', parameters('isHibernateSupported')))), createArray()), if(not(equals(parameters('diskControllerType'), null())), createArray(createObject('name', 'DiskControllerTypes', 'value', format('{0}', parameters('diskControllerType')))), createArray())), 'hyperVGeneration', coalesce(parameters('hyperVGeneration'), if(not(empty(coalesce(parameters('securityType'), ''))), 'V2', 'V1')), 'identifier', createObject('publisher', parameters('identifier').publisher, 'offer', parameters('identifier').offer, 'sku', parameters('identifier').sku), 'osState', parameters('osState'), 'osType', parameters('osType'), 'privacyStatementUri', parameters('privacyStatementUri')), if(not(equals(parameters('purchasePlan'), null())), createObject('purchasePlan', parameters('purchasePlan')), createObject()), createObject('recommended', createObject('vCPUs', parameters('vCPUs'), 'memory', parameters('memory')), 'releaseNoteUri', parameters('releaseNoteUri'))))]"
             },
             "image_roleAssignments": {
               "copy": {
@@ -1769,6 +1779,9 @@
     },
     "imageResourceIds": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "metadata": {
         "description": "The resource ids of the deployed images."
       },

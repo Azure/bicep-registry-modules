@@ -185,7 +185,7 @@ var alzCustomPolicySetDefsJson = [
   }
 ]
 
-var managementGroupCustomRoleDefinitions = [
+var managementGroupCustomPolicyDefinitions = [
   for policy in alzCustomPolicyDefsJson: {
     name: policy.name
     properties: {
@@ -247,6 +247,7 @@ module testDeployment '../../../main.bicep' = [
           identity: 'None'
           enforcementMode: 'Default'
           policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/cccc23c7-8427-4f53-ad12-b6a63eb452b3'
+          definitionVersion: '1.*.*'
           parameters: {
             listOfAllowedSKUs: {
               value: [
@@ -286,12 +287,23 @@ module testDeployment '../../../main.bicep' = [
               value: 'costCenter'
             }
             effect: {
+              value: 'Disabled'
+            }
+          }
+          parameterOverrides: {
+            effect: {
               value: 'Audit'
             }
           }
         }
       ]
-      managementGroupCustomPolicyDefinitions: managementGroupCustomRoleDefinitions
+      managementGroupExcludedPolicyAssignments: [
+        'allowed-vm-skus-root'
+      ]
+      managementGroupDoNotEnforcePolicyAssignments: [
+        'diag-activity-log-lz'
+      ]
+      managementGroupCustomPolicyDefinitions: managementGroupCustomPolicyDefinitions
       managementGroupCustomPolicySetDefinitions: managementGroupCustomPolicySetDefinitions
     }
   }

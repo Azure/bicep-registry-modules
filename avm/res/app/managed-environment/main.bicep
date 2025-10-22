@@ -8,7 +8,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.App/managedEnvironments@2024-10-02-preview'>.tags?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
@@ -72,7 +72,7 @@ param certificateValue string = ''
 @description('Optional. DNS suffix for the environment domain.')
 param dnsSuffix string = ''
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -250,9 +250,9 @@ resource managedEnvironment_lock 'Microsoft.Authorization/locks@2020-05-01' = if
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: managedEnvironment
 }
@@ -338,9 +338,9 @@ type storageType = {
 @description('The type for the App Logs Configuration.')
 type appLogsConfigurationType = {
   @description('Optional. The destination of the logs.')
-  destination: string?
+  destination: ('log-analytics' | 'azure-monitor' | 'none')?
 
-  @description('Optional. The configuration for Log Analytics.')
+  @description('Conditional. The Log Analytics configuration. Required if `destination` is `log-analytics`.')
   logAnalyticsConfiguration: {
     @description('Required. The Log Analytics Workspace ID.')
     customerId: string

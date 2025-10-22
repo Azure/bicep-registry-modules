@@ -10,10 +10,10 @@ This module deploys a MongoDB Database within a CosmosDB Account.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/mongodbDatabases) |
-| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/mongodbDatabases/collections) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_mongodbdatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/mongodbDatabases)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_mongodbdatabases_collections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/mongodbDatabases/collections)</li></ul> |
 
 ## Parameters
 
@@ -33,6 +33,7 @@ This module deploys a MongoDB Database within a CosmosDB Account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`autoscaleSettings`](#parameter-autoscalesettings) | object | Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both. |
 | [`collections`](#parameter-collections) | array | Collections in the mongodb database. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`throughput`](#parameter-throughput) | int | Request Units per second. Setting throughput at the database level is only recommended for development/test or when workload across all collections in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level. |
@@ -51,13 +52,61 @@ The name of the parent Cosmos DB database account. Required if the template is u
 - Required: Yes
 - Type: string
 
+### Parameter: `autoscaleSettings`
+
+Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both.
+
+- Required: No
+- Type: object
+
 ### Parameter: `collections`
 
 Collections in the mongodb database.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`indexes`](#parameter-collectionsindexes) | array | Indexes for the collection. |
+| [`name`](#parameter-collectionsname) | string | Name of the collection. |
+| [`shardKey`](#parameter-collectionsshardkey) | object | ShardKey for the collection. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`throughput`](#parameter-collectionsthroughput) | int | Request Units per second. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level. |
+
+### Parameter: `collections.indexes`
+
+Indexes for the collection.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `collections.name`
+
+Name of the collection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `collections.shardKey`
+
+ShardKey for the collection.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `collections.throughput`
+
+Request Units per second. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level.
+
+- Required: No
+- Type: int
 
 ### Parameter: `tags`
 

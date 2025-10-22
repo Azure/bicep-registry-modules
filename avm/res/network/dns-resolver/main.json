@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "9925034311524259969"
+      "version": "0.38.5.1644",
+      "templateHash": "9194961541096380322"
     },
     "name": "DNS Resolver",
     "description": "This module deploys a DNS Resolver."
@@ -29,10 +29,13 @@
         },
         "tags": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsResolvers/inboundEndpoints@2025-05-01#properties/tags"
+            },
             "description": "Optional. Tags for the resource."
-          }
+          },
+          "nullable": true
         },
         "location": {
           "type": "string",
@@ -82,10 +85,13 @@
         },
         "tags": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/dnsResolvers/outboundEndpoints@2025-05-01#properties/tags"
+            },
             "description": "Optional. Tags of the resource."
-          }
+          },
+          "nullable": true
         },
         "location": {
           "type": "string",
@@ -142,12 +148,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -222,7 +235,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -261,10 +274,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/dnsResolvers@2025-05-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "virtualNetworkResourceId": {
       "type": "string",
@@ -344,7 +360,7 @@
     },
     "dnsResolver": {
       "type": "Microsoft.Network/dnsResolvers",
-      "apiVersion": "2022-07-01",
+      "apiVersion": "2025-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -362,7 +378,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "dnsResolver"
@@ -396,7 +412,7 @@
         "count": "[length(coalesce(parameters('inboundEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-dnsResolver-inbound-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -433,8 +449,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "16944244045686961069"
+              "version": "0.38.5.1644",
+              "templateHash": "902733791124628074"
             },
             "name": "DNS Resolver Inbound Endpoint",
             "description": "This module deploys a DNS Resolver Inbound Endpoint."
@@ -456,10 +472,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsResolvers/inboundEndpoints@2025-05-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             },
             "subnetResourceId": {
               "type": "string",
@@ -492,12 +511,12 @@
             "dnsResolver": {
               "existing": true,
               "type": "Microsoft.Network/dnsResolvers",
-              "apiVersion": "2022-07-01",
+              "apiVersion": "2025-05-01",
               "name": "[parameters('dnsResolverName')]"
             },
             "inboundEndpoint": {
               "type": "Microsoft.Network/dnsResolvers/inboundEndpoints",
-              "apiVersion": "2022-07-01",
+              "apiVersion": "2025-05-01",
               "name": "[format('{0}/{1}', parameters('dnsResolverName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -549,7 +568,7 @@
         "count": "[length(coalesce(parameters('outboundEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-dnsResolver-outbound-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -580,8 +599,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "17191426470259312613"
+              "version": "0.38.5.1644",
+              "templateHash": "12016157190295204834"
             },
             "name": "DNS Resolver Outbound Endpoint",
             "description": "This module deploys a DNS Resolver Outbound Endpoint."
@@ -603,10 +622,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/dnsResolvers/outboundEndpoints@2025-05-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             },
             "subnetResourceId": {
               "type": "string",
@@ -625,12 +647,12 @@
             "dnsResolver": {
               "existing": true,
               "type": "Microsoft.Network/dnsResolvers",
-              "apiVersion": "2022-07-01",
+              "apiVersion": "2025-05-01",
               "name": "[parameters('dnsResolverName')]"
             },
             "outboundEndpoint": {
               "type": "Microsoft.Network/dnsResolvers/outboundEndpoints",
-              "apiVersion": "2022-07-01",
+              "apiVersion": "2025-05-01",
               "name": "[format('{0}/{1}', parameters('dnsResolverName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -698,7 +720,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('dnsResolver', '2022-07-01', 'full').location]"
+      "value": "[reference('dnsResolver', '2025-05-01', 'full').location]"
     },
     "outboundEndpointsObject": {
       "type": "array",
@@ -722,7 +744,7 @@
         "$ref": "#/definitions/endpointDetailsType"
       },
       "metadata": {
-        "description": "The outbound endpoints object."
+        "description": "The inbound endpoints object."
       },
       "copy": {
         "count": "[length(range(0, length(coalesce(parameters('inboundEndpoints'), createArray()))))]",

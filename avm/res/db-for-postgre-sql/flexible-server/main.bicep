@@ -15,7 +15,7 @@ param administratorLoginPassword string?
 param tenantId string?
 
 @description('Optional. The Azure AD administrators when AAD authentication enabled.')
-param administrators array = []
+param administrators administratorType[]?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -31,14 +31,31 @@ param skuName string
 @description('Required. The tier of the particular SKU. Tier must align with the \'skuName\' property. Example, tier cannot be \'Burstable\' if skuName is \'Standard_D4s_v3\'.')
 param tier string
 
+@description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).')
 @allowed([
-  ''
-  '1'
-  '2'
-  '3'
+  -1
+  1
+  2
+  3
 ])
-@description('Optional. Availability zone information of the server. Default will have no preference set.')
-param availabilityZone string = ''
+param availabilityZone int
+
+@description('Optional. Standby availability zone information of the server. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Default will have no preference set.')
+@allowed([
+  -1
+  1
+  2
+  3
+])
+param highAvailabilityZone int = -1
+
+@allowed([
+  'Disabled'
+  'SameZone'
+  'ZoneRedundant'
+])
+@description('Optional. The mode for high availability.')
+param highAvailability string = 'ZoneRedundant'
 
 @minValue(7)
 @maxValue(35)
@@ -81,17 +98,10 @@ param autoGrow string?
   '14'
   '15'
   '16'
+  '17'
 ])
 @description('Optional. PostgreSQL Server version.')
-param version string = '16'
-
-@allowed([
-  'Disabled'
-  'SameZone'
-  'ZoneRedundant'
-])
-@description('Optional. The mode for high availability.')
-param highAvailability string = 'ZoneRedundant'
+param version string = '17'
 
 @allowed([
   'Create'
@@ -104,7 +114,7 @@ param highAvailability string = 'ZoneRedundant'
 @description('Optional. The mode to create a new PostgreSQL server.')
 param createMode string = 'Default'
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Conditional. The managed identity definition for this resource. Required if \'cMKKeyName\' is not empty.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
 
@@ -115,12 +125,12 @@ param managedIdentities managedIdentityOnlyUserAssignedType?
 @description('Optional. Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server.')
 param serverThreatProtection string = 'Enabled'
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType?
+param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Optional. Properties for the maintenence window. If provided, \'customWindow\' property must exist and set to \'Enabled\'.')
-param maintenanceWindow object = {
+param maintenanceWindow resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01'>.properties.maintenanceWindow = {
   customWindow: 'Enabled'
   dayOfWeek: 0
   startHour: 1
@@ -134,13 +144,13 @@ param pointInTimeUTC string = ''
 param sourceServerResourceId string = ''
 
 @description('Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is \'Private Access\' - virtual network integration.')
-param delegatedSubnetResourceId string = ''
+param delegatedSubnetResourceId string?
 
 @description('Optional. Private dns zone arm resource ID. Used when the desired connectivity mode is \'Private Access\' and required when \'delegatedSubnetResourceId\' is used. The Private DNS Zone must be linked to the Virtual Network referenced in \'delegatedSubnetResourceId\'.')
 param privateDnsZoneArmResourceId string = ''
 
 @description('Optional. The firewall rules to create in the PostgreSQL flexible server.')
-param firewallRules array = []
+param firewallRules firewallRuleType[]?
 
 @description('Optional. Determines whether or not public network access is enabled or disabled.')
 @allowed([
@@ -155,7 +165,7 @@ param databases array = []
 @description('Optional. The configurations to create in the server.')
 param configurations array = []
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -165,25 +175,31 @@ param replica replicaType?
 @description('Optional. Enable/Disable advanced threat protection.')
 param enableAdvancedThreatProtection bool = true
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. Used when the desired connectivity mode is \'Public Access\' and \'delegatedSubnetResourceId\' is NOT used.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 var enableReferencedModulesTelemetry = false
+
+var standByAvailabilityZone = {
+  Disabled: -1
+  SameZone: availabilityZone
+  ZoneRedundant: highAvailabilityZone
+}[?highAvailability]
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -242,19 +258,19 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName!
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
@@ -273,13 +289,18 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' =
   identity: identity
   properties: {
     administratorLogin: administratorLogin
+    #disable-next-line use-secure-value-for-secure-inputs // Is defined as secure(). False-positive
     administratorLoginPassword: administratorLoginPassword
     authConfig: {
       activeDirectoryAuth: !empty(administrators) ? 'enabled' : 'disabled'
       passwordAuth: !empty(administratorLogin) && !empty(administratorLoginPassword) ? 'enabled' : 'disabled'
       tenantId: tenantId
     }
-    availabilityZone: availabilityZone
+    availabilityZone: availabilityZone != -1 ? string(availabilityZone) : null
+    highAvailability: {
+      mode: highAvailability
+      standbyAvailabilityZone: standByAvailabilityZone != -1 ? string(standByAvailabilityZone) : null
+    }
     backup: {
       backupRetentionDays: backupRetentionDays
       geoRedundantBackup: geoRedundantBackup
@@ -287,17 +308,15 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' =
     createMode: createMode
     dataEncryption: !empty(customerManagedKey)
       ? {
-          primaryKeyURI: !empty(customerManagedKey.?keyVersion ?? '')
-            ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
-            : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+          primaryKeyURI: !empty(customerManagedKey.?keyVersion)
+            ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+            : (customerManagedKey.?autoRotationEnabled ?? true)
+                ? cMKKeyVault::cMKKey!.properties.keyUri
+                : cMKKeyVault::cMKKey!.properties.keyUriWithVersion
           primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
           type: 'AzureKeyVault'
         }
       : null
-    highAvailability: {
-      mode: highAvailability
-      standbyAvailabilityZone: highAvailability == 'SameZone' ? availabilityZone : null
-    }
     maintenanceWindow: !empty(maintenanceWindow)
       ? {
           customWindow: maintenanceWindow.customWindow
@@ -330,9 +349,9 @@ resource flexibleServer_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!e
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: flexibleServer
 }
@@ -362,11 +381,14 @@ module flexibleServer_databases 'database/main.bicep' = [
       collation: database.?collation
       charset: database.?charset
     }
+    dependsOn: [
+      flexibleServer_roleAssignments
+    ]
   }
 ]
 
 module flexibleServer_firewallRules 'firewall-rule/main.bicep' = [
-  for (firewallRule, index) in firewallRules: {
+  for (firewallRule, index) in (firewallRules ?? []): {
     name: '${uniqueString(deployment().name, location)}-PostgreSQL-FirewallRules-${index}'
     params: {
       name: firewallRule.name
@@ -397,7 +419,7 @@ module flexibleServer_configurations 'configuration/main.bicep' = [
 ]
 
 module flexibleServer_administrators 'administrator/main.bicep' = [
-  for (administrator, index) in administrators: {
+  for (administrator, index) in (administrators ?? []): {
     name: '${uniqueString(deployment().name, location)}-PostgreSQL-Administrators-${index}'
     params: {
       flexibleServerName: flexibleServer.name
@@ -412,7 +434,7 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
   }
 ]
 
-module flexibleServer_advancedThreatProtection 'advanced-threat-protection/main.bicep' = if (enableAdvancedThreatProtection) {
+module flexibleServer_advancedThreatProtection 'advanced-threat-protection-setting/main.bicep' = if (enableAdvancedThreatProtection) {
   name: '${uniqueString(deployment().name, location)}-PostgreSQL-Threat'
   params: {
     serverThreatProtection: serverThreatProtection
@@ -452,7 +474,7 @@ resource flexibleServer_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
   }
 ]
 
-module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): if (empty(delegatedSubnetResourceId)) {
     name: '${uniqueString(deployment().name, location)}-PostgreSQL-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -525,11 +547,11 @@ output fqdn string = flexibleServer.properties.fullyQualifiedDomainName
 @description('The private endpoints of the PostgreSQL Flexible server.')
 output privateEndpoints privateEndpointOutputType[] = [
   for (item, index) in (privateEndpoints ?? []): {
-    name: server_privateEndpoints[index].outputs.name
-    resourceId: server_privateEndpoints[index].outputs.resourceId
-    groupId: server_privateEndpoints[index].outputs.?groupId!
-    customDnsConfigs: server_privateEndpoints[index].outputs.customDnsConfigs
-    networkInterfaceResourceIds: server_privateEndpoints[index].outputs.networkInterfaceResourceIds
+    name: server_privateEndpoints[index]!.outputs.name
+    resourceId: server_privateEndpoints[index]!.outputs.resourceId
+    groupId: server_privateEndpoints[index]!.outputs.?groupId!
+    customDnsConfigs: server_privateEndpoints[index]!.outputs.customDnsConfigs
+    networkInterfaceResourceIds: server_privateEndpoints[index]!.outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -563,14 +585,41 @@ type privateEndpointOutputType = {
 
 @export()
 type replicaType = {
-  @description('''Conditional. Sets the promote mode for a replica server. This is a write only property. 'standalone'
-'switchover'. Required if enabling replication.''')
+  @description('Conditional. Sets the promote mode for a replica server. This is a write only property. Required if enabling replication.')
   promoteMode: ('standalone' | 'switchover')
 
-  @description('''Conditional. Sets the promote options for a replica server. This is a write only property.	'forced'
-'planned'. Required if enabling replication.''')
+  @description('Conditional. Sets the promote options for a replica server. This is a write only property. Required if enabling replication.')
   promoteOption: ('forced' | 'planned')
 
-  @description('''Conditional. Used to indicate role of the server in replication set.	'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'. Required if enabling replication.''')
+  @description('Conditional. Used to indicate role of the server in replication set. Required if enabling replication.')
   role: ('AsyncReplica' | 'GeoAsyncReplica' | 'None' | 'Primary')
+}
+
+@export()
+@description('The type of an administrator.')
+type administratorType = {
+  @description('Required. The objectId of the Active Directory administrator.')
+  objectId: string
+
+  @description('Required. Active Directory administrator principal name.')
+  principalName: string
+
+  @description('Required. The principal type used to represent the type of Active Directory Administrator.')
+  principalType: ('Group' | 'ServicePrincipal' | 'Unknown' | 'User')
+
+  @description('Optional. The tenantId of the Active Directory administrator.')
+  tenantId: string?
+}
+
+@export()
+@description('The type of a firewall rule.')
+type firewallRuleType = {
+  @description('Required. The name of the PostgreSQL flexible server Firewall Rule.')
+  name: string
+
+  @description('Required. The start IP address of the firewall rule. Must be IPv4 format. Use value \'0.0.0.0\' for all Azure-internal IP addresses.')
+  startIpAddress: string
+
+  @description('Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value \'0.0.0.0\' for all Azure-internal IP addresses.')
+  endIpAddress: string
 }

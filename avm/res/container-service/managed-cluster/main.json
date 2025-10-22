@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "5338557594070532693"
+      "version": "0.37.4.10188",
+      "templateHash": "13892076982555016602"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -100,6 +100,16 @@
           "metadata": {
             "description": "Optional. The kubelet disk type of the agent pool."
           }
+        },
+        "linuxOSConfig": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-05-02-preview#properties/properties/properties/linuxOSConfig"
+            },
+            "description": "Optional. The Linux OS configuration of the agent pool."
+          },
+          "nullable": true
         },
         "maxCount": {
           "type": "int",
@@ -265,6 +275,17 @@
             "description": "Optional. vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch."
           }
         },
+        "sshAccess": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "LocalUser"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. SSH access method of an agent pool."
+          }
+        },
         "spotMaxPrice": {
           "type": "int",
           "nullable": true,
@@ -317,6 +338,16 @@
           "metadata": {
             "description": "Optional. The workload runtime of the agent pool."
           }
+        },
+        "windowsProfile": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-05-02-preview#properties/properties/properties/windowsProfile"
+            },
+            "description": "Optional. The Windows profile of the agent pool."
+          },
+          "nullable": true
         },
         "enableDefaultTelemetry": {
           "type": "bool",
@@ -653,7 +684,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -678,12 +709,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -711,7 +749,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -786,7 +824,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -902,6 +940,40 @@
         "description": "Optional. Outbound IP Count for the Load balancer."
       }
     },
+    "allocatedOutboundPorts": {
+      "type": "int",
+      "defaultValue": 0,
+      "metadata": {
+        "description": "Optional. The desired number of allocated SNAT ports per VM. Default is 0, which results in Azure dynamically allocating ports."
+      }
+    },
+    "idleTimeoutInMinutes": {
+      "type": "int",
+      "defaultValue": 30,
+      "metadata": {
+        "description": "Optional. Desired outbound flow idle timeout in minutes."
+      }
+    },
+    "outboundPublicIPResourceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. A list of the resource IDs of the public IP addresses to use for the load balancer outbound rules."
+      }
+    },
+    "outboundPublicIPPrefixResourceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. A list of the resource IDs of the public IP prefixes to use for the load balancer outbound rules."
+      }
+    },
     "backendPoolType": {
       "type": "string",
       "defaultValue": "NodeIPConfiguration",
@@ -934,7 +1006,7 @@
         "Automatic"
       ],
       "metadata": {
-        "description": "Optional. Name of a managed cluster SKU. AUTOMATIC CLUSTER SKU IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION."
+        "description": "Optional. Name of a managed cluster SKU."
       }
     },
     "skuTier": {
@@ -1276,6 +1348,27 @@
         "description": "Optional. Specifies the balance of similar node groups for the auto-scaler of the AKS cluster."
       }
     },
+    "autoScalerProfileDaemonsetEvictionForEmptyNodes": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether to enable daemonset eviction for empty nodes for the auto-scaler of the AKS cluster."
+      }
+    },
+    "autoScalerProfileDaemonsetEvictionForOccupiedNodes": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether to enable daemonset eviction for occupied nodes for the auto-scaler of the AKS cluster."
+      }
+    },
+    "autoScalerProfileIgnoreDaemonsetsUtilization": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether to ignore daemonsets utilization for the auto-scaler of the AKS cluster."
+      }
+    },
     "autoScalerProfileExpander": {
       "type": "string",
       "defaultValue": "random",
@@ -1381,17 +1474,23 @@
     },
     "podIdentityProfileUserAssignedIdentities": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2025-05-02-preview#properties/properties/properties/podIdentityProfile/properties/userAssignedIdentities"
+        },
         "description": "Optional. The pod identities to use in the cluster."
-      }
+      },
+      "nullable": true
     },
     "podIdentityProfileUserAssignedIdentityExceptions": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2025-05-02-preview#properties/properties/properties/podIdentityProfile/properties/userAssignedIdentityExceptions"
+        },
         "description": "Optional. The pod identity exceptions to allow."
-      }
+      },
+      "nullable": true
     },
     "enableOidcIssuerProfile": {
       "type": "bool",
@@ -1414,11 +1513,35 @@
         "description": "Optional. Whether to enable Azure Defender."
       }
     },
+    "securityGatingConfig": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2025-05-02-preview#properties/properties/properties/securityProfile/properties/defender/properties/securityGating"
+        },
+        "description": "Optional. Microsoft Defender settings for security gating, validates container images eligibility for deployment based on Defender for Containers security findings. Using Admission Controller, it either audits or prevents the deployment of images that do not meet security standards."
+      },
+      "nullable": true
+    },
     "enableImageCleaner": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Whether to enable Image Cleaner for Kubernetes."
+        "description": "Optional. Whether to enable Image Cleaner."
+      }
+    },
+    "enableImageIntegrity": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether to enable Image Integrity. Image integrity is a feature that works with Azure Policy to verify image integrity by signature. This will not have any effect unless Azure Policy is applied to enforce image signatures. See https://aka.ms/aks/image-integrity for how to use this feature via policy."
+      }
+    },
+    "enableNodeRestriction": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether to enable Node Restriction."
       }
     },
     "imageCleanerIntervalHours": {
@@ -1427,13 +1550,6 @@
       "minValue": 24,
       "metadata": {
         "description": "Optional. The interval in hours Image Cleaner will run. The maximum value is three months."
-      }
-    },
-    "enablePodSecurityPolicy": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Whether to enable Kubernetes pod security policy. Requires enabling the pod security policy feature flag on the subscription."
       }
     },
     "enableStorageProfileBlobCSIDriver": {
@@ -1532,10 +1648,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2025-05-02-preview#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "diskEncryptionSetResourceId": {
       "type": "string",
@@ -1553,17 +1672,23 @@
     },
     "httpProxyConfig": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2025-05-02-preview#properties/properties/properties/httpProxyConfig"
+        },
         "description": "Optional. Configurations for provisioning the cluster with HTTP proxy servers."
-      }
+      },
+      "nullable": true
     },
     "identityProfile": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2025-05-02-preview#properties/properties/properties/identityProfile"
+        },
         "description": "Optional. Identities associated with the cluster."
-      }
+      },
+      "nullable": true
     },
     "kedaAddon": {
       "type": "bool",
@@ -1585,6 +1710,16 @@
       "metadata": {
         "description": "Optional. Whether the metric state of the kubenetes cluster is enabled."
       }
+    },
+    "appMonitoring": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2025-05-02-preview#properties/properties/properties/azureMonitorProfile/properties/appMonitoring"
+        },
+        "description": "Optional. Application Monitoring Profile for Kubernetes Application Container. Collects application logs, metrics and traces through auto-instrumentation of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview."
+      },
+      "nullable": true
     },
     "enableContainerInsights": {
       "type": "bool",
@@ -1720,7 +1855,7 @@
     },
     "managedCluster": {
       "type": "Microsoft.ContainerService/managedClusters",
-      "apiVersion": "2024-09-02-preview",
+      "apiVersion": "2025-05-02-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1787,7 +1922,6 @@
         "nodeResourceGroup": "[parameters('nodeResourceGroup')]",
         "nodeResourceGroupProfile": "[parameters('nodeResourceGroupProfile')]",
         "nodeProvisioningProfile": "[if(not(empty(parameters('nodeProvisioningProfileMode'))), createObject('mode', parameters('nodeProvisioningProfileMode')), null())]",
-        "enablePodSecurityPolicy": "[parameters('enablePodSecurityPolicy')]",
         "workloadAutoScalerProfile": {
           "keda": {
             "enabled": "[parameters('kedaAddon')]"
@@ -1806,17 +1940,16 @@
           "dnsServiceIP": "[parameters('dnsServiceIP')]",
           "outboundType": "[parameters('outboundType')]",
           "loadBalancerSku": "[parameters('loadBalancerSku')]",
-          "loadBalancerProfile": {
-            "managedOutboundIPs": "[if(not(equals(parameters('managedOutboundIPCount'), 0)), createObject('count', parameters('managedOutboundIPCount')), null())]",
-            "effectiveOutboundIPs": [],
-            "backendPoolType": "[parameters('backendPoolType')]"
-          }
+          "loadBalancerProfile": "[if(not(equals(parameters('outboundType'), 'userDefinedRouting')), createObject('allocatedOutboundPorts', parameters('allocatedOutboundPorts'), 'idleTimeoutInMinutes', parameters('idleTimeoutInMinutes'), 'managedOutboundIPs', if(not(equals(parameters('managedOutboundIPCount'), 0)), createObject('count', parameters('managedOutboundIPCount')), null()), 'backendPoolType', parameters('backendPoolType'), 'outboundIPPrefixes', if(not(empty(parameters('outboundPublicIPPrefixResourceIds'))), createObject('publicIPPrefixes', map(coalesce(parameters('outboundPublicIPPrefixResourceIds'), createArray()), lambda('id', createObject('id', lambdaVariables('id'))))), null()), 'outboundIPs', if(not(empty(parameters('outboundPublicIPResourceIds'))), createObject('publicIPs', map(coalesce(parameters('outboundPublicIPResourceIds'), createArray()), lambda('id', createObject('id', lambdaVariables('id'))))), null())), null())]"
         },
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "aadProfile": "[if(not(empty(parameters('aadProfile'))), createObject('clientAppID', tryGet(parameters('aadProfile'), 'aadProfileClientAppID'), 'serverAppID', tryGet(parameters('aadProfile'), 'aadProfileServerAppID'), 'serverAppSecret', tryGet(parameters('aadProfile'), 'aadProfileServerAppSecret'), 'managed', tryGet(parameters('aadProfile'), 'aadProfileManaged'), 'enableAzureRBAC', tryGet(parameters('aadProfile'), 'aadProfileEnableAzureRBAC'), 'adminGroupObjectIDs', tryGet(parameters('aadProfile'), 'aadProfileAdminGroupObjectIDs'), 'tenantID', tryGet(parameters('aadProfile'), 'aadProfileTenantId')), null())]",
         "autoScalerProfile": {
           "balance-similar-node-groups": "[toLower(string(parameters('autoScalerProfileBalanceSimilarNodeGroups')))]",
+          "daemonset-eviction-for-empty-nodes": "[parameters('autoScalerProfileDaemonsetEvictionForEmptyNodes')]",
+          "daemonset-eviction-for-occupied-nodes": "[parameters('autoScalerProfileDaemonsetEvictionForOccupiedNodes')]",
           "expander": "[parameters('autoScalerProfileExpander')]",
+          "ignore-daemonsets-utilization": "[parameters('autoScalerProfileIgnoreDaemonsetsUtilization')]",
           "max-empty-bulk-delete": "[format('{0}', parameters('autoScalerProfileMaxEmptyBulkDelete'))]",
           "max-graceful-termination-sec": "[format('{0}', parameters('autoScalerProfileMaxGracefulTerminationSec'))]",
           "max-node-provision-time": "[parameters('autoScalerProfileMaxNodeProvisionTime')]",
@@ -1845,6 +1978,7 @@
           "privateDNSZone": "[parameters('privateDNSZone')]"
         },
         "azureMonitorProfile": {
+          "appMonitoring": "[parameters('appMonitoring')]",
           "containerInsights": "[if(parameters('enableContainerInsights'), createObject('enabled', parameters('enableContainerInsights'), 'logAnalyticsWorkspaceResourceId', if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), null()), 'disableCustomMetrics', parameters('disableCustomMetrics'), 'disablePrometheusMetricsScraping', parameters('disablePrometheusMetricsScraping'), 'syslogPort', parameters('syslogPort')), null())]",
           "metrics": "[if(parameters('enableAzureMonitorProfileMetrics'), createObject('enabled', parameters('enableAzureMonitorProfileMetrics'), 'kubeStateMetrics', createObject('metricLabelsAllowlist', parameters('metricLabelsAllowlist'), 'metricAnnotationsAllowList', parameters('metricAnnotationsAllowList'))), null())]"
         },
@@ -1855,9 +1989,11 @@
           "userAssignedIdentityExceptions": "[parameters('podIdentityProfileUserAssignedIdentityExceptions')]"
         },
         "securityProfile": {
-          "defender": "[if(parameters('enableAzureDefender'), createObject('securityMonitoring', createObject('enabled', parameters('enableAzureDefender')), 'logAnalyticsWorkspaceResourceId', parameters('monitoringWorkspaceResourceId')), null())]",
-          "workloadIdentity": "[if(parameters('enableWorkloadIdentity'), createObject('enabled', parameters('enableWorkloadIdentity')), null())]",
-          "imageCleaner": "[if(parameters('enableImageCleaner'), createObject('enabled', parameters('enableImageCleaner'), 'intervalHours', parameters('imageCleanerIntervalHours')), null())]"
+          "defender": "[if(parameters('enableAzureDefender'), createObject('securityGating', parameters('securityGatingConfig'), 'securityMonitoring', createObject('enabled', parameters('enableAzureDefender')), 'logAnalyticsWorkspaceResourceId', parameters('monitoringWorkspaceResourceId')), null())]",
+          "imageCleaner": "[if(parameters('enableImageCleaner'), createObject('enabled', parameters('enableImageCleaner'), 'intervalHours', parameters('imageCleanerIntervalHours')), null())]",
+          "imageIntegrity": "[if(parameters('enableImageIntegrity'), createObject('enabled', parameters('enableImageIntegrity')), null())]",
+          "nodeRestriction": "[if(parameters('enableNodeRestriction'), createObject('enabled', parameters('enableNodeRestriction')), null())]",
+          "workloadIdentity": "[if(parameters('enableWorkloadIdentity'), createObject('enabled', parameters('enableWorkloadIdentity')), null())]"
         },
         "storageProfile": {
           "blobCSIDriver": {
@@ -1885,7 +2021,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "managedCluster"
@@ -1955,18 +2091,40 @@
       ]
     },
     "dnsZone": {
-      "condition": "[and(and(equals(parameters('enableDnsZoneContributorRoleAssignment'), true()), not(equals(parameters('dnsZoneResourceId'), null()))), parameters('webApplicationRoutingEnabled'))]",
+      "condition": "[and(and(and(not(equals(parameters('publicNetworkAccess'), 'Disabled')), equals(parameters('enableDnsZoneContributorRoleAssignment'), true())), not(equals(parameters('dnsZoneResourceId'), null()))), parameters('webApplicationRoutingEnabled'))]",
       "existing": true,
       "type": "Microsoft.Network/dnsZones",
       "apiVersion": "2018-05-01",
       "name": "[last(split(if(not(empty(parameters('dnsZoneResourceId'))), parameters('dnsZoneResourceId'), '/dummmyZone'), '/'))]"
     },
+    "privateDnsZone": {
+      "condition": "[and(and(and(equals(parameters('publicNetworkAccess'), 'Disabled'), equals(parameters('enableDnsZoneContributorRoleAssignment'), true())), not(equals(parameters('dnsZoneResourceId'), null()))), parameters('webApplicationRoutingEnabled'))]",
+      "existing": true,
+      "type": "Microsoft.Network/privateDnsZones",
+      "apiVersion": "2024-06-01",
+      "name": "[last(split(if(not(empty(parameters('dnsZoneResourceId'))), parameters('dnsZoneResourceId'), '/dummmyZone'), '/'))]"
+    },
     "dnsZone_roleAssignment": {
-      "condition": "[and(and(equals(parameters('enableDnsZoneContributorRoleAssignment'), true()), not(equals(parameters('dnsZoneResourceId'), null()))), parameters('webApplicationRoutingEnabled'))]",
+      "condition": "[and(and(and(not(equals(parameters('publicNetworkAccess'), 'Disabled')), equals(parameters('enableDnsZoneContributorRoleAssignment'), true())), not(equals(parameters('dnsZoneResourceId'), null()))), parameters('webApplicationRoutingEnabled'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.Network/dnsZones/{0}', last(split(if(not(empty(parameters('dnsZoneResourceId'))), parameters('dnsZoneResourceId'), '/dummmyZone'), '/')))]",
       "name": "[guid(resourceId('Microsoft.Network/dnsZones', last(split(if(not(empty(parameters('dnsZoneResourceId'))), parameters('dnsZoneResourceId'), '/dummmyZone'), '/'))), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314'), 'DNS Zone Contributor')]",
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314')]",
+        "principalId": "[reference('managedCluster').ingressProfile.webAppRouting.identity.objectId]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "managedCluster"
+      ]
+    },
+    "privateDnsZone_roleAssignment": {
+      "condition": "[and(and(and(equals(parameters('publicNetworkAccess'), 'Disabled'), equals(parameters('enableDnsZoneContributorRoleAssignment'), true())), not(equals(parameters('dnsZoneResourceId'), null()))), parameters('webApplicationRoutingEnabled'))]",
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.Network/privateDnsZones/{0}', last(split(if(not(empty(parameters('dnsZoneResourceId'))), parameters('dnsZoneResourceId'), '/dummmyZone'), '/')))]",
+      "name": "[guid(resourceId('Microsoft.Network/privateDnsZones', last(split(if(not(empty(parameters('dnsZoneResourceId'))), parameters('dnsZoneResourceId'), '/dummmyZone'), '/'))), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314'), 'DNS Zone Contributor')]",
       "properties": {
         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314')]",
         "principalId": "[reference('managedCluster').ingressProfile.webAppRouting.identity.objectId]",
@@ -2006,8 +2164,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "13067595449609999928"
+              "version": "0.37.4.10188",
+              "templateHash": "7706575185664059509"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations."
@@ -2036,7 +2194,7 @@
           "resources": [
             {
               "type": "Microsoft.ContainerService/managedClusters/maintenanceConfigurations",
-              "apiVersion": "2023-10-01",
+              "apiVersion": "2025-05-01",
               "name": "[format('{0}/{1}', parameters('managedClusterName'), parameters('name'))]",
               "properties": {
                 "maintenanceWindow": "[parameters('maintenanceWindow')]"
@@ -2122,6 +2280,9 @@
           "kubeletDiskType": {
             "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'kubeletDiskType')]"
           },
+          "linuxOSConfig": {
+            "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'linuxOSConfig')]"
+          },
           "maxCount": {
             "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'maxCount')]"
           },
@@ -2173,6 +2334,13 @@
           "scaleSetPriority": {
             "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'scaleSetPriority')]"
           },
+          "enableSecureBoot": {
+            "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'enableSecureBoot')]"
+          },
+          "enableVTPM": {
+            "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'enableVTPM')]"
+          },
+          "sshAccess": "[if(equals(parameters('skuName'), 'Automatic'), createObject('value', 'Disabled'), createObject('value', 'LocalUser'))]",
           "spotMaxPrice": {
             "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'spotMaxPrice')]"
           },
@@ -2193,6 +2361,9 @@
           },
           "workloadRuntime": {
             "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'workloadRuntime')]"
+          },
+          "windowsProfile": {
+            "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'windowsProfile')]"
           }
         },
         "template": {
@@ -2202,8 +2373,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "3651532122518241859"
+              "version": "0.37.4.10188",
+              "templateHash": "10674124128040534735"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
@@ -2306,6 +2477,16 @@
               "metadata": {
                 "description": "Optional. Determines the placement of emptyDir volumes, container runtime data root, and Kubelet ephemeral storage."
               }
+            },
+            "linuxOSConfig": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-05-02-preview#properties/properties/properties/linuxOSConfig"
+                },
+                "description": "Optional. Linux OS configuration."
+              },
+              "nullable": true
             },
             "maxCount": {
               "type": "int",
@@ -2467,6 +2648,17 @@
                 "description": "Optional. vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch."
               }
             },
+            "sshAccess": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "Disabled",
+                "LocalUser"
+              ],
+              "metadata": {
+                "description": "Optional. SSH access method of an agent pool."
+              }
+            },
             "spotMaxPrice": {
               "type": "int",
               "nullable": true,
@@ -2515,18 +2707,28 @@
               "metadata": {
                 "description": "Optional. Determines the type of workload a node can run."
               }
+            },
+            "windowsProfile": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-05-02-preview#properties/properties/properties/windowsProfile"
+                },
+                "description": "Optional. Windows OS configuration."
+              },
+              "nullable": true
             }
           },
           "resources": {
             "managedCluster": {
               "existing": true,
               "type": "Microsoft.ContainerService/managedClusters",
-              "apiVersion": "2024-09-01",
+              "apiVersion": "2025-05-02-preview",
               "name": "[parameters('managedClusterName')]"
             },
             "agentPool": {
               "type": "Microsoft.ContainerService/managedClusters/agentPools",
-              "apiVersion": "2024-09-01",
+              "apiVersion": "2025-05-02-preview",
               "name": "[format('{0}/{1}', parameters('managedClusterName'), parameters('name'))]",
               "properties": {
                 "availabilityZones": "[map(coalesce(parameters('availabilityZones'), createArray()), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
@@ -2539,6 +2741,7 @@
                 "enableUltraSSD": "[parameters('enableUltraSSD')]",
                 "gpuInstanceProfile": "[parameters('gpuInstanceProfile')]",
                 "kubeletDiskType": "[parameters('kubeletDiskType')]",
+                "linuxOSConfig": "[parameters('linuxOSConfig')]",
                 "maxCount": "[parameters('maxCount')]",
                 "maxPods": "[parameters('maxPods')]",
                 "minCount": "[parameters('minCount')]",
@@ -2558,7 +2761,8 @@
                 "scaleSetPriority": "[parameters('scaleSetPriority')]",
                 "securityProfile": {
                   "enableSecureBoot": "[parameters('enableSecureBoot')]",
-                  "enableVTPM": "[parameters('enableVTPM')]"
+                  "enableVTPM": "[parameters('enableVTPM')]",
+                  "sshAccess": "[parameters('sshAccess')]"
                 },
                 "spotMaxPrice": "[parameters('spotMaxPrice')]",
                 "tags": "[parameters('tags')]",
@@ -2568,7 +2772,8 @@
                 },
                 "vmSize": "[parameters('vmSize')]",
                 "vnetSubnetID": "[parameters('vnetSubnetResourceId')]",
-                "workloadRuntime": "[parameters('workloadRuntime')]"
+                "workloadRuntime": "[parameters('workloadRuntime')]",
+                "windowsProfile": "[parameters('windowsProfile')]"
               }
             }
           },
@@ -2644,6 +2849,9 @@
           },
           "version": {
             "value": "[tryGet(parameters('fluxExtension'), 'version')]"
+          },
+          "targetNamespace": {
+            "value": "[tryGet(parameters('fluxExtension'), 'targetNamespace')]"
           }
         },
         "template": {
@@ -2653,12 +2861,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "9966442976957263225"
+              "version": "0.37.4.10188",
+              "templateHash": "9872939647776132218"
             },
             "name": "Kubernetes Configuration Extensions",
-            "description": "This module deploys a Kubernetes Configuration Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Kubernetes Configuration Extension."
           },
           "parameters": {
             "name": {
@@ -2687,19 +2894,36 @@
                 "description": "Optional. Location for all resources."
               }
             },
+            "clusterType": {
+              "type": "string",
+              "defaultValue": "managedCluster",
+              "allowedValues": [
+                "managedCluster",
+                "connectedCluster"
+              ],
+              "metadata": {
+                "description": "Optional. The type of cluster to configure. Choose between AKS managed cluster or Arc-enabled connected cluster."
+              }
+            },
             "configurationProtectedSettings": {
               "type": "secureObject",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/configurationProtectedSettings"
+                },
                 "description": "Optional. Configuration settings that are sensitive, as name-value pairs for configuring this extension."
-              }
+              },
+              "nullable": true
             },
             "configurationSettings": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.KubernetesConfiguration/extensions@2024-11-01#properties/properties/properties/configurationSettings"
+                },
                 "description": "Optional. Configuration settings, as name-value pairs for configuring this extension."
-              }
+              },
+              "nullable": true
             },
             "extensionType": {
               "type": "string",
@@ -2737,10 +2961,33 @@
             },
             "fluxConfigurations": {
               "type": "array",
+              "items": {
+                "type": "object",
+                "metadata": {
+                  "__bicep_resource_derived_type!": {
+                    "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties"
+                  }
+                }
+              },
               "nullable": true,
               "metadata": {
                 "description": "Optional. A list of flux configuraitons."
               }
+            }
+          },
+          "variables": {
+            "enableReferencedModulesTelemetry": false,
+            "extensionProperties": {
+              "autoUpgradeMinorVersion": "[if(not(empty(parameters('version'))), false(), true())]",
+              "configurationProtectedSettings": "[parameters('configurationProtectedSettings')]",
+              "configurationSettings": "[parameters('configurationSettings')]",
+              "extensionType": "[parameters('extensionType')]",
+              "releaseTrain": "[parameters('releaseTrain')]",
+              "scope": {
+                "cluster": "[if(not(empty(parameters('releaseNamespace'))), createObject('releaseNamespace', parameters('releaseNamespace')), null())]",
+                "namespace": "[if(not(empty(parameters('targetNamespace'))), createObject('targetNamespace', parameters('targetNamespace')), null())]"
+              },
+              "version": "[parameters('version')]"
             }
           },
           "resources": {
@@ -2748,7 +2995,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.kubernetesconfiguration-extension.{0}.{1}', replace('0.3.5', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.kubernetesconfiguration-extension.{0}.{1}', replace('0.3.8', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2765,28 +3012,37 @@
               }
             },
             "managedCluster": {
+              "condition": "[equals(parameters('clusterType'), 'managedCluster')]",
               "existing": true,
               "type": "Microsoft.ContainerService/managedClusters",
-              "apiVersion": "2022-07-01",
+              "apiVersion": "2025-05-01",
               "name": "[parameters('clusterName')]"
             },
-            "extension": {
+            "connectedCluster": {
+              "condition": "[equals(parameters('clusterType'), 'connectedCluster')]",
+              "existing": true,
+              "type": "Microsoft.Kubernetes/connectedClusters",
+              "apiVersion": "2024-01-01",
+              "name": "[parameters('clusterName')]"
+            },
+            "managedExtension": {
+              "condition": "[equals(parameters('clusterType'), 'managedCluster')]",
               "type": "Microsoft.KubernetesConfiguration/extensions",
-              "apiVersion": "2022-03-01",
+              "apiVersion": "2024-11-01",
               "scope": "[format('Microsoft.ContainerService/managedClusters/{0}', parameters('clusterName'))]",
               "name": "[parameters('name')]",
-              "properties": {
-                "autoUpgradeMinorVersion": "[if(not(empty(parameters('version'))), false(), true())]",
-                "configurationProtectedSettings": "[parameters('configurationProtectedSettings')]",
-                "configurationSettings": "[parameters('configurationSettings')]",
-                "extensionType": "[parameters('extensionType')]",
-                "releaseTrain": "[parameters('releaseTrain')]",
-                "scope": {
-                  "cluster": "[if(not(empty(coalesce(parameters('releaseNamespace'), ''))), createObject('releaseNamespace', parameters('releaseNamespace')), null())]",
-                  "namespace": "[if(not(empty(coalesce(parameters('targetNamespace'), ''))), createObject('targetNamespace', parameters('targetNamespace')), null())]"
-                },
-                "version": "[parameters('version')]"
-              }
+              "properties": "[variables('extensionProperties')]"
+            },
+            "connectedExtension": {
+              "condition": "[equals(parameters('clusterType'), 'connectedCluster')]",
+              "type": "Microsoft.KubernetesConfiguration/extensions",
+              "apiVersion": "2024-11-01",
+              "scope": "[format('Microsoft.Kubernetes/connectedClusters/{0}', parameters('clusterName'))]",
+              "name": "[parameters('name')]",
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "properties": "[variables('extensionProperties')]"
             },
             "fluxConfiguration": {
               "copy": {
@@ -2795,7 +3051,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-ManagedCluster-FluxConfiguration{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "name": "[format('{0}-Cluster-FluxConfiguration{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -2803,7 +3059,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "enableTelemetry": {
-                    "value": "[coalesce(tryGet(coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   },
                   "clusterName": {
                     "value": "[parameters('clusterName')]"
@@ -2813,6 +3069,9 @@
                   },
                   "namespace": {
                     "value": "[coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()].namespace]"
+                  },
+                  "clusterType": {
+                    "value": "[parameters('clusterType')]"
                   },
                   "sourceKind": "[if(contains(coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()], 'gitRepository'), createObject('value', 'GitRepository'), createObject('value', 'Bucket'))]",
                   "name": {
@@ -2841,12 +3100,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "885928168160399718"
+                      "version": "0.37.4.10188",
+                      "templateHash": "12743785390507267340"
                     },
                     "name": "Kubernetes Configuration Flux Configurations",
-                    "description": "This module deploys a Kubernetes Configuration Flux Configuration.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Kubernetes Configuration Flux Configuration."
                   },
                   "parameters": {
                     "name": {
@@ -2875,30 +3133,73 @@
                         "description": "Optional. Location for all resources."
                       }
                     },
+                    "clusterType": {
+                      "type": "string",
+                      "defaultValue": "managedCluster",
+                      "allowedValues": [
+                        "managedCluster",
+                        "connectedCluster"
+                      ],
+                      "metadata": {
+                        "description": "Optional. The type of cluster to configure. Choose between AKS managed cluster or Arc-enabled connected cluster."
+                      }
+                    },
                     "bucket": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/bucket"
+                        },
                         "description": "Conditional. Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `Bucket`."
-                      }
+                      },
+                      "nullable": true
                     },
                     "configurationProtectedSettings": {
                       "type": "secureObject",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/configurationProtectedSettings"
+                        },
                         "description": "Optional. Key-value pairs of protected configuration settings for the configuration."
-                      }
+                      },
+                      "nullable": true
                     },
                     "gitRepository": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/gitRepository"
+                        },
                         "description": "Conditional. Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `GitRepository`."
-                      }
+                      },
+                      "nullable": true
+                    },
+                    "ociRepository": {
+                      "type": "object",
+                      "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/ociRepository"
+                        },
+                        "description": "Conditional. Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `OciRepository`."
+                      },
+                      "nullable": true
+                    },
+                    "azureBlob": {
+                      "type": "object",
+                      "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/azureBlob"
+                        },
+                        "description": "Conditional. Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `AzureBlob`."
+                      },
+                      "nullable": true
                     },
                     "kustomizations": {
                       "type": "object",
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/kustomizations"
+                        },
                         "description": "Required. Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster."
                       }
                     },
@@ -2910,22 +3211,27 @@
                     },
                     "scope": {
                       "type": "string",
-                      "allowedValues": [
-                        "cluster",
-                        "namespace"
-                      ],
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/scope"
+                        },
                         "description": "Required. Scope at which the configuration will be installed."
                       }
                     },
                     "sourceKind": {
                       "type": "string",
-                      "allowedValues": [
-                        "Bucket",
-                        "GitRepository"
-                      ],
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/sourceKind"
+                        },
                         "description": "Required. Source Kind to pull the configuration data from."
+                      }
+                    },
+                    "reconciliationWaitDuration": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Reconciliation wait duration (ISO 8601 format)."
                       }
                     },
                     "suspend": {
@@ -2936,12 +3242,27 @@
                       }
                     }
                   },
+                  "variables": {
+                    "fluxConfigProperties": {
+                      "scope": "[parameters('scope')]",
+                      "namespace": "[parameters('namespace')]",
+                      "sourceKind": "[parameters('sourceKind')]",
+                      "suspend": "[parameters('suspend')]",
+                      "reconciliationWaitDuration": "[parameters('reconciliationWaitDuration')]",
+                      "gitRepository": "[parameters('gitRepository')]",
+                      "azureBlob": "[parameters('azureBlob')]",
+                      "bucket": "[parameters('bucket')]",
+                      "configurationProtectedSettings": "[parameters('configurationProtectedSettings')]",
+                      "ociRepository": "[parameters('ociRepository')]",
+                      "kustomizations": "[parameters('kustomizations')]"
+                    }
+                  },
                   "resources": {
                     "avmTelemetry": {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2023-07-01",
-                      "name": "[format('46d3xbcp.res.kubernetesconfiguration-fluxconfig.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.kubernetesconfiguration-fluxconfig.{0}.{1}', replace('0.3.8', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -2958,29 +3279,34 @@
                       }
                     },
                     "managedCluster": {
+                      "condition": "[equals(parameters('clusterType'), 'managedCluster')]",
                       "existing": true,
                       "type": "Microsoft.ContainerService/managedClusters",
-                      "apiVersion": "2022-07-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[parameters('clusterName')]"
                     },
-                    "fluxConfiguration": {
+                    "connectedCluster": {
+                      "condition": "[equals(parameters('clusterType'), 'connectedCluster')]",
+                      "existing": true,
+                      "type": "Microsoft.Kubernetes/connectedClusters",
+                      "apiVersion": "2024-01-01",
+                      "name": "[parameters('clusterName')]"
+                    },
+                    "fluxConfigurationManaged": {
+                      "condition": "[equals(parameters('clusterType'), 'managedCluster')]",
                       "type": "Microsoft.KubernetesConfiguration/fluxConfigurations",
-                      "apiVersion": "2023-05-01",
+                      "apiVersion": "2025-04-01",
                       "scope": "[format('Microsoft.ContainerService/managedClusters/{0}', parameters('clusterName'))]",
                       "name": "[parameters('name')]",
-                      "properties": {
-                        "bucket": "[parameters('bucket')]",
-                        "configurationProtectedSettings": "[parameters('configurationProtectedSettings')]",
-                        "gitRepository": "[parameters('gitRepository')]",
-                        "kustomizations": "[parameters('kustomizations')]",
-                        "namespace": "[parameters('namespace')]",
-                        "scope": "[parameters('scope')]",
-                        "sourceKind": "[parameters('sourceKind')]",
-                        "suspend": "[parameters('suspend')]"
-                      },
-                      "dependsOn": [
-                        "managedCluster"
-                      ]
+                      "properties": "[variables('fluxConfigProperties')]"
+                    },
+                    "fluxConfigurationConnected": {
+                      "condition": "[equals(parameters('clusterType'), 'connectedCluster')]",
+                      "type": "Microsoft.KubernetesConfiguration/fluxConfigurations",
+                      "apiVersion": "2025-04-01",
+                      "scope": "[format('Microsoft.Kubernetes/connectedClusters/{0}', parameters('clusterName'))]",
+                      "name": "[parameters('name')]",
+                      "properties": "[variables('fluxConfigProperties')]"
                     }
                   },
                   "outputs": {
@@ -2989,14 +3315,14 @@
                       "metadata": {
                         "description": "The name of the flux configuration."
                       },
-                      "value": "[parameters('name')]"
+                      "value": "[if(equals(parameters('clusterType'), 'managedCluster'), parameters('name'), parameters('name'))]"
                     },
                     "resourceId": {
                       "type": "string",
                       "metadata": {
                         "description": "The resource ID of the flux configuration."
                       },
-                      "value": "[extensionResourceId(resourceId('Microsoft.ContainerService/managedClusters', parameters('clusterName')), 'Microsoft.KubernetesConfiguration/fluxConfigurations', parameters('name'))]"
+                      "value": "[if(equals(parameters('clusterType'), 'managedCluster'), extensionResourceId(resourceId('Microsoft.ContainerService/managedClusters', parameters('clusterName')), 'Microsoft.KubernetesConfiguration/fluxConfigurations', parameters('name')), extensionResourceId(resourceId('Microsoft.Kubernetes/connectedClusters', parameters('clusterName')), 'Microsoft.KubernetesConfiguration/fluxConfigurations', parameters('name')))]"
                     },
                     "resourceGroupName": {
                       "type": "string",
@@ -3009,7 +3335,8 @@
                 }
               },
               "dependsOn": [
-                "extension"
+                "connectedExtension",
+                "managedExtension"
               ]
             }
           },
@@ -3019,14 +3346,14 @@
               "metadata": {
                 "description": "The name of the extension."
               },
-              "value": "[parameters('name')]"
+              "value": "[if(equals(parameters('clusterType'), 'managedCluster'), parameters('name'), parameters('name'))]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the extension."
               },
-              "value": "[extensionResourceId(resourceId('Microsoft.ContainerService/managedClusters', parameters('clusterName')), 'Microsoft.KubernetesConfiguration/extensions', parameters('name'))]"
+              "value": "[if(equals(parameters('clusterType'), 'managedCluster'), extensionResourceId(resourceId('Microsoft.ContainerService/managedClusters', parameters('clusterName')), 'Microsoft.KubernetesConfiguration/extensions', parameters('name')), extensionResourceId(resourceId('Microsoft.Kubernetes/connectedClusters', parameters('clusterName')), 'Microsoft.KubernetesConfiguration/extensions', parameters('name')))]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -3078,7 +3405,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('managedCluster', '2024-09-02-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('managedCluster', '2025-05-02-preview', 'full'), 'identity'), 'principalId')]"
     },
     "kubeletIdentityClientId": {
       "type": "string",
@@ -3141,7 +3468,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('managedCluster', '2024-09-02-preview', 'full').location]"
+      "value": "[reference('managedCluster', '2025-05-02-preview', 'full').location]"
     },
     "oidcIssuerUrl": {
       "type": "string",

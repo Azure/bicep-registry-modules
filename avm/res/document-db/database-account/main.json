@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "7887433268521689813"
+      "version": "0.38.33.27573",
+      "templateHash": "3141917109929076105"
     },
-    "name": "DocumentDB Database Accounts",
-    "description": "This module deploys a DocumentDB Database Account."
+    "name": "Azure Cosmos DB account",
+    "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
   },
   "definitions": {
     "privateEndpointOutputType": {
@@ -31,7 +31,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "The group Id for the private endpoint Group."
+            "description": "The group ID for the private endpoint group."
           }
         },
         "customDnsConfigs": {
@@ -43,7 +43,7 @@
                 "type": "string",
                 "nullable": true,
                 "metadata": {
-                  "description": "FQDN that resolves to private endpoint IP address."
+                  "description": "fully-qualified domain name (FQDN) that resolves to private endpoint IP address."
                 }
               },
               "ipAddresses": {
@@ -52,7 +52,7 @@
                   "type": "string"
                 },
                 "metadata": {
-                  "description": "A list of private IP addresses of the private endpoint."
+                  "description": "A list of private IP addresses for the private endpoint."
                 }
               }
             }
@@ -89,7 +89,7 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Default to true. Flag to indicate whether or not this region is an AvailabilityZone region."
+            "description": "Optional. Flag to indicate whether or not this region is an AvailabilityZone region. Defaults to true."
           }
         },
         "locationName": {
@@ -104,301 +104,91 @@
         "description": "The type for the failover location."
       }
     },
-    "sqlRoleDefinitionType": {
+    "dataPlaneRoleAssignmentType": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
-          "metadata": {
-            "description": "Required. Name of the SQL Role Definition."
-          }
-        },
-        "dataAction": {
-          "type": "array",
           "nullable": true,
           "metadata": {
-            "description": "Optional. An array of data actions that are allowed."
+            "description": "Optional. The unique name of the role assignment."
+          }
+        },
+        "roleDefinitionId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The unique identifier of the Azure Cosmos DB for NoSQL native role-based access control definition."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription."
+          }
+        },
+        "scope": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for an Azure Cosmos DB for NoSQL native role-based access control assignment."
+      }
+    },
+    "dataPlaneRoleDefinitionType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The unique identifier of the role-based access control definition."
           }
         },
         "roleName": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. A user-friendly name for the Role Definition. Must be unique for the database account."
+            "description": "Required. A user-friendly name for the role-based access control definition. This must be unique within the database account."
           }
         },
-        "roleType": {
-          "type": "string",
-          "allowedValues": [
-            "BuiltInRole",
-            "CustomRole"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Indicates whether the Role Definition was built-in or user created."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for the SQL Role Definitions."
-      }
-    },
-    "sqlDatabaseType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Name of the SQL database ."
-          }
-        },
-        "throughput": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
-          }
-        },
-        "autoscaleSettingsMaxThroughput": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
-          }
-        },
-        "containers": {
+        "dataActions": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "metadata": {
-                  "description": "Required. Name of the container."
-                }
-              },
-              "paths": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "minLength": 1,
-                "maxLength": 3,
-                "metadata": {
-                  "description": "Required. List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1."
-                }
-              },
-              "analyticalStorageTtl": {
-                "type": "int",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store."
-                }
-              },
-              "autoscaleSettingsMaxThroughput": {
-                "type": "int",
-                "nullable": true,
-                "maxValue": 1000000,
-                "metadata": {
-                  "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level."
-                }
-              },
-              "conflictResolutionPolicy": {
-                "type": "object",
-                "properties": {
-                  "conflictResolutionPath": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Conditional. The conflict resolution path in the case of LastWriterWins mode. Required if `mode` is set to 'LastWriterWins'."
-                    }
-                  },
-                  "conflictResolutionProcedure": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Conditional. The procedure to resolve conflicts in the case of custom mode. Required if `mode` is set to 'Custom'."
-                    }
-                  },
-                  "mode": {
-                    "type": "string",
-                    "allowedValues": [
-                      "Custom",
-                      "LastWriterWins"
-                    ],
-                    "metadata": {
-                      "description": "Required. Indicates the conflict resolution mode."
-                    }
-                  }
-                },
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions."
-                }
-              },
-              "defaultTtl": {
-                "type": "int",
-                "nullable": true,
-                "minValue": -1,
-                "maxValue": 2147483647,
-                "metadata": {
-                  "description": "Optional. Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to \"-1\", it is equal to infinity, and items don't expire by default."
-                }
-              },
-              "indexingPolicy": {
-                "type": "object",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Indexing policy of the container."
-                }
-              },
-              "kind": {
-                "type": "string",
-                "allowedValues": [
-                  "Hash",
-                  "MultiHash"
-                ],
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Default to Hash. Indicates the kind of algorithm used for partitioning."
-                }
-              },
-              "version": {
-                "type": "int",
-                "allowedValues": [
-                  1,
-                  2
-                ],
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition."
-                }
-              },
-              "throughput": {
-                "type": "int",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used."
-                }
-              },
-              "uniqueKeyPolicyKeys": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "paths": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "metadata": {
-                        "description": "Required. List of paths must be unique for each document in the Azure Cosmos DB service."
-                      }
-                    }
-                  }
-                },
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service."
-                }
-              }
-            }
+            "type": "string"
+          },
+          "minLength": 1,
+          "metadata": {
+            "description": "Required. An array of data actions that are allowed."
+          }
+        },
+        "assignableScopes": {
+          "type": "array",
+          "items": {
+            "type": "string"
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. Array of containers to deploy in the SQL database."
+            "description": "Optional. A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope."
+          }
+        },
+        "assignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/sqlRoleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. An array of role-based access control assignments to be created for the definition."
           }
         }
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "The type for the SQL database."
-      }
-    },
-    "secretsExportConfigurationType": {
-      "type": "object",
-      "properties": {
-        "keyVaultResourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The resource ID of the key vault where to store the secrets of this module."
-          }
-        },
-        "primaryWriteKeySecretName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The primary write key secret name to create."
-          }
-        },
-        "primaryReadOnlyKeySecretName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The primary readonly key secret name to create."
-          }
-        },
-        "primaryWriteConnectionStringSecretName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The primary write connection string secret name to create."
-          }
-        },
-        "primaryReadonlyConnectionStringSecretName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The primary readonly connection string secret name to create."
-          }
-        },
-        "secondaryWriteKeySecretName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The primary write key secret name to create."
-          }
-        },
-        "secondaryReadonlyKeySecretName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The primary readonly key secret name to create."
-          }
-        },
-        "secondaryWriteConnectionStringSecretName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The primary write connection string secret name to create."
-          }
-        },
-        "secondaryReadonlyConnectionStringSecretName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The primary readonly connection string secret name to create."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for the secrets export configuration."
-      }
-    },
-    "secretsOutputType": {
-      "type": "object",
-      "properties": {},
-      "additionalProperties": {
-        "$ref": "#/definitions/secretSetType",
-        "metadata": {
-          "description": "An exported secret's references."
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for the secrets output."
+        "description": "The type for an Azure Cosmos DB for NoSQL or Table native role-based access control definition."
       }
     },
     "networkRestrictionType": {
@@ -411,7 +201,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: \"23.40.210.245\" or \"23.40.210.0/8\"."
+            "description": "Optional. A single IPv4 address or a single IPv4 address range in Classless Inter-Domain Routing (CIDR) format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: `10.0.0.0/8`, `100.64.0.0/10`, `172.16.0.0/12`, `192.168.0.0/16`, since these are not enforceable by the IP address filter. Example of valid inputs: `23.40.210.245` or `23.40.210.0/8`."
           }
         },
         "networkAclBypass": {
@@ -422,7 +212,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Default to None. Specifies the network ACL bypass for Azure services."
+            "description": "Optional. Specifies the network ACL bypass for Azure services. Default to \"None\"."
           }
         },
         "publicNetworkAccess": {
@@ -433,7 +223,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Default to Disabled. Whether requests from Public Network are allowed."
+            "description": "Optional. Whether requests from the public network are allowed. Default to \"Disabled\"."
           }
         },
         "virtualNetworkRules": {
@@ -451,13 +241,281 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. List of Virtual Network ACL rules configured for the Cosmos DB account.."
+            "description": "Optional. List of virtual network access control list (ACL) rules configured for the account."
+          }
+        },
+        "networkAclBypassResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. An array that contains the Resource Ids for Network Acl Bypass for the Cosmos DB account."
           }
         }
       },
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for the network restriction."
+      }
+    },
+    "gremlinDatabaseType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the Gremlin database."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases@2024-11-15#properties/tags"
+            },
+            "description": "Optional. Tags of the Gremlin database resource."
+          },
+          "nullable": true
+        },
+        "graphs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/graphType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of graphs to deploy in the Gremlin database."
+          }
+        },
+        "maxThroughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored. Setting throughput at the database level is only recommended for development/test or when workload across all graphs in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the graph level and not at the database level."
+          }
+        },
+        "throughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`. Setting throughput at the database level is only recommended for development/test or when workload across all graphs in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the graph level and not at the database level."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a gremlin databae."
+      }
+    },
+    "mongoDbType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the mongodb database."
+          }
+        },
+        "throughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Request Units per second. Setting throughput at the database level is only recommended for development/test or when workload across all collections in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level."
+          }
+        },
+        "collections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/collectionType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Collections in the mongodb database."
+          }
+        },
+        "autoscaleSettings": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15#properties/properties/properties/options/properties/autoscaleSettings"
+            },
+            "description": "Optional. Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both."
+          },
+          "nullable": true
+        },
+        "tags": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15#properties/tags"
+            },
+            "description": "Optional. Tags of the resource."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a mongo databae."
+      }
+    },
+    "sqlDatabaseType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the SQL database ."
+          }
+        },
+        "containers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/containerType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of containers to deploy in the SQL database."
+          }
+        },
+        "throughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
+          }
+        },
+        "autoscaleSettingsMaxThroughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2025-04-15#properties/tags"
+            },
+            "description": "Optional. Tags of the SQL database resource."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a sql database."
+      }
+    },
+    "tableType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the table."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/tables@2025-04-15#properties/tags"
+            },
+            "description": "Optional. Tags for the table."
+          },
+          "nullable": true
+        },
+        "maxThroughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored."
+          }
+        },
+        "throughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a table."
+      }
+    },
+    "defaultIdentityType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "name",
+        "mapping": {
+          "FirstPartyIdentity": {
+            "$ref": "#/definitions/defaultIdentityFirstPartyType"
+          },
+          "SystemAssignedIdentity": {
+            "$ref": "#/definitions/defaultIdentitySystemAssignedType"
+          },
+          "UserAssignedIdentity": {
+            "$ref": "#/definitions/defaultIdentityUserAssignedType"
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the default identity."
+      }
+    },
+    "defaultIdentityFirstPartyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "FirstPartyIdentity"
+          ],
+          "metadata": {
+            "description": "Required. The type of default identity to use."
+          }
+        }
+      }
+    },
+    "defaultIdentitySystemAssignedType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "SystemAssignedIdentity"
+          ],
+          "metadata": {
+            "description": "Required. The type of default identity to use."
+          }
+        }
+      }
+    },
+    "defaultIdentityUserAssignedType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "UserAssignedIdentity"
+          ],
+          "metadata": {
+            "description": "Required. The type of default identity to use."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the user assigned identity to use as the default identity."
+          }
+        }
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -482,7 +540,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -524,7 +582,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -565,7 +623,170 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "collectionType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the collection."
+          }
+        },
+        "throughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Request Units per second. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level."
+          }
+        },
+        "indexes": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2025-04-15#properties/properties/properties/resource/properties/indexes"
+            },
+            "description": "Required. Indexes for the collection."
+          }
+        },
+        "shardKey": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2025-04-15#properties/properties/properties/resource/properties/shardKey"
+            },
+            "description": "Required. ShardKey for the collection."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type of a collection.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "mongodb-database/main.bicep"
+        }
+      }
+    },
+    "containerType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the container."
+          }
+        },
+        "analyticalStorageTtl": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store."
+          }
+        },
+        "conflictResolutionPolicy": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/conflictResolutionPolicy"
+            },
+            "description": "Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions."
+          },
+          "nullable": true
+        },
+        "defaultTtl": {
+          "type": "int",
+          "nullable": true,
+          "minValue": -1,
+          "maxValue": 2147483647,
+          "metadata": {
+            "description": "Optional. Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to \"-1\", it is equal to infinity, and items don't expire by default."
+          }
+        },
+        "throughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
+          }
+        },
+        "autoscaleSettingsMaxThroughput": {
+          "type": "int",
+          "nullable": true,
+          "maxValue": 1000000,
+          "metadata": {
+            "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/tags"
+            },
+            "description": "Optional. Tags of the SQL Database resource."
+          },
+          "nullable": true
+        },
+        "paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minLength": 1,
+          "maxLength": 3,
+          "metadata": {
+            "description": "Required. List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1."
+          }
+        },
+        "indexingPolicy": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/indexingPolicy"
+            },
+            "description": "Optional. Indexing policy of the container."
+          },
+          "nullable": true
+        },
+        "uniqueKeyPolicyKeys": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/uniqueKeyPolicy/properties/uniqueKeys"
+            },
+            "description": "Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service."
+          },
+          "nullable": true
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "Hash",
+            "MultiHash"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default to Hash. Indicates the kind of algorithm used for partitioning."
+          }
+        },
+        "version": {
+          "type": "int",
+          "allowedValues": [
+            1,
+            2
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type of a container.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "sql-database/main.bicep"
         }
       }
     },
@@ -687,7 +908,54 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "graphType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the graph."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15#properties/tags"
+            },
+            "description": "Optional. Tags of the Gremlin graph resource."
+          },
+          "nullable": true
+        },
+        "indexingPolicy": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15#properties/properties/properties/resource/properties/indexingPolicy"
+            },
+            "description": "Optional. Indexing policy of the graph."
+          },
+          "nullable": true
+        },
+        "partitionKeyPaths": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15#properties/properties/properties/resource/properties/partitionKey/properties/paths"
+            },
+            "description": "Optional. List of paths using which data within the container can be partitioned."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "description": "The type of a graph.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "gremlin-database/main.bicep"
         }
       }
     },
@@ -712,12 +980,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -745,7 +1020,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -872,6 +1147,9 @@
           "type": "object",
           "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+            },
             "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
           }
         },
@@ -886,7 +1164,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -961,30 +1239,38 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
-    "secretSetType": {
+    "sqlRoleAssignmentType": {
       "type": "object",
       "properties": {
-        "secretResourceId": {
+        "name": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "The resourceId of the exported secret."
+            "description": "Optional. Name unique identifier of the SQL Role Assignment."
           }
         },
-        "secretUri": {
+        "principalId": {
           "type": "string",
           "metadata": {
-            "description": "The secret URI of the exported secret."
+            "description": "Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription."
+          }
+        },
+        "scope": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level."
           }
         }
       },
       "metadata": {
-        "description": "The type for the secret set.",
+        "description": "The type for the SQL Role Assignments.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "modules/keyVaultExport.bicep"
+          "sourceTemplate": "sql-role-definition/main.bicep"
         }
       }
     }
@@ -993,22 +1279,25 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the Database Account."
+        "description": "Required. The name of the account."
       }
     },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Optional. Default to current resource group scope location. Location for all resources."
+        "description": "Optional. Defaults to the current resource group scope location. Location for all resources."
       }
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
-        "description": "Optional. Tags of the Database Account resource."
-      }
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DocumentDB/databaseAccounts@2024-11-15#properties/tags"
+        },
+        "description": "Optional. Tags for the resource."
+      },
+      "nullable": true
     },
     "managedIdentities": {
       "$ref": "#/definitions/managedIdentityAllType",
@@ -1024,17 +1313,24 @@
         "Standard"
       ],
       "metadata": {
-        "description": "Optional. Default to Standard. The offer type for the Azure Cosmos DB database account."
+        "description": "Optional. The offer type for the account. Defaults to \"Standard\"."
       }
     },
-    "locations": {
+    "failoverLocations": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/failoverLocationType"
       },
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Default to the location where the account is deployed. Locations enabled for the Cosmos DB account."
+        "description": "Optional. The set of locations enabled for the account. Defaults to the location where the account is deployed."
+      }
+    },
+    "zoneRedundant": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Indicates whether the single-region account is zone redundant. Defaults to true. This property is ignored for multi-region accounts."
       }
     },
     "defaultConsistencyLevel": {
@@ -1048,49 +1344,49 @@
         "Strong"
       ],
       "metadata": {
-        "description": "Optional. Default to Session. The default consistency level of the Cosmos DB account."
+        "description": "Optional. The default consistency level of the account. Defaults to \"Session\"."
       }
     },
-    "disableLocalAuth": {
+    "disableLocalAuthentication": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Default to true. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication."
+        "description": "Optional. Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true."
       }
     },
     "enableAnalyticalStorage": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Default to false. Flag to indicate whether to enable storage analytics."
+        "description": "Optional. Flag to indicate whether to enable storage analytics. Defaults to false."
       }
     },
-    "automaticFailover": {
+    "enableAutomaticFailover": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Default to true. Enable automatic failover for regions."
+        "description": "Optional. Enable automatic failover for regions. Defaults to true."
       }
     },
     "enableFreeTier": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Default to false. Flag to indicate whether Free Tier is enabled."
+        "description": "Optional. Flag to indicate whether \"Free Tier\" is enabled. Defaults to false."
       }
     },
     "enableMultipleWriteLocations": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled."
+        "description": "Optional. Enables the account to write in multiple locations. Periodic backup must be used if enabled. Defaults to false."
       }
     },
     "disableKeyBasedMetadataWriteAccess": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Default to true. Disable write operations on metadata resources (databases, containers, throughput) via account keys."
+        "description": "Optional. Disable write operations on metadata resources (databases, containers, throughput) via account keys. Defaults to true."
       }
     },
     "maxStalenessPrefix": {
@@ -1099,7 +1395,7 @@
       "minValue": 1,
       "maxValue": 2147483647,
       "metadata": {
-        "description": "Optional. Default to 100000. Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000."
+        "description": "Optional. The maximum stale requests. Required for \"BoundedStaleness\" consistency level. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000. Defaults to 100000."
       }
     },
     "maxIntervalInSeconds": {
@@ -1108,7 +1404,7 @@
       "minValue": 5,
       "maxValue": 86400,
       "metadata": {
-        "description": "Optional. Default to 300. Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400."
+        "description": "Optional. The maximum lag time in minutes. Required for \"BoundedStaleness\" consistency level. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400. Defaults to 300."
       }
     },
     "serverVersion": {
@@ -1124,7 +1420,7 @@
         "7.0"
       ],
       "metadata": {
-        "description": "Optional. Default to 4.2. Specifies the MongoDB server version to use."
+        "description": "Optional. Specifies the MongoDB server version to use if using Azure Cosmos DB for MongoDB RU. Defaults to \"4.2\"."
       }
     },
     "sqlDatabases": {
@@ -1132,47 +1428,39 @@
       "items": {
         "$ref": "#/definitions/sqlDatabaseType"
       },
-      "defaultValue": [],
-      "metadata": {
-        "description": "Optional. SQL Databases configurations."
-      }
-    },
-    "sqlRoleAssignmentsPrincipalIds": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Optional. SQL Role Definitions configurations."
-      }
-    },
-    "sqlRoleDefinitions": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/sqlRoleDefinitionType"
-      },
       "nullable": true,
       "metadata": {
-        "description": "Optional. SQL Role Definitions configurations."
+        "description": "Optional. Configuration for databases when using Azure Cosmos DB for NoSQL."
       }
     },
     "mongodbDatabases": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/mongoDbType"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. MongoDB Databases configurations."
+        "description": "Optional. Configuration for databases when using Azure Cosmos DB for MongoDB RU."
       }
     },
     "gremlinDatabases": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/gremlinDatabaseType"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Gremlin Databases configurations."
+        "description": "Optional. Configuration for databases when using Azure Cosmos DB for Apache Gremlin."
       }
     },
     "tables": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/tableType"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Table configurations."
+        "description": "Optional. Configuration for databases when using Azure Cosmos DB for Table."
       }
     },
     "enableTelemetry": {
@@ -1186,7 +1474,7 @@
       "type": "int",
       "defaultValue": -1,
       "metadata": {
-        "description": "Optional. Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s)."
+        "description": "Optional. The total throughput limit imposed on this account in request units per second (RU/s). Default to unlimited throughput."
       }
     },
     "lock": {
@@ -1203,7 +1491,27 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. Array of role assignments to create."
+        "description": "Optional. An array of control plane Azure role-based access control assignments."
+      }
+    },
+    "dataPlaneRoleDefinitions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/dataPlaneRoleDefinitionType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions."
+      }
+    },
+    "dataPlaneRoleAssignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/dataPlaneRoleAssignmentType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments."
       }
     },
     "diagnosticSettings": {
@@ -1213,7 +1521,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. The diagnostic settings of the service."
+        "description": "Optional. The diagnostic settings for the service."
       }
     },
     "capabilitiesToAdd": {
@@ -1221,7 +1529,7 @@
       "items": {
         "type": "string"
       },
-      "defaultValue": [],
+      "nullable": true,
       "allowedValues": [
         "EnableCassandra",
         "EnableTable",
@@ -1235,7 +1543,7 @@
         "DeleteAllItemsByPartitionKey"
       ],
       "metadata": {
-        "description": "Optional. List of Cosmos DB capabilities for the account. THE DeleteAllItemsByPartitionKey VALUE USED IN THIS PARAMETER IS USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION."
+        "description": "Optional. A list of Azure Cosmos DB specific capabilities for the account."
       }
     },
     "backupPolicyType": {
@@ -1246,7 +1554,7 @@
         "Continuous"
       ],
       "metadata": {
-        "description": "Optional. Default to Continuous. Describes the mode of backups. Periodic backup must be used if multiple write locations are used."
+        "description": "Optional. Configures the backup mode. Periodic backup must be used if multiple write locations are used. Defaults to \"Continuous\"."
       }
     },
     "backupPolicyContinuousTier": {
@@ -1257,7 +1565,7 @@
         "Continuous7Days"
       ],
       "metadata": {
-        "description": "Optional. Default to Continuous30Days. Configuration values for continuous mode backup."
+        "description": "Optional. Configuration values to specify the retention period for continuous mode backup. Default to \"Continuous30Days\"."
       }
     },
     "backupIntervalInMinutes": {
@@ -1266,7 +1574,7 @@
       "minValue": 60,
       "maxValue": 1440,
       "metadata": {
-        "description": "Optional. Default to 240. An integer representing the interval in minutes between two backups. Only applies to periodic backup type."
+        "description": "Optional. An integer representing the interval in minutes between two backups. This setting only applies to the periodic backup type. Defaults to 240."
       }
     },
     "backupRetentionIntervalInHours": {
@@ -1275,7 +1583,7 @@
       "minValue": 2,
       "maxValue": 720,
       "metadata": {
-        "description": "Optional. Default to 8. An integer representing the time (in hours) that each backup is retained. Only applies to periodic backup type."
+        "description": "Optional. An integer representing the time (in hours) that each backup is retained. This setting only applies to the periodic backup type. Defaults to 8."
       }
     },
     "backupStorageRedundancy": {
@@ -1287,7 +1595,7 @@
         "Zone"
       ],
       "metadata": {
-        "description": "Optional. Default to Local. Enum to indicate type of backup residency. Only applies to periodic backup type."
+        "description": "Optional. Setting that indicates the type of backup residency. This setting only applies to the periodic backup type. Defaults to \"Local\"."
       }
     },
     "privateEndpoints": {
@@ -1297,14 +1605,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible."
-      }
-    },
-    "secretsExportConfiguration": {
-      "$ref": "#/definitions/secretsExportConfigurationType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Key vault reference and secret settings for the module's secrets export."
+        "description": "Optional. Configuration details for private endpoints. For security reasons, it is advised to use private endpoints whenever possible."
       }
     },
     "networkRestrictions": {
@@ -1325,82 +1626,79 @@
         "Tls12"
       ],
       "metadata": {
-        "description": "Optional. Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later."
+        "description": "Optional. Setting that indicates the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later. Defaults to \"Tls12\" (TLS 1.2)."
+      }
+    },
+    "enableBurstCapacity": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Flag to indicate enabling/disabling of Burst Capacity feature on the account. Cannot be enabled for serverless accounts."
+      }
+    },
+    "enableCassandraConnector": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enables the cassandra connector on the Cosmos DB C* account."
+      }
+    },
+    "enablePartitionMerge": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Flag to enable/disable the 'Partition Merge' feature on the account."
+      }
+    },
+    "enablePerRegionPerPartitionAutoscale": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Flag to enable/disable the 'PerRegionPerPartitionAutoscale' feature on the account."
+      }
+    },
+    "analyticalStorageConfiguration": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DocumentDB/databaseAccounts@2025-04-15#properties/properties/properties/analyticalStorageConfiguration"
+        },
+        "description": "Optional. Analytical storage specific properties."
+      },
+      "nullable": true
+    },
+    "cors": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DocumentDB/databaseAccounts@2025-04-15#properties/properties/properties/cors"
+        },
+        "description": "Optional. The CORS policy for the Cosmos DB database account."
+      },
+      "nullable": true
+    },
+    "defaultIdentity": {
+      "$ref": "#/definitions/defaultIdentityType",
+      "defaultValue": {
+        "name": "FirstPartyIdentity"
+      },
+      "metadata": {
+        "description": "Optional. The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users."
       }
     }
   },
   "variables": {
     "copy": [
       {
-        "name": "databaseAccount_locations",
-        "count": "[length(parameters('locations'))]",
-        "input": {
-          "failoverPriority": "[parameters('locations')[copyIndex('databaseAccount_locations')].failoverPriority]",
-          "locationName": "[parameters('locations')[copyIndex('databaseAccount_locations')].locationName]",
-          "isZoneRedundant": "[coalesce(tryGet(parameters('locations')[copyIndex('databaseAccount_locations')], 'isZoneRedundant'), true())]"
-        }
-      },
-      {
-        "name": "capabilities",
-        "count": "[length(parameters('capabilitiesToAdd'))]",
-        "input": {
-          "name": "[parameters('capabilitiesToAdd')[copyIndex('capabilities')]]"
-        }
-      },
-      {
-        "name": "ipRules",
-        "count": "[length(coalesce(tryGet(parameters('networkRestrictions'), 'ipRules'), createArray()))]",
-        "input": {
-          "ipAddressOrRange": "[coalesce(tryGet(parameters('networkRestrictions'), 'ipRules'), createArray())[copyIndex('ipRules')]]"
-        }
-      },
-      {
-        "name": "virtualNetworkRules",
-        "count": "[length(coalesce(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules'), createArray()))]",
-        "input": {
-          "id": "[coalesce(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules'), createArray())[copyIndex('virtualNetworkRules')].subnetResourceId]",
-          "ignoreMissingVnetServiceEndpoint": false
-        }
-      },
-      {
         "name": "formattedRoleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
-        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInControlPlaneRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
     "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
-    "consistencyPolicy": {
-      "Eventual": {
-        "defaultConsistencyLevel": "Eventual"
-      },
-      "ConsistentPrefix": {
-        "defaultConsistencyLevel": "ConsistentPrefix"
-      },
-      "Session": {
-        "defaultConsistencyLevel": "Session"
-      },
-      "BoundedStaleness": {
-        "defaultConsistencyLevel": "BoundedStaleness",
-        "maxStalenessPrefix": "[parameters('maxStalenessPrefix')]",
-        "maxIntervalInSeconds": "[parameters('maxIntervalInSeconds')]"
-      },
-      "Strong": {
-        "defaultConsistencyLevel": "Strong"
-      }
-    },
-    "defaultFailoverLocation": [
-      {
-        "failoverPriority": 0,
-        "locationName": "[parameters('location')]",
-        "isZoneRedundant": true
-      }
-    ],
-    "kind": "[if(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('gremlinDatabases')))), 'GlobalDocumentDB', if(not(empty(parameters('mongodbDatabases'))), 'MongoDB', 'GlobalDocumentDB'))]",
-    "backupPolicy": "[if(equals(parameters('backupPolicyType'), 'Continuous'), createObject('type', parameters('backupPolicyType'), 'continuousModeProperties', createObject('tier', parameters('backupPolicyContinuousTier'))), createObject('type', parameters('backupPolicyType'), 'periodicModeProperties', createObject('backupIntervalInMinutes', parameters('backupIntervalInMinutes'), 'backupRetentionIntervalInHours', parameters('backupRetentionIntervalInHours'), 'backupStorageRedundancy', parameters('backupStorageRedundancy'))))]",
-    "databaseAccountProperties": "[union(createObject('databaseAccountOfferType', parameters('databaseAccountOfferType'), 'backupPolicy', variables('backupPolicy'), 'capabilities', variables('capabilities'), 'minimalTlsVersion', parameters('minimumTlsVersion'), 'capacity', createObject('totalThroughputLimit', parameters('totalThroughputLimit'))), if(or(or(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('mongodbDatabases')))), not(empty(parameters('gremlinDatabases')))), not(empty(parameters('tables')))), createObject('consistencyPolicy', variables('consistencyPolicy')[parameters('defaultConsistencyLevel')], 'enableMultipleWriteLocations', parameters('enableMultipleWriteLocations'), 'locations', if(empty(variables('databaseAccount_locations')), variables('defaultFailoverLocation'), variables('databaseAccount_locations')), 'ipRules', variables('ipRules'), 'virtualNetworkRules', variables('virtualNetworkRules'), 'networkAclBypass', coalesce(tryGet(parameters('networkRestrictions'), 'networkAclBypass'), 'None'), 'publicNetworkAccess', coalesce(tryGet(parameters('networkRestrictions'), 'publicNetworkAccess'), 'Disabled'), 'isVirtualNetworkFilterEnabled', or(not(empty(variables('ipRules'))), not(empty(variables('virtualNetworkRules')))), 'enableFreeTier', parameters('enableFreeTier'), 'enableAutomaticFailover', parameters('automaticFailover'), 'enableAnalyticalStorage', parameters('enableAnalyticalStorage')), createObject()), if(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('tables')))), createObject('disableLocalAuth', parameters('disableLocalAuth'), 'disableKeyBasedMetadataWriteAccess', parameters('disableKeyBasedMetadataWriteAccess')), createObject()), if(not(empty(parameters('mongodbDatabases'))), createObject('apiProperties', createObject('serverVersion', parameters('serverVersion'))), createObject()))]",
-    "builtInRoleNames": {
+    "builtInControlPlaneRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Cosmos DB Account Reader Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fbdf93bf-df7d-467e-a4d2-9458aa1360c8')]",
       "Cosmos DB Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '230815da-be43-4aae-9cb4-875f7bd000aa')]",
@@ -1436,13 +1734,13 @@
     },
     "databaseAccount": {
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2024-11-15",
+      "apiVersion": "2025-04-15",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
-      "kind": "[variables('kind')]",
-      "properties": "[variables('databaseAccountProperties')]"
+      "kind": "[if(not(empty(parameters('mongodbDatabases'))), 'MongoDB', 'GlobalDocumentDB')]",
+      "properties": "[shallowMerge(createArray(createObject('enableBurstCapacity', if(not(contains(coalesce(parameters('capabilitiesToAdd'), createArray()), 'EnableServerless')), parameters('enableBurstCapacity'), false()), 'analyticalStorageConfiguration', parameters('analyticalStorageConfiguration'), 'defaultIdentity', if(and(not(empty(parameters('defaultIdentity'))), not(equals(tryGet(parameters('defaultIdentity'), 'name'), 'UserAssignedIdentity'))), parameters('defaultIdentity').name, format('UserAssignedIdentity={0}', tryGet(parameters('defaultIdentity'), 'resourceId'))), 'enablePartitionMerge', parameters('enablePartitionMerge'), 'enablePerRegionPerPartitionAutoscale', parameters('enablePerRegionPerPartitionAutoscale'), 'databaseAccountOfferType', parameters('databaseAccountOfferType'), 'backupPolicy', shallowMerge(createArray(createObject('type', parameters('backupPolicyType')), if(equals(parameters('backupPolicyType'), 'Continuous'), createObject('continuousModeProperties', createObject('tier', parameters('backupPolicyContinuousTier'))), createObject()), if(equals(parameters('backupPolicyType'), 'Periodic'), createObject('periodicModeProperties', createObject('backupIntervalInMinutes', parameters('backupIntervalInMinutes'), 'backupRetentionIntervalInHours', parameters('backupRetentionIntervalInHours'), 'backupStorageRedundancy', parameters('backupStorageRedundancy'))), createObject()))), 'capabilities', map(coalesce(parameters('capabilitiesToAdd'), createArray()), lambda('capability', createObject('name', lambdaVariables('capability'))))), if(not(empty(parameters('cors'))), createObject('cors', parameters('cors')), createObject()), if(contains(coalesce(parameters('capabilitiesToAdd'), createArray()), 'EnableCassandra'), createObject('connectorOffer', if(parameters('enableCassandraConnector'), 'Small', null()), 'enableCassandraConnector', parameters('enableCassandraConnector')), createObject()), createObject('minimalTlsVersion', parameters('minimumTlsVersion'), 'capacity', createObject('totalThroughputLimit', parameters('totalThroughputLimit')), 'publicNetworkAccess', coalesce(tryGet(parameters('networkRestrictions'), 'publicNetworkAccess'), 'Disabled')), if(or(or(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('mongodbDatabases')))), not(empty(parameters('gremlinDatabases')))), not(empty(parameters('tables')))), createObject('consistencyPolicy', shallowMerge(createArray(createObject('defaultConsistencyLevel', parameters('defaultConsistencyLevel')), if(equals(parameters('defaultConsistencyLevel'), 'BoundedStaleness'), createObject('maxStalenessPrefix', parameters('maxStalenessPrefix'), 'maxIntervalInSeconds', parameters('maxIntervalInSeconds')), createObject()))), 'enableMultipleWriteLocations', parameters('enableMultipleWriteLocations'), 'locations', if(not(empty(parameters('failoverLocations'))), map(parameters('failoverLocations'), lambda('failoverLocation', createObject('failoverPriority', lambdaVariables('failoverLocation').failoverPriority, 'locationName', lambdaVariables('failoverLocation').locationName, 'isZoneRedundant', coalesce(tryGet(lambdaVariables('failoverLocation'), 'isZoneRedundant'), true())))), createArray(createObject('failoverPriority', 0, 'locationName', parameters('location'), 'isZoneRedundant', parameters('zoneRedundant')))), 'ipRules', map(coalesce(tryGet(parameters('networkRestrictions'), 'ipRules'), createArray()), lambda('ipRule', createObject('ipAddressOrRange', lambdaVariables('ipRule')))), 'virtualNetworkRules', map(coalesce(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules'), createArray()), lambda('rule', createObject('id', lambdaVariables('rule').subnetResourceId, 'ignoreMissingVNetServiceEndpoint', false()))), 'networkAclBypass', coalesce(tryGet(parameters('networkRestrictions'), 'networkAclBypass'), 'None'), 'networkAclBypassResourceIds', tryGet(parameters('networkRestrictions'), 'networkAclBypassResourceIds'), 'isVirtualNetworkFilterEnabled', or(not(empty(tryGet(parameters('networkRestrictions'), 'ipRules'))), not(empty(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules')))), 'enableFreeTier', parameters('enableFreeTier'), 'enableAutomaticFailover', parameters('enableAutomaticFailover'), 'enableAnalyticalStorage', parameters('enableAnalyticalStorage')), createObject()), if(or(not(empty(parameters('mongodbDatabases'))), not(empty(parameters('gremlinDatabases')))), createObject('disableLocalAuth', false(), 'disableKeyBasedMetadataWriteAccess', false()), createObject('disableLocalAuth', parameters('disableLocalAuthentication'), 'disableKeyBasedMetadataWriteAccess', parameters('disableKeyBasedMetadataWriteAccess'))), if(not(empty(parameters('mongodbDatabases'))), createObject('apiProperties', createObject('serverVersion', parameters('serverVersion'))), createObject())))]"
     },
     "databaseAccount_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -1452,7 +1750,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "databaseAccount"
@@ -1524,11 +1822,11 @@
     "databaseAccount_sqlDatabases": {
       "copy": {
         "name": "databaseAccount_sqlDatabases",
-        "count": "[length(parameters('sqlDatabases'))]"
+        "count": "[length(coalesce(parameters('sqlDatabases'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-sqldb-{1}', uniqueString(deployment().name, parameters('location')), parameters('sqlDatabases')[copyIndex()].name)]",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-sqldb-{1}', uniqueString(deployment().name, parameters('location')), coalesce(parameters('sqlDatabases'), createArray())[copyIndex()].name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1536,19 +1834,19 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('sqlDatabases')[copyIndex()].name]"
+            "value": "[coalesce(parameters('sqlDatabases'), createArray())[copyIndex()].name]"
           },
           "containers": {
-            "value": "[tryGet(parameters('sqlDatabases')[copyIndex()], 'containers')]"
+            "value": "[tryGet(coalesce(parameters('sqlDatabases'), createArray())[copyIndex()], 'containers')]"
           },
           "throughput": {
-            "value": "[tryGet(parameters('sqlDatabases')[copyIndex()], 'throughput')]"
+            "value": "[tryGet(coalesce(parameters('sqlDatabases'), createArray())[copyIndex()], 'throughput')]"
           },
           "databaseAccountName": {
             "value": "[parameters('name')]"
           },
           "autoscaleSettingsMaxThroughput": {
-            "value": "[tryGet(parameters('sqlDatabases')[copyIndex()], 'autoscaleSettingsMaxThroughput')]"
+            "value": "[tryGet(coalesce(parameters('sqlDatabases'), createArray())[copyIndex()], 'autoscaleSettingsMaxThroughput')]"
           }
         },
         "template": {
@@ -1558,11 +1856,132 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "16080632612286518435"
+              "version": "0.38.33.27573",
+              "templateHash": "1549250134356326406"
             },
             "name": "DocumentDB Database Account SQL Databases",
             "description": "This module deploys a SQL Database in a CosmosDB Account."
+          },
+          "definitions": {
+            "containerType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Name of the container."
+                  }
+                },
+                "analyticalStorageTtl": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store."
+                  }
+                },
+                "conflictResolutionPolicy": {
+                  "type": "object",
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/conflictResolutionPolicy"
+                    },
+                    "description": "Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions."
+                  },
+                  "nullable": true
+                },
+                "defaultTtl": {
+                  "type": "int",
+                  "nullable": true,
+                  "minValue": -1,
+                  "maxValue": 2147483647,
+                  "metadata": {
+                    "description": "Optional. Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to \"-1\", it is equal to infinity, and items don't expire by default."
+                  }
+                },
+                "throughput": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
+                  }
+                },
+                "autoscaleSettingsMaxThroughput": {
+                  "type": "int",
+                  "nullable": true,
+                  "maxValue": 1000000,
+                  "metadata": {
+                    "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
+                  }
+                },
+                "tags": {
+                  "type": "object",
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/tags"
+                    },
+                    "description": "Optional. Tags of the SQL Database resource."
+                  },
+                  "nullable": true
+                },
+                "paths": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minLength": 1,
+                  "maxLength": 3,
+                  "metadata": {
+                    "description": "Required. List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1."
+                  }
+                },
+                "indexingPolicy": {
+                  "type": "object",
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/indexingPolicy"
+                    },
+                    "description": "Optional. Indexing policy of the container."
+                  },
+                  "nullable": true
+                },
+                "uniqueKeyPolicyKeys": {
+                  "type": "array",
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/uniqueKeyPolicy/properties/uniqueKeys"
+                    },
+                    "description": "Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service."
+                  },
+                  "nullable": true
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Hash",
+                    "MultiHash"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Default to Hash. Indicates the kind of algorithm used for partitioning."
+                  }
+                },
+                "version": {
+                  "type": "int",
+                  "allowedValues": [
+                    1,
+                    2
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type of a container."
+              }
+            }
           },
           "parameters": {
             "databaseAccountName": {
@@ -1580,9 +1999,9 @@
             "containers": {
               "type": "array",
               "items": {
-                "type": "object"
+                "$ref": "#/definitions/containerType"
               },
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of containers to deploy in the SQL database."
               }
@@ -1603,22 +2022,25 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2025-04-15#properties/tags"
+                },
                 "description": "Optional. Tags of the SQL database resource."
-              }
+              },
+              "nullable": true
             }
           },
           "resources": {
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2024-11-15",
+              "apiVersion": "2025-04-15",
               "name": "[parameters('databaseAccountName')]"
             },
             "sqlDatabase": {
               "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
-              "apiVersion": "2024-11-15",
+              "apiVersion": "2025-04-15",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -1634,11 +2056,11 @@
             "container": {
               "copy": {
                 "name": "container",
-                "count": "[length(parameters('containers'))]"
+                "count": "[length(coalesce(parameters('containers'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-sqldb-{1}', uniqueString(deployment().name, parameters('name')), parameters('containers')[copyIndex()].name)]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-sqldb-{1}', uniqueString(deployment().name, parameters('name')), coalesce(parameters('containers'), createArray())[copyIndex()].name)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -1652,35 +2074,35 @@
                     "value": "[parameters('name')]"
                   },
                   "name": {
-                    "value": "[parameters('containers')[copyIndex()].name]"
+                    "value": "[coalesce(parameters('containers'), createArray())[copyIndex()].name]"
                   },
                   "analyticalStorageTtl": {
-                    "value": "[tryGet(parameters('containers')[copyIndex()], 'analyticalStorageTtl')]"
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'analyticalStorageTtl')]"
                   },
                   "autoscaleSettingsMaxThroughput": {
-                    "value": "[tryGet(parameters('containers')[copyIndex()], 'autoscaleSettingsMaxThroughput')]"
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'autoscaleSettingsMaxThroughput')]"
                   },
                   "conflictResolutionPolicy": {
-                    "value": "[tryGet(parameters('containers')[copyIndex()], 'conflictResolutionPolicy')]"
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'conflictResolutionPolicy')]"
                   },
                   "defaultTtl": {
-                    "value": "[tryGet(parameters('containers')[copyIndex()], 'defaultTtl')]"
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'defaultTtl')]"
                   },
                   "indexingPolicy": {
-                    "value": "[tryGet(parameters('containers')[copyIndex()], 'indexingPolicy')]"
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'indexingPolicy')]"
                   },
                   "kind": {
-                    "value": "[tryGet(parameters('containers')[copyIndex()], 'kind')]"
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'kind')]"
                   },
                   "version": {
-                    "value": "[tryGet(parameters('containers')[copyIndex()], 'version')]"
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'version')]"
                   },
                   "paths": {
-                    "value": "[tryGet(parameters('containers')[copyIndex()], 'paths')]"
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'paths')]"
                   },
-                  "throughput": "[if(and(or(not(equals(parameters('throughput'), null())), not(equals(parameters('autoscaleSettingsMaxThroughput'), null()))), equals(tryGet(parameters('containers')[copyIndex()], 'throughput'), null())), createObject('value', -1), createObject('value', tryGet(parameters('containers')[copyIndex()], 'throughput')))]",
+                  "throughput": "[if(and(or(not(equals(parameters('throughput'), null())), not(equals(parameters('autoscaleSettingsMaxThroughput'), null()))), equals(tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'throughput'), null())), createObject('value', -1), createObject('value', tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'throughput')))]",
                   "uniqueKeyPolicyKeys": {
-                    "value": "[tryGet(parameters('containers')[copyIndex()], 'uniqueKeyPolicyKeys')]"
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'uniqueKeyPolicyKeys')]"
                   }
                 },
                 "template": {
@@ -1690,8 +2112,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "8834615293032195419"
+                      "version": "0.38.33.27573",
+                      "templateHash": "1005439058963058082"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
                     "description": "This module deploys a SQL Database Container in a CosmosDB Account."
@@ -1724,14 +2146,17 @@
                     },
                     "conflictResolutionPolicy": {
                       "type": "object",
-                      "defaultValue": {},
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/conflictResolutionPolicy"
+                        },
                         "description": "Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions."
-                      }
+                      },
+                      "nullable": true
                     },
                     "defaultTtl": {
                       "type": "int",
-                      "defaultValue": -1,
+                      "nullable": true,
                       "minValue": -1,
                       "maxValue": 2147483647,
                       "metadata": {
@@ -1755,10 +2180,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/tags"
+                        },
                         "description": "Optional. Tags of the SQL Database resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "paths": {
                       "type": "array",
@@ -1773,17 +2201,23 @@
                     },
                     "indexingPolicy": {
                       "type": "object",
-                      "defaultValue": {},
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/indexingPolicy"
+                        },
                         "description": "Optional. Indexing policy of the container."
-                      }
+                      },
+                      "nullable": true
                     },
                     "uniqueKeyPolicyKeys": {
                       "type": "array",
-                      "defaultValue": [],
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/uniqueKeyPolicy/properties/uniqueKeys"
+                        },
                         "description": "Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service."
-                      }
+                      },
+                      "nullable": true
                     },
                     "kind": {
                       "type": "string",
@@ -1815,29 +2249,28 @@
                         "count": "[length(parameters('paths'))]",
                         "input": "[if(startsWith(parameters('paths')[copyIndex('partitionKeyPaths')], '/'), parameters('paths')[copyIndex('partitionKeyPaths')], format('/{0}', parameters('paths')[copyIndex('partitionKeyPaths')]))]"
                       }
-                    ],
-                    "containerResourceParams": "[union(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'defaultTtl', parameters('defaultTtl'), 'id', parameters('name'), 'indexingPolicy', if(not(empty(parameters('indexingPolicy'))), parameters('indexingPolicy'), null()), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version'))), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()))]"
+                    ]
                   },
                   "resources": {
                     "databaseAccount::sqlDatabase": {
                       "existing": true,
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
-                      "apiVersion": "2024-11-15",
+                      "apiVersion": "2025-04-15",
                       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('sqlDatabaseName'))]"
                     },
                     "databaseAccount": {
                       "existing": true,
                       "type": "Microsoft.DocumentDB/databaseAccounts",
-                      "apiVersion": "2024-11-15",
+                      "apiVersion": "2025-04-15",
                       "name": "[parameters('databaseAccountName')]"
                     },
                     "container": {
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
-                      "apiVersion": "2024-11-15",
+                      "apiVersion": "2025-04-15",
                       "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('sqlDatabaseName'), parameters('name'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
-                        "resource": "[variables('containerResourceParams')]",
+                        "resource": "[shallowMerge(createArray(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'id', parameters('name'), 'indexingPolicy', parameters('indexingPolicy'), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version'))), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()), if(not(equals(parameters('defaultTtl'), null())), createObject('defaultTtl', parameters('defaultTtl')), createObject())))]",
                         "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', if(and(equals(parameters('autoscaleSettingsMaxThroughput'), null()), not(equals(parameters('throughput'), -1))), parameters('throughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleSettingsMaxThroughput'), null())), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null())))]"
                       },
                       "dependsOn": [
@@ -1907,47 +2340,82 @@
     "databaseAccount_sqlRoleDefinitions": {
       "copy": {
         "name": "databaseAccount_sqlRoleDefinitions",
-        "count": "[length(coalesce(parameters('sqlRoleDefinitions'), createArray()))]"
+        "count": "[length(coalesce(parameters('dataPlaneRoleDefinitions'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-sqlrd-{1}', uniqueString(deployment().name, parameters('location')), coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()].name)]",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-sqlrd-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
         },
         "mode": "Incremental",
         "parameters": {
-          "name": {
-            "value": "[coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()].name]"
-          },
           "databaseAccountName": {
             "value": "[parameters('name')]"
           },
+          "name": {
+            "value": "[tryGet(coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()], 'name')]"
+          },
           "dataActions": {
-            "value": "[tryGet(coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()], 'dataActions')]"
+            "value": "[coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()].dataActions]"
           },
           "roleName": {
-            "value": "[tryGet(coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()], 'roleName')]"
+            "value": "[coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()].roleName]"
           },
-          "roleType": {
-            "value": "[tryGet(coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()], 'roleType')]"
+          "assignableScopes": {
+            "value": "[tryGet(coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()], 'assignableScopes')]"
           },
-          "principalIds": {
-            "value": "[parameters('sqlRoleAssignmentsPrincipalIds')]"
+          "sqlRoleAssignments": {
+            "value": "[tryGet(coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()], 'assignments')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "2490416937519336508"
+              "version": "0.38.33.27573",
+              "templateHash": "8600771348637416058"
             },
-            "name": "DocumentDB Database Account SQL Role.",
-            "description": "This module deploys SQL Role Definision and Assignment in a CosmosDB Account."
+            "name": "DocumentDB Database Account SQL Role Definitions.",
+            "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
+          },
+          "definitions": {
+            "sqlRoleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name unique identifier of the SQL Role Assignment."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription."
+                  }
+                },
+                "scope": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the SQL Role Assignments."
+              }
+            }
           },
           "parameters": {
             "databaseAccountName": {
@@ -1958,199 +2426,139 @@
             },
             "name": {
               "type": "string",
+              "nullable": true,
               "metadata": {
-                "description": "Required. Name of the SQL Role."
-              }
-            },
-            "dataActions": {
-              "type": "array",
-              "defaultValue": [
-                "Microsoft.DocumentDB/databaseAccounts/readMetadata",
-                "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*",
-                "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*"
-              ],
-              "metadata": {
-                "description": "Optional. An array of data actions that are allowed."
-              }
-            },
-            "principalIds": {
-              "type": "array",
-              "defaultValue": [],
-              "metadata": {
-                "description": "Optional. Ids needs to be granted."
+                "description": "Optional. The unique identifier of the Role Definition."
               }
             },
             "roleName": {
               "type": "string",
-              "defaultValue": "Reader Writer",
               "metadata": {
-                "description": "Optional. A user-friendly name for the Role Definition. Must be unique for the database account."
+                "description": "Required. A user-friendly name for the Role Definition. Must be unique for the database account."
               }
             },
-            "roleType": {
-              "type": "string",
-              "defaultValue": "CustomRole",
-              "allowedValues": [
-                "CustomRole",
-                "BuiltInRole"
-              ],
+            "dataActions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minLength": 1,
               "metadata": {
-                "description": "Optional. Indicates whether the Role Definition was built-in or user created."
+                "description": "Required. An array of data actions that are allowed."
+              }
+            },
+            "assignableScopes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Collection. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account."
+              }
+            },
+            "sqlRoleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/sqlRoleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. An array of SQL Role Assignments to be created for the SQL Role Definition."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
               }
             }
           },
-          "resources": [
-            {
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('sql-role-definition-{0}', uniqueString(parameters('name')))]",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.doctdb-dbacct-sqlroledefinition.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
                 "mode": "Incremental",
-                "parameters": {
-                  "databaseAccountName": {
-                    "value": "[parameters('databaseAccountName')]"
-                  },
-                  "dataActions": {
-                    "value": "[parameters('dataActions')]"
-                  },
-                  "roleName": {
-                    "value": "[parameters('roleName')]"
-                  },
-                  "roleType": {
-                    "value": "[parameters('roleType')]"
-                  }
-                },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "16003674161646405716"
-                    },
-                    "name": "DocumentDB Database Account SQL Role Definitions.",
-                    "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
-                  },
-                  "parameters": {
-                    "databaseAccountName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment."
-                      }
-                    },
-                    "dataActions": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. An array of data actions that are allowed."
-                      }
-                    },
-                    "roleName": {
-                      "type": "string",
-                      "defaultValue": "Reader Writer",
-                      "metadata": {
-                        "description": "Optional. A user-friendly name for the Role Definition. Must be unique for the database account."
-                      }
-                    },
-                    "roleType": {
-                      "type": "string",
-                      "defaultValue": "CustomRole",
-                      "allowedValues": [
-                        "CustomRole",
-                        "BuiltInRole"
-                      ],
-                      "metadata": {
-                        "description": "Optional. Indicates whether the Role Definition was built-in or user created."
-                      }
-                    }
-                  },
-                  "resources": [
-                    {
-                      "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
-                      "apiVersion": "2024-11-15",
-                      "name": "[format('{0}/{1}', parameters('databaseAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role'))]",
-                      "properties": {
-                        "assignableScopes": [
-                          "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))]"
-                        ],
-                        "permissions": [
-                          {
-                            "dataActions": "[parameters('dataActions')]"
-                          }
-                        ],
-                        "roleName": "[parameters('roleName')]",
-                        "type": "[parameters('roleType')]"
-                      }
-                    }
-                  ],
+                  "resources": [],
                   "outputs": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The name of the SQL database."
-                      },
-                      "value": "[guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role')]"
-                    },
-                    "resourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The resource ID of the SQL database."
-                      },
-                      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role'))]"
-                    },
-                    "resourceGroupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The name of the resource group the SQL database was created in."
-                      },
-                      "value": "[resourceGroup().name]"
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
                     }
                   }
                 }
               }
             },
-            {
+            "databaseAccount": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2024-11-15",
+              "name": "[parameters('databaseAccountName')]"
+            },
+            "sqlRoleDefinition": {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
+              "apiVersion": "2024-11-15",
+              "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName'))))]",
+              "properties": {
+                "assignableScopes": "[coalesce(parameters('assignableScopes'), createArray(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))))]",
+                "permissions": [
+                  {
+                    "dataActions": "[parameters('dataActions')]"
+                  }
+                ],
+                "roleName": "[parameters('roleName')]",
+                "type": "CustomRole"
+              }
+            },
+            "databaseAccount_sqlRoleAssignments": {
               "copy": {
-                "name": "sqlRoleAssignment",
-                "count": "[length(parameters('principalIds'))]",
-                "mode": "serial",
-                "batchSize": 1
+                "name": "databaseAccount_sqlRoleAssignments",
+                "count": "[length(coalesce(parameters('sqlRoleAssignments'), createArray()))]"
               },
-              "condition": "[not(empty(parameters('principalIds')[copyIndex()]))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('sql-role-assign-{0}', uniqueString(parameters('principalIds')[copyIndex()]))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-sqlra-{1}', uniqueString(deployment().name), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "name": {
-                    "value": "[guid(reference(resourceId('Microsoft.Resources/deployments', format('sql-role-definition-{0}', uniqueString(parameters('name')))), '2022-09-01').outputs.resourceId.value, parameters('principalIds')[copyIndex()], resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))]"
-                  },
                   "databaseAccountName": {
                     "value": "[parameters('databaseAccountName')]"
                   },
-                  "roleDefinitionId": {
-                    "value": "[reference(resourceId('Microsoft.Resources/deployments', format('sql-role-definition-{0}', uniqueString(parameters('name')))), '2022-09-01').outputs.resourceId.value]"
+                  "roleDefinitionIdOrName": {
+                    "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName'))))]"
                   },
                   "principalId": {
-                    "value": "[parameters('principalIds')[copyIndex()]]"
+                    "value": "[coalesce(parameters('sqlRoleAssignments'), createArray())[copyIndex()].principalId]"
+                  },
+                  "name": {
+                    "value": "[tryGet(coalesce(parameters('sqlRoleAssignments'), createArray())[copyIndex()], 'name')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "16164048892239373889"
+                      "version": "0.38.33.27573",
+                      "templateHash": "17007224102611744259"
                     },
                     "name": "DocumentDB Database Account SQL Role Assignments.",
                     "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -2164,41 +2572,103 @@
                     },
                     "name": {
                       "type": "string",
+                      "nullable": true,
                       "metadata": {
-                        "description": "Required. Name of the SQL Role Assignment."
+                        "description": "Optional. Name unique identifier of the SQL Role Assignment."
                       }
                     },
                     "principalId": {
                       "type": "string",
-                      "defaultValue": "",
                       "metadata": {
-                        "description": "Optional. Id needs to be granted."
+                        "description": "Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription."
                       }
                     },
-                    "roleDefinitionId": {
+                    "roleDefinitionIdOrName": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. Id of the SQL Role Definition."
+                        "description": "Required. The unique identifier of the associated SQL Role Definition."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
+                    },
+                    "scope": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level."
                       }
                     }
                   },
-                  "resources": [
-                    {
+                  "variables": {
+                    "builtInDataPlaneRoleNames": {
+                      "Cosmos DB Built-in Data Reader": "[format('{0}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))]",
+                      "Cosmos DB Built-in Data Contributor": "[format('{0}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))]"
+                    },
+                    "formattedRoleDefinition": "[coalesce(tryGet(variables('builtInDataPlaneRoleNames'), parameters('roleDefinitionIdOrName')), if(contains(parameters('roleDefinitionIdOrName'), '/sqlRoleDefinitions/'), parameters('roleDefinitionIdOrName'), format('{0}/sqlRoleDefinitions/{1}', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('roleDefinitionIdOrName'))))]",
+                    "formattedScope": "[replace(replace(coalesce(parameters('scope'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))), '/sqlDatabases/', '/dbs/'), '/containers/', '/colls/')]"
+                  },
+                  "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.doctdb-dbacct-sqlroleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "databaseAccount": {
+                      "existing": true,
+                      "type": "Microsoft.DocumentDB/databaseAccounts",
+                      "apiVersion": "2024-11-15",
+                      "name": "[parameters('databaseAccountName')]"
+                    },
+                    "sqlRoleAssignment": {
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
                       "apiVersion": "2024-11-15",
-                      "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
+                      "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(variables('formattedRoleDefinition'), parameters('principalId'), variables('formattedScope'))))]",
                       "properties": {
                         "principalId": "[parameters('principalId')]",
-                        "roleDefinitionId": "[parameters('roleDefinitionId')]",
-                        "scope": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))]"
+                        "roleDefinitionId": "[variables('formattedRoleDefinition')]",
+                        "scope": "[variables('formattedScope')]"
                       }
                     }
-                  ],
+                  },
                   "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the SQL Role Assignment."
+                      },
+                      "value": "[coalesce(parameters('name'), guid(variables('formattedRoleDefinition'), parameters('principalId'), variables('formattedScope')))]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the SQL Role Assignment."
+                      },
+                      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments', parameters('databaseAccountName'), coalesce(parameters('name'), guid(variables('formattedRoleDefinition'), parameters('principalId'), variables('formattedScope'))))]"
+                    },
                     "resourceGroupName": {
                       "type": "string",
                       "metadata": {
-                        "description": "The name of the resource group the SQL Role Assignment was created in."
+                        "description": "The name of the resource group the SQL Role Definition was created in."
                       },
                       "value": "[resourceGroup().name]"
                     }
@@ -2206,17 +2676,38 @@
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', format('sql-role-definition-{0}', uniqueString(parameters('name'))))]"
+                "sqlRoleDefinition"
               ]
             }
-          ],
+          },
           "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the SQL Role Definition."
+              },
+              "value": "[coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName')))]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the SQL Role Definition."
+              },
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName'))))]"
+            },
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The name of the resource group the SQL Role Definition and Assignment were created in."
+                "description": "The name of the resource group the SQL Role Definition was created in."
               },
               "value": "[resourceGroup().name]"
+            },
+            "roleName": {
+              "type": "string",
+              "metadata": {
+                "description": "The role name of the SQL Role Definition."
+              },
+              "value": "[reference('sqlRoleDefinition').roleName]"
             }
           }
         }
@@ -2225,14 +2716,177 @@
         "databaseAccount"
       ]
     },
+    "databaseAccount_sqlRoleAssignments": {
+      "copy": {
+        "name": "databaseAccount_sqlRoleAssignments",
+        "count": "[length(coalesce(parameters('dataPlaneRoleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-sqlra-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "databaseAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "roleDefinitionIdOrName": {
+            "value": "[coalesce(parameters('dataPlaneRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]"
+          },
+          "principalId": {
+            "value": "[coalesce(parameters('dataPlaneRoleAssignments'), createArray())[copyIndex()].principalId]"
+          },
+          "name": {
+            "value": "[tryGet(coalesce(parameters('dataPlaneRoleAssignments'), createArray())[copyIndex()], 'name')]"
+          },
+          "scope": {
+            "value": "[tryGet(coalesce(parameters('dataPlaneRoleAssignments'), createArray())[copyIndex()], 'scope')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.38.33.27573",
+              "templateHash": "17007224102611744259"
+            },
+            "name": "DocumentDB Database Account SQL Role Assignments.",
+            "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
+          },
+          "parameters": {
+            "databaseAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Name unique identifier of the SQL Role Assignment."
+              }
+            },
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription."
+              }
+            },
+            "roleDefinitionIdOrName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The unique identifier of the associated SQL Role Definition."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
+            "scope": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level."
+              }
+            }
+          },
+          "variables": {
+            "builtInDataPlaneRoleNames": {
+              "Cosmos DB Built-in Data Reader": "[format('{0}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))]",
+              "Cosmos DB Built-in Data Contributor": "[format('{0}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))]"
+            },
+            "formattedRoleDefinition": "[coalesce(tryGet(variables('builtInDataPlaneRoleNames'), parameters('roleDefinitionIdOrName')), if(contains(parameters('roleDefinitionIdOrName'), '/sqlRoleDefinitions/'), parameters('roleDefinitionIdOrName'), format('{0}/sqlRoleDefinitions/{1}', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('roleDefinitionIdOrName'))))]",
+            "formattedScope": "[replace(replace(coalesce(parameters('scope'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))), '/sqlDatabases/', '/dbs/'), '/containers/', '/colls/')]"
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.doctdb-dbacct-sqlroleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "databaseAccount": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2024-11-15",
+              "name": "[parameters('databaseAccountName')]"
+            },
+            "sqlRoleAssignment": {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
+              "apiVersion": "2024-11-15",
+              "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(variables('formattedRoleDefinition'), parameters('principalId'), variables('formattedScope'))))]",
+              "properties": {
+                "principalId": "[parameters('principalId')]",
+                "roleDefinitionId": "[variables('formattedRoleDefinition')]",
+                "scope": "[variables('formattedScope')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the SQL Role Assignment."
+              },
+              "value": "[coalesce(parameters('name'), guid(variables('formattedRoleDefinition'), parameters('principalId'), variables('formattedScope')))]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the SQL Role Assignment."
+              },
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments', parameters('databaseAccountName'), coalesce(parameters('name'), guid(variables('formattedRoleDefinition'), parameters('principalId'), variables('formattedScope'))))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the SQL Role Definition was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "databaseAccount",
+        "databaseAccount_sqlDatabases"
+      ]
+    },
     "databaseAccount_mongodbDatabases": {
       "copy": {
         "name": "databaseAccount_mongodbDatabases",
-        "count": "[length(parameters('mongodbDatabases'))]"
+        "count": "[length(coalesce(parameters('mongodbDatabases'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-mongodb-{1}', uniqueString(deployment().name, parameters('location')), parameters('mongodbDatabases')[copyIndex()].name)]",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-mongodb-{1}', uniqueString(deployment().name, parameters('location')), coalesce(parameters('mongodbDatabases'), createArray())[copyIndex()].name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2243,16 +2897,19 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('mongodbDatabases')[copyIndex()].name]"
+            "value": "[coalesce(parameters('mongodbDatabases'), createArray())[copyIndex()].name]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('mongodbDatabases')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('mongodbDatabases'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "collections": {
-            "value": "[tryGet(parameters('mongodbDatabases')[copyIndex()], 'collections')]"
+            "value": "[tryGet(coalesce(parameters('mongodbDatabases'), createArray())[copyIndex()], 'collections')]"
           },
           "throughput": {
-            "value": "[tryGet(parameters('mongodbDatabases')[copyIndex()], 'throughput')]"
+            "value": "[tryGet(coalesce(parameters('mongodbDatabases'), createArray())[copyIndex()], 'throughput')]"
+          },
+          "autoscaleSettings": {
+            "value": "[tryGet(coalesce(parameters('mongodbDatabases'), createArray())[copyIndex()], 'autoscaleSettings')]"
           }
         },
         "template": {
@@ -2262,11 +2919,53 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "918699205331356852"
+              "version": "0.38.33.27573",
+              "templateHash": "7289795303297936310"
             },
             "name": "DocumentDB Database Account MongoDB Databases",
             "description": "This module deploys a MongoDB Database within a CosmosDB Account."
+          },
+          "definitions": {
+            "collectionType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Name of the collection."
+                  }
+                },
+                "throughput": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Request Units per second. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level."
+                  }
+                },
+                "indexes": {
+                  "type": "array",
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2025-04-15#properties/properties/properties/resource/properties/indexes"
+                    },
+                    "description": "Required. Indexes for the collection."
+                  }
+                },
+                "shardKey": {
+                  "type": "object",
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2025-04-15#properties/properties/properties/resource/properties/shardKey"
+                    },
+                    "description": "Required. ShardKey for the collection."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type of a collection."
+              }
+            }
           },
           "parameters": {
             "databaseAccountName": {
@@ -2290,36 +2989,52 @@
             },
             "collections": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "$ref": "#/definitions/collectionType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Collections in the mongodb database."
               }
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
+            },
+            "autoscaleSettings": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15#properties/properties/properties/options/properties/autoscaleSettings"
+                },
+                "description": "Optional. Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both."
+              },
+              "nullable": true
             }
           },
           "resources": {
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2024-11-15",
+              "apiVersion": "2025-04-15",
               "name": "[parameters('databaseAccountName')]"
             },
             "mongodbDatabase": {
               "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases",
-              "apiVersion": "2024-11-15",
+              "apiVersion": "2025-04-15",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
                 "resource": {
                   "id": "[parameters('name')]"
                 },
-                "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]"
+                "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput'), 'autoscaleSettings', parameters('autoscaleSettings')))]"
               },
               "dependsOn": [
                 "databaseAccount"
@@ -2328,11 +3043,11 @@
             "mongodbDatabase_collections": {
               "copy": {
                 "name": "mongodbDatabase_collections",
-                "count": "[length(parameters('collections'))]"
+                "count": "[length(coalesce(parameters('collections'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-collection-{1}', uniqueString(deployment().name, parameters('name')), parameters('collections')[copyIndex()].name)]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-collection-{1}', uniqueString(deployment().name, parameters('name')), coalesce(parameters('collections'), createArray())[copyIndex()].name)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -2346,16 +3061,16 @@
                     "value": "[parameters('name')]"
                   },
                   "name": {
-                    "value": "[parameters('collections')[copyIndex()].name]"
+                    "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].name]"
                   },
                   "indexes": {
-                    "value": "[parameters('collections')[copyIndex()].indexes]"
+                    "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].indexes]"
                   },
                   "shardKey": {
-                    "value": "[parameters('collections')[copyIndex()].shardKey]"
+                    "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].shardKey]"
                   },
                   "throughput": {
-                    "value": "[tryGet(parameters('collections')[copyIndex()], 'throughput')]"
+                    "value": "[tryGet(coalesce(parameters('collections'), createArray())[copyIndex()], 'throughput')]"
                   }
                 },
                 "template": {
@@ -2364,8 +3079,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "5747070610235343863"
+                      "version": "0.38.33.27573",
+                      "templateHash": "4317369978166598876"
                     },
                     "name": "DocumentDB Database Account MongoDB Database Collections",
                     "description": "This module deploys a MongoDB Database Collection."
@@ -2399,12 +3114,18 @@
                     "indexes": {
                       "type": "array",
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2025-04-15#properties/properties/properties/resource/properties/indexes"
+                        },
                         "description": "Required. Indexes for the collection."
                       }
                     },
                     "shardKey": {
                       "type": "object",
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2025-04-15#properties/properties/properties/resource/properties/shardKey"
+                        },
                         "description": "Required. ShardKey for the collection."
                       }
                     }
@@ -2412,10 +3133,10 @@
                   "resources": [
                     {
                       "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections",
-                      "apiVersion": "2024-11-15",
+                      "apiVersion": "2025-04-15",
                       "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('mongodbDatabaseName'), parameters('name'))]",
                       "properties": {
-                        "options": "[if(contains(reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), '2024-11-15').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]",
+                        "options": "[if(contains(reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), '2025-04-15').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]",
                         "resource": {
                           "id": "[parameters('name')]",
                           "indexes": "[parameters('indexes')]",
@@ -2486,11 +3207,11 @@
     "databaseAccount_gremlinDatabases": {
       "copy": {
         "name": "databaseAccount_gremlinDatabases",
-        "count": "[length(parameters('gremlinDatabases'))]"
+        "count": "[length(coalesce(parameters('gremlinDatabases'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-gremlin-{1}', uniqueString(deployment().name, parameters('location')), parameters('gremlinDatabases')[copyIndex()].name)]",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-gremlin-{1}', uniqueString(deployment().name, parameters('location')), coalesce(parameters('gremlinDatabases'), createArray())[copyIndex()].name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2501,19 +3222,19 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('gremlinDatabases')[copyIndex()].name]"
+            "value": "[coalesce(parameters('gremlinDatabases'), createArray())[copyIndex()].name]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('gremlinDatabases')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('gremlinDatabases'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "graphs": {
-            "value": "[tryGet(parameters('gremlinDatabases')[copyIndex()], 'graphs')]"
+            "value": "[tryGet(coalesce(parameters('gremlinDatabases'), createArray())[copyIndex()], 'graphs')]"
           },
           "maxThroughput": {
-            "value": "[tryGet(parameters('gremlinDatabases')[copyIndex()], 'maxThroughput')]"
+            "value": "[tryGet(coalesce(parameters('gremlinDatabases'), createArray())[copyIndex()], 'maxThroughput')]"
           },
           "throughput": {
-            "value": "[tryGet(parameters('gremlinDatabases')[copyIndex()], 'throughput')]"
+            "value": "[tryGet(coalesce(parameters('gremlinDatabases'), createArray())[copyIndex()], 'throughput')]"
           }
         },
         "template": {
@@ -2523,11 +3244,58 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "3102415923148662010"
+              "version": "0.38.33.27573",
+              "templateHash": "14708982296215631776"
             },
             "name": "DocumentDB Database Account Gremlin Databases",
             "description": "This module deploys a Gremlin Database within a CosmosDB Account."
+          },
+          "definitions": {
+            "graphType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Name of the graph."
+                  }
+                },
+                "tags": {
+                  "type": "object",
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15#properties/tags"
+                    },
+                    "description": "Optional. Tags of the Gremlin graph resource."
+                  },
+                  "nullable": true
+                },
+                "indexingPolicy": {
+                  "type": "object",
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15#properties/properties/properties/resource/properties/indexingPolicy"
+                    },
+                    "description": "Optional. Indexing policy of the graph."
+                  },
+                  "nullable": true
+                },
+                "partitionKeyPaths": {
+                  "type": "array",
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15#properties/properties/properties/resource/properties/partitionKey/properties/paths"
+                    },
+                    "description": "Optional. List of paths using which data within the container can be partitioned."
+                  },
+                  "nullable": true
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type of a graph."
+              }
+            }
           },
           "parameters": {
             "name": {
@@ -2538,10 +3306,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases@2024-11-15#properties/tags"
+                },
                 "description": "Optional. Tags of the Gremlin database resource."
-              }
+              },
+              "nullable": true
             },
             "databaseAccountName": {
               "type": "string",
@@ -2551,7 +3322,10 @@
             },
             "graphs": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "$ref": "#/definitions/graphType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of graphs to deploy in the Gremlin database."
               }
@@ -2575,12 +3349,12 @@
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2024-11-15",
+              "apiVersion": "2025-04-15",
               "name": "[parameters('databaseAccountName')]"
             },
             "gremlinDatabase": {
               "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
-              "apiVersion": "2024-11-15",
+              "apiVersion": "2025-04-15",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -2596,11 +3370,11 @@
             "gremlinDatabase_gremlinGraphs": {
               "copy": {
                 "name": "gremlinDatabase_gremlinGraphs",
-                "count": "[length(parameters('graphs'))]"
+                "count": "[length(coalesce(parameters('graphs'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-gremlindb-{1}', uniqueString(deployment().name, parameters('name')), parameters('graphs')[copyIndex()].name)]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-gremlindb-{1}', uniqueString(deployment().name, parameters('name')), coalesce(parameters('graphs'), createArray())[copyIndex()].name)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -2608,7 +3382,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[parameters('graphs')[copyIndex()].name]"
+                    "value": "[coalesce(parameters('graphs'), createArray())[copyIndex()].name]"
                   },
                   "gremlinDatabaseName": {
                     "value": "[parameters('name')]"
@@ -2617,9 +3391,11 @@
                     "value": "[parameters('databaseAccountName')]"
                   },
                   "indexingPolicy": {
-                    "value": "[tryGet(parameters('graphs')[copyIndex()], 'indexingPolicy')]"
+                    "value": "[tryGet(coalesce(parameters('graphs'), createArray())[copyIndex()], 'indexingPolicy')]"
                   },
-                  "partitionKeyPaths": "[if(not(empty(parameters('graphs')[copyIndex()].partitionKeyPaths)), createObject('value', parameters('graphs')[copyIndex()].partitionKeyPaths), createObject('value', createArray()))]"
+                  "partitionKeyPaths": {
+                    "value": "[tryGet(coalesce(parameters('graphs'), createArray())[copyIndex()], 'partitionKeyPaths')]"
+                  }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2628,8 +3404,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "14448207336426896249"
+                      "version": "0.38.33.27573",
+                      "templateHash": "15097132107382000570"
                     },
                     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
                     "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph."
@@ -2643,10 +3419,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15#properties/tags"
+                        },
                         "description": "Optional. Tags of the Gremlin graph resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "databaseAccountName": {
                       "type": "string",
@@ -2662,43 +3441,49 @@
                     },
                     "indexingPolicy": {
                       "type": "object",
-                      "defaultValue": {},
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15#properties/properties/properties/resource/properties/indexingPolicy"
+                        },
                         "description": "Optional. Indexing policy of the graph."
-                      }
+                      },
+                      "nullable": true
                     },
                     "partitionKeyPaths": {
                       "type": "array",
-                      "defaultValue": [],
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15#properties/properties/properties/resource/properties/partitionKey/properties/paths"
+                        },
                         "description": "Optional. List of paths using which data within the container can be partitioned."
-                      }
+                      },
+                      "nullable": true
                     }
                   },
                   "resources": {
                     "databaseAccount::gremlinDatabase": {
                       "existing": true,
                       "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
-                      "apiVersion": "2024-11-15",
+                      "apiVersion": "2025-04-15",
                       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('gremlinDatabaseName'))]"
                     },
                     "databaseAccount": {
                       "existing": true,
                       "type": "Microsoft.DocumentDB/databaseAccounts",
-                      "apiVersion": "2024-11-15",
+                      "apiVersion": "2025-04-15",
                       "name": "[parameters('databaseAccountName')]"
                     },
                     "gremlinGraph": {
                       "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs",
-                      "apiVersion": "2024-11-15",
+                      "apiVersion": "2025-04-15",
                       "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('gremlinDatabaseName'), parameters('name'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
                         "resource": {
                           "id": "[parameters('name')]",
-                          "indexingPolicy": "[if(not(empty(parameters('indexingPolicy'))), parameters('indexingPolicy'), null())]",
+                          "indexingPolicy": "[parameters('indexingPolicy')]",
                           "partitionKey": {
-                            "paths": "[if(not(empty(parameters('partitionKeyPaths'))), parameters('partitionKeyPaths'), null())]"
+                            "paths": "[parameters('partitionKeyPaths')]"
                           }
                         }
                       }
@@ -2766,11 +3551,11 @@
     "databaseAccount_tables": {
       "copy": {
         "name": "databaseAccount_tables",
-        "count": "[length(parameters('tables'))]"
+        "count": "[length(coalesce(parameters('tables'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-table-{1}', uniqueString(deployment().name, parameters('location')), parameters('tables')[copyIndex()].name)]",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-table-{1}', uniqueString(deployment().name, parameters('location')), coalesce(parameters('tables'), createArray())[copyIndex()].name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2781,16 +3566,16 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('tables')[copyIndex()].name]"
+            "value": "[coalesce(parameters('tables'), createArray())[copyIndex()].name]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('tables')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "maxThroughput": {
-            "value": "[tryGet(parameters('tables')[copyIndex()], 'maxThroughput')]"
+            "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'maxThroughput')]"
           },
           "throughput": {
-            "value": "[tryGet(parameters('tables')[copyIndex()], 'throughput')]"
+            "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'throughput')]"
           }
         },
         "template": {
@@ -2800,8 +3585,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "6386293577244138652"
+              "version": "0.38.33.27573",
+              "templateHash": "11768488776074268398"
             },
             "name": "Azure Cosmos DB account tables",
             "description": "This module deploys a table within an Azure Cosmos DB Account."
@@ -2815,10 +3600,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DocumentDB/databaseAccounts/tables@2025-04-15#properties/tags"
+                },
                 "description": "Optional. Tags for the table."
-              }
+              },
+              "nullable": true
             },
             "databaseAccountName": {
               "type": "string",
@@ -2845,12 +3633,12 @@
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2024-11-15",
+              "apiVersion": "2025-04-15",
               "name": "[parameters('databaseAccountName')]"
             },
             "table": {
               "type": "Microsoft.DocumentDB/databaseAccounts/tables",
-              "apiVersion": "2024-11-15",
+              "apiVersion": "2025-04-15",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -2899,7 +3687,7 @@
         "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-dbAccount-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
@@ -2955,8 +3743,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "15954548978129725136"
+              "version": "0.38.5.1644",
+              "templateHash": "16604612898799598358"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -2983,115 +3771,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "ipConfigurationType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the resource that is unique within a resource group."
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "groupId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
-                      }
-                    },
-                    "memberName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
-                      }
-                    },
-                    "privateIPAddress": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. Properties of private endpoint IP configurations."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "privateLinkServiceConnectionType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the private link service connection."
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "groupIds": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "metadata": {
-                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
-                      }
-                    },
-                    "privateLinkServiceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The resource id of private link service."
-                      }
-                    },
-                    "requestMessage": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. Properties of private link service connection."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "customDnsConfigType": {
-              "type": "object",
-              "properties": {
-                "fqdn": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. FQDN that resolves to private endpoint IP address."
-                  }
-                },
-                "ipAddresses": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "metadata": {
-                    "description": "Required. A list of private IP addresses of the private endpoint."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of a private dns zone group."
               }
             },
             "lockType": {
@@ -3115,12 +3796,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -3142,6 +3830,7 @@
                 }
               },
               "metadata": {
+                "description": "The type of a private DNS zone group configuration.",
                 "__bicep_imported_from!": {
                   "sourceTemplate": "private-dns-zone-group/main.bicep"
                 }
@@ -3218,7 +3907,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -3255,13 +3944,13 @@
             },
             "ipConfigurations": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/ipConfigurationType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/ipConfigurations"
+                },
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
-              }
+              },
+              "nullable": true
             },
             "privateDnsZoneGroup": {
               "$ref": "#/definitions/privateDnsZoneGroupType",
@@ -3296,40 +3985,43 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/tags"
+                },
                 "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
-              }
+              },
+              "nullable": true
             },
             "customDnsConfigs": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/customDnsConfigType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs"
+                },
                 "description": "Optional. Custom DNS configurations."
-              }
+              },
+              "nullable": true
             },
             "manualPrivateLinkServiceConnections": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/privateLinkServiceConnectionType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/manualPrivateLinkServiceConnections"
+                },
                 "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
-              }
+              },
+              "nullable": true
             },
             "privateLinkServiceConnections": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/privateLinkServiceConnectionType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/privateLinkServiceConnections"
+                },
                 "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
-              }
+              },
+              "nullable": true
             },
             "enableTelemetry": {
               "type": "bool",
@@ -3364,8 +4056,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3383,7 +4075,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-10-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -3415,7 +4107,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "privateEndpoint"
@@ -3446,7 +4138,7 @@
             "privateEndpoint_privateDnsZoneGroup": {
               "condition": "[not(empty(parameters('privateDnsZoneGroup')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-PrivateEndpoint-PrivateDnsZoneGroup', uniqueString(deployment().name))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -3471,8 +4163,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "5440815542537978381"
+                      "version": "0.38.5.1644",
+                      "templateHash": "24141742673128945"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -3496,7 +4188,8 @@
                         }
                       },
                       "metadata": {
-                        "__bicep_export!": true
+                        "__bicep_export!": true,
+                        "description": "The type of a private DNS zone group configuration."
                       }
                     }
                   },
@@ -3526,33 +4219,30 @@
                       }
                     }
                   },
-                  "variables": {
-                    "copy": [
-                      {
-                        "name": "privateDnsZoneConfigsVar",
-                        "count": "[length(parameters('privateDnsZoneConfigs'))]",
-                        "input": {
-                          "name": "[coalesce(tryGet(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')], 'name'), last(split(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId, '/')))]",
-                          "properties": {
-                            "privateDnsZoneId": "[parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId]"
-                          }
-                        }
-                      }
-                    ]
-                  },
                   "resources": {
                     "privateEndpoint": {
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-10-01",
                       "name": "[parameters('privateEndpointName')]"
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-10-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
-                        "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
+                        "copy": [
+                          {
+                            "name": "privateDnsZoneConfigs",
+                            "count": "[length(parameters('privateDnsZoneConfigs'))]",
+                            "input": {
+                              "name": "[coalesce(tryGet(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')], 'name'), last(split(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')].privateDnsZoneResourceId, '/')))]",
+                              "properties": {
+                                "privateDnsZoneId": "[parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')].privateDnsZoneResourceId]"
+                              }
+                            }
+                          }
+                        ]
                       }
                     }
                   },
@@ -3613,14 +4303,15 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2024-10-01', 'full').location]"
             },
             "customDnsConfigs": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/customDnsConfigType"
-              },
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs",
+                  "output": true
+                },
                 "description": "The custom DNS configurations of the private endpoint."
               },
               "value": "[reference('privateEndpoint').customDnsConfigs]"
@@ -3649,152 +4340,9 @@
       "dependsOn": [
         "databaseAccount"
       ]
-    },
-    "secretsExport": {
-      "condition": "[not(equals(parameters('secretsExportConfiguration'), null()))]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
-      "subscriptionId": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[2]]",
-      "resourceGroup": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[4]]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "keyVaultName": {
-            "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
-          },
-          "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryWriteKeySecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryWriteKeySecretName'), 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2024-11-15').primaryMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryReadOnlyKeySecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryReadOnlyKeySecretName'), 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2024-11-15').primaryReadonlyMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryWriteConnectionStringSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryWriteConnectionStringSecretName'), 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2024-11-15').connectionStrings[0].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryReadonlyConnectionStringSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryReadonlyConnectionStringSecretName'), 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2024-11-15').connectionStrings[2].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryWriteKeySecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryWriteKeySecretName'), 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2024-11-15').secondaryMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryReadonlyKeySecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryReadonlyKeySecretName'), 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2024-11-15').secondaryReadonlyMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryWriteConnectionStringSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryWriteConnectionStringSecretName'), 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2024-11-15').connectionStrings[1].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryReadonlyConnectionStringSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryReadonlyConnectionStringSecretName'), 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2024-11-15').connectionStrings[3].connectionString)), createArray()))]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "17295277467511711636"
-            }
-          },
-          "definitions": {
-            "secretSetType": {
-              "type": "object",
-              "properties": {
-                "secretResourceId": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "The resourceId of the exported secret."
-                  }
-                },
-                "secretUri": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "The secret URI of the exported secret."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for the secret set."
-              }
-            },
-            "secretToSetType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the secret to set."
-                  }
-                },
-                "value": {
-                  "type": "securestring",
-                  "metadata": {
-                    "description": "Required. The value of the secret to set."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for the secrets to set."
-              }
-            }
-          },
-          "parameters": {
-            "keyVaultName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the Key Vault to set the ecrets in."
-              }
-            },
-            "secretsToSet": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/secretToSetType"
-              },
-              "metadata": {
-                "description": "Required. The secrets to set in the Key Vault."
-              }
-            }
-          },
-          "resources": {
-            "keyVault": {
-              "existing": true,
-              "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2023-07-01",
-              "name": "[parameters('keyVaultName')]"
-            },
-            "secrets": {
-              "copy": {
-                "name": "secrets",
-                "count": "[length(parameters('secretsToSet'))]"
-              },
-              "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2023-07-01",
-              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
-              "properties": {
-                "value": "[parameters('secretsToSet')[copyIndex()].value]"
-              }
-            }
-          },
-          "outputs": {
-            "secretsSet": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/secretSetType"
-              },
-              "metadata": {
-                "description": "The references to the secrets exported to the provided Key Vault."
-              },
-              "copy": {
-                "count": "[length(range(0, length(coalesce(parameters('secretsToSet'), createArray()))))]",
-                "input": {
-                  "secretResourceId": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretsToSet')[range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()]].name)]",
-                  "secretUri": "[reference(format('secrets[{0}]', range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()])).secretUri]"
-                }
-              }
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "databaseAccount"
-      ]
     }
   },
   "outputs": {
-    "exportedSecrets": {
-      "$ref": "#/definitions/secretsOutputType",
-      "metadata": {
-        "description": "The references to the secrets exported to the provided Key Vault."
-      },
-      "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
-    },
     "name": {
       "type": "string",
       "metadata": {
@@ -3822,14 +4370,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('databaseAccount', '2024-11-15', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('databaseAccount', '2025-04-15', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('databaseAccount', '2024-11-15', 'full').location]"
+      "value": "[reference('databaseAccount', '2025-04-15', 'full').location]"
     },
     "endpoint": {
       "type": "string",
@@ -3856,6 +4404,62 @@
           "networkInterfaceResourceIds": "[reference(format('databaseAccount_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
         }
       }
+    },
+    "primaryReadWriteKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The primary read-write key."
+      },
+      "value": "[listKeys('databaseAccount', '2025-04-15').primaryMasterKey]"
+    },
+    "primaryReadOnlyKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The primary read-only key."
+      },
+      "value": "[listKeys('databaseAccount', '2025-04-15').primaryReadonlyMasterKey]"
+    },
+    "primaryReadWriteConnectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The primary read-write connection string."
+      },
+      "value": "[listConnectionStrings('databaseAccount', '2025-04-15').connectionStrings[0].connectionString]"
+    },
+    "primaryReadOnlyConnectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The primary read-only connection string."
+      },
+      "value": "[listConnectionStrings('databaseAccount', '2025-04-15').connectionStrings[2].connectionString]"
+    },
+    "secondaryReadWriteKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The secondary read-write key."
+      },
+      "value": "[listKeys('databaseAccount', '2025-04-15').secondaryMasterKey]"
+    },
+    "secondaryReadOnlyKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The secondary read-only key."
+      },
+      "value": "[listKeys('databaseAccount', '2025-04-15').secondaryReadonlyMasterKey]"
+    },
+    "secondaryReadWriteConnectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The secondary read-write connection string."
+      },
+      "value": "[listConnectionStrings('databaseAccount', '2025-04-15').connectionStrings[1].connectionString]"
+    },
+    "secondaryReadOnlyConnectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The secondary read-only connection string."
+      },
+      "value": "[listConnectionStrings('databaseAccount', '2025-04-15').connectionStrings[3].connectionString]"
     }
   }
 }

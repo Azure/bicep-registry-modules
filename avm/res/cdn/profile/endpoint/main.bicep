@@ -11,16 +11,16 @@ param name string
 param location string = resourceGroup().location
 
 @description('Required. Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details).')
-param properties object
+param properties resourceInput<'microsoft.cdn/profiles/endpoints@2025-04-15'>.properties
 
 @description('Optional. Endpoint tags.')
-param tags object?
+param tags resourceInput<'microsoft.cdn/profiles/endpoints@2025-04-15'>.tags?
 
-resource profile 'Microsoft.Cdn/profiles@2021-06-01' existing = {
+resource profile 'Microsoft.Cdn/profiles@2025-04-15' existing = {
   name: profileName
 }
 
-resource endpoint 'microsoft.cdn/profiles/endpoints@2021-06-01' = {
+resource endpoint 'microsoft.cdn/profiles/endpoints@2025-04-15' = {
   parent: profile
   name: name
   location: location

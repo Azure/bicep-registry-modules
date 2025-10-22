@@ -11,14 +11,15 @@ metadata description = 'This instance deploys the module asa Linux Web App with 
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-web.sites-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'wswalmax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
+
+// Note, we enforce the location due to quota restrictions in other regions (esp. east-us)
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'northeurope'
 
 // ============ //
 // Dependencies //
@@ -26,14 +27,14 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
@@ -41,7 +42,6 @@ module nestedDependencies 'dependencies.bicep' = {
     relayNamespaceName: 'dep-${namePrefix}-ns-${serviceShort}'
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
     hybridConnectionName: 'dep-${namePrefix}-hc-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -49,13 +49,12 @@ module nestedDependencies 'dependencies.bicep' = {
 // ===========
 module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -66,10 +65,10 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
+      location: enforcedLocation
       kind: 'app,linux'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
       diagnosticSettings: [
@@ -106,9 +105,13 @@ module testDeployment '../../../main.bicep' = [
           privateEndpoints: [
             {
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
-              privateDnsZoneResourceIds: [
-                nestedDependencies.outputs.privateDNSZoneResourceId
-              ]
+              privateDnsZoneGroup: {
+                privateDnsZoneGroupConfigs: [
+                  {
+                    privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+                  }
+                ]
+              }
               tags: {
                 'hidden-title': 'This is visible in the resource name'
                 Environment: 'Non-Prod'
@@ -156,11 +159,16 @@ module testDeployment '../../../main.bicep' = [
               }
             ]
           }
-          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-          storageAccountUseIdentityAuthentication: true
+          configs: [
+            {
+              name: 'appsettings'
+              storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+              storageAccountUseIdentityAuthentication: true
+            }
+          ]
           hybridConnectionRelays: [
             {
-              resourceId: nestedDependencies.outputs.hybridConnectionResourceId
+              hybridConnectionResourceId: nestedDependencies.outputs.hybridConnectionResourceId
               sendKeyName: 'defaultSender'
             }
           ]
@@ -175,8 +183,13 @@ module testDeployment '../../../main.bicep' = [
               name: 'scm'
             }
           ]
-          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-          storageAccountUseIdentityAuthentication: true
+          configs: [
+            {
+              name: 'appsettings'
+              storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+              storageAccountUseIdentityAuthentication: true
+            }
+          ]
         }
       ]
       privateEndpoints: [
@@ -235,8 +248,13 @@ module testDeployment '../../../main.bicep' = [
           }
         ]
       }
-      storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-      storageAccountUseIdentityAuthentication: true
+      configs: [
+        {
+          name: 'appsettings'
+          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+          storageAccountUseIdentityAuthentication: true
+        }
+      ]
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [
@@ -255,14 +273,16 @@ module testDeployment '../../../main.bicep' = [
       ]
       hybridConnectionRelays: [
         {
-          resourceId: nestedDependencies.outputs.hybridConnectionResourceId
+          hybridConnectionResourceId: nestedDependencies.outputs.hybridConnectionResourceId
           sendKeyName: 'defaultSender'
         }
       ]
       scmSiteAlsoStopped: true
-      vnetContentShareEnabled: true
-      vnetImagePullEnabled: true
-      vnetRouteAllEnabled: true
+      outboundVnetRouting: {
+        allTraffic: true
+        contentShareTraffic: true
+        imagePullTraffic: true
+      }
       publicNetworkAccess: 'Disabled'
     }
   }

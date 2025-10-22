@@ -5,7 +5,7 @@ metadata description = 'This module deploys a table within an Azure Cosmos DB Ac
 param name string
 
 @description('Optional. Tags for the table.')
-param tags object?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/tables@2025-04-15'>.tags?
 
 @description('Conditional. The name of the parent Azure Cosmos DB account. Required if the template is used in a standalone deployment.')
 param databaseAccountName string
@@ -16,27 +16,25 @@ param maxThroughput int = 4000
 @description('Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`.')
 param throughput int?
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {
   name: databaseAccountName
 }
 
-var tableOptions = contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' })
-  ? {}
-  : {
-      autoscaleSettings: throughput == null
-        ? {
-            maxThroughput: maxThroughput
-          }
-        : null
-      throughput: throughput
-    }
-
-resource table 'Microsoft.DocumentDB/databaseAccounts/tables@2024-11-15' = {
+resource table 'Microsoft.DocumentDB/databaseAccounts/tables@2025-04-15' = {
   name: name
   tags: tags
   parent: databaseAccount
   properties: {
-    options: tableOptions
+    options: contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' })
+      ? {}
+      : {
+          autoscaleSettings: throughput == null
+            ? {
+                maxThroughput: maxThroughput
+              }
+            : null
+          throughput: throughput
+        }
     resource: {
       id: name
     }

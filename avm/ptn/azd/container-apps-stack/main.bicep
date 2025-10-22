@@ -21,8 +21,8 @@ param containerRegistryResourceGroupName string = ''
 @description('Optional. Enable admin user that have push / pull permission to the registry.')
 param acrAdminUserEnabled bool = false
 
-@description('Required. Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990).')
-param logAnalyticsWorkspaceResourceId string
+@description('Required. Existing Log Analytics Workspace name.')
+param logAnalyticsWorkspaceName string
 
 @description('Optional. Application Insights connection string.')
 @secure()
@@ -67,8 +67,10 @@ param workloadProfiles array = []
 @description('Optional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param infrastructureResourceGroupName string = take('ME_${containerAppsEnvironmentName}', 63)
 
+var containerRegistryRG = empty(containerRegistryResourceGroupName) ? resourceGroup() : resourceGroup(containerRegistryResourceGroupName)
+
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.azd-containerappsstack.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -86,20 +88,30 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.7.0' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' existing = {
+  name: logAnalyticsWorkspaceName
+}
+
+module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.11.2' = {
   name: take('containerAppsEnvironment-${deployment().name}-deployment', 64)
   params: {
     name: containerAppsEnvironmentName
     location: location
     tags: tags
     daprAIInstrumentationKey: daprAIInstrumentationKey
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
+    appLogsConfiguration:{
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: logAnalyticsWorkspace.properties.customerId
+        sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
+      }
+    }
     appInsightsConnectionString: appInsightsConnectionString
     zoneRedundant: zoneRedundant
     workloadProfiles: workloadProfiles
     infrastructureResourceGroupName: infrastructureResourceGroupName
     internal: internal
-    infrastructureSubnetId: infrastructureSubnetResourceId
+    infrastructureSubnetResourceId: infrastructureSubnetResourceId
     dockerBridgeCidr: dockerBridgeCidr
     platformReservedCidr: platformReservedCidr
     platformReservedDnsIP: platformReservedDnsIP
@@ -107,11 +119,9 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.7.0
   }
 }
 
-module containerRegistry 'br/public:avm/res/container-registry/registry:0.4.0' = {
+module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = {
   name: take('containerRegistry-${deployment().name}-deployment', 64)
-  scope: !empty(containerRegistryResourceGroupName)
-    ? resourceGroup(containerRegistryResourceGroupName)
-    : resourceGroup()
+  scope: containerRegistryRG
   params: {
     name: containerRegistryName
     location: location

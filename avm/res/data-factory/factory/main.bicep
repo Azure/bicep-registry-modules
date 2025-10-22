@@ -61,13 +61,16 @@ param gitLastCommitId string = ''
 param gitTenantId string = ''
 
 @description('Optional. List of Global Parameters for the factory.')
-param globalParameters object = {}
+param globalParameters resourceInput<'Microsoft.DataFactory/factories@2018-06-01'>.properties.globalParameters?
+
+@description('Optional. Purview Account resource identifier.')
+param purviewResourceId string?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings for all Resources in the solution.')
 param lock lockType?
 
@@ -79,7 +82,7 @@ import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/av
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
@@ -88,7 +91,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.DataFactory/factories@2018-06-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -205,7 +208,7 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
             : {}),
           {}
         )
-    globalParameters: !empty(globalParameters) ? globalParameters : null
+    globalParameters: globalParameters
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? any(publicNetworkAccess)
       : (!empty(privateEndpoints) ? 'Disabled' : null)
@@ -223,6 +226,11 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
                 ? null
                 : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
           vaultBaseUrl: cMKKeyVault.properties.vaultUri
+        }
+      : null
+    purviewConfiguration: !empty(purviewResourceId)
+      ? {
+          purviewResourceId: purviewResourceId
         }
       : null
   }
@@ -276,9 +284,9 @@ resource dataFactory_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empt
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: dataFactory
 }

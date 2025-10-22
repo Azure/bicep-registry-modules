@@ -32,6 +32,7 @@ on:
       - "avm/res/managed-identity/user-assigned-identity/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
+      - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:

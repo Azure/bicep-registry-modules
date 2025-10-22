@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "248313507400838211"
+      "version": "0.37.4.10188",
+      "templateHash": "11217937818637058576"
     },
     "name": "avm/ptn/network/private-link-private-dns-zones",
     "description": "Private Link Private DNS Zones"
@@ -33,12 +33,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -119,10 +126,12 @@
     "privateLinkPrivateDnsZones": {
       "type": "array",
       "defaultValue": [
+        "privatelink.{regionName}.azurecontainerapps.io",
         "privatelink.api.azureml.ms",
         "privatelink.notebooks.azure.net",
         "privatelink.cognitiveservices.azure.com",
         "privatelink.openai.azure.com",
+        "privatelink.services.ai.azure.com",
         "privatelink.directline.botframework.com",
         "privatelink.token.botframework.com",
         "privatelink.servicebus.windows.net",
@@ -146,10 +155,10 @@
         "privatelink.wvd.microsoft.com",
         "privatelink.{regionName}.azmk8s.io",
         "privatelink.azurecr.io",
-        "{regionName}.data.privatelink.azurecr.io",
         "privatelink.database.windows.net",
         "privatelink.documents.azure.com",
         "privatelink.mongo.cosmos.azure.com",
+        "privatelink.mongocluster.cosmos.azure.com",
         "privatelink.cassandra.cosmos.azure.com",
         "privatelink.gremlin.cosmos.azure.com",
         "privatelink.table.cosmos.azure.com",
@@ -165,6 +174,7 @@
         "privatelink.dp.kubernetesconfiguration.azure.com",
         "privatelink.eventgrid.azure.net",
         "privatelink.azure-api.net",
+        "privatelink.azurehealthcareapis.com",
         "privatelink.workspace.azurehealthcareapis.com",
         "privatelink.fhir.azurehealthcareapis.com",
         "privatelink.dicom.azurehealthcareapis.com",
@@ -178,6 +188,7 @@
         "privatelink.{regionCode}.backup.windowsazure.com",
         "privatelink.siterecovery.windowsazure.com",
         "privatelink.monitor.azure.com",
+        "privatelink.{regionName}.prometheus.monitor.azure.com",
         "privatelink.oms.opinsights.azure.com",
         "privatelink.ods.opinsights.azure.com",
         "privatelink.agentsvc.azure-automation.net",
@@ -191,7 +202,6 @@
         "privatelink.attest.azure.net",
         "privatelink.search.windows.net",
         "privatelink.azurewebsites.net",
-        "scm.privatelink.azurewebsites.net",
         "privatelink.service.signalr.net",
         "privatelink.azurestaticapps.net",
         "privatelink.azuresynapse.net",
@@ -211,6 +221,16 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. An array of Private Link Private DNS Zones to exclude from the deployment. The DNS zone names must match what is provided as the default values or any input to the `privateLinkPrivateDnsZones` parameter e.g. `privatelink.api.azureml.ms` or `privatelink.{regionCode}.backup.windowsazure.com` or `privatelink.{regionName}.azmk8s.io` ."
+      }
+    },
+    "additionalPrivateLinkPrivateDnsZonesToInclude": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. An array of additional Private Link Private DNS Zones to include in the deployment on top of the defaults set in the parameter `privateLinkPrivateDnsZones`."
       }
     },
     "virtualNetworkResourceIdsToLinkTo": {
@@ -258,7 +278,8 @@
         }
       }
     ],
-    "privateLinkPrivateDnsZonesWithExclusions": "[filter(parameters('privateLinkPrivateDnsZones'), lambda('zone', not(contains(coalesce(parameters('privateLinkPrivateDnsZonesToExclude'), createArray()), lambdaVariables('zone')))))]",
+    "combinedPrivateLinkPrivateDnsZonesProvided": "[union(parameters('privateLinkPrivateDnsZones'), coalesce(parameters('additionalPrivateLinkPrivateDnsZonesToInclude'), createArray()))]",
+    "privateLinkPrivateDnsZonesWithExclusions": "[filter(variables('combinedPrivateLinkPrivateDnsZonesProvided'), lambda('zone', not(contains(coalesce(parameters('privateLinkPrivateDnsZonesToExclude'), createArray()), lambdaVariables('zone')))))]",
     "azureRegionGeoCodeShortNameAsKey": {
       "uaenorth": "uan",
       "northcentralus": "ncus",
@@ -397,7 +418,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.ptn.network-privatelinkprivatednszones.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -432,7 +453,7 @@
       },
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
-      "apiVersion": "2016-09-01",
+      "apiVersion": "2020-05-01",
       "scope": "[format('Microsoft.Network/privateDnsZones/{0}', variables('combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink')[copyIndex()].pdnsZoneName)]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', variables('combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink')[copyIndex()].pdnsZoneName))]",
       "properties": {
@@ -474,8 +495,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "16258048003053729823"
+              "version": "0.37.4.10188",
+              "templateHash": "16009712215620397331"
             },
             "name": "Private DNS Zone Virtual Network Link Child Module",
             "description": "This module deploys a Private DNS Zone Virtual Network Link."

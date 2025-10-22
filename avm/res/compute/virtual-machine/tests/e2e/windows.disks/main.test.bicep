@@ -65,7 +65,7 @@ module testDeployment '../../../main.bicep' = [
         version: 'latest'
       }
       diskControllerType: 'SCSI'
-      zone: 1
+      availabilityZone: 1
       nicConfigurations: [
         {
           ipConfigurations: [

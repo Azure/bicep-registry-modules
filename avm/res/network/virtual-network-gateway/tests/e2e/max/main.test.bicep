@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -99,7 +99,7 @@ module testDeployment '../../../main.bicep' = [
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
-      publicIpZones: [
+      publicIpAvailabilityZones: [
         1
         2
         3
@@ -182,7 +182,7 @@ output defaultBgpIpAddresses string? = testDeployment[0].outputs.?defaultBgpIpAd
 output ipConfigurations array? = testDeployment[0].outputs.?ipConfigurations
 output location string = testDeployment[0].outputs.location
 output name string = testDeployment[0].outputs.name
-output primaryPublicIpAddress string = testDeployment[0].outputs.primaryPublicIpAddress
+output primaryPublicIpAddress string? = testDeployment[0].outputs.?primaryPublicIpAddress
 output resourceGroupName string = testDeployment[0].outputs.resourceGroupName
 output resourceId string = testDeployment[0].outputs.resourceId
 output secondaryCustomBgpIpAddress string? = testDeployment[0].outputs.?secondaryCustomBgpIpAddress

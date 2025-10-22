@@ -1,5 +1,10 @@
 # Hybrid Container Service Provisioned Cluster Instance `[Microsoft.HybridContainerService/provisionedClusterInstances]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 Deploy a provisioned cluster instance.
 
 ## Navigation
@@ -12,14 +17,13 @@ Deploy a provisioned cluster instance.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.HybridContainerService/provisionedClusterInstances` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridContainerService/2024-01-01/provisionedClusterInstances) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
-| `Microsoft.Kubernetes/connectedClusters` | [2024-07-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kubernetes/2024-07-15-preview/connectedClusters) |
-| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
-| `Microsoft.Resources/deploymentScripts` | [2020-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2020-10-01/deploymentScripts) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.HybridContainerService/provisionedClusterInstances` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.hybridcontainerservice_provisionedclusterinstances.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridContainerService/2024-01-01/provisionedClusterInstances)</li></ul> |
+| `Microsoft.Kubernetes/connectedClusters` | 2024-07-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kubernetes_connectedclusters.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kubernetes/2024-07-15-preview/connectedClusters)</li></ul> |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
+| `Microsoft.Resources/deploymentScripts` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_deploymentscripts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts)</li></ul> |
 
 ## Usage examples
 
@@ -185,7 +189,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     licenseProfile: {
       azureHybridBenefit: 'False'
     }
-    linuxProfile: '<linuxProfile>'
     location: '<location>'
     oidcIssuerProfile: {
       enabled: false
@@ -202,11 +205,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       smbCsiDriver: {
         enabled: true
       }
-    }
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
     }
   }
 }
@@ -293,9 +291,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         "azureHybridBenefit": "False"
       }
     },
-    "linuxProfile": {
-      "value": "<linuxProfile>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -319,13 +314,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         "smbCsiDriver": {
           "enabled": true
         }
-      }
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
       }
     }
   }
@@ -389,7 +377,6 @@ param kubernetesVersion = '1.29.4'
 param licenseProfile = {
   azureHybridBenefit: 'False'
 }
-param linuxProfile = '<linuxProfile>'
 param location = '<location>'
 param oidcIssuerProfile = {
   enabled: false
@@ -406,11 +393,6 @@ param storageProfile = {
   smbCsiDriver: {
     enabled: true
   }
-}
-param tags = {
-  Environment: 'Non-Prod'
-  'hidden-title': 'This is visible in the resource name'
-  Role: 'DeploymentValidation'
 }
 ```
 
@@ -469,11 +451,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       vmSize: 'Standard_A4_v2'
     }
     keyVaultName: '<keyVaultName>'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -542,13 +519,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     },
     "keyVaultName": {
       "value": "<keyVaultName>"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
@@ -603,11 +573,6 @@ param controlPlane = {
   vmSize: 'Standard_A4_v2'
 }
 param keyVaultName = '<keyVaultName>'
-param tags = {
-  Environment: 'Non-Prod'
-  'hidden-title': 'This is visible in the resource name'
-  Role: 'DeploymentValidation'
-}
 ```
 
 </details>

@@ -5,26 +5,26 @@ metadata description = 'This module deploys a Logic App (Workflow).'
 param name string
 
 @description('Optional. The access control configuration for workflow actions.')
-param actionsAccessControlConfiguration object?
+param actionsAccessControlConfiguration resourceInput<'Microsoft.Logic/workflows@2019-05-01'>.properties.accessControl.actions?
 
 @description('Optional. The endpoints configuration:  Access endpoint and outgoing IP addresses for the connector.')
-param connectorEndpointsConfiguration object?
+param connectorEndpointsConfiguration resourceInput<'Microsoft.Logic/workflows@2019-05-01'>.properties.endpointsConfiguration.connector?
 
 @description('Optional. The access control configuration for accessing workflow run contents.')
-param contentsAccessControlConfiguration object?
+param contentsAccessControlConfiguration resourceInput<'Microsoft.Logic/workflows@2019-05-01'>.properties.accessControl.contents?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. Parameters for the definition template.')
-param definitionParameters object?
+param definitionParameters resourceInput<'Microsoft.Logic/workflows@2019-05-01'>.properties.parameters?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. The integration account.')
-param integrationAccount object?
+param integrationAccount resourceInput<'Microsoft.Logic/workflows@2019-05-01'>.properties.integrationAccount?
 
 @description('Optional. The integration service environment settings.')
 param integrationServiceEnvironment integrationServiceEnvironmentType?
@@ -36,7 +36,7 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -56,22 +56,22 @@ param roleAssignments roleAssignmentType[]?
 param state string = 'Enabled'
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Logic/workflows@2019-05-01'>.tags?
 
 @description('Optional. The access control configuration for invoking workflow triggers.')
-param triggersAccessControlConfiguration object?
+param triggersAccessControlConfiguration resourceInput<'Microsoft.Logic/workflows@2019-05-01'>.properties.accessControl.triggers?
 
 @description('Optional. The definitions for one or more actions to execute at workflow runtime.')
-param workflowActions object?
+param workflowActions object = {}
 
 @description('Optional. The endpoints configuration:  Access endpoint and outgoing IP addresses for the workflow.')
-param workflowEndpointsConfiguration object?
+param workflowEndpointsConfiguration resourceInput<'Microsoft.Logic/workflows@2019-05-01'>.properties.endpointsConfiguration.workflow?
 
 @description('Optional. The access control configuration for workflow management.')
-param workflowManagementAccessControlConfiguration object?
+param workflowManagementAccessControlConfiguration resourceInput<'Microsoft.Logic/workflows@2019-05-01'>.properties.accessControl.workflowManagement?
 
 @description('Optional. The definitions for the outputs to return from a workflow run.')
-param workflowOutputs object?
+param workflowOutputs object = {}
 
 @description('Optional. The definitions for one or more parameters that pass the values to use at your logic app\'s runtime.')
 param workflowParameters object?
@@ -80,7 +80,7 @@ param workflowParameters object?
 param workflowStaticResults object?
 
 @description('Optional. The definitions for one or more triggers that instantiate your workflow. You can define more than one trigger, but only with the Workflow Definition Language, not visually through the Logic Apps Designer.')
-param workflowTriggers object?
+param workflowTriggers object = {}
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -185,9 +185,9 @@ resource logicApp_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(l
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: logicApp
 }

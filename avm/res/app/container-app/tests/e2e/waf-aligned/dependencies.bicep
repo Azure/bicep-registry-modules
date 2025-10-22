@@ -7,13 +7,18 @@ param managedEnvironmentName string
 @description('Required. The name of the managed identity to create.')
 param managedIdentityName string
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-08-02-preview' = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-preview' = {
   name: managedEnvironmentName
   location: location
-  properties: {}
+  properties: {
+    appLogsConfiguration:{
+      destination: 'azure-monitor'
+    }
+
+  }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }

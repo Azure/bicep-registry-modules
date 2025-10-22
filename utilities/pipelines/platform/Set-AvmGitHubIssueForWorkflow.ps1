@@ -137,7 +137,7 @@ function Set-AvmGitHubIssueForWorkflow {
             # --------------------------
             $failedRunText = 'Failed run: {0}' -f $workflowRun.url -replace 'api\.github.com\/repos', 'github.com'
 
-            if ($issues.title -notContains $issueName) {
+            if ($issues.title -notcontains $issueName) {
                 # Handle non-existend issues for failed runs in main
                 # --------------------------------------------------
                 # Logic ahead
@@ -160,7 +160,7 @@ function Set-AvmGitHubIssueForWorkflow {
                 }
                 Write-Warning ('⚠️   Created issue {0} ({1}) as the module''s latest run in the main branch failed.' -f $issueUrl, $issueName)
 
-                $workflowRun.name -notMatch 'avm.(?:res|ptn|utl)'
+                $workflowRun.name -notmatch 'avm.(?:res|ptn|utl)'
                 switch ($matches[0]) {
                     'avm.ptn' { $module = $knownPatterns | Where-Object { $_.ModuleName -eq $moduleName }; break }
                     'avm.res' { $module = $knownResources | Where-Object { $_.ModuleName -eq $moduleName }; break }
@@ -175,7 +175,7 @@ function Set-AvmGitHubIssueForWorkflow {
                 if ($null -eq $module) {
                     # Non resource module. Could be platform workflow
                     if ($PSCmdlet.ShouldProcess("Issue [$issueName] to project [AVM - Issue Triage]", 'Add')) {
-                        $null = Add-GitHubIssueToProject -Repo $repo -ProjectNumber $issueTriageProjectNumber -IssueUrl $issueUrl
+                        $null = Add-GitHubIssueToProject -RepositoryOwner $RepositoryOwner -RepositoryName $RepositoryName -ProjectNumber $issueTriageProjectNumber -IssueUrl $issueUrl
                     }
                     $platformIssueComment = @'
 > [!IMPORTANT]
@@ -191,11 +191,11 @@ function Set-AvmGitHubIssueForWorkflow {
 
                 # CASE : Module workflow
                 # ----------------------
-                $moduleIsOrphaned = $module.ModuleStatus -eq 'Orphaned :eyes:' -and [string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)
+                $moduleIsOrphaned = $module.ModuleStatus -eq 'Orphaned' -and [string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)
 
                 $ProjectNumber = $moduleIsOrphaned ? $issueTriageProjectNumber : $moduleIssuesProjectNumber
                 if ($PSCmdlet.ShouldProcess("Issue [$issueName] to project [AVM - Issue Triage]", 'Add')) {
-                    $null = Add-GitHubIssueToProject -Repo $repo -ProjectNumber $ProjectNumber -IssueUrl $issueUrl
+                    $null = Add-GitHubIssueToProject -RepositoryOwner $RepositoryOwner -RepositoryName $RepositoryName -ProjectNumber $ProjectNumber -IssueUrl $issueUrl
                 }
 
                 # Handle comments & ownership

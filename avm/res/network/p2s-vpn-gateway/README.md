@@ -13,10 +13,10 @@ This module deploys a Virtual Hub P2S Gateway.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Network/p2svpnGateways` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/p2svpnGateways) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Network/p2svpnGateways` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_p2svpngateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/p2svpnGateways)</li></ul> |
 
 ## Usage examples
 
@@ -143,10 +143,8 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
       '10.50.50.50'
     ]
     enableInternetSecurity: false
-    inboundRouteMapResourceId: '<inboundRouteMapResourceId>'
     isRoutingPreferenceInternet: false
     location: '<location>'
-    outboundRouteMapResourceId: '<outboundRouteMapResourceId>'
     p2SConnectionConfigurationsName: 'p2sConnectionConfig'
     propagatedLabelNames: '<propagatedLabelNames>'
     propagatedRouteTableNames: [
@@ -194,17 +192,11 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     "enableInternetSecurity": {
       "value": false
     },
-    "inboundRouteMapResourceId": {
-      "value": "<inboundRouteMapResourceId>"
-    },
     "isRoutingPreferenceInternet": {
       "value": false
     },
     "location": {
       "value": "<location>"
-    },
-    "outboundRouteMapResourceId": {
-      "value": "<outboundRouteMapResourceId>"
     },
     "p2SConnectionConfigurationsName": {
       "value": "p2sConnectionConfig"
@@ -253,10 +245,8 @@ param customDnsServers = [
   '10.50.50.50'
 ]
 param enableInternetSecurity = false
-param inboundRouteMapResourceId = '<inboundRouteMapResourceId>'
 param isRoutingPreferenceInternet = false
 param location = '<location>'
-param outboundRouteMapResourceId = '<outboundRouteMapResourceId>'
 p2SConnectionConfigurationsName: 'p2sConnectionConfig'
 param propagatedLabelNames = '<propagatedLabelNames>'
 param propagatedRouteTableNames = [
@@ -509,6 +499,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -528,6 +519,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -676,7 +674,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 

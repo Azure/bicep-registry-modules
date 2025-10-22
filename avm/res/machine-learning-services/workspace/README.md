@@ -14,16 +14,17 @@ This module deploys a Machine Learning Services Workspace.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.MachineLearningServices/workspaces` | [2024-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01-preview/workspaces) |
-| `Microsoft.MachineLearningServices/workspaces/computes` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/computes) |
-| `Microsoft.MachineLearningServices/workspaces/connections` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/connections) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.MachineLearningServices/workspaces` | 2024-10-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.machinelearningservices_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01-preview/workspaces)</li></ul> |
+| `Microsoft.MachineLearningServices/workspaces/computes` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.machinelearningservices_workspaces_computes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/computes)</li></ul> |
+| `Microsoft.MachineLearningServices/workspaces/connections` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.machinelearningservices_workspaces_connections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/connections)</li></ul> |
+| `Microsoft.MachineLearningServices/workspaces/datastores` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.machinelearningservices_workspaces_datastores.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/datastores)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -33,14 +34,15 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/machine-learning-services/workspace:<version>`.
 
-- [Creating Azure AI Studio resources](#example-1-creating-azure-ai-studio-resources)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-3-using-customer-managed-keys-with-user-assigned-identity)
-- [Creating Azure ML managed feature store](#example-4-creating-azure-ml-managed-feature-store)
-- [Using large parameter set](#example-5-using-large-parameter-set)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Creating Azure AI Studio hub resource](#example-1-creating-azure-ai-studio-hub-resource)
+- [Creating Azure AI Studio project resource](#example-2-creating-azure-ai-studio-project-resource)
+- [Using only defaults](#example-3-using-only-defaults)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-4-using-customer-managed-keys-with-user-assigned-identity)
+- [Creating Azure ML managed feature store](#example-5-creating-azure-ml-managed-feature-store)
+- [Using large parameter set](#example-6-using-large-parameter-set)
+- [WAF-aligned](#example-7-waf-aligned)
 
-### Example 1: _Creating Azure AI Studio resources_
+### Example 1: _Creating Azure AI Studio hub resource_
 
 This instance deploys an Azure AI hub workspace.
 
@@ -54,32 +56,12 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
   name: 'workspaceDeployment'
   params: {
     // Required parameters
-    name: 'mlswai001'
+    name: 'mlswaih001'
     sku: 'Basic'
     // Non-required parameters
     associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
     associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
     associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
-    connections: [
-      {
-        category: 'AIServices'
-        connectionProperties: {
-          authType: 'ApiKey'
-          credentials: {
-            key: 'key'
-          }
-        }
-        metadata: {
-          ApiType: 'Azure'
-          ApiVersion: '2023-07-01-preview'
-          DeploymentApiVersion: '2023-10-01-preview'
-          Location: '<Location>'
-          ResourceId: '<ResourceId>'
-        }
-        name: 'ai'
-        target: '<target>'
-      }
-    ]
     kind: 'Hub'
     location: '<location>'
     workspaceHubConfig: {
@@ -104,7 +86,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
   "parameters": {
     // Required parameters
     "name": {
-      "value": "mlswai001"
+      "value": "mlswaih001"
     },
     "sku": {
       "value": "Basic"
@@ -118,28 +100,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     },
     "associatedStorageAccountResourceId": {
       "value": "<associatedStorageAccountResourceId>"
-    },
-    "connections": {
-      "value": [
-        {
-          "category": "AIServices",
-          "connectionProperties": {
-            "authType": "ApiKey",
-            "credentials": {
-              "key": "key"
-            }
-          },
-          "metadata": {
-            "ApiType": "Azure",
-            "ApiVersion": "2023-07-01-preview",
-            "DeploymentApiVersion": "2023-10-01-preview",
-            "Location": "<Location>",
-            "ResourceId": "<ResourceId>"
-          },
-          "name": "ai",
-          "target": "<target>"
-        }
-      ]
     },
     "kind": {
       "value": "Hub"
@@ -168,32 +128,12 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 using 'br/public:avm/res/machine-learning-services/workspace:<version>'
 
 // Required parameters
-param name = 'mlswai001'
+param name = 'mlswaih001'
 param sku = 'Basic'
 // Non-required parameters
 param associatedApplicationInsightsResourceId = '<associatedApplicationInsightsResourceId>'
 param associatedKeyVaultResourceId = '<associatedKeyVaultResourceId>'
 param associatedStorageAccountResourceId = '<associatedStorageAccountResourceId>'
-param connections = [
-  {
-    category: 'AIServices'
-    connectionProperties: {
-      authType: 'ApiKey'
-      credentials: {
-        key: 'key'
-      }
-    }
-    metadata: {
-      ApiType: 'Azure'
-      ApiVersion: '2023-07-01-preview'
-      DeploymentApiVersion: '2023-10-01-preview'
-      Location: '<Location>'
-      ResourceId: '<ResourceId>'
-    }
-    name: 'ai'
-    target: '<target>'
-  }
-]
 param kind = 'Hub'
 param location = '<location>'
 param workspaceHubConfig = {
@@ -205,7 +145,86 @@ param workspaceHubConfig = {
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 2: _Creating Azure AI Studio project resource_
+
+This instance deploys an Azure AI project workspace.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
+  name: 'workspaceDeployment'
+  params: {
+    // Required parameters
+    name: 'mlswaip001'
+    sku: 'Basic'
+    // Non-required parameters
+    hubResourceId: '<hubResourceId>'
+    kind: 'Project'
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "mlswaip001"
+    },
+    "sku": {
+      "value": "Basic"
+    },
+    // Non-required parameters
+    "hubResourceId": {
+      "value": "<hubResourceId>"
+    },
+    "kind": {
+      "value": "Project"
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/machine-learning-services/workspace:<version>'
+
+// Required parameters
+param name = 'mlswaip001'
+param sku = 'Basic'
+// Non-required parameters
+param hubResourceId = '<hubResourceId>'
+param kind = 'Project'
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -289,7 +308,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 3: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 4: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -459,7 +478,7 @@ param primaryUserAssignedIdentity = '<primaryUserAssignedIdentity>'
 </details>
 <p>
 
-### Example 4: _Creating Azure ML managed feature store_
+### Example 5: _Creating Azure ML managed feature store_
 
 This instance deploys an Azure ML managed feature store.
 
@@ -565,7 +584,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 5: _Using large parameter set_
+### Example 6: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -615,17 +634,22 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         sku: 'Basic'
       }
     ]
-    connections: [
+    datastores: [
       {
-        category: 'ApiKey'
-        connectionProperties: {
-          authType: 'ApiKey'
+        name: 'datastore'
+        properties: {
+          accountName: 'myaccount'
+          containerName: 'my-container'
           credentials: {
-            key: 'key'
+            credentialsType: 'None'
           }
+          datastoreType: 'AzureBlob'
+          endpoint: '<endpoint>'
+          protocol: 'https'
+          resourceGroup: '<resourceGroup>'
+          serviceDataAccessAuthIdentity: 'None'
+          subscriptionId: '<subscriptionId>'
         }
-        name: 'connection'
-        target: 'https://example.com'
       }
     ]
     description: 'The cake is a lie.'
@@ -791,18 +815,23 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         }
       ]
     },
-    "connections": {
+    "datastores": {
       "value": [
         {
-          "category": "ApiKey",
-          "connectionProperties": {
-            "authType": "ApiKey",
+          "name": "datastore",
+          "properties": {
+            "accountName": "myaccount",
+            "containerName": "my-container",
             "credentials": {
-              "key": "key"
-            }
-          },
-          "name": "connection",
-          "target": "https://example.com"
+              "credentialsType": "None"
+            },
+            "datastoreType": "AzureBlob",
+            "endpoint": "<endpoint>",
+            "protocol": "https",
+            "resourceGroup": "<resourceGroup>",
+            "serviceDataAccessAuthIdentity": "None",
+            "subscriptionId": "<subscriptionId>"
+          }
         }
       ]
     },
@@ -991,17 +1020,22 @@ param computes = [
     sku: 'Basic'
   }
 ]
-param connections = [
+param datastores = [
   {
-    category: 'ApiKey'
-    connectionProperties: {
-      authType: 'ApiKey'
+    name: 'datastore'
+    properties: {
+      accountName: 'myaccount'
+      containerName: 'my-container'
       credentials: {
-        key: 'key'
+        credentialsType: 'None'
       }
+      datastoreType: 'AzureBlob'
+      endpoint: '<endpoint>'
+      protocol: 'https'
+      resourceGroup: '<resourceGroup>'
+      serviceDataAccessAuthIdentity: 'None'
+      subscriptionId: '<subscriptionId>'
     }
-    name: 'connection'
-    target: 'https://example.com'
   }
 ]
 param description = 'The cake is a lie.'
@@ -1107,7 +1141,7 @@ param tags = {
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1182,7 +1216,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         }
       }
     ]
-    provisionNetworkNow: true
     systemDatastoresAuthMode: 'Identity'
     tags: {
       Environment: 'Non-Prod'
@@ -1285,9 +1318,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         }
       ]
     },
-    "provisionNetworkNow": {
-      "value": true
-    },
     "systemDatastoresAuthMode": {
       "value": "Identity"
     },
@@ -1374,7 +1404,6 @@ param privateEndpoints = [
     }
   }
 ]
-param provisionNetworkNow = true
 param systemDatastoresAuthMode = 'Identity'
 param tags = {
   Environment: 'Non-Prod'
@@ -1414,6 +1443,7 @@ param tags = {
 | [`computes`](#parameter-computes) | array | Computes to create respectively attach to the workspace. |
 | [`connections`](#parameter-connections) | array | Connections to create in the workspace. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
+| [`datastores`](#parameter-datastores) | array | Datastores to create in the workspace. |
 | [`description`](#parameter-description) | string | The description of this workspace. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`discoveryUrl`](#parameter-discoveryurl) | string | URL for the discovery service to identify regional endpoints for machine learning experimentation services. |
@@ -1566,7 +1596,6 @@ Connections to create in the workspace.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -2465,6 +2494,34 @@ User assigned identity to use when fetching the customer managed key. Required i
 - Required: No
 - Type: string
 
+### Parameter: `datastores`
+
+Datastores to create in the workspace.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-datastoresname) | string | Name of the datastore to create. |
+| [`properties`](#parameter-datastoresproperties) | object | The properties of the datastore. |
+
+### Parameter: `datastores.name`
+
+Name of the datastore to create.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `datastores.properties`
+
+The properties of the datastore.
+
+- Required: Yes
+- Type: object
+
 ### Parameter: `description`
 
 The description of this workspace.
@@ -2707,6 +2764,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -2726,6 +2784,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -3255,6 +3320,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -3274,6 +3340,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -3727,6 +3800,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Notes
 

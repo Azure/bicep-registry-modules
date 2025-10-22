@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "12780275859390763587"
+      "version": "0.38.33.27573",
+      "templateHash": "17266408658363939762"
     },
     "name": "Disk Encryption Sets",
     "description": "This module deploys a Disk Encryption Set. The module will attempt to set permissions on the provided Key Vault for any used user-assigned identity."
@@ -33,12 +33,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -66,7 +73,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -141,7 +148,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -176,12 +183,12 @@
     "keyName": {
       "type": "string",
       "metadata": {
-        "description": "Required. Key URL (with version) pointing to a key or secret in KeyVault."
+        "description": "Required. The name of the key used for encryption."
       }
     },
     "keyVersion": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, the latest key version is used."
       }
@@ -232,10 +239,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/diskEncryptionSets@2025-01-02#properties/tags"
+        },
         "description": "Optional. Tags of the disk encryption resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -272,7 +282,7 @@
     "keyVault::key": {
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2021-10-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(parameters('keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(parameters('keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName'))]"
@@ -300,14 +310,14 @@
     "keyVault": {
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2021-10-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(parameters('keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(parameters('keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(parameters('keyVaultResourceId'), '/'))]"
     },
     "diskEncryptionSet": {
       "type": "Microsoft.Compute/diskEncryptionSets",
-      "apiVersion": "2023-10-02",
+      "apiVersion": "2025-01-02",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -358,7 +368,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "diskEncryptionSet"
@@ -370,7 +380,7 @@
         "count": "[length(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-DiskEncrSet-KVPermissions-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "subscriptionId": "[split(parameters('keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(parameters('keyVaultResourceId'), '/')[4]]",
@@ -402,8 +412,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "7494737573812109564"
+              "version": "0.38.33.27573",
+              "templateHash": "16638198610761428685"
             }
           },
           "parameters": {
@@ -448,7 +458,7 @@
               "scope": "[format('Microsoft.KeyVault/vaults/{0}/keys/{1}', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName'))]",
               "name": "[guid(format('msi-{0}-{1}-{2}-Key-Reader-RoleAssignment', resourceId('Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName')), parameters('location'), parameters('userAssignedIdentityResourceId')))]",
               "properties": {
-                "principalId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('userAssignedIdentityResourceId'), '/')[2], split(parameters('userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(parameters('userAssignedIdentityResourceId'), '/'))), '2023-01-31').principalId]",
+                "principalId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('userAssignedIdentityResourceId'), '/')[2], split(parameters('userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(parameters('userAssignedIdentityResourceId'), '/'))), '2024-11-30').principalId]",
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424')]",
                 "principalType": "ServicePrincipal"
               }
@@ -456,7 +466,7 @@
             {
               "condition": "[not(equals(parameters('rbacAuthorizationEnabled'), true()))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-DiskEncrSet-KVAccessPolicies', uniqueString(deployment().name, parameters('location')))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -471,7 +481,7 @@
                     "value": [
                       {
                         "tenantId": "[subscription().tenantId]",
-                        "objectId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('userAssignedIdentityResourceId'), '/')[2], split(parameters('userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(parameters('userAssignedIdentityResourceId'), '/'))), '2023-01-31').principalId]",
+                        "objectId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('userAssignedIdentityResourceId'), '/')[2], split(parameters('userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(parameters('userAssignedIdentityResourceId'), '/'))), '2024-11-30').principalId]",
                         "permissions": {
                           "keys": [
                             "get",
@@ -490,8 +500,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "4507893149671290848"
+                      "version": "0.38.33.27573",
+                      "templateHash": "14666649903122909079"
                     },
                     "name": "Key Vault Access Policies",
                     "description": "This module deploys a Key Vault Access Policy."
@@ -665,12 +675,12 @@
                     "keyVault": {
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults",
-                      "apiVersion": "2022-07-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[parameters('keyVaultName')]"
                     },
                     "policies": {
                       "type": "Microsoft.KeyVault/vaults/accessPolicies",
-                      "apiVersion": "2022-07-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[format('{0}/{1}', parameters('keyVaultName'), 'add')]",
                       "properties": {
                         "accessPolicies": "[variables('formattedAccessPolicies')]"
@@ -739,14 +749,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('diskEncryptionSet', '2023-10-02', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('diskEncryptionSet', '2025-01-02', 'full'), 'identity'), 'principalId')]"
     },
     "identities": {
       "type": "object",
       "metadata": {
         "description": "The idenities of the disk encryption set."
       },
-      "value": "[reference('diskEncryptionSet', '2023-10-02', 'full').identity]"
+      "value": "[reference('diskEncryptionSet', '2025-01-02', 'full').identity]"
     },
     "keyVaultName": {
       "type": "string",
@@ -760,7 +770,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('diskEncryptionSet', '2023-10-02', 'full').location]"
+      "value": "[reference('diskEncryptionSet', '2025-01-02', 'full').location]"
     }
   }
 }

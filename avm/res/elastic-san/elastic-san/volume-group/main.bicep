@@ -15,6 +15,9 @@ param name string
 @sys.description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
+@description('Optional. A boolean indicating whether or not Data Integrity Check is enabled.')
+param enforceDataIntegrityCheckForIscsi bool = false
+
 @sys.description('Optional. List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group. Elastic SAN Volume Group can contain up to 1,000 volumes.')
 param volumes volumeType[]?
 
@@ -29,14 +32,14 @@ import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types
 @sys.description('Optional. The customer managed key definition. This parameter enables the encryption of Elastic SAN Volume Group using a customer-managed key. Currently, the only supported configuration is to use the same user-assigned identity for both \'managedIdentities.userAssignedResourceIds\' and \'customerManagedKey.userAssignedIdentityResourceId\'. Other configurations such as system-assigned identity are not supported. Ensure that the specified user-assigned identity has the \'Key Vault Crypto Service Encryption User\' role access to both the key vault and the key itself. The key vault must also have purge protection enabled.')
 param customerManagedKey customerManagedKeyType? // This requires KV with enabled purge protection
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @sys.description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @sys.description('Optional. Tags of the Elastic SAN Volume Group resource.')
 param tags object?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -76,23 +79,23 @@ var networkRules = [
 // Add your resources here
 //
 
-resource elasticSan 'Microsoft.ElasticSan/elasticSans@2023-01-01' existing = {
+resource elasticSan 'Microsoft.ElasticSan/elasticSans@2024-05-01' existing = {
   name: elasticSanName
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName!
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
@@ -100,11 +103,12 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource volumeGroup 'Microsoft.ElasticSan/elasticSans/volumegroups@2023-01-01' = {
+resource volumeGroup 'Microsoft.ElasticSan/elasticSans/volumegroups@2024-05-01' = {
   name: name
   parent: elasticSan
   identity: identity
   properties: {
+    enforceDataIntegrityCheckForIscsi: enforceDataIntegrityCheckForIscsi
     encryption: !empty(customerManagedKey)
       ? 'EncryptionAtRestWithCustomerManagedKey'
       : 'EncryptionAtRestWithPlatformKey'
@@ -118,10 +122,10 @@ resource volumeGroup 'Microsoft.ElasticSan/elasticSans/volumegroups@2023-01-01' 
           keyVaultProperties: !empty(customerManagedKey)
             ? {
                 keyName: customerManagedKey!.keyName
-                keyVaultUri: cMKKeyVault.properties.vaultUri
+                keyVaultUri: cMKKeyVault!.properties.vaultUri
                 keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
                   ? customerManagedKey!.?keyVersion
-                  : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+                  : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
               }
             : null
         }
@@ -218,6 +222,9 @@ output resourceGroupName string = resourceGroup().name
 
 @sys.description('The principal ID of the system assigned identity of the deployed Elastic SAN Volume Group.')
 output systemAssignedMIPrincipalId string? = volumeGroup.?identity.?principalId
+
+@description('A boolean indicating whether or not Data Integrity Check is enabled or not.')
+output enforceDataIntegrityCheckForIscsi bool = volumeGroup.properties.enforceDataIntegrityCheckForIscsi
 
 @sys.description('Details on the deployed Elastic SAN Volumes.')
 output volumes volumeOutputType[] = [

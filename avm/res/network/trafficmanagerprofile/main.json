@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "10249625090556904431"
+      "version": "0.38.5.1644",
+      "templateHash": "10915174660248035529"
     },
     "name": "Traffic Manager Profiles",
     "description": "This module deploys a Traffic Manager Profile."
@@ -155,12 +155,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -290,21 +297,27 @@
     },
     "monitorConfig": {
       "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/trafficmanagerprofiles@2022-04-01#properties/properties/properties/monitorConfig"
+        },
+        "description": "Optional. The endpoint monitoring settings of the Traffic Manager profile."
+      },
       "defaultValue": {
         "protocol": "http",
-        "port": "80",
+        "port": 80,
         "path": "/"
-      },
-      "metadata": {
-        "description": "Optional. The endpoint monitoring settings of the Traffic Manager profile."
       }
     },
     "endpoints": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/trafficmanagerprofiles@2022-04-01#properties/properties/properties/endpoints"
+        },
         "description": "Optional. The list of endpoints in the Traffic Manager profile."
-      }
+      },
+      "nullable": true
     },
     "trafficViewEnrollmentStatus": {
       "type": "string",
@@ -353,10 +366,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/trafficmanagerprofiles@2022-04-01#properties/tags"
+        },
         "description": "Optional. Resource tags."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -371,6 +387,16 @@
       "metadata": {
         "description": "Optional. Location for all resources."
       }
+    },
+    "allowedEndpointRecordTypes": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/trafficmanagerprofiles@2022-04-01#properties/properties/properties/allowedEndpointRecordTypes"
+        },
+        "description": "Optional. The list of allowed endpoint record types."
+      },
+      "nullable": true
     }
   },
   "variables": {
@@ -414,7 +440,7 @@
     },
     "trafficManagerProfile": {
       "type": "Microsoft.Network/trafficmanagerprofiles",
-      "apiVersion": "2018-08-01",
+      "apiVersion": "2022-04-01",
       "name": "[parameters('name')]",
       "tags": "[parameters('tags')]",
       "location": "[parameters('location')]",
@@ -426,6 +452,7 @@
           "ttl": "[parameters('ttl')]"
         },
         "monitorConfig": "[parameters('monitorConfig')]",
+        "allowedEndpointRecordTypes": "[parameters('allowedEndpointRecordTypes')]",
         "endpoints": "[parameters('endpoints')]",
         "trafficViewEnrollmentStatus": "[parameters('trafficViewEnrollmentStatus')]",
         "maxReturn": "[parameters('maxReturn')]"
@@ -439,7 +466,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "trafficManagerProfile"

@@ -45,14 +45,14 @@ param jobSchedules array = []
 @description('Optional. List of variables to be created in the automation account.')
 param variables array = []
 
+@description('Optional. List of webhooks to be created in the automation account.')
+param webhooks array = []
+
 @description('Optional. ID of the log analytics workspace to be linked to the deployed automation account.')
 param linkedWorkspaceResourceId string = ''
 
 @description('Optional. List of gallerySolutions to be created in the linked log analytics workspace.')
 param gallerySolutions gallerySolutionType[]?
-
-@description('Optional. List of softwareUpdateConfigurations to be created in the automation account.')
-param softwareUpdateConfigurations array = []
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
 @allowed([
@@ -65,7 +65,7 @@ param publicNetworkAccess string = ''
 @description('Optional. Disable local authentication profile used within the resource.')
 param disableLocalAuth bool = true
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
@@ -77,7 +77,7 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -86,10 +86,13 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the Automation Account resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Automation/automationAccounts@2024-10-23'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+@description('Optional. The source control configurations.')
+param sourceControlConfigurations sourceControlConfigurationType[]?
 
 var enableReferencedModulesTelemetry = false
 
@@ -168,19 +171,19 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName!
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
@@ -188,7 +191,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' = {
+resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' = {
   name: name
   location: location
   tags: tags
@@ -207,10 +210,10 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' 
             : null
           keyVaultProperties: {
             keyName: customerManagedKey!.keyName
-            keyvaultUri: cMKKeyVault.properties.vaultUri
+            keyvaultUri: cMKKeyVault!.properties.vaultUri
             keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
               ? customerManagedKey!.?keyVersion!
-              : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+              : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
           }
         }
       : null
@@ -353,6 +356,38 @@ module automationAccount_variables 'variable/main.bicep' = [
   }
 ]
 
+module automationAccount_webhook 'webhook/main.bicep' = [
+  for (webhook, index) in webhooks: {
+    name: '${uniqueString(deployment().name, location)}-AutoAccount-Webhook-${index}'
+    params: {
+      automationAccountName: automationAccount.name
+      name: webhook.name
+      runbookName: webhook.runbookName
+      runOn: webhook.?runOn
+      expiryTime: webhook.?expiryTime
+      parameters: webhook.?parameters
+    }
+  }
+]
+
+module automationAccount_sourceControlConfigurations 'source-control/main.bicep' = [
+  for (configuration, index) in (sourceControlConfigurations ?? []): {
+    name: '${uniqueString(deployment().name, location)}-AutoAccount-Variable-${index}'
+    params: {
+      automationAccountName: automationAccount.name
+      branch: configuration.branch
+      description: configuration.description
+      folderPath: configuration.folderPath
+      name: configuration.name
+      repoUrl: configuration.repoUrl
+      sourceType: configuration.sourceType
+      securityToken: configuration.?securityToken
+      autoSync: configuration.?autoSync
+      publishRunbook: configuration.?publishRunbook
+    }
+  }
+]
+
 module automationAccount_linkedService 'modules/linked-service.bicep' = if (!empty(linkedWorkspaceResourceId)) {
   name: '${uniqueString(deployment().name, location)}-AutoAccount-LinkedService'
   params: {
@@ -399,56 +434,13 @@ module automationAccount_solutions 'br/public:avm/res/operations-management/solu
   }
 ]
 
-module automationAccount_softwareUpdateConfigurations 'software-update-configuration/main.bicep' = [
-  for (softwareUpdateConfiguration, index) in softwareUpdateConfigurations: {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-SwUpdateConfig-${index}'
-    params: {
-      name: softwareUpdateConfiguration.name
-      automationAccountName: automationAccount.name
-      frequency: softwareUpdateConfiguration.frequency
-      operatingSystem: softwareUpdateConfiguration.operatingSystem
-      rebootSetting: softwareUpdateConfiguration.rebootSetting
-      azureVirtualMachines: softwareUpdateConfiguration.?azureVirtualMachines
-      excludeUpdates: softwareUpdateConfiguration.?excludeUpdates
-      expiryTime: softwareUpdateConfiguration.?expiryTime
-      expiryTimeOffsetMinutes: softwareUpdateConfiguration.?expiryTimeOffsetMinute
-      includeUpdates: softwareUpdateConfiguration.?includeUpdates
-      interval: softwareUpdateConfiguration.?interval
-      isEnabled: softwareUpdateConfiguration.?isEnabled
-      maintenanceWindow: softwareUpdateConfiguration.?maintenanceWindow
-      monthDays: softwareUpdateConfiguration.?monthDays
-      monthlyOccurrences: softwareUpdateConfiguration.?monthlyOccurrences
-      nextRun: softwareUpdateConfiguration.?nextRun
-      nextRunOffsetMinutes: softwareUpdateConfiguration.?nextRunOffsetMinutes
-      nonAzureComputerNames: softwareUpdateConfiguration.?nonAzureComputerNames
-      nonAzureQueries: softwareUpdateConfiguration.?nonAzureQueries
-      postTaskParameters: softwareUpdateConfiguration.?postTaskParameters
-      postTaskSource: softwareUpdateConfiguration.?postTaskSource
-      preTaskParameters: softwareUpdateConfiguration.?preTaskParameters
-      preTaskSource: softwareUpdateConfiguration.?preTaskSource
-      scheduleDescription: softwareUpdateConfiguration.?scheduleDescription
-      scopeByLocations: softwareUpdateConfiguration.?scopeByLocations
-      scopeByResources: softwareUpdateConfiguration.?scopeByResources
-      scopeByTags: softwareUpdateConfiguration.?scopeByTags
-      scopeByTagsOperation: softwareUpdateConfiguration.?scopeByTagsOperation
-      startTime: softwareUpdateConfiguration.?startTime
-      timeZone: softwareUpdateConfiguration.?timeZone
-      updateClassifications: softwareUpdateConfiguration.?updateClassifications
-      weekDays: softwareUpdateConfiguration.?weekDays
-    }
-    dependsOn: [
-      automationAccount_solutions
-    ]
-  }
-]
-
 resource automationAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: automationAccount
 }
@@ -482,9 +474,9 @@ resource automationAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSett
   }
 ]
 
-module automationAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module automationAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-automationAccount-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-automationAccount-pe-${index}'
     scope: resourceGroup(
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
@@ -612,17 +604,17 @@ type privateEndpointOutputType = {
 
 @export()
 type credentialType = {
-  @sys.description('Required. Name of the Automation Account credential.')
+  @description('Required. Name of the Automation Account credential.')
   name: string
 
-  @sys.description('Required. The user name associated to the credential.')
+  @description('Required. The user name associated to the credential.')
   userName: string
 
-  @sys.description('Required. Password of the credential.')
+  @description('Required. Password of the credential.')
   @secure()
   password: string
 
-  @sys.description('Optional. Description of the credential.')
+  @description('Optional. Description of the credential.')
   description: string?
 }
 
@@ -673,4 +665,36 @@ type python23PackageType = {
 
   @description('Optional. Module version or specify latest to get the latest version.')
   version: string?
+}
+
+@export()
+@description('The type of a source control configuration.')
+type sourceControlConfigurationType = {
+  @description('Required. Type of source control mechanism.')
+  sourceType: ('GitHub' | 'VsoGit' | 'VsoTfvc')
+
+  @description('Optional. Setting that turns on or off automatic synchronization when a commit is made in the source control repository or GitHub repo. Defaults to `false`.')
+  autoSync: bool?
+
+  @description('Required. The repo url of the source control.')
+  @maxLength(2000)
+  repoUrl: string
+
+  @description('Required. The repo branch of the source control. Include branch as empty string for VsoTfvc.')
+  @maxLength(255)
+  branch: string
+
+  @description('Required. The folder path of the source control. Path must be relative.')
+  @maxLength(255)
+  folderPath: string
+
+  @description('Optional. The auto publish of the source control. Defaults to `true`.')
+  publishRunbook: bool?
+
+  @description('Required. The user description of the source control.')
+  @maxLength(512)
+  description: string
+
+  @description('Optional. The authorization token for the repo of the source control.')
+  securityToken: resourceInput<'Microsoft.Automation/automationAccounts/sourceControls@2024-10-23'>.properties.securityToken?
 }

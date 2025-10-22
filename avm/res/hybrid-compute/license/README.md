@@ -1,5 +1,10 @@
 # Azure Arc License `[Microsoft.HybridCompute/licenses]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an Azure Arc License for use with Azure Arc-enabled servers. This module should not be used for other Arc-enabled server scenarios, where the Arc License resource is created automatically by the onboarding process.
 
 ## Navigation
@@ -12,9 +17,9 @@ This module deploys an Azure Arc License for use with Azure Arc-enabled servers.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.HybridCompute/licenses` | [2024-11-10-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2024-11-10-preview/licenses) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.HybridCompute/licenses` | 2024-11-10-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.hybridcompute_licenses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2024-11-10-preview/licenses)</li></ul> |
 
 ## Usage examples
 
