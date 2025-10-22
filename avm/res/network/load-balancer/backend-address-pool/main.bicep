@@ -27,14 +27,23 @@ param syncMode string = ''
 @description('Optional. The resource Id of the virtual network.')
 param virtualNetworkResourceId string = ''
 
+@allowed([
+  'NIC'
+  'BackendAddress'
+  'None'
+])
+@description('Optional. How backend pool members are managed. NIC = via NIC IP configs, BackendAddress = via backend addresses, None = empty pool.')
+param backendMembershipMode string = 'None'
+
 resource loadBalancer 'Microsoft.Network/loadBalancers@2024-10-01' existing = {
   name: loadBalancerName
 }
 
-resource backendAddressPool 'Microsoft.Network/loadBalancers/backendAddressPools@2024-10-01' = {
+// Only deploy the backend address pool if it's not managed by NICs
+resource backendAddressPool 'Microsoft.Network/loadBalancers/backendAddressPools@2024-10-01' = if (backendMembershipMode != 'NIC') {
   name: name
   properties: {
-    loadBalancerBackendAddresses: loadBalancerBackendAddresses
+    loadBalancerBackendAddresses: backendMembershipMode == 'BackendAddress' ? loadBalancerBackendAddresses : null
     tunnelInterfaces: tunnelInterfaces
     drainPeriodInSeconds: drainPeriodInSeconds != 0 ? drainPeriodInSeconds : null
     syncMode: !empty(syncMode) ? syncMode : null
@@ -44,10 +53,12 @@ resource backendAddressPool 'Microsoft.Network/loadBalancers/backendAddressPools
 }
 
 @description('The name of the backend address pool.')
-output name string = backendAddressPool.name
+output name string = backendMembershipMode != 'NIC' ? backendAddressPool.name : name
 
 @description('The resource ID of the backend address pool.')
-output resourceId string = backendAddressPool.id
+output resourceId string = backendMembershipMode != 'NIC'
+  ? backendAddressPool.id
+  : '${loadBalancer.id}/backendAddressPools/${name}'
 
 @description('The resource group the backend address pool was deployed into.')
 output resourceGroupName string = resourceGroup().name

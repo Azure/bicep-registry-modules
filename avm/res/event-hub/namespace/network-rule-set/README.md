@@ -102,6 +102,27 @@ An array of subnet resource ID objects that this Event Hub Namespace is exposed 
 - Type: array
 - Default: `[]`
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ignoreMissingVnetServiceEndpoint`](#parameter-virtualnetworkrulesignoremissingvnetserviceendpoint) | bool | Value that indicates whether to ignore missing Vnet Service Endpoint. |
+| [`subnetResourceId`](#parameter-virtualnetworkrulessubnetresourceid) | string | The resource Id of a Virtual Network Subnet. |
+
+### Parameter: `virtualNetworkRules.ignoreMissingVnetServiceEndpoint`
+
+Value that indicates whether to ignore missing Vnet Service Endpoint.
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualNetworkRules.subnetResourceId`
+
+The resource Id of a Virtual Network Subnet.
+
+- Required: No
+- Type: string
+
 ## Outputs
 
 | Output | Type | Description |

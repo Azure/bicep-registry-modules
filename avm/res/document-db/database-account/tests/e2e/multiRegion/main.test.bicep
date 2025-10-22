@@ -40,7 +40,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}-multi-region'
-    automaticFailover: true
+    enableAutomaticFailover: true
     enableMultipleWriteLocations: true
     backupPolicyType: 'Periodic'
     backupIntervalInMinutes: 300
