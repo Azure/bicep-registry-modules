@@ -1076,7 +1076,7 @@ module vm_backup 'modules/protected-item.bicep' = if (!empty(backupVaultName)) {
   params: {
     name: 'vm;iaasvmcontainerv2;${resourceGroup().name};${vm.name}'
     location: location
-    policyId: az.resourceId(
+    policyResourceId: az.resourceId(
       backupVaultResourceGroup,
       'Microsoft.RecoveryServices/vaults/backupPolicies',
       backupVaultName,
