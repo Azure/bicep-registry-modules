@@ -17,7 +17,7 @@ This module deploys a Virtual WAN.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.Network/virtualWans` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualwans.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/virtualWans)</li></ul> |
+| `Microsoft.Network/virtualWans` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualwans.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/virtualWans)</li></ul> |
 
 ## Usage examples
 
@@ -101,6 +101,8 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
     name: 'nvwmax001'
     // Non-required parameters
     allowBranchToBranchTraffic: true
+    allowVnetToVnetTraffic: true
+    disableVpnEncryption: false
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -154,6 +156,12 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
     // Non-required parameters
     "allowBranchToBranchTraffic": {
       "value": true
+    },
+    "allowVnetToVnetTraffic": {
+      "value": true
+    },
+    "disableVpnEncryption": {
+      "value": false
     },
     "location": {
       "value": "<location>"
@@ -213,6 +221,8 @@ using 'br/public:avm/res/network/virtual-wan:<version>'
 param name = 'nvwmax001'
 // Non-required parameters
 param allowBranchToBranchTraffic = true
+param allowVnetToVnetTraffic = true
+param disableVpnEncryption = false
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -347,6 +357,8 @@ param type = 'Basic'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`allowBranchToBranchTraffic`](#parameter-allowbranchtobranchtraffic) | bool | True if branch to branch traffic is allowed. |
+| [`allowVnetToVnetTraffic`](#parameter-allowvnettovnettraffic) | bool | True if VNet to VNet traffic is allowed. |
+| [`disableVpnEncryption`](#parameter-disablevpnencryption) | bool | True if VPN encryption is disabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location where all resources will be created. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -368,6 +380,22 @@ True if branch to branch traffic is allowed.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `allowVnetToVnetTraffic`
+
+True if VNet to VNet traffic is allowed.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `disableVpnEncryption`
+
+True if VPN encryption is disabled.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `enableTelemetry`
 

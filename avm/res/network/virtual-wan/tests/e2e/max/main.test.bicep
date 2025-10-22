@@ -53,6 +53,8 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       allowBranchToBranchTraffic: true
+      allowVnetToVnetTraffic: true
+      disableVpnEncryption: false
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
