@@ -18,15 +18,15 @@ param enableTelemetry bool
 @description('Optional. The network security group (NSG) to attach to the network interface.')
 param networkSecurityGroupResourceId string = ''
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -108,7 +108,7 @@ output ipConfigurations networkInterfaceIPConfigurationOutputType[] = networkInt
 //   Definitions   //
 // =============== //
 
-import { dnsSettingsType, ddosSettingsType, ipTagType } from 'br/public:avm/res/network/public-ip-address:0.8.0'
+import { dnsSettingsType, ddosSettingsType, ipTagType } from 'br/public:avm/res/network/public-ip-address:0.9.1'
 
 @export()
 @description('The type for the public IP address configuration.')
@@ -179,7 +179,7 @@ import {
   subResourceType
   virtualNetworkTapType
   networkInterfaceIPConfigurationOutputType
-} from 'br/public:avm/res/network/network-interface:0.5.1'
+} from 'br/public:avm/res/network/network-interface:0.5.3'
 
 @export()
 @description('The type for the IP configuration.')
