@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "12597997588152363654"
+      "templateHash": "17171711328982440702"
     },
     "name": "Elastic SANs",
     "description": "This module deploys an Elastic SAN."
@@ -906,10 +906,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ElasticSan/elasticSans@2024-05-01#properties/tags"
+        },
         "description": "Optional. Tags of the Elastic SAN resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -1119,7 +1122,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "2119140151739573060"
+              "templateHash": "3293091893277505471"
             },
             "name": "Elastic SAN Volume Groups",
             "description": "This module deploys an Elastic SAN Volume Group."
@@ -1864,10 +1867,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ElasticSan/elasticSans/volumegroups@2024-05-01#properties/tags"
+                },
                 "description": "Optional. Tags of the Elastic SAN Volume Group resource."
-              }
+              },
+              "nullable": true
             },
             "lock": {
               "$ref": "#/definitions/lockType",

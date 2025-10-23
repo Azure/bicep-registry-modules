@@ -16,6 +16,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Updated Bicep Registry module references:
   - `br/public:avm/utl/types/avm-common-types` → **0.6.1**
   - `br/public:avm/res/network/private-endpoint` → **0.11.1**
+- Updated tags parameters in main module and volume group submodule to use the latest resource input types.
 
 ### Breaking Changes
 

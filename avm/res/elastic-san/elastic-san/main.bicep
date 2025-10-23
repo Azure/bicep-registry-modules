@@ -50,7 +50,7 @@ param extendedCapacitySizeTiB int = 0
 param publicNetworkAccess string?
 
 @sys.description('Optional. Tags of the Elastic SAN resource.')
-param tags object?
+param tags resourceInput<'Microsoft.ElasticSan/elasticSans@2024-05-01'>.tags?
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true

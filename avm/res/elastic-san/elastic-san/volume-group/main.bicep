@@ -37,7 +37,7 @@ import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-co
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @sys.description('Optional. Tags of the Elastic SAN Volume Group resource.')
-param tags object?
+param tags resourceInput<'Microsoft.ElasticSan/elasticSans/volumegroups@2024-05-01'>.tags?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @sys.description('Optional. The lock settings of the service.')
