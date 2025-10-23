@@ -89,7 +89,7 @@ module testDeployment '../../../main.bicep' = [
           locationName: enforcedSecondLocation
         }
       ]
-      automaticFailover: true
+      enableAutomaticFailover: true
       minimumTlsVersion: 'Tls12'
       disableLocalAuthentication: true
       disableKeyBasedMetadataWriteAccess: true
@@ -158,11 +158,11 @@ module testDeployment '../../../main.bicep' = [
                 clusterKeys: [
                   {
                     name: 'order_date'
-                    orderBy: 'desc'
+                    orderBy: 'Desc'
                   }
                   {
                     name: 'order_id'
-                    orderBy: 'asc'
+                    orderBy: 'Asc'
                   }
                 ]
               }
@@ -199,7 +199,7 @@ module testDeployment '../../../main.bicep' = [
                 clusterKeys: [
                   {
                     name: 'created_at'
-                    orderBy: 'desc'
+                    orderBy: 'Desc'
                   }
                 ]
               }

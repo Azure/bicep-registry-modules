@@ -109,7 +109,7 @@ param roleAssignments roleAssignmentType[]?
 param dataPlaneRoleDefinitions dataPlaneRoleDefinitionType[]?
 
 @description('Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments.')
-param dataPlaneRoleAssignments dataPlaneRoleAssignmentType[]?
+param sqlRoleAssignments dataPlaneRoleAssignmentType[]?
 
 @description('Optional. Configurations for Azure Cosmos DB for Apache Cassandra native role-based access control definitions. Allows the creations of custom role definitions.')
 param cassandraRoleDefinitions cassandraRoleDefinitionType[]?
@@ -487,7 +487,7 @@ module databaseAccount_sqlRoleDefinitions 'sql-role-definition/main.bicep' = [
 ]
 
 module databaseAccount_sqlRoleAssignments 'sql-role-assignment/main.bicep' = [
-  for (noSqlRoleAssignment, index) in (dataPlaneRoleAssignments ?? []): {
+  for (noSqlRoleAssignment, index) in (sqlRoleAssignments ?? []): {
     name: '${uniqueString(deployment().name)}-sqlra-${index}'
     params: {
       databaseAccountName: databaseAccount.name
@@ -761,7 +761,7 @@ type dataPlaneRoleAssignmentType = {
   scope: string?
 }
 
-import { sqlRoleAssignmentType } from 'sql-role-definition/main.bicep'
+import { sqlRoleAssignmentType as nestedSqlRoleAssignmentType } from 'sql-role-definition/main.bicep'
 @export()
 @description('The type for an Azure Cosmos DB for NoSQL or Table native role-based access control definition.')
 type dataPlaneRoleDefinitionType = {
@@ -779,7 +779,7 @@ type dataPlaneRoleDefinitionType = {
   assignableScopes: string[]?
 
   @description('Optional. An array of role-based access control assignments to be created for the definition.')
-  assignments: sqlRoleAssignmentType[]?
+  assignments: nestedSqlRoleAssignmentType[]?
 }
 
 @export()
@@ -906,10 +906,10 @@ type cassandraRoleDefinitionType = {
   @description('Required. A user-friendly name for the role-based access control definition. Must be unique for the database account.')
   roleName: string
 
-  @description('Optional. An array of data actions that are allowed.')
+  @description('Optional. An array of data actions that are allowed. Note: Valid data action strings are currently undocumented (API version 2025-05-01-preview). Expected to follow format similar to SQL RBAC once documented by Microsoft.')
   dataActions: string[]?
 
-  @description('Optional. An array of data actions that are denied.')
+  @description('Optional. An array of data actions that are denied. Note: Unlike SQL RBAC, Cassandra supports deny rules for granular access control. Valid data action strings are currently undocumented (API version 2025-05-01-preview).')
   notDataActions: string[]?
 
   @description('Optional. A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition.')

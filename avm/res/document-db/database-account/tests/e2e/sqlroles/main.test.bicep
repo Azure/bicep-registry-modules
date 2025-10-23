@@ -103,7 +103,7 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       ]
-      dataPlaneRoleAssignments: [
+      sqlRoleAssignments: [
         {
           principalId: nestedDependencies.outputs.identityPrincipalId
           roleDefinitionId: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}${serviceShort}001/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001' // 'Cosmos DB Built-in Data Reader'
