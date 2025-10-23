@@ -15,11 +15,11 @@ param resourceGroupName string = 'dep-${namePrefix}-web.sites-${serviceShort}-rg
 param serviceShort string = 'wsazstor'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'ts'
 
 // Note, we enforce the location due to quota restrictions in other regions
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'eastus2'
+var enforcedLocation = 'australiaeast'
 
 // ============ //
 // Dependencies //
@@ -98,15 +98,7 @@ module testDeployment '../../../main.bicep' = [
               type: 'AzureFiles'
               protocol: 'Smb'
             }
-            // Mount 4: Temporary blob storage (Azure Blob)
-            'temp-blob-storage': {
-              accountName: nestedDependencies.outputs.primaryStorageAccountName // ✅ STRING field
-              accessKey: nestedDependencies.outputs.primaryStorageAccountKey
-              shareName: 'temp-files' // Container name for blob storage
-              mountPath: '/mnt/temp'
-              type: 'AzureBlob'
-              protocol: 'Http'
-            }
+            // Note: Azure Blob storage mounting is not supported in Windows App Service plans
           }
         }
         {
@@ -116,7 +108,6 @@ module testDeployment '../../../main.bicep' = [
             STORAGE_CONFIG_MOUNT: '/mnt/config'
             STORAGE_LOGS_MOUNT: '/mnt/logs'
             STORAGE_DATA_MOUNT: '/mnt/data'
-            STORAGE_TEMP_MOUNT: '/mnt/temp'
           }
         }
       ]
