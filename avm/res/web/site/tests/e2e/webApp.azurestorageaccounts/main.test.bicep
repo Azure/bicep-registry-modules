@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-web.sites-${serviceShort}-rg
 param serviceShort string = 'wsazstor'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = 'ts'
+param namePrefix string = '#_namePrefix_#'
 
 // Note, we enforce the location due to quota restrictions in other regions
 #disable-next-line no-hardcoded-location
