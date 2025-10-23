@@ -140,10 +140,10 @@ function Export-TestsAsCsv {
 
 <#
 .SYNOPSIS
-Update the current documentation in the given wiki file path with the latest test detail of the given test file path.
+Export Pester tests from a given test file to a specified output format.
 
 .DESCRIPTION
-Update the current documentation in the given wiki file path with the latest test detail of the given test file path.
+This function extracts Pester tests from a specified test file and exports them to a desired output format (CSV or Markdown). The output can be written to a file or returned as an array of strings.
 
 .PARAMETER TestFilePath
 Mandatory. The path to the test file to get the content from.
