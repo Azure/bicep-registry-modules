@@ -76,7 +76,7 @@ module testDeployment '../../../main.bicep' = [
               accountName: nestedDependencies.outputs.primaryStorageAccountName // ✅ STRING field
               accessKey: nestedDependencies.outputs.primaryStorageAccountKey
               shareName: 'config-share'
-              mountPath: '/mnt/config'
+              mountPath: '\\mounts\\config'
               type: 'AzureFiles'
               protocol: 'Smb'
             }
@@ -85,7 +85,7 @@ module testDeployment '../../../main.bicep' = [
               accountName: nestedDependencies.outputs.primaryStorageAccountName // ✅ STRING field
               accessKey: nestedDependencies.outputs.primaryStorageAccountKey
               shareName: 'logs-share'
-              mountPath: '/mnt/logs'
+              mountPath: '\\mounts\\logs'
               type: 'AzureFiles'
               protocol: 'Smb'
             }
@@ -94,7 +94,7 @@ module testDeployment '../../../main.bicep' = [
               accountName: nestedDependencies.outputs.secondaryStorageAccountName // ✅ STRING field
               accessKey: nestedDependencies.outputs.secondaryStorageAccountKey
               shareName: 'data-share'
-              mountPath: '/mnt/data'
+              mountPath: '\\mounts\\data'
               type: 'AzureFiles'
               protocol: 'Smb'
             }
@@ -105,9 +105,9 @@ module testDeployment '../../../main.bicep' = [
           // Additional configuration to show azurestorageaccounts works with other configs
           name: 'appsettings'
           properties: {
-            STORAGE_CONFIG_MOUNT: '/mnt/config'
-            STORAGE_LOGS_MOUNT: '/mnt/logs'
-            STORAGE_DATA_MOUNT: '/mnt/data'
+            STORAGE_CONFIG_MOUNT: '\\mounts\\config'
+            STORAGE_LOGS_MOUNT: '\\mounts\\logs'
+            STORAGE_DATA_MOUNT: '\\mounts\\data'
           }
         }
       ]
