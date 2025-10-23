@@ -29,10 +29,11 @@ function Export-TestsAsMarkdown {
         [string] $TestFilePath,
 
         [Parameter(Mandatory = $false)]
-        [string] $OutputFilePath,
+        [string] $OutputFilePath
+        # ,
 
-        [Parameter(Mandatory = $false)]
-        [switch] $Force
+        # [Parameter(Mandatory = $false)]
+        # [switch] $Force
     )
 
     $content = Get-Content $TestFilePath
@@ -96,10 +97,11 @@ function Export-TestsAsCsv {
         [string] $TestFilePath,
 
         [Parameter(Mandatory = $false)]
-        [string] $OutputFilePath,
+        [string] $OutputFilePath
+        # ,
 
-        [Parameter(Mandatory = $false)]
-        [switch] $Force
+        # [Parameter(Mandatory = $false)]
+        # [switch] $Force
     )
 
     $content = Get-Content $TestFilePath
@@ -130,7 +132,7 @@ function Export-TestsAsCsv {
 
     if ($OutputFilePath) {
         if ($PSCmdlet.ShouldProcess("csv to path [$OutputFilePath]", 'Export')) {
-            $relevantContent | Export-Csv -Path $OutputFilePath -Force:$Force #-NoTypeInformation
+            $relevantContent | Export-Csv -Path $OutputFilePath # -Force:$Force #-NoTypeInformation
             Write-Verbose "File [$OutputFilePath] updated" -Verbose
         }
     }
@@ -179,10 +181,11 @@ function Export-StaticTestsAsOutput {
         [string] $OutputFormat,
 
         [Parameter(Mandatory = $false)]
-        [string] $OutputFilePath,
+        [string] $OutputFilePath
+        # ,
 
-        [Parameter(Mandatory = $false)]
-        [switch] $Force
+        # [Parameter(Mandatory = $false)]
+        # [switch] $Force
     )
 
     Write-Verbose "Checking test file path: $TestFilePath" -Verbose
@@ -190,24 +193,24 @@ function Export-StaticTestsAsOutput {
         throw "Test file path '$TestFilePath' does not exist."
     }
     if ($OutputFilePath) {
-        if (!$Force) {
-            Write-Verbose "Checking output file path: $OutputFilePath" -Verbose
-            if (Test-Path -Path $OutputFilePath) {
-                throw "Output file path '$OutputFilePath' already exists. To overwrite it use the -Force switch."
-            }
-        }
+        # if (!$Force) {
+        #     Write-Verbose "Checking output file path: $OutputFilePath" -Verbose
+        #     if (Test-Path -Path $OutputFilePath) {
+        #         throw "Output file path '$OutputFilePath' already exists. To overwrite it use the -Force switch."
+        #     }
+        # }
         Write-Verbose "Checking output file directory: $(Split-Path -Path $OutputFilePath)" -Verbose
-        if (!(Test-Path -Path (Split-Path -Path $OutputFilePath))) {
+        if (-not (Test-Path -Path (Split-Path -Path $OutputFilePath))) {
             throw "Output file parent directory '$(Split-Path -Path $OutputFilePath)' does not exist."
         }
     }
 
     switch ($OutputFormat) {
         'md' {
-            $relevantContent = Export-TestsAsMarkdown -TestFilePath $TestFilePath -OutputFilePath $OutputFilePath -Force:$Force
+            $relevantContent = Export-TestsAsMarkdown -TestFilePath $TestFilePath -OutputFilePath $OutputFilePath # -Force:$Force
         }
         'csv' {
-            $relevantContent = Export-TestsAsCsv -TestFilePath $TestFilePath -OutputFilePath $OutputFilePath -Force:$Force
+            $relevantContent = Export-TestsAsCsv -TestFilePath $TestFilePath -OutputFilePath $OutputFilePath # -Force:$Force
         }
     }
 
