@@ -2,6 +2,25 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/elastic-san/elastic-san/CHANGELOG.md).
 
+## 0.5.0
+
+### Changes
+
+- Upgraded resource API versions and module references to align with the latest standards:
+  - `Microsoft.Resources/deployments` → **2025-04-01**
+  - `Microsoft.ElasticSan/elasticSans` → **2024-05-01**
+  - `Microsoft.ElasticSan/elasticSans/volumegroups` → **2024-05-01**
+  - `Microsoft.ElasticSan/elasticSans/volumegroups/volumes` → **2024-05-01**
+  - `Microsoft.ElasticSan/elasticSans/volumegroups/snapshots` → **2024-05-01**
+  - `Microsoft.KeyVault/vaults` → **2025-05-01**
+- Updated Bicep Registry module references:
+  - `br/public:avm/utl/types/avm-common-types` → **0.6.1**
+  - `br/public:avm/res/network/private-endpoint` → **0.11.1**
+
+### Breaking Changes
+
+- None
+
 ## 0.4.1
 
 ### Changes
