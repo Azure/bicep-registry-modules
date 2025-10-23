@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.5.1644",
-      "templateHash": "11258416978502374007"
+      "version": "0.38.33.27573",
+      "templateHash": "10507629033981271941"
     },
     "name": "Virtual WANs",
     "description": "This module deploys a Virtual WAN."
@@ -171,7 +171,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/virtualWans@2024-07-01#properties/tags"
+          "source": "Microsoft.Network/virtualWans@2024-10-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -232,13 +232,13 @@
     },
     "virtualWan": {
       "type": "Microsoft.Network/virtualWans",
-      "apiVersion": "2024-07-01",
+      "apiVersion": "2024-10-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "allowBranchToBranchTraffic": "[parameters('allowBranchToBranchTraffic')]",
-        "type": "[parameters('type')]"
+        "type": "[parameters('type')]",
+        "allowBranchToBranchTraffic": "[parameters('allowBranchToBranchTraffic')]"
       }
     },
     "virtualWan_lock": {
@@ -305,7 +305,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('virtualWan', '2024-07-01', 'full').location]"
+      "value": "[reference('virtualWan', '2024-10-01', 'full').location]"
     }
   }
 }

@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/ai-ml/ai-foundry/CHANGELOG.md).
 
+## 0.5.0
+
+### Changes
+
+- Updates of dependent resources
+
+### Breaking Changes
+
+- Changed ids of role assignments performed on Azure AI Project identity
+
 ## 0.4.0
 
 ### Changes

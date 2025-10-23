@@ -6,9 +6,11 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Updated API versions
-- Added `disableVpnEncryption` parameter to control VPN encryption settings.
-- Added `allowVnetToVnetTraffic` parameter to control VNet to VNet traffic settings.
+- Updated API versions for Virtual WAN.
+
+### Breaking Changes
+
+- None
 
 ## 0.4.1
 
