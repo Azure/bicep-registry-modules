@@ -109,7 +109,7 @@ param roleAssignments roleAssignmentType[]?
 param dataPlaneRoleDefinitions dataPlaneRoleDefinitionType[]?
 
 @description('Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments.')
-param sqlRoleAssignments dataPlaneRoleAssignmentType[]?
+param sqlRoleAssignments sqlRoleAssignmentType[]?
 
 @description('Optional. Configurations for Azure Cosmos DB for Apache Cassandra native role-based access control definitions. Allows the creations of custom role definitions.')
 param cassandraRoleDefinitions cassandraRoleDefinitionType[]?
@@ -747,7 +747,7 @@ type failoverLocationType = {
 
 @export()
 @description('The type for an Azure Cosmos DB for NoSQL native role-based access control assignment.')
-type dataPlaneRoleAssignmentType = {
+type sqlRoleAssignmentType = {
   @description('Optional. The unique name of the role assignment.')
   name: string?
 
@@ -762,6 +762,8 @@ type dataPlaneRoleAssignmentType = {
 }
 
 import { sqlRoleAssignmentType as nestedSqlRoleAssignmentType } from 'sql-role-definition/main.bicep'
+import { tableType as cassandraTableType, viewType as cassandraViewType } from 'cassandra-keyspace/main.bicep'
+
 @export()
 @description('The type for an Azure Cosmos DB for NoSQL or Table native role-based access control definition.')
 type dataPlaneRoleDefinitionType = {
@@ -920,90 +922,6 @@ type cassandraRoleDefinitionType = {
 }
 
 @export()
-@description('The type for a Cassandra column definition.')
-type cassandraColumnType = {
-  @description('Required. Name of the Cassandra column.')
-  name: string
-
-  @description('Required. Type of the Cassandra column. Valid types: ascii, bigint, blob, boolean, counter, date, decimal, double, duration, float, inet, int, smallint, text, time, timestamp, timeuuid, tinyint, uuid, varchar, varint.')
-  type: string
-}
-
-@export()
-@description('The type for a Cassandra partition key definition.')
-type cassandraPartitionKeyType = {
-  @description('Required. Name of the partition key column.')
-  name: string
-}
-
-@export()
-@description('The type for a Cassandra cluster key definition.')
-type cassandraClusterKeyType = {
-  @description('Required. Name of the cluster key column.')
-  name: string
-
-  @description('Optional. Sort order for the cluster key. Default is \'Asc\'.')
-  orderBy: ('Asc' | 'Desc')?
-}
-
-@export()
-@description('The type for a Cassandra table schema definition.')
-type cassandraSchemaType = {
-  @description('Required. List of Cassandra table columns.')
-  columns: cassandraColumnType[]
-
-  @description('Required. List of partition key columns.')
-  partitionKeys: cassandraPartitionKeyType[]
-
-  @description('Optional. List of cluster key columns with sort order.')
-  clusterKeys: cassandraClusterKeyType[]?
-}
-
-@export()
-@description('The type for a Cassandra table.')
-type cassandraTableType = {
-  @description('Required. Name of the Cassandra table.')
-  name: string
-
-  @description('Required. Schema definition for the Cassandra table.')
-  schema: cassandraSchemaType
-
-  @description('Optional. Analytical TTL for the table. Default to 0 (disabled). Analytical store is enabled when set to a value other than 0. If set to -1, analytical store retains all historical data.')
-  analyticalStorageTtl: int?
-
-  @description('Optional. Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored.')
-  maxThroughput: int?
-
-  @description('Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`.')
-  throughput: int?
-
-  @description('Optional. Time to live of the Cosmos DB resource. Default to 0 (disabled). Cassandra TTL is enabled when set to a value other than 0. Cassandra TTL must be positive and >= 0 or -1.')
-  defaultTtl: int?
-
-  @description('Optional. Tags of the Cassandra table resource.')
-  tags: object?
-}
-
-@export()
-@description('The type for a Cassandra view (materialized view).')
-type cassandraViewType = {
-  @description('Required. Name of the Cassandra view.')
-  name: string
-
-  @description('Required. View definition of the Cassandra view. This is the CQL statement that defines the materialized view.')
-  viewDefinition: string
-
-  @description('Optional. Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored.')
-  maxThroughput: int?
-
-  @description('Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`.')
-  throughput: int?
-
-  @description('Optional. Tags of the Cassandra view resource.')
-  tags: object?
-}
-
-@export()
 @description('The type for an Azure Cosmos DB Cassandra keyspace.')
 type cassandraKeyspaceType = {
   @description('Required. Name of the Cassandra keyspace.')
@@ -1022,7 +940,7 @@ type cassandraKeyspaceType = {
   throughput: int?
 
   @description('Optional. Tags of the Cassandra keyspace resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces@2024-11-15'>.tags?
 }
 
 @export()

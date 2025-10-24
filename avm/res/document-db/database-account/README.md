@@ -3836,165 +3836,64 @@ Array of Cassandra tables to deploy in the keyspace.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-cassandrakeyspacestablesname) | string | Name of the Cassandra table. |
-| [`schema`](#parameter-cassandrakeyspacestablesschema) | object | Schema definition for the Cassandra table. |
+| [`name`](#parameter-cassandrakeyspacestablesname) | string | Name of the table. |
+| [`schema`](#parameter-cassandrakeyspacestablesschema) | object | Schema definition for the table. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`analyticalStorageTtl`](#parameter-cassandrakeyspacestablesanalyticalstoragettl) | int | Analytical TTL for the table. Default to 0 (disabled). Analytical store is enabled when set to a value other than 0. If set to -1, analytical store retains all historical data. |
-| [`defaultTtl`](#parameter-cassandrakeyspacestablesdefaultttl) | int | Time to live of the Cosmos DB resource. Default to 0 (disabled). Cassandra TTL is enabled when set to a value other than 0. Cassandra TTL must be positive and >= 0 or -1. |
-| [`maxThroughput`](#parameter-cassandrakeyspacestablesmaxthroughput) | int | Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored. |
-| [`tags`](#parameter-cassandrakeyspacestablestags) | object | Tags of the Cassandra table resource. |
-| [`throughput`](#parameter-cassandrakeyspacestablesthroughput) | int | Request Units per second (for example 10000). Cannot be set together with `maxThroughput`. |
+| [`analyticalStorageTtl`](#parameter-cassandrakeyspacestablesanalyticalstoragettl) | int | Analytical TTL for the table. |
+| [`autoscaleSettingsMaxThroughput`](#parameter-cassandrakeyspacestablesautoscalesettingsmaxthroughput) | int | Maximum autoscale throughput for the table. Cannot be used with throughput. |
+| [`defaultTtl`](#parameter-cassandrakeyspacestablesdefaultttl) | int | Default TTL (Time To Live) in seconds for data in the table. |
+| [`tags`](#parameter-cassandrakeyspacestablestags) | object | Tags for the table. |
+| [`throughput`](#parameter-cassandrakeyspacestablesthroughput) | int | Request units per second. Cannot be used with autoscaleSettingsMaxThroughput. |
 
 ### Parameter: `cassandraKeyspaces.tables.name`
 
-Name of the Cassandra table.
+Name of the table.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `cassandraKeyspaces.tables.schema`
 
-Schema definition for the Cassandra table.
+Schema definition for the table.
 
 - Required: Yes
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`columns`](#parameter-cassandrakeyspacestablesschemacolumns) | array | List of Cassandra table columns. |
-| [`partitionKeys`](#parameter-cassandrakeyspacestablesschemapartitionkeys) | array | List of partition key columns. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`clusterKeys`](#parameter-cassandrakeyspacestablesschemaclusterkeys) | array | List of cluster key columns with sort order. |
-
-### Parameter: `cassandraKeyspaces.tables.schema.columns`
-
-List of Cassandra table columns.
-
-- Required: Yes
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-cassandrakeyspacestablesschemacolumnsname) | string | Name of the Cassandra column. |
-| [`type`](#parameter-cassandrakeyspacestablesschemacolumnstype) | string | Type of the Cassandra column. Valid types: ascii, bigint, blob, boolean, counter, date, decimal, double, duration, float, inet, int, smallint, text, time, timestamp, timeuuid, tinyint, uuid, varchar, varint. |
-
-### Parameter: `cassandraKeyspaces.tables.schema.columns.name`
-
-Name of the Cassandra column.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `cassandraKeyspaces.tables.schema.columns.type`
-
-Type of the Cassandra column. Valid types: ascii, bigint, blob, boolean, counter, date, decimal, double, duration, float, inet, int, smallint, text, time, timestamp, timeuuid, tinyint, uuid, varchar, varint.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `cassandraKeyspaces.tables.schema.partitionKeys`
-
-List of partition key columns.
-
-- Required: Yes
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-cassandrakeyspacestablesschemapartitionkeysname) | string | Name of the partition key column. |
-
-### Parameter: `cassandraKeyspaces.tables.schema.partitionKeys.name`
-
-Name of the partition key column.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `cassandraKeyspaces.tables.schema.clusterKeys`
-
-List of cluster key columns with sort order.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-cassandrakeyspacestablesschemaclusterkeysname) | string | Name of the cluster key column. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`orderBy`](#parameter-cassandrakeyspacestablesschemaclusterkeysorderby) | string | Sort order for the cluster key. Default is 'Asc'. |
-
-### Parameter: `cassandraKeyspaces.tables.schema.clusterKeys.name`
-
-Name of the cluster key column.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `cassandraKeyspaces.tables.schema.clusterKeys.orderBy`
-
-Sort order for the cluster key. Default is 'Asc'.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Asc'
-    'Desc'
-  ]
-  ```
-
 ### Parameter: `cassandraKeyspaces.tables.analyticalStorageTtl`
 
-Analytical TTL for the table. Default to 0 (disabled). Analytical store is enabled when set to a value other than 0. If set to -1, analytical store retains all historical data.
+Analytical TTL for the table.
+
+- Required: No
+- Type: int
+
+### Parameter: `cassandraKeyspaces.tables.autoscaleSettingsMaxThroughput`
+
+Maximum autoscale throughput for the table. Cannot be used with throughput.
 
 - Required: No
 - Type: int
 
 ### Parameter: `cassandraKeyspaces.tables.defaultTtl`
 
-Time to live of the Cosmos DB resource. Default to 0 (disabled). Cassandra TTL is enabled when set to a value other than 0. Cassandra TTL must be positive and >= 0 or -1.
-
-- Required: No
-- Type: int
-
-### Parameter: `cassandraKeyspaces.tables.maxThroughput`
-
-Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored.
+Default TTL (Time To Live) in seconds for data in the table.
 
 - Required: No
 - Type: int
 
 ### Parameter: `cassandraKeyspaces.tables.tags`
 
-Tags of the Cassandra table resource.
+Tags for the table.
 
 - Required: No
 - Type: object
 
 ### Parameter: `cassandraKeyspaces.tables.throughput`
 
-Request Units per second (for example 10000). Cannot be set together with `maxThroughput`.
+Request units per second. Cannot be used with autoscaleSettingsMaxThroughput.
 
 - Required: No
 - Type: int
@@ -4024,48 +3923,48 @@ Array of Cassandra views (materialized views) to deploy in the keyspace.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-cassandrakeyspacesviewsname) | string | Name of the Cassandra view. |
-| [`viewDefinition`](#parameter-cassandrakeyspacesviewsviewdefinition) | string | View definition of the Cassandra view. This is the CQL statement that defines the materialized view. |
+| [`name`](#parameter-cassandrakeyspacesviewsname) | string | Name of the view. |
+| [`viewDefinition`](#parameter-cassandrakeyspacesviewsviewdefinition) | string | View definition (CQL statement). |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`maxThroughput`](#parameter-cassandrakeyspacesviewsmaxthroughput) | int | Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored. |
-| [`tags`](#parameter-cassandrakeyspacesviewstags) | object | Tags of the Cassandra view resource. |
-| [`throughput`](#parameter-cassandrakeyspacesviewsthroughput) | int | Request Units per second (for example 10000). Cannot be set together with `maxThroughput`. |
+| [`autoscaleSettingsMaxThroughput`](#parameter-cassandrakeyspacesviewsautoscalesettingsmaxthroughput) | int | Maximum autoscale throughput for the view. Cannot be used with throughput. |
+| [`tags`](#parameter-cassandrakeyspacesviewstags) | object | Tags for the view. |
+| [`throughput`](#parameter-cassandrakeyspacesviewsthroughput) | int | Request units per second. Cannot be used with autoscaleSettingsMaxThroughput. |
 
 ### Parameter: `cassandraKeyspaces.views.name`
 
-Name of the Cassandra view.
+Name of the view.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `cassandraKeyspaces.views.viewDefinition`
 
-View definition of the Cassandra view. This is the CQL statement that defines the materialized view.
+View definition (CQL statement).
 
 - Required: Yes
 - Type: string
 
-### Parameter: `cassandraKeyspaces.views.maxThroughput`
+### Parameter: `cassandraKeyspaces.views.autoscaleSettingsMaxThroughput`
 
-Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored.
+Maximum autoscale throughput for the view. Cannot be used with throughput.
 
 - Required: No
 - Type: int
 
 ### Parameter: `cassandraKeyspaces.views.tags`
 
-Tags of the Cassandra view resource.
+Tags for the view.
 
 - Required: No
 - Type: object
 
 ### Parameter: `cassandraKeyspaces.views.throughput`
 
-Request Units per second (for example 10000). Cannot be set together with `maxThroughput`.
+Request units per second. Cannot be used with autoscaleSettingsMaxThroughput.
 
 - Required: No
 - Type: int
