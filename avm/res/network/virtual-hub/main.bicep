@@ -9,7 +9,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/virtualHubs@2022-04-01'>.tags?
 
 @description('Required. Address-prefix for this VirtualHub.')
 param addressPrefix string
@@ -117,7 +117,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2024-05-01' = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2024-10-01' = {
   name: name
   location: location
   tags: tags
