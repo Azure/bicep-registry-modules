@@ -17,12 +17,12 @@ This module deploys a DBforPostgreSQL Flexible Server.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.DBforPostgreSQL/flexibleServers` | 2024-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2024-08-01/flexibleServers)</li></ul> |
-| `Microsoft.DBforPostgreSQL/flexibleServers/administrators` | 2024-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_administrators.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2024-08-01/flexibleServers/administrators)</li></ul> |
-| `Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings` | 2024-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_advancedthreatprotectionsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2024-08-01/flexibleServers/advancedThreatProtectionSettings)</li></ul> |
-| `Microsoft.DBforPostgreSQL/flexibleServers/configurations` | 2024-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_configurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2024-08-01/flexibleServers/configurations)</li></ul> |
-| `Microsoft.DBforPostgreSQL/flexibleServers/databases` | 2024-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2024-08-01/flexibleServers/databases)</li></ul> |
-| `Microsoft.DBforPostgreSQL/flexibleServers/firewallRules` | 2024-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_firewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2024-08-01/flexibleServers/firewallRules)</li></ul> |
+| `Microsoft.DBforPostgreSQL/flexibleServers` | 2025-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2025-06-01-preview/flexibleServers)</li></ul> |
+| `Microsoft.DBforPostgreSQL/flexibleServers/administrators` | 2025-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_administrators.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2025-06-01-preview/flexibleServers/administrators)</li></ul> |
+| `Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings` | 2025-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_advancedthreatprotectionsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2025-06-01-preview/flexibleServers/advancedThreatProtectionSettings)</li></ul> |
+| `Microsoft.DBforPostgreSQL/flexibleServers/configurations` | 2025-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_configurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2025-06-01-preview/flexibleServers/configurations)</li></ul> |
+| `Microsoft.DBforPostgreSQL/flexibleServers/databases` | 2025-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2025-06-01-preview/flexibleServers/databases)</li></ul> |
+| `Microsoft.DBforPostgreSQL/flexibleServers/firewallRules` | 2025-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_firewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2025-06-01-preview/flexibleServers/firewallRules)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
@@ -40,7 +40,8 @@ The following section provides usage examples for the module, which were used to
 - [Private access](#example-3-private-access)
 - [Public access with private endpoints](#example-4-public-access-with-private-endpoints)
 - [Public access](#example-5-public-access)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Primary server and Readonly Replication server](#example-6-primary-server-and-readonly-replication-server)
+- [WAF-aligned](#example-7-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -56,6 +57,11 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
+    authConfig: {
+      activeDirectoryAuth: 'Enabled'
+      passwordAuth: 'Disabled'
+      tenantId: '<tenantId>'
+    }
     availabilityZone: 1
     name: 'dfpsmin001'
     skuName: 'Standard_D2s_v3'
@@ -85,6 +91,13 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "authConfig": {
+      "value": {
+        "activeDirectoryAuth": "Enabled",
+        "passwordAuth": "Disabled",
+        "tenantId": "<tenantId>"
+      }
+    },
     "availabilityZone": {
       "value": 1
     },
@@ -122,6 +135,11 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
+param authConfig = {
+  activeDirectoryAuth: 'Enabled'
+  passwordAuth: 'Disabled'
+  tenantId: '<tenantId>'
+}
 param availabilityZone = 1
 param name = 'dfpsmin001'
 param skuName = 'Standard_D2s_v3'
@@ -153,6 +171,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
+    authConfig: {
+      activeDirectoryAuth: 'Disabled'
+      passwordAuth: 'Enabled'
+    }
     availabilityZone: 1
     name: 'dfpfmax001'
     skuName: 'Standard_D2s_v3'
@@ -193,6 +215,12 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "authConfig": {
+      "value": {
+        "activeDirectoryAuth": "Disabled",
+        "passwordAuth": "Enabled"
+      }
+    },
     "availabilityZone": {
       "value": 1
     },
@@ -259,6 +287,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
+param authConfig = {
+  activeDirectoryAuth: 'Disabled'
+  passwordAuth: 'Enabled'
+}
 param availabilityZone = 1
 param name = 'dfpfmax001'
 param skuName = 'Standard_D2s_v3'
@@ -301,6 +333,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
+    authConfig: {
+      activeDirectoryAuth: 'Disabled'
+      passwordAuth: 'Enabled'
+    }
     availabilityZone: -1
     name: 'dfpspvt001'
     skuName: 'Standard_D2s_v3'
@@ -381,6 +417,12 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "authConfig": {
+      "value": {
+        "activeDirectoryAuth": "Disabled",
+        "passwordAuth": "Enabled"
+      }
+    },
     "availabilityZone": {
       "value": -1
     },
@@ -485,6 +527,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
+param authConfig = {
+  activeDirectoryAuth: 'Disabled'
+  passwordAuth: 'Enabled'
+}
 param availabilityZone = -1
 param name = 'dfpspvt001'
 param skuName = 'Standard_D2s_v3'
@@ -567,6 +613,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
+    authConfig: {
+      activeDirectoryAuth: 'Enabled'
+      passwordAuth: 'Enabled'
+    }
     availabilityZone: -1
     name: 'dfpspe001'
     skuName: 'Standard_D2ds_v5'
@@ -616,6 +666,12 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "authConfig": {
+      "value": {
+        "activeDirectoryAuth": "Enabled",
+        "passwordAuth": "Enabled"
+      }
+    },
     "availabilityZone": {
       "value": -1
     },
@@ -683,6 +739,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
+param authConfig = {
+  activeDirectoryAuth: 'Enabled'
+  passwordAuth: 'Enabled'
+}
 param availabilityZone = -1
 param name = 'dfpspe001'
 param skuName = 'Standard_D2ds_v5'
@@ -734,6 +794,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
+    authConfig: {
+      activeDirectoryAuth: 'Enabled'
+      passwordAuth: 'Disabled'
+    }
     availabilityZone: 1
     name: 'dfpspub001'
     skuName: 'Standard_D2s_v3'
@@ -835,6 +899,12 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "authConfig": {
+      "value": {
+        "activeDirectoryAuth": "Enabled",
+        "passwordAuth": "Disabled"
+      }
+    },
     "availabilityZone": {
       "value": 1
     },
@@ -968,6 +1038,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
+param authConfig = {
+  activeDirectoryAuth: 'Enabled'
+  passwordAuth: 'Disabled'
+}
 param availabilityZone = 1
 param name = 'dfpspub001'
 param skuName = 'Standard_D2s_v3'
@@ -1057,7 +1131,90 @@ param version = '14'
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 6: _Primary server and Readonly Replication server_
+
+This instance deploys a primary and readonly replication server using the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+targetScope = 'subscription'
+
+metadata name = 'Primary server and Readonly Replication server'
+metadata description = 'This instance deploys a primary and readonly replication server using the module with the minimum set of required parameters.'
+
+// ========== //
+// Parameters //
+// ========== //
+
+@description('Optional. The name of the resource group to deploy for testing purposes.')
+@maxLength(90)
+param resourceGroupName string = 'dep-${namePrefix}-dbforpostgresql.flexibleservers-${serviceShort}-rg'
+
+@description('Optional. The location to deploy resources to.')
+param resourceLocation string = deployment().location
+
+@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
+param serviceShort string = 'dfpsrep'
+
+@description('Optional. A token to inject into the name of each resource.')
+param namePrefix string = '#_namePrefix_#'
+
+// ============ //
+// Dependencies //
+// ============ //
+
+// General resources
+// =================
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+  name: resourceGroupName
+  location: resourceLocation
+}
+
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    primaryServerName: '${namePrefix}${serviceShort}pri001'
+  }
+}
+// ============== //
+// Test Execution //
+// ============== //
+
+@batchSize(1)
+module replicationTestDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      sourceServerResourceId: nestedDependencies.outputs.serverResourceId
+      // createMode: 'Replica'
+      availabilityZone: 1
+      authConfig: {
+        activeDirectoryAuth: 'Enabled'
+        passwordAuth: 'Disabled'
+      }
+      skuName: 'Standard_D2s_v3'
+      tier: 'GeneralPurpose'
+      version: '17'
+      storageSizeGB: 512
+      autoGrow: 'Enabled'
+      replicationRole: 'AsyncReplica'
+    }
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1071,6 +1228,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
+    authConfig: {
+      activeDirectoryAuth: 'Enabled'
+      passwordAuth: 'Disabled'
+    }
     availabilityZone: 1
     name: 'dfpswaf001'
     skuName: 'Standard_D2s_v3'
@@ -1144,6 +1305,12 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "authConfig": {
+      "value": {
+        "activeDirectoryAuth": "Enabled",
+        "passwordAuth": "Disabled"
+      }
+    },
     "availabilityZone": {
       "value": 1
     },
@@ -1241,6 +1408,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
+param authConfig = {
+  activeDirectoryAuth: 'Enabled'
+  passwordAuth: 'Disabled'
+}
 param availabilityZone = 1
 param name = 'dfpswaf001'
 param skuName = 'Standard_D2s_v3'
@@ -1308,6 +1479,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`authConfig`](#parameter-authconfig) | object | The authentication configuration for the server. |
 | [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-name) | string | The name of the PostgreSQL flexible server. |
 | [`skuName`](#parameter-skuname) | string | The name of the sku, typically, tier + family + cores, e.g. Standard_D4s_v3. |
@@ -1349,12 +1521,67 @@ param tags = {
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. Used when the desired connectivity mode is 'Public Access' and 'delegatedSubnetResourceId' is NOT used. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Determines whether or not public network access is enabled or disabled. |
 | [`replica`](#parameter-replica) | object | The replication settings for the server. Can only be set on existing flexible servers. |
+| [`replicationRole`](#parameter-replicationrole) | string | The replication role for the server. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serverThreatProtection`](#parameter-serverthreatprotection) | string | Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server. |
 | [`storageSizeGB`](#parameter-storagesizegb) | int | Max storage allowed for a server. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`tenantId`](#parameter-tenantid) | string | Tenant id of the server. |
 | [`version`](#parameter-version) | string | PostgreSQL Server version. |
+
+### Parameter: `authConfig`
+
+The authentication configuration for the server.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`activeDirectoryAuth`](#parameter-authconfigactivedirectoryauth) | string | Indicates if the server supports Microsoft Entra authentication. |
+| [`passwordAuth`](#parameter-authconfigpasswordauth) | string | Indicates if the server supports password based authentication. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`tenantId`](#parameter-authconfigtenantid) | string | Identifier of the tenant of the delegated resource. Required in cross-tenant or multi-tenant scenarios. |
+
+### Parameter: `authConfig.activeDirectoryAuth`
+
+Indicates if the server supports Microsoft Entra authentication.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `authConfig.passwordAuth`
+
+Indicates if the server supports password based authentication.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `authConfig.tenantId`
+
+Identifier of the tenant of the delegated resource. Required in cross-tenant or multi-tenant scenarios.
+
+- Required: No
+- Type: string
 
 ### Parameter: `availabilityZone`
 
@@ -2447,6 +2674,23 @@ Used to indicate role of the server in replication set. Required if enabling rep
   ]
   ```
 
+### Parameter: `replicationRole`
+
+The replication role for the server.
+
+- Required: No
+- Type: string
+- Default: `'None'`
+- Allowed:
+  ```Bicep
+  [
+    'AsyncReplica'
+    'GeoAsyncReplica'
+    'None'
+    'Primary'
+  ]
+  ```
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
@@ -2594,13 +2838,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `tenantId`
-
-Tenant id of the server.
-
-- Required: No
-- Type: string
 
 ### Parameter: `version`
 

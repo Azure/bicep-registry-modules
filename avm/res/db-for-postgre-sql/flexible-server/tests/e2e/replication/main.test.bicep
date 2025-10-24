@@ -18,7 +18,7 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'dfpsrep'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = 'nga2'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //

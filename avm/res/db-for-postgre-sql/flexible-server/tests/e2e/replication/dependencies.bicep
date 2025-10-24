@@ -13,46 +13,26 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-
   location: location
 }
 
-resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview' = {
-  name: primaryServerName
-  location: location
-  sku: {
+module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:0.13.1' = {
+  name: '${uniqueString(deployment().name, location)}-flexibleServer'
+  params: {
+    name: primaryServerName
+    location: location
     tier: 'GeneralPurpose'
-    name: 'Standard_D2s_v3'
-  }
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${managedIdentity.id}': {}
-    }
-  }
-  properties: {
+    skuName: 'Standard_D2s_v3'
     version: '17'
-    authConfig: {
-      activeDirectoryAuth: 'Enabled'
-      passwordAuth: 'Disabled'
-    }
-    storage: {
-      storageSizeGB: 512
-      autoGrow: 'Enabled'
-    }
-    backup: {
-      backupRetentionDays: 7
-      geoRedundantBackup: 'Disabled'
-    }
-    replicationRole: 'Primary'
-    availabilityZone: '1'
-  }
-}
-
-// Configure Azure AD administrator for the server
-resource administrator 'Microsoft.DBforPostgreSQL/flexibleServers/administrators@2025-06-01-preview' = {
-  parent: flexibleServer
-  name: managedIdentity.name
-  properties: {
-    principalType: 'ServicePrincipal'
-    principalName: managedIdentity.properties.principalId
-    tenantId: tenant().tenantId
+    administrators: [
+      {
+        objectId: managedIdentity.properties.clientId
+        principalName: managedIdentity.name
+        principalType: 'ServicePrincipal'
+      }
+    ]
+    storageSizeGB: 512
+    autoGrow: 'Enabled'
+    backupRetentionDays: 7
+    geoRedundantBackup: 'Disabled'
+    availabilityZone: -1
   }
 }
 
@@ -63,7 +43,7 @@ output managedIdentityClientId string = managedIdentity.properties.clientId
 output managedIdentityName string = managedIdentity.name
 
 @description('The resource ID of the primary server.')
-output serverResourceId string = flexibleServer.id
+output serverResourceId string = flexibleServer.outputs.resourceId
 
 @description('The principal ID of the managed identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
