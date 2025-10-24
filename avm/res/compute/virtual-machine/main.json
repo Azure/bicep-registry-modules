@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "5626158199534722675"
+      "version": "0.38.33.27573",
+      "templateHash": "12439828045387582596"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -934,7 +934,7 @@
       "metadata": {
         "description": "The type for the application gateway backend address pool.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
         }
       }
     },
@@ -973,7 +973,7 @@
       "metadata": {
         "description": "The type for the application security group.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
         }
       }
     },
@@ -1005,7 +1005,7 @@
       "metadata": {
         "description": "The type for a backend address pool.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
         }
       }
     },
@@ -1107,7 +1107,7 @@
       "metadata": {
         "description": "The type for the inbound NAT rule.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
         }
       }
     },
@@ -1146,7 +1146,7 @@
       "metadata": {
         "description": "The type for the virtual network tap.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
         }
       }
     },
@@ -1180,7 +1180,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.8.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.9.1"
         }
       }
     },
@@ -1223,7 +1223,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.8.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.9.1"
         }
       }
     },
@@ -1245,7 +1245,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.8.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.9.1"
         }
       }
     },
@@ -1544,7 +1544,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1725,7 +1725,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1753,7 +1753,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1782,8 +1782,9 @@
         }
       },
       "metadata": {
+        "description": "The type for the network interface IP configuration output.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
         }
       }
     },
@@ -1858,7 +1859,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1876,7 +1877,7 @@
       "metadata": {
         "description": "The type for the sub resource.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
         }
       }
     }
@@ -1945,6 +1946,17 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use."
+      }
+    },
+    "diskControllerType": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "NVMe",
+        "SCSI"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies the disk controller type."
       }
     },
     "osDisk": {
@@ -2654,6 +2666,7 @@
               }
             }
           ],
+          "diskControllerType": "[parameters('diskControllerType')]",
           "imageReference": "[parameters('imageReference')]",
           "osDisk": {
             "name": "[coalesce(tryGet(parameters('osDisk'), 'name'), format('{0}-disk-os-01', parameters('name')))]",
@@ -2854,7 +2867,7 @@
         "count": "[length(parameters('nicConfigurations'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-VM-Nic-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2872,10 +2885,10 @@
             "value": "[parameters('location')]"
           },
           "enableIPForwarding": {
-            "value": "[coalesce(tryGet(parameters('nicConfigurations')[copyIndex()], 'enableIPForwarding'), false())]"
+            "value": "[tryGet(parameters('nicConfigurations')[copyIndex()], 'enableIPForwarding')]"
           },
           "enableAcceleratedNetworking": {
-            "value": "[coalesce(tryGet(parameters('nicConfigurations')[copyIndex()], 'enableAcceleratedNetworking'), true())]"
+            "value": "[tryGet(parameters('nicConfigurations')[copyIndex()], 'enableAcceleratedNetworking')]"
           },
           "dnsServers": "[if(contains(parameters('nicConfigurations')[copyIndex()], 'dnsServers'), if(not(empty(tryGet(parameters('nicConfigurations')[copyIndex()], 'dnsServers'))), createObject('value', tryGet(parameters('nicConfigurations')[copyIndex()], 'dnsServers')), createObject('value', createArray())), createObject('value', createArray()))]",
           "networkSecurityGroupResourceId": {
@@ -2907,8 +2920,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "774019590280042559"
+              "version": "0.38.33.27573",
+              "templateHash": "4477411705774057876"
             }
           },
           "definitions": {
@@ -3285,7 +3298,7 @@
               "metadata": {
                 "description": "The type for the application gateway backend address pool.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
                 }
               }
             },
@@ -3324,7 +3337,7 @@
               "metadata": {
                 "description": "The type for the application security group.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
                 }
               }
             },
@@ -3356,7 +3369,7 @@
               "metadata": {
                 "description": "The type for a backend address pool.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
                 }
               }
             },
@@ -3390,7 +3403,7 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.8.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.9.1"
                 }
               }
             },
@@ -3512,7 +3525,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -3555,7 +3568,7 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.8.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.9.1"
                 }
               }
             },
@@ -3657,7 +3670,7 @@
               "metadata": {
                 "description": "The type for the inbound NAT rule.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
                 }
               }
             },
@@ -3679,7 +3692,7 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.8.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.9.1"
                 }
               }
             },
@@ -3716,7 +3729,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -3745,8 +3758,9 @@
                 }
               },
               "metadata": {
+                "description": "The type for the network interface IP configuration output.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
                 }
               }
             },
@@ -3821,7 +3835,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -3839,7 +3853,7 @@
               "metadata": {
                 "description": "The type for the sub resource.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
                 }
               }
             },
@@ -3878,7 +3892,7 @@
               "metadata": {
                 "description": "The type for the virtual network tap.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
                 }
               }
             }
@@ -3911,11 +3925,11 @@
             },
             "enableIPForwarding": {
               "type": "bool",
-              "defaultValue": false
+              "nullable": true
             },
             "enableAcceleratedNetworking": {
               "type": "bool",
-              "defaultValue": false
+              "nullable": true
             },
             "dnsServers": {
               "type": "array",
@@ -3973,7 +3987,7 @@
               },
               "condition": "[and(not(empty(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'))), empty(tryGet(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), 'publicIPAddressResourceId')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-publicIP-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -4040,8 +4054,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "14921988046704902194"
+                      "version": "0.38.5.1644",
+                      "templateHash": "7550528442771433353"
                     },
                     "name": "Public IP Addresses",
                     "description": "This module deploys a Public IP Address."
@@ -4283,12 +4297,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -4509,10 +4530,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/publicIPAddresses@2024-10-01#properties/tags"
+                        },
                         "description": "Optional. Tags of the resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "diagnosticSettings": {
                       "type": "array",
@@ -4551,7 +4575,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.9.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.9.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -4596,7 +4620,7 @@
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
                       },
                       "dependsOn": [
                         "publicIpAddress"
@@ -4708,7 +4732,7 @@
             },
             "networkInterface": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-NetworkInterface', deployment().name)]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -4764,8 +4788,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "10218370167882238860"
+                      "version": "0.38.5.1644",
+                      "templateHash": "272838238520810437"
                     },
                     "name": "Network Interface",
                     "description": "This module deploys a Network Interface."
@@ -5336,12 +5360,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -5437,10 +5468,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/networkInterfaces@2024-07-01#properties/tags"
+                        },
                         "description": "Optional. Resource tags."
-                      }
+                      },
+                      "nullable": true
                     },
                     "enableTelemetry": {
                       "type": "bool",
@@ -5586,7 +5620,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-networkinterface.{0}.{1}', replace('0.5.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-networkinterface.{0}.{1}', replace('0.5.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -5651,7 +5685,7 @@
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
                       },
                       "dependsOn": [
                         "networkInterface"
@@ -5791,7 +5825,7 @@
     "vm_domainJoinExtension": {
       "condition": "[and(contains(parameters('extensionDomainJoinConfig'), 'enabled'), parameters('extensionDomainJoinConfig').enabled)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-VM-DomainJoin', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -5845,8 +5879,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13125609748815648088"
+              "version": "0.38.33.27573",
+              "templateHash": "12381209217361931756"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6027,7 +6061,7 @@
     "vm_aadJoinExtension": {
       "condition": "[parameters('extensionAadJoinConfig').enabled]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-VM-AADLogin', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -6074,8 +6108,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13125609748815648088"
+              "version": "0.38.33.27573",
+              "templateHash": "12381209217361931756"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6257,7 +6291,7 @@
     "vm_microsoftAntiMalwareExtension": {
       "condition": "[parameters('extensionAntiMalwareConfig').enabled]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-VM-MicrosoftAntiMalware', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -6306,8 +6340,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13125609748815648088"
+              "version": "0.38.33.27573",
+              "templateHash": "12381209217361931756"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6489,7 +6523,7 @@
     "vm_azureMonitorAgentExtension": {
       "condition": "[parameters('extensionMonitoringAgentConfig').enabled]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-VM-AzureMonitorAgent', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -6533,8 +6567,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13125609748815648088"
+              "version": "0.38.33.27573",
+              "templateHash": "12381209217361931756"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6716,7 +6750,7 @@
     "vm_dependencyAgentExtension": {
       "condition": "[parameters('extensionDependencyAgentConfig').enabled]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-VM-DependencyAgent', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -6765,8 +6799,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13125609748815648088"
+              "version": "0.38.33.27573",
+              "templateHash": "12381209217361931756"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6948,7 +6982,7 @@
     "vm_networkWatcherAgentExtension": {
       "condition": "[parameters('extensionNetworkWatcherAgentConfig').enabled]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-VM-NetworkWatcherAgent', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -6992,8 +7026,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13125609748815648088"
+              "version": "0.38.33.27573",
+              "templateHash": "12381209217361931756"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7175,7 +7209,7 @@
     "vm_desiredStateConfigurationExtension": {
       "condition": "[parameters('extensionDSCConfig').enabled]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-VM-DesiredStateConfiguration', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -7227,8 +7261,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13125609748815648088"
+              "version": "0.38.33.27573",
+              "templateHash": "12381209217361931756"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7410,7 +7444,7 @@
     "vm_customScriptExtension": {
       "condition": "[not(empty(parameters('extensionCustomScriptConfig')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-VM-CustomScriptExtension', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -7467,8 +7501,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13125609748815648088"
+              "version": "0.38.33.27573",
+              "templateHash": "12381209217361931756"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7651,7 +7685,7 @@
     "vm_azureDiskEncryptionExtension": {
       "condition": "[parameters('extensionAzureDiskEncryptionConfig').enabled]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-VM-AzureDiskEncryption', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -7701,8 +7735,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13125609748815648088"
+              "version": "0.38.33.27573",
+              "templateHash": "12381209217361931756"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7884,7 +7918,7 @@
     "vm_nvidiaGpuDriverWindowsExtension": {
       "condition": "[parameters('extensionNvidiaGpuDriverWindows').enabled]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-VM-NvidiaGpuDriverWindows', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -7930,8 +7964,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13125609748815648088"
+              "version": "0.38.33.27573",
+              "templateHash": "12381209217361931756"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8113,7 +8147,7 @@
     "vm_hostPoolRegistrationExtension": {
       "condition": "[parameters('extensionHostPoolRegistration').enabled]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-VM-HostPoolRegistration', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -8168,8 +8202,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13125609748815648088"
+              "version": "0.38.33.27573",
+              "templateHash": "12381209217361931756"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8351,7 +8385,7 @@
     "vm_azureGuestConfigurationExtension": {
       "condition": "[parameters('extensionGuestConfigurationExtension').enabled]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-VM-GuestConfiguration', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -8402,8 +8436,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13125609748815648088"
+              "version": "0.38.33.27573",
+              "templateHash": "12381209217361931756"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8585,7 +8619,7 @@
     "vm_backup": {
       "condition": "[not(empty(parameters('backupVaultName')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-VM-Backup', uniqueString(deployment().name, parameters('location')))]",
       "resourceGroup": "[parameters('backupVaultResourceGroup')]",
       "properties": {
@@ -8600,7 +8634,7 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "policyId": {
+          "policyResourceId": {
             "value": "[resourceId(parameters('backupVaultResourceGroup'), 'Microsoft.RecoveryServices/vaults/backupPolicies', parameters('backupVaultName'), parameters('backupPolicyName'))]"
           },
           "protectedItemType": {
@@ -8622,8 +8656,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13700395772485726477"
+              "version": "0.38.33.27573",
+              "templateHash": "11268134370143564492"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
@@ -8672,7 +8706,7 @@
                 "description": "Required. The backup item type."
               }
             },
-            "policyId": {
+            "policyResourceId": {
               "type": "string",
               "metadata": {
                 "description": "Required. ID of the backup policy with which this item is backed up."
@@ -8693,7 +8727,7 @@
               "location": "[parameters('location')]",
               "properties": {
                 "protectedItemType": "[parameters('protectedItemType')]",
-                "policyId": "[parameters('policyId')]",
+                "policyId": "[parameters('policyResourceId')]",
                 "sourceResourceId": "[parameters('sourceResourceId')]"
               }
             }
