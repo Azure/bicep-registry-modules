@@ -1279,7 +1279,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
           'config-storage': {
             accessKey: '<accessKey>'
             accountName: '<accountName>'
-            mountPath: '/mnt/config'
+            mountPath: '\\mounts\\config'
             protocol: 'Smb'
             shareName: 'config-share'
             type: 'AzureFiles'
@@ -1287,7 +1287,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
           'data-storage': {
             accessKey: '<accessKey>'
             accountName: '<accountName>'
-            mountPath: '/mnt/data'
+            mountPath: '\\mounts\\data'
             protocol: 'Smb'
             shareName: 'data-share'
             type: 'AzureFiles'
@@ -1295,28 +1295,19 @@ module site 'br/public:avm/res/web/site:<version>' = {
           'logs-storage': {
             accessKey: '<accessKey>'
             accountName: '<accountName>'
-            mountPath: '/mnt/logs'
+            mountPath: '\\mounts\\logs'
             protocol: 'Smb'
             shareName: 'logs-share'
             type: 'AzureFiles'
-          }
-          'temp-blob-storage': {
-            accessKey: '<accessKey>'
-            accountName: '<accountName>'
-            mountPath: '/mnt/temp'
-            protocol: 'Http'
-            shareName: 'temp-files'
-            type: 'AzureBlob'
           }
         }
       }
       {
         name: 'appsettings'
         properties: {
-          STORAGE_CONFIG_MOUNT: '/mnt/config'
-          STORAGE_DATA_MOUNT: '/mnt/data'
-          STORAGE_LOGS_MOUNT: '/mnt/logs'
-          STORAGE_TEMP_MOUNT: '/mnt/temp'
+          STORAGE_CONFIG_MOUNT: '\\mounts\\config'
+          STORAGE_DATA_MOUNT: '\\mounts\\data'
+          STORAGE_LOGS_MOUNT: '\\mounts\\logs'
         }
       }
     ]
@@ -1356,7 +1347,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
             "config-storage": {
               "accessKey": "<accessKey>",
               "accountName": "<accountName>",
-              "mountPath": "/mnt/config",
+              "mountPath": "\\mounts\\config",
               "protocol": "Smb",
               "shareName": "config-share",
               "type": "AzureFiles"
@@ -1364,7 +1355,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
             "data-storage": {
               "accessKey": "<accessKey>",
               "accountName": "<accountName>",
-              "mountPath": "/mnt/data",
+              "mountPath": "\\mounts\\data",
               "protocol": "Smb",
               "shareName": "data-share",
               "type": "AzureFiles"
@@ -1372,28 +1363,19 @@ module site 'br/public:avm/res/web/site:<version>' = {
             "logs-storage": {
               "accessKey": "<accessKey>",
               "accountName": "<accountName>",
-              "mountPath": "/mnt/logs",
+              "mountPath": "\\mounts\\logs",
               "protocol": "Smb",
               "shareName": "logs-share",
               "type": "AzureFiles"
-            },
-            "temp-blob-storage": {
-              "accessKey": "<accessKey>",
-              "accountName": "<accountName>",
-              "mountPath": "/mnt/temp",
-              "protocol": "Http",
-              "shareName": "temp-files",
-              "type": "AzureBlob"
             }
           }
         },
         {
           "name": "appsettings",
           "properties": {
-            "STORAGE_CONFIG_MOUNT": "/mnt/config",
-            "STORAGE_DATA_MOUNT": "/mnt/data",
-            "STORAGE_LOGS_MOUNT": "/mnt/logs",
-            "STORAGE_TEMP_MOUNT": "/mnt/temp"
+            "STORAGE_CONFIG_MOUNT": "\\mounts\\config",
+            "STORAGE_DATA_MOUNT": "\\mounts\\data",
+            "STORAGE_LOGS_MOUNT": "\\mounts\\logs"
           }
         }
       ]
@@ -1427,7 +1409,7 @@ param configs = [
       'config-storage': {
         accessKey: '<accessKey>'
         accountName: '<accountName>'
-        mountPath: '/mnt/config'
+        mountPath: '\\mounts\\config'
         protocol: 'Smb'
         shareName: 'config-share'
         type: 'AzureFiles'
@@ -1435,7 +1417,7 @@ param configs = [
       'data-storage': {
         accessKey: '<accessKey>'
         accountName: '<accountName>'
-        mountPath: '/mnt/data'
+        mountPath: '\\mounts\\data'
         protocol: 'Smb'
         shareName: 'data-share'
         type: 'AzureFiles'
@@ -1443,28 +1425,19 @@ param configs = [
       'logs-storage': {
         accessKey: '<accessKey>'
         accountName: '<accountName>'
-        mountPath: '/mnt/logs'
+        mountPath: '\\mounts\\logs'
         protocol: 'Smb'
         shareName: 'logs-share'
         type: 'AzureFiles'
-      }
-      'temp-blob-storage': {
-        accessKey: '<accessKey>'
-        accountName: '<accountName>'
-        mountPath: '/mnt/temp'
-        protocol: 'Http'
-        shareName: 'temp-files'
-        type: 'AzureBlob'
       }
     }
   }
   {
     name: 'appsettings'
     properties: {
-      STORAGE_CONFIG_MOUNT: '/mnt/config'
-      STORAGE_DATA_MOUNT: '/mnt/data'
-      STORAGE_LOGS_MOUNT: '/mnt/logs'
-      STORAGE_TEMP_MOUNT: '/mnt/temp'
+      STORAGE_CONFIG_MOUNT: '\\mounts\\config'
+      STORAGE_DATA_MOUNT: '\\mounts\\data'
+      STORAGE_LOGS_MOUNT: '\\mounts\\logs'
     }
   }
 ]
