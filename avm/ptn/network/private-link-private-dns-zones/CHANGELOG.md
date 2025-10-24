@@ -8,7 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Added Austria East to the list of regions
 
-## Breaking Changes
+### Breaking Changes
 
 - None
 
