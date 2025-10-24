@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.3.11034",
-      "templateHash": "8811194718452933465"
+      "templateHash": "1519164852009991278"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server."
@@ -114,42 +114,6 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type of replication settings for the server. Can only be set on existing flexible servers."
-      }
-    },
-    "authConfigType": {
-      "type": "object",
-      "properties": {
-        "activeDirectoryAuth": {
-          "type": "string",
-          "allowedValues": [
-            "Disabled",
-            "Enabled"
-          ],
-          "metadata": {
-            "description": "Required. Indicates if the server supports Microsoft Entra authentication."
-          }
-        },
-        "passwordAuth": {
-          "type": "string",
-          "allowedValues": [
-            "Disabled",
-            "Enabled"
-          ],
-          "metadata": {
-            "description": "Required. Indicates if the server supports password based authentication."
-          }
-        },
-        "tenantId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Identifier of the tenant of the delegated resource. Required in cross-tenant or multi-tenant scenarios."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type of authentication configuration for the server."
       }
     },
     "administratorType": {
@@ -805,10 +769,14 @@
       }
     },
     "authConfig": {
-      "$ref": "#/definitions/authConfigType",
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview#properties/properties/properties/authConfig"
+        },
         "description": "Required. The authentication configuration for the server."
-      }
+      },
+      "nullable": true
     },
     "location": {
       "type": "string",
@@ -981,7 +949,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01#properties/properties/properties/maintenanceWindow"
+          "source": "Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview#properties/properties/properties/maintenanceWindow"
         },
         "description": "Optional. Properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'."
       },
@@ -1103,7 +1071,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01#properties/tags"
+          "source": "Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -1146,6 +1114,10 @@
       }
     ],
     "enableReferencedModulesTelemetry": false,
+    "defaultAuthConfig": {
+      "activeDirectoryAuth": "Enabled",
+      "passwordAuth": "Disabled"
+    },
     "standByAvailabilityZone": "[tryGet(createObject('Disabled', -1, 'SameZone', parameters('availabilityZone'), 'ZoneRedundant', parameters('highAvailabilityZone')), parameters('highAvailability'))]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None'), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
@@ -1219,7 +1191,7 @@
       "properties": {
         "administratorLogin": "[parameters('administratorLogin')]",
         "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
-        "authConfig": "[parameters('authConfig')]",
+        "authConfig": "[coalesce(parameters('authConfig'), variables('defaultAuthConfig'))]",
         "availabilityZone": "[if(not(equals(parameters('availabilityZone'), -1)), string(parameters('availabilityZone')), null())]",
         "highAvailability": {
           "mode": "[parameters('highAvailability')]",

@@ -15,7 +15,7 @@ param administratorLoginPassword string?
 param administrators administratorType[]?
 
 @description('Required. The authentication configuration for the server.')
-param authConfig authConfigType
+param authConfig resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview'>.properties.authConfig?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -130,7 +130,7 @@ import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/av
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Optional. Properties for the maintenence window. If provided, \'customWindow\' property must exist and set to \'Enabled\'.')
-param maintenanceWindow resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01'>.properties.maintenanceWindow = {
+param maintenanceWindow resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview'>.properties.maintenanceWindow = {
   customWindow: 'Enabled'
   dayOfWeek: 0
   startHour: 1
@@ -189,7 +189,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01'>.tags?
+param tags resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -203,6 +203,11 @@ import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-co
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 var enableReferencedModulesTelemetry = false
+
+var defaultAuthConfig = {
+  activeDirectoryAuth: 'Enabled'
+  passwordAuth: 'Disabled'
+}
 
 var standByAvailabilityZone = {
   Disabled: -1
@@ -300,7 +305,7 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-pr
     administratorLogin: administratorLogin
     #disable-next-line use-secure-value-for-secure-inputs // Is defined as secure(). False-positive
     administratorLoginPassword: administratorLoginPassword
-    authConfig: authConfig
+    authConfig: authConfig ?? defaultAuthConfig // Apply WAF-aligned defaults if not provided
     availabilityZone: availabilityZone != -1 ? string(availabilityZone) : null
     highAvailability: {
       mode: highAvailability
@@ -600,17 +605,6 @@ type replicaType = {
 
   @description('Conditional. Used to indicate role of the server in replication set. Required if enabling replication.')
   role: ('AsyncReplica' | 'GeoAsyncReplica' | 'None' | 'Primary')
-}
-
-@export()
-@description('The type of authentication configuration for the server.')
-type authConfigType = {
-  @description('Required. Indicates if the server supports Microsoft Entra authentication.')
-  activeDirectoryAuth: ('Enabled' | 'Disabled')
-  @description('Required. Indicates if the server supports password based authentication.')
-  passwordAuth: ('Enabled' | 'Disabled')
-  @description('Optional. Identifier of the tenant of the delegated resource. Required in cross-tenant or multi-tenant scenarios.')
-  tenantId: string?
 }
 
 @export()

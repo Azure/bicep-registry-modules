@@ -13,7 +13,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-
   location: location
 }
 
-module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:0.13.1' = {
+module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:0.13.2' = {
   name: '${uniqueString(deployment().name, location)}-flexibleServer'
   params: {
     name: primaryServerName

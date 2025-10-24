@@ -51,8 +51,7 @@ module replicationTestDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       sourceServerResourceId: nestedDependencies.outputs.serverResourceId
-      // createMode: 'Replica'
-      availabilityZone: 1
+      availabilityZone: -1
       authConfig: {
         activeDirectoryAuth: 'Enabled'
         passwordAuth: 'Disabled'

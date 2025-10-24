@@ -57,11 +57,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
-    authConfig: {
-      activeDirectoryAuth: 'Enabled'
-      passwordAuth: 'Disabled'
-      tenantId: '<tenantId>'
-    }
     availabilityZone: 1
     name: 'dfpsmin001'
     skuName: 'Standard_D2s_v3'
@@ -74,6 +69,11 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
         principalType: 'ServicePrincipal'
       }
     ]
+    authConfig: {
+      activeDirectoryAuth: 'Enabled'
+      passwordAuth: 'Disabled'
+      tenantId: '<tenantId>'
+    }
   }
 }
 ```
@@ -91,13 +91,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "authConfig": {
-      "value": {
-        "activeDirectoryAuth": "Enabled",
-        "passwordAuth": "Disabled",
-        "tenantId": "<tenantId>"
-      }
-    },
     "availabilityZone": {
       "value": 1
     },
@@ -119,6 +112,13 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
           "principalType": "ServicePrincipal"
         }
       ]
+    },
+    "authConfig": {
+      "value": {
+        "activeDirectoryAuth": "Enabled",
+        "passwordAuth": "Disabled",
+        "tenantId": "<tenantId>"
+      }
     }
   }
 }
@@ -135,11 +135,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
-param authConfig = {
-  activeDirectoryAuth: 'Enabled'
-  passwordAuth: 'Disabled'
-  tenantId: '<tenantId>'
-}
 param availabilityZone = 1
 param name = 'dfpsmin001'
 param skuName = 'Standard_D2s_v3'
@@ -152,6 +147,11 @@ param administrators = [
     principalType: 'ServicePrincipal'
   }
 ]
+param authConfig = {
+  activeDirectoryAuth: 'Enabled'
+  passwordAuth: 'Disabled'
+  tenantId: '<tenantId>'
+}
 ```
 
 </details>
@@ -171,10 +171,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
-    authConfig: {
-      activeDirectoryAuth: 'Disabled'
-      passwordAuth: 'Enabled'
-    }
     availabilityZone: 1
     name: 'dfpfmax001'
     skuName: 'Standard_D2s_v3'
@@ -182,6 +178,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
+    authConfig: {
+      activeDirectoryAuth: 'Disabled'
+      passwordAuth: 'Enabled'
+    }
     autoGrow: 'Enabled'
     customerManagedKey: {
       keyName: '<keyName>'
@@ -215,12 +215,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "authConfig": {
-      "value": {
-        "activeDirectoryAuth": "Disabled",
-        "passwordAuth": "Enabled"
-      }
-    },
     "availabilityZone": {
       "value": 1
     },
@@ -239,6 +233,12 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     },
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
+    },
+    "authConfig": {
+      "value": {
+        "activeDirectoryAuth": "Disabled",
+        "passwordAuth": "Enabled"
+      }
     },
     "autoGrow": {
       "value": "Enabled"
@@ -287,10 +287,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
-param authConfig = {
-  activeDirectoryAuth: 'Disabled'
-  passwordAuth: 'Enabled'
-}
 param availabilityZone = 1
 param name = 'dfpfmax001'
 param skuName = 'Standard_D2s_v3'
@@ -298,6 +294,10 @@ param tier = 'GeneralPurpose'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
+param authConfig = {
+  activeDirectoryAuth: 'Disabled'
+  passwordAuth: 'Enabled'
+}
 param autoGrow = 'Enabled'
 param customerManagedKey = {
   keyName: '<keyName>'
@@ -333,10 +333,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
-    authConfig: {
-      activeDirectoryAuth: 'Disabled'
-      passwordAuth: 'Enabled'
-    }
     availabilityZone: -1
     name: 'dfpspvt001'
     skuName: 'Standard_D2s_v3'
@@ -344,6 +340,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
+    authConfig: {
+      activeDirectoryAuth: 'Disabled'
+      passwordAuth: 'Enabled'
+    }
     configurations: [
       {
         name: 'log_min_messages'
@@ -417,12 +417,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "authConfig": {
-      "value": {
-        "activeDirectoryAuth": "Disabled",
-        "passwordAuth": "Enabled"
-      }
-    },
     "availabilityZone": {
       "value": -1
     },
@@ -441,6 +435,12 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     },
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
+    },
+    "authConfig": {
+      "value": {
+        "activeDirectoryAuth": "Disabled",
+        "passwordAuth": "Enabled"
+      }
     },
     "configurations": {
       "value": [
@@ -527,10 +527,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
-param authConfig = {
-  activeDirectoryAuth: 'Disabled'
-  passwordAuth: 'Enabled'
-}
 param availabilityZone = -1
 param name = 'dfpspvt001'
 param skuName = 'Standard_D2s_v3'
@@ -538,6 +534,10 @@ param tier = 'GeneralPurpose'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
+param authConfig = {
+  activeDirectoryAuth: 'Disabled'
+  passwordAuth: 'Enabled'
+}
 param configurations = [
   {
     name: 'log_min_messages'
@@ -613,10 +613,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
-    authConfig: {
-      activeDirectoryAuth: 'Enabled'
-      passwordAuth: 'Enabled'
-    }
     availabilityZone: -1
     name: 'dfpspe001'
     skuName: 'Standard_D2ds_v5'
@@ -624,6 +620,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
+    authConfig: {
+      activeDirectoryAuth: 'Enabled'
+      passwordAuth: 'Enabled'
+    }
     geoRedundantBackup: 'Enabled'
     highAvailability: 'ZoneRedundant'
     maintenanceWindow: {
@@ -666,12 +666,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "authConfig": {
-      "value": {
-        "activeDirectoryAuth": "Enabled",
-        "passwordAuth": "Enabled"
-      }
-    },
     "availabilityZone": {
       "value": -1
     },
@@ -690,6 +684,12 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     },
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
+    },
+    "authConfig": {
+      "value": {
+        "activeDirectoryAuth": "Enabled",
+        "passwordAuth": "Enabled"
+      }
     },
     "geoRedundantBackup": {
       "value": "Enabled"
@@ -739,10 +739,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
-param authConfig = {
-  activeDirectoryAuth: 'Enabled'
-  passwordAuth: 'Enabled'
-}
 param availabilityZone = -1
 param name = 'dfpspe001'
 param skuName = 'Standard_D2ds_v5'
@@ -750,6 +746,10 @@ param tier = 'GeneralPurpose'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
+param authConfig = {
+  activeDirectoryAuth: 'Enabled'
+  passwordAuth: 'Enabled'
+}
 param geoRedundantBackup = 'Enabled'
 param highAvailability = 'ZoneRedundant'
 param maintenanceWindow = {
@@ -794,10 +794,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
-    authConfig: {
-      activeDirectoryAuth: 'Enabled'
-      passwordAuth: 'Disabled'
-    }
     availabilityZone: 1
     name: 'dfpspub001'
     skuName: 'Standard_D2s_v3'
@@ -810,6 +806,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
         principalType: 'ServicePrincipal'
       }
     ]
+    authConfig: {
+      activeDirectoryAuth: 'Enabled'
+      passwordAuth: 'Disabled'
+    }
     backupRetentionDays: 20
     configurations: [
       {
@@ -899,12 +899,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "authConfig": {
-      "value": {
-        "activeDirectoryAuth": "Enabled",
-        "passwordAuth": "Disabled"
-      }
-    },
     "availabilityZone": {
       "value": 1
     },
@@ -926,6 +920,12 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
           "principalType": "ServicePrincipal"
         }
       ]
+    },
+    "authConfig": {
+      "value": {
+        "activeDirectoryAuth": "Enabled",
+        "passwordAuth": "Disabled"
+      }
     },
     "backupRetentionDays": {
       "value": 20
@@ -1038,10 +1038,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
-param authConfig = {
-  activeDirectoryAuth: 'Enabled'
-  passwordAuth: 'Disabled'
-}
 param availabilityZone = 1
 param name = 'dfpspub001'
 param skuName = 'Standard_D2s_v3'
@@ -1054,6 +1050,10 @@ param administrators = [
     principalType: 'ServicePrincipal'
   }
 ]
+param authConfig = {
+  activeDirectoryAuth: 'Enabled'
+  passwordAuth: 'Disabled'
+}
 param backupRetentionDays = 20
 param configurations = [
   {
@@ -1194,8 +1194,7 @@ module replicationTestDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       sourceServerResourceId: nestedDependencies.outputs.serverResourceId
-      // createMode: 'Replica'
-      availabilityZone: 1
+      availabilityZone: -1
       authConfig: {
         activeDirectoryAuth: 'Enabled'
         passwordAuth: 'Disabled'
@@ -1228,10 +1227,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
-    authConfig: {
-      activeDirectoryAuth: 'Enabled'
-      passwordAuth: 'Disabled'
-    }
     availabilityZone: 1
     name: 'dfpswaf001'
     skuName: 'Standard_D2s_v3'
@@ -1244,6 +1239,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
         principalType: 'ServicePrincipal'
       }
     ]
+    authConfig: {
+      activeDirectoryAuth: 'Enabled'
+      passwordAuth: 'Disabled'
+    }
     configurations: [
       {
         name: 'log_min_messages'
@@ -1305,12 +1304,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "authConfig": {
-      "value": {
-        "activeDirectoryAuth": "Enabled",
-        "passwordAuth": "Disabled"
-      }
-    },
     "availabilityZone": {
       "value": 1
     },
@@ -1332,6 +1325,12 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
           "principalType": "ServicePrincipal"
         }
       ]
+    },
+    "authConfig": {
+      "value": {
+        "activeDirectoryAuth": "Enabled",
+        "passwordAuth": "Disabled"
+      }
     },
     "configurations": {
       "value": [
@@ -1408,10 +1407,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
-param authConfig = {
-  activeDirectoryAuth: 'Enabled'
-  passwordAuth: 'Disabled'
-}
 param availabilityZone = 1
 param name = 'dfpswaf001'
 param skuName = 'Standard_D2s_v3'
@@ -1424,6 +1419,10 @@ param administrators = [
     principalType: 'ServicePrincipal'
   }
 ]
+param authConfig = {
+  activeDirectoryAuth: 'Enabled'
+  passwordAuth: 'Disabled'
+}
 param configurations = [
   {
     name: 'log_min_messages'
@@ -1532,56 +1531,8 @@ param tags = {
 
 The authentication configuration for the server.
 
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`activeDirectoryAuth`](#parameter-authconfigactivedirectoryauth) | string | Indicates if the server supports Microsoft Entra authentication. |
-| [`passwordAuth`](#parameter-authconfigpasswordauth) | string | Indicates if the server supports password based authentication. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`tenantId`](#parameter-authconfigtenantid) | string | Identifier of the tenant of the delegated resource. Required in cross-tenant or multi-tenant scenarios. |
-
-### Parameter: `authConfig.activeDirectoryAuth`
-
-Indicates if the server supports Microsoft Entra authentication.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-  ]
-  ```
-
-### Parameter: `authConfig.passwordAuth`
-
-Indicates if the server supports password based authentication.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-  ]
-  ```
-
-### Parameter: `authConfig.tenantId`
-
-Identifier of the tenant of the delegated resource. Required in cross-tenant or multi-tenant scenarios.
-
 - Required: No
-- Type: string
+- Type: object
 
 ### Parameter: `availabilityZone`
 
