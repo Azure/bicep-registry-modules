@@ -24,7 +24,7 @@ param secretSourceResourceId string = ''
 param secretVersion string = ''
 
 @description('Optional. The subject alternative names of the secret.')
-param subjectAlternativeNames array = []
+param subjectAlternativeNames string[] = []
 
 @description('Optional. Indicates whether to use the latest version of the secret.')
 param useLatestVersion bool = false

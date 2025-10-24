@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app/container-app/CHANGELOG.md).
 
+## 0.19.0
+
+### Changes
+
+- Added `kind` parameter to support different types of container apps (e.g., 'workflowapp', 'functionapp').
+- Updated API versions to v2025-02-02-preview for additional features.
+
+### Breaking Changes
+
+- None
+
 ## 0.18.2
 
 ### Changes

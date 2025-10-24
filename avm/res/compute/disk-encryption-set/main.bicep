@@ -7,14 +7,14 @@ param name string
 @description('Optional. Resource location.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
 @description('Required. Resource ID of the KeyVault containing the key or secret.')
 param keyVaultResourceId string
 
-@description('Required. Key URL (with version) pointing to a key or secret in KeyVault.')
+@description('Required. The name of the key used for encryption.')
 param keyName string
 
 @description('Optional. The version of the customer managed key to reference for encryption. If not provided, the latest key version is used.')
@@ -33,13 +33,13 @@ param federatedClientId string = 'None'
 @description('Optional. Set this flag to true to enable auto-updating of this disk encryption set to the latest key version.')
 param rotationToLatestKeyVersionEnabled bool = false
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType = {
   systemAssigned: true
 }
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -152,7 +152,7 @@ module keyVaultPermissions 'modules/nested_keyVaultPermissions.bicep' = [
   }
 ]
 
-resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2023-10-02' = {
+resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' = {
   name: name
   location: location
   tags: tags

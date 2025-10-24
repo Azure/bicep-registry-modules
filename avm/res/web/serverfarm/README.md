@@ -446,7 +446,7 @@ param zoneRedundant = true
 
 ### Example 4: _WAF-aligned_
 
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework. Note - whilst this test is WAF aligned, zoneRedundant is set to false to avoid temporary AVM environment challenges. It is highly recommended that users of this module set the property value to true.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
