@@ -347,6 +347,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
                     keyVaultUri: (customerManagedKeyManagedDisk!.?keyVaultResourceId != customerManagedKey!.?keyVaultResourceId)
                       ? cMKManagedDiskKeyVault!.properties.vaultUri
                       : cMKKeyVault!.properties.vaultUri
+                    keyName: customerManagedKeyManagedDisk!.keyName
                     // Cases
                     // - If the defined vaults differ, use the managed disk key vault and key
                     // - If the defined vaults are the same, but the keys differ, use the managed disk key

@@ -77,9 +77,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
 @description('The resource ID of the created Key Vault.')
 output keyVaultResourceId string = keyVault.id
 
-@description('The resource ID of the created Disk Key Vault.')
-output keyVaultDiskResourceId string = keyVault.id
-
 @description('The name of the created Key Vault encryption key.')
 output keyVaultKeyName string = keyVault::key.name
 
