@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/dev-test-lab/lab/CHANGELOG.md).
 
+## 0.4.4
+
+### Changes
+
+- Added support for configuring storage account access method (User Assigned Managed Identity or Shared Key) for DevTest Labs.
+
+### Breaking Changes
+
+- None
+
 ## 0.4.3
 
 ### Changes

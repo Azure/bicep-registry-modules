@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "12831024384586215893"
+      "version": "0.38.33.27573",
+      "templateHash": "8282045703947063660"
     },
     "name": "DevTest Labs",
     "description": "This module deploys a DevTest Lab."
@@ -1039,6 +1039,13 @@
         "description": "Optional. The resource ID of the storage account used to store artifacts and images by the lab. Also used for defaultStorageAccount, defaultPremiumStorageAccount and premiumDataDiskStorageAccount properties. If left empty, a default storage account will be created by the lab and used."
       }
     },
+    "storageAccountAccess": {
+      "type": "string",
+      "defaultValue": "sas",
+      "metadata": {
+        "description": "Optional. Configure whether the lab uses a User Assigned Managed Identity or a Shared Key to access the storage account. This identity must have at least \"Storage Blob Data Reader\" role on the storage account. Default is \"sas\" which uses a Shared Key. If needing to user managed identities, set this property value to the resource ID of the User Assigned Managed Identity."
+      }
+    },
     "mandatoryArtifactsResourceIdsLinux": {
       "type": "array",
       "defaultValue": [],
@@ -1269,6 +1276,7 @@
       "identity": "[variables('identity')]",
       "properties": {
         "artifactsStorageAccount": "[parameters('artifactsStorageAccount')]",
+        "storageAccountAccess": "[parameters('storageAccountAccess')]",
         "announcement": "[parameters('announcement')]",
         "environmentPermission": "[parameters('environmentPermission')]",
         "extendedProperties": "[parameters('extendedProperties')]",
@@ -1330,7 +1338,7 @@
         "count": "[length(coalesce(parameters('virtualnetworks'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Lab-VirtualNetwork-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1367,8 +1375,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "8445856704861775730"
+              "version": "0.38.33.27573",
+              "templateHash": "7178170914374803267"
             },
             "name": "DevTest Lab Virtual Networks",
             "description": "This module deploys a DevTest Lab Virtual Network.\n\nLab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines."
@@ -1605,7 +1613,7 @@
         "count": "[length(coalesce(parameters('policies'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Lab-PolicySets-Policy-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1644,8 +1652,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "8873903756685797283"
+              "version": "0.38.33.27573",
+              "templateHash": "5910550412582055668"
             },
             "name": "DevTest Lab Policy Sets Policies",
             "description": "This module deploys a DevTest Lab Policy Sets Policy.\n\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings."
@@ -1773,7 +1781,7 @@
         "count": "[length(coalesce(parameters('schedules'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Lab-Schedules-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1822,8 +1830,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13883158783796437346"
+              "version": "0.38.33.27573",
+              "templateHash": "5748782575239594930"
             },
             "name": "DevTest Lab Schedules",
             "description": "This module deploys a DevTest Lab Schedule.\n\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines."
@@ -2079,7 +2087,7 @@
         "count": "[length(coalesce(parameters('notificationchannels'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Lab-NotificationChannels-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2119,8 +2127,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "1103267499871744968"
+              "version": "0.38.33.27573",
+              "templateHash": "16443550604461843214"
             },
             "name": "DevTest Lab Notification Channels",
             "description": "This module deploys a DevTest Lab Notification Channel.\n\nNotification channels are used by the schedule resource type in order to send notifications or events to email addresses and/or webhooks."
@@ -2248,7 +2256,7 @@
         "count": "[length(coalesce(parameters('artifactsources'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Lab-ArtifactSources-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2297,8 +2305,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "4678850000249407168"
+              "version": "0.38.33.27573",
+              "templateHash": "2257913499916958223"
             },
             "name": "DevTest Lab Artifact Sources",
             "description": "This module deploys a DevTest Lab Artifact Source.\n\nAn artifact source allows you to create custom artifacts for the VMs in the lab, or use Azure Resource Manager templates to create a custom test environment. You must add a private Git repository for the artifacts or Resource Manager templates that your team creates. The repository can be hosted on GitHub or on Azure DevOps Services."
@@ -2444,7 +2452,7 @@
     "lab_costs": {
       "condition": "[not(empty(parameters('costs')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Lab-Costs', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2514,8 +2522,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "12382238122958060703"
+              "version": "0.38.33.27573",
+              "templateHash": "5491973684926460005"
             },
             "name": "DevTest Lab Costs",
             "description": "This module deploys a DevTest Lab Cost.\n\nManage lab costs by setting a spending target that can be viewed in the Monthly Estimated Cost Trend chart. DevTest Labs can send a notification when spending reaches the specified target threshold."
@@ -2797,7 +2805,7 @@
         "count": "[length(coalesce(parameters('secrets'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Lab-Secrets-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2827,8 +2835,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "5679672050000621262"
+              "version": "0.38.33.27573",
+              "templateHash": "9222608230966856141"
             },
             "name": "DevTest Lab Secrets",
             "description": "This module deploys a DevTest Lab Secret.\n\nLab secrets will be accessible to all lab users. Depending on their scope, secrets can be used to securely provide credentials when creating formulas, virtual machines, artifacts, or ARM templates."

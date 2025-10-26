@@ -18,12 +18,12 @@ param virtualNetworkName string
 
 var addressPrefix = '10.0.0.0/16'
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -41,7 +41,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2022-07-01' = {
+  resource key 'keys@2025-05-01' = {
     name: 'encryptionKey'
     properties: {
       kty: 'RSA'
@@ -49,7 +49,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   }
 }
 
-resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2021-04-01' = {
+resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' = {
   name: diskEncryptionSetName
   location: location
   identity: {
@@ -79,7 +79,7 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
   name: storageAccountName
   location: location
   kind: 'StorageV2'
@@ -92,7 +92,20 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   }
 }
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+resource storageBlobDataReaderRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${storageAccount.id}-${managedIdentity.id}-Storage-Blob-Data-Reader-RoleAssignment')
+  scope: storageAccount
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
+    ) // Storage Blob Data Reader
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-10-01' = {
   name: virtualNetworkName
   location: location
   properties: {

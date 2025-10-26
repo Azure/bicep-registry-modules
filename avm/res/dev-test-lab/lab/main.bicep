@@ -42,6 +42,9 @@ param labStorageType string = 'Premium'
 @description('Optional. The resource ID of the storage account used to store artifacts and images by the lab. Also used for defaultStorageAccount, defaultPremiumStorageAccount and premiumDataDiskStorageAccount properties. If left empty, a default storage account will be created by the lab and used.')
 param artifactsStorageAccount string = ''
 
+@description('Optional. Configure whether the lab uses a User Assigned Managed Identity or a Shared Key to access the storage account. This identity must have at least "Storage Blob Data Reader" role on the storage account. Default is "sas" which uses a Shared Key. If needing to user managed identities, set this property value to the resource ID of the User Assigned Managed Identity.')
+param storageAccountAccess string = 'sas'
+
 @description('Optional. The ordered list of artifact resource IDs that should be applied on all Linux VM creations by default, prior to the artifacts specified by the user.')
 param mandatoryArtifactsResourceIdsLinux array = []
 
@@ -201,6 +204,7 @@ resource lab 'Microsoft.DevTestLab/labs@2018-10-15-preview' = {
   identity: identity
   properties: {
     artifactsStorageAccount: artifactsStorageAccount
+    storageAccountAccess: storageAccountAccess
     announcement: announcement
     environmentPermission: environmentPermission
     extendedProperties: extendedProperties
