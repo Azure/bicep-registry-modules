@@ -54,21 +54,21 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-// @batchSize(1)
-// module testDeployment '../../../main.bicep' = [
-//   for iteration in ['init', 'idem']: {
-//     scope: resourceGroup
-//     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-//     params: {
-//       name: '${namePrefix}${serviceShort}001'
-//       customerManagedKey: {
-//         keyName: nestedDependencies.outputs.keyVaultKeyName
-//         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-//       }
-//       customerManagedKeyManagedDisk: {
-//         keyName: nestedDependencies.outputs.keyVaultDiskKeyName
-//         keyVaultResourceId: nestedDependencies.outputs.keyVaultDiskResourceId
-//       }
-//     }
-//   }
-// ]
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      customerManagedKey: {
+        keyName: nestedDependencies.outputs.keyVaultKeyName
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+      }
+      customerManagedKeyManagedDisk: {
+        keyName: nestedDependencies.outputs.keyVaultDiskKeyName
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultDiskResourceId
+      }
+    }
+  }
+]

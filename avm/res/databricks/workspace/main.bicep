@@ -346,7 +346,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
                     // Case: Key Vault  Gen == Key Vault DE
                     // Case: Key Vault Gen != Key Vault DE
                     keyVersion: last(split(
-                      (customerManagedKeyManagedDisk!.?keyVaultResourceId != customerManagedKey!.?keyVaultResourceId && customerManagedKeyManagedDisk!.?keyName != customerManagedKey!.?keyName)
+                      (customerManagedKeyManagedDisk!.?keyVaultResourceId != customerManagedKey!.?keyVaultResourceId || customerManagedKeyManagedDisk!.?keyName != customerManagedKey!.?keyName)
                         ? cMKManagedDiskKeyVault::cMKKey!.properties.keyUriWithVersion
                         : cMKKeyVault::cMKKey!.properties.keyUriWithVersion,
                       '/'
