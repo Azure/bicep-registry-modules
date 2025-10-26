@@ -61,18 +61,18 @@ resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
 //   }
 // }
 
-resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Key-Vault-Crypto-User-RoleAssignment')
-  scope: keyVault::key
-  properties: {
-    principalId: databricksApplicationObjectId
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      '12338af0-0e69-4776-bea7-57ae8d297424'
-    ) // Key Vault Crypto User
-    principalType: 'ServicePrincipal'
-  }
-}
+// resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+//   name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Key-Vault-Crypto-User-RoleAssignment')
+//   scope: keyVault::key
+//   properties: {
+//     principalId: databricksApplicationObjectId
+//     roleDefinitionId: subscriptionResourceId(
+//       'Microsoft.Authorization/roleDefinitions',
+//       '12338af0-0e69-4776-bea7-57ae8d297424'
+//     ) // Key Vault Crypto User
+//     principalType: 'ServicePrincipal'
+//   }
+// }
 
 @description('The resource ID of the created Key Vault.')
 output keyVaultResourceId string = keyVault.id
