@@ -47,20 +47,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
   }
 }
 
-// TODO: Temp REMOVE
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(keyVaultName, '701e72da-1da4-4cc6-a6be-9c2b0248346a')
-  scope: keyVault
-  properties: {
-    principalId: '701e72da-1da4-4cc6-a6be-9c2b0248346a'
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      '00482a5a-887f-4fb3-b363-3b7fe8e74483'
-    ) // Admin
-    principalType: 'User'
-  }
-}
-
 resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Key-Vault-Crypto-User-RoleAssignment')
   scope: keyVault::key
