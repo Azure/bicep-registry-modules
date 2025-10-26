@@ -343,8 +343,10 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
                       ? cMKManagedDiskKeyVault!.properties.vaultUri
                       : cMKKeyVault!.properties.vaultUri
                     keyName: customerManagedKeyManagedDisk!.keyName
+                    // Case: Key Vault  Gen == Key Vault DE
+                    // Case: Key Vault Gen != Key Vault DE
                     keyVersion: last(split(
-                      (customerManagedKeyManagedDisk!.?keyVaultResourceId != customerManagedKey!.?keyVaultResourceId)
+                      (customerManagedKeyManagedDisk!.?keyVaultResourceId != customerManagedKey!.?keyVaultResourceId && customerManagedKeyManagedDisk!.?keyName != customerManagedKey!.?keyName)
                         ? cMKManagedDiskKeyVault::cMKKey!.properties.keyUriWithVersion
                         : cMKKeyVault::cMKKey!.properties.keyUriWithVersion,
                       '/'
@@ -447,7 +449,7 @@ resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
 ]
 
 @batchSize(1)
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -511,7 +513,7 @@ var _storageAccountId = resourceId(
 )
 
 @batchSize(1)
-module storageAccount_storageAccountPrivateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module storageAccount_storageAccountPrivateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (storageAccountPrivateEndpoints ?? []): if (privateStorageAccount == 'Enabled') {
     name: '${uniqueString(deployment().name, location)}-workspacestorage-PrivateEndpoint-${index}'
     scope: resourceGroup(
