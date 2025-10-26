@@ -207,7 +207,8 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empt
 }
 
 // Added condition if the key vault for the managed disk is the same as for the default encryption. Without the condition, the same key vault would be defined twice in the same template, which is not allowed
-resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && customerManagedKeyManagedDisk.?keyVaultResourceId != customerManagedKey.?keyVaultResourceId) {
+// resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && customerManagedKeyManagedDisk.?keyVaultResourceId != customerManagedKey.?keyVaultResourceId) {
+resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId)) {
   name: last(split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/')[2],
@@ -339,18 +340,26 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
               ? {
                   keySource: 'Microsoft.Keyvault'
                   keyVaultProperties: {
-                    keyVaultUri: (customerManagedKeyManagedDisk!.?keyVaultResourceId != customerManagedKey!.?keyVaultResourceId)
-                      ? cMKManagedDiskKeyVault!.properties.vaultUri
-                      : cMKKeyVault!.properties.vaultUri
+                    keyVaultUri: cMKManagedDiskKeyVault!.properties.vaultUri
                     keyName: customerManagedKeyManagedDisk!.keyName
                     // Case: Key Vault  Gen == Key Vault DE
                     // Case: Key Vault Gen != Key Vault DE
-                    keyVersion: last(split(
-                      (customerManagedKeyManagedDisk!.?keyVaultResourceId != customerManagedKey!.?keyVaultResourceId || customerManagedKeyManagedDisk!.?keyName != customerManagedKey!.?keyName)
-                        ? cMKManagedDiskKeyVault::cMKKey!.properties.keyUriWithVersion
-                        : cMKKeyVault::cMKKey!.properties.keyUriWithVersion,
-                      '/'
-                    ))
+                    keyVersion: !empty(customerManagedKeyManagedDisk.?keyVersion)
+                      ? customerManagedKeyManagedDisk!.?keyVersion!
+                      : last(split(cMKManagedDiskKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
+                    // keyVaultProperties: {
+                    //   keyVaultUri: (customerManagedKeyManagedDisk!.?keyVaultResourceId != customerManagedKey!.?keyVaultResourceId)
+                    //     ? cMKManagedDiskKeyVault!.properties.vaultUri
+                    //     : cMKKeyVault!.properties.vaultUri
+                    //   keyName: customerManagedKeyManagedDisk!.keyName
+                    //   // Case: Key Vault  Gen == Key Vault DE
+                    //   // Case: Key Vault Gen != Key Vault DE
+                    //   keyVersion: last(split(
+                    //     (customerManagedKeyManagedDisk!.?keyVaultResourceId != customerManagedKey!.?keyVaultResourceId || customerManagedKeyManagedDisk!.?keyName != customerManagedKey!.?keyName)
+                    //       ? cMKManagedDiskKeyVault::cMKKey!.properties.keyUriWithVersion
+                    //       : cMKKeyVault::cMKKey!.properties.keyUriWithVersion,
+                    //     '/'
+                    //   ))
                   }
                   rotationToLatestKeyVersionEnabled: (customerManagedKeyManagedDisk.?autoRotationEnabled ?? true) ?? false
                 }
