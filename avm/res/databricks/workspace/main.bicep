@@ -215,7 +215,7 @@ resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing 
     split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && !empty(customerManagedKeyManagedDisk.?keyName)) {
+  resource cMKManagedDiskKey 'keys@2024-11-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && !empty(customerManagedKeyManagedDisk.?keyName)) {
     name: customerManagedKeyManagedDisk.?keyName ?? 'dummyKey'
   }
 }
@@ -346,7 +346,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
                     // Case: Key Vault Gen != Key Vault DE
                     keyVersion: !empty(customerManagedKeyManagedDisk.?keyVersion)
                       ? customerManagedKeyManagedDisk!.?keyVersion!
-                      : last(split(cMKManagedDiskKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
+                      : last(split(cMKManagedDiskKeyVault::cMKManagedDiskKey!.properties.keyUriWithVersion, '/'))
                     // keyVaultProperties: {
                     //   keyVaultUri: (customerManagedKeyManagedDisk!.?keyVaultResourceId != customerManagedKey!.?keyVaultResourceId)
                     //     ? cMKManagedDiskKeyVault!.properties.vaultUri
