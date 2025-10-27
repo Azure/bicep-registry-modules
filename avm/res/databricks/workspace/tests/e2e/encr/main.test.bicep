@@ -66,8 +66,7 @@ module testDeployment '../../../main.bicep' = [
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       }
       customerManagedKeyManagedDisk: {
-        // keyName: nestedDependencies.outputs.keyVaultDiskKeyName
-        keyName: nestedDependencies.outputs.keyVaultKeyName
+        keyName: nestedDependencies.outputs.keyVaultDiskKeyName
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       }
     }
