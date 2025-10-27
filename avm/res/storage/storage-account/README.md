@@ -21,7 +21,7 @@ This module deploys a Storage Account.
 | `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
-| `Microsoft.Storage/storageAccounts` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts)</li></ul> |
+| `Microsoft.Storage/storageAccounts` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers_immutabilitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers/immutabilityPolicies)</li></ul> |
@@ -29,6 +29,7 @@ This module deploys a Storage Account.
 | `Microsoft.Storage/storageAccounts/fileServices/shares` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices_shares.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices/shares)</li></ul> |
 | `Microsoft.Storage/storageAccounts/localUsers` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_localusers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/localUsers)</li></ul> |
 | `Microsoft.Storage/storageAccounts/managementPolicies` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_managementpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/managementPolicies)</li></ul> |
+| `Microsoft.Storage/storageAccounts/objectReplicationPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_objectreplicationpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/objectReplicationPolicies)</li></ul> |
 | `Microsoft.Storage/storageAccounts/queueServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/queueServices)</li></ul> |
 | `Microsoft.Storage/storageAccounts/queueServices/queues` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices_queues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/queueServices/queues)</li></ul> |
 | `Microsoft.Storage/storageAccounts/tableServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_tableservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/tableServices)</li></ul> |
@@ -50,10 +51,11 @@ The following section provides usage examples for the module, which were used to
 - [Deploying with a key vault reference to save secrets](#example-6-deploying-with-a-key-vault-reference-to-save-secrets)
 - [Using large parameter set](#example-7-using-large-parameter-set)
 - [Deploying with a NFS File Share](#example-8-deploying-with-a-nfs-file-share)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-9-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-10-using-customer-managed-keys-with-user-assigned-identity)
-- [Deploying as Storage Account version 1](#example-11-deploying-as-storage-account-version-1)
-- [WAF-aligned](#example-12-waf-aligned)
+- [Object Replication](#example-9-object-replication)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-10-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-11-using-customer-managed-keys-with-user-assigned-identity)
+- [Deploying as Storage Account version 1](#example-12-deploying-as-storage-account-version-1)
+- [WAF-aligned](#example-13-waf-aligned)
 
 ### Example 1: _Deploying as a Blob Storage_
 
@@ -2316,7 +2318,156 @@ param skuName = 'Premium_LRS'
 </details>
 <p>
 
-### Example 9: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 9: _Object Replication_
+
+This instance deploys the module with Object Replication features.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  name: 'storageAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'ssaobre001'
+    // Non-required parameters
+    blobServices: {
+      changeFeedEnabled: true
+      containers: [
+        {
+          name: 'container01'
+        }
+      ]
+      isVersioningEnabled: true
+    }
+    objectReplicationPolicies: [
+      {
+        destinationNameOrResourceId: '<destinationNameOrResourceId>'
+        rules: [
+          {
+            destinationContainer: '<destinationContainer>'
+            filters: {
+              minCreationTime: '2025-01-01T00:00:00Z'
+              prefixMatch: [
+                'documents/'
+                'images/'
+              ]
+            }
+            sourceContainer: 'container01'
+          }
+        ]
+      }
+    ]
+    skuName: 'Standard_LRS'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssaobre001"
+    },
+    // Non-required parameters
+    "blobServices": {
+      "value": {
+        "changeFeedEnabled": true,
+        "containers": [
+          {
+            "name": "container01"
+          }
+        ],
+        "isVersioningEnabled": true
+      }
+    },
+    "objectReplicationPolicies": {
+      "value": [
+        {
+          "destinationNameOrResourceId": "<destinationNameOrResourceId>",
+          "rules": [
+            {
+              "destinationContainer": "<destinationContainer>",
+              "filters": {
+                "minCreationTime": "2025-01-01T00:00:00Z",
+                "prefixMatch": [
+                  "documents/",
+                  "images/"
+                ]
+              },
+              "sourceContainer": "container01"
+            }
+          ]
+        }
+      ]
+    },
+    "skuName": {
+      "value": "Standard_LRS"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssaobre001'
+// Non-required parameters
+param blobServices = {
+  changeFeedEnabled: true
+  containers: [
+    {
+      name: 'container01'
+    }
+  ]
+  isVersioningEnabled: true
+}
+param objectReplicationPolicies = [
+  {
+    destinationNameOrResourceId: '<destinationNameOrResourceId>'
+    rules: [
+      {
+        destinationContainer: '<destinationContainer>'
+        filters: {
+          minCreationTime: '2025-01-01T00:00:00Z'
+          prefixMatch: [
+            'documents/'
+            'images/'
+          ]
+        }
+        sourceContainer: 'container01'
+      }
+    ]
+  }
+]
+param skuName = 'Standard_LRS'
+```
+
+</details>
+<p>
+
+### Example 10: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
@@ -2467,7 +2618,7 @@ param privateEndpoints = [
 </details>
 <p>
 
-### Example 10: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 11: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -2641,7 +2792,7 @@ param privateEndpoints = [
 </details>
 <p>
 
-### Example 11: _Deploying as Storage Account version 1_
+### Example 12: _Deploying as Storage Account version 1_
 
 This instance deploys the module as Storage Account version 1.
 
@@ -2705,7 +2856,7 @@ param kind = 'Storage'
 </details>
 <p>
 
-### Example 12: _WAF-aligned_
+### Example 13: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -3551,6 +3702,7 @@ param tags = {
 | [`managementPolicyRules`](#parameter-managementpolicyrules) | array | The Storage Account ManagementPolicies Rules. |
 | [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | Set the minimum TLS version on request to storage. The TLS versions 1.0 and 1.1 are deprecated and not supported anymore. |
 | [`networkAcls`](#parameter-networkacls) | object | Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny. |
+| [`objectReplicationPolicies`](#parameter-objectreplicationpolicies) | array | Object replication policies for the storage account. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. |
 | [`queueServices`](#parameter-queueservices) | object | Queue service and queues to create. |
@@ -5255,6 +5407,55 @@ Sets the virtual network rules.
 
 - Required: No
 - Type: array
+
+### Parameter: `objectReplicationPolicies`
+
+Object replication policies for the storage account.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destinationNameOrResourceId`](#parameter-objectreplicationpoliciesdestinationnameorresourceid) | string | The name or resource ID of the destination storage account. |
+| [`rules`](#parameter-objectreplicationpoliciesrules) | array | The storage account object replication rules. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enableMetrics`](#parameter-objectreplicationpoliciesenablemetrics) | bool | Indicates whether metrics are enabled for the object replication policy. |
+| [`name`](#parameter-objectreplicationpoliciesname) | string | The name of the object replication policy. If not provided, a GUID will be generated. |
+
+### Parameter: `objectReplicationPolicies.destinationNameOrResourceId`
+
+The name or resource ID of the destination storage account.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `objectReplicationPolicies.rules`
+
+The storage account object replication rules.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `objectReplicationPolicies.enableMetrics`
+
+Indicates whether metrics are enabled for the object replication policy.
+
+- Required: No
+- Type: bool
+
+### Parameter: `objectReplicationPolicies.name`
+
+The name of the object replication policy. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints`
 

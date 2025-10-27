@@ -62,7 +62,7 @@ param accessTier string = 'Hot'
 param largeFileSharesState string = 'Disabled'
 
 @description('Optional. Provides the identity based authentication settings for Azure Files.')
-param azureFilesIdentityBasedAuthentication resourceInput<'Microsoft.Storage/storageAccounts@2024-01-01'>.properties.azureFilesIdentityBasedAuthentication?
+param azureFilesIdentityBasedAuthentication resourceInput<'Microsoft.Storage/storageAccounts@2025-01-01'>.properties.azureFilesIdentityBasedAuthentication?
 
 @description('Optional. A boolean flag which indicates whether the default authentication is OAuth or not.')
 param defaultToOAuthAuthentication bool = false
@@ -75,7 +75,7 @@ import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-com
 param privateEndpoints privateEndpointMultiServiceType[]?
 
 @description('Optional. The Storage Account ManagementPolicies Rules.')
-param managementPolicyRules resourceInput<'Microsoft.Storage/storageAccounts/managementPolicies@2024-01-01'>.properties.policy.rules?
+param managementPolicyRules resourceInput<'Microsoft.Storage/storageAccounts/managementPolicies@2025-01-01'>.properties.policy.rules?
 
 @description('Optional. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
 param networkAcls networkAclsType?
@@ -151,7 +151,7 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 param lock lockType?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Storage/storageAccounts@2024-01-01'>.tags?
+param tags resourceInput<'Microsoft.Storage/storageAccounts@2025-01-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -196,6 +196,9 @@ param secretsExportConfiguration secretsExportConfigurationType?
 
 @description('Optional. The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default. Cannot be enabled for ADLS Gen2 storage accounts.')
 param immutableStorageWithVersioning resourceInput<'Microsoft.Storage/storageAccounts@2025-01-01'>.properties.immutableStorageWithVersioning?
+
+@description('Optional. Object replication policies for the storage account.')
+param objectReplicationPolicies objectReplicationPolicyType[]?
 
 var enableReferencedModulesTelemetry = false
 
@@ -352,7 +355,7 @@ var formattedManagementPolicies = union(
 )
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.storage-storageaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -370,7 +373,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
@@ -390,7 +393,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
   name: name
   location: location
   kind: kind
@@ -734,6 +737,24 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
   }
 }
 
+resource storageAccount_objectReplicationPolicies 'Microsoft.Storage/storageAccounts/objectReplicationPolicies@2025-01-01' = [
+  for (policy, index) in (objectReplicationPolicies ?? []): {
+    parent: storageAccount
+    name: policy.?name ?? guid(storageAccount.id, policy.destinationNameOrResourceId, string(index))
+    properties: {
+      destinationAccount: policy.destinationNameOrResourceId
+      metrics: {
+        enabled: policy.?enableMetrics ?? false
+      }
+      rules: policy.?rules ?? []
+      sourceAccount: storageAccount.name
+    }
+    dependsOn: [
+      storageAccount_blobServices
+    ]
+  }
+]
+
 @description('The resource ID of the deployed storage account.')
 output resourceId string = storageAccount.id
 
@@ -1014,4 +1035,20 @@ type tableServiceType = {
 
   @description('Optional. The diagnostic settings of the service.')
   diagnosticSettings: diagnosticSettingFullType[]?
+}
+
+@export()
+@description('The type of an object replication policy.')
+type objectReplicationPolicyType = {
+  @description('Optional. The name of the object replication policy. If not provided, a GUID will be generated.')
+  name: string?
+
+  @description('Required. The name or resource ID of the destination storage account.')
+  destinationNameOrResourceId: string
+
+  @description('Optional. Indicates whether metrics are enabled for the object replication policy.')
+  enableMetrics: bool?
+
+  @description('Required. The storage account object replication rules.')
+  rules: resourceInput<'Microsoft.Storage/storageAccounts/objectReplicationPolicies@2025-01-01'>.properties.rules
 }

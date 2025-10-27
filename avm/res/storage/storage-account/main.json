@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "8121796394375056167"
+      "templateHash": "3138290319085213830"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -540,6 +540,44 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type of a table service."
+      }
+    },
+    "objectReplicationPolicyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the object replication policy. If not provided, a GUID will be generated."
+          }
+        },
+        "destinationNameOrResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name or resource ID of the destination storage account."
+          }
+        },
+        "enableMetrics": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates whether metrics are enabled for the object replication policy."
+          }
+        },
+        "rules": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Storage/storageAccounts/objectReplicationPolicies@2025-01-01#properties/properties/properties/rules"
+            },
+            "description": "Required. The storage account object replication rules."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of an object replication policy."
       }
     },
     "_1.immutabilityPolicyType": {
@@ -1893,7 +1931,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Storage/storageAccounts@2024-01-01#properties/properties/properties/azureFilesIdentityBasedAuthentication"
+          "source": "Microsoft.Storage/storageAccounts@2025-01-01#properties/properties/properties/azureFilesIdentityBasedAuthentication"
         },
         "description": "Optional. Provides the identity based authentication settings for Azure Files."
       },
@@ -1927,7 +1965,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Storage/storageAccounts/managementPolicies@2024-01-01#properties/properties/properties/policy/properties/rules"
+          "source": "Microsoft.Storage/storageAccounts/managementPolicies@2025-01-01#properties/properties/properties/policy/properties/rules"
         },
         "description": "Optional. The Storage Account ManagementPolicies Rules."
       },
@@ -2083,7 +2121,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Storage/storageAccounts@2024-01-01#properties/tags"
+          "source": "Microsoft.Storage/storageAccounts@2025-01-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -2177,6 +2215,16 @@
         "description": "Optional. The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default. Cannot be enabled for ADLS Gen2 storage accounts."
       },
       "nullable": true
+    },
+    "objectReplicationPolicies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/objectReplicationPolicyType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Object replication policies for the storage account."
+      }
     }
   },
   "variables": {
@@ -2234,7 +2282,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -2255,7 +2303,7 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2024-11-01",
+      "apiVersion": "2025-05-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -2271,7 +2319,7 @@
     },
     "storageAccount": {
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "kind": "[parameters('kind')]",
@@ -2352,6 +2400,27 @@
       },
       "dependsOn": [
         "storageAccount"
+      ]
+    },
+    "storageAccount_objectReplicationPolicies": {
+      "copy": {
+        "name": "storageAccount_objectReplicationPolicies",
+        "count": "[length(coalesce(parameters('objectReplicationPolicies'), createArray()))]"
+      },
+      "type": "Microsoft.Storage/storageAccounts/objectReplicationPolicies",
+      "apiVersion": "2025-01-01",
+      "name": "[format('{0}/{1}', parameters('name'), coalesce(tryGet(coalesce(parameters('objectReplicationPolicies'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), coalesce(parameters('objectReplicationPolicies'), createArray())[copyIndex()].destinationNameOrResourceId, string(copyIndex()))))]",
+      "properties": {
+        "destinationAccount": "[coalesce(parameters('objectReplicationPolicies'), createArray())[copyIndex()].destinationNameOrResourceId]",
+        "metrics": {
+          "enabled": "[coalesce(tryGet(coalesce(parameters('objectReplicationPolicies'), createArray())[copyIndex()], 'enableMetrics'), false())]"
+        },
+        "rules": "[coalesce(tryGet(coalesce(parameters('objectReplicationPolicies'), createArray())[copyIndex()], 'rules'), createArray())]",
+        "sourceAccount": "[parameters('name')]"
+      },
+      "dependsOn": [
+        "storageAccount",
+        "storageAccount_blobServices"
       ]
     },
     "storageAccount_privateEndpoints": {
@@ -6925,7 +6994,7 @@
             "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listKeys('storageAccount', '2024-01-01').keys[0].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'connectionString1Name'), 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2024-01-01').keys[0].value, environment().suffixes.storage))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listKeys('storageAccount', '2024-01-01').keys[1].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'connectionString2Name'), 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2024-01-01').keys[1].value, environment().suffixes.storage))), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listKeys('storageAccount', '2025-01-01').keys[0].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'connectionString1Name'), 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2025-01-01').keys[0].value, environment().suffixes.storage))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listKeys('storageAccount', '2025-01-01').keys[1].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'connectionString2Name'), 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2025-01-01').keys[1].value, environment().suffixes.storage))), createArray()))]"
           }
         },
         "template": {
@@ -7091,14 +7160,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('storageAccount', '2024-01-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('storageAccount', '2025-01-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('storageAccount', '2024-01-01', 'full').location]"
+      "value": "[reference('storageAccount', '2025-01-01', 'full').location]"
     },
     "serviceEndpoints": {
       "type": "object",
@@ -7138,28 +7207,28 @@
       "metadata": {
         "description": "The primary access key of the storage account."
       },
-      "value": "[listKeys('storageAccount', '2024-01-01').keys[0].value]"
+      "value": "[listKeys('storageAccount', '2025-01-01').keys[0].value]"
     },
     "secondaryAccessKey": {
       "type": "securestring",
       "metadata": {
         "description": "The secondary access key of the storage account."
       },
-      "value": "[listKeys('storageAccount', '2024-01-01').keys[1].value]"
+      "value": "[listKeys('storageAccount', '2025-01-01').keys[1].value]"
     },
     "primaryConnectionString": {
       "type": "securestring",
       "metadata": {
         "description": "The primary connection string of the storage account."
       },
-      "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2024-01-01').keys[0].value, environment().suffixes.storage)]"
+      "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2025-01-01').keys[0].value, environment().suffixes.storage)]"
     },
     "secondaryConnectionString": {
       "type": "securestring",
       "metadata": {
         "description": "The secondary connection string of the storage account."
       },
-      "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2024-01-01').keys[1].value, environment().suffixes.storage)]"
+      "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2025-01-01').keys[1].value, environment().suffixes.storage)]"
     }
   }
 }
