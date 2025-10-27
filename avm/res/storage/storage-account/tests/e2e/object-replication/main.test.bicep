@@ -80,6 +80,12 @@ module testDeployment '../../../main.bicep' = [
           destinationNameOrResourceId: nestedDependencies.outputs.storageAccountResourceId
           rules: [
             {
+              ruleId: guid(
+                deployment().name,
+                resourceLocation,
+                nestedDependencies.outputs.storageAccountResourceId,
+                'rule01'
+              )
               sourceContainer: 'container01'
               destinationContainer: nestedDependencies.outputs.containerName
               filters: {

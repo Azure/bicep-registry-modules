@@ -2356,6 +2356,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
                 'images/'
               ]
             }
+            ruleId: '<ruleId>'
             sourceContainer: 'container01'
           }
         ]
@@ -2408,6 +2409,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
                   "images/"
                 ]
               },
+              "ruleId": "<ruleId>",
               "sourceContainer": "container01"
             }
           ]
@@ -2456,6 +2458,7 @@ param objectReplicationPolicies = [
             'images/'
           ]
         }
+        ruleId: '<ruleId>'
         sourceContainer: 'container01'
       }
     ]
