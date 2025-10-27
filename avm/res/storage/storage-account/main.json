@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "3138290319085213830"
+      "templateHash": "2401132551182446512"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -2416,7 +2416,7 @@
           "enabled": "[coalesce(tryGet(coalesce(parameters('objectReplicationPolicies'), createArray())[copyIndex()], 'enableMetrics'), false())]"
         },
         "rules": "[coalesce(tryGet(coalesce(parameters('objectReplicationPolicies'), createArray())[copyIndex()], 'rules'), createArray())]",
-        "sourceAccount": "[parameters('name')]"
+        "sourceAccount": "[if(parameters('allowCrossTenantReplication'), parameters('name'), resourceId('Microsoft.Storage/storageAccounts', parameters('name')))]"
       },
       "dependsOn": [
         "storageAccount",

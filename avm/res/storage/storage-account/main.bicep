@@ -747,7 +747,7 @@ resource storageAccount_objectReplicationPolicies 'Microsoft.Storage/storageAcco
         enabled: policy.?enableMetrics ?? false
       }
       rules: policy.?rules ?? []
-      sourceAccount: storageAccount.name
+      sourceAccount: allowCrossTenantReplication ? storageAccount.name : storageAccount.id
     }
     dependsOn: [
       storageAccount_blobServices
