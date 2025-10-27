@@ -73,57 +73,57 @@ module nestedDependencies2 'dependencies2.bicep' = {
   }
 }
 
-module imageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:0.1.6' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-imageBuilder'
-  params: {
-    imageTemplateName: 'dep-${namePrefix}-it-${serviceShort}'
-    location: enforcedLocation
-    deploymentsToPerform: 'All'
-    waitForImageBuild: true
-    resourceGroupName: resourceGroup2.name
-    waitForImageBuildTimeout: 'PT40M'
-    virtualNetworkName: nestedDependencies2.outputs.virtualNetworkName
-    virtualNetworkAddressPrefix: nestedDependencies2.outputs.virtualNetworkAddressSpace
-    imageSubnetName: nestedDependencies2.outputs.virtualNetworkSubnets[0].name
-    virtualNetworkSubnetAddressPrefix: nestedDependencies2.outputs.virtualNetworkSubnets[0].properties.addressPrefix
-    deploymentScriptSubnetName: nestedDependencies2.outputs.virtualNetworkSubnets[1].name
-    virtualNetworkDeploymentScriptSubnetAddressPrefix: nestedDependencies2.outputs.virtualNetworkSubnets[1].properties.addressPrefix
-    imageTemplateResourceGroupName: ''
-    assetsStorageAccountName: 'depst${namePrefix}${serviceShort}'
-    assetsStorageAccountContainerName: 'dep${namePrefix}assets${serviceShort}'
-    storageDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-storage'
-    waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-wait'
-    imageTemplateDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-it'
-    deploymentScriptStorageAccountName: 'depst${namePrefix}${serviceShort}ds'
-    computeGalleryName: 'dep${namePrefix}gal${serviceShort}'
-    computeGalleryImageDefinitionName: 'dep-${namePrefix}-galid-${serviceShort}'
-    imageManagedIdentityName: nestedDependencies2.outputs.managedIdentityName
-    deploymentScriptManagedIdentityName: nestedDependencies2.outputs.managedIdentityName
-    computeGalleryImageDefinitions: [
-      {
-        name: 'dep-${namePrefix}-galid-${serviceShort}'
-        hyperVGeneration: 'V2'
-        identifier: {
-          offer: 'avmDevbox'
-          publisher: 'avm'
-          sku: 'devbox-avmwindows'
-        }
-        osState: 'Generalized'
-        osType: 'Windows'
-        securityType: 'TrustedLaunch'
-        isHibernateSupported: true
-        architecture: 'x64'
-      }
-    ]
-    imageTemplateImageSource: {
-      offer: 'Windows-11'
-      publisher: 'MicrosoftWindowsDesktop'
-      sku: 'win11-24h2-ent'
-      type: 'PlatformImage'
-      version: 'latest'
-    }
-  }
-}
+//module imageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:0.1.6' = {
+//  name: '${uniqueString(deployment().name, enforcedLocation)}-imageBuilder'
+//  params: {
+//    imageTemplateName: 'dep-${namePrefix}-it-${serviceShort}'
+//    location: enforcedLocation
+//    deploymentsToPerform: 'All'
+//    waitForImageBuild: true
+//    resourceGroupName: resourceGroup2.name
+//    waitForImageBuildTimeout: 'PT60M'
+//    virtualNetworkName: nestedDependencies2.outputs.virtualNetworkName
+//    virtualNetworkAddressPrefix: nestedDependencies2.outputs.virtualNetworkAddressSpace
+//    imageSubnetName: nestedDependencies2.outputs.virtualNetworkSubnets[0].name
+//    virtualNetworkSubnetAddressPrefix: nestedDependencies2.outputs.virtualNetworkSubnets[0].properties.addressPrefix
+//    deploymentScriptSubnetName: nestedDependencies2.outputs.virtualNetworkSubnets[1].name
+//    virtualNetworkDeploymentScriptSubnetAddressPrefix: nestedDependencies2.outputs.virtualNetworkSubnets[1].properties.addressPrefix
+//    imageTemplateResourceGroupName: ''
+//    assetsStorageAccountName: 'depst${namePrefix}${serviceShort}'
+//    assetsStorageAccountContainerName: 'dep${namePrefix}assets${serviceShort}'
+//    storageDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-storage'
+//    waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-wait'
+//    imageTemplateDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-it'
+//    deploymentScriptStorageAccountName: 'depst${namePrefix}${serviceShort}ds'
+//    computeGalleryName: 'dep${namePrefix}gal${serviceShort}'
+//    computeGalleryImageDefinitionName: 'dep-${namePrefix}-galid-${serviceShort}'
+//    imageManagedIdentityName: nestedDependencies2.outputs.managedIdentityName
+//    deploymentScriptManagedIdentityName: nestedDependencies2.outputs.managedIdentityName
+//    computeGalleryImageDefinitions: [
+//      {
+//        name: 'dep-${namePrefix}-galid-${serviceShort}'
+//        hyperVGeneration: 'V2'
+//        identifier: {
+//          offer: 'avmDevbox'
+//          publisher: 'avm'
+//          sku: 'devbox-avmwindows'
+//        }
+//        osState: 'Generalized'
+//        osType: 'Windows'
+//        securityType: 'TrustedLaunch'
+//        isHibernateSupported: true
+//        architecture: 'x64'
+//      }
+//    ]
+//    imageTemplateImageSource: {
+//      offer: 'Windows-11'
+//      publisher: 'MicrosoftWindowsDesktop'
+//      sku: 'win11-24h2-ent'
+//      type: 'PlatformImage'
+//      version: 'latest'
+//    }
+//  }
+//}
 
 // ============== //
 // Test Execution //
@@ -131,6 +131,8 @@ module imageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builde
 
 var devcenterName = '${namePrefix}${serviceShort}001'
 var devcenterExpectedResourceID = '${resourceGroup1.id}/providers/Microsoft.DevCenter/devcenters/${devcenterName}'
+var devcenterDevboxDefinitionCustomName = 'test-devbox-definition-custom-gallery-image'
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
@@ -209,7 +211,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          name: 'test-devbox-definition-custom-gallery-image'
+          name: devcenterDevboxDefinitionCustomName
           imageResourceId: '${devcenterExpectedResourceID}/galleries/computegallery/images/dep-${namePrefix}-galid-dcdcmax'
           sku: {
             name: 'general_i_8c32gb256ssd_v2'
@@ -304,17 +306,18 @@ module testDeployment '../../../main.bicep' = [
           pools: [
             {
               name: 'sandbox-pool'
-              displayName: 'My Sandbox Pool - Managed Network'
+              displayName: 'My Sandbox Pool - Unmanaged Network'
               devBoxDefinitionType: 'Reference'
-              devBoxDefinitionName: 'test-devbox-definition-builtin-gallery-image'
+              devBoxDefinitionName: devcenterDevboxDefinitionCustomName
               localAdministrator: 'Disabled'
-              virtualNetworkType: 'Managed'
+              virtualNetworkType: 'Unmanaged'
               singleSignOnStatus: 'Enabled'
               stopOnDisconnect: {
                 gracePeriodMinutes: 60
                 status: 'Enabled'
               }
               managedVirtualNetworkRegion: 'westeurope'
+              networkConnectionName: 'test-attached-network'
             }
           ]
         }
@@ -373,7 +376,7 @@ module testDeployment '../../../main.bicep' = [
       ]
     }
     dependsOn: [
-      imageBuilder
+      //imageBuilder
     ]
   }
 ]

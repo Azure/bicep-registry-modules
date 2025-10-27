@@ -5,7 +5,7 @@ metadata description = 'This module deploys a Dev Center Catalog.'
 // Parameters       //
 // ================ //
 
-@description('Required. The name of the catalog. Must be between 3 and 63 characters and can contain alphanumeric characters, hyphens, underscores, and periods.')
+@description('Required. The name of the catalog. Must be between 3 and 63 characters and can contain #_namePrefix_#numeric characters, hyphens, underscores, and periods.')
 @minLength(3)
 @maxLength(63)
 param name string

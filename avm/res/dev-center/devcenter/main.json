@@ -75,7 +75,7 @@
         "name": {
           "type": "string",
           "metadata": {
-            "description": "Required. The name of the catalog. Must be between 3 and 63 characters and can contain alphanumeric characters, hyphens, underscores, and periods."
+            "description": "Required. The name of the catalog. Must be between 3 and 63 characters and can contain #_namePrefix_#numeric characters, hyphens, underscores, and periods."
           }
         },
         "gitHub": {
@@ -185,7 +185,7 @@
           "minLength": 3,
           "maxLength": 63,
           "metadata": {
-            "description": "Required. It must be between 3 and 63 characters, can only include alphanumeric characters, underscores and periods, and can not start or end with \".\" or \"_\"."
+            "description": "Required. It must be between 3 and 63 characters, can only include #_namePrefix_#numeric characters, underscores and periods, and can not start or end with \".\" or \"_\"."
           }
         },
         "galleryResourceId": {
@@ -1679,7 +1679,7 @@
               "minLength": 3,
               "maxLength": 63,
               "metadata": {
-                "description": "Required. The name of the catalog. Must be between 3 and 63 characters and can contain alphanumeric characters, hyphens, underscores, and periods."
+                "description": "Required. The name of the catalog. Must be between 3 and 63 characters and can contain #_namePrefix_#numeric characters, hyphens, underscores, and periods."
               }
             },
             "devcenterName": {
@@ -1955,7 +1955,7 @@
               "minLength": 3,
               "maxLength": 63,
               "metadata": {
-                "description": "Required. It must be between 3 and 63 characters, can only include alphanumeric characters, underscores and periods, and can not start or end with \".\" or \"_\"."
+                "description": "Required. It must be between 3 and 63 characters, can only include #_namePrefix_#numeric characters, underscores and periods, and can not start or end with \".\" or \"_\"."
               }
             },
             "galleryResourceId": {
@@ -2868,7 +2868,7 @@
                 "name": {
                   "type": "string",
                   "metadata": {
-                    "description": "Required. The name of the catalog. Must be between 3 and 63 characters and can contain alphanumeric characters, hyphens, underscores, and periods."
+                    "description": "Required. The name of the catalog. Must be between 3 and 63 characters and can contain #_namePrefix_#numeric characters, hyphens, underscores, and periods."
                   }
                 },
                 "gitHub": {
@@ -3956,7 +3956,7 @@
                       "minLength": 3,
                       "maxLength": 63,
                       "metadata": {
-                        "description": "Required. The name of the catalog. Must be between 3 and 63 characters and can contain alphanumeric characters, hyphens, underscores, and periods."
+                        "description": "Required. The name of the catalog. Must be between 3 and 63 characters and can contain #_namePrefix_#numeric characters, hyphens, underscores, and periods."
                       }
                     },
                     "projectName": {

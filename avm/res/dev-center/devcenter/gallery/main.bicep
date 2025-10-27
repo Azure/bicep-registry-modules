@@ -8,7 +8,7 @@ metadata description = 'This module deploys a Dev Center Gallery.'
 @description('Conditional. The name of the parent dev center. Required if the template is used in a standalone deployment.')
 param devcenterName string
 
-@description('Required. It must be between 3 and 63 characters, can only include alphanumeric characters, underscores and periods, and can not start or end with "." or "_".')
+@description('Required. It must be between 3 and 63 characters, can only include #_namePrefix_#numeric characters, underscores and periods, and can not start or end with "." or "_".')
 @minLength(3)
 @maxLength(63)
 param name string
