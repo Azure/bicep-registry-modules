@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "8282045703947063660"
+      "templateHash": "17296943252523419175"
     },
     "name": "DevTest Labs",
     "description": "This module deploys a DevTest Lab."
@@ -1043,7 +1043,7 @@
       "type": "string",
       "defaultValue": "sas",
       "metadata": {
-        "description": "Optional. Configure whether the lab uses a User Assigned Managed Identity or a Shared Key to access the storage account. This identity must have at least \"Storage Blob Data Reader\" role on the storage account. Default is \"sas\" which uses a Shared Key. If needing to user managed identities, set this property value to the resource ID of the User Assigned Managed Identity."
+        "description": "Optional. Configure whether the lab uses a User Assigned Managed Identity or a Shared Key to access the storage account. This identity must have at least \"Storage Blob Data Reader\" role on the storage account. Default is \"sas\" which uses a Shared Key. If needing to use managed identities, set this property value to the resource ID of the User Assigned Managed Identity. Be sure first to have the \"Azure Lab Services\" service principal (Application ID: \"1a14be2a-e903-4cec-99cf-b2e209259a0f\") assigned with at least the \"Reader\" role on the user identity, resource group or subscription before using this feature. The portal experience automatically performs this role assignment with \"Contributor\" rights, but template deployments require this to be done programmatically prior using this feature."
       }
     },
     "mandatoryArtifactsResourceIdsLinux": {

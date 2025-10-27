@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added support for configuring storage account access method (User Assigned Managed Identity or Shared Key) for DevTest Labs.
+- Added support for configuring storage account access method (User Assigned Managed Identity or Shared Key) for DevTest Labs. This uses the `storageAccountAccess` parameter.
 
 ### Breaking Changes
 
