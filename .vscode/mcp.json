@@ -4,6 +4,10 @@
     "github": {
       "url": "https://api.githubcopilot.com/mcp/",
       "type": "http"
+    },
+    "Microsoft Learn": {
+      "url": "https://learn.microsoft.com/api/mcp",
+      "type": "sse"
     }
   }
 }
