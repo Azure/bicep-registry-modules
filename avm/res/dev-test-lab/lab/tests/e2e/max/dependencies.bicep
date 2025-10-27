@@ -4,6 +4,9 @@ param location string = resourceGroup().location
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
+@description('Required. The Object ID of the Azure Lab Services Enterprise Application.')
+param AzureLabServicesEnterpriseApplicationObjectId string
+
 @description('Required. The name of the Disk Encryption Set to create.')
 param diskEncryptionSetName string
 
@@ -21,6 +24,19 @@ var addressPrefix = '10.0.0.0/16'
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
+}
+
+resource managedIdentityReaderRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${managedIdentity.id}-${location}-Reader-RoleAssignment')
+  scope: managedIdentity
+  properties: {
+    principalId: AzureLabServicesEnterpriseApplicationObjectId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+    ) // Reader
+    principalType: 'ServicePrincipal'
+  }
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
