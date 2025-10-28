@@ -783,6 +783,9 @@ output primaryConnectionString string = 'DefaultEndpointsProtocol=https;AccountN
 @description('The secondary connection string of the storage account.')
 output secondaryConnectionString string = 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[1].value};EndpointSuffix=${environment().suffixes.storage}'
 
+@description('The key vault uri of the storage account.')
+output keyvaulturi string = 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.${environment().suffixes.keyvaultDns}'
+
 // =============== //
 //   Definitions   //
 // =============== //
