@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Object Replication'
-metadata description = 'This instance deploys the module with Object Replication features.'
+metadata name = 'Using object replication'
+metadata description = 'This instance deploys the module with Object Replication features to async replicate blobs from one account to another.'
 
 // ========== //
 // Parameters //
