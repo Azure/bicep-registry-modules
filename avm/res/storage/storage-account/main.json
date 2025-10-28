@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "6076034671820044291"
+      "templateHash": "13011669458185389838"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -1906,6 +1906,13 @@
         "description": "Optional. Location for all resources."
       }
     },
+    "extendedLocationZone": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Extended Zone location (ex 'losangeles'). When supplied, the storage account will be created in the specified zone under the parent location. The extended zone must be available in the supplied parent location."
+      }
+    },
     "roleAssignments": {
       "type": "array",
       "items": {
@@ -2379,6 +2386,7 @@
       "apiVersion": "2025-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
+      "extendedLocation": "[if(not(empty(parameters('extendedLocationZone'))), createObject('name', parameters('extendedLocationZone'), 'type', 'EdgeZone'), null())]",
       "kind": "[parameters('kind')]",
       "sku": {
         "name": "[parameters('skuName')]"
@@ -7163,7 +7171,7 @@
     "storageAccount_objectReplicationPolicies": {
       "copy": {
         "name": "storageAccount_objectReplicationPolicies",
-        "count": "[length(parameters('objectReplicationPolicies'))]"
+        "count": "[length(coalesce(parameters('objectReplicationPolicies'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -7178,13 +7186,13 @@
             "value": "[parameters('name')]"
           },
           "destinationAccountResourceId": {
-            "value": "[parameters('objectReplicationPolicies')[copyIndex()].destinationStorageAccountResourceId]"
+            "value": "[coalesce(parameters('objectReplicationPolicies'), createArray())[copyIndex()].destinationStorageAccountResourceId]"
           },
           "enableMetrics": {
-            "value": "[coalesce(tryGet(parameters('objectReplicationPolicies')[copyIndex()], 'enableMetrics'), false())]"
+            "value": "[coalesce(tryGet(coalesce(parameters('objectReplicationPolicies'), createArray())[copyIndex()], 'enableMetrics'), false())]"
           },
           "rules": {
-            "value": "[tryGet(parameters('objectReplicationPolicies')[copyIndex()], 'rules')]"
+            "value": "[tryGet(coalesce(parameters('objectReplicationPolicies'), createArray())[copyIndex()], 'rules')]"
           }
         },
         "template": {

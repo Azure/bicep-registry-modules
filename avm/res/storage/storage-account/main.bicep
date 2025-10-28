@@ -8,6 +8,9 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
+@description('Optional. Extended Zone location (ex \'losangeles\'). When supplied, the storage account will be created in the specified zone under the parent location. The extended zone must be available in the supplied parent location.')
+param extendedLocationZone string?
+
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
@@ -396,6 +399,12 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
   name: name
   location: location
+  extendedLocation: !empty(extendedLocationZone)
+    ? {
+        name: extendedLocationZone
+        type: 'EdgeZone'
+      }
+    : null
   kind: kind
   sku: {
     name: skuName
@@ -738,7 +747,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
 }
 
 module storageAccount_objectReplicationPolicies 'object-replication-policy/main.bicep' = [
-  for (policy, index) in (objectReplicationPolicies!): {
+  for (policy, index) in (objectReplicationPolicies ?? []): {
     name: '${uniqueString(deployment().name, location)}-Storage-ObjRepPolicy-${index}'
     params: {
       storageAccountName: storageAccount.name

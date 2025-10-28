@@ -47,15 +47,16 @@ The following section provides usage examples for the module, which were used to
 - [Deploying as a Block Blob Storage](#example-2-deploying-as-a-block-blob-storage)
 - [Using only changefeed configuration](#example-3-using-only-changefeed-configuration)
 - [Using only defaults](#example-4-using-only-defaults)
-- [With immutability policy](#example-5-with-immutability-policy)
-- [Deploying with a key vault reference to save secrets](#example-6-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-7-using-large-parameter-set)
-- [Deploying with a NFS File Share](#example-8-deploying-with-a-nfs-file-share)
-- [Using object replication](#example-9-using-object-replication)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-10-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-11-using-customer-managed-keys-with-user-assigned-identity)
-- [Deploying as Storage Account version 1](#example-12-deploying-as-storage-account-version-1)
-- [WAF-aligned](#example-13-waf-aligned)
+- [Using extended zones](#example-5-using-extended-zones)
+- [With immutability policy](#example-6-with-immutability-policy)
+- [Deploying with a key vault reference to save secrets](#example-7-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-8-using-large-parameter-set)
+- [Deploying with a NFS File Share](#example-9-deploying-with-a-nfs-file-share)
+- [Using object replication](#example-10-using-object-replication)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-11-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-12-using-customer-managed-keys-with-user-assigned-identity)
+- [Deploying as Storage Account version 1](#example-13-deploying-as-storage-account-version-1)
+- [WAF-aligned](#example-14-waf-aligned)
 
 ### Example 1: _Deploying as a Blob Storage_
 
@@ -348,7 +349,86 @@ param networkAcls = {
 </details>
 <p>
 
-### Example 5: _With immutability policy_
+### Example 5: _Using extended zones_
+
+This instance deploys the module within an Azure Extended Zone.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  name: 'storageAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'ssaexzn001'
+    // Non-required parameters
+    extendedLocationZone: '<extendedLocationZone>'
+    kind: 'StorageV2'
+    location: '<location>'
+    skuName: 'Premium_LRS'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssaexzn001"
+    },
+    // Non-required parameters
+    "extendedLocationZone": {
+      "value": "<extendedLocationZone>"
+    },
+    "kind": {
+      "value": "StorageV2"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "skuName": {
+      "value": "Premium_LRS"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssaexzn001'
+// Non-required parameters
+param extendedLocationZone = '<extendedLocationZone>'
+param kind = 'StorageV2'
+param location = '<location>'
+param skuName = 'Premium_LRS'
+```
+
+</details>
+<p>
+
+### Example 6: _With immutability policy_
 
 This instance deploys the module with the immutability policy enabled.
 
@@ -502,7 +582,7 @@ param networkAcls = {
 </details>
 <p>
 
-### Example 6: _Deploying with a key vault reference to save secrets_
+### Example 7: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving all its secrets in a key vault.
 
@@ -584,7 +664,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 7: _Using large parameter set_
+### Example 8: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -2223,7 +2303,7 @@ param tags = {
 </details>
 <p>
 
-### Example 8: _Deploying with a NFS File Share_
+### Example 9: _Deploying with a NFS File Share_
 
 This instance deploys the module with a NFS File Share.
 
@@ -2318,7 +2398,7 @@ param skuName = 'Premium_LRS'
 </details>
 <p>
 
-### Example 9: _Using object replication_
+### Example 10: _Using object replication_
 
 This instance deploys the module with Object Replication features to async replicate blobs from one account to another.
 
@@ -2464,7 +2544,7 @@ param skuName = 'Standard_LRS'
 </details>
 <p>
 
-### Example 10: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 11: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
@@ -2615,7 +2695,7 @@ param privateEndpoints = [
 </details>
 <p>
 
-### Example 11: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 12: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -2789,7 +2869,7 @@ param privateEndpoints = [
 </details>
 <p>
 
-### Example 12: _Deploying as Storage Account version 1_
+### Example 13: _Deploying as Storage Account version 1_
 
 This instance deploys the module as Storage Account version 1.
 
@@ -2853,7 +2933,7 @@ param kind = 'Storage'
 </details>
 <p>
 
-### Example 13: _WAF-aligned_
+### Example 14: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -3686,6 +3766,7 @@ param tags = {
 | [`enableNfsV3`](#parameter-enablenfsv3) | bool | If true, enables NFS 3.0 support for the storage account. Requires enableHierarchicalNamespace to be true. |
 | [`enableSftp`](#parameter-enablesftp) | bool | If true, enables Secure File Transfer Protocol for the storage account. Requires enableHierarchicalNamespace to be true. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`extendedLocationZone`](#parameter-extendedlocationzone) | string | Extended Zone location (ex 'losangeles'). When supplied, the storage account will be created in the specified zone under the parent location. The extended zone must be available in the supplied parent location. |
 | [`fileServices`](#parameter-fileservices) | object | File service and shares to deploy. |
 | [`immutableStorageWithVersioning`](#parameter-immutablestoragewithversioning) | object | The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default. Cannot be enabled for ADLS Gen2 storage accounts. |
 | [`isLocalUserEnabled`](#parameter-islocaluserenabled) | bool | Enables local users feature, if set to true. |
@@ -4596,6 +4677,13 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `extendedLocationZone`
+
+Extended Zone location (ex 'losangeles'). When supplied, the storage account will be created in the specified zone under the parent location. The extended zone must be available in the supplied parent location.
+
+- Required: No
+- Type: string
 
 ### Parameter: `fileServices`
 
