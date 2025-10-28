@@ -5502,7 +5502,6 @@ Tags of the resource.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
-| `keyvaulturi` | string | The key vault uri of the storage account. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed storage account. |
 | `primaryAccessKey` | securestring | The primary access key of the storage account. |

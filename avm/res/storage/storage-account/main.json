@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "6277216707819066294"
+      "templateHash": "1848376849457437895"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -6537,13 +6537,6 @@
         "description": "The secondary connection string of the storage account."
       },
       "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2024-01-01').keys[1].value, environment().suffixes.storage)]"
-    },
-    "keyvaulturi": {
-      "type": "string",
-      "metadata": {
-        "description": "The key vault uri of the storage account."
-      },
-      "value": "[format('https://{0}.{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), environment().suffixes.keyvaultDns)]"
     }
   }
 }
