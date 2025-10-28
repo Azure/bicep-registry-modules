@@ -2,6 +2,23 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/document-db/database-account/CHANGELOG.md).
 
+## 0.18.0
+
+### Changes
+
+- Introduced and exposed the [`cassandra-keyspace`](/Azure/bicep-registry-modules/blob/main/avm/res/document-db/database-account/cassandra-keyspace) as child module (with nested `table` and `view` modules) via the `cassandraKeyspaces` parameter
+- Introduced and exposed the [`cassandra-role-definition`](/Azure/bicep-registry-modules/blob/main/avm/res/document-db/database-account/cassandra-role-definition) as child module via the `cassandraRoleDefinitions` parameter
+- Introduced and exposed the [`cassandra-role-assignment`](/Azure/bicep-registry-modules/blob/main/avm/res/document-db/database-account/cassandra-role-assignment) as child module via the `cassandraRoleAssignments` parameter
+- Added exported types in top-level `main.bicep`
+  - `cassandraKeyspaceType`
+  - `cassandraRoleDefinitionType`
+  - `cassandraStandaloneRoleAssignmentType`
+
+### Breaking Changes
+
+- Renamed parameter `dataPlaneRoleAssignments` to `sqlRoleAssignments` to clarify it is specific to SQL (NoSQL API) resources
+- Renamed parameter `dataPlaneRoleDefinitions` to `sqlRoleDefinitions` for consistency with `sqlRoleAssignments`
+
 ## 0.17.0
 
 ### Changes
