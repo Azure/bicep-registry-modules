@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "6630571556988048505"
+      "templateHash": "10135024818800158783"
     }
   },
   "parameters": {
@@ -16,14 +16,14 @@
       "minLength": 3,
       "maxLength": 20,
       "metadata": {
-        "description": "Required. A unique prefix for all resources in this deployment. This should be 3-20 characters long:"
+        "description": "Optional. A unique prefix for all resources in this deployment. This should be 3-20 characters long."
       }
     },
     "cosmosLocation": {
       "type": "string",
       "defaultValue": "eastus2",
       "metadata": {
-        "description": "Optional. CosmosDB Location"
+        "description": "Optional. CosmosDB Location."
       }
     },
     "gptModelDeploymentType": {
@@ -35,7 +35,7 @@
       ],
       "minLength": 1,
       "metadata": {
-        "description": "Optional. GPT model deployment type:"
+        "description": "Optional. GPT model deployment type."
       }
     },
     "gptModelName": {
@@ -46,7 +46,7 @@
       ],
       "minLength": 1,
       "metadata": {
-        "description": "Optional. Name of the GPT model to deploy:"
+        "description": "Optional. Name of the GPT model to deploy."
       }
     },
     "gptModelVersion": {
@@ -75,7 +75,7 @@
       "defaultValue": 200,
       "minValue": 10,
       "metadata": {
-        "description": "Optional. Capacity of the GPT deployment:"
+        "description": "Optional. Capacity of the GPT deployment."
       }
     },
     "embeddingModel": {
@@ -86,7 +86,7 @@
       ],
       "minLength": 1,
       "metadata": {
-        "description": "Optional. Name of the Text Embedding model to deploy:"
+        "description": "Optional. Name of the Text Embedding model to deploy."
       }
     },
     "embeddingDeploymentCapacity": {
@@ -94,7 +94,7 @@
       "defaultValue": 80,
       "minValue": 10,
       "metadata": {
-        "description": "Optional. Capacity of the Embedding Model deployment"
+        "description": "Optional. Capacity of the Embedding Model deployment."
       }
     },
     "azureAiServiceLocation": {
@@ -138,7 +138,7 @@
         "azd": {
           "type": "location"
         },
-        "description": "Required. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions)."
+        "description": "Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions)."
       }
     },
     "solutionUniqueToken": {
@@ -205,18 +205,11 @@
         "description": "Optional. The Container Image Tag to deploy on the webapp."
       }
     },
-    "existingFoundryProjectResourceId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Resource ID of an existing Foundry project"
-      }
-    },
     "enablePurgeProtection": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Enable purge protection for the Key Vault"
+        "description": "Optional. Enable purge protection for the Key Vault."
       }
     },
     "vmSize": {
@@ -254,7 +247,7 @@
       "type": "string",
       "defaultValue": "[if(contains(deployer(), 'userPrincipalName'), split(deployer().userPrincipalName, '@')[0], deployer().objectId)]",
       "metadata": {
-        "description": "Optional. Tag, Created by user name"
+        "description": "Optional. Tag, Created by user name."
       }
     }
   },
@@ -25634,7 +25627,7 @@
           },
           "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', null()))]",
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
-          "privateEndpoints": "[if(and(parameters('enablePrivateNetworking'), empty(parameters('existingFoundryProjectResourceId'))), createObject('value', createArray(createObject('name', format('pep-{0}', variables('aiFoundryAiServicesResourceName')), 'customNetworkInterfaceName', format('nic-{0}', variables('aiFoundryAiServicesResourceName')), 'subnetResourceId', reference('virtualNetwork').outputs.pepsSubnetResourceId.value, 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'ai-services-dns-zone-cognitiveservices', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)).outputs.resourceId.value), createObject('name', 'ai-services-dns-zone-openai', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)).outputs.resourceId.value), createObject('name', 'ai-services-dns-zone-aiservices', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)).outputs.resourceId.value)))))), createObject('value', createArray()))]",
+          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-{0}', variables('aiFoundryAiServicesResourceName')), 'customNetworkInterfaceName', format('nic-{0}', variables('aiFoundryAiServicesResourceName')), 'subnetResourceId', reference('virtualNetwork').outputs.pepsSubnetResourceId.value, 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'ai-services-dns-zone-cognitiveservices', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)).outputs.resourceId.value), createObject('name', 'ai-services-dns-zone-openai', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)).outputs.resourceId.value), createObject('name', 'ai-services-dns-zone-aiservices', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)).outputs.resourceId.value)))))), createObject('value', createArray()))]",
           "deployments": {
             "value": [
               {
@@ -28991,9 +28984,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -40154,8 +40147,8 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "keyvault",
         "userAssignedIdentity",
         "virtualNetwork"

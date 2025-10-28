@@ -319,8 +319,6 @@ param vmAdminUsername = 'adminuser'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`azureAiServiceLocation`](#parameter-azureaiservicelocation) | string | Location for AI Foundry deployment. This is the location where the AI Foundry resources will be deployed. |
-| [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). |
-| [`solutionName`](#parameter-solutionname) | string | A unique prefix for all resources in this deployment. This should be 3-20 characters long: |
 
 **Optional parameters**
 
@@ -329,23 +327,24 @@ param vmAdminUsername = 'adminuser'
 | [`azureOpenaiAPIVersion`](#parameter-azureopenaiapiversion) | string | API version for the Azure OpenAI service. |
 | [`containerImageName`](#parameter-containerimagename) | string | The Container Image Name to deploy on the webapp. |
 | [`containerRegistryHostname`](#parameter-containerregistryhostname) | string | The Container Registry hostname where the docker images for the frontend are located. |
-| [`cosmosLocation`](#parameter-cosmoslocation) | string | CosmosDB Location |
-| [`createdBy`](#parameter-createdby) | string | Tag, Created by user name |
-| [`embeddingDeploymentCapacity`](#parameter-embeddingdeploymentcapacity) | int | Capacity of the Embedding Model deployment |
-| [`embeddingModel`](#parameter-embeddingmodel) | string | Name of the Text Embedding model to deploy: |
+| [`cosmosLocation`](#parameter-cosmoslocation) | string | CosmosDB Location. |
+| [`createdBy`](#parameter-createdby) | string | Tag, Created by user name. |
+| [`embeddingDeploymentCapacity`](#parameter-embeddingdeploymentcapacity) | int | Capacity of the Embedding Model deployment. |
+| [`embeddingModel`](#parameter-embeddingmodel) | string | Name of the Text Embedding model to deploy. |
 | [`embeddingModelVersion`](#parameter-embeddingmodelversion) | string | Version of the GPT model to deploy. |
 | [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
-| [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Enable purge protection for the Key Vault |
+| [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Enable purge protection for the Key Vault. |
 | [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`existingFoundryProjectResourceId`](#parameter-existingfoundryprojectresourceid) | string | Resource ID of an existing Foundry project |
-| [`gptModelCapacity`](#parameter-gptmodelcapacity) | int | Capacity of the GPT deployment: |
-| [`gptModelDeploymentType`](#parameter-gptmodeldeploymenttype) | string | GPT model deployment type: |
-| [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy: |
+| [`gptModelCapacity`](#parameter-gptmodelcapacity) | int | Capacity of the GPT deployment. |
+| [`gptModelDeploymentType`](#parameter-gptmodeldeploymenttype) | string | GPT model deployment type. |
+| [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. |
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy. |
 | [`imageTag`](#parameter-imagetag) | string | The Container Image Tag to deploy on the webapp. |
+| [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). |
+| [`solutionName`](#parameter-solutionname) | string | A unique prefix for all resources in this deployment. This should be 3-20 characters long. |
 | [`solutionUniqueToken`](#parameter-solutionuniquetoken) | string | A unique token for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
 | [`tags`](#parameter-tags) | object | The tags to apply to all deployed Azure resources. |
 | [`vmAdminPassword`](#parameter-vmadminpassword) | securestring | Admin password for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true. |
@@ -373,35 +372,6 @@ Location for AI Foundry deployment. This is the location where the AI Foundry re
   ]
   ```
 
-### Parameter: `location`
-
-Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).
-
-- Required: No
-- Type: string
-- Default: `'eastus2'`
-- Allowed:
-  ```Bicep
-  [
-    'australiaeast'
-    'centralus'
-    'eastasia'
-    'eastus2'
-    'japaneast'
-    'northeurope'
-    'southeastasia'
-    'uksouth'
-  ]
-  ```
-
-### Parameter: `solutionName`
-
-A unique prefix for all resources in this deployment. This should be 3-20 characters long:
-
-- Required: No
-- Type: string
-- Default: `'clientadvisor'`
-
 ### Parameter: `azureOpenaiAPIVersion`
 
 API version for the Azure OpenAI service.
@@ -428,7 +398,7 @@ The Container Registry hostname where the docker images for the frontend are loc
 
 ### Parameter: `cosmosLocation`
 
-CosmosDB Location
+CosmosDB Location.
 
 - Required: No
 - Type: string
@@ -436,7 +406,7 @@ CosmosDB Location
 
 ### Parameter: `createdBy`
 
-Tag, Created by user name
+Tag, Created by user name.
 
 - Required: No
 - Type: string
@@ -444,7 +414,7 @@ Tag, Created by user name
 
 ### Parameter: `embeddingDeploymentCapacity`
 
-Capacity of the Embedding Model deployment
+Capacity of the Embedding Model deployment.
 
 - Required: No
 - Type: int
@@ -453,7 +423,7 @@ Capacity of the Embedding Model deployment
 
 ### Parameter: `embeddingModel`
 
-Name of the Text Embedding model to deploy:
+Name of the Text Embedding model to deploy.
 
 - Required: No
 - Type: string
@@ -491,7 +461,7 @@ Enable private networking for applicable resources, aligned with the Well Archit
 
 ### Parameter: `enablePurgeProtection`
 
-Enable purge protection for the Key Vault
+Enable purge protection for the Key Vault.
 
 - Required: No
 - Type: bool
@@ -521,17 +491,9 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `existingFoundryProjectResourceId`
-
-Resource ID of an existing Foundry project
-
-- Required: No
-- Type: string
-- Default: `''`
-
 ### Parameter: `gptModelCapacity`
 
-Capacity of the GPT deployment:
+Capacity of the GPT deployment.
 
 - Required: No
 - Type: int
@@ -540,7 +502,7 @@ Capacity of the GPT deployment:
 
 ### Parameter: `gptModelDeploymentType`
 
-GPT model deployment type:
+GPT model deployment type.
 
 - Required: No
 - Type: string
@@ -555,7 +517,7 @@ GPT model deployment type:
 
 ### Parameter: `gptModelName`
 
-Name of the GPT model to deploy:
+Name of the GPT model to deploy.
 
 - Required: No
 - Type: string
@@ -582,6 +544,35 @@ The Container Image Tag to deploy on the webapp.
 - Required: No
 - Type: string
 - Default: `'latest_waf_2025-09-18_794'`
+
+### Parameter: `location`
+
+Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).
+
+- Required: No
+- Type: string
+- Default: `'eastus2'`
+- Allowed:
+  ```Bicep
+  [
+    'australiaeast'
+    'centralus'
+    'eastasia'
+    'eastus2'
+    'japaneast'
+    'northeurope'
+    'southeastasia'
+    'uksouth'
+  ]
+  ```
+
+### Parameter: `solutionName`
+
+A unique prefix for all resources in this deployment. This should be 3-20 characters long.
+
+- Required: No
+- Type: string
+- Default: `'clientadvisor'`
 
 ### Parameter: `solutionUniqueToken`
 

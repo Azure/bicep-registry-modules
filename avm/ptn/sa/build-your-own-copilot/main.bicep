@@ -3,14 +3,14 @@ targetScope = 'resourceGroup'
 
 @minLength(3)
 @maxLength(20)
-@description('Required. A unique prefix for all resources in this deployment. This should be 3-20 characters long:')
+@description('Optional. A unique prefix for all resources in this deployment. This should be 3-20 characters long.')
 param solutionName string = 'clientadvisor'
 
-@description('Optional. CosmosDB Location')
+@description('Optional. CosmosDB Location.')
 param cosmosLocation string = 'eastus2'
 
 @minLength(1)
-@description('Optional. GPT model deployment type:')
+@description('Optional. GPT model deployment type.')
 @allowed([
   'Standard'
   'GlobalStandard'
@@ -18,7 +18,7 @@ param cosmosLocation string = 'eastus2'
 param gptModelDeploymentType string = 'GlobalStandard'
 
 @minLength(1)
-@description('Optional. Name of the GPT model to deploy:')
+@description('Optional. Name of the GPT model to deploy.')
 @allowed([
   'gpt-4o-mini'
 ])
@@ -34,20 +34,20 @@ param embeddingModelVersion string = '2'
 param azureOpenaiAPIVersion string = '2025-04-01-preview'
 
 @minValue(10)
-@description('Optional. Capacity of the GPT deployment:')
+@description('Optional. Capacity of the GPT deployment.')
 // You can increase this, but capacity is limited per model/region, so you will get errors if you go over
 // https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits
 param gptModelCapacity int = 200
 
 @minLength(1)
-@description('Optional. Name of the Text Embedding model to deploy:')
+@description('Optional. Name of the Text Embedding model to deploy.')
 @allowed([
   'text-embedding-ada-002'
 ])
 param embeddingModel string = 'text-embedding-ada-002'
 
 @minValue(10)
-@description('Optional. Capacity of the Embedding Model deployment')
+@description('Optional. Capacity of the Embedding Model deployment.')
 param embeddingDeploymentCapacity int = 80
 
 //restricting to these regions because assistants api for gpt-4o-mini is available only in these regions
@@ -85,7 +85,7 @@ param azureAiServiceLocation string
   'uksouth'
 ])
 @metadata({ azd: { type: 'location' } })
-@description('Required. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).')
+@description('Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).')
 param location string = 'eastus2'
 var solutionLocation = empty(location) ? resourceGroup().location : location
 
@@ -127,10 +127,7 @@ param containerImageName string = 'byc-wa-app'
 @description('Optional. The Container Image Tag to deploy on the webapp.')
 param imageTag string = 'latest_waf_2025-09-18_794'
 
-@description('Optional. Resource ID of an existing Foundry project')
-param existingFoundryProjectResourceId string = ''
-
-@description('Optional. Enable purge protection for the Key Vault')
+@description('Optional. Enable purge protection for the Key Vault.')
 param enablePurgeProtection bool = false
 
 var appEnvironment = 'Prod'
@@ -249,7 +246,7 @@ var allTags = union(
 // Paired location calculated based on 'location' parameter. This location will be used by applicable resources if `enableScalability` is set to `true`
 var cosmosDbHaLocation = cosmosDbZoneRedundantHaRegionPairs[resourceGroup().location]
 
-@description('Optional. Tag, Created by user name')
+@description('Optional. Tag, Created by user name.')
 param createdBy string = contains(deployer(), 'userPrincipalName')
   ? split(deployer().userPrincipalName, '@')[0]
   : deployer().objectId
@@ -696,7 +693,7 @@ module aiFoundryAiServices 'modules/ai-services.bicep' = if (aiFoundryAIservices
     // WAF aligned configuration for Monitoring
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : null
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
-    privateEndpoints: (enablePrivateNetworking && empty(existingFoundryProjectResourceId))
+    privateEndpoints: (enablePrivateNetworking)
       ? ([
           {
             name: 'pep-${aiFoundryAiServicesResourceName}'
