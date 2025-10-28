@@ -497,6 +497,10 @@ module databaseAccount_sqlRoleAssignments 'sql-role-assignment/main.bicep' = [
       scope: noSqlRoleAssignment.?scope
       enableTelemetry: enableReferencedModulesTelemetry
     }
+    dependsOn: [
+      databaseAccount_sqlDatabases
+      databaseAccount_sqlRoleDefinitions
+    ]
   }
 ]
 
@@ -527,6 +531,7 @@ module databaseAccount_cassandraRoleAssignments 'cassandra-role-assignment/main.
     }
     dependsOn: [
       databaseAccount_cassandraKeyspaces
+      databaseAccount_cassandraRoleDefinitions
     ]
   }
 ]

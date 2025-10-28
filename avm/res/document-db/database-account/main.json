@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "902133538685083915"
+      "templateHash": "16552693844533718428"
     },
     "name": "Azure Cosmos DB account",
     "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -139,7 +139,7 @@
         "description": "The type for an Azure Cosmos DB for NoSQL native role-based access control assignment."
       }
     },
-    "dataPlaneRoleDefinitionType": {
+    "sqlRoleDefinitionType": {
       "type": "object",
       "properties": {
         "name": {
@@ -1804,10 +1804,10 @@
         "description": "Optional. An array of control plane Azure role-based access control assignments."
       }
     },
-    "dataPlaneRoleDefinitions": {
+    "sqlRoleDefinitions": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/dataPlaneRoleDefinitionType"
+        "$ref": "#/definitions/sqlRoleDefinitionType"
       },
       "nullable": true,
       "metadata": {
@@ -2670,7 +2670,7 @@
     "databaseAccount_sqlRoleDefinitions": {
       "copy": {
         "name": "databaseAccount_sqlRoleDefinitions",
-        "count": "[length(coalesce(parameters('dataPlaneRoleDefinitions'), createArray()))]"
+        "count": "[length(coalesce(parameters('sqlRoleDefinitions'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -2685,19 +2685,19 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[tryGet(coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()], 'name')]"
+            "value": "[tryGet(coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()], 'name')]"
           },
           "dataActions": {
-            "value": "[coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()].dataActions]"
+            "value": "[coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()].dataActions]"
           },
           "roleName": {
-            "value": "[coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()].roleName]"
+            "value": "[coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()].roleName]"
           },
           "assignableScopes": {
-            "value": "[tryGet(coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()], 'assignableScopes')]"
+            "value": "[tryGet(coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()], 'assignableScopes')]"
           },
           "sqlRoleAssignments": {
-            "value": "[tryGet(coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()], 'assignments')]"
+            "value": "[tryGet(coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()], 'assignments')]"
           },
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
@@ -3205,7 +3205,9 @@
         }
       },
       "dependsOn": [
-        "databaseAccount"
+        "databaseAccount",
+        "databaseAccount_sqlDatabases",
+        "databaseAccount_sqlRoleDefinitions"
       ]
     },
     "databaseAccount_cassandraRoleDefinitions": {
@@ -3647,7 +3649,8 @@
       },
       "dependsOn": [
         "databaseAccount",
-        "databaseAccount_cassandraKeyspaces"
+        "databaseAccount_cassandraKeyspaces",
+        "databaseAccount_cassandraRoleDefinitions"
       ]
     },
     "databaseAccount_mongodbDatabases": {
