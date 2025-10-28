@@ -737,17 +737,14 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
   }
 }
 
-resource storageAccount_objectReplicationPolicies 'Microsoft.Storage/storageAccounts/objectReplicationPolicies@2025-01-01' = [
-  for (policy, index) in (objectReplicationPolicies ?? []): {
-    parent: storageAccount
-    name: policy.?name ?? guid(storageAccount.id, policy.destinationNameOrResourceId, string(index))
-    properties: {
-      destinationAccount: policy.destinationNameOrResourceId
-      metrics: {
-        enabled: policy.?enableMetrics ?? false
-      }
-      rules: policy.?rules ?? []
-      sourceAccount: allowCrossTenantReplication ? storageAccount.name : storageAccount.id
+module storageAccount_objectReplicationPolicies 'object-replication-policy/main.bicep' = [
+  for (policy, index) in (objectReplicationPolicies!): {
+    name: '${uniqueString(deployment().name, location)}-Storage-ObjRepPolicy-${index}'
+    params: {
+      storageAccountName: storageAccount.name
+      destinationAccountResourceId: policy.destinationStorageAccountResourceId
+      enableMetrics: policy.?enableMetrics ?? false
+      rules: policy.?rules
     }
     dependsOn: [
       storageAccount_blobServices
@@ -1037,18 +1034,20 @@ type tableServiceType = {
   diagnosticSettings: diagnosticSettingFullType[]?
 }
 
+import { objectReplicationPolicyRuleType } from 'object-replication-policy/policy/main.bicep'
+
 @export()
 @description('The type of an object replication policy.')
 type objectReplicationPolicyType = {
   @description('Optional. The name of the object replication policy. If not provided, a GUID will be generated.')
   name: string?
 
-  @description('Required. The name or resource ID of the destination storage account.')
-  destinationNameOrResourceId: string
+  @description('Required. The resource ID of the destination storage account.')
+  destinationStorageAccountResourceId: string
 
   @description('Optional. Indicates whether metrics are enabled for the object replication policy.')
   enableMetrics: bool?
 
   @description('Required. The storage account object replication rules.')
-  rules: resourceInput<'Microsoft.Storage/storageAccounts/objectReplicationPolicies@2025-01-01'>.properties.rules
+  rules: objectReplicationPolicyRuleType[]
 }

@@ -77,17 +77,10 @@ module testDeployment '../../../main.bicep' = [
       }
       objectReplicationPolicies: [
         {
-          destinationNameOrResourceId: nestedDependencies.outputs.storageAccountResourceId
+          destinationStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
           rules: [
             {
-              ruleId: guid(
-                deployment().name,
-                resourceLocation,
-                nestedDependencies.outputs.storageAccountResourceId,
-                'rule01'
-              )
-              sourceContainer: 'container01'
-              destinationContainer: nestedDependencies.outputs.containerName
+              containerName: 'container01'
               filters: {
                 prefixMatch: [
                   'documents/'

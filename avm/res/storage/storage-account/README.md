@@ -2345,10 +2345,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     }
     objectReplicationPolicies: [
       {
-        destinationNameOrResourceId: '<destinationNameOrResourceId>'
+        destinationStorageAccountResourceId: '<destinationStorageAccountResourceId>'
         rules: [
           {
-            destinationContainer: '<destinationContainer>'
+            containerName: 'container01'
             filters: {
               minCreationTime: '2025-01-01T00:00:00Z'
               prefixMatch: [
@@ -2356,8 +2356,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
                 'images/'
               ]
             }
-            ruleId: '<ruleId>'
-            sourceContainer: 'container01'
           }
         ]
       }
@@ -2398,19 +2396,17 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     "objectReplicationPolicies": {
       "value": [
         {
-          "destinationNameOrResourceId": "<destinationNameOrResourceId>",
+          "destinationStorageAccountResourceId": "<destinationStorageAccountResourceId>",
           "rules": [
             {
-              "destinationContainer": "<destinationContainer>",
+              "containerName": "container01",
               "filters": {
                 "minCreationTime": "2025-01-01T00:00:00Z",
                 "prefixMatch": [
                   "documents/",
                   "images/"
                 ]
-              },
-              "ruleId": "<ruleId>",
-              "sourceContainer": "container01"
+              }
             }
           ]
         }
@@ -2447,10 +2443,10 @@ param blobServices = {
 }
 param objectReplicationPolicies = [
   {
-    destinationNameOrResourceId: '<destinationNameOrResourceId>'
+    destinationStorageAccountResourceId: '<destinationStorageAccountResourceId>'
     rules: [
       {
-        destinationContainer: '<destinationContainer>'
+        containerName: 'container01'
         filters: {
           minCreationTime: '2025-01-01T00:00:00Z'
           prefixMatch: [
@@ -2458,8 +2454,6 @@ param objectReplicationPolicies = [
             'images/'
           ]
         }
-        ruleId: '<ruleId>'
-        sourceContainer: 'container01'
       }
     ]
   }
@@ -5422,7 +5416,7 @@ Object replication policies for the storage account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`destinationNameOrResourceId`](#parameter-objectreplicationpoliciesdestinationnameorresourceid) | string | The name or resource ID of the destination storage account. |
+| [`destinationStorageAccountResourceId`](#parameter-objectreplicationpoliciesdestinationstorageaccountresourceid) | string | The resource ID of the destination storage account. |
 | [`rules`](#parameter-objectreplicationpoliciesrules) | array | The storage account object replication rules. |
 
 **Optional parameters**
@@ -5432,9 +5426,9 @@ Object replication policies for the storage account.
 | [`enableMetrics`](#parameter-objectreplicationpoliciesenablemetrics) | bool | Indicates whether metrics are enabled for the object replication policy. |
 | [`name`](#parameter-objectreplicationpoliciesname) | string | The name of the object replication policy. If not provided, a GUID will be generated. |
 
-### Parameter: `objectReplicationPolicies.destinationNameOrResourceId`
+### Parameter: `objectReplicationPolicies.destinationStorageAccountResourceId`
 
-The name or resource ID of the destination storage account.
+The resource ID of the destination storage account.
 
 - Required: Yes
 - Type: string
@@ -5442,6 +5436,74 @@ The name or resource ID of the destination storage account.
 ### Parameter: `objectReplicationPolicies.rules`
 
 The storage account object replication rules.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`containerName`](#parameter-objectreplicationpoliciesrulescontainername) | string | The name of the source container. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ruleId`](#parameter-objectreplicationpoliciesrulesruleid) | string | The ID of the rule. Auto-generated on destination account. Required for source account. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destinationContainerName`](#parameter-objectreplicationpoliciesrulesdestinationcontainername) | string | The name of the destination container. If not provided, the same name as the source container will be used. |
+| [`filters`](#parameter-objectreplicationpoliciesrulesfilters) | object | The filters for the object replication policy rule. |
+
+### Parameter: `objectReplicationPolicies.rules.containerName`
+
+The name of the source container.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `objectReplicationPolicies.rules.ruleId`
+
+The ID of the rule. Auto-generated on destination account. Required for source account.
+
+- Required: No
+- Type: string
+
+### Parameter: `objectReplicationPolicies.rules.destinationContainerName`
+
+The name of the destination container. If not provided, the same name as the source container will be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `objectReplicationPolicies.rules.filters`
+
+The filters for the object replication policy rule.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`minCreationTime`](#parameter-objectreplicationpoliciesrulesfiltersmincreationtime) | string | The minimum creation time to match for the replication policy rule. |
+| [`prefixMatch`](#parameter-objectreplicationpoliciesrulesfiltersprefixmatch) | array | The prefix to match for the replication policy rule. |
+
+### Parameter: `objectReplicationPolicies.rules.filters.minCreationTime`
+
+The minimum creation time to match for the replication policy rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `objectReplicationPolicies.rules.filters.prefixMatch`
+
+The prefix to match for the replication policy rule.
 
 - Required: Yes
 - Type: array
