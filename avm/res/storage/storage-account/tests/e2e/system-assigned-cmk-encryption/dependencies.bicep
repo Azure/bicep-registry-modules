@@ -122,3 +122,6 @@ output keyVaultResourceId string = keyVault.id
 
 @description('The name of the created encryption key.')
 output keyName string = keyVault::key.name
+
+@description('The version of the created encryption key.')
+output keyVersion string = last(split(keyVault::key.properties.keyUriWithVersion, '/'))
