@@ -363,30 +363,6 @@ resource hSMCMKKey 'Microsoft.KeyVault/managedHSMs/keys@2024-11-01' existing = i
   )
 }
 
-// resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!isHSMKeyVault && !empty(customerManagedKey.?keyVaultResourceId)) {
-//   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
-//   scope: resourceGroup(
-//     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
-//     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
-//   )
-
-//   resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-//     name: customerManagedKey.?keyName!
-//   }
-// }
-
-// resource hSMCMKKeyVault 'Microsoft.KeyVault/managedHSMs@2024-11-01' existing = if (isHSMKeyVault && !empty(customerManagedKey.?keyVaultResourceId)) {
-//   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
-//   scope: resourceGroup(
-//     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
-//     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
-//   )
-
-//   resource hSMCMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-//     name: customerManagedKey.?keyName!
-//   }
-// }
-
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
@@ -418,7 +394,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
     encryption: union(
       {
         keySource: !empty(customerManagedKey) ? 'Microsoft.Keyvault' : 'Microsoft.Storage'
-        // keySource: 'Microsoft.Storage'
         services: {
           blob: supportsBlobService
             ? {
@@ -442,7 +417,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
         keyvaultproperties: !empty(customerManagedKey)
           ? {
               keyname: customerManagedKey!.keyName
-              // keyvaulturi: !isHSMKeyVault ? cMKKeyVault!.properties.vaultUri : hSMCMKKeyVault!.properties.hsmUri
               keyvaulturi: !isHSMKeyVault
                 ? 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}${environment().suffixes.keyvaultDns}/'
                 : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/'
@@ -453,9 +427,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
                     : (!isHSMKeyVault
                         ? last(split(cMKKey!.properties.keyUriWithVersion, '/'))
                         : last(split(hSMCMKKey!.properties.keyUriWithVersion, '/')))
-              // : (!isHSMKeyVault
-              //     ? last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
-              //     : last(split(hSMCMKKeyVault::hSMCMKKey!.properties.keyUriWithVersion, '/')))
             }
           : null
         identity: {

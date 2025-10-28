@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added support for managed HSM key encryption
+- Updated the Customer Manager Key Encryption interface to reference the existing encryption key directly, eliminating the need to reference the parent Key Vault. This change avoids requiring Reader access to the Key Vault for the deployment identity
 
 ### Breaking Changes
 
