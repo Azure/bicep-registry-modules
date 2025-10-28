@@ -61,7 +61,8 @@ module replicationTestDeployment '../../../main.bicep' = [
       version: '17'
       storageSizeGB: 512
       autoGrow: 'Enabled'
-      replicationRole: 'AsyncReplica'
+      highAvailability: 'Disabled' // Must be disabled for read-replicas
+      createMode: iteration == 'init' ? 'Replica' : null // Only set createMode on initial deployment of replica
     }
   }
 ]
