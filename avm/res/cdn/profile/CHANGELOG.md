@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cdn/profile/CHANGELOG.md).
 
+## 0.16.1
+
+### Changes
+
+- Fixed bug when using `secrets` that treats the `secretVersion` as a mandatory property even though it is not.
+
+### Breaking Changes
+
+- None
+
 ## 0.16.0
 
 ### Changes
