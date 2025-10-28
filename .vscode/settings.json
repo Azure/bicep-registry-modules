@@ -34,5 +34,10 @@
     {
       "text": "The first line should be a summary of no more than 50 characters, starting with one of: `AVM-RES:` (resource module), `AVM-PTN:` (pattern module), `AVM-UTL:` (utility module), or `CHORE:`|`NEW:`|`FIX:`|`CHANGE:`|`BREAKING CHANGE:`|`TESTS:`|`SECURITY:`|`COMPLEX:`|`DOCS:`|`ACTIONS:` for other updates. The second line should be blank. The following lines should be a detailed summary, each item starting with a `-`. Any summary item that is security related should start with `SECURITY:`. Any summary item that causes a breaking change to a feature/interface/dependency should start with `BREAKING CHANGE:`. For AVM module changes, specify the module path (e.g., avm/res/storage/storage-account)."
     }
-  ]
+  ],
+  "chat.promptFilesRecommendations": {
+    "create-plan-update-ARM-API": true,
+    "tech-debt-analysis-ARM-API": true,
+    "triage-github-issues-for-resource-module": true
+  }
 }
