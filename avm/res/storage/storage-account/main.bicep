@@ -347,6 +347,22 @@ var keyVaultType = !empty(customerManagedKey.?keyVaultResourceId)
   : ''
 var isHSMKeyVault = contains(keyVaultType, 'managedHSMs')
 
+resource cMKKey 'Microsoft.KeyVault/vaults/keys@2024-11-01' existing = if (!isHSMKeyVault && !empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  name: '${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}/${customerManagedKey.?keyName!}'
+  scope: resourceGroup(
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+  )
+}
+
+resource hSMCMKKey 'Microsoft.KeyVault/managedHSMs/keys@2024-11-01' existing = if (isHSMKeyVault && !empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  name: '${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}/${customerManagedKey.?keyName!}'
+  scope: resourceGroup(
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+  )
+}
+
 // resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!isHSMKeyVault && !empty(customerManagedKey.?keyVaultResourceId)) {
 //   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
 //   scope: resourceGroup(
@@ -432,7 +448,11 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
                 : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/'
               keyversion: !empty(customerManagedKey.?keyVersion)
                 ? customerManagedKey!.keyVersion!
-                : (customerManagedKey.?autoRotationEnabled ?? true) ? null : ''
+                : (customerManagedKey.?autoRotationEnabled ?? true)
+                    ? null
+                    : (!isHSMKeyVault
+                        ? last(split(cMKKey!.properties.keyUriWithVersion, '/'))
+                        : last(split(hSMCMKKey!.properties.keyUriWithVersion, '/')))
               // : (!isHSMKeyVault
               //     ? last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
               //     : last(split(hSMCMKKeyVault::hSMCMKKey!.properties.keyUriWithVersion, '/')))
