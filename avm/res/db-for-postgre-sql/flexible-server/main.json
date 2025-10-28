@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.3.11034",
-      "templateHash": "4469492316155268266"
+      "templateHash": "13774837352351304101"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server."
@@ -782,8 +782,7 @@
           "source": "Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview#properties/properties/properties/authConfig"
         },
         "description": "Required. The authentication configuration for the server."
-      },
-      "nullable": true
+      }
     },
     "location": {
       "type": "string",

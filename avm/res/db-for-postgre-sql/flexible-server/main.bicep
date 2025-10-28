@@ -15,7 +15,7 @@ param administratorLoginPassword string?
 param administrators administratorType[]?
 
 @description('Required. The authentication configuration for the server.')
-param authConfig resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview'>.properties.authConfig?
+param authConfig resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview'>.properties.authConfig
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
