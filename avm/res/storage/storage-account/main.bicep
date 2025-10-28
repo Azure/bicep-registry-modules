@@ -401,8 +401,8 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
     isLocalUserEnabled: isLocalUserEnabled
     encryption: union(
       {
-        // keySource: !empty(customerManagedKey) ? 'Microsoft.Keyvault' : 'Microsoft.Storage'
-        keySource: 'Microsoft.Storage'
+        keySource: !empty(customerManagedKey) ? 'Microsoft.Keyvault' : 'Microsoft.Storage'
+        // keySource: 'Microsoft.Storage'
         services: {
           blob: supportsBlobService
             ? {
@@ -423,21 +423,21 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
             keyType: keyType
           }
         }
-        // keyvaultproperties: !empty(customerManagedKey)
-        //   ? {
-        //       keyname: customerManagedKey!.keyName
-        //       // keyvaulturi: !isHSMKeyVault ? cMKKeyVault!.properties.vaultUri : hSMCMKKeyVault!.properties.hsmUri
-        //       keyvaulturi: !isHSMKeyVault
-        //         ? 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.${environment().suffixes.keyvaultDns}'
-        //         : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net'
-        //       keyversion: !empty(customerManagedKey.?keyVersion)
-        //         ? customerManagedKey!.keyVersion!
-        //         : (customerManagedKey.?autoRotationEnabled ?? true) ? null : ''
-        //       // : (!isHSMKeyVault
-        //       //     ? last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
-        //       //     : last(split(hSMCMKKeyVault::hSMCMKKey!.properties.keyUriWithVersion, '/')))
-        //     }
-        //   : null
+        keyvaultproperties: !empty(customerManagedKey)
+          ? {
+              keyname: customerManagedKey!.keyName
+              // keyvaulturi: !isHSMKeyVault ? cMKKeyVault!.properties.vaultUri : hSMCMKKeyVault!.properties.hsmUri
+              keyvaulturi: !isHSMKeyVault
+                ? 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}${environment().suffixes.keyvaultDns}/'
+                : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/'
+              keyversion: !empty(customerManagedKey.?keyVersion)
+                ? customerManagedKey!.keyVersion!
+                : (customerManagedKey.?autoRotationEnabled ?? true) ? null : ''
+              // : (!isHSMKeyVault
+              //     ? last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
+              //     : last(split(hSMCMKKeyVault::hSMCMKKey!.properties.keyUriWithVersion, '/')))
+            }
+          : null
         identity: {
           userAssignedIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
             ? cMKUserAssignedIdentity.id
