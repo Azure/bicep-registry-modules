@@ -569,7 +569,9 @@ output privateEndpoints privateEndpointOutputType[] = [
 ]
 
 @description('The principal ID of the system assigned managed identity.')
-output systemAssignedMIPrincipalId string? = flexibleServer.identity.?principalId
+output systemAssignedMIPrincipalId string? = !empty(managedIdentities) && (managedIdentities.?systemAssigned ?? false)
+  ? flexibleServer.identity.principalId
+  : null
 
 // =============== //
 //   Definitions   //

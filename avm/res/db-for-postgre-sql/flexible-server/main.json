@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.3.11034",
-      "templateHash": "13774837352351304101"
+      "templateHash": "14331191002523902525"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server."
@@ -2582,7 +2582,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned managed identity."
       },
-      "value": "[tryGet(reference('flexibleServer', '2025-06-01-preview', 'full').identity, 'principalId')]"
+      "value": "[if(and(not(empty(parameters('managedIdentities'))), coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false())), reference('flexibleServer', '2025-06-01-preview', 'full').identity.principalId, null())]"
     }
   }
 }
