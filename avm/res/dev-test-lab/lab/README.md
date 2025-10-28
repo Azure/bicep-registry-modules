@@ -329,6 +329,7 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
         value: '<value>'
       }
     ]
+    storageAccountAccess: '<storageAccountAccess>'
     support: {
       enabled: 'Enabled'
       markdown: 'DevTest Lab support text. <br> New line. It also supports Markdown'
@@ -660,6 +661,9 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
         }
       ]
     },
+    "storageAccountAccess": {
+      "value": "<storageAccountAccess>"
+    },
     "support": {
       "value": {
         "enabled": "Enabled",
@@ -951,6 +955,7 @@ param secrets = [
     value: '<value>'
   }
 ]
+param storageAccountAccess = '<storageAccountAccess>'
 param support = {
   enabled: 'Enabled'
   markdown: 'DevTest Lab support text. <br> New line. It also supports Markdown'
@@ -1134,6 +1139,7 @@ param tags = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`schedules`](#parameter-schedules) | array | Schedules to create for the lab. |
 | [`secrets`](#parameter-secrets) | array | Secrets to create for the lab. With Lab Secrets, you can store sensitive data once at the lab level and make it available wherever it's needed. |
+| [`storageAccountAccess`](#parameter-storageaccountaccess) | string | Configure whether the lab uses a User Assigned Managed Identity or a Shared Key to access the storage account. This identity must have at least "Storage Blob Data Reader" role on the storage account. Default is "sas" which uses a Shared Key. If needing to use managed identities, set this property value to the resource ID of the User Assigned Managed Identity. Be sure first to have the "Azure Lab Services" service principal (Application ID: "1a14be2a-e903-4cec-99cf-b2e209259a0f") assigned with at least the "Reader" role on the user identity, resource group or subscription before using this feature. The portal experience automatically performs this role assignment with "Contributor" rights, but template deployments require this to be done programmatically prior using this feature. |
 | [`support`](#parameter-support) | object | The properties of any lab support message associated with this lab. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualnetworks`](#parameter-virtualnetworks) | array | Virtual networks to create for the lab. |
@@ -2303,6 +2309,14 @@ Set a user password or provide an SSH public key to access your Windows or Linux
 
 - Required: No
 - Type: bool
+
+### Parameter: `storageAccountAccess`
+
+Configure whether the lab uses a User Assigned Managed Identity or a Shared Key to access the storage account. This identity must have at least "Storage Blob Data Reader" role on the storage account. Default is "sas" which uses a Shared Key. If needing to use managed identities, set this property value to the resource ID of the User Assigned Managed Identity. Be sure first to have the "Azure Lab Services" service principal (Application ID: "1a14be2a-e903-4cec-99cf-b2e209259a0f") assigned with at least the "Reader" role on the user identity, resource group or subscription before using this feature. The portal experience automatically performs this role assignment with "Contributor" rights, but template deployments require this to be done programmatically prior using this feature.
+
+- Required: No
+- Type: string
+- Default: `'sas'`
 
 ### Parameter: `support`
 
