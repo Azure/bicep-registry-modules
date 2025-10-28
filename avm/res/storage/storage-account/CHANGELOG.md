@@ -6,9 +6,11 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added strict types for `fileServices`, `queueServices`, and `tableServices`
+- Added strict types for `fileServices`, `queueServices`, and `tableServices` inputs
 - Updated input `managementPolicyRules` to match underlying strict type `storageAccounts/managementPolicies.properties.policy.rules`
 - Added optional input `blobServices.versionDeletePolicyDays` to provide a friendly means of including an auto-created lifecycle policy for deleting blob versions after x days.
+- Added optional input `extendedLocationZone` to support Azure Extended Zone region deployment
+- Added optional input `objectReplicationPolicies` to support Object Replication policies across storage accounts
 
 ### Breaking Changes
 
