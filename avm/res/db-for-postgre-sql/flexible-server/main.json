@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.3.11034",
-      "templateHash": "16274578076055079318"
+      "templateHash": "4469492316155268266"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server."
@@ -2576,6 +2576,14 @@
           "networkInterfaceResourceIds": "[reference(format('server_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
         }
       }
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The principal ID of the system assigned managed identity."
+      },
+      "value": "[tryGet(reference('flexibleServer', '2025-06-01-preview', 'full').identity, 'principalId')]"
     }
   }
 }

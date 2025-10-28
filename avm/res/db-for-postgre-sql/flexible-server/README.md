@@ -2832,6 +2832,7 @@ PostgreSQL Server version.
 | `privateEndpoints` | array | The private endpoints of the PostgreSQL Flexible server. |
 | `resourceGroupName` | string | The resource group of the deployed PostgreSQL Flexible server. |
 | `resourceId` | string | The resource ID of the deployed PostgreSQL Flexible server. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned managed identity. |
 
 ## Cross-referenced modules
 
