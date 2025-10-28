@@ -193,6 +193,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     highAvailabilityZone: 2
     location: '<location>'
     managedIdentities: {
+      systemAssigned: true
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
@@ -264,6 +265,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     },
     "managedIdentities": {
       "value": {
+        "systemAssigned": true,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
@@ -309,6 +311,7 @@ param highAvailability = 'Disabled'
 param highAvailabilityZone = 2
 param location = '<location>'
 param managedIdentities = {
+  systemAssigned: true
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
@@ -1204,7 +1207,8 @@ module replicationTestDeployment '../../../main.bicep' = [
       version: '17'
       storageSizeGB: 512
       autoGrow: 'Enabled'
-      replicationRole: 'AsyncReplica'
+      highAvailability: 'Disabled' // Must be disabled for read-replicas
+      createMode: iteration == 'init' ? 'Replica' : null // Only set createMode on initial deployment of replica
     }
   }
 ]
@@ -1590,7 +1594,15 @@ The managed identity definition for this resource. Required if 'cMKKeyName' is n
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
 | [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 

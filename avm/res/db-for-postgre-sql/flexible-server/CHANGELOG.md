@@ -11,6 +11,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added authConfigType as a resource defined type to address replica servers deployments. The existing administrators block was being passed
 - Added replicationRole parameter
 - Added conditional output for the fullyQualifiedDomainName property. In rare instances the deployment of the module would fail if the fullyQualifiedDomainName property was not returned from Azure. There is a long standing support ticket with the Flexible Server product group to address the issue permanently.
+- Added support for SystemAssigned identities
 
 ### Breaking Changes
 

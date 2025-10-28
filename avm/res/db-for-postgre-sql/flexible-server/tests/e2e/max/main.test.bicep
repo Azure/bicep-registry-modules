@@ -81,6 +81,7 @@ module testDeployment '../../../main.bicep' = [
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
+        systemAssigned: true
       }
       serverThreatProtection: 'Enabled'
       autoGrow: 'Enabled'

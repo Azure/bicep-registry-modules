@@ -114,9 +114,9 @@ param version string = '17'
 @description('Optional. The mode to create a new PostgreSQL server.')
 param createMode string = 'Default'
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Conditional. The managed identity definition for this resource. Required if \'cMKKeyName\' is not empty.')
-param managedIdentities managedIdentityOnlyUserAssignedType?
+param managedIdentities managedIdentityAllType?
 
 @allowed([
   'Disabled'
@@ -223,7 +223,9 @@ var formattedUserAssignedIdentities = reduce(
 
 var identity = !empty(managedIdentities)
   ? {
-      type: !empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None'
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
