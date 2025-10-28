@@ -1144,74 +1144,109 @@ This instance deploys a primary and readonly replication server using the module
 <summary>via Bicep module</summary>
 
 ```bicep
-targetScope = 'subscription'
-
-metadata name = 'Primary server and Readonly Replication server'
-metadata description = 'This instance deploys a primary and readonly replication server using the module with the minimum set of required parameters.'
-
-// ========== //
-// Parameters //
-// ========== //
-
-@description('Optional. The name of the resource group to deploy for testing purposes.')
-@maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-dbforpostgresql.flexibleservers-${serviceShort}-rg'
-
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dfpsrep'
-
-@description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
-
-// ============ //
-// Dependencies //
-// ============ //
-
-// General resources
-// =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
-  name: resourceGroupName
-  location: resourceLocation
-}
-
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
+  name: 'flexibleServerDeployment'
   params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    primaryServerName: '${namePrefix}${serviceShort}pri001'
+    // Required parameters
+    authConfig: {
+      activeDirectoryAuth: 'Enabled'
+      passwordAuth: 'Disabled'
+    }
+    availabilityZone: -1
+    name: 'dfpsrep001'
+    skuName: 'Standard_D2s_v3'
+    tier: 'GeneralPurpose'
+    // Non-required parameters
+    autoGrow: 'Enabled'
+    createMode: '<createMode>'
+    highAvailability: 'Disabled'
+    sourceServerResourceId: '<sourceServerResourceId>'
+    storageSizeGB: 512
+    version: '17'
   }
 }
-// ============== //
-// Test Execution //
-// ============== //
+```
 
-@batchSize(1)
-module replicationTestDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-    params: {
-      name: '${namePrefix}${serviceShort}001'
-      sourceServerResourceId: nestedDependencies.outputs.serverResourceId
-      availabilityZone: -1
-      authConfig: {
-        activeDirectoryAuth: 'Enabled'
-        passwordAuth: 'Disabled'
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "authConfig": {
+      "value": {
+        "activeDirectoryAuth": "Enabled",
+        "passwordAuth": "Disabled"
       }
-      skuName: 'Standard_D2s_v3'
-      tier: 'GeneralPurpose'
-      version: '17'
-      storageSizeGB: 512
-      autoGrow: 'Enabled'
-      highAvailability: 'Disabled' // Must be disabled for read-replicas
-      createMode: iteration == 'init' ? 'Replica' : null // Only set createMode on initial deployment of replica
+    },
+    "availabilityZone": {
+      "value": -1
+    },
+    "name": {
+      "value": "dfpsrep001"
+    },
+    "skuName": {
+      "value": "Standard_D2s_v3"
+    },
+    "tier": {
+      "value": "GeneralPurpose"
+    },
+    // Non-required parameters
+    "autoGrow": {
+      "value": "Enabled"
+    },
+    "createMode": {
+      "value": "<createMode>"
+    },
+    "highAvailability": {
+      "value": "Disabled"
+    },
+    "sourceServerResourceId": {
+      "value": "<sourceServerResourceId>"
+    },
+    "storageSizeGB": {
+      "value": 512
+    },
+    "version": {
+      "value": "17"
     }
   }
-]
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
+
+// Required parameters
+param authConfig = {
+  activeDirectoryAuth: 'Enabled'
+  passwordAuth: 'Disabled'
+}
+param availabilityZone = -1
+param name = 'dfpsrep001'
+param skuName = 'Standard_D2s_v3'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param autoGrow = 'Enabled'
+param createMode = '<createMode>'
+param highAvailability = 'Disabled'
+param sourceServerResourceId = '<sourceServerResourceId>'
+param storageSizeGB = 512
+param version = '17'
 ```
 
 </details>
