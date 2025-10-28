@@ -6,17 +6,18 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- **Added support for Cassandra API resources** - First version to include Cassandra keyspaces, tables, views, role assignments, and role definitions for Azure Cosmos DB
-- Import `tableType` and `viewType` from `cassandra-keyspace` module to eliminate code duplication
-- Reduced template size by approximately 85 lines through type import architecture
-- Established single source of truth for Cassandra resource types across modules
+- Introduced and exposed the [`cassandra-keyspace`](/Azure/bicep-registry-modules/blob/main/avm/res/document-db/database-account/cassandra-keyspace) as child module (with nested `table` and `view` modules) via the `cassandraKeyspaces` parameter
+- Introduced and exposed the [`cassandra-role-definition`](/Azure/bicep-registry-modules/blob/main/avm/res/document-db/database-account/cassandra-role-definition) as child module via the `cassandraRoleDefinitions` parameter
+- Introduced and exposed the [`cassandra-role-assignment`](/Azure/bicep-registry-modules/blob/main/avm/res/document-db/database-account/cassandra-role-assignment) as child module via the `cassandraRoleAssignments` parameter
+- Added exported types in top-level `main.bicep`
+  - `cassandraKeyspaceType`
+  - `cassandraRoleDefinitionType`
+  - `cassandraStandaloneRoleAssignmentType`
 
 ### Breaking Changes
 
-- Renamed parameter `dataPlaneRoleAssignments` to `sqlRoleAssignments` to clarify it is specific to SQL (NoSQL API) resources and distinguish it from Cassandra role assignments
-- Removed custom Cassandra schema type definitions (`cassandraColumnType`, `cassandraPartitionKeyType`, `cassandraClusterKeyType`, `cassandraSchemaType`, `cassandraTableType`, `cassandraViewType`)
-- Cassandra table and view types now imported from `cassandra-keyspace` module instead of being defined locally
-- Users upgrading to this version must update Cassandra configurations to use Azure API schema format (`resourceInput<...>.properties.resource.schema`) instead of the previous custom schema object format
+- Renamed parameter `dataPlaneRoleAssignments` to `sqlRoleAssignments` to clarify it is specific to SQL (NoSQL API) resources
+- Renamed parameter `dataPlaneRoleDefinitions` to `sqlRoleDefinitions` for consistency with `sqlRoleAssignments`
 
 ## 0.17.0
 
