@@ -70,7 +70,7 @@ module testDeployment '../../../main.bicep' = [
       frontendIPConfigurations: [
         {
           name: 'publicIPConfig1'
-          publicIPAddressId: nestedDependencies.outputs.publicIPResourceId
+          publicIPAddressResourceId: nestedDependencies.outputs.publicIPResourceId
         }
       ]
       backendAddressPools: [

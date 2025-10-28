@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/azure-firewall/CHANGELOG.md).
 
+## 0.9.1
+
+### Changes
+
+- Fixed issue [#5816](https://github.com/Azure/bicep-registry-modules/issues/5816) to allow BYOIP scenarios with Azure Firewall in Virtual WAN hubs by adjusting the logic for `hubIPAddresses` and `publicIPResourceID` parameters to ensure correct handling when both are provided.
+
+### Breaking Changes
+
+- None
+
 ## 0.9.0
 
 ### Changes

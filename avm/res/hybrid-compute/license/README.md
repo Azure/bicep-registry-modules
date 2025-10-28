@@ -1,5 +1,10 @@
 # Azure Arc License `[Microsoft.HybridCompute/licenses]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an Azure Arc License for use with Azure Arc-enabled servers. This module should not be used for other Arc-enabled server scenarios, where the Arc License resource is created automatically by the onboarding process.
 
 ## Navigation
