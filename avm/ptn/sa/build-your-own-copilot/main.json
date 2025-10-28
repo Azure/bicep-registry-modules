@@ -6,8 +6,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "10135024818800158783"
-    }
+      "templateHash": "3059562821081703524"
+    },
+    "name": "Build Your Own Copilot Solution Accelerator",
+    "description": "This module deploys a comprehensive Build Your Own Copilot solution accelerator with Azure AI Services, CosmosDB, SQL Database, Key Vault, Storage Account, Azure AI Search, and a containerized web application. The solution includes AI Foundry services for GPT and embedding models, supporting both private and public networking configurations with optional WAF-aligned features for monitoring, scalability, and redundancy.",
+    "owner": "Azure/module-maintainers"
   },
   "parameters": {
     "solutionName": {
@@ -417,6 +420,26 @@
       "dependsOn": [
         "searchService"
       ]
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.ptn.sa-build-your-own-copilot.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
     },
     "logAnalyticsWorkspace": {
       "condition": "[parameters('enableMonitoring')]",
@@ -28985,8 +29008,8 @@
       },
       "dependsOn": [
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -40188,6 +40211,9 @@
           "softDeleteRetentionInDays": {
             "value": 7
           },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "secrets": {
             "value": [
               {
@@ -43613,6 +43639,9 @@
         "parameters": {
           "name": {
             "value": "[format('sql-{0}', variables('solutionSuffix'))]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "administrators": {
             "value": {
@@ -52939,6 +52968,9 @@
           "name": {
             "value": "[variables('aiSearchName')]"
           },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "authOptions": {
             "value": {
               "aadOrApiKey": {
@@ -55306,427 +55338,427 @@
     }
   },
   "outputs": {
-    "WEB_APP_URL": {
+    "webAppUrl": {
       "type": "string",
       "metadata": {
-        "description": "URL of the deployed web application."
+        "description": "The URL of the deployed web application."
       },
       "value": "[format('https://{0}.azurewebsites.net', reference('webSite').outputs.name.value)]"
     },
-    "STORAGE_ACCOUNT_NAME": {
+    "storageAccountName": {
       "type": "string",
       "metadata": {
-        "description": "Name of the storage account."
+        "description": "The name of the deployed Storage Account."
       },
       "value": "[reference('avmStorageAccount').outputs.name.value]"
     },
-    "STORAGE_CONTAINER_NAME": {
+    "storageContainerName": {
       "type": "string",
       "metadata": {
-        "description": "Name of the storage container."
+        "description": "The name of the Storage Container."
       },
       "value": "data"
     },
-    "KEY_VAULT_NAME": {
+    "keyVaultName": {
       "type": "string",
       "metadata": {
-        "description": "Name of the Key Vault."
+        "description": "The name of the deployed Key Vault."
       },
       "value": "[reference('keyvault').outputs.name.value]"
     },
-    "COSMOSDB_ACCOUNT_NAME": {
+    "cosmosDbAccountName": {
       "type": "string",
       "metadata": {
-        "description": "Name of the Cosmos DB account."
+        "description": "The name of the deployed CosmosDB Account."
       },
       "value": "[reference('cosmosDb').outputs.name.value]"
     },
-    "RESOURCE_GROUP_NAME": {
+    "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "Name of the resource group."
+        "description": "The name of the Resource Group."
       },
       "value": "[resourceGroup().name]"
     },
-    "AI_FOUNDRY_RESOURCE_ID": {
+    "aiFoundryResourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the AI Foundry instance."
+        "description": "The resource ID of the AI Foundry service."
       },
       "value": "[reference('aiFoundryAiServices').outputs.resourceId.value]"
     },
-    "SQLDB_SERVER_NAME": {
+    "sqlDbServerName": {
       "type": "string",
       "metadata": {
-        "description": "Name of the SQL Database server."
+        "description": "The name of the SQL Database server."
       },
       "value": "[reference('sqlDBModule').outputs.name.value]"
     },
-    "SQLDB_DATABASE": {
+    "sqlDbDatabase": {
       "type": "string",
       "metadata": {
-        "description": "Name of the SQL Database."
+        "description": "The name of the SQL Database."
       },
       "value": "[variables('sqlDbName')]"
     },
-    "MANAGEDIDENTITY_WEBAPP_NAME": {
+    "managedIdentityWebAppName": {
       "type": "string",
       "metadata": {
-        "description": "Name of the managed identity used by the web app."
+        "description": "The name of the managed identity for the web application."
       },
       "value": "[reference('userAssignedIdentity').outputs.name.value]"
     },
-    "MANAGEDIDENTITY_WEBAPP_CLIENTID": {
-      "type": "string",
-      "metadata": {
-        "description": "Client ID of the managed identity used by the web app."
-      },
-      "value": "[reference('userAssignedIdentity').outputs.clientId.value]"
-    },
-    "MANAGEDIDENTITY_SQL_NAME": {
-      "type": "string",
-      "metadata": {
-        "description": "Name of the managed identity used for SQL database operations."
-      },
-      "value": "[reference('sqlUserAssignedIdentity').outputs.name.value]"
-    },
-    "MANAGEDIDENTITY_SQL_CLIENTID": {
-      "type": "string",
-      "metadata": {
-        "description": "Client ID of the managed identity used for SQL database operations."
-      },
-      "value": "[reference('sqlUserAssignedIdentity').outputs.clientId.value]"
-    },
-    "AI_SEARCH_SERVICE_NAME": {
-      "type": "string",
-      "metadata": {
-        "description": "Name of the AI Search service."
-      },
-      "value": "[variables('aiSearchName')]"
-    },
-    "WEB_APP_NAME": {
-      "type": "string",
-      "metadata": {
-        "description": "Name of the deployed web application."
-      },
-      "value": "[reference('webSite').outputs.name.value]"
-    },
-    "APP_ENV": {
-      "type": "string",
-      "metadata": {
-        "description": "Specifies the current application environment."
-      },
-      "value": "[variables('appEnvironment')]"
-    },
-    "APPINSIGHTS_INSTRUMENTATIONKEY": {
-      "type": "string",
-      "metadata": {
-        "description": "The Application Insights instrumentation key."
-      },
-      "value": "[if(parameters('enableMonitoring'), reference('applicationInsights').outputs.instrumentationKey.value, '')]"
-    },
-    "APPLICATIONINSIGHTS_CONNECTION_STRING": {
-      "type": "string",
-      "metadata": {
-        "description": "The Application Insights connection string."
-      },
-      "value": "[if(parameters('enableMonitoring'), reference('applicationInsights').outputs.connectionString.value, '')]"
-    },
-    "AZURE_AI_AGENT_API_VERSION": {
-      "type": "string",
-      "metadata": {
-        "description": "The API version used for the Azure AI Agent service."
-      },
-      "value": "[parameters('azureOpenaiAPIVersion')]"
-    },
-    "AZURE_AI_AGENT_ENDPOINT": {
-      "type": "string",
-      "metadata": {
-        "description": "The endpoint URL of the Azure AI Agent project."
-      },
-      "value": "[reference('aiFoundryAiServices').outputs.aiProjectInfo.value.apiEndpoint]"
-    },
-    "AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME": {
-      "type": "string",
-      "metadata": {
-        "description": "The deployment name of the GPT model for the Azure AI Agent."
-      },
-      "value": "[parameters('gptModelName')]"
-    },
-    "AZURE_AI_SEARCH_ENDPOINT": {
-      "type": "string",
-      "metadata": {
-        "description": "The endpoint URL of the Azure AI Search service."
-      },
-      "value": "[format('https://{0}.search.windows.net', variables('aiSearchName'))]"
-    },
-    "AZURE_CALL_TRANSCRIPT_SYSTEM_PROMPT": {
-      "type": "string",
-      "metadata": {
-        "description": "The system prompt used for call transcript processing in Azure Functions."
-      },
-      "value": "[variables('functionAppCallTranscriptSystemPrompt')]"
-    },
-    "AZURE_COSMOSDB_ACCOUNT": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the Azure Cosmos DB account."
-      },
-      "value": "[reference('cosmosDb').outputs.name.value]"
-    },
-    "AZURE_COSMOSDB_CONVERSATIONS_CONTAINER": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the Azure Cosmos DB container for storing conversations."
-      },
-      "value": "[variables('collectionName')]"
-    },
-    "AZURE_COSMOSDB_DATABASE": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the Azure Cosmos DB database."
-      },
-      "value": "[variables('cosmosDbDatabaseName')]"
-    },
-    "AZURE_COSMOSDB_ENABLE_FEEDBACK": {
-      "type": "string",
-      "metadata": {
-        "description": "Indicates whether feedback is enabled in Azure Cosmos DB."
-      },
-      "value": "[variables('azureCosmosDbEnableFeedback')]"
-    },
-    "AZURE_OPENAI_EMBEDDING_ENDPOINT": {
-      "type": "string",
-      "metadata": {
-        "description": "The endpoint URL for the Azure OpenAI Embedding model."
-      },
-      "value": "[reference('aiFoundryAiServices').outputs.endpoints.value['OpenAI Language Model Instance API']]"
-    },
-    "AZURE_OPENAI_EMBEDDING_NAME": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the Azure OpenAI Embedding model."
-      },
-      "value": "[parameters('embeddingModel')]"
-    },
-    "AZURE_OPENAI_ENDPOINT": {
-      "type": "string",
-      "metadata": {
-        "description": "The endpoint URL for the Azure OpenAI service."
-      },
-      "value": "[reference('aiFoundryAiServices').outputs.endpoints.value['OpenAI Language Model Instance API']]"
-    },
-    "AZURE_OPENAI_MAX_TOKENS": {
-      "type": "string",
-      "metadata": {
-        "description": "The maximum number of tokens for Azure OpenAI responses."
-      },
-      "value": "[variables('azureOpenAIMaxTokens')]"
-    },
-    "AZURE_OPENAI_MODEL": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the Azure OpenAI GPT model."
-      },
-      "value": "[parameters('gptModelName')]"
-    },
-    "AZURE_OPENAI_PREVIEW_API_VERSION": {
-      "type": "string",
-      "metadata": {
-        "description": "The preview API version for Azure OpenAI."
-      },
-      "value": "[parameters('azureOpenaiAPIVersion')]"
-    },
-    "AZURE_OPENAI_RESOURCE": {
-      "type": "string",
-      "metadata": {
-        "description": "The Azure OpenAI resource name."
-      },
-      "value": "[reference('aiFoundryAiServices').outputs.name.value]"
-    },
-    "AZURE_OPENAI_STOP_SEQUENCE": {
-      "type": "string",
-      "metadata": {
-        "description": "The stop sequence(s) for Azure OpenAI responses."
-      },
-      "value": "[variables('azureOpenAIStopSequence')]"
-    },
-    "AZURE_OPENAI_STREAM": {
-      "type": "string",
-      "metadata": {
-        "description": "Indicates whether streaming is enabled for Azure OpenAI responses."
-      },
-      "value": "[variables('azureOpenAIStream')]"
-    },
-    "AZURE_OPENAI_STREAM_TEXT_SYSTEM_PROMPT": {
-      "type": "string",
-      "metadata": {
-        "description": "The system prompt for streaming text responses in Azure Functions."
-      },
-      "value": "[variables('functionAppStreamTextSystemPrompt')]"
-    },
-    "AZURE_OPENAI_SYSTEM_MESSAGE": {
-      "type": "string",
-      "metadata": {
-        "description": "The system message for Azure OpenAI requests."
-      },
-      "value": "[variables('azureOpenAISystemMessage')]"
-    },
-    "AZURE_OPENAI_TEMPERATURE": {
-      "type": "string",
-      "metadata": {
-        "description": "The temperature setting for Azure OpenAI responses."
-      },
-      "value": "[variables('azureOpenAITemperature')]"
-    },
-    "AZURE_OPENAI_TOP_P": {
-      "type": "string",
-      "metadata": {
-        "description": "The Top-P setting for Azure OpenAI responses."
-      },
-      "value": "[variables('azureOpenAITopP')]"
-    },
-    "AZURE_SEARCH_CONNECTION_NAME": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the Azure AI Search connection."
-      },
-      "value": "[variables('aiSearchName')]"
-    },
-    "AZURE_SEARCH_CONTENT_COLUMNS": {
-      "type": "string",
-      "metadata": {
-        "description": "The columns in Azure AI Search that contain content."
-      },
-      "value": "[variables('azureSearchContentColumns')]"
-    },
-    "AZURE_SEARCH_ENABLE_IN_DOMAIN": {
-      "type": "string",
-      "metadata": {
-        "description": "Indicates whether in-domain filtering is enabled for Azure AI Search."
-      },
-      "value": "[variables('azureSearchEnableInDomain')]"
-    },
-    "AZURE_SEARCH_FILENAME_COLUMN": {
-      "type": "string",
-      "metadata": {
-        "description": "The filename column used in Azure AI Search."
-      },
-      "value": "[variables('azureSearchFilenameColumn')]"
-    },
-    "AZURE_SEARCH_INDEX": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the Azure AI Search index."
-      },
-      "value": "[variables('azureSearchIndex')]"
-    },
-    "AZURE_SEARCH_PERMITTED_GROUPS_COLUMN": {
-      "type": "string",
-      "metadata": {
-        "description": "The permitted groups field used in Azure AI Search."
-      },
-      "value": "[variables('azureSearchPermittedGroupsField')]"
-    },
-    "AZURE_SEARCH_QUERY_TYPE": {
-      "type": "string",
-      "metadata": {
-        "description": "The query type for Azure AI Search."
-      },
-      "value": "[variables('azureSearchQueryType')]"
-    },
-    "AZURE_SEARCH_SEMANTIC_SEARCH_CONFIG": {
-      "type": "string",
-      "metadata": {
-        "description": "The semantic search configuration name in Azure AI Search."
-      },
-      "value": "[variables('azureSearchSemanticSearchConfig')]"
-    },
-    "AZURE_SEARCH_SERVICE": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the Azure AI Search service."
-      },
-      "value": "[variables('aiSearchName')]"
-    },
-    "AZURE_SEARCH_STRICTNESS": {
-      "type": "string",
-      "metadata": {
-        "description": "The strictness setting for Azure AI Search semantic ranking."
-      },
-      "value": "[variables('azureSearchStrictness')]"
-    },
-    "AZURE_SEARCH_TITLE_COLUMN": {
-      "type": "string",
-      "metadata": {
-        "description": "The title column used in Azure AI Search."
-      },
-      "value": "[variables('azureSearchTitleColumn')]"
-    },
-    "AZURE_SEARCH_TOP_K": {
-      "type": "string",
-      "metadata": {
-        "description": "The number of top results (K) to return from Azure AI Search."
-      },
-      "value": "[variables('azureSearchTopK')]"
-    },
-    "AZURE_SEARCH_URL_COLUMN": {
-      "type": "string",
-      "metadata": {
-        "description": "The URL column used in Azure AI Search."
-      },
-      "value": "[variables('azureSearchUrlColumn')]"
-    },
-    "AZURE_SEARCH_USE_SEMANTIC_SEARCH": {
-      "type": "string",
-      "metadata": {
-        "description": "Indicates whether semantic search is used in Azure AI Search."
-      },
-      "value": "[variables('azureSearchUseSemanticSearch')]"
-    },
-    "AZURE_SEARCH_VECTOR_COLUMNS": {
-      "type": "string",
-      "metadata": {
-        "description": "The vector fields used in Azure AI Search."
-      },
-      "value": "[variables('azureSearchVectorFields')]"
-    },
-    "AZURE_SQL_SYSTEM_PROMPT": {
-      "type": "string",
-      "metadata": {
-        "description": "The system prompt for SQL queries in Azure Functions."
-      },
-      "value": "[variables('functionAppSqlPrompt')]"
-    },
-    "SQLDB_SERVER": {
-      "type": "string",
-      "metadata": {
-        "description": "The fully qualified domain name (FQDN) of the Azure SQL Server."
-      },
-      "value": "[variables('sqlServerFqdn')]"
-    },
-    "SQLDB_USER_MID": {
+    "managedIdentityWebAppClientId": {
       "type": "string",
       "metadata": {
         "description": "The client ID of the managed identity for the web application."
       },
       "value": "[reference('userAssignedIdentity').outputs.clientId.value]"
     },
-    "USE_AI_PROJECT_CLIENT": {
+    "managedIdentitySqlName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the managed identity for SQL Server."
+      },
+      "value": "[reference('sqlUserAssignedIdentity').outputs.name.value]"
+    },
+    "managedIdentitySqlClientId": {
+      "type": "string",
+      "metadata": {
+        "description": "The client ID of the managed identity for SQL Server."
+      },
+      "value": "[reference('sqlUserAssignedIdentity').outputs.clientId.value]"
+    },
+    "aiSearchServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure AI Search service."
+      },
+      "value": "[variables('aiSearchName')]"
+    },
+    "webAppName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed web application."
+      },
+      "value": "[reference('webSite').outputs.name.value]"
+    },
+    "appEnv": {
+      "type": "string",
+      "metadata": {
+        "description": "The application environment."
+      },
+      "value": "[variables('appEnvironment')]"
+    },
+    "appInsightsInstrumentationKey": {
+      "type": "string",
+      "metadata": {
+        "description": "The Application Insights instrumentation key."
+      },
+      "value": "[if(parameters('enableMonitoring'), reference('applicationInsights').outputs.instrumentationKey.value, '')]"
+    },
+    "applicationInsightsConnectionString": {
+      "type": "string",
+      "metadata": {
+        "description": "The Application Insights connection string."
+      },
+      "value": "[if(parameters('enableMonitoring'), reference('applicationInsights').outputs.connectionString.value, '')]"
+    },
+    "azureAiAgentApiVersion": {
+      "type": "string",
+      "metadata": {
+        "description": "The API version for the Azure AI Agent."
+      },
+      "value": "[parameters('azureOpenaiAPIVersion')]"
+    },
+    "azureAiAgentEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "The endpoint for the Azure AI Agent."
+      },
+      "value": "[reference('aiFoundryAiServices').outputs.aiProjectInfo.value.apiEndpoint]"
+    },
+    "azureAiAgentModelDeploymentName": {
+      "type": "string",
+      "metadata": {
+        "description": "The model deployment name for the Azure AI Agent."
+      },
+      "value": "[parameters('gptModelName')]"
+    },
+    "azureAiSearchEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "The endpoint for the Azure AI Search service."
+      },
+      "value": "[format('https://{0}.search.windows.net', variables('aiSearchName'))]"
+    },
+    "azureCallTranscriptSystemPrompt": {
+      "type": "string",
+      "metadata": {
+        "description": "The system prompt for call transcript processing in Azure Functions."
+      },
+      "value": "[variables('functionAppCallTranscriptSystemPrompt')]"
+    },
+    "azureCosmosDbAccount": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure CosmosDB account name."
+      },
+      "value": "[reference('cosmosDb').outputs.name.value]"
+    },
+    "azureCosmosDbConversationsContainer": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure CosmosDB conversations container name."
+      },
+      "value": "[variables('collectionName')]"
+    },
+    "azureCosmosDbDatabase": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure CosmosDB database name."
+      },
+      "value": "[variables('cosmosDbDatabaseName')]"
+    },
+    "azureCosmosDbEnableFeedback": {
+      "type": "string",
+      "metadata": {
+        "description": "Indicates whether feedback is enabled for Azure CosmosDB."
+      },
+      "value": "[variables('azureCosmosDbEnableFeedback')]"
+    },
+    "azureOpenAiEmbeddingEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "The endpoint for Azure OpenAI embedding service."
+      },
+      "value": "[reference('aiFoundryAiServices').outputs.endpoints.value['OpenAI Language Model Instance API']]"
+    },
+    "azureOpenAiEmbeddingName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure OpenAI embedding model."
+      },
+      "value": "[parameters('embeddingModel')]"
+    },
+    "azureOpenAiEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "The endpoint for the Azure OpenAI service."
+      },
+      "value": "[reference('aiFoundryAiServices').outputs.endpoints.value['OpenAI Language Model Instance API']]"
+    },
+    "azureOpenAiMaxTokens": {
+      "type": "string",
+      "metadata": {
+        "description": "The maximum number of tokens for Azure OpenAI."
+      },
+      "value": "[variables('azureOpenAIMaxTokens')]"
+    },
+    "azureOpenAiModel": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure OpenAI model name."
+      },
+      "value": "[parameters('gptModelName')]"
+    },
+    "azureOpenAiPreviewApiVersion": {
+      "type": "string",
+      "metadata": {
+        "description": "The preview API version for Azure OpenAI."
+      },
+      "value": "[parameters('azureOpenaiAPIVersion')]"
+    },
+    "azureOpenAiResource": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure OpenAI resource name."
+      },
+      "value": "[reference('aiFoundryAiServices').outputs.name.value]"
+    },
+    "azureOpenAiStopSequence": {
+      "type": "string",
+      "metadata": {
+        "description": "The stop sequence for Azure OpenAI."
+      },
+      "value": "[variables('azureOpenAIStopSequence')]"
+    },
+    "azureOpenAiStream": {
+      "type": "string",
+      "metadata": {
+        "description": "Indicates whether streaming is enabled for Azure OpenAI."
+      },
+      "value": "[variables('azureOpenAIStream')]"
+    },
+    "azureOpenAiStreamTextSystemPrompt": {
+      "type": "string",
+      "metadata": {
+        "description": "The system prompt for stream text processing in Azure Functions."
+      },
+      "value": "[variables('functionAppStreamTextSystemPrompt')]"
+    },
+    "azureOpenAiSystemMessage": {
+      "type": "string",
+      "metadata": {
+        "description": "The system message for Azure OpenAI."
+      },
+      "value": "[variables('azureOpenAISystemMessage')]"
+    },
+    "azureOpenAiTemperature": {
+      "type": "string",
+      "metadata": {
+        "description": "The temperature setting for Azure OpenAI."
+      },
+      "value": "[variables('azureOpenAITemperature')]"
+    },
+    "azureOpenAiTopP": {
+      "type": "string",
+      "metadata": {
+        "description": "The top P setting for Azure OpenAI."
+      },
+      "value": "[variables('azureOpenAITopP')]"
+    },
+    "azureSearchConnectionName": {
+      "type": "string",
+      "metadata": {
+        "description": "The connection name for Azure AI Search."
+      },
+      "value": "[variables('aiSearchName')]"
+    },
+    "azureSearchContentColumns": {
+      "type": "string",
+      "metadata": {
+        "description": "The content columns used in Azure AI Search."
+      },
+      "value": "[variables('azureSearchContentColumns')]"
+    },
+    "azureSearchEnableInDomain": {
+      "type": "string",
+      "metadata": {
+        "description": "Indicates whether in-domain search is enabled for Azure AI Search."
+      },
+      "value": "[variables('azureSearchEnableInDomain')]"
+    },
+    "azureSearchFilenameColumn": {
+      "type": "string",
+      "metadata": {
+        "description": "The filename column used in Azure AI Search."
+      },
+      "value": "[variables('azureSearchFilenameColumn')]"
+    },
+    "azureSearchIndex": {
+      "type": "string",
+      "metadata": {
+        "description": "The index name used in Azure AI Search."
+      },
+      "value": "[variables('azureSearchIndex')]"
+    },
+    "azureSearchPermittedGroupsColumn": {
+      "type": "string",
+      "metadata": {
+        "description": "The permitted groups column used in Azure AI Search."
+      },
+      "value": "[variables('azureSearchPermittedGroupsField')]"
+    },
+    "azureSearchQueryType": {
+      "type": "string",
+      "metadata": {
+        "description": "The query type used in Azure AI Search."
+      },
+      "value": "[variables('azureSearchQueryType')]"
+    },
+    "azureSearchSemanticSearchConfig": {
+      "type": "string",
+      "metadata": {
+        "description": "The semantic search configuration used in Azure AI Search."
+      },
+      "value": "[variables('azureSearchSemanticSearchConfig')]"
+    },
+    "azureSearchService": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure AI Search service name."
+      },
+      "value": "[variables('aiSearchName')]"
+    },
+    "azureSearchStrictness": {
+      "type": "string",
+      "metadata": {
+        "description": "The strictness level used in Azure AI Search."
+      },
+      "value": "[variables('azureSearchStrictness')]"
+    },
+    "azureSearchTitleColumn": {
+      "type": "string",
+      "metadata": {
+        "description": "The title column used in Azure AI Search."
+      },
+      "value": "[variables('azureSearchTitleColumn')]"
+    },
+    "azureSearchTopK": {
+      "type": "string",
+      "metadata": {
+        "description": "The number of top results (K) to return from Azure AI Search."
+      },
+      "value": "[variables('azureSearchTopK')]"
+    },
+    "azureSearchUrlColumn": {
+      "type": "string",
+      "metadata": {
+        "description": "The URL column used in Azure AI Search."
+      },
+      "value": "[variables('azureSearchUrlColumn')]"
+    },
+    "azureSearchUseSemanticSearch": {
+      "type": "string",
+      "metadata": {
+        "description": "Indicates whether semantic search is used in Azure AI Search."
+      },
+      "value": "[variables('azureSearchUseSemanticSearch')]"
+    },
+    "azureSearchVectorColumns": {
+      "type": "string",
+      "metadata": {
+        "description": "The vector fields used in Azure AI Search."
+      },
+      "value": "[variables('azureSearchVectorFields')]"
+    },
+    "azureSqlSystemPrompt": {
+      "type": "string",
+      "metadata": {
+        "description": "The system prompt for SQL queries in Azure Functions."
+      },
+      "value": "[variables('functionAppSqlPrompt')]"
+    },
+    "sqlDbServer": {
+      "type": "string",
+      "metadata": {
+        "description": "The fully qualified domain name (FQDN) of the Azure SQL Server."
+      },
+      "value": "[variables('sqlServerFqdn')]"
+    },
+    "sqlDbUserMid": {
+      "type": "string",
+      "metadata": {
+        "description": "The client ID of the managed identity for the web application."
+      },
+      "value": "[reference('userAssignedIdentity').outputs.clientId.value]"
+    },
+    "useAiProjectClient": {
       "type": "string",
       "metadata": {
         "description": "Indicates whether the AI Project Client should be used."
       },
       "value": "[variables('useAIProjectClientFlag')]"
     },
-    "USE_INTERNAL_STREAM": {
+    "useInternalStream": {
       "type": "string",
       "metadata": {
         "description": "Indicates whether the internal stream should be used."
       },
       "value": "[variables('useInternalStream')]"
     },
-    "AZURE_SUBSCRIPTION_ID": {
+    "azureSubscriptionId": {
       "type": "string",
       "metadata": {
         "description": "The Azure Subscription ID where the resources are deployed."

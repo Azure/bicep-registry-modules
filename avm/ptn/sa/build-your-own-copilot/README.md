@@ -1,5 +1,47 @@
-#  `[Sa/BuildYourOwnCopilot]`
+# Build Your Own Copilot Solution Accelerator `[Sa/BuildYourOwnCopilot]`
 
+# Changelog
+
+The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/build-your-own-copilot/CHANGELOG.md).
+
+## 0.2.0
+
+### Changes
+
+- Fixed parameter descriptions to comply with AVM standards - all descriptions now start with a category (Optional./Required.) and end with a period
+- Removed trailing colons from parameter descriptions for `solutionName`, `gptModelDeploymentType`, `gptModelName`, `gptModelCapacity`, and `embeddingModel`
+- Added missing periods to parameter descriptions for `cosmosLocation`, `embeddingDeploymentCapacity`, `existingFoundryProjectResourceId`, `enablePurgeProtection`, and `createdBy`
+- Improved parameter validation compliance with AVM specification requirements
+
+### Breaking Changes
+
+- None
+
+## 0.1.1
+
+### Changes
+
+- Fixed parameter descriptions for `solutionName` and `location` to be "Optional." instead of "Required." since they have default values
+- Updated parameter validation to comply with AVM standards for optional vs required parameters
+- Improved module compliance with AVM specification RMFR requirements
+
+### Breaking Changes
+
+- None
+
+## 0.1.0
+
+### Changes
+
+- Initial version of Build your own copilot solution accelerator
+- Comprehensive AI document processing solution with Azure OpenAI, Cognitive Services, and Azure Search
+- Support for private networking, monitoring, redundancy, and scalability configurations
+- Integrated Azure Bastion and jumpbox for secure access
+- AVM compliance with telemetry, proper naming conventions, and governance
+
+### Breaking Changes
+
+- None
 
 ## Navigation
 
@@ -615,67 +657,67 @@ Size of the Jumpbox Virtual Machine when created. Set to custom value if enableP
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `AI_FOUNDRY_RESOURCE_ID` | string | The resource ID of the AI Foundry instance. |
-| `AI_SEARCH_SERVICE_NAME` | string | Name of the AI Search service. |
-| `APP_ENV` | string | Specifies the current application environment. |
-| `APPINSIGHTS_INSTRUMENTATIONKEY` | string | The Application Insights instrumentation key. |
-| `APPLICATIONINSIGHTS_CONNECTION_STRING` | string | The Application Insights connection string. |
-| `AZURE_AI_AGENT_API_VERSION` | string | The API version used for the Azure AI Agent service. |
-| `AZURE_AI_AGENT_ENDPOINT` | string | The endpoint URL of the Azure AI Agent project. |
-| `AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME` | string | The deployment name of the GPT model for the Azure AI Agent. |
-| `AZURE_AI_SEARCH_ENDPOINT` | string | The endpoint URL of the Azure AI Search service. |
-| `AZURE_CALL_TRANSCRIPT_SYSTEM_PROMPT` | string | The system prompt used for call transcript processing in Azure Functions. |
-| `AZURE_COSMOSDB_ACCOUNT` | string | The name of the Azure Cosmos DB account. |
-| `AZURE_COSMOSDB_CONVERSATIONS_CONTAINER` | string | The name of the Azure Cosmos DB container for storing conversations. |
-| `AZURE_COSMOSDB_DATABASE` | string | The name of the Azure Cosmos DB database. |
-| `AZURE_COSMOSDB_ENABLE_FEEDBACK` | string | Indicates whether feedback is enabled in Azure Cosmos DB. |
-| `AZURE_OPENAI_EMBEDDING_ENDPOINT` | string | The endpoint URL for the Azure OpenAI Embedding model. |
-| `AZURE_OPENAI_EMBEDDING_NAME` | string | The name of the Azure OpenAI Embedding model. |
-| `AZURE_OPENAI_ENDPOINT` | string | The endpoint URL for the Azure OpenAI service. |
-| `AZURE_OPENAI_MAX_TOKENS` | string | The maximum number of tokens for Azure OpenAI responses. |
-| `AZURE_OPENAI_MODEL` | string | The name of the Azure OpenAI GPT model. |
-| `AZURE_OPENAI_PREVIEW_API_VERSION` | string | The preview API version for Azure OpenAI. |
-| `AZURE_OPENAI_RESOURCE` | string | The Azure OpenAI resource name. |
-| `AZURE_OPENAI_STOP_SEQUENCE` | string | The stop sequence(s) for Azure OpenAI responses. |
-| `AZURE_OPENAI_STREAM` | string | Indicates whether streaming is enabled for Azure OpenAI responses. |
-| `AZURE_OPENAI_STREAM_TEXT_SYSTEM_PROMPT` | string | The system prompt for streaming text responses in Azure Functions. |
-| `AZURE_OPENAI_SYSTEM_MESSAGE` | string | The system message for Azure OpenAI requests. |
-| `AZURE_OPENAI_TEMPERATURE` | string | The temperature setting for Azure OpenAI responses. |
-| `AZURE_OPENAI_TOP_P` | string | The Top-P setting for Azure OpenAI responses. |
-| `AZURE_SEARCH_CONNECTION_NAME` | string | The name of the Azure AI Search connection. |
-| `AZURE_SEARCH_CONTENT_COLUMNS` | string | The columns in Azure AI Search that contain content. |
-| `AZURE_SEARCH_ENABLE_IN_DOMAIN` | string | Indicates whether in-domain filtering is enabled for Azure AI Search. |
-| `AZURE_SEARCH_FILENAME_COLUMN` | string | The filename column used in Azure AI Search. |
-| `AZURE_SEARCH_INDEX` | string | The name of the Azure AI Search index. |
-| `AZURE_SEARCH_PERMITTED_GROUPS_COLUMN` | string | The permitted groups field used in Azure AI Search. |
-| `AZURE_SEARCH_QUERY_TYPE` | string | The query type for Azure AI Search. |
-| `AZURE_SEARCH_SEMANTIC_SEARCH_CONFIG` | string | The semantic search configuration name in Azure AI Search. |
-| `AZURE_SEARCH_SERVICE` | string | The name of the Azure AI Search service. |
-| `AZURE_SEARCH_STRICTNESS` | string | The strictness setting for Azure AI Search semantic ranking. |
-| `AZURE_SEARCH_TITLE_COLUMN` | string | The title column used in Azure AI Search. |
-| `AZURE_SEARCH_TOP_K` | string | The number of top results (K) to return from Azure AI Search. |
-| `AZURE_SEARCH_URL_COLUMN` | string | The URL column used in Azure AI Search. |
-| `AZURE_SEARCH_USE_SEMANTIC_SEARCH` | string | Indicates whether semantic search is used in Azure AI Search. |
-| `AZURE_SEARCH_VECTOR_COLUMNS` | string | The vector fields used in Azure AI Search. |
-| `AZURE_SQL_SYSTEM_PROMPT` | string | The system prompt for SQL queries in Azure Functions. |
-| `AZURE_SUBSCRIPTION_ID` | string | The Azure Subscription ID where the resources are deployed. |
-| `COSMOSDB_ACCOUNT_NAME` | string | Name of the Cosmos DB account. |
-| `KEY_VAULT_NAME` | string | Name of the Key Vault. |
-| `MANAGEDIDENTITY_SQL_CLIENTID` | string | Client ID of the managed identity used for SQL database operations. |
-| `MANAGEDIDENTITY_SQL_NAME` | string | Name of the managed identity used for SQL database operations. |
-| `MANAGEDIDENTITY_WEBAPP_CLIENTID` | string | Client ID of the managed identity used by the web app. |
-| `MANAGEDIDENTITY_WEBAPP_NAME` | string | Name of the managed identity used by the web app. |
-| `RESOURCE_GROUP_NAME` | string | Name of the resource group. |
-| `SQLDB_DATABASE` | string | Name of the SQL Database. |
-| `SQLDB_SERVER` | string | The fully qualified domain name (FQDN) of the Azure SQL Server. |
-| `SQLDB_SERVER_NAME` | string | Name of the SQL Database server. |
-| `SQLDB_USER_MID` | string | The client ID of the managed identity for the web application. |
-| `STORAGE_ACCOUNT_NAME` | string | Name of the storage account. |
-| `STORAGE_CONTAINER_NAME` | string | Name of the storage container. |
-| `USE_AI_PROJECT_CLIENT` | string | Indicates whether the AI Project Client should be used. |
-| `USE_INTERNAL_STREAM` | string | Indicates whether the internal stream should be used. |
-| `WEB_APP_NAME` | string | Name of the deployed web application. |
-| `WEB_APP_URL` | string | URL of the deployed web application. |
+| `aiFoundryResourceId` | string | The resource ID of the AI Foundry service. |
+| `aiSearchServiceName` | string | The name of the Azure AI Search service. |
+| `appEnv` | string | The application environment. |
+| `appInsightsInstrumentationKey` | string | The Application Insights instrumentation key. |
+| `applicationInsightsConnectionString` | string | The Application Insights connection string. |
+| `azureAiAgentApiVersion` | string | The API version for the Azure AI Agent. |
+| `azureAiAgentEndpoint` | string | The endpoint for the Azure AI Agent. |
+| `azureAiAgentModelDeploymentName` | string | The model deployment name for the Azure AI Agent. |
+| `azureAiSearchEndpoint` | string | The endpoint for the Azure AI Search service. |
+| `azureCallTranscriptSystemPrompt` | string | The system prompt for call transcript processing in Azure Functions. |
+| `azureCosmosDbAccount` | string | The Azure CosmosDB account name. |
+| `azureCosmosDbConversationsContainer` | string | The Azure CosmosDB conversations container name. |
+| `azureCosmosDbDatabase` | string | The Azure CosmosDB database name. |
+| `azureCosmosDbEnableFeedback` | string | Indicates whether feedback is enabled for Azure CosmosDB. |
+| `azureOpenAiEmbeddingEndpoint` | string | The endpoint for Azure OpenAI embedding service. |
+| `azureOpenAiEmbeddingName` | string | The name of the Azure OpenAI embedding model. |
+| `azureOpenAiEndpoint` | string | The endpoint for the Azure OpenAI service. |
+| `azureOpenAiMaxTokens` | string | The maximum number of tokens for Azure OpenAI. |
+| `azureOpenAiModel` | string | The Azure OpenAI model name. |
+| `azureOpenAiPreviewApiVersion` | string | The preview API version for Azure OpenAI. |
+| `azureOpenAiResource` | string | The Azure OpenAI resource name. |
+| `azureOpenAiStopSequence` | string | The stop sequence for Azure OpenAI. |
+| `azureOpenAiStream` | string | Indicates whether streaming is enabled for Azure OpenAI. |
+| `azureOpenAiStreamTextSystemPrompt` | string | The system prompt for stream text processing in Azure Functions. |
+| `azureOpenAiSystemMessage` | string | The system message for Azure OpenAI. |
+| `azureOpenAiTemperature` | string | The temperature setting for Azure OpenAI. |
+| `azureOpenAiTopP` | string | The top P setting for Azure OpenAI. |
+| `azureSearchConnectionName` | string | The connection name for Azure AI Search. |
+| `azureSearchContentColumns` | string | The content columns used in Azure AI Search. |
+| `azureSearchEnableInDomain` | string | Indicates whether in-domain search is enabled for Azure AI Search. |
+| `azureSearchFilenameColumn` | string | The filename column used in Azure AI Search. |
+| `azureSearchIndex` | string | The index name used in Azure AI Search. |
+| `azureSearchPermittedGroupsColumn` | string | The permitted groups column used in Azure AI Search. |
+| `azureSearchQueryType` | string | The query type used in Azure AI Search. |
+| `azureSearchSemanticSearchConfig` | string | The semantic search configuration used in Azure AI Search. |
+| `azureSearchService` | string | The Azure AI Search service name. |
+| `azureSearchStrictness` | string | The strictness level used in Azure AI Search. |
+| `azureSearchTitleColumn` | string | The title column used in Azure AI Search. |
+| `azureSearchTopK` | string | The number of top results (K) to return from Azure AI Search. |
+| `azureSearchUrlColumn` | string | The URL column used in Azure AI Search. |
+| `azureSearchUseSemanticSearch` | string | Indicates whether semantic search is used in Azure AI Search. |
+| `azureSearchVectorColumns` | string | The vector fields used in Azure AI Search. |
+| `azureSqlSystemPrompt` | string | The system prompt for SQL queries in Azure Functions. |
+| `azureSubscriptionId` | string | The Azure Subscription ID where the resources are deployed. |
+| `cosmosDbAccountName` | string | The name of the deployed CosmosDB Account. |
+| `keyVaultName` | string | The name of the deployed Key Vault. |
+| `managedIdentitySqlClientId` | string | The client ID of the managed identity for SQL Server. |
+| `managedIdentitySqlName` | string | The name of the managed identity for SQL Server. |
+| `managedIdentityWebAppClientId` | string | The client ID of the managed identity for the web application. |
+| `managedIdentityWebAppName` | string | The name of the managed identity for the web application. |
+| `resourceGroupName` | string | The name of the Resource Group. |
+| `sqlDbDatabase` | string | The name of the SQL Database. |
+| `sqlDbServer` | string | The fully qualified domain name (FQDN) of the Azure SQL Server. |
+| `sqlDbServerName` | string | The name of the SQL Database server. |
+| `sqlDbUserMid` | string | The client ID of the managed identity for the web application. |
+| `storageAccountName` | string | The name of the deployed Storage Account. |
+| `storageContainerName` | string | The name of the Storage Container. |
+| `useAiProjectClient` | string | Indicates whether the AI Project Client should be used. |
+| `useInternalStream` | string | Indicates whether the internal stream should be used. |
+| `webAppName` | string | The name of the deployed web application. |
+| `webAppUrl` | string | The URL of the deployed web application. |
 
 ## Cross-referenced modules
 
