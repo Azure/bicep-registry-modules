@@ -49,7 +49,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      dataPlaneRoleDefinitions: [
+      sqlRoleDefinitions: [
         {
           name: guid('optional-role-identifier') // MUST be a guid
           roleName: 'cosmos-sql-role-test'

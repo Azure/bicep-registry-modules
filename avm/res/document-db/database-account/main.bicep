@@ -106,7 +106,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions.')
-param dataPlaneRoleDefinitions dataPlaneRoleDefinitionType[]?
+param sqlRoleDefinitions sqlRoleDefinitionType[]?
 
 @description('Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments.')
 param sqlRoleAssignments sqlRoleAssignmentType[]?
@@ -472,7 +472,7 @@ module databaseAccount_sqlDatabases 'sql-database/main.bicep' = [
 ]
 
 module databaseAccount_sqlRoleDefinitions 'sql-role-definition/main.bicep' = [
-  for (nosqlRoleDefinition, index) in (dataPlaneRoleDefinitions ?? []): {
+  for (nosqlRoleDefinition, index) in (sqlRoleDefinitions ?? []): {
     name: '${uniqueString(deployment().name, location)}-sqlrd-${index}'
     params: {
       databaseAccountName: databaseAccount.name
@@ -766,7 +766,7 @@ import { tableType as cassandraTableType, viewType as cassandraViewType } from '
 
 @export()
 @description('The type for an Azure Cosmos DB for NoSQL or Table native role-based access control definition.')
-type dataPlaneRoleDefinitionType = {
+type sqlRoleDefinitionType = {
   @description('Optional. The unique identifier of the role-based access control definition.')
   name: string?
 

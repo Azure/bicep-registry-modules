@@ -3031,7 +3031,39 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Required parameters
     name: 'dddarole001'
     // Non-required parameters
-    dataPlaneRoleDefinitions: [
+    sqlDatabases: [
+      {
+        containers: [
+          {
+            indexingPolicy: {
+              automatic: true
+            }
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'simple-db'
+      }
+    ]
+    sqlRoleAssignments: [
+      {
+        principalId: '<principalId>'
+        roleDefinitionId: '<roleDefinitionId>'
+      }
+      {
+        principalId: '<principalId>'
+        roleDefinitionId: '00000000-0000-0000-0000-000000000001'
+        scope: '<scope>'
+      }
+      {
+        principalId: '<principalId>'
+        roleDefinitionId: 'Cosmos DB Built-in Data Reader'
+        scope: '<scope>'
+      }
+    ]
+    sqlRoleDefinitions: [
       {
         assignableScopes: [
           '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
@@ -3065,38 +3097,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         roleName: 'cosmos-sql-role-test-3'
       }
     ]
-    sqlDatabases: [
-      {
-        containers: [
-          {
-            indexingPolicy: {
-              automatic: true
-            }
-            name: 'container-001'
-            paths: [
-              '/myPartitionKey'
-            ]
-          }
-        ]
-        name: 'simple-db'
-      }
-    ]
-    sqlRoleAssignments: [
-      {
-        principalId: '<principalId>'
-        roleDefinitionId: '<roleDefinitionId>'
-      }
-      {
-        principalId: '<principalId>'
-        roleDefinitionId: '00000000-0000-0000-0000-000000000001'
-        scope: '<scope>'
-      }
-      {
-        principalId: '<principalId>'
-        roleDefinitionId: 'Cosmos DB Built-in Data Reader'
-        scope: '<scope>'
-      }
-    ]
     zoneRedundant: false
   }
 }
@@ -3119,42 +3119,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "dddarole001"
     },
     // Non-required parameters
-    "dataPlaneRoleDefinitions": {
-      "value": [
-        {
-          "assignableScopes": [
-            "<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001"
-          ],
-          "assignments": [
-            {
-              "principalId": "<principalId>"
-            }
-          ],
-          "dataActions": [
-            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
-            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*",
-            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
-          ],
-          "name": "<name>",
-          "roleName": "cosmos-sql-role-test"
-        },
-        {
-          "assignableScopes": [
-            "<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001"
-          ],
-          "dataActions": [
-            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
-          ],
-          "roleName": "cosmos-sql-role-test-2"
-        },
-        {
-          "dataActions": [
-            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
-          ],
-          "roleName": "cosmos-sql-role-test-3"
-        }
-      ]
-    },
     "sqlDatabases": {
       "value": [
         {
@@ -3191,6 +3155,42 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         }
       ]
     },
+    "sqlRoleDefinitions": {
+      "value": [
+        {
+          "assignableScopes": [
+            "<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001"
+          ],
+          "assignments": [
+            {
+              "principalId": "<principalId>"
+            }
+          ],
+          "dataActions": [
+            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*",
+            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
+          ],
+          "name": "<name>",
+          "roleName": "cosmos-sql-role-test"
+        },
+        {
+          "assignableScopes": [
+            "<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001"
+          ],
+          "dataActions": [
+            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
+          ],
+          "roleName": "cosmos-sql-role-test-2"
+        },
+        {
+          "dataActions": [
+            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
+          ],
+          "roleName": "cosmos-sql-role-test-3"
+        }
+      ]
+    },
     "zoneRedundant": {
       "value": false
     }
@@ -3211,7 +3211,39 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'dddarole001'
 // Non-required parameters
-param dataPlaneRoleDefinitions = [
+param sqlDatabases = [
+  {
+    containers: [
+      {
+        indexingPolicy: {
+          automatic: true
+        }
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'simple-db'
+  }
+]
+param sqlRoleAssignments = [
+  {
+    principalId: '<principalId>'
+    roleDefinitionId: '<roleDefinitionId>'
+  }
+  {
+    principalId: '<principalId>'
+    roleDefinitionId: '00000000-0000-0000-0000-000000000001'
+    scope: '<scope>'
+  }
+  {
+    principalId: '<principalId>'
+    roleDefinitionId: 'Cosmos DB Built-in Data Reader'
+    scope: '<scope>'
+  }
+]
+param sqlRoleDefinitions = [
   {
     assignableScopes: [
       '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
@@ -3243,38 +3275,6 @@ param dataPlaneRoleDefinitions = [
       'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
     ]
     roleName: 'cosmos-sql-role-test-3'
-  }
-]
-param sqlDatabases = [
-  {
-    containers: [
-      {
-        indexingPolicy: {
-          automatic: true
-        }
-        name: 'container-001'
-        paths: [
-          '/myPartitionKey'
-        ]
-      }
-    ]
-    name: 'simple-db'
-  }
-]
-param sqlRoleAssignments = [
-  {
-    principalId: '<principalId>'
-    roleDefinitionId: '<roleDefinitionId>'
-  }
-  {
-    principalId: '<principalId>'
-    roleDefinitionId: '00000000-0000-0000-0000-000000000001'
-    scope: '<scope>'
-  }
-  {
-    principalId: '<principalId>'
-    roleDefinitionId: 'Cosmos DB Built-in Data Reader'
-    scope: '<scope>'
   }
 ]
 param zoneRedundant = false
@@ -3651,7 +3651,6 @@ param zoneRedundant = true
 | [`cassandraRoleDefinitions`](#parameter-cassandraroledefinitions) | array | Configurations for Azure Cosmos DB for Apache Cassandra native role-based access control definitions. Allows the creations of custom role definitions. |
 | [`cors`](#parameter-cors) | array | The CORS policy for the Cosmos DB database account. |
 | [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | The offer type for the account. Defaults to "Standard". |
-| [`dataPlaneRoleDefinitions`](#parameter-dataplaneroledefinitions) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions. |
 | [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | The default consistency level of the account. Defaults to "Session". |
 | [`defaultIdentity`](#parameter-defaultidentity) | object | The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings for the service. |
@@ -3681,6 +3680,7 @@ param zoneRedundant = true
 | [`serverVersion`](#parameter-serverversion) | string | Specifies the MongoDB server version to use if using Azure Cosmos DB for MongoDB RU. Defaults to "4.2". |
 | [`sqlDatabases`](#parameter-sqldatabases) | array | Configuration for databases when using Azure Cosmos DB for NoSQL. |
 | [`sqlRoleAssignments`](#parameter-sqlroleassignments) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments. |
+| [`sqlRoleDefinitions`](#parameter-sqlroledefinitions) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions. |
 | [`tables`](#parameter-tables) | array | Configuration for databases when using Azure Cosmos DB for Table. |
 | [`tags`](#parameter-tags) | object | Tags for the resource. |
 | [`totalThroughputLimit`](#parameter-totalthroughputlimit) | int | The total throughput limit imposed on this account in request units per second (RU/s). Default to unlimited throughput. |
@@ -4137,97 +4137,6 @@ The offer type for the account. Defaults to "Standard".
     'Standard'
   ]
   ```
-
-### Parameter: `dataPlaneRoleDefinitions`
-
-Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`dataActions`](#parameter-dataplaneroledefinitionsdataactions) | array | An array of data actions that are allowed. |
-| [`roleName`](#parameter-dataplaneroledefinitionsrolename) | string | A user-friendly name for the role-based access control definition. This must be unique within the database account. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`assignableScopes`](#parameter-dataplaneroledefinitionsassignablescopes) | array | A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope. |
-| [`assignments`](#parameter-dataplaneroledefinitionsassignments) | array | An array of role-based access control assignments to be created for the definition. |
-| [`name`](#parameter-dataplaneroledefinitionsname) | string | The unique identifier of the role-based access control definition. |
-
-### Parameter: `dataPlaneRoleDefinitions.dataActions`
-
-An array of data actions that are allowed.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `dataPlaneRoleDefinitions.roleName`
-
-A user-friendly name for the role-based access control definition. This must be unique within the database account.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `dataPlaneRoleDefinitions.assignableScopes`
-
-A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope.
-
-- Required: No
-- Type: array
-
-### Parameter: `dataPlaneRoleDefinitions.assignments`
-
-An array of role-based access control assignments to be created for the definition.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalId`](#parameter-dataplaneroledefinitionsassignmentsprincipalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-dataplaneroledefinitionsassignmentsname) | string | Name unique identifier of the SQL Role Assignment. |
-| [`scope`](#parameter-dataplaneroledefinitionsassignmentsscope) | string | The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level. |
-
-### Parameter: `dataPlaneRoleDefinitions.assignments.principalId`
-
-The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `dataPlaneRoleDefinitions.assignments.name`
-
-Name unique identifier of the SQL Role Assignment.
-
-- Required: No
-- Type: string
-
-### Parameter: `dataPlaneRoleDefinitions.assignments.scope`
-
-The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level.
-
-- Required: No
-- Type: string
-
-### Parameter: `dataPlaneRoleDefinitions.name`
-
-The unique identifier of the role-based access control definition.
-
-- Required: No
-- Type: string
 
 ### Parameter: `defaultConsistencyLevel`
 
@@ -5773,6 +5682,97 @@ The unique name of the role assignment.
 ### Parameter: `sqlRoleAssignments.scope`
 
 The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlRoleDefinitions`
+
+Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataActions`](#parameter-sqlroledefinitionsdataactions) | array | An array of data actions that are allowed. |
+| [`roleName`](#parameter-sqlroledefinitionsrolename) | string | A user-friendly name for the role-based access control definition. This must be unique within the database account. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`assignableScopes`](#parameter-sqlroledefinitionsassignablescopes) | array | A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope. |
+| [`assignments`](#parameter-sqlroledefinitionsassignments) | array | An array of role-based access control assignments to be created for the definition. |
+| [`name`](#parameter-sqlroledefinitionsname) | string | The unique identifier of the role-based access control definition. |
+
+### Parameter: `sqlRoleDefinitions.dataActions`
+
+An array of data actions that are allowed.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `sqlRoleDefinitions.roleName`
+
+A user-friendly name for the role-based access control definition. This must be unique within the database account.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sqlRoleDefinitions.assignableScopes`
+
+A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope.
+
+- Required: No
+- Type: array
+
+### Parameter: `sqlRoleDefinitions.assignments`
+
+An array of role-based access control assignments to be created for the definition.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-sqlroledefinitionsassignmentsprincipalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-sqlroledefinitionsassignmentsname) | string | Name unique identifier of the SQL Role Assignment. |
+| [`scope`](#parameter-sqlroledefinitionsassignmentsscope) | string | The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level. |
+
+### Parameter: `sqlRoleDefinitions.assignments.principalId`
+
+The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sqlRoleDefinitions.assignments.name`
+
+Name unique identifier of the SQL Role Assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlRoleDefinitions.assignments.scope`
+
+The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlRoleDefinitions.name`
+
+The unique identifier of the role-based access control definition.
 
 - Required: No
 - Type: string
