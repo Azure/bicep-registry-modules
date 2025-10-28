@@ -51,7 +51,7 @@ The following section provides usage examples for the module, which were used to
 - [Deploying with a key vault reference to save secrets](#example-6-deploying-with-a-key-vault-reference-to-save-secrets)
 - [Using large parameter set](#example-7-using-large-parameter-set)
 - [Deploying with a NFS File Share](#example-8-deploying-with-a-nfs-file-share)
-- [Object Replication](#example-9-object-replication)
+- [Using object replication](#example-9-using-object-replication)
 - [Using Customer-Managed-Keys with System-Assigned identity](#example-10-using-customer-managed-keys-with-system-assigned-identity)
 - [Using Customer-Managed-Keys with User-Assigned identity](#example-11-using-customer-managed-keys-with-user-assigned-identity)
 - [Deploying as Storage Account version 1](#example-12-deploying-as-storage-account-version-1)
@@ -2318,9 +2318,9 @@ param skuName = 'Premium_LRS'
 </details>
 <p>
 
-### Example 9: _Object Replication_
+### Example 9: _Using object replication_
 
-This instance deploys the module with Object Replication features.
+This instance deploys the module with Object Replication features to async replicate blobs from one account to another.
 
 
 <details>
@@ -5446,31 +5446,19 @@ The storage account object replication rules.
 | :-- | :-- | :-- |
 | [`containerName`](#parameter-objectreplicationpoliciesrulescontainername) | string | The name of the source container. |
 
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ruleId`](#parameter-objectreplicationpoliciesrulesruleid) | string | The ID of the rule. Auto-generated on destination account. Required for source account. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`destinationContainerName`](#parameter-objectreplicationpoliciesrulesdestinationcontainername) | string | The name of the destination container. If not provided, the same name as the source container will be used. |
 | [`filters`](#parameter-objectreplicationpoliciesrulesfilters) | object | The filters for the object replication policy rule. |
+| [`ruleId`](#parameter-objectreplicationpoliciesrulesruleid) | string | The ID of the rule. Auto-generated on destination account. Required for source account. |
 
 ### Parameter: `objectReplicationPolicies.rules.containerName`
 
 The name of the source container.
 
 - Required: Yes
-- Type: string
-
-### Parameter: `objectReplicationPolicies.rules.ruleId`
-
-The ID of the rule. Auto-generated on destination account. Required for source account.
-
-- Required: No
 - Type: string
 
 ### Parameter: `objectReplicationPolicies.rules.destinationContainerName`
@@ -5505,8 +5493,15 @@ The minimum creation time to match for the replication policy rule.
 
 The prefix to match for the replication policy rule.
 
-- Required: Yes
+- Required: No
 - Type: array
+
+### Parameter: `objectReplicationPolicies.rules.ruleId`
+
+The ID of the rule. Auto-generated on destination account. Required for source account.
+
+- Required: No
+- Type: string
 
 ### Parameter: `objectReplicationPolicies.enableMetrics`
 

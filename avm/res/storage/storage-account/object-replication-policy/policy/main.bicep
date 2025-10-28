@@ -64,7 +64,7 @@ output rules resourceOutput<'Microsoft.Storage/storageAccounts/objectReplication
 @export()
 @description('The type of an object replication policy rule.')
 type objectReplicationPolicyRuleType = {
-  @description('Conditional. The ID of the rule. Auto-generated on destination account. Required for source account.')
+  @description('Optional. The ID of the rule. Auto-generated on destination account. Required for source account.')
   ruleId: string?
 
   @description('Required. The name of the source container.')
@@ -76,7 +76,7 @@ type objectReplicationPolicyRuleType = {
   @description('Optional. The filters for the object replication policy rule.')
   filters: {
     @description('Optional. The prefix to match for the replication policy rule.')
-    prefixMatch: string[]
+    prefixMatch: string[]?
 
     @description('Optional. The minimum creation time to match for the replication policy rule.')
     minCreationTime: string?

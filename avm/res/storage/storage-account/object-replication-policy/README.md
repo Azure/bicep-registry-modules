@@ -51,31 +51,19 @@ Rules for the object replication policy.
 | :-- | :-- | :-- |
 | [`containerName`](#parameter-rulescontainername) | string | The name of the source container. |
 
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ruleId`](#parameter-rulesruleid) | string | The ID of the rule. Auto-generated on destination account. Required for source account. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`destinationContainerName`](#parameter-rulesdestinationcontainername) | string | The name of the destination container. If not provided, the same name as the source container will be used. |
 | [`filters`](#parameter-rulesfilters) | object | The filters for the object replication policy rule. |
+| [`ruleId`](#parameter-rulesruleid) | string | The ID of the rule. Auto-generated on destination account. Required for source account. |
 
 ### Parameter: `rules.containerName`
 
 The name of the source container.
 
 - Required: Yes
-- Type: string
-
-### Parameter: `rules.ruleId`
-
-The ID of the rule. Auto-generated on destination account. Required for source account.
-
-- Required: No
 - Type: string
 
 ### Parameter: `rules.destinationContainerName`
@@ -110,8 +98,15 @@ The minimum creation time to match for the replication policy rule.
 
 The prefix to match for the replication policy rule.
 
-- Required: Yes
+- Required: No
 - Type: array
+
+### Parameter: `rules.ruleId`
+
+The ID of the rule. Auto-generated on destination account. Required for source account.
+
+- Required: No
+- Type: string
 
 ### Parameter: `storageAccountName`
 

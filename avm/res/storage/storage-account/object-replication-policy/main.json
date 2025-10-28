@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "10546768800414078960"
+      "templateHash": "7981342209922290627"
     },
     "name": "Storage Account Object Replication Policy",
     "description": "This module deploys a Storage Account Object Replication Policy for both the source account and destination account."
@@ -19,7 +19,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. The ID of the rule. Auto-generated on destination account. Required for source account."
+            "description": "Optional. The ID of the rule. Auto-generated on destination account. Required for source account."
           }
         },
         "containerName": {
@@ -43,6 +43,7 @@
               "items": {
                 "type": "string"
               },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The prefix to match for the replication policy rule."
               }
@@ -159,7 +160,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "8279997669466605337"
+              "templateHash": "13231340475360081313"
             },
             "name": "Storage Account Object Replication Policy",
             "description": "This module deploys a Storage Account Object Replication Policy for a provided storage account."
@@ -172,7 +173,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Conditional. The ID of the rule. Auto-generated on destination account. Required for source account."
+                    "description": "Optional. The ID of the rule. Auto-generated on destination account. Required for source account."
                   }
                 },
                 "containerName": {
@@ -196,6 +197,7 @@
                       "items": {
                         "type": "string"
                       },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. The prefix to match for the replication policy rule."
                       }
@@ -375,7 +377,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "8279997669466605337"
+              "templateHash": "13231340475360081313"
             },
             "name": "Storage Account Object Replication Policy",
             "description": "This module deploys a Storage Account Object Replication Policy for a provided storage account."
@@ -388,7 +390,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Conditional. The ID of the rule. Auto-generated on destination account. Required for source account."
+                    "description": "Optional. The ID of the rule. Auto-generated on destination account. Required for source account."
                   }
                 },
                 "containerName": {
@@ -412,6 +414,7 @@
                       "items": {
                         "type": "string"
                       },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. The prefix to match for the replication policy rule."
                       }
