@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "4638558771909825280"
+      "templateHash": "3437004955678493874"
     },
     "name": "Storage Account blob Services",
     "description": "This module deploys a Storage Account Blob Service."
@@ -533,6 +533,13 @@
       "metadata": {
         "description": "Optional. The diagnostic settings of the service."
       }
+    },
+    "usingExtendedLocation": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether the storage account is using an extended location."
+      }
     }
   },
   "variables": {
@@ -566,7 +573,7 @@
           "allowPermanentDelete": "[if(and(parameters('deleteRetentionPolicyEnabled'), parameters('deleteRetentionPolicyAllowPermanentDelete')), true(), null())]"
         },
         "isVersioningEnabled": "[parameters('isVersioningEnabled')]",
-        "lastAccessTimeTrackingPolicy": "[if(and(not(equals(reference('storageAccount', '2025-01-01', 'full').kind, 'Storage')), equals(reference('storageAccount', '2025-01-01', 'full').extendedLocation, null())), createObject('enable', parameters('lastAccessTimeTrackingPolicyEnabled'), 'name', if(equals(parameters('lastAccessTimeTrackingPolicyEnabled'), true()), 'AccessTimeTracking', null()), 'trackingGranularityInDays', if(equals(parameters('lastAccessTimeTrackingPolicyEnabled'), true()), 1, null())), null())]",
+        "lastAccessTimeTrackingPolicy": "[if(and(not(equals(reference('storageAccount', '2025-01-01', 'full').kind, 'Storage')), not(parameters('usingExtendedLocation'))), createObject('enable', parameters('lastAccessTimeTrackingPolicyEnabled'), 'name', if(equals(parameters('lastAccessTimeTrackingPolicyEnabled'), true()), 'AccessTimeTracking', null()), 'trackingGranularityInDays', if(equals(parameters('lastAccessTimeTrackingPolicyEnabled'), true()), 1, null())), null())]",
         "restorePolicy": "[if(parameters('restorePolicyEnabled'), createObject('enabled', true(), 'days', parameters('restorePolicyDays')), null())]"
       },
       "dependsOn": [
