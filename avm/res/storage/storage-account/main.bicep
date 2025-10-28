@@ -401,7 +401,8 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
     isLocalUserEnabled: isLocalUserEnabled
     encryption: union(
       {
-        keySource: !empty(customerManagedKey) ? 'Microsoft.Keyvault' : 'Microsoft.Storage'
+        // keySource: !empty(customerManagedKey) ? 'Microsoft.Keyvault' : 'Microsoft.Storage'
+        keySource: 'Microsoft.Storage'
         services: {
           blob: supportsBlobService
             ? {
