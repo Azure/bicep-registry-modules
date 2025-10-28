@@ -1,5 +1,7 @@
 # Build Your Own Copilot Solution Accelerator `[Sa/BuildYourOwnCopilot]`
 
+This module deploys a comprehensive Build Your Own Copilot solution accelerator with Azure AI Services, CosmosDB, SQL Database, Key Vault, Storage Account, Azure AI Search, and a containerized web application. The solution includes AI Foundry services for GPT and embedding models, supporting both private and public networking configurations with optional WAF-aligned features for monitoring, scalability, and redundancy.
+
 # Changelog
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/build-your-own-copilot/CHANGELOG.md).
@@ -12,32 +14,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Removed trailing colons from parameter descriptions for `solutionName`, `gptModelDeploymentType`, `gptModelName`, `gptModelCapacity`, and `embeddingModel`
 - Added missing periods to parameter descriptions for `cosmosLocation`, `embeddingDeploymentCapacity`, `existingFoundryProjectResourceId`, `enablePurgeProtection`, and `createdBy`
 - Improved parameter validation compliance with AVM specification requirements
-
-### Breaking Changes
-
-- None
-
-## 0.1.1
-
-### Changes
-
-- Fixed parameter descriptions for `solutionName` and `location` to be "Optional." instead of "Required." since they have default values
-- Updated parameter validation to comply with AVM standards for optional vs required parameters
-- Improved module compliance with AVM specification RMFR requirements
-
-### Breaking Changes
-
-- None
-
-## 0.1.0
-
-### Changes
-
-- Initial version of Build your own copilot solution accelerator
-- Comprehensive AI document processing solution with Azure OpenAI, Cognitive Services, and Azure Search
-- Support for private networking, monitoring, redundancy, and scalability configurations
-- Integrated Azure Bastion and jumpbox for secure access
-- AVM compliance with telemetry, proper naming conventions, and governance
 
 ### Breaking Changes
 
@@ -593,20 +569,7 @@ Azure region for all services. Regions are restricted to guarantee compatibility
 
 - Required: No
 - Type: string
-- Default: `'eastus2'`
-- Allowed:
-  ```Bicep
-  [
-    'australiaeast'
-    'centralus'
-    'eastasia'
-    'eastus2'
-    'japaneast'
-    'northeurope'
-    'southeastasia'
-    'uksouth'
-  ]
-  ```
+- Default: `''`
 
 ### Parameter: `solutionName`
 

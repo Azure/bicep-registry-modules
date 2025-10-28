@@ -78,19 +78,19 @@ param embeddingDeploymentCapacity int = 80
 @description('Required. Location for AI Foundry deployment. This is the location where the AI Foundry resources will be deployed.')
 param azureAiServiceLocation string
 
-@allowed([
-  'australiaeast'
-  'centralus'
-  'eastasia'
-  'eastus2'
-  'japaneast'
-  'northeurope'
-  'southeastasia'
-  'uksouth'
-])
-@metadata({ azd: { type: 'location' } })
+// @allowed([
+//   'australiaeast'
+//   'centralus'
+//   'eastasia'
+//   'eastus2'
+//   'japaneast'
+//   'northeurope'
+//   'southeastasia'
+//   'uksouth'
+// ])
+// @metadata({ azd: { type: 'location' } })
 @description('Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).')
-param location string = 'eastus2'
+param location string = ''
 var solutionLocation = empty(location) ? resourceGroup().location : location
 
 @maxLength(5)
@@ -1245,7 +1245,10 @@ resource searchServiceToAiServicesRoleAssignment 'Microsoft.Authorization/roleAs
 // ========== AVM Telemetry ========== //
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.sa-build-your-own-copilot.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: take(
+    '46d3xbcp.ptn.sa-buildyourowncopilot.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, solutionLocation), 0, 4)}',
+    64
+  )
   properties: {
     mode: 'Incremental'
     template: {
