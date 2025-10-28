@@ -7,7 +7,7 @@
     },
     "Microsoft Learn": {
       "url": "https://learn.microsoft.com/api/mcp",
-      "type": "sse"
+      "type": "http"
     }
   }
 }
