@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "3141917109929076105"
+      "templateHash": "16552693844533718428"
     },
     "name": "Azure Cosmos DB account",
     "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -104,7 +104,7 @@
         "description": "The type for the failover location."
       }
     },
-    "dataPlaneRoleAssignmentType": {
+    "sqlRoleAssignmentType": {
       "type": "object",
       "properties": {
         "name": {
@@ -139,7 +139,7 @@
         "description": "The type for an Azure Cosmos DB for NoSQL native role-based access control assignment."
       }
     },
-    "dataPlaneRoleDefinitionType": {
+    "sqlRoleDefinitionType": {
       "type": "object",
       "properties": {
         "name": {
@@ -178,7 +178,7 @@
         "assignments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/sqlRoleAssignmentType"
+            "$ref": "#/definitions/nestedSqlRoleAssignmentType"
           },
           "nullable": true,
           "metadata": {
@@ -449,6 +449,162 @@
         "description": "The type for a table."
       }
     },
+    "cassandraStandaloneRoleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The unique name of the role assignment."
+          }
+        },
+        "roleDefinitionId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The unique identifier of the Azure Cosmos DB for Apache Cassandra native role-based access control definition."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription."
+          }
+        },
+        "scope": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The data plane resource path for which access is being granted through this role-based access control assignment. Defaults to the current account."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for an Azure Cosmos DB for Apache Cassandra native role-based access control assignment."
+      }
+    },
+    "cassandraRoleDefinitionType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The unique identifier of the role-based access control definition."
+          }
+        },
+        "roleName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. A user-friendly name for the role-based access control definition. Must be unique for the database account."
+          }
+        },
+        "dataActions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. An array of data actions that are allowed. Note: Valid data action strings are currently undocumented (API version 2025-05-01-preview). Expected to follow format similar to SQL RBAC once documented by Microsoft."
+          }
+        },
+        "notDataActions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. An array of data actions that are denied. Note: Unlike SQL RBAC, Cassandra supports deny rules for granular access control. Valid data action strings are currently undocumented (API version 2025-05-01-preview)."
+          }
+        },
+        "assignableScopes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition."
+          }
+        },
+        "assignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/cassandraRoleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. An array of role-based access control assignments to be created for the definition."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for an Azure Cosmos DB for Apache Cassandra native role-based access control definition."
+      }
+    },
+    "cassandraKeyspaceType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the Cassandra keyspace."
+          }
+        },
+        "tables": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/cassandraTableType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of Cassandra tables to deploy in the keyspace."
+          }
+        },
+        "views": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/cassandraViewType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of Cassandra views (materialized views) to deploy in the keyspace."
+          }
+        },
+        "autoscaleSettingsMaxThroughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level and not at the keyspace level."
+          }
+        },
+        "throughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Request Units per second (for example 10000). Cannot be set together with `autoscaleSettingsMaxThroughput`. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level and not at the keyspace level."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces@2024-11-15#properties/tags"
+            },
+            "description": "Optional. Tags of the Cassandra keyspace resource."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for an Azure Cosmos DB Cassandra keyspace."
+      }
+    },
     "defaultIdentityType": {
       "type": "object",
       "discriminator": {
@@ -624,6 +780,149 @@
       "metadata": {
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "cassandraRoleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The unique identifier of the role assignment."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The unique identifier for the associated AAD principal."
+          }
+        },
+        "scope": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The data plane resource path for which access is being granted. Defaults to the current account."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "cassandra-role-definition/main.bicep"
+        }
+      }
+    },
+    "cassandraTableType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the table."
+          }
+        },
+        "schema": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15#properties/properties/properties/resource/properties/schema"
+            },
+            "description": "Required. Schema definition for the table."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15#properties/tags"
+            },
+            "description": "Optional. Tags for the table."
+          },
+          "nullable": true
+        },
+        "defaultTtl": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default TTL (Time To Live) in seconds for data in the table."
+          }
+        },
+        "analyticalStorageTtl": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Analytical TTL for the table."
+          }
+        },
+        "throughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput."
+          }
+        },
+        "autoscaleSettingsMaxThroughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Maximum autoscale throughput for the table. Cannot be used with throughput."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type of a Cassandra table.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "cassandra-keyspace/main.bicep",
+          "originalIdentifier": "tableType"
+        }
+      }
+    },
+    "cassandraViewType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the view."
+          }
+        },
+        "viewDefinition": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. View definition (CQL statement)."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2025-05-01-preview#properties/tags"
+            },
+            "description": "Optional. Tags for the view."
+          },
+          "nullable": true
+        },
+        "throughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput."
+          }
+        },
+        "autoscaleSettingsMaxThroughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Maximum autoscale throughput for the view. Cannot be used with throughput."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type of a Cassandra view (materialized view).",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "cassandra-keyspace/main.bicep",
+          "originalIdentifier": "viewType"
         }
       }
     },
@@ -1024,6 +1323,38 @@
         }
       }
     },
+    "nestedSqlRoleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name unique identifier of the SQL Role Assignment."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription."
+          }
+        },
+        "scope": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the SQL Role Assignments.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "sql-role-definition/main.bicep",
+          "originalIdentifier": "sqlRoleAssignmentType"
+        }
+      }
+    },
     "privateEndpointMultiServiceType": {
       "type": "object",
       "properties": {
@@ -1242,37 +1573,6 @@
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
-    },
-    "sqlRoleAssignmentType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Name unique identifier of the SQL Role Assignment."
-          }
-        },
-        "principalId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription."
-          }
-        },
-        "scope": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for the SQL Role Assignments.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "sql-role-definition/main.bicep"
-        }
-      }
     }
   },
   "parameters": {
@@ -1463,6 +1763,16 @@
         "description": "Optional. Configuration for databases when using Azure Cosmos DB for Table."
       }
     },
+    "cassandraKeyspaces": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/cassandraKeyspaceType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Configuration for keyspaces when using Azure Cosmos DB for Apache Cassandra."
+      }
+    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -1494,24 +1804,44 @@
         "description": "Optional. An array of control plane Azure role-based access control assignments."
       }
     },
-    "dataPlaneRoleDefinitions": {
+    "sqlRoleDefinitions": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/dataPlaneRoleDefinitionType"
+        "$ref": "#/definitions/sqlRoleDefinitionType"
       },
       "nullable": true,
       "metadata": {
         "description": "Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions."
       }
     },
-    "dataPlaneRoleAssignments": {
+    "sqlRoleAssignments": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/dataPlaneRoleAssignmentType"
+        "$ref": "#/definitions/sqlRoleAssignmentType"
       },
       "nullable": true,
       "metadata": {
         "description": "Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments."
+      }
+    },
+    "cassandraRoleDefinitions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/cassandraRoleDefinitionType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Configurations for Azure Cosmos DB for Apache Cassandra native role-based access control definitions. Allows the creations of custom role definitions."
+      }
+    },
+    "cassandraRoleAssignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/cassandraStandaloneRoleAssignmentType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Azure Cosmos DB for Apache Cassandra native data plane role-based access control assignments. Each assignment references a role definition unique identifier and a principal identifier."
       }
     },
     "diagnosticSettings": {
@@ -1740,7 +2070,7 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "kind": "[if(not(empty(parameters('mongodbDatabases'))), 'MongoDB', 'GlobalDocumentDB')]",
-      "properties": "[shallowMerge(createArray(createObject('enableBurstCapacity', if(not(contains(coalesce(parameters('capabilitiesToAdd'), createArray()), 'EnableServerless')), parameters('enableBurstCapacity'), false()), 'analyticalStorageConfiguration', parameters('analyticalStorageConfiguration'), 'defaultIdentity', if(and(not(empty(parameters('defaultIdentity'))), not(equals(tryGet(parameters('defaultIdentity'), 'name'), 'UserAssignedIdentity'))), parameters('defaultIdentity').name, format('UserAssignedIdentity={0}', tryGet(parameters('defaultIdentity'), 'resourceId'))), 'enablePartitionMerge', parameters('enablePartitionMerge'), 'enablePerRegionPerPartitionAutoscale', parameters('enablePerRegionPerPartitionAutoscale'), 'databaseAccountOfferType', parameters('databaseAccountOfferType'), 'backupPolicy', shallowMerge(createArray(createObject('type', parameters('backupPolicyType')), if(equals(parameters('backupPolicyType'), 'Continuous'), createObject('continuousModeProperties', createObject('tier', parameters('backupPolicyContinuousTier'))), createObject()), if(equals(parameters('backupPolicyType'), 'Periodic'), createObject('periodicModeProperties', createObject('backupIntervalInMinutes', parameters('backupIntervalInMinutes'), 'backupRetentionIntervalInHours', parameters('backupRetentionIntervalInHours'), 'backupStorageRedundancy', parameters('backupStorageRedundancy'))), createObject()))), 'capabilities', map(coalesce(parameters('capabilitiesToAdd'), createArray()), lambda('capability', createObject('name', lambdaVariables('capability'))))), if(not(empty(parameters('cors'))), createObject('cors', parameters('cors')), createObject()), if(contains(coalesce(parameters('capabilitiesToAdd'), createArray()), 'EnableCassandra'), createObject('connectorOffer', if(parameters('enableCassandraConnector'), 'Small', null()), 'enableCassandraConnector', parameters('enableCassandraConnector')), createObject()), createObject('minimalTlsVersion', parameters('minimumTlsVersion'), 'capacity', createObject('totalThroughputLimit', parameters('totalThroughputLimit')), 'publicNetworkAccess', coalesce(tryGet(parameters('networkRestrictions'), 'publicNetworkAccess'), 'Disabled')), if(or(or(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('mongodbDatabases')))), not(empty(parameters('gremlinDatabases')))), not(empty(parameters('tables')))), createObject('consistencyPolicy', shallowMerge(createArray(createObject('defaultConsistencyLevel', parameters('defaultConsistencyLevel')), if(equals(parameters('defaultConsistencyLevel'), 'BoundedStaleness'), createObject('maxStalenessPrefix', parameters('maxStalenessPrefix'), 'maxIntervalInSeconds', parameters('maxIntervalInSeconds')), createObject()))), 'enableMultipleWriteLocations', parameters('enableMultipleWriteLocations'), 'locations', if(not(empty(parameters('failoverLocations'))), map(parameters('failoverLocations'), lambda('failoverLocation', createObject('failoverPriority', lambdaVariables('failoverLocation').failoverPriority, 'locationName', lambdaVariables('failoverLocation').locationName, 'isZoneRedundant', coalesce(tryGet(lambdaVariables('failoverLocation'), 'isZoneRedundant'), true())))), createArray(createObject('failoverPriority', 0, 'locationName', parameters('location'), 'isZoneRedundant', parameters('zoneRedundant')))), 'ipRules', map(coalesce(tryGet(parameters('networkRestrictions'), 'ipRules'), createArray()), lambda('ipRule', createObject('ipAddressOrRange', lambdaVariables('ipRule')))), 'virtualNetworkRules', map(coalesce(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules'), createArray()), lambda('rule', createObject('id', lambdaVariables('rule').subnetResourceId, 'ignoreMissingVNetServiceEndpoint', false()))), 'networkAclBypass', coalesce(tryGet(parameters('networkRestrictions'), 'networkAclBypass'), 'None'), 'networkAclBypassResourceIds', tryGet(parameters('networkRestrictions'), 'networkAclBypassResourceIds'), 'isVirtualNetworkFilterEnabled', or(not(empty(tryGet(parameters('networkRestrictions'), 'ipRules'))), not(empty(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules')))), 'enableFreeTier', parameters('enableFreeTier'), 'enableAutomaticFailover', parameters('enableAutomaticFailover'), 'enableAnalyticalStorage', parameters('enableAnalyticalStorage')), createObject()), if(or(not(empty(parameters('mongodbDatabases'))), not(empty(parameters('gremlinDatabases')))), createObject('disableLocalAuth', false(), 'disableKeyBasedMetadataWriteAccess', false()), createObject('disableLocalAuth', parameters('disableLocalAuthentication'), 'disableKeyBasedMetadataWriteAccess', parameters('disableKeyBasedMetadataWriteAccess'))), if(not(empty(parameters('mongodbDatabases'))), createObject('apiProperties', createObject('serverVersion', parameters('serverVersion'))), createObject())))]"
+      "properties": "[shallowMerge(createArray(createObject('enableBurstCapacity', if(not(contains(coalesce(parameters('capabilitiesToAdd'), createArray()), 'EnableServerless')), parameters('enableBurstCapacity'), false()), 'analyticalStorageConfiguration', parameters('analyticalStorageConfiguration'), 'defaultIdentity', if(and(not(empty(parameters('defaultIdentity'))), not(equals(tryGet(parameters('defaultIdentity'), 'name'), 'UserAssignedIdentity'))), parameters('defaultIdentity').name, format('UserAssignedIdentity={0}', tryGet(parameters('defaultIdentity'), 'resourceId'))), 'enablePartitionMerge', parameters('enablePartitionMerge'), 'enablePerRegionPerPartitionAutoscale', parameters('enablePerRegionPerPartitionAutoscale'), 'databaseAccountOfferType', parameters('databaseAccountOfferType'), 'backupPolicy', shallowMerge(createArray(createObject('type', parameters('backupPolicyType')), if(equals(parameters('backupPolicyType'), 'Continuous'), createObject('continuousModeProperties', createObject('tier', parameters('backupPolicyContinuousTier'))), createObject()), if(equals(parameters('backupPolicyType'), 'Periodic'), createObject('periodicModeProperties', createObject('backupIntervalInMinutes', parameters('backupIntervalInMinutes'), 'backupRetentionIntervalInHours', parameters('backupRetentionIntervalInHours'), 'backupStorageRedundancy', parameters('backupStorageRedundancy'))), createObject()))), 'capabilities', map(coalesce(parameters('capabilitiesToAdd'), createArray()), lambda('capability', createObject('name', lambdaVariables('capability'))))), if(not(empty(parameters('cors'))), createObject('cors', parameters('cors')), createObject()), if(contains(coalesce(parameters('capabilitiesToAdd'), createArray()), 'EnableCassandra'), createObject('connectorOffer', if(parameters('enableCassandraConnector'), 'Small', null()), 'enableCassandraConnector', parameters('enableCassandraConnector')), createObject()), createObject('minimalTlsVersion', parameters('minimumTlsVersion'), 'capacity', createObject('totalThroughputLimit', parameters('totalThroughputLimit')), 'publicNetworkAccess', coalesce(tryGet(parameters('networkRestrictions'), 'publicNetworkAccess'), 'Disabled')), if(or(or(or(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('mongodbDatabases')))), not(empty(parameters('gremlinDatabases')))), not(empty(parameters('tables')))), not(empty(parameters('cassandraKeyspaces')))), createObject('consistencyPolicy', shallowMerge(createArray(createObject('defaultConsistencyLevel', parameters('defaultConsistencyLevel')), if(equals(parameters('defaultConsistencyLevel'), 'BoundedStaleness'), createObject('maxStalenessPrefix', parameters('maxStalenessPrefix'), 'maxIntervalInSeconds', parameters('maxIntervalInSeconds')), createObject()))), 'enableMultipleWriteLocations', parameters('enableMultipleWriteLocations'), 'locations', if(not(empty(parameters('failoverLocations'))), map(parameters('failoverLocations'), lambda('failoverLocation', createObject('failoverPriority', lambdaVariables('failoverLocation').failoverPriority, 'locationName', lambdaVariables('failoverLocation').locationName, 'isZoneRedundant', coalesce(tryGet(lambdaVariables('failoverLocation'), 'isZoneRedundant'), true())))), createArray(createObject('failoverPriority', 0, 'locationName', parameters('location'), 'isZoneRedundant', parameters('zoneRedundant')))), 'ipRules', map(coalesce(tryGet(parameters('networkRestrictions'), 'ipRules'), createArray()), lambda('ipRule', createObject('ipAddressOrRange', lambdaVariables('ipRule')))), 'virtualNetworkRules', map(coalesce(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules'), createArray()), lambda('rule', createObject('id', lambdaVariables('rule').subnetResourceId, 'ignoreMissingVNetServiceEndpoint', false()))), 'networkAclBypass', coalesce(tryGet(parameters('networkRestrictions'), 'networkAclBypass'), 'None'), 'networkAclBypassResourceIds', tryGet(parameters('networkRestrictions'), 'networkAclBypassResourceIds'), 'isVirtualNetworkFilterEnabled', or(not(empty(tryGet(parameters('networkRestrictions'), 'ipRules'))), not(empty(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules')))), 'enableFreeTier', parameters('enableFreeTier'), 'enableAutomaticFailover', parameters('enableAutomaticFailover'), 'enableAnalyticalStorage', parameters('enableAnalyticalStorage')), createObject()), if(or(or(not(empty(parameters('mongodbDatabases'))), not(empty(parameters('gremlinDatabases')))), not(empty(parameters('cassandraKeyspaces')))), createObject('disableLocalAuth', false(), 'disableKeyBasedMetadataWriteAccess', false()), createObject('disableLocalAuth', parameters('disableLocalAuthentication'), 'disableKeyBasedMetadataWriteAccess', parameters('disableKeyBasedMetadataWriteAccess'))), if(not(empty(parameters('mongodbDatabases'))), createObject('apiProperties', createObject('serverVersion', parameters('serverVersion'))), createObject())))]"
     },
     "databaseAccount_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -2340,7 +2670,7 @@
     "databaseAccount_sqlRoleDefinitions": {
       "copy": {
         "name": "databaseAccount_sqlRoleDefinitions",
-        "count": "[length(coalesce(parameters('dataPlaneRoleDefinitions'), createArray()))]"
+        "count": "[length(coalesce(parameters('sqlRoleDefinitions'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -2355,19 +2685,19 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[tryGet(coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()], 'name')]"
+            "value": "[tryGet(coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()], 'name')]"
           },
           "dataActions": {
-            "value": "[coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()].dataActions]"
+            "value": "[coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()].dataActions]"
           },
           "roleName": {
-            "value": "[coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()].roleName]"
+            "value": "[coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()].roleName]"
           },
           "assignableScopes": {
-            "value": "[tryGet(coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()], 'assignableScopes')]"
+            "value": "[tryGet(coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()], 'assignableScopes')]"
           },
           "sqlRoleAssignments": {
-            "value": "[tryGet(coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()], 'assignments')]"
+            "value": "[tryGet(coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()], 'assignments')]"
           },
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
@@ -2719,7 +3049,7 @@
     "databaseAccount_sqlRoleAssignments": {
       "copy": {
         "name": "databaseAccount_sqlRoleAssignments",
-        "count": "[length(coalesce(parameters('dataPlaneRoleAssignments'), createArray()))]"
+        "count": "[length(coalesce(parameters('sqlRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -2734,16 +3064,16 @@
             "value": "[parameters('name')]"
           },
           "roleDefinitionIdOrName": {
-            "value": "[coalesce(parameters('dataPlaneRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]"
+            "value": "[coalesce(parameters('sqlRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]"
           },
           "principalId": {
-            "value": "[coalesce(parameters('dataPlaneRoleAssignments'), createArray())[copyIndex()].principalId]"
+            "value": "[coalesce(parameters('sqlRoleAssignments'), createArray())[copyIndex()].principalId]"
           },
           "name": {
-            "value": "[tryGet(coalesce(parameters('dataPlaneRoleAssignments'), createArray())[copyIndex()], 'name')]"
+            "value": "[tryGet(coalesce(parameters('sqlRoleAssignments'), createArray())[copyIndex()], 'name')]"
           },
           "scope": {
-            "value": "[tryGet(coalesce(parameters('dataPlaneRoleAssignments'), createArray())[copyIndex()], 'scope')]"
+            "value": "[tryGet(coalesce(parameters('sqlRoleAssignments'), createArray())[copyIndex()], 'scope')]"
           },
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
@@ -2876,7 +3206,451 @@
       },
       "dependsOn": [
         "databaseAccount",
-        "databaseAccount_sqlDatabases"
+        "databaseAccount_sqlDatabases",
+        "databaseAccount_sqlRoleDefinitions"
+      ]
+    },
+    "databaseAccount_cassandraRoleDefinitions": {
+      "copy": {
+        "name": "databaseAccount_cassandraRoleDefinitions",
+        "count": "[length(coalesce(parameters('cassandraRoleDefinitions'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-cassandra-rd-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "databaseAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[tryGet(coalesce(parameters('cassandraRoleDefinitions'), createArray())[copyIndex()], 'name')]"
+          },
+          "roleName": {
+            "value": "[coalesce(parameters('cassandraRoleDefinitions'), createArray())[copyIndex()].roleName]"
+          },
+          "dataActions": {
+            "value": "[tryGet(coalesce(parameters('cassandraRoleDefinitions'), createArray())[copyIndex()], 'dataActions')]"
+          },
+          "notDataActions": {
+            "value": "[tryGet(coalesce(parameters('cassandraRoleDefinitions'), createArray())[copyIndex()], 'notDataActions')]"
+          },
+          "assignableScopes": {
+            "value": "[tryGet(coalesce(parameters('cassandraRoleDefinitions'), createArray())[copyIndex()], 'assignableScopes')]"
+          },
+          "cassandraRoleAssignments": {
+            "value": "[tryGet(coalesce(parameters('cassandraRoleDefinitions'), createArray())[copyIndex()], 'assignments')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.38.33.27573",
+              "templateHash": "17859939500809924517"
+            },
+            "name": "DocumentDB Database Account Cassandra Role Definitions.",
+            "description": "This module deploys a Cassandra Role Definition in a CosmosDB Account."
+          },
+          "definitions": {
+            "cassandraRoleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The unique identifier of the role assignment."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The unique identifier for the associated AAD principal."
+                  }
+                },
+                "scope": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The data plane resource path for which access is being granted. Defaults to the current account."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            }
+          },
+          "parameters": {
+            "databaseAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The unique identifier of the Role Definition."
+              }
+            },
+            "roleName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. A user-friendly name for the Role Definition. Must be unique for the database account."
+              }
+            },
+            "dataActions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. An array of data actions that are allowed. Note: Valid data action strings for Cassandra API are currently undocumented (as of API version 2025-05-01-preview). Please refer to official Azure documentation once available."
+              }
+            },
+            "notDataActions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. An array of data actions that are denied. Note: Unlike SQL RBAC, Cassandra RBAC supports deny rules (notDataActions) for granular access control. Valid data action strings are currently undocumented (as of API version 2025-05-01-preview)."
+              }
+            },
+            "assignableScopes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Keyspace. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account."
+              }
+            },
+            "cassandraRoleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/cassandraRoleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. An array of Cassandra Role Assignments to be created for the Cassandra Role Definition."
+              }
+            }
+          },
+          "resources": {
+            "databaseAccount": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2024-11-15",
+              "name": "[parameters('databaseAccountName')]"
+            },
+            "cassandraRoleDefinition": {
+              "type": "Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions",
+              "apiVersion": "2025-05-01-preview",
+              "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName'))))]",
+              "properties": {
+                "assignableScopes": "[coalesce(parameters('assignableScopes'), createArray(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))))]",
+                "permissions": [
+                  {
+                    "dataActions": "[parameters('dataActions')]",
+                    "notDataActions": "[parameters('notDataActions')]"
+                  }
+                ],
+                "roleName": "[parameters('roleName')]",
+                "type": "CustomRole"
+              }
+            },
+            "databaseAccount_cassandraRoleAssignments": {
+              "copy": {
+                "name": "databaseAccount_cassandraRoleAssignments",
+                "count": "[length(coalesce(parameters('cassandraRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-cassandra-ra-{1}', uniqueString(deployment().name), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "databaseAccountName": {
+                    "value": "[parameters('databaseAccountName')]"
+                  },
+                  "roleDefinitionId": {
+                    "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName'))))]"
+                  },
+                  "principalId": {
+                    "value": "[coalesce(parameters('cassandraRoleAssignments'), createArray())[copyIndex()].principalId]"
+                  },
+                  "name": {
+                    "value": "[tryGet(coalesce(parameters('cassandraRoleAssignments'), createArray())[copyIndex()], 'name')]"
+                  },
+                  "scope": {
+                    "value": "[tryGet(coalesce(parameters('cassandraRoleAssignments'), createArray())[copyIndex()], 'scope')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.38.33.27573",
+                      "templateHash": "552115240340341941"
+                    },
+                    "name": "DocumentDB Database Account Cassandra Role Assignments.",
+                    "description": "This module deploys a Cassandra Role Assignment in a CosmosDB Account."
+                  },
+                  "parameters": {
+                    "databaseAccountName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Name unique identifier of the Cassandra Role Assignment."
+                      }
+                    },
+                    "principalId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription."
+                      }
+                    },
+                    "roleDefinitionId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The unique identifier of the associated Cassandra Role Definition."
+                      }
+                    },
+                    "scope": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The data plane resource path for which access is being granted through this Cassandra Role Assignment. Defaults to the current account."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "databaseAccount": {
+                      "existing": true,
+                      "type": "Microsoft.DocumentDB/databaseAccounts",
+                      "apiVersion": "2024-11-15",
+                      "name": "[parameters('databaseAccountName')]"
+                    },
+                    "cassandraRoleAssignment": {
+                      "type": "Microsoft.DocumentDB/databaseAccounts/cassandraRoleAssignments",
+                      "apiVersion": "2025-05-01-preview",
+                      "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))))]",
+                      "properties": {
+                        "principalId": "[parameters('principalId')]",
+                        "roleDefinitionId": "[parameters('roleDefinitionId')]",
+                        "scope": "[coalesce(parameters('scope'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))]"
+                      }
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the Cassandra Role Assignment."
+                      },
+                      "value": "[coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))))]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the Cassandra Role Assignment."
+                      },
+                      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/cassandraRoleAssignments', parameters('databaseAccountName'), coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the Cassandra Role Assignment was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "cassandraRoleDefinition"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the cassandra role definition."
+              },
+              "value": "[coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName')))]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the cassandra role definition."
+              },
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName'))))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the cassandra role definition was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "databaseAccount"
+      ]
+    },
+    "databaseAccount_cassandraRoleAssignments": {
+      "copy": {
+        "name": "databaseAccount_cassandraRoleAssignments",
+        "count": "[length(coalesce(parameters('cassandraRoleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-cassandra-ra-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "databaseAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "roleDefinitionId": {
+            "value": "[coalesce(parameters('cassandraRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]"
+          },
+          "principalId": {
+            "value": "[coalesce(parameters('cassandraRoleAssignments'), createArray())[copyIndex()].principalId]"
+          },
+          "name": {
+            "value": "[tryGet(coalesce(parameters('cassandraRoleAssignments'), createArray())[copyIndex()], 'name')]"
+          },
+          "scope": {
+            "value": "[tryGet(coalesce(parameters('cassandraRoleAssignments'), createArray())[copyIndex()], 'scope')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.38.33.27573",
+              "templateHash": "552115240340341941"
+            },
+            "name": "DocumentDB Database Account Cassandra Role Assignments.",
+            "description": "This module deploys a Cassandra Role Assignment in a CosmosDB Account."
+          },
+          "parameters": {
+            "databaseAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Name unique identifier of the Cassandra Role Assignment."
+              }
+            },
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription."
+              }
+            },
+            "roleDefinitionId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The unique identifier of the associated Cassandra Role Definition."
+              }
+            },
+            "scope": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The data plane resource path for which access is being granted through this Cassandra Role Assignment. Defaults to the current account."
+              }
+            }
+          },
+          "resources": {
+            "databaseAccount": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2024-11-15",
+              "name": "[parameters('databaseAccountName')]"
+            },
+            "cassandraRoleAssignment": {
+              "type": "Microsoft.DocumentDB/databaseAccounts/cassandraRoleAssignments",
+              "apiVersion": "2025-05-01-preview",
+              "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))))]",
+              "properties": {
+                "principalId": "[parameters('principalId')]",
+                "roleDefinitionId": "[parameters('roleDefinitionId')]",
+                "scope": "[coalesce(parameters('scope'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Cassandra Role Assignment."
+              },
+              "value": "[coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))))]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Cassandra Role Assignment."
+              },
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/cassandraRoleAssignments', parameters('databaseAccountName'), coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the Cassandra Role Assignment was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "databaseAccount",
+        "databaseAccount_cassandraKeyspaces",
+        "databaseAccount_cassandraRoleDefinitions"
       ]
     },
     "databaseAccount_mongodbDatabases": {
@@ -3671,6 +4445,623 @@
               "type": "string",
               "metadata": {
                 "description": "The name of the resource group the table was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "databaseAccount"
+      ]
+    },
+    "databaseAccount_cassandraKeyspaces": {
+      "copy": {
+        "name": "databaseAccount_cassandraKeyspaces",
+        "count": "[length(coalesce(parameters('cassandraKeyspaces'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-cassandradb-{1}', uniqueString(deployment().name, parameters('location')), coalesce(parameters('cassandraKeyspaces'), createArray())[copyIndex()].name)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "databaseAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('cassandraKeyspaces'), createArray())[copyIndex()].name]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(coalesce(parameters('cassandraKeyspaces'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          },
+          "tables": {
+            "value": "[tryGet(coalesce(parameters('cassandraKeyspaces'), createArray())[copyIndex()], 'tables')]"
+          },
+          "views": {
+            "value": "[tryGet(coalesce(parameters('cassandraKeyspaces'), createArray())[copyIndex()], 'views')]"
+          },
+          "autoscaleSettingsMaxThroughput": {
+            "value": "[tryGet(coalesce(parameters('cassandraKeyspaces'), createArray())[copyIndex()], 'autoscaleSettingsMaxThroughput')]"
+          },
+          "throughput": {
+            "value": "[tryGet(coalesce(parameters('cassandraKeyspaces'), createArray())[copyIndex()], 'throughput')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.38.33.27573",
+              "templateHash": "63327155428300562"
+            },
+            "name": "DocumentDB Database Account Cassandra Keyspaces",
+            "description": "This module deploys a Cassandra Keyspace within a CosmosDB Account."
+          },
+          "definitions": {
+            "tableType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Name of the table."
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15#properties/properties/properties/resource/properties/schema"
+                    },
+                    "description": "Required. Schema definition for the table."
+                  }
+                },
+                "tags": {
+                  "type": "object",
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15#properties/tags"
+                    },
+                    "description": "Optional. Tags for the table."
+                  },
+                  "nullable": true
+                },
+                "defaultTtl": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Default TTL (Time To Live) in seconds for data in the table."
+                  }
+                },
+                "analyticalStorageTtl": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Analytical TTL for the table."
+                  }
+                },
+                "throughput": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput."
+                  }
+                },
+                "autoscaleSettingsMaxThroughput": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Maximum autoscale throughput for the table. Cannot be used with throughput."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type of a Cassandra table."
+              }
+            },
+            "viewType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Name of the view."
+                  }
+                },
+                "viewDefinition": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. View definition (CQL statement)."
+                  }
+                },
+                "tags": {
+                  "type": "object",
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2025-05-01-preview#properties/tags"
+                    },
+                    "description": "Optional. Tags for the view."
+                  },
+                  "nullable": true
+                },
+                "throughput": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput."
+                  }
+                },
+                "autoscaleSettingsMaxThroughput": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Maximum autoscale throughput for the view. Cannot be used with throughput."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type of a Cassandra view (materialized view)."
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the Cassandra keyspace."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces@2024-11-15#properties/tags"
+                },
+                "description": "Optional. Tags of the Cassandra keyspace resource."
+              },
+              "nullable": true
+            },
+            "databaseAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Cosmos DB account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "tables": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/tableType"
+              },
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. Array of Cassandra tables to deploy in the keyspace."
+              }
+            },
+            "views": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/viewType"
+              },
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. Array of Cassandra views (materialized views) to deploy in the keyspace."
+              }
+            },
+            "autoscaleSettingsMaxThroughput": {
+              "type": "int",
+              "defaultValue": 4000,
+              "metadata": {
+                "description": "Optional. Maximum autoscale throughput for the keyspace. If not set, autoscale will be disabled. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level."
+              }
+            },
+            "throughput": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level."
+              }
+            }
+          },
+          "resources": {
+            "databaseAccount": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2024-11-15",
+              "name": "[parameters('databaseAccountName')]"
+            },
+            "cassandraKeyspace": {
+              "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces",
+              "apiVersion": "2024-11-15",
+              "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), createObject(), createObject('autoscaleSettings', if(equals(parameters('throughput'), null()), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null()), 'throughput', parameters('throughput')))]",
+                "resource": {
+                  "id": "[parameters('name')]"
+                }
+              },
+              "dependsOn": [
+                "databaseAccount"
+              ]
+            },
+            "cassandraKeyspace_tables": {
+              "copy": {
+                "name": "cassandraKeyspace_tables",
+                "count": "[length(parameters('tables'))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-cassandradb-{1}', uniqueString(deployment().name, parameters('name')), parameters('tables')[copyIndex()].name)]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[parameters('tables')[copyIndex()].name]"
+                  },
+                  "cassandraKeyspaceName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "databaseAccountName": {
+                    "value": "[parameters('databaseAccountName')]"
+                  },
+                  "schema": {
+                    "value": "[parameters('tables')[copyIndex()].schema]"
+                  },
+                  "analyticalStorageTtl": {
+                    "value": "[tryGet(parameters('tables')[copyIndex()], 'analyticalStorageTtl')]"
+                  },
+                  "throughput": {
+                    "value": "[tryGet(parameters('tables')[copyIndex()], 'throughput')]"
+                  },
+                  "autoscaleSettingsMaxThroughput": {
+                    "value": "[tryGet(parameters('tables')[copyIndex()], 'autoscaleSettingsMaxThroughput')]"
+                  },
+                  "defaultTtl": {
+                    "value": "[tryGet(parameters('tables')[copyIndex()], 'defaultTtl')]"
+                  },
+                  "tags": {
+                    "value": "[coalesce(tryGet(parameters('tables')[copyIndex()], 'tags'), parameters('tags'))]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.38.33.27573",
+                      "templateHash": "785607874724829202"
+                    },
+                    "name": "DocumentDB Database Account Cassandra Keyspaces Tables",
+                    "description": "This module deploys a Cassandra Table within a Cassandra Keyspace in a CosmosDB Account."
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Name of the Cassandra table."
+                      }
+                    },
+                    "tags": {
+                      "type": "object",
+                      "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15#properties/tags"
+                        },
+                        "description": "Optional. Tags of the Cassandra table resource."
+                      },
+                      "nullable": true
+                    },
+                    "databaseAccountName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "cassandraKeyspaceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent Cassandra Keyspace. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "schema": {
+                      "type": "object",
+                      "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15#properties/properties/properties/resource/properties/schema"
+                        },
+                        "description": "Required. Schema definition for the Cassandra table."
+                      }
+                    },
+                    "analyticalStorageTtl": {
+                      "type": "int",
+                      "defaultValue": 0,
+                      "metadata": {
+                        "description": "Optional. Analytical TTL for the table. Default to 0 (disabled). Analytical store is enabled when set to a value other than 0. If set to -1, analytical store retains all historical data."
+                      }
+                    },
+                    "throughput": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput. If not specified, the table will inherit throughput from the keyspace."
+                      }
+                    },
+                    "autoscaleSettingsMaxThroughput": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Maximum autoscale throughput for the table. Cannot be used with throughput. If not specified, the table will inherit throughput from the keyspace."
+                      }
+                    },
+                    "defaultTtl": {
+                      "type": "int",
+                      "defaultValue": 0,
+                      "metadata": {
+                        "description": "Optional. Default time to live in seconds. Default to 0 (disabled). If set to -1, items do not expire."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "databaseAccount::cassandraKeyspace": {
+                      "existing": true,
+                      "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces",
+                      "apiVersion": "2024-11-15",
+                      "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('cassandraKeyspaceName'))]"
+                    },
+                    "databaseAccount": {
+                      "existing": true,
+                      "type": "Microsoft.DocumentDB/databaseAccounts",
+                      "apiVersion": "2024-11-15",
+                      "name": "[parameters('databaseAccountName')]"
+                    },
+                    "cassandraTable": {
+                      "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables",
+                      "apiVersion": "2024-11-15",
+                      "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('cassandraKeyspaceName'), parameters('name'))]",
+                      "tags": "[parameters('tags')]",
+                      "properties": {
+                        "resource": {
+                          "id": "[parameters('name')]",
+                          "schema": "[parameters('schema')]",
+                          "defaultTtl": "[parameters('defaultTtl')]",
+                          "analyticalStorageTtl": "[parameters('analyticalStorageTtl')]"
+                        },
+                        "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), createObject(), createObject('autoscaleSettings', if(and(equals(parameters('throughput'), null()), not(equals(parameters('autoscaleSettingsMaxThroughput'), null()))), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null()), 'throughput', parameters('throughput')))]"
+                      },
+                      "dependsOn": [
+                        "databaseAccount"
+                      ]
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the Cassandra table."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the Cassandra table."
+                      },
+                      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables', parameters('databaseAccountName'), parameters('cassandraKeyspaceName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the Cassandra table was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "cassandraKeyspace"
+              ]
+            },
+            "cassandraKeyspace_views": {
+              "copy": {
+                "name": "cassandraKeyspace_views",
+                "count": "[length(parameters('views'))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-cassandraview-{1}', uniqueString(deployment().name, parameters('name')), parameters('views')[copyIndex()].name)]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[parameters('views')[copyIndex()].name]"
+                  },
+                  "cassandraKeyspaceName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "databaseAccountName": {
+                    "value": "[parameters('databaseAccountName')]"
+                  },
+                  "viewDefinition": {
+                    "value": "[parameters('views')[copyIndex()].viewDefinition]"
+                  },
+                  "throughput": {
+                    "value": "[tryGet(parameters('views')[copyIndex()], 'throughput')]"
+                  },
+                  "autoscaleSettingsMaxThroughput": {
+                    "value": "[tryGet(parameters('views')[copyIndex()], 'autoscaleSettingsMaxThroughput')]"
+                  },
+                  "tags": {
+                    "value": "[coalesce(tryGet(parameters('views')[copyIndex()], 'tags'), parameters('tags'))]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.38.33.27573",
+                      "templateHash": "14021794949328228224"
+                    },
+                    "name": "DocumentDB Database Account Cassandra Keyspaces Views",
+                    "description": "This module deploys a Cassandra View (Materialized View) within a Cassandra Keyspace in a CosmosDB Account."
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Name of the Cassandra view."
+                      }
+                    },
+                    "tags": {
+                      "type": "object",
+                      "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2025-05-01-preview#properties/tags"
+                        },
+                        "description": "Optional. Tags of the Cassandra view resource."
+                      },
+                      "nullable": true
+                    },
+                    "databaseAccountName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "cassandraKeyspaceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent Cassandra Keyspace. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "viewDefinition": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. View definition of the Cassandra view. This is the CQL statement that defines the materialized view."
+                      }
+                    },
+                    "throughput": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput."
+                      }
+                    },
+                    "autoscaleSettingsMaxThroughput": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Maximum autoscale throughput for the view. Cannot be used with throughput."
+                      }
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]",
+                      "metadata": {
+                        "description": "Optional. Location for all resources."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "databaseAccount::cassandraKeyspace": {
+                      "existing": true,
+                      "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces",
+                      "apiVersion": "2025-05-01-preview",
+                      "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('cassandraKeyspaceName'))]"
+                    },
+                    "databaseAccount": {
+                      "existing": true,
+                      "type": "Microsoft.DocumentDB/databaseAccounts",
+                      "apiVersion": "2025-05-01-preview",
+                      "name": "[parameters('databaseAccountName')]"
+                    },
+                    "cassandraView": {
+                      "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views",
+                      "apiVersion": "2025-05-01-preview",
+                      "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('cassandraKeyspaceName'), parameters('name'))]",
+                      "tags": "[parameters('tags')]",
+                      "location": "[parameters('location')]",
+                      "properties": {
+                        "resource": {
+                          "id": "[parameters('name')]",
+                          "viewDefinition": "[parameters('viewDefinition')]"
+                        },
+                        "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), createObject(), createObject('autoscaleSettings', if(and(equals(parameters('throughput'), null()), not(equals(parameters('autoscaleSettingsMaxThroughput'), null()))), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null()), 'throughput', parameters('throughput')))]"
+                      },
+                      "dependsOn": [
+                        "databaseAccount"
+                      ]
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the Cassandra view."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the Cassandra view."
+                      },
+                      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views', parameters('databaseAccountName'), parameters('cassandraKeyspaceName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the Cassandra view was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "cassandraKeyspace"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Cassandra keyspace."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Cassandra keyspace."
+              },
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces', parameters('databaseAccountName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the Cassandra keyspace was created in."
               },
               "value": "[resourceGroup().name]"
             }
