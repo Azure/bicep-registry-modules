@@ -2,6 +2,22 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/document-db/database-account/CHANGELOG.md).
 
+## 0.18.0
+
+### Changes
+
+- **Added support for Cassandra API resources** - First version to include Cassandra keyspaces, tables, views, role assignments, and role definitions for Azure Cosmos DB
+- Import `tableType` and `viewType` from `cassandra-keyspace` module to eliminate code duplication
+- Reduced template size by approximately 85 lines through type import architecture
+- Established single source of truth for Cassandra resource types across modules
+
+### Breaking Changes
+
+- Renamed parameter `dataPlaneRoleAssignments` to `sqlRoleAssignments` to clarify it is specific to SQL (NoSQL API) resources and distinguish it from Cassandra role assignments
+- Removed custom Cassandra schema type definitions (`cassandraColumnType`, `cassandraPartitionKeyType`, `cassandraClusterKeyType`, `cassandraSchemaType`, `cassandraTableType`, `cassandraViewType`)
+- Cassandra table and view types now imported from `cassandra-keyspace` module instead of being defined locally
+- Users upgrading to this version must update Cassandra configurations to use Azure API schema format (`resourceInput<...>.properties.resource.schema`) instead of the previous custom schema object format
+
 ## 0.17.0
 
 ### Changes

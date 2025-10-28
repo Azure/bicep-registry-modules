@@ -70,6 +70,72 @@ Array of Cassandra tables to deploy in the keyspace.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-tablesname) | string | Name of the table. |
+| [`schema`](#parameter-tablesschema) | object | Schema definition for the table. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`analyticalStorageTtl`](#parameter-tablesanalyticalstoragettl) | int | Analytical TTL for the table. |
+| [`autoscaleSettingsMaxThroughput`](#parameter-tablesautoscalesettingsmaxthroughput) | int | Maximum autoscale throughput for the table. Cannot be used with throughput. |
+| [`defaultTtl`](#parameter-tablesdefaultttl) | int | Default TTL (Time To Live) in seconds for data in the table. |
+| [`tags`](#parameter-tablestags) | object | Tags for the table. |
+| [`throughput`](#parameter-tablesthroughput) | int | Request units per second. Cannot be used with autoscaleSettingsMaxThroughput. |
+
+### Parameter: `tables.name`
+
+Name of the table.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tables.schema`
+
+Schema definition for the table.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `tables.analyticalStorageTtl`
+
+Analytical TTL for the table.
+
+- Required: No
+- Type: int
+
+### Parameter: `tables.autoscaleSettingsMaxThroughput`
+
+Maximum autoscale throughput for the table. Cannot be used with throughput.
+
+- Required: No
+- Type: int
+
+### Parameter: `tables.defaultTtl`
+
+Default TTL (Time To Live) in seconds for data in the table.
+
+- Required: No
+- Type: int
+
+### Parameter: `tables.tags`
+
+Tags for the table.
+
+- Required: No
+- Type: object
+
+### Parameter: `tables.throughput`
+
+Request units per second. Cannot be used with autoscaleSettingsMaxThroughput.
+
+- Required: No
+- Type: int
+
 ### Parameter: `tags`
 
 Tags of the Cassandra keyspace resource.
@@ -91,6 +157,56 @@ Array of Cassandra views (materialized views) to deploy in the keyspace.
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-viewsname) | string | Name of the view. |
+| [`viewDefinition`](#parameter-viewsviewdefinition) | string | View definition (CQL statement). |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoscaleSettingsMaxThroughput`](#parameter-viewsautoscalesettingsmaxthroughput) | int | Maximum autoscale throughput for the view. Cannot be used with throughput. |
+| [`tags`](#parameter-viewstags) | object | Tags for the view. |
+| [`throughput`](#parameter-viewsthroughput) | int | Request units per second. Cannot be used with autoscaleSettingsMaxThroughput. |
+
+### Parameter: `views.name`
+
+Name of the view.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `views.viewDefinition`
+
+View definition (CQL statement).
+
+- Required: Yes
+- Type: string
+
+### Parameter: `views.autoscaleSettingsMaxThroughput`
+
+Maximum autoscale throughput for the view. Cannot be used with throughput.
+
+- Required: No
+- Type: int
+
+### Parameter: `views.tags`
+
+Tags for the view.
+
+- Required: No
+- Type: object
+
+### Parameter: `views.throughput`
+
+Request units per second. Cannot be used with autoscaleSettingsMaxThroughput.
+
+- Required: No
+- Type: int
 
 ## Outputs
 

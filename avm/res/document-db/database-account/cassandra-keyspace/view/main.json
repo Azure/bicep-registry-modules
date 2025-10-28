@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "6161256708876711339"
+      "version": "0.38.33.27573",
+      "templateHash": "14021794949328228224"
     },
     "name": "DocumentDB Database Account Cassandra Keyspaces Views",
     "description": "This module deploys a Cassandra View (Materialized View) within a Cassandra Keyspace in a CosmosDB Account."
@@ -20,10 +20,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2025-05-01-preview#properties/tags"
+        },
         "description": "Optional. Tags of the Cassandra view resource."
-      }
+      },
+      "nullable": true
     },
     "databaseAccountName": {
       "type": "string",
@@ -63,13 +66,6 @@
       "metadata": {
         "description": "Optional. Location for all resources."
       }
-    },
-    "enableTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable/Disable usage telemetry for module."
-      }
     }
   },
   "resources": {
@@ -101,26 +97,6 @@
       "dependsOn": [
         "databaseAccount"
       ]
-    },
-    "telemetry": {
-      "condition": "[parameters('enableTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.doctdb-dbacct-cassandrakeyspaceview.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": [],
-          "outputs": {
-            "telemetry": {
-              "type": "String",
-              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-            }
-          }
-        }
-      }
     }
   },
   "outputs": {

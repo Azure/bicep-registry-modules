@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "4241878097223511975"
+      "version": "0.38.33.27573",
+      "templateHash": "785607874724829202"
     },
     "name": "DocumentDB Database Account Cassandra Keyspaces Tables",
     "description": "This module deploys a Cassandra Table within a Cassandra Keyspace in a CosmosDB Account."
@@ -20,10 +20,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15#properties/tags"
+        },
         "description": "Optional. Tags of the Cassandra table resource."
-      }
+      },
+      "nullable": true
     },
     "databaseAccountName": {
       "type": "string",
@@ -40,6 +43,9 @@
     "schema": {
       "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15#properties/properties/properties/resource/properties/schema"
+        },
         "description": "Required. Schema definition for the Cassandra table."
       }
     },
