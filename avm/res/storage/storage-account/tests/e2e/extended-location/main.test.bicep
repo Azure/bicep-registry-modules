@@ -48,6 +48,7 @@ module testDeployment '../../../main.bicep' = [
       extendedLocationZone: extendedZone
       kind: 'StorageV2'
       skuName: 'Premium_LRS'
+      allowBlobPublicAccess: false
     }
   }
 ]

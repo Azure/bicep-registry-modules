@@ -365,6 +365,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     // Required parameters
     name: 'ssaexzn001'
     // Non-required parameters
+    allowBlobPublicAccess: false
     extendedLocationZone: '<extendedLocationZone>'
     kind: 'StorageV2'
     location: '<location>'
@@ -390,6 +391,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       "value": "ssaexzn001"
     },
     // Non-required parameters
+    "allowBlobPublicAccess": {
+      "value": false
+    },
     "extendedLocationZone": {
       "value": "<extendedLocationZone>"
     },
@@ -419,6 +423,7 @@ using 'br/public:avm/res/storage/storage-account:<version>'
 // Required parameters
 param name = 'ssaexzn001'
 // Non-required parameters
+param allowBlobPublicAccess = false
 param extendedLocationZone = '<extendedLocationZone>'
 param kind = 'StorageV2'
 param location = '<location>'
