@@ -37,13 +37,11 @@ Creates an AI Foundry account and project with Standard Agent Services.
 | `Microsoft.DocumentDB/databaseAccounts/tables` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/tables)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.KeyVault/vaults` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults)</li></ul> |
-| `Microsoft.KeyVault/vaults/accessPolicies` | 2023-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/accessPolicies)</li></ul> |
+| `Microsoft.KeyVault/vaults/accessPolicies` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/accessPolicies)</li></ul> |
 | `Microsoft.KeyVault/vaults/keys` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/keys)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Resources/deploymentScripts` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_deploymentscripts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts)</li></ul> |
 | `Microsoft.Search/searchServices` | 2025-02-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices)</li></ul> |
 | `Microsoft.Search/searchServices/sharedPrivateLinkResources` | 2025-02-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices_sharedprivatelinkresources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices/sharedPrivateLinkResources)</li></ul> |
@@ -463,10 +461,6 @@ param storageAccountConfiguration = {
 
 This instance deploys the module with most of its features enabled.
 
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-Ignoring this test due to issues in the order of operations when removing resources that include networkInjections on the Cognitive Services Account. The Account resource locks the "agents" subnet and the link is not able to be removed. Workarounds are available but are not reliable in the automated testing process. See the "removeLockingDependencyAfterDeployment" parameter on this test and the associated "/tests/shared/removeLockingDependencies.bicep" module as a sample workaround.
-```
 
 <details>
 
@@ -483,6 +477,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       accountName: '<accountName>'
       allowProjectManagement: true
       createCapabilityHosts: true
+      disableLocalAuth: true
       location: '<location>'
       networking: {
         agentServiceSubnetResourceId: '<agentServiceSubnetResourceId>'
@@ -601,6 +596,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
         "accountName": "<accountName>",
         "allowProjectManagement": true,
         "createCapabilityHosts": true,
+        "disableLocalAuth": true,
         "location": "<location>",
         "networking": {
           "agentServiceSubnetResourceId": "<agentServiceSubnetResourceId>",
@@ -737,6 +733,7 @@ param aiFoundryConfiguration = {
   accountName: '<accountName>'
   allowProjectManagement: true
   createCapabilityHosts: true
+  disableLocalAuth: true
   location: '<location>'
   networking: {
     agentServiceSubnetResourceId: '<agentServiceSubnetResourceId>'
@@ -838,10 +835,6 @@ param tags = {
 
 Creates an AI Foundry account and project with Standard Agent Services with private networking.
 
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-Ignoring this test due to issues in the order of operations when removing resources that include networkInjections on the Cognitive Services Account. The Account resource locks the "agents" subnet and the link is not able to be removed. Workarounds are available but are not reliable in the automated testing process. See the "removeLockingDependencyAfterDeployment" parameter on this test and the associated "/tests/shared/removeLockingDependencies.bicep" module as a sample workaround.
-```
 
 <details>
 
@@ -1071,6 +1064,7 @@ Custom configuration for the AI Foundry.
 | [`accountName`](#parameter-aifoundryconfigurationaccountname) | string | The name of the AI Foundry account. |
 | [`allowProjectManagement`](#parameter-aifoundryconfigurationallowprojectmanagement) | bool | Whether to allow project management in the AI Foundry account. If true, users can create and manage projects within the AI Foundry account. Defaults to true. |
 | [`createCapabilityHosts`](#parameter-aifoundryconfigurationcreatecapabilityhosts) | bool | Whether to create Capability Hosts for the AI Agent Service. If true, the AI Foundry Account and default Project will be created with the capability host for the associated resources. Can only be true if 'includeAssociatedResources' is true. Defaults to false. |
+| [`disableLocalAuth`](#parameter-aifoundryconfigurationdisablelocalauth) | bool | Allow only Azure AD authentication. Should be enabled for security reasons. Defaults to true. |
 | [`location`](#parameter-aifoundryconfigurationlocation) | string | The location of the AI Foundry account. Will default to the resource group location if not specified. |
 | [`networking`](#parameter-aifoundryconfigurationnetworking) | object | Values to establish private networking for the AI Foundry account and project. |
 | [`project`](#parameter-aifoundryconfigurationproject) | object | AI Foundry default project. |
@@ -1094,6 +1088,13 @@ Whether to allow project management in the AI Foundry account. If true, users ca
 ### Parameter: `aiFoundryConfiguration.createCapabilityHosts`
 
 Whether to create Capability Hosts for the AI Agent Service. If true, the AI Foundry Account and default Project will be created with the capability host for the associated resources. Can only be true if 'includeAssociatedResources' is true. Defaults to false.
+
+- Required: No
+- Type: bool
+
+### Parameter: `aiFoundryConfiguration.disableLocalAuth`
+
+Allow only Azure AD authentication. Should be enabled for security reasons. Defaults to true.
 
 - Required: No
 - Type: bool
@@ -2100,11 +2101,11 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/cognitive-services/account:0.12.0` | Remote reference |
-| `br/public:avm/res/cognitive-services/account:0.13.1` | Remote reference |
-| `br/public:avm/res/document-db/database-account:0.15.0` | Remote reference |
-| `br/public:avm/res/key-vault/vault:0.13.1` | Remote reference |
-| `br/public:avm/res/search/search-service:0.11.0` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.26.0` | Remote reference |
+| `br/public:avm/res/cognitive-services/account:0.13.2` | Remote reference |
+| `br/public:avm/res/document-db/database-account:0.16.0` | Remote reference |
+| `br/public:avm/res/key-vault/vault:0.13.3` | Remote reference |
+| `br/public:avm/res/search/search-service:0.11.1` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.26.2` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 

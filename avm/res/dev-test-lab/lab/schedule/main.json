@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "44867339593492653"
+      "version": "0.37.4.10188",
+      "templateHash": "13883158783796437346"
     },
     "name": "DevTest Lab Schedules",
     "description": "This module deploys a DevTest Lab Schedule.\n\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines."

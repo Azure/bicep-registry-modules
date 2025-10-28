@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "10396319188362265745"
+      "version": "0.38.5.1644",
+      "templateHash": "5051943203961398060"
     },
     "name": "App Service Environments",
     "description": "This module deploys an App Service Environment."
@@ -142,7 +142,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -245,7 +245,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -562,7 +562,7 @@
     "appServiceEnvironment_configurations_customDnsSuffix": {
       "condition": "[not(empty(parameters('customDnsSuffix')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-AppServiceEnv-Configurations-CustomDnsSuffix', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -589,8 +589,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "16715583923779507786"
+              "version": "0.38.5.1644",
+              "templateHash": "11637564412237269522"
             },
             "name": "Hosting Environment Custom DNS Suffix Configuration",
             "description": "This module deploys a Hosting Environment Custom DNS Suffix Configuration."

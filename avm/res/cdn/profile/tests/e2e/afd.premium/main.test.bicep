@@ -50,7 +50,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: 'dep-${namePrefix}-test-${serviceShort}'
+      name: 'dep-${namePrefix}-test-afd-${serviceShort}'
       location: 'global'
       originResponseTimeoutSeconds: 60
       sku: 'Premium_AzureFrontDoor'
@@ -102,7 +102,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       afdEndpoints: [
         {
-          name: 'dep-${namePrefix}-test-${serviceShort}-afd-endpoint'
+          name: 'dep-${namePrefix}-test-afd-${serviceShort}-afd-endpoint'
           routes: [
             {
               name: 'dep-${namePrefix}-test-${serviceShort}-afd-route'
@@ -127,9 +127,9 @@ module testDeployment '../../../main.bicep' = [
                   id: resourceId(
                     subscription().subscriptionId,
                     resourceGroup.name,
-                    'Microsoft.Cdn/profiles/afdEndpoints',
-                    'dep-${namePrefix}-test-${serviceShort}',
-                    'dep-${namePrefix}-test-${serviceShort}-afd-endpoint'
+                    'Microsoft.Cdn/profiles/customDomains',
+                    'dep-${namePrefix}-test-afd-${serviceShort}',
+                    'dep-${namePrefix}-test-${serviceShort}-custom-domain'
                   )
                 }
               ]

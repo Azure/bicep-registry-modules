@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "16181163629166007646"
+      "version": "0.37.4.10188",
+      "templateHash": "8499430664571850159"
     },
     "name": "SQL Managed Instance Security Alert Policies",
     "description": "This module deploys a SQL Managed Instance Security Alert Policy."
@@ -40,19 +41,81 @@
       "metadata": {
         "description": "Optional. Specifies that the schedule scan notification will be is sent to the subscription administrators."
       }
+    },
+    "emailAddresses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Specifies an array of e-mail addresses to which the alert is sent."
+      }
+    },
+    "retentionDays": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Specifies the number of days to keep in the Threat Detection audit logs."
+      }
+    },
+    "disabledAlerts": {
+      "type": "array",
+      "allowedValues": [
+        "Access_Anomaly",
+        "Brute_Force",
+        "Data_Exfiltration",
+        "Sql_Injection",
+        "Sql_Injection_Vulnerability",
+        "Unsafe_Action"
+      ],
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Specifies an array of alerts that are disabled."
+      }
+    },
+    "storageAccountResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. A blob storage to hold all Threat Detection audit logs. Required if state is 'Enabled'."
+      }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "storageAccount": {
+      "condition": "[not(empty(parameters('storageAccountResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2025-01-01",
+      "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
+      "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
+      "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
+    },
+    "managedInstance": {
+      "existing": true,
+      "type": "Microsoft.Sql/managedInstances",
+      "apiVersion": "2024-05-01-preview",
+      "name": "[parameters('managedInstanceName')]"
+    },
+    "securityAlertPolicy": {
       "type": "Microsoft.Sql/managedInstances/securityAlertPolicies",
       "apiVersion": "2024-05-01-preview",
       "name": "[format('{0}/{1}', parameters('managedInstanceName'), parameters('name'))]",
       "properties": {
+        "disabledAlerts": "[parameters('disabledAlerts')]",
+        "emailAccountAdmins": "[parameters('emailAccountAdmins')]",
+        "emailAddresses": "[parameters('emailAddresses')]",
+        "retentionDays": "[parameters('retentionDays')]",
         "state": "[parameters('state')]",
-        "emailAccountAdmins": "[parameters('emailAccountAdmins')]"
-      }
+        "storageAccountAccessKey": "[if(not(empty(parameters('storageAccountResourceId'))), listKeys('storageAccount', '2025-01-01').keys[0].value, null())]",
+        "storageEndpoint": "[if(not(empty(parameters('storageAccountResourceId'))), reference('storageAccount').primaryEndpoints.blob, null())]"
+      },
+      "dependsOn": [
+        "storageAccount"
+      ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

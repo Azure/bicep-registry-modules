@@ -39,7 +39,7 @@ This module deploys an API Management Service Named Value.
 | [`keyVault`](#parameter-keyvault) | object | KeyVault location details of the namedValue. |
 | [`secret`](#parameter-secret) | bool | Determines whether the value is a secret and should be encrypted or not. Default value is false. |
 | [`tags`](#parameter-tags) | array | Tags that when provided can be used to filter the NamedValue list. - string. |
-| [`value`](#parameter-value) | string | Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value. |
+| [`value`](#parameter-value) | securestring | Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value. |
 
 ### Parameter: `displayName`
 
@@ -97,7 +97,7 @@ Tags that when provided can be used to filter the NamedValue list. - string.
 Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value.
 
 - Required: No
-- Type: string
+- Type: securestring
 - Default: `[newGuid()]`
 
 ## Outputs

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "12394215697119119779"
+      "templateHash": "11115113860162040259"
     },
     "name": "Fabric Capacities",
     "description": "This module deploys Fabric capacities, which provide the compute resources for all the experiences in Fabric."
@@ -66,10 +66,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Fabric/capacities@2023-11-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "skuName": {
       "type": "string",
@@ -104,6 +107,9 @@
     "adminMembers": {
       "type": "array",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Fabric/capacities@2023-11-01#properties/properties/properties/administration/properties/members"
+        },
         "description": "Required. List of admin members. Format: [\"something@domain.com\"]."
       }
     },
