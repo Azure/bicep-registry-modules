@@ -144,7 +144,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource firewallPolicy 'Microsoft.Network/firewallPolicies@2024-05-01' = {
+resource firewallPolicy 'Microsoft.Network/firewallPolicies@2024-10-01' = {
   name: name
   location: location
   tags: tags
@@ -155,7 +155,7 @@ resource firewallPolicy 'Microsoft.Network/firewallPolicies@2024-05-01' = {
           id: basePolicyResourceId
         }
       : null
-    dnsSettings: enableProxy
+    dnsSettings: (enableProxy || servers != null)
       ? {
           enableProxy: enableProxy
           servers: servers ?? []
