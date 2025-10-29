@@ -333,6 +333,8 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (en
     retentionInDays: 365
     kind: 'web'
     disableIpMasking: false
+    // WAF aligned configuration - Disable local authentication to enforce Azure AD authentication
+    disableLocalAuth: true
     flowType: 'Bluefield'
     // WAF aligned configuration for Monitoring
     workspaceResourceId: enableMonitoring ? logAnalyticsWorkspace!.outputs.resourceId : ''
@@ -411,50 +413,6 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePr
 }
 
 // ========== VM Maintenance Configuration Mapping ========== //
-// Map Azure regions to their corresponding VM maintenance configuration names
-var vmMaintenanceConfigMapping = {
-  eastus: 'VM_EastUS_DB_1'
-  eastus2: 'VM_EastUS2_DB_1'
-  westus: 'VM_WestUS_DB_1'
-  westus2: 'VM_WestUS2_DB_1'
-  westus3: 'VM_WestUS3_DB_1'
-  centralus: 'VM_CentralUS_DB_1'
-  northcentralus: 'VM_NorthCentralUS_DB_1'
-  southcentralus: 'VM_SouthCentralUS_DB_1'
-  westcentralus: 'VM_WestCentralUS_DB_1'
-  canadacentral: 'VM_CanadaCentral_DB_1'
-  canadaeast: 'VM_CanadaEast_DB_1'
-  northeurope: 'VM_NorthEurope_DB_1'
-  westeurope: 'VM_WestEurope_DB_1'
-  uksouth: 'VM_UKSouth_DB_1'
-  ukwest: 'VM_UKWest_DB_1'
-  francecentral: 'VM_FranceCentral_DB_1'
-  francesouth: 'VM_FranceSouth_DB_1'
-  germanywestcentral: 'VM_GermanyWestCentral_DB_1'
-  switzerlandnorth: 'VM_SwitzerlandNorth_DB_1'
-  swedencentral: 'VM_SwedenCentral_DB_1'
-  eastasia: 'VM_EastAsia_DB_1'
-  southeastasia: 'VM_SoutheastAsia_DB_1'
-  australiaeast: 'VM_AustraliaEast_DB_1'
-  australiasoutheast: 'VM_AustraliaSoutheast_DB_1'
-  centralindia: 'VM_CentralIndia_DB_1'
-  southindia: 'VM_SouthIndia_DB_1'
-  japaneast: 'VM_JapanEast_DB_1'
-  japanwest: 'VM_JapanWest_DB_1'
-  brazilsouth: 'VM_BrazilSouth_DB_1'
-  brazilsoutheast: 'VM_BrazilSoutheast_DB_1'
-  southafricanorth: 'VM_SouthAfricaNorth_DB_1'
-  uaenorth: 'VM_UAENorth_DB_1'
-}
-
-// Determine the VM maintenance configuration name to use
-var vmMaintenanceConfigName = vmMaintenanceConfigMapping[?solutionLocation] ?? ''
-var shouldConfigureVmMaintenance = !empty(vmMaintenanceConfigName)
-
-resource vmMaintenanceConfiguration 'Microsoft.Maintenance/publicMaintenanceConfigurations@2023-04-01' existing = if (shouldConfigureVmMaintenance) {
-  scope: subscription()
-  name: vmMaintenanceConfigName
-}
 
 // Jumpbox Virtual Machine
 var jumpboxVmName = take('vm-jumpbox-${solutionSuffix}', 15)
@@ -466,12 +424,13 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
     location: solutionLocation
     adminUsername: vmAdminUsername ?? 'JumpboxAdminUser'
     // WAF aligned configuration - Use provided password or generate a secure unique password
-    adminPassword: vmAdminPassword ?? uniqueString(
-      resourceGroup().id,
-      deployment().name,
-      'vmAdminPassword',
-      solutionSuffix
-    )
+    adminPassword: vmAdminPassword
+    // adminPassword: vmAdminPassword ?? uniqueString(
+    //   resourceGroup().id,
+    //   deployment().name,
+    //   'vmAdminPassword',
+    //   solutionSuffix
+    // )
     tags: allTags
     // WAF aligned configuration for Redundancy - use availability zone when redundancy is enabled
     availabilityZone: enableRedundancy ? 1 : -1
@@ -491,7 +450,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
     }
     encryptionAtHost: false // Some Azure subscriptions do not support encryption at host
     // WAF aligned configuration - VM maintenance configuration for reduced unplanned disruptions
-    maintenanceConfigurationResourceId: shouldConfigureMaintenance ? maintenanceWindow.id : null
+    maintenanceConfigurationResourceId: maintenanceConfiguration.outputs.resourceId
     nicConfigurations: [
       {
         name: 'nic-${jumpboxVmName}'
@@ -522,6 +481,42 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
       }
     ]
     enableTelemetry: enableTelemetry
+  }
+}
+
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.1' = {
+  name: take('${jumpboxVmName}-jumpbox-maintenance-config', 64)
+  params: {
+    name: 'mc-${jumpboxVmName}'
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    extensionProperties: {
+      InGuestPatchMode: 'User'
+    }
+    maintenanceScope: 'InGuestPatch'
+    maintenanceWindow: {
+      startDateTime: '2024-06-16 00:00'
+      duration: '03:55'
+      timeZone: 'W. Europe Standard Time'
+      recurEvery: '1Day'
+    }
+    visibility: 'Custom'
+    installPatches: {
+      rebootSetting: 'IfRequired'
+      windowsParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+      linuxParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+    }
   }
 }
 

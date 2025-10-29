@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "10092666979619502763"
+      "templateHash": "10605429641334671584"
     },
     "name": "Build Your Own Copilot Solution Accelerator",
     "description": "This module deploys a comprehensive Build Your Own Copilot solution accelerator with Azure AI Services, CosmosDB, SQL Database, Key Vault, Storage Account, Azure AI Search, and a containerized web application. The solution includes AI Foundry services for GPT and embedding models, supporting both private and public networking configurations with optional WAF-aligned features for monitoring, scalability, and redundancy.",
@@ -303,42 +303,6 @@
     "userAssignedIdentityResourceName": "[format('id-{0}', variables('solutionSuffix'))]",
     "sqlUserAssignedIdentityResourceName": "[format('id-sql-{0}', variables('solutionSuffix'))]",
     "bastionHostName": "[format('bas-{0}', variables('solutionSuffix'))]",
-    "vmMaintenanceConfigMapping": {
-      "eastus": "VM_EastUS_DB_1",
-      "eastus2": "VM_EastUS2_DB_1",
-      "westus": "VM_WestUS_DB_1",
-      "westus2": "VM_WestUS2_DB_1",
-      "westus3": "VM_WestUS3_DB_1",
-      "centralus": "VM_CentralUS_DB_1",
-      "northcentralus": "VM_NorthCentralUS_DB_1",
-      "southcentralus": "VM_SouthCentralUS_DB_1",
-      "westcentralus": "VM_WestCentralUS_DB_1",
-      "canadacentral": "VM_CanadaCentral_DB_1",
-      "canadaeast": "VM_CanadaEast_DB_1",
-      "northeurope": "VM_NorthEurope_DB_1",
-      "westeurope": "VM_WestEurope_DB_1",
-      "uksouth": "VM_UKSouth_DB_1",
-      "ukwest": "VM_UKWest_DB_1",
-      "francecentral": "VM_FranceCentral_DB_1",
-      "francesouth": "VM_FranceSouth_DB_1",
-      "germanywestcentral": "VM_GermanyWestCentral_DB_1",
-      "switzerlandnorth": "VM_SwitzerlandNorth_DB_1",
-      "swedencentral": "VM_SwedenCentral_DB_1",
-      "eastasia": "VM_EastAsia_DB_1",
-      "southeastasia": "VM_SoutheastAsia_DB_1",
-      "australiaeast": "VM_AustraliaEast_DB_1",
-      "australiasoutheast": "VM_AustraliaSoutheast_DB_1",
-      "centralindia": "VM_CentralIndia_DB_1",
-      "southindia": "VM_SouthIndia_DB_1",
-      "japaneast": "VM_JapanEast_DB_1",
-      "japanwest": "VM_JapanWest_DB_1",
-      "brazilsouth": "VM_BrazilSouth_DB_1",
-      "brazilsoutheast": "VM_BrazilSoutheast_DB_1",
-      "southafricanorth": "VM_SouthAfricaNorth_DB_1",
-      "uaenorth": "VM_UAENorth_DB_1"
-    },
-    "vmMaintenanceConfigName": "[coalesce(tryGet(variables('vmMaintenanceConfigMapping'), variables('solutionLocation')), '')]",
-    "shouldConfigureVmMaintenance": "[not(empty(variables('vmMaintenanceConfigName')))]",
     "jumpboxVmName": "[take(format('vm-jumpbox-{0}', variables('solutionSuffix')), 15)]",
     "privateDnsZones": [
       "privatelink.cognitiveservices.azure.com",
@@ -446,14 +410,6 @@
       "properties": {
         "tags": "[shallowMerge(createArray(parameters('tags'), createObject('TemplateName', 'Client Advisor', 'Type', if(parameters('enablePrivateNetworking'), 'WAF', 'Non-WAF'), 'CreatedBy', parameters('createdBy'), 'DeploymentName', deployment().name)))]"
       }
-    },
-    "vmMaintenanceConfiguration": {
-      "condition": "[variables('shouldConfigureVmMaintenance')]",
-      "existing": true,
-      "type": "Microsoft.Maintenance/publicMaintenanceConfigurations",
-      "apiVersion": "2023-04-01",
-      "subscriptionId": "[subscription().subscriptionId]",
-      "name": "[variables('vmMaintenanceConfigName')]"
     },
     "maintenanceWindow": {
       "condition": "[variables('shouldConfigureMaintenance')]",
@@ -3652,6 +3608,9 @@
           },
           "disableIpMasking": {
             "value": false
+          },
+          "disableLocalAuth": {
+            "value": true
           },
           "flowType": {
             "value": "Bluefield"
@@ -9912,7 +9871,7 @@
             "value": "[coalesce(parameters('vmAdminUsername'), 'JumpboxAdminUser')]"
           },
           "adminPassword": {
-            "value": "[coalesce(parameters('vmAdminPassword'), uniqueString(resourceGroup().id, deployment().name, 'vmAdminPassword', variables('solutionSuffix')))]"
+            "value": "[parameters('vmAdminPassword')]"
           },
           "tags": {
             "value": "[variables('allTags')]"
@@ -9940,7 +9899,9 @@
           "encryptionAtHost": {
             "value": false
           },
-          "maintenanceConfigurationResourceId": "[if(variables('shouldConfigureMaintenance'), createObject('value', subscriptionResourceId('Microsoft.Maintenance/publicMaintenanceConfigurations', variables('defaultMaintenanceConfigName'))), createObject('value', null()))]",
+          "maintenanceConfigurationResourceId": {
+            "value": "[reference('maintenanceConfiguration').outputs.resourceId.value]"
+          },
           "nicConfigurations": {
             "value": [
               {
@@ -18765,8 +18726,412 @@
       },
       "dependsOn": [
         "logAnalyticsWorkspace",
+        "maintenanceConfiguration",
         "virtualNetwork"
       ]
+    },
+    "maintenanceConfiguration": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[take(format('{0}-jumpbox-maintenance-config', variables('jumpboxVmName')), 64)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[format('mc-{0}', variables('jumpboxVmName'))]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
+          "extensionProperties": {
+            "value": {
+              "InGuestPatchMode": "User"
+            }
+          },
+          "maintenanceScope": {
+            "value": "InGuestPatch"
+          },
+          "maintenanceWindow": {
+            "value": {
+              "startDateTime": "2024-06-16 00:00",
+              "duration": "03:55",
+              "timeZone": "W. Europe Standard Time",
+              "recurEvery": "1Day"
+            }
+          },
+          "visibility": {
+            "value": "Custom"
+          },
+          "installPatches": {
+            "value": {
+              "rebootSetting": "IfRequired",
+              "windowsParameters": {
+                "classificationsToInclude": [
+                  "Critical",
+                  "Security"
+                ]
+              },
+              "linuxParameters": {
+                "classificationsToInclude": [
+                  "Critical",
+                  "Security"
+                ]
+              }
+            }
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "16060601297152129929"
+            },
+            "name": "Maintenance Configurations",
+            "description": "This module deploys a Maintenance Configuration."
+          },
+          "definitions": {
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Maintenance Configuration Name."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
+            "extensionProperties": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Gets or sets extensionProperties of the maintenanceConfiguration."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all Resources."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "maintenanceScope": {
+              "type": "string",
+              "defaultValue": "Host",
+              "allowedValues": [
+                "Host",
+                "OSImage",
+                "Extension",
+                "InGuestPatch",
+                "SQLDB",
+                "SQLManagedInstance"
+              ],
+              "metadata": {
+                "description": "Optional. Gets or sets maintenanceScope of the configuration."
+              }
+            },
+            "maintenanceWindow": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Definition of a MaintenanceWindow."
+              }
+            },
+            "namespace": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Gets or sets namespace of the resource."
+              }
+            },
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Gets or sets tags of the resource."
+              }
+            },
+            "visibility": {
+              "type": "string",
+              "defaultValue": "",
+              "allowedValues": [
+                "",
+                "Custom",
+                "Public"
+              ],
+              "metadata": {
+                "description": "Optional. Gets or sets the visibility of the configuration. The default value is 'Custom'."
+              }
+            },
+            "installPatches": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Configuration settings for VM guest patching with Azure Update Manager."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "Scheduled Patching Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'cd08ab90-6b14-449c-ad9a-8f8e549482c6')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            }
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.maintenance-maintenanceconfiguration.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "maintenanceConfiguration": {
+              "type": "Microsoft.Maintenance/maintenanceConfigurations",
+              "apiVersion": "2023-04-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "extensionProperties": "[parameters('extensionProperties')]",
+                "maintenanceScope": "[parameters('maintenanceScope')]",
+                "maintenanceWindow": "[parameters('maintenanceWindow')]",
+                "namespace": "[parameters('namespace')]",
+                "visibility": "[parameters('visibility')]",
+                "installPatches": "[if(equals(parameters('maintenanceScope'), 'InGuestPatch'), parameters('installPatches'), null())]"
+              }
+            },
+            "maintenanceConfiguration_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[format('Microsoft.Maintenance/maintenanceConfigurations/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "maintenanceConfiguration"
+              ]
+            },
+            "maintenanceConfiguration_roleAssignments": {
+              "copy": {
+                "name": "maintenanceConfiguration_roleAssignments",
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Maintenance/maintenanceConfigurations/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Maintenance/maintenanceConfigurations', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "properties": {
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "maintenanceConfiguration"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Maintenance Configuration."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Maintenance Configuration."
+              },
+              "value": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the Maintenance Configuration was created in."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the Maintenance Configuration was created in."
+              },
+              "value": "[reference('maintenanceConfiguration', '2023-04-01', 'full').location]"
+            }
+          }
+        }
+      }
     },
     "avmPrivateDnsZones": {
       "copy": {
@@ -40259,8 +40624,8 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "keyvault",
         "userAssignedIdentity",
         "virtualNetwork"
