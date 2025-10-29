@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "16765164806848813267"
+      "templateHash": "4901912554181697994"
     },
     "name": "Build Your Own Copilot Solution Accelerator",
     "description": "This module deploys a comprehensive Build Your Own Copilot solution accelerator with Azure AI Services, CosmosDB, SQL Database, Key Vault, Storage Account, Azure AI Search, and a containerized web application. The solution includes AI Foundry services for GPT and embedding models, supporting both private and public networking configurations with optional WAF-aligned features for monitoring, scalability, and redundancy.",
@@ -33700,6 +33700,12 @@
                   "publicAccess": "None",
                   "denyEncryptionScopeOverride": false,
                   "defaultEncryptionScope": "$account-encryption-key"
+                },
+                {
+                  "name": "sqlvascans",
+                  "publicAccess": "None",
+                  "denyEncryptionScopeOverride": false,
+                  "defaultEncryptionScope": "$account-encryption-key"
                 }
               ]
             }
@@ -43767,6 +43773,7 @@
           "primaryUserAssignedIdentityResourceId": {
             "value": "[reference('userAssignedIdentity').outputs.resourceId.value]"
           },
+          "vulnerabilityAssessmentsObj": "[if(parameters('enableMonitoring'), createObject('value', createObject('name', 'default', 'storageAccountResourceId', reference('avmStorageAccount').outputs.resourceId.value, 'storageContainerName', 'sqlvascans', 'storageContainerPath', format('https://{0}.blob.{1}/sqlvascans', variables('storageAccountName'), environment().suffixes.storage), 'recurringScansIsEnabled', true(), 'recurringScansEmailSubscriptionAdmins', false(), 'recurringScansEmails', createArray())), createObject('value', null()))]",
           "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').sqlServer)).outputs.resourceId.value))), 'service', 'sqlServer', 'subnetResourceId', reference('virtualNetwork').outputs.pepsSubnetResourceId.value, 'tags', parameters('tags')))), createObject('value', createArray()))]",
           "firewallRules": "[if(not(parameters('enablePrivateNetworking')), createObject('value', createArray(createObject('endIpAddress', '255.255.255.255', 'name', 'AllowSpecificRange', 'startIpAddress', '0.0.0.0'), createObject('endIpAddress', '0.0.0.0', 'name', 'AllowAllWindowsAzureIps', 'startIpAddress', '0.0.0.0'))), createObject('value', createArray()))]",
           "tags": {
@@ -50460,6 +50467,7 @@
       },
       "dependsOn": [
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').sqlServer)]",
+        "avmStorageAccount",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"

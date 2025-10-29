@@ -957,6 +957,13 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.27.1' = {
           denyEncryptionScopeOverride: false
           defaultEncryptionScope: '$account-encryption-key'
         }
+        // WAF aligned configuration - Container for SQL Vulnerability Assessment scans
+        {
+          name: 'sqlvascans'
+          publicAccess: 'None'
+          denyEncryptionScopeOverride: false
+          defaultEncryptionScope: '$account-encryption-key'
+        }
       ]
     }
   }
@@ -1090,6 +1097,18 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
       ]
     }
     primaryUserAssignedIdentityResourceId: userAssignedIdentity.outputs.resourceId
+    // WAF aligned configuration - SQL Vulnerability Assessment for security monitoring
+    vulnerabilityAssessmentsObj: enableMonitoring
+      ? {
+          name: 'default'
+          storageAccountResourceId: avmStorageAccount.outputs.resourceId
+          storageContainerName: 'sqlvascans'
+          storageContainerPath: 'https://${storageAccountName}.blob.${environment().suffixes.storage}/sqlvascans'
+          recurringScansIsEnabled: true
+          recurringScansEmailSubscriptionAdmins: false
+          recurringScansEmails: []
+        }
+      : null
     privateEndpoints: enablePrivateNetworking
       ? [
           {
