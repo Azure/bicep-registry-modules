@@ -564,7 +564,7 @@ var aiRelatedDnsZoneIndices = [
 // ===================================================
 @batchSize(5)
 module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.0' = [
-  for (zone, i) in privateDnsZones: if (enablePrivateNetworking && (!contains(aiRelatedDnsZoneIndices, i))) {
+  for (zone, i) in privateDnsZones: if (enablePrivateNetworking) {
     name: 'avm.res.network.private-dns-zone.${split(zone, '.')[1]}'
     params: {
       name: zone
