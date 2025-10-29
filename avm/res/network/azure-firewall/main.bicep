@@ -72,8 +72,8 @@ param autoscaleMinCapacity int?
 ])
 param availabilityZones int[] = [1, 2, 3]
 
-@description('Optional. Enable/Disable forced tunneling.')
-param enableForcedTunneling bool = false
+@description('Optional. Enable/Disable to support Forced Tunneling and Packet capture scenarios.')
+param enableManagementNic bool = false
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
@@ -98,7 +98,7 @@ param enableTelemetry bool = true
 
 var enableReferencedModulesTelemetry = false
 var azureSkuName = empty(virtualNetworkResourceId) ? 'AZFW_Hub' : 'AZFW_VNet'
-var requiresManagementIp = (azureSkuTier == 'Basic' || enableForcedTunneling) ? true : false
+var requiresManagementIp = (azureSkuTier == 'Basic' || enableManagementNic) ? true : false
 var isCreateDefaultManagementIP = empty(managementIPResourceID) && requiresManagementIp
 
 // ----------------------------------------------------------------------------
@@ -122,7 +122,7 @@ var additionalPublicIpConfigurationsVar = [
 var ipConfigurations = concat(
   [
     {
-      name: !empty(publicIPResourceID) ? last(split(publicIPResourceID, '/')) : publicIPAddress.outputs.name
+      name: !empty(publicIPResourceID) ? last(split(publicIPResourceID, '/')) : publicIPAddress.?outputs.name
       properties: union(
         (azureSkuName == 'AZFW_VNet')
           ? {
@@ -135,7 +135,7 @@ var ipConfigurations = concat(
           ? {
               //Use existing Public IP, new Public IP created in this module, or none if neither
               publicIPAddress: {
-                id: !empty(publicIPResourceID) ? publicIPResourceID : publicIPAddress.outputs.resourceId
+                id: !empty(publicIPResourceID) ? publicIPResourceID : publicIPAddress.?outputs.resourceId
               }
             }
           : {}
@@ -151,14 +151,14 @@ var ipConfigurations = concat(
 // 2. Use new Management Public IP created in this module
 
 var managementIPConfiguration = {
-  name: !empty(managementIPResourceID) ? last(split(managementIPResourceID, '/')) : managementIPAddress.outputs.name
+  name: !empty(managementIPResourceID) ? last(split(managementIPResourceID, '/')) : managementIPAddress.?outputs.name
   properties: {
     subnet: {
       id: '${virtualNetworkResourceId}/subnets/AzureFirewallManagementSubnet' // The subnet name must be AzureFirewallManagementSubnet for a 'Basic' SKU tier firewall
     }
     // Use existing Management Public IP, new Management Public IP created in this module, or none if neither
     publicIPAddress: {
-      id: !empty(managementIPResourceID) ? managementIPResourceID : managementIPAddress.outputs.resourceId
+      id: !empty(managementIPResourceID) ? managementIPResourceID : managementIPAddress.?outputs.resourceId
     }
   }
 }
@@ -208,7 +208,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.8.0' = if (empty(publicIPResourceID) && azureSkuName == 'AZFW_VNet') {
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.9.1' = if (empty(publicIPResourceID) && azureSkuName == 'AZFW_VNet') {
   name: '${uniqueString(deployment().name, location)}-Firewall-PIP'
   params: {
     name: publicIPAddressObject.name
@@ -231,15 +231,20 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.8.0' = if 
       : []
     diagnosticSettings: publicIPAddressObject.?diagnosticSettings
     location: location
-    lock: lock
     tags: publicIPAddressObject.?tags ?? tags
-    zones: availabilityZones
+    availabilityZones: availabilityZones
+    ipTags: publicIPAddressObject.?ipTags 
+    ddosSettings: publicIPAddressObject.?ddosSettings 
+    dnsSettings: publicIPAddressObject.?dnsSettings 
+    idleTimeoutInMinutes: publicIPAddressObject.?idleTimeoutInMinutes 
+    publicIPAddressVersion: publicIPAddressObject.?publicIPAddressVersion 
+    lock: lock
     enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
 // create a Management Public IP address if one is not provided and the flag is true
-module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.8.0' = if (isCreateDefaultManagementIP && azureSkuName == 'AZFW_VNet') {
+module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.9.1' = if (isCreateDefaultManagementIP && azureSkuName == 'AZFW_VNet') {
   name: '${uniqueString(deployment().name, location)}-Firewall-MIP'
   params: {
     name: contains(managementIPAddressObject, 'name')
@@ -267,12 +272,18 @@ module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.8.0' =
     diagnosticSettings: managementIPAddressObject.?diagnosticSettings
     location: location
     tags: managementIPAddressObject.?tags ?? tags
-    zones: availabilityZones
+    availabilityZones: availabilityZones
+    ipTags: publicIPAddressObject.?ipTags 
+    ddosSettings: publicIPAddressObject.?ddosSettings 
+    dnsSettings: publicIPAddressObject.?dnsSettings 
+    idleTimeoutInMinutes: publicIPAddressObject.?idleTimeoutInMinutes 
+    publicIPAddressVersion: publicIPAddressObject.?publicIPAddressVersion 
+    lock: lock
     enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
-resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-05-01' = {
+resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-10-01' = {
   name: name
   location: location
   zones: map(availabilityZones, zone => '${zone}')
