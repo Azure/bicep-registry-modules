@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "11095450118541660951"
+      "templateHash": "10092666979619502763"
     },
     "name": "Build Your Own Copilot Solution Accelerator",
     "description": "This module deploys a comprehensive Build Your Own Copilot solution accelerator with Azure AI Services, CosmosDB, SQL Database, Key Vault, Storage Account, Azure AI Search, and a containerized web application. The solution includes AI Foundry services for GPT and embedding models, supporting both private and public networking configurations with optional WAF-aligned features for monitoring, scalability, and redundancy.",
@@ -530,7 +530,7 @@
             "value": "[variables('logAnalyticsWorkspaceResourceName')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('allTags')]"
           },
           "location": {
             "value": "[variables('solutionLocation')]"
@@ -560,7 +560,7 @@
           "replication": "[if(parameters('enableRedundancy'), createObject('value', createObject('enabled', true(), 'location', variables('replicaLocation'))), createObject('value', null()))]",
           "publicNetworkAccessForIngestion": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "publicNetworkAccessForQuery": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
-          "dataSources": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('tags', parameters('tags'), 'eventLogName', 'Application', 'eventTypes', createArray(createObject('eventType', 'Error'), createObject('eventType', 'Warning'), createObject('eventType', 'Information')), 'kind', 'WindowsEvent', 'name', 'applicationEvent'), createObject('counterName', '% Processor Time', 'instanceName', '*', 'intervalSeconds', 60, 'kind', 'WindowsPerformanceCounter', 'name', 'windowsPerfCounter1', 'objectName', 'Processor'), createObject('kind', 'IISLogs', 'name', 'sampleIISLog1', 'state', 'OnPremiseEnabled'))), createObject('value', null()))]"
+          "dataSources": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('tags', variables('allTags'), 'eventLogName', 'Application', 'eventTypes', createArray(createObject('eventType', 'Error'), createObject('eventType', 'Warning'), createObject('eventType', 'Information')), 'kind', 'WindowsEvent', 'name', 'applicationEvent'), createObject('counterName', '% Processor Time', 'instanceName', '*', 'intervalSeconds', 60, 'kind', 'WindowsPerformanceCounter', 'name', 'windowsPerfCounter1', 'objectName', 'Processor'), createObject('kind', 'IISLogs', 'name', 'sampleIISLog1', 'state', 'OnPremiseEnabled'))), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -3636,7 +3636,7 @@
             "value": "[variables('applicationInsightsResourceName')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('allTags')]"
           },
           "location": {
             "value": "[variables('solutionLocation')]"
@@ -4369,7 +4369,7 @@
             "value": "[variables('solutionLocation')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('allTags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -4861,7 +4861,7 @@
             "value": "[variables('solutionLocation')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('allTags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -8208,7 +8208,7 @@
             ]
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('allTags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -9915,7 +9915,7 @@
             "value": "[coalesce(parameters('vmAdminPassword'), uniqueString(resourceGroup().id, deployment().name, 'vmAdminPassword', variables('solutionSuffix')))]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('allTags')]"
           },
           "availabilityZone": "[if(parameters('enableRedundancy'), createObject('value', 1), createObject('value', -1))]",
           "imageReference": {
@@ -18789,7 +18789,7 @@
             "value": "[variables('privateDnsZones')[copyIndex()]]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('allTags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -22164,7 +22164,7 @@
             "value": "[variables('solutionLocation')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('allTags')]"
           },
           "sku": {
             "value": "standard"
@@ -29081,9 +29081,9 @@
         }
       },
       "dependsOn": [
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -29106,7 +29106,7 @@
             "value": "[parameters('cosmosLocation')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('allTags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -33659,12 +33659,18 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('allTags')]"
           },
           "accessTier": {
             "value": "Hot"
           },
           "supportsHttpsTrafficOnly": {
+            "value": true
+          },
+          "allowSharedKeyAccess": {
+            "value": false
+          },
+          "defaultToOAuthAuthentication": {
             "value": true
           },
           "roleAssignments": {
@@ -40306,10 +40312,6 @@
               {
                 "name": "ADLS-ACCOUNT-CONTAINER",
                 "value": "data"
-              },
-              {
-                "name": "ADLS-ACCOUNT-KEY",
-                "value": "[listOutputsWithSecureValues('avmStorageAccount', '2025-04-01').primaryAccessKey]"
               }
             ]
           }
@@ -43705,10 +43707,7 @@
             }
           }
         }
-      },
-      "dependsOn": [
-        "avmStorageAccount"
-      ]
+      }
     },
     "sqlDBModule": {
       "type": "Microsoft.Resources/deployments",
@@ -43774,10 +43773,10 @@
             "value": "[reference('userAssignedIdentity').outputs.resourceId.value]"
           },
           "vulnerabilityAssessmentsObj": "[if(parameters('enableMonitoring'), createObject('value', createObject('name', 'default', 'storageAccountResourceId', reference('avmStorageAccount').outputs.resourceId.value, 'storageContainerName', 'sqlvascans', 'storageContainerPath', format('https://{0}.blob.{1}/sqlvascans', variables('storageAccountName'), environment().suffixes.storage), 'recurringScansIsEnabled', true(), 'recurringScansEmailSubscriptionAdmins', false(), 'recurringScansEmails', createArray())), createObject('value', null()))]",
-          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').sqlServer)).outputs.resourceId.value))), 'service', 'sqlServer', 'subnetResourceId', reference('virtualNetwork').outputs.pepsSubnetResourceId.value, 'tags', parameters('tags')))), createObject('value', createArray()))]",
+          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').sqlServer)).outputs.resourceId.value))), 'service', 'sqlServer', 'subnetResourceId', reference('virtualNetwork').outputs.pepsSubnetResourceId.value, 'tags', variables('allTags')))), createObject('value', createArray()))]",
           "firewallRules": "[if(not(parameters('enablePrivateNetworking')), createObject('value', createArray(createObject('endIpAddress', '255.255.255.255', 'name', 'AllowSpecificRange', 'startIpAddress', '0.0.0.0'), createObject('endIpAddress', '0.0.0.0', 'name', 'AllowAllWindowsAzureIps', 'startIpAddress', '0.0.0.0'))), createObject('value', createArray()))]",
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('allTags')]"
           }
         },
         "template": {
@@ -50487,7 +50486,7 @@
             "value": "[variables('webServerFarmResourceName')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('allTags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -51058,7 +51057,7 @@
             "value": "[variables('webSiteResourceName')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('allTags')]"
           },
           "location": {
             "value": "[variables('solutionLocation')]"
@@ -53125,7 +53124,7 @@
             "value": "free"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('allTags')]"
           },
           "publicNetworkAccess": {
             "value": "Enabled"

@@ -264,7 +264,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
   name: take('avm.res.operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
   params: {
     name: logAnalyticsWorkspaceResourceName
-    tags: tags
+    tags: allTags
     location: solutionLocation
     enableTelemetry: enableTelemetry
     skuName: 'PerGB2018'
@@ -285,7 +285,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
     dataSources: enablePrivateNetworking
       ? [
           {
-            tags: tags
+            tags: allTags
             eventLogName: 'Application'
             eventTypes: [
               {
@@ -327,7 +327,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (en
   name: take('avm.res.insights.component.${applicationInsightsResourceName}', 64)
   params: {
     name: applicationInsightsResourceName
-    tags: tags
+    tags: allTags
     location: solutionLocation
     enableTelemetry: enableTelemetry
     retentionInDays: 365
@@ -348,7 +348,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
   params: {
     name: userAssignedIdentityResourceName
     location: solutionLocation
-    tags: tags
+    tags: allTags
     enableTelemetry: enableTelemetry
   }
 }
@@ -361,7 +361,7 @@ module sqlUserAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned
   params: {
     name: sqlUserAssignedIdentityResourceName
     location: solutionLocation
-    tags: tags
+    tags: allTags
     enableTelemetry: enableTelemetry
   }
 }
@@ -402,7 +402,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePr
         ]
       }
     ]
-    tags: tags
+    tags: allTags
     enableTelemetry: enableTelemetry
     publicIPAddressObject: {
       name: 'pip-${bastionHostName}'
@@ -472,7 +472,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
       'vmAdminPassword',
       solutionSuffix
     )
-    tags: tags
+    tags: allTags
     // WAF aligned configuration for Redundancy - use availability zone when redundancy is enabled
     availabilityZone: enableRedundancy ? 1 : -1
     imageReference: {
@@ -573,7 +573,7 @@ module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.0' = [
     name: 'avm.res.network.private-dns-zone.${split(zone, '.')[1]}'
     params: {
       name: zone
-      tags: tags
+      tags: allTags
       enableTelemetry: enableTelemetry
       virtualNetworkLinks: [
         {
@@ -592,7 +592,7 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.3' = {
   params: {
     name: keyVaultName
     location: solutionLocation
-    tags: tags
+    tags: allTags
     sku: 'standard'
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     networkAcls: {
@@ -815,7 +815,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.17.0' = {
     // Required parameters
     name: cosmosDbResourceName
     location: cosmosLocation
-    tags: tags
+    tags: allTags
     enableTelemetry: enableTelemetry
     sqlDatabases: [
       {
@@ -903,9 +903,12 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.27.1' = {
     managedIdentities: { systemAssigned: true }
     minimumTlsVersion: 'TLS1_2'
     enableTelemetry: enableTelemetry
-    tags: tags
+    tags: allTags
     accessTier: 'Hot'
     supportsHttpsTrafficOnly: true
+    // WAF aligned configuration - Disable shared key access to enforce Azure AD authentication
+    allowSharedKeyAccess: false
+    defaultToOAuthAuthentication: true
     roleAssignments: [
       {
         principalId: userAssignedIdentity.outputs.principalId
@@ -999,10 +1002,8 @@ module saveStorageAccountSecretsInKeyVault 'br/public:avm/res/key-vault/vault:0.
         name: 'ADLS-ACCOUNT-CONTAINER'
         value: 'data'
       }
-      {
-        name: 'ADLS-ACCOUNT-KEY'
-        value: avmStorageAccount.outputs.primaryAccessKey
-      }
+      // WAF aligned configuration - Removed ADLS-ACCOUNT-KEY since allowSharedKeyAccess is disabled
+      // The application will use managed identity for storage authentication instead
     ]
   }
 }
@@ -1128,7 +1129,7 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
             }
             service: 'sqlServer'
             subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
-            tags: tags
+            tags: allTags
           }
         ]
       : []
@@ -1146,7 +1147,7 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
           }
         ]
       : []
-    tags: tags
+    tags: allTags
   }
 }
 
@@ -1158,7 +1159,7 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.5.0' = {
   name: take('avm.res.web.serverfarm.${webServerFarmResourceName}', 64)
   params: {
     name: webServerFarmResourceName
-    tags: tags
+    tags: allTags
     enableTelemetry: enableTelemetry
     location: solutionLocation
     reserved: true
@@ -1183,7 +1184,7 @@ module webSite 'modules/web-sites.bicep' = {
   name: take('module.web-sites.${webSiteResourceName}', 64)
   params: {
     name: webSiteResourceName
-    tags: tags
+    tags: allTags
     location: solutionLocation
     clientAffinityEnabled: false
     managedIdentities: {
@@ -1321,7 +1322,7 @@ module searchService 'br/public:avm/res/search/search-service:0.11.1' = {
     sku: 'standard'
     semanticSearch: 'free'
     // Use the deployment tags provided to the template
-    tags: tags
+    tags: allTags
     publicNetworkAccess: 'Enabled'
     privateEndpoints: false
       ? [
