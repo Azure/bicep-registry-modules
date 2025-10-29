@@ -592,7 +592,7 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.3' = {
       }
       {
         name: 'AZURE-OPENAI-ENDPOINT'
-        value: aiFoundryAiServices.outputs.endpoints['OpenAI Language Model Instance API']
+        value: aiFoundryAiServices.outputs.openaiEndpoint
       }
       {
         name: 'AZURE-OPENAI-EMBEDDING-MODEL'
@@ -1085,7 +1085,7 @@ module webSite 'modules/web-sites.bicep' = {
           AZURE_SEARCH_URL_COLUMN: azureSearchUrlColumn
           AZURE_OPENAI_RESOURCE: aiFoundryAiServices.outputs.name
           AZURE_OPENAI_MODEL: gptModelName
-          AZURE_OPENAI_ENDPOINT: aiFoundryAiServices.outputs.endpoints['OpenAI Language Model Instance API']
+          AZURE_OPENAI_ENDPOINT: aiFoundryAiServices.outputs.openaiEndpoint
           AZURE_OPENAI_TEMPERATURE: azureOpenAITemperature
           AZURE_OPENAI_TOP_P: azureOpenAITopP
           AZURE_OPENAI_MAX_TOKENS: azureOpenAIMaxTokens
@@ -1098,7 +1098,7 @@ module webSite 'modules/web-sites.bicep' = {
           AZURE_SEARCH_PERMITTED_GROUPS_COLUMN: azureSearchPermittedGroupsField
           AZURE_SEARCH_STRICTNESS: azureSearchStrictness
           AZURE_OPENAI_EMBEDDING_NAME: embeddingModel
-          AZURE_OPENAI_EMBEDDING_ENDPOINT: aiFoundryAiServices.outputs.endpoints['OpenAI Language Model Instance API']
+          AZURE_OPENAI_EMBEDDING_ENDPOINT: aiFoundryAiServices.outputs.openaiEndpoint
           SQLDB_SERVER: sqlServerFqdn
           SQLDB_DATABASE: sqlDbName
           USE_INTERNAL_STREAM: useInternalStream
@@ -1344,13 +1344,13 @@ output azureCosmosDbDatabase string = cosmosDbDatabaseName
 output azureCosmosDbEnableFeedback string = azureCosmosDbEnableFeedback
 
 @description('The endpoint for Azure OpenAI embedding service.')
-output azureOpenAiEmbeddingEndpoint string = aiFoundryAiServices.outputs.endpoints['OpenAI Language Model Instance API']
+output azureOpenAiEmbeddingEndpoint string = aiFoundryAiServices.outputs.openaiEndpoint
 
 @description('The name of the Azure OpenAI embedding model.')
 output azureOpenAiEmbeddingName string = embeddingModel
 
 @description('The endpoint for the Azure OpenAI service.')
-output azureOpenAiEndpoint string = aiFoundryAiServices.outputs.endpoints['OpenAI Language Model Instance API']
+output azureOpenAiEndpoint string = aiFoundryAiServices.outputs.openaiEndpoint
 
 @description('The maximum number of tokens for Azure OpenAI.')
 output azureOpenAiMaxTokens string = azureOpenAIMaxTokens

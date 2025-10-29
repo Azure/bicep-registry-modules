@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "11012468255999260027"
+      "templateHash": "3677607980498332080"
     },
     "name": "Build Your Own Copilot Solution Accelerator",
     "description": "This module deploys a comprehensive Build Your Own Copilot solution accelerator with Azure AI Services, CosmosDB, SQL Database, Key Vault, Storage Account, Azure AI Search, and a containerized web application. The solution includes AI Foundry services for GPT and embedding models, supporting both private and public networking configurations with optional WAF-aligned features for monitoring, scalability, and redundancy.",
@@ -22141,7 +22141,7 @@
               },
               {
                 "name": "AZURE-OPENAI-ENDPOINT",
-                "value": "[reference('aiFoundryAiServices').outputs.endpoints.value['OpenAI Language Model Instance API']]"
+                "value": "[reference('aiFoundryAiServices').outputs.openaiEndpoint.value]"
               },
               {
                 "name": "AZURE-OPENAI-EMBEDDING-MODEL",
@@ -51004,7 +51004,7 @@
                   "AZURE_SEARCH_URL_COLUMN": "[variables('azureSearchUrlColumn')]",
                   "AZURE_OPENAI_RESOURCE": "[reference('aiFoundryAiServices').outputs.name.value]",
                   "AZURE_OPENAI_MODEL": "[parameters('gptModelName')]",
-                  "AZURE_OPENAI_ENDPOINT": "[reference('aiFoundryAiServices').outputs.endpoints.value['OpenAI Language Model Instance API']]",
+                  "AZURE_OPENAI_ENDPOINT": "[reference('aiFoundryAiServices').outputs.openaiEndpoint.value]",
                   "AZURE_OPENAI_TEMPERATURE": "[variables('azureOpenAITemperature')]",
                   "AZURE_OPENAI_TOP_P": "[variables('azureOpenAITopP')]",
                   "AZURE_OPENAI_MAX_TOKENS": "[variables('azureOpenAIMaxTokens')]",
@@ -51017,7 +51017,7 @@
                   "AZURE_SEARCH_PERMITTED_GROUPS_COLUMN": "[variables('azureSearchPermittedGroupsField')]",
                   "AZURE_SEARCH_STRICTNESS": "[variables('azureSearchStrictness')]",
                   "AZURE_OPENAI_EMBEDDING_NAME": "[parameters('embeddingModel')]",
-                  "AZURE_OPENAI_EMBEDDING_ENDPOINT": "[reference('aiFoundryAiServices').outputs.endpoints.value['OpenAI Language Model Instance API']]",
+                  "AZURE_OPENAI_EMBEDDING_ENDPOINT": "[reference('aiFoundryAiServices').outputs.openaiEndpoint.value]",
                   "SQLDB_SERVER": "[variables('sqlServerFqdn')]",
                   "SQLDB_DATABASE": "[variables('sqlDbName')]",
                   "USE_INTERNAL_STREAM": "[variables('useInternalStream')]",
@@ -55519,7 +55519,7 @@
       "metadata": {
         "description": "The endpoint for Azure OpenAI embedding service."
       },
-      "value": "[reference('aiFoundryAiServices').outputs.endpoints.value['OpenAI Language Model Instance API']]"
+      "value": "[reference('aiFoundryAiServices').outputs.openaiEndpoint.value]"
     },
     "azureOpenAiEmbeddingName": {
       "type": "string",
@@ -55533,7 +55533,7 @@
       "metadata": {
         "description": "The endpoint for the Azure OpenAI service."
       },
-      "value": "[reference('aiFoundryAiServices').outputs.endpoints.value['OpenAI Language Model Instance API']]"
+      "value": "[reference('aiFoundryAiServices').outputs.openaiEndpoint.value]"
     },
     "azureOpenAiMaxTokens": {
       "type": "string",
