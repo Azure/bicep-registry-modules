@@ -604,10 +604,10 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.3' = {
         name: 'AZURE-OPENAI-PREVIEW-API-VERSION'
         value: azureOpenaiAPIVersion
       }
-      // {
-      //   name: 'AZURE-OPENAI-ENDPOINT'
-      //   value: aiFoundryAiServices.outputs.endpoints['OpenAI Language Model Instance API']
-      // }
+      {
+        name: 'AZURE-OPENAI-ENDPOINT'
+        value: aiFoundryAiServices.outputs.endpoints['OpenAI Language Model Instance API']
+      }
       {
         name: 'AZURE-OPENAI-EMBEDDING-MODEL'
         value: embeddingModel
@@ -751,18 +751,6 @@ module aiFoundryAiServices 'modules/ai-services.bicep' = if (aiFoundryAIservices
       }
     ]
   }
-}
-
-// Add OpenAI endpoint secret separately to avoid dependency issues
-resource openAiEndpointSecret 'Microsoft.KeyVault/vaults/secrets@2024-11-01' = if (aiFoundryAIservicesEnabled) {
-  name: '${keyVaultName}/AZURE-OPENAI-ENDPOINT'
-  properties: {
-    value: aiFoundryAiServices.outputs.endpoints['OpenAI Language Model Instance API']
-  }
-  dependsOn: [
-    keyvault
-    aiFoundryAiServices
-  ]
 }
 
 //========== AVM WAF ========== //

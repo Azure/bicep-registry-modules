@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "7035821518527236463"
+      "templateHash": "5386322957127159929"
     },
     "name": "Build Your Own Copilot Solution Accelerator",
     "description": "This module deploys a comprehensive Build Your Own Copilot solution accelerator with Azure AI Services, CosmosDB, SQL Database, Key Vault, Storage Account, Azure AI Search, and a containerized web application. The solution includes AI Foundry services for GPT and embedding models, supporting both private and public networking configurations with optional WAF-aligned features for monitoring, scalability, and redundancy.",
@@ -378,19 +378,6 @@
       "properties": {
         "tags": "[shallowMerge(createArray(parameters('tags'), createObject('TemplateName', 'Client Advisor', 'Type', if(parameters('enablePrivateNetworking'), 'WAF', 'Non-WAF'), 'CreatedBy', parameters('createdBy'), 'DeploymentName', deployment().name)))]"
       }
-    },
-    "openAiEndpointSecret": {
-      "condition": "[variables('aiFoundryAIservicesEnabled')]",
-      "type": "Microsoft.KeyVault/vaults/secrets",
-      "apiVersion": "2024-11-01",
-      "name": "[format('{0}/AZURE-OPENAI-ENDPOINT', variables('keyVaultName'))]",
-      "properties": {
-        "value": "[reference('aiFoundryAiServices').outputs.endpoints.value['OpenAI Language Model Instance API']]"
-      },
-      "dependsOn": [
-        "aiFoundryAiServices",
-        "keyvault"
-      ]
     },
     "projectAISearchConnection": {
       "type": "Microsoft.CognitiveServices/accounts/projects/connections",
@@ -22156,6 +22143,10 @@
                 "value": "[parameters('azureOpenaiAPIVersion')]"
               },
               {
+                "name": "AZURE-OPENAI-ENDPOINT",
+                "value": "[reference('aiFoundryAiServices').outputs.endpoints.value['OpenAI Language Model Instance API']]"
+              },
+              {
                 "name": "AZURE-OPENAI-EMBEDDING-MODEL",
                 "value": "[parameters('embeddingModel')]"
               },
@@ -25566,6 +25557,7 @@
         }
       },
       "dependsOn": [
+        "aiFoundryAiServices",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').keyVault)]",
         "sqlUserAssignedIdentity",
         "userAssignedIdentity",
@@ -29005,9 +28997,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
