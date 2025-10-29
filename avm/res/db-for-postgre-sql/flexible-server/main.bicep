@@ -14,7 +14,7 @@ param administratorLoginPassword string?
 @description('Optional. The Azure AD administrators when AAD authentication enabled.')
 param administrators administratorType[]?
 
-@description('Required. The authentication configuration for the server.')
+@description('Optional. The authentication configuration for the server.')
 param authConfig resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview'>.properties.authConfig = {
   activeDirectoryAuth: 'Enabled'
   passwordAuth: 'Disabled'

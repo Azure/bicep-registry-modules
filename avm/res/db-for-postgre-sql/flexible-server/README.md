@@ -69,11 +69,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
         principalType: 'ServicePrincipal'
       }
     ]
-    authConfig: {
-      activeDirectoryAuth: 'Enabled'
-      passwordAuth: 'Disabled'
-      tenantId: '<tenantId>'
-    }
   }
 }
 ```
@@ -112,13 +107,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
           "principalType": "ServicePrincipal"
         }
       ]
-    },
-    "authConfig": {
-      "value": {
-        "activeDirectoryAuth": "Enabled",
-        "passwordAuth": "Disabled",
-        "tenantId": "<tenantId>"
-      }
     }
   }
 }
@@ -147,11 +135,6 @@ param administrators = [
     principalType: 'ServicePrincipal'
   }
 ]
-param authConfig = {
-  activeDirectoryAuth: 'Enabled'
-  passwordAuth: 'Disabled'
-  tenantId: '<tenantId>'
-}
 ```
 
 </details>
@@ -809,10 +792,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
         principalType: 'ServicePrincipal'
       }
     ]
-    authConfig: {
-      activeDirectoryAuth: 'Enabled'
-      passwordAuth: 'Disabled'
-    }
     backupRetentionDays: 20
     configurations: [
       {
@@ -923,12 +902,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
           "principalType": "ServicePrincipal"
         }
       ]
-    },
-    "authConfig": {
-      "value": {
-        "activeDirectoryAuth": "Enabled",
-        "passwordAuth": "Disabled"
-      }
     },
     "backupRetentionDays": {
       "value": 20
@@ -1053,10 +1026,6 @@ param administrators = [
     principalType: 'ServicePrincipal'
   }
 ]
-param authConfig = {
-  activeDirectoryAuth: 'Enabled'
-  passwordAuth: 'Disabled'
-}
 param backupRetentionDays = 20
 param configurations = [
   {
@@ -1153,10 +1122,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
-    authConfig: {
-      activeDirectoryAuth: 'Enabled'
-      passwordAuth: 'Disabled'
-    }
     autoGrow: 'Enabled'
     createMode: '<createMode>'
     highAvailability: 'Disabled'
@@ -1193,12 +1158,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       "value": "GeneralPurpose"
     },
     // Non-required parameters
-    "authConfig": {
-      "value": {
-        "activeDirectoryAuth": "Enabled",
-        "passwordAuth": "Disabled"
-      }
-    },
     "autoGrow": {
       "value": "Enabled"
     },
@@ -1237,10 +1196,6 @@ param name = 'dfpsrep001'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
 // Non-required parameters
-param authConfig = {
-  activeDirectoryAuth: 'Enabled'
-  passwordAuth: 'Disabled'
-}
 param autoGrow = 'Enabled'
 param createMode = '<createMode>'
 param highAvailability = 'Disabled'
@@ -1517,7 +1472,6 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`authConfig`](#parameter-authconfig) | object | The authentication configuration for the server. |
 | [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-name) | string | The name of the PostgreSQL flexible server. |
 | [`skuName`](#parameter-skuname) | string | The name of the sku, typically, tier + family + cores, e.g. Standard_D4s_v3. |
@@ -1538,6 +1492,7 @@ param tags = {
 | [`administratorLogin`](#parameter-administratorlogin) | string | The administrator login name of the server. Can only be specified when the PostgreSQL server is being created. |
 | [`administratorLoginPassword`](#parameter-administratorloginpassword) | securestring | The administrator login password. |
 | [`administrators`](#parameter-administrators) | array | The Azure AD administrators when AAD authentication enabled. |
+| [`authConfig`](#parameter-authconfig) | object | The authentication configuration for the server. |
 | [`autoGrow`](#parameter-autogrow) | string | Flag to enable / disable Storage Auto grow for flexible server. |
 | [`backupRetentionDays`](#parameter-backupretentiondays) | int | Backup retention days for the server. |
 | [`configurations`](#parameter-configurations) | array | The configurations to create in the server. |
@@ -1565,20 +1520,6 @@ param tags = {
 | [`storageSizeGB`](#parameter-storagesizegb) | int | Max storage allowed for a server. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`version`](#parameter-version) | string | PostgreSQL Server version. |
-
-### Parameter: `authConfig`
-
-The authentication configuration for the server.
-
-- Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      activeDirectoryAuth: 'Enabled'
-      passwordAuth: 'Disabled'
-  }
-  ```
 
 ### Parameter: `availabilityZone`
 
@@ -1740,6 +1681,20 @@ The tenantId of the Active Directory administrator.
 
 - Required: No
 - Type: string
+
+### Parameter: `authConfig`
+
+The authentication configuration for the server.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      activeDirectoryAuth: 'Enabled'
+      passwordAuth: 'Disabled'
+  }
+  ```
 
 ### Parameter: `autoGrow`
 

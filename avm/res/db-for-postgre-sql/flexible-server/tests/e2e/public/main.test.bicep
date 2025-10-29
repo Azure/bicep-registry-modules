@@ -71,10 +71,6 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
-      authConfig: {
-        activeDirectoryAuth: 'Enabled'
-        passwordAuth: 'Disabled'
-      }
       skuName: 'Standard_D2s_v3'
       tier: 'GeneralPurpose'
       backupRetentionDays: 20

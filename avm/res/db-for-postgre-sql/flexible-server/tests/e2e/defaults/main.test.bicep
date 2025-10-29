@@ -57,11 +57,6 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
-      authConfig: {
-        activeDirectoryAuth: 'Enabled'
-        passwordAuth: 'Disabled'
-        tenantId: tenant().tenantId
-      }
       skuName: 'Standard_D2s_v3'
       tier: 'GeneralPurpose'
     }

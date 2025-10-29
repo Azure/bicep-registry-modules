@@ -52,10 +52,6 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       sourceServerResourceId: nestedDependencies.outputs.serverResourceId
       availabilityZone: -1
-      authConfig: {
-        activeDirectoryAuth: 'Enabled'
-        passwordAuth: 'Disabled'
-      }
       skuName: 'Standard_D2s_v3'
       tier: 'GeneralPurpose'
       version: '17'
