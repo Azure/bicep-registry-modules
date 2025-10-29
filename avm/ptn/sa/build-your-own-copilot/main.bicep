@@ -609,9 +609,14 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.3' = {
     ]
     enableTelemetry: enableTelemetry
   }
-  dependsOn: [
-    aiFoundryAiServices
-  ]
+  dependsOn: enableMonitoring
+    ? [
+        aiFoundryAiServices
+        logAnalyticsWorkspace
+      ]
+    : [
+        aiFoundryAiServices
+      ]
 }
 
 // ========== AI Foundry: AI Services ========== //
