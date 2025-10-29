@@ -2,12 +2,22 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/storage/storage-account/CHANGELOG.md).
 
+## 0.28.0
+
+### Changes
+
+- Added support for managed HSM key encryption
+- Updated the Customer Manager Key Encryption interface to reference the existing encryption key directly, eliminating the need to reference the parent Key Vault. This change avoids requiring Reader access to the Key Vault for the deployment identity
+
+### Breaking Changes
+
+- None
+
 ## 0.27.1
 
 ### Changes
 
 - Added check for immutability when hierarchical namespace is enabled
-
 
 ### Breaking Changes
 
