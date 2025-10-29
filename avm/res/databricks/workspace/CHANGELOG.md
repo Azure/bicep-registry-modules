@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/databricks/workspace/CHANGELOG.md).
 
+## 0.11.5
+
+### Changes
+
+- Fixed an issue where having separate keys for encryption & disk-encryption in the same vault would not work as expected.
+
+### Breaking Changes
+
+- None
+
 ## 0.11.4
 
 ### Changes

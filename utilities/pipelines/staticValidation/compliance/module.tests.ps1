@@ -2368,7 +2368,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
             foreach ($resource in $nestedResources) {
 
                 switch ($resource.type) {
-                    { $PSItem -like '*diagnosticsettings*' } {
+                    { $PSItem -match '[\\|\/]diagnosticSettings$' } {
                         $testCases += @{
                             moduleName                     = $moduleFolderName
                             resourceType                   = 'diagnosticSettings'
@@ -2379,7 +2379,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
                         }
                         break
                     }
-                    { $PSItem -like '*locks' } {
+                    { $PSItem -match '[\\|\/]locks$' } {
                         $testCases += @{
                             moduleName                     = $moduleFolderName
                             resourceType                   = 'locks'
@@ -2390,7 +2390,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
                         }
                         break
                     }
-                    { $PSItem -like '*roleAssignments' } {
+                    { $PSItem -match '[\\|\/]roleAssignments$' } {
                         $testCases += @{
                             moduleName                     = $moduleFolderName
                             resourceType                   = 'roleAssignments'
@@ -2401,7 +2401,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
                         }
                         break
                     }
-                    { $PSItem -like '*privateEndpoints' -and ($PSItem -notlike '*managedPrivateEndpoints') } {
+                    { $PSItem -match '[\\|\/]privateEndpoints$' } {
                         $testCases += @{
                             moduleName                     = $moduleFolderName
                             resourceType                   = 'privateEndpoints'
