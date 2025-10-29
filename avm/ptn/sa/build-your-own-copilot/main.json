@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "8888962513379486665"
+      "templateHash": "16765164806848813267"
     },
     "name": "Build Your Own Copilot Solution Accelerator",
     "description": "This module deploys a comprehensive Build Your Own Copilot solution accelerator with Azure AI Services, CosmosDB, SQL Database, Key Vault, Storage Account, Azure AI Search, and a containerized web application. The solution includes AI Foundry services for GPT and embedding models, supporting both private and public networking configurations with optional WAF-aligned features for monitoring, scalability, and redundancy.",
@@ -303,6 +303,42 @@
     "userAssignedIdentityResourceName": "[format('id-{0}', variables('solutionSuffix'))]",
     "sqlUserAssignedIdentityResourceName": "[format('id-sql-{0}', variables('solutionSuffix'))]",
     "bastionHostName": "[format('bas-{0}', variables('solutionSuffix'))]",
+    "vmMaintenanceConfigMapping": {
+      "eastus": "VM_EastUS_DB_1",
+      "eastus2": "VM_EastUS2_DB_1",
+      "westus": "VM_WestUS_DB_1",
+      "westus2": "VM_WestUS2_DB_1",
+      "westus3": "VM_WestUS3_DB_1",
+      "centralus": "VM_CentralUS_DB_1",
+      "northcentralus": "VM_NorthCentralUS_DB_1",
+      "southcentralus": "VM_SouthCentralUS_DB_1",
+      "westcentralus": "VM_WestCentralUS_DB_1",
+      "canadacentral": "VM_CanadaCentral_DB_1",
+      "canadaeast": "VM_CanadaEast_DB_1",
+      "northeurope": "VM_NorthEurope_DB_1",
+      "westeurope": "VM_WestEurope_DB_1",
+      "uksouth": "VM_UKSouth_DB_1",
+      "ukwest": "VM_UKWest_DB_1",
+      "francecentral": "VM_FranceCentral_DB_1",
+      "francesouth": "VM_FranceSouth_DB_1",
+      "germanywestcentral": "VM_GermanyWestCentral_DB_1",
+      "switzerlandnorth": "VM_SwitzerlandNorth_DB_1",
+      "swedencentral": "VM_SwedenCentral_DB_1",
+      "eastasia": "VM_EastAsia_DB_1",
+      "southeastasia": "VM_SoutheastAsia_DB_1",
+      "australiaeast": "VM_AustraliaEast_DB_1",
+      "australiasoutheast": "VM_AustraliaSoutheast_DB_1",
+      "centralindia": "VM_CentralIndia_DB_1",
+      "southindia": "VM_SouthIndia_DB_1",
+      "japaneast": "VM_JapanEast_DB_1",
+      "japanwest": "VM_JapanWest_DB_1",
+      "brazilsouth": "VM_BrazilSouth_DB_1",
+      "brazilsoutheast": "VM_BrazilSoutheast_DB_1",
+      "southafricanorth": "VM_SouthAfricaNorth_DB_1",
+      "uaenorth": "VM_UAENorth_DB_1"
+    },
+    "vmMaintenanceConfigName": "[coalesce(tryGet(variables('vmMaintenanceConfigMapping'), variables('solutionLocation')), '')]",
+    "shouldConfigureVmMaintenance": "[not(empty(variables('vmMaintenanceConfigName')))]",
     "jumpboxVmName": "[take(format('vm-jumpbox-{0}', variables('solutionSuffix')), 15)]",
     "privateDnsZones": [
       "privatelink.cognitiveservices.azure.com",
@@ -410,6 +446,14 @@
       "properties": {
         "tags": "[shallowMerge(createArray(parameters('tags'), createObject('TemplateName', 'Client Advisor', 'Type', if(parameters('enablePrivateNetworking'), 'WAF', 'Non-WAF'), 'CreatedBy', parameters('createdBy'), 'DeploymentName', deployment().name)))]"
       }
+    },
+    "vmMaintenanceConfiguration": {
+      "condition": "[variables('shouldConfigureVmMaintenance')]",
+      "existing": true,
+      "type": "Microsoft.Maintenance/publicMaintenanceConfigurations",
+      "apiVersion": "2023-04-01",
+      "subscriptionId": "[subscription().subscriptionId]",
+      "name": "[variables('vmMaintenanceConfigName')]"
     },
     "maintenanceWindow": {
       "condition": "[variables('shouldConfigureMaintenance')]",
@@ -9896,6 +9940,7 @@
           "encryptionAtHost": {
             "value": false
           },
+          "maintenanceConfigurationResourceId": "[if(variables('shouldConfigureMaintenance'), createObject('value', subscriptionResourceId('Microsoft.Maintenance/publicMaintenanceConfigurations', variables('defaultMaintenanceConfigName'))), createObject('value', null()))]",
           "nicConfigurations": {
             "value": [
               {
@@ -29037,8 +29082,8 @@
       },
       "dependsOn": [
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
