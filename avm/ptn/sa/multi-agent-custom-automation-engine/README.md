@@ -142,8 +142,8 @@ module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom
     enableRedundancy: false
     enableScalability: false
     // Non-required parameters
-    azurelocation: '<azurelocation>'
     enableTelemetry: true
+    location: '<location>'
     solutionName: 'macaemin'
   }
 }
@@ -178,11 +178,11 @@ module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom
       "value": false
     },
     // Non-required parameters
-    "azurelocation": {
-      "value": "<azurelocation>"
-    },
     "enableTelemetry": {
       "value": true
+    },
+    "location": {
+      "value": "<location>"
     },
     "solutionName": {
       "value": "macaemin"
@@ -208,8 +208,8 @@ param enablePrivateNetworking = false
 param enableRedundancy = false
 param enableScalability = false
 // Non-required parameters
-param azurelocation = '<azurelocation>'
 param enableTelemetry = true
+param location = '<location>'
 param solutionName = 'macaemin'
 ```
 
@@ -236,8 +236,8 @@ module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom
     enableRedundancy: true
     enableScalability: true
     // Non-required parameters
-    azurelocation: '<azurelocation>'
     enableTelemetry: true
+    location: '<location>'
     solutionName: 'macaewaf'
     virtualMachineAdminPassword: '<virtualMachineAdminPassword>'
     virtualMachineAdminUsername: 'adminuser'
@@ -274,11 +274,11 @@ module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom
       "value": true
     },
     // Non-required parameters
-    "azurelocation": {
-      "value": "<azurelocation>"
-    },
     "enableTelemetry": {
       "value": true
+    },
+    "location": {
+      "value": "<location>"
     },
     "solutionName": {
       "value": "macaewaf"
@@ -310,8 +310,8 @@ param enablePrivateNetworking = true
 param enableRedundancy = true
 param enableScalability = true
 // Non-required parameters
-param azurelocation = '<azurelocation>'
 param enableTelemetry = true
+param location = '<location>'
 param solutionName = 'macaewaf'
 param virtualMachineAdminPassword = '<virtualMachineAdminPassword>'
 param virtualMachineAdminUsername = 'adminuser'
@@ -336,7 +336,6 @@ param virtualMachineAdminUsername = 'adminuser'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`azurelocation`](#parameter-azurelocation) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). |
 | [`azureopenaiVersion`](#parameter-azureopenaiversion) | string | Version of the Azure OpenAI service to deploy. Defaults to 2025-01-01-preview. |
 | [`backendContainerImageName`](#parameter-backendcontainerimagename) | string | The Container Image Name to deploy on the backend. |
 | [`backendContainerImageTag`](#parameter-backendcontainerimagetag) | string | The Container Image Tag to deploy on the backend. |
@@ -358,6 +357,7 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`gptReasoningModelDeploymentType`](#parameter-gptreasoningmodeldeploymenttype) | string | GPT model deployment type. Defaults to GlobalStandard. |
 | [`gptReasoningModelName`](#parameter-gptreasoningmodelname) | string | Name of the GPT Reasoning model to deploy. |
 | [`gptReasoningModelVersion`](#parameter-gptreasoningmodelversion) | string | Version of the GPT Reasoning model to deploy. Defaults to 2025-04-14. |
+| [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). |
 | [`mcpContainerImageName`](#parameter-mcpcontainerimagename) | string | The Container Image Name to deploy on the MCP. |
 | [`mcpContainerImageTag`](#parameter-mcpcontainerimagetag) | string | The Container Image Tag to deploy on the MCP. |
 | [`mcpContainerRegistryHostname`](#parameter-mcpcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the MCP are located. |
@@ -414,27 +414,6 @@ Enable scalability for applicable resources, aligned with the Well Architected F
 
 - Required: Yes
 - Type: bool
-
-### Parameter: `azurelocation`
-
-Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).
-
-- Required: No
-- Type: string
-- Default: `'uksouth'`
-- Allowed:
-  ```Bicep
-  [
-    'australiaeast'
-    'centralus'
-    'eastasia'
-    'eastus2'
-    'japaneast'
-    'northeurope'
-    'southeastasia'
-    'uksouth'
-  ]
-  ```
 
 ### Parameter: `azureopenaiVersion`
 
@@ -624,6 +603,14 @@ Version of the GPT Reasoning model to deploy. Defaults to 2025-04-14.
 - Required: No
 - Type: string
 - Default: `'2025-04-16'`
+
+### Parameter: `location`
+
+Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
 
 ### Parameter: `mcpContainerImageName`
 

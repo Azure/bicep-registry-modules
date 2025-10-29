@@ -17,18 +17,7 @@ param solutionUniqueText string = take(uniqueString(subscription().id, resourceG
 
 @metadata({ azd: { type: 'location' } })
 @description('Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).')
-@allowed([
-  'australiaeast'
-  'centralus'
-  'eastasia'
-  'eastus2'
-  'japaneast'
-  'northeurope'
-  'southeastasia'
-  'uksouth'
-])
-param azurelocation string = 'uksouth'
-var location = empty(azurelocation) ? resourceGroup().location : azurelocation
+param location string = resourceGroup().location
 
 //Get the current deployer's information
 var deployerInfo = deployer()
