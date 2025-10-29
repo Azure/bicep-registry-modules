@@ -420,7 +420,8 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
     adminUsername: vmAdminUsername ?? 'JumpboxAdminUser'
     adminPassword: vmAdminPassword ?? 'JumpboxAdminP@ssw0rd1234!'
     tags: tags
-    availabilityZone: -1
+    // WAF aligned configuration for Redundancy - use availability zone when redundancy is enabled
+    availabilityZone: enableRedundancy ? 1 : -1
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -431,7 +432,8 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
     osDisk: {
       name: 'osdisk-${jumpboxVmName}'
       managedDisk: {
-        storageAccountType: 'Standard_LRS'
+        // WAF aligned configuration - use Premium storage for better SLA when redundancy is enabled
+        storageAccountType: enableRedundancy ? 'Premium_LRS' : 'Standard_LRS'
       }
     }
     encryptionAtHost: false // Some Azure subscriptions do not support encryption at host
@@ -467,6 +469,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
     enableTelemetry: enableTelemetry
   }
 }
+
 // ========== Private DNS Zones ========== //
 var privateDnsZones = [
   'privatelink.cognitiveservices.azure.com'
@@ -942,6 +945,52 @@ module saveStorageAccountSecretsInKeyVault 'br/public:avm/res/key-vault/vault:0.
   }
 }
 
+// ========== Maintenance Configuration Mapping ========== //
+// Map Azure regions to their corresponding SQL Database maintenance configuration names
+var sqlMaintenanceConfigMapping = {
+  eastus: 'SQL_EastUS_DB_1'
+  eastus2: 'SQL_EastUS2_DB_1'
+  westus: 'SQL_WestUS_DB_1'
+  westus2: 'SQL_WestUS2_DB_1'
+  westus3: 'SQL_WestUS3_DB_1'
+  centralus: 'SQL_CentralUS_DB_1'
+  northcentralus: 'SQL_NorthCentralUS_DB_1'
+  southcentralus: 'SQL_SouthCentralUS_DB_1'
+  westcentralus: 'SQL_WestCentralUS_DB_1'
+  canadacentral: 'SQL_CanadaCentral_DB_1'
+  canadaeast: 'SQL_CanadaEast_DB_1'
+  northeurope: 'SQL_NorthEurope_DB_1'
+  westeurope: 'SQL_WestEurope_DB_1'
+  uksouth: 'SQL_UKSouth_DB_1'
+  ukwest: 'SQL_UKWest_DB_1'
+  francecentral: 'SQL_FranceCentral_DB_1'
+  francesouth: 'SQL_FranceSouth_DB_1'
+  germanywestcentral: 'SQL_GermanyWestCentral_DB_1'
+  switzerlandnorth: 'SQL_SwitzerlandNorth_DB_1'
+  swedencentral: 'SQL_SwedenCentral_DB_1'
+  eastasia: 'SQL_EastAsia_DB_1'
+  southeastasia: 'SQL_SoutheastAsia_DB_1'
+  australiaeast: 'SQL_AustraliaEast_DB_1'
+  australiasoutheast: 'SQL_AustraliaSoutheast_DB_1'
+  centralindia: 'SQL_CentralIndia_DB_1'
+  southindia: 'SQL_SouthIndia_DB_1'
+  japaneast: 'SQL_JapanEast_DB_1'
+  japanwest: 'SQL_JapanWest_DB_1'
+  brazilsouth: 'SQL_BrazilSouth_DB_1'
+  brazilsoutheast: 'SQL_BrazilSoutheast_DB_1'
+  southafricanorth: 'SQL_SouthAfricaNorth_DB_1'
+  uaenorth: 'SQL_UAENorth_DB_1'
+}
+
+// Determine the maintenance configuration name to use - use solutionLocation and consider WAF alignment
+var defaultMaintenanceConfigName = sqlMaintenanceConfigMapping[?solutionLocation] ?? ''
+var shouldConfigureMaintenance = !empty(defaultMaintenanceConfigName)
+
+resource maintenanceWindow 'Microsoft.Maintenance/publicMaintenanceConfigurations@2023-04-01' existing = if (shouldConfigureMaintenance) {
+  scope: subscription()
+  name: defaultMaintenanceConfigName
+}
+
 // ========== AVM WAF ========== //
 // ========== SQL module ========== //
 var sqlDbName = 'sqldb-${solutionSuffix}'
@@ -962,6 +1011,8 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
     connectionPolicy: 'Redirect'
     databases: [
       {
+        // WAF aligned configuration - always configure maintenance window when available
+        maintenanceConfigurationId: shouldConfigureMaintenance ? maintenanceWindow.id : null
         zoneRedundant: enableRedundancy
         // When enableRedundancy is true (zoneRedundant=true), set availabilityZone to -1
         // to let Azure automatically manage zone placement across multiple zones.
@@ -1186,7 +1237,7 @@ module searchService 'br/public:avm/res/search/search-service:0.11.1' = {
       }
     ]
     partitionCount: 1
-    replicaCount: 1
+    replicaCount: 3
     sku: 'standard'
     semanticSearch: 'free'
     // Use the deployment tags provided to the template
