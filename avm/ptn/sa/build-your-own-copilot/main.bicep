@@ -653,7 +653,7 @@ var aiFoundryAiServicesEmbeddingModel = {
   raiPolicyName: 'Microsoft.Default'
 }
 
-module aiFoundryAiServices 'modules/ai-services.bicep' = if (aiFoundryAIservicesEnabled) {
+module aiFoundryAiServices 'modules/ai-services.bicep' = {
   name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesResourceName}', 64)
   params: {
     name: aiFoundryAiServicesResourceName
