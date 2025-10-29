@@ -85,7 +85,7 @@ param azureAiServiceLocation string
 //   'southeastasia'
 //   'uksouth'
 // ])
-@metadata({ azd: { type: 'location' } })
+// @metadata({ azd: { type: 'location' } })
 @description('Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).')
 param location string = resourceGroup().location
 var solutionLocation = empty(location) ? resourceGroup().location : location
@@ -558,7 +558,7 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.3' = {
     enableSoftDelete: true
     enablePurgeProtection: enablePurgeProtection
     softDeleteRetentionInDays: 7
-    //diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }] : []
+    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : null
     // WAF aligned configuration for Private Networking
     privateEndpoints: enablePrivateNetworking
       ? [
@@ -620,6 +620,9 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.3' = {
     ]
     enableTelemetry: enableTelemetry
   }
+  dependsOn: [
+    aiFoundryAiServices
+  ]
 }
 
 // ========== AI Foundry: AI Services ========== //
@@ -631,7 +634,6 @@ var aiFoundryAiServicesResourceName = 'aif-${solutionSuffix}'
 // NOTE: Required version 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' not available in AVM
 
 var aiFoundryAiServicesAiProjectResourceName = 'proj-${solutionSuffix}'
-var aiFoundryAIservicesEnabled = true
 var aiFoundryAiServicesModelDeployment = {
   format: 'OpenAI'
   name: gptModelName
