@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.3.11034",
-      "templateHash": "14331191002523902525"
+      "templateHash": "15817530356289689890"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server."
@@ -782,6 +782,10 @@
           "source": "Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview#properties/properties/properties/authConfig"
         },
         "description": "Required. The authentication configuration for the server."
+      },
+      "defaultValue": {
+        "activeDirectoryAuth": "Enabled",
+        "passwordAuth": "Disabled"
       }
     },
     "location": {
@@ -1120,10 +1124,6 @@
       }
     ],
     "enableReferencedModulesTelemetry": false,
-    "defaultAuthConfig": {
-      "activeDirectoryAuth": "Enabled",
-      "passwordAuth": "Disabled"
-    },
     "standByAvailabilityZone": "[tryGet(createObject('Disabled', -1, 'SameZone', parameters('availabilityZone'), 'ZoneRedundant', parameters('highAvailabilityZone')), parameters('highAvailability'))]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
@@ -1197,7 +1197,7 @@
       "properties": {
         "administratorLogin": "[parameters('administratorLogin')]",
         "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
-        "authConfig": "[coalesce(parameters('authConfig'), variables('defaultAuthConfig'))]",
+        "authConfig": "[parameters('authConfig')]",
         "availabilityZone": "[if(not(equals(parameters('availabilityZone'), -1)), string(parameters('availabilityZone')), null())]",
         "highAvailability": {
           "mode": "[parameters('highAvailability')]",
@@ -2582,7 +2582,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned managed identity."
       },
-      "value": "[if(and(not(empty(parameters('managedIdentities'))), coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false())), reference('flexibleServer', '2025-06-01-preview', 'full').identity.principalId, null())]"
+      "value": "[tryGet(tryGet(reference('flexibleServer', '2025-06-01-preview', 'full'), 'identity'), 'principalId')]"
     }
   }
 }

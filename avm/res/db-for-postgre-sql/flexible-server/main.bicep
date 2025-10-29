@@ -15,7 +15,10 @@ param administratorLoginPassword string?
 param administrators administratorType[]?
 
 @description('Required. The authentication configuration for the server.')
-param authConfig resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview'>.properties.authConfig
+param authConfig resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview'>.properties.authConfig = {
+  activeDirectoryAuth: 'Enabled'
+  passwordAuth: 'Disabled'
+}
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -204,11 +207,6 @@ param privateEndpoints privateEndpointSingleServiceType[]?
 
 var enableReferencedModulesTelemetry = false
 
-var defaultAuthConfig = {
-  activeDirectoryAuth: 'Enabled'
-  passwordAuth: 'Disabled'
-}
-
 var standByAvailabilityZone = {
   Disabled: -1
   SameZone: availabilityZone
@@ -307,7 +305,7 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-pr
     administratorLogin: administratorLogin
     #disable-next-line use-secure-value-for-secure-inputs // Is defined as secure(). False-positive
     administratorLoginPassword: administratorLoginPassword
-    authConfig: authConfig ?? defaultAuthConfig // Apply WAF-aligned defaults if not provided
+    authConfig: authConfig
     availabilityZone: availabilityZone != -1 ? string(availabilityZone) : null
     highAvailability: {
       mode: highAvailability
@@ -569,9 +567,7 @@ output privateEndpoints privateEndpointOutputType[] = [
 ]
 
 @description('The principal ID of the system assigned managed identity.')
-output systemAssignedMIPrincipalId string? = !empty(managedIdentities) && (managedIdentities.?systemAssigned ?? false)
-  ? flexibleServer.identity.principalId
-  : null
+output systemAssignedMIPrincipalId string? = flexibleServer.?identity.?principalId
 
 // =============== //
 //   Definitions   //
