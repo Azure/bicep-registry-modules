@@ -39,8 +39,6 @@ param azureOpenaiAPIVersion string = '2025-04-01-preview'
 
 @minValue(10)
 @description('Optional. Capacity of the GPT deployment.')
-// You can increase this, but capacity is limited per model/region, so you will get errors if you go over
-// https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits
 param gptModelCapacity int = 200
 
 @minLength(1)
@@ -54,7 +52,6 @@ param embeddingModel string = 'text-embedding-ada-002'
 @description('Optional. Capacity of the Embedding Model deployment.')
 param embeddingDeploymentCapacity int = 80
 
-//restricting to these regions because assistants api for gpt-4o-mini is available only in these regions
 @allowed([
   'australiaeast'
   'eastus'
