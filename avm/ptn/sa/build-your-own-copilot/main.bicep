@@ -75,17 +75,6 @@ param embeddingDeploymentCapacity int = 80
 @description('Required. Location for AI Foundry deployment. This is the location where the AI Foundry resources will be deployed.')
 param azureAiServiceLocation string
 
-// @allowed([
-//   'australiaeast'
-//   'centralus'
-//   'eastasia'
-//   'eastus2'
-//   'japaneast'
-//   'northeurope'
-//   'southeastasia'
-//   'uksouth'
-// ])
-// @metadata({ azd: { type: 'location' } })
 @description('Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).')
 param location string = resourceGroup().location
 var solutionLocation = empty(location) ? resourceGroup().location : location
