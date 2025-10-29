@@ -2,12 +2,22 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/dev-ops/cicd-agents-and-runners/CHANGELOG.md).
 
-## 0.3.1
+## 0.3.2
 
 ### Changes
 
 - Added new optional parameter
 - Refactored DNS configuration object for ACR
+
+### Breaking Changes
+
+- None
+
+## 0.3.1
+
+### Changes
+
+- Updated modules versions
 
 ### Breaking Changes
 

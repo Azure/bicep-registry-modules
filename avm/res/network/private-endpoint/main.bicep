@@ -14,7 +14,7 @@ param applicationSecurityGroupResourceIds string[]?
 param customNetworkInterfaceName string?
 
 @description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
-param ipConfigurations ipConfigurationType[]?
+param ipConfigurations resourceInput<'Microsoft.Network/privateEndpoints@2024-01-01'>.properties.ipConfigurations?
 
 @description('Optional. The private DNS zone group to configure for the private endpoint.')
 param privateDnsZoneGroup privateDnsZoneGroupType?
@@ -22,25 +22,25 @@ param privateDnsZoneGroup privateDnsZoneGroupType?
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/privateEndpoints@2024-01-01'>.tags?
 
 @description('Optional. Custom DNS configurations.')
-param customDnsConfigs customDnsConfigType[]?
+param customDnsConfigs resourceInput<'Microsoft.Network/privateEndpoints@2024-01-01'>.properties.customDnsConfigs?
 
 @description('Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty.')
-param manualPrivateLinkServiceConnections privateLinkServiceConnectionType[]?
+param manualPrivateLinkServiceConnections resourceInput<'Microsoft.Network/privateEndpoints@2024-01-01'>.properties.manualPrivateLinkServiceConnections?
 
 @description('Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty.')
-param privateLinkServiceConnections privateLinkServiceConnectionType[]?
+param privateLinkServiceConnections resourceInput<'Microsoft.Network/privateEndpoints@2024-01-01'>.properties.privateLinkServiceConnections?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -91,7 +91,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-privateendpoint.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -109,7 +109,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2024-05-01' = {
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2024-10-01' = {
   name: name
   location: location
   tags: tags
@@ -179,7 +179,7 @@ output name string = privateEndpoint.name
 output location string = privateEndpoint.location
 
 @description('The custom DNS configurations of the private endpoint.')
-output customDnsConfigs customDnsConfigType[] = privateEndpoint.properties.customDnsConfigs
+output customDnsConfigs resourceOutput<'Microsoft.Network/privateEndpoints@2024-01-01'>.properties.customDnsConfigs = privateEndpoint.properties.customDnsConfigs
 
 @description('The resource IDs of the network interfaces associated with the private endpoint.')
 output networkInterfaceResourceIds string[] = map(privateEndpoint.properties.networkInterfaces, nic => nic.id)
@@ -194,55 +194,11 @@ output groupId string? = privateEndpoint.properties.?manualPrivateLinkServiceCon
 import { privateDnsZoneGroupConfigType } from 'private-dns-zone-group/main.bicep'
 
 @export()
+@description('The type of a private dns zone group.')
 type privateDnsZoneGroupType = {
   @description('Optional. The name of the Private DNS Zone Group.')
   name: string?
 
   @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
   privateDnsZoneGroupConfigs: privateDnsZoneGroupConfigType[]
-}
-
-@export()
-type ipConfigurationType = {
-  @description('Required. The name of the resource that is unique within a resource group.')
-  name: string
-
-  @description('Required. Properties of private endpoint IP configurations.')
-  properties: {
-    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string.')
-    groupId: string
-
-    @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string.')
-    memberName: string
-
-    @description('Required. A private IP address obtained from the private endpoint\'s subnet.')
-    privateIPAddress: string
-  }
-}
-
-@export()
-type privateLinkServiceConnectionType = {
-  @description('Required. The name of the private link service connection.')
-  name: string
-
-  @description('Required. Properties of private link service connection.')
-  properties: {
-    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.')
-    groupIds: string[]
-
-    @description('Required. The resource id of private link service.')
-    privateLinkServiceId: string
-
-    @description('Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.')
-    requestMessage: string?
-  }
-}
-
-@export()
-type customDnsConfigType = {
-  @description('Optional. FQDN that resolves to private endpoint IP address.')
-  fqdn: string?
-
-  @description('Required. A list of private IP addresses of the private endpoint.')
-  ipAddresses: string[]
 }

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "12597453138683207461"
+      "templateHash": "2273969900389099556"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps."
@@ -4399,7 +4399,7 @@
           "virtualNetworkLinks": {
             "value": [
               {
-                "virtualNetworkResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'createNew'), reference('newVnet').outputs.resourceId.value, parameters('networkingConfiguration').virtualNetworkResourceId)]"
+                "virtualNetworkResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'createNew'), tryGet(if(equals(parameters('networkingConfiguration').networkType, 'createNew'), reference('newVnet'), null()), 'outputs', 'resourceId', 'value'), parameters('networkingConfiguration').virtualNetworkResourceId)]"
               }
             ]
           },
@@ -7788,7 +7788,7 @@
             ]
           },
           "networkRuleBypassOptions": "[if(parameters('privateNetworking'), createObject('value', 'AzureServices'), createObject('value', 'None'))]",
-          "privateEndpoints": "[if(parameters('privateNetworking'), createObject('value', createArray(createObject('subnetResourceId', if(equals(parameters('networkingConfiguration').networkType, 'createNew'), filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateEndpointSubnetName'), 'acr-subnet'))))[0], if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').containerRegistryPrivateEndpointSubnetName), null())), 'privateDnsZoneGroup', if(not(parameters('dnsIsDeployedByPolicy')), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneResourceId'), ''))), coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneResourceId'), ''), reference('acrPrivateDNSZone').outputs.resourceId.value), 'name', 'acrPrivateDNSZoneGroup'))), null())))), createObject('value', null()))]"
+          "privateEndpoints": "[if(parameters('privateNetworking'), createObject('value', createArray(createObject('subnetResourceId', if(equals(parameters('networkingConfiguration').networkType, 'createNew'), filter(coalesce(tryGet(if(equals(parameters('networkingConfiguration').networkType, 'createNew'), reference('newVnet'), null()), 'outputs', 'subnetResourceIds', 'value'), createArray()), lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateEndpointSubnetName'), 'acr-subnet'))))[0], if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').containerRegistryPrivateEndpointSubnetName), null())), 'privateDnsZoneResourceIds', if(not(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneResourceId'), ''))), createArray(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneResourceId'), '')), createArray(if(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneResourceId'), '')), tryGet(if(and(parameters('privateNetworking'), empty(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneResourceId'), ''))), reference('acrPrivateDNSZone'), null()), 'outputs', 'resourceId', 'value'), ''))), 'privateDnsZoneGroupName', 'acrPrivateDNSZoneGroup'))), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -10962,7 +10962,7 @@
             ]
           },
           "subnets": {
-            "value": "[union(if(parameters('privateNetworking'), createArray(createObject('name', coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateEndpointSubnetName'), 'acr-subnet'), 'addressPrefix', coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistrySubnetPrefix'), '10.0.0.32/29')), createObject('name', coalesce(tryGet(parameters('networkingConfiguration'), 'acrDeploymentScriptSubnetName'), 'acr-deployment-script-subnet'), 'addressPrefix', coalesce(tryGet(parameters('networkingConfiguration'), 'acrDeploymentScriptSubnetPrefix'), '10.0.3.0/24'), 'delegation', 'Microsoft.ContainerInstance/containerGroups')), createArray()), if(or(and(parameters('privateNetworking'), equals(parameters('selfHostedConfig').selfHostedType, 'azuredevops')), contains(parameters('computeTypes'), 'azure-container-instance')), createArray(createObject('name', coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'), 'addressPrefix', coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetAddressPrefix'), '10.0.2.0/24'), 'natGatewayResourceId', if(and(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayResourceId'), '')), parameters('privateNetworking')), reference('natGateway').outputs.resourceId.value, coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayResourceId'), '')), 'delegation', 'Microsoft.ContainerInstance/containerGroups')), createArray()), if(contains(parameters('computeTypes'), 'azure-container-app'), createArray(createObject('name', coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppSubnetName'), 'app-subnet'), 'addressPrefix', coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppSubnetAddressPrefix'), '10.0.1.0/24'), 'natGatewayResourceId', if(and(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayResourceId'), '')), parameters('privateNetworking')), reference('natGateway').outputs.resourceId.value, coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayResourceId'), '')), 'delegation', 'Microsoft.App/environments')), createArray()), if(and(and(contains(parameters('computeTypes'), 'azure-container-app'), parameters('privateNetworking')), equals(parameters('selfHostedConfig').selfHostedType, 'azuredevops')), createArray(createObject('name', coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppDeploymentScriptSubnetName'), 'app-deployment-script-subnet'), 'addressPrefix', coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppDeploymentScriptSubnetPrefix'), '10.0.3.0/29'))), createArray()), createArray())]"
+            "value": "[union(if(parameters('privateNetworking'), createArray(createObject('name', coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateEndpointSubnetName'), 'acr-subnet'), 'addressPrefix', coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistrySubnetPrefix'), '10.0.0.32/29')), createObject('name', coalesce(tryGet(parameters('networkingConfiguration'), 'acrDeploymentScriptSubnetName'), 'acr-deployment-script-subnet'), 'addressPrefix', coalesce(tryGet(parameters('networkingConfiguration'), 'acrDeploymentScriptSubnetPrefix'), '10.0.3.0/24'), 'delegation', 'Microsoft.ContainerInstance/containerGroups')), createArray()), if(or(and(parameters('privateNetworking'), equals(parameters('selfHostedConfig').selfHostedType, 'azuredevops')), contains(parameters('computeTypes'), 'azure-container-instance')), createArray(createObject('name', coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'), 'addressPrefix', coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetAddressPrefix'), '10.0.2.0/24'), 'natGatewayResourceId', if(and(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayResourceId'), '')), parameters('privateNetworking')), tryGet(if(and(and(parameters('privateNetworking'), empty(coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayResourceId'), ''))), equals(parameters('networkingConfiguration').networkType, 'createNew')), reference('natGateway'), null()), 'outputs', 'resourceId', 'value'), coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayResourceId'), '')), 'delegation', 'Microsoft.ContainerInstance/containerGroups')), createArray()), if(contains(parameters('computeTypes'), 'azure-container-app'), createArray(createObject('name', coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppSubnetName'), 'app-subnet'), 'addressPrefix', coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppSubnetAddressPrefix'), '10.0.1.0/24'), 'natGatewayResourceId', if(and(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayResourceId'), '')), parameters('privateNetworking')), tryGet(if(and(and(parameters('privateNetworking'), empty(coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayResourceId'), ''))), equals(parameters('networkingConfiguration').networkType, 'createNew')), reference('natGateway'), null()), 'outputs', 'resourceId', 'value'), coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayResourceId'), '')), 'delegation', 'Microsoft.App/environments')), createArray()), if(and(and(contains(parameters('computeTypes'), 'azure-container-app'), parameters('privateNetworking')), equals(parameters('selfHostedConfig').selfHostedType, 'azuredevops')), createArray(createObject('name', coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppDeploymentScriptSubnetName'), 'app-deployment-script-subnet'), 'addressPrefix', coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppDeploymentScriptSubnetPrefix'), '10.0.3.0/29'))), createArray()), createArray())]"
           }
         },
         "template": {
@@ -12620,7 +12620,7 @@
           "infrastructureResourceGroupName": {
             "value": "[parameters('infrastructureResourceGroupName')]"
           },
-          "infrastructureSubnetResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'createNew'), createObject('value', filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppSubnetName'), 'app-subnet'))))[0]), if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), createObject('value', format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerAppSubnetName)), createObject('value', null())))]",
+          "infrastructureSubnetResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'createNew'), createObject('value', filter(coalesce(tryGet(if(equals(parameters('networkingConfiguration').networkType, 'createNew'), reference('newVnet'), null()), 'outputs', 'subnetResourceIds', 'value'), createArray()), lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppSubnetName'), 'app-subnet'))))[0]), if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), createObject('value', format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerAppSubnetName)), createObject('value', null())))]",
           "zoneRedundant": {
             "value": true
           },
@@ -14244,7 +14244,7 @@
           },
           "publicIpResourceIds": {
             "value": [
-              "[coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayPublicIpAddressResourceId'), reference('natGatewayPublicIp').outputs.resourceId.value)]"
+              "[coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayPublicIpAddressResourceId'), tryGet(if(and(and(and(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayResourceId'), '')), empty(coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayPublicIpAddressResourceId'), ''))), equals(parameters('networkingConfiguration').networkType, 'createNew')), parameters('privateNetworking')), reference('natGatewayPublicIp'), null()), 'outputs', 'resourceId', 'value'))]"
             ]
           }
         },
@@ -16166,7 +16166,7 @@
               }
             ]
           },
-          "subnets": "[if(parameters('privateNetworking'), createObject('value', createArray(createObject('subnetResourceId', if(equals(parameters('networkingConfiguration').networkType, 'createNew'), filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'))))[0], format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerInstanceSubnetName))))), createObject('value', null()))]",
+          "subnets": "[if(parameters('privateNetworking'), createObject('value', createArray(createObject('subnetResourceId', if(equals(parameters('networkingConfiguration').networkType, 'createNew'), filter(coalesce(tryGet(if(equals(parameters('networkingConfiguration').networkType, 'createNew'), reference('newVnet'), null()), 'outputs', 'subnetResourceIds', 'value'), createArray()), lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'))))[0], format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerInstanceSubnetName))))), createObject('value', null()))]",
           "ipAddress": {
             "value": {
               "type": "[if(parameters('privateNetworking'), 'Private', 'Public')]",
@@ -17400,7 +17400,7 @@
             ]
           },
           "environmentResourceId": {
-            "value": "[reference('appEnvironment').outputs.resourceId.value]"
+            "value": "[coalesce(tryGet(if(contains(parameters('computeTypes'), 'azure-container-app'), reference('appEnvironment'), null()), 'outputs', 'resourceId', 'value'), '')]"
           },
           "workloadProfileName": {
             "value": "consumption"
@@ -18673,7 +18673,7 @@
             ]
           },
           "environmentResourceId": {
-            "value": "[reference('appEnvironment').outputs.resourceId.value]"
+            "value": "[coalesce(tryGet(if(contains(parameters('computeTypes'), 'azure-container-app'), reference('appEnvironment'), null()), 'outputs', 'resourceId', 'value'), '')]"
           },
           "workloadProfileName": {
             "value": "consumption"
@@ -19865,7 +19865,7 @@
           "virtualNetworkLinks": {
             "value": [
               {
-                "virtualNetworkResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), parameters('networkingConfiguration').virtualNetworkResourceId, reference('newVnet').outputs.resourceId.value)]"
+                "virtualNetworkResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), parameters('networkingConfiguration').virtualNetworkResourceId, tryGet(if(equals(parameters('networkingConfiguration').networkType, 'createNew'), reference('newVnet'), null()), 'outputs', 'resourceId', 'value'))]"
               }
             ]
           },
@@ -23259,8 +23259,15 @@
             "value": [
               {
                 "service": "file",
-                "subnetResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerAppDeploymentScriptSubnetName), filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppDeploymentScriptSubnetName'), 'app-deployment-script-subnet'))))[0])]",
-                "privateDnsZoneGroup": "[if(not(parameters('dnsIsDeployedByPolicy')), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', coalesce(tryGet(parameters('networkingConfiguration'), 'deploymentScriptPrivateDnsZoneResourceId'), reference('deploymentScriptPrivateDNSZone').outputs.resourceId.value), 'name', 'dsStgPrivateDNSZoneGroup'))), null())]"
+                "subnetResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerAppDeploymentScriptSubnetName), filter(coalesce(tryGet(if(equals(parameters('networkingConfiguration').networkType, 'createNew'), reference('newVnet'), null()), 'outputs', 'subnetResourceIds', 'value'), createArray()), lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppDeploymentScriptSubnetName'), 'app-deployment-script-subnet'))))[0])]",
+                "privateDnsZoneGroup": {
+                  "privateDnsZoneGroupConfigs": [
+                    {
+                      "privateDnsZoneResourceId": "[coalesce(tryGet(parameters('networkingConfiguration'), 'deploymentScriptPrivateDnsZoneResourceId'), tryGet(if(and(parameters('privateNetworking'), empty(coalesce(tryGet(parameters('networkingConfiguration'), 'deploymentScriptPrivateDnsZoneResourceId'), ''))), reference('deploymentScriptPrivateDNSZone'), null()), 'outputs', 'resourceId', 'value'))]",
+                      "name": "stgPrivateDNSZoneGroup"
+                    }
+                  ]
+                }
               }
             ]
           }
@@ -29167,8 +29174,14 @@
             "value": [
               {
                 "service": "file",
-                "subnetResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateEndpointSubnetName')), filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateEndpointSubnetName'), 'acr-subnet'))))[0])]",
-                "privateDnsZoneGroup": "[if(not(parameters('dnsIsDeployedByPolicy')), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'deploymentScriptPrivateDnsZoneResourceId'), ''))), coalesce(tryGet(parameters('networkingConfiguration'), 'deploymentScriptPrivateDnsZoneResourceId'), ''), reference('deploymentScriptPrivateDNSZone').outputs.resourceId.value), 'name', 'acrStgPrivateDNSZoneGroup'))), null())]"
+                "subnetResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateEndpointSubnetName')), filter(coalesce(tryGet(if(equals(parameters('networkingConfiguration').networkType, 'createNew'), reference('newVnet'), null()), 'outputs', 'subnetResourceIds', 'value'), createArray()), lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateEndpointSubnetName'), 'acr-subnet'))))[0])]",
+                "privateDnsZoneGroup": {
+                  "privateDnsZoneGroupConfigs": [
+                    {
+                      "privateDnsZoneResourceId": "[if(not(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'deploymentScriptPrivateDnsZoneResourceId'), ''))), coalesce(tryGet(parameters('networkingConfiguration'), 'deploymentScriptPrivateDnsZoneResourceId'), ''), tryGet(if(and(parameters('privateNetworking'), empty(coalesce(tryGet(parameters('networkingConfiguration'), 'deploymentScriptPrivateDnsZoneResourceId'), ''))), reference('deploymentScriptPrivateDNSZone'), null()), 'outputs', 'resourceId', 'value'))]"
+                    }
+                  ]
+                }
               }
             ]
           }
@@ -35073,10 +35086,10 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "storageAccountResourceId": "[if(parameters('privateNetworking'), createObject('value', reference('deploymentScriptStg').outputs.resourceId.value), createObject('value', null()))]",
-          "subnetResourceIds": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), createObject('value', createArray(filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'))))[0])), if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'useExisting')), createObject('value', createArray(format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, tryGet(parameters('networkingConfiguration').computeNetworking, 'containerInstanceSubnetName')))), createObject('value', null())))]",
+          "storageAccountResourceId": "[if(parameters('privateNetworking'), createObject('value', tryGet(if(and(and(contains(parameters('computeTypes'), 'azure-container-app'), equals(parameters('selfHostedConfig').selfHostedType, 'azuredevops')), parameters('privateNetworking')), reference('deploymentScriptStg'), null()), 'outputs', 'resourceId', 'value')), createObject('value', null()))]",
+          "subnetResourceIds": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), createObject('value', createArray(filter(coalesce(tryGet(if(equals(parameters('networkingConfiguration').networkType, 'createNew'), reference('newVnet'), null()), 'outputs', 'subnetResourceIds', 'value'), createArray()), lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'))))[0])), if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'useExisting')), createObject('value', createArray(format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, tryGet(parameters('networkingConfiguration').computeNetworking, 'containerInstanceSubnetName')))), createObject('value', null())))]",
           "arguments": {
-            "value": "[format('-resourceGroup {0} -jobName {1} -subscriptionId {2}', resourceGroup().name, reference('acaPlaceholderJob').outputs.name.value, subscription().subscriptionId)]"
+            "value": "[format('-resourceGroup {0} -jobName {1} -subscriptionId {2}', resourceGroup().name, tryGet(if(and(contains(parameters('computeTypes'), 'azure-container-app'), equals(parameters('selfHostedConfig').selfHostedType, 'azuredevops')), reference('acaPlaceholderJob'), null()), 'outputs', 'name', 'value'), subscription().subscriptionId)]"
           },
           "scriptContent": {
             "value": "[variables('$fxv#0')]"
@@ -35652,8 +35665,8 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "storageAccountResourceId": "[if(parameters('privateNetworking'), createObject('value', reference('deploymentScriptAcrStg').outputs.resourceId.value), createObject('value', null()))]",
-          "subnetResourceIds": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), createObject('value', createArray(filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'acrDeploymentScriptSubnetName'), 'acr-deployment-script-subnet'))))[0])), if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'useExisting')), createObject('value', createArray(format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').acrDeploymentScriptSubnetName))), createObject('value', null())))]",
+          "storageAccountResourceId": "[if(parameters('privateNetworking'), createObject('value', tryGet(if(parameters('privateNetworking'), reference('deploymentScriptAcrStg'), null()), 'outputs', 'resourceId', 'value')), createObject('value', null()))]",
+          "subnetResourceIds": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), createObject('value', createArray(filter(coalesce(tryGet(if(equals(parameters('networkingConfiguration').networkType, 'createNew'), reference('newVnet'), null()), 'outputs', 'subnetResourceIds', 'value'), createArray()), lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'acrDeploymentScriptSubnetName'), 'acr-deployment-script-subnet'))))[0])), if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'useExisting')), createObject('value', createArray(format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').acrDeploymentScriptSubnetName))), createObject('value', null())))]",
           "scriptContent": {
             "value": "[format('az resource update --namespace Microsoft.ContainerRegistry --resource-type registries --name {0} --resource-group {1} --api-version 2025-05-01-preview --set properties.networkRuleBypassAllowedForTasks=true', reference('acr').outputs.name.value, resourceGroup().name)]"
           }

@@ -17,6 +17,7 @@ import { pimRoleAssignmentTypeType } from 'modules/subResourceWrapper.bicep'
 import { userAssignedIdentityType } from 'modules/subResourceWrapper.bicep'
 import { virtualNetworkType } from 'modules/subResourceWrapper.bicep'
 import { routeTableType } from 'modules/subResourceWrapper.bicep'
+import { networkSecurityGroupType } from 'modules/subResourceWrapper.bicep'
 
 // PARAMETERS
 
@@ -29,7 +30,7 @@ param subscriptionAliasEnabled bool = true
 
 The string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.
 
-> The value for this parameter and the parameter named `subscriptionAliasName` are usually set to the same value for simplicity. But they can be different if required for a reason.
+> The value for this parameter and the parameter named `subscriptionAliasName` are usually set to the same value for simplicity. But they can be different if required.
 
 > **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.
 ''')
@@ -38,7 +39,7 @@ param subscriptionDisplayName string = ''
 @maxLength(63)
 @description('''Optional. The name of the Subscription Alias, that will be created by this module.
 
-The string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.
+The string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, and, `_`. The maximum length is 63 characters.
 
 > **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.
 ''')
@@ -396,6 +397,12 @@ param routeTables routeTableType[] = []
 @description('Optional. The name of the resource group to create the route tables in.')
 param routeTablesResourceGroupName string = ''
 
+@sys.description('Optional. The list of network security groups to create that are standalone from the NSGs that can be created as part of the `virtualNetworkSubnets` parameter input.')
+param networkSecurityGroups networkSecurityGroupType[] = []
+
+@sys.description('Optional. The name of the resource group to create the standalone network security groups in, outside of what can be declared in the `virtualNetworkSubnets` parameter.')
+param networkSecurityGroupResourceGroupName string = ''
+
 // VARIABLES
 
 var existingSubscriptionIDEmptyCheck = empty(existingSubscriptionId)
@@ -500,6 +507,8 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     peerAllVirtualNetworks: peerAllVirtualNetworks
     routeTables: routeTables
     routeTablesResourceGroupName: routeTablesResourceGroupName
+    networkSecurityGroups: networkSecurityGroups
+    networkSecurityGroupResourceGroupName: networkSecurityGroupResourceGroupName
     enableTelemetry: enableTelemetry
   }
 }

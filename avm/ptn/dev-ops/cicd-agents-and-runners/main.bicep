@@ -246,7 +246,7 @@ module acrPrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = if
     virtualNetworkLinks: [
       {
         virtualNetworkResourceId: networkingConfiguration.networkType == 'createNew'
-          ? newVnet!.outputs.resourceId
+          ? newVnet.?outputs.resourceId
           : networkingConfiguration.virtualNetworkResourceId
       }
     ]
@@ -282,7 +282,7 @@ module acr 'br/public:avm/res/container-registry/registry:0.9.3' = {
           {
             subnetResourceId: networkingConfiguration.networkType == 'createNew'
               ? filter(
-                  newVnet!.outputs.subnetResourceIds,
+                  newVnet.?outputs.subnetResourceIds ?? [],
                   subnetId =>
                     contains(
                       subnetId,
@@ -341,7 +341,7 @@ module newVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (networkin
               name: networkingConfiguration.?containerInstanceSubnetName ?? 'aci-subnet'
               addressPrefix: networkingConfiguration.?containerInstanceSubnetAddressPrefix ?? '10.0.2.0/24'
               natGatewayResourceId: empty(networkingConfiguration.?natGatewayResourceId ?? '') && privateNetworking
-                ? natGateway!.outputs.resourceId
+                ? natGateway.?outputs.resourceId
                 : networkingConfiguration.?natGatewayResourceId ?? ''
               delegation: 'Microsoft.ContainerInstance/containerGroups'
             }
@@ -353,7 +353,7 @@ module newVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (networkin
               name: networkingConfiguration.?containerAppSubnetName ?? 'app-subnet'
               addressPrefix: networkingConfiguration.?containerAppSubnetAddressPrefix ?? '10.0.1.0/24'
               natGatewayResourceId: empty(networkingConfiguration.?natGatewayResourceId ?? '') && privateNetworking
-                ? natGateway!.outputs.resourceId
+                ? natGateway.?outputs.resourceId
                 : networkingConfiguration.?natGatewayResourceId ?? ''
               delegation: 'Microsoft.App/environments'
             }
@@ -390,7 +390,7 @@ module appEnvironment 'br/public:avm/res/app/managed-environment:0.11.3' = if (c
     infrastructureResourceGroupName: infrastructureResourceGroupName
     infrastructureSubnetResourceId: networkingConfiguration.networkType == 'createNew'
       ? filter(
-          newVnet!.outputs.subnetResourceIds,
+          newVnet.?outputs.subnetResourceIds ?? [],
           subnetId => contains(subnetId, networkingConfiguration.?containerAppSubnetName ?? 'app-subnet')
         )[0]
       : networkingConfiguration.networkType == 'useExisting'
@@ -426,7 +426,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:1.4.0' = if (privateNet
     location: location
     enableTelemetry: enableTelemetry
     publicIpResourceIds: [
-      networkingConfiguration.?natGatewayPublicIpAddressResourceId ?? natGatewayPublicIp!.outputs.resourceId
+      networkingConfiguration.?natGatewayPublicIpAddressResourceId ?? natGatewayPublicIp.?outputs.resourceId
     ]
   }
 }
@@ -528,7 +528,7 @@ module aciJob 'br/public:avm/res/container-instance/container-group:0.6.0' = [
             {
               subnetResourceId: networkingConfiguration.networkType == 'createNew'
                 ? filter(
-                    newVnet!.outputs.subnetResourceIds,
+                    newVnet.?outputs.subnetResourceIds ?? [],
                     subnetId => contains(subnetId, networkingConfiguration.?containerInstanceSubnetName ?? 'aci-subnet')
                   )[0]
                 : '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.computeNetworking.containerInstanceSubnetName}'
@@ -664,7 +664,7 @@ module acaJob 'br/public:avm/res/app/job:0.7.1' = if (contains(computeTypes, 'az
         env: selfHostedConfig.selfHostedType == 'github' ? acaGitHubEnvVariables : acaAzureDevOpsEnvVariables
       }
     ]
-    environmentResourceId: appEnvironment!.outputs.resourceId
+    environmentResourceId: appEnvironment.?outputs.resourceId ?? ''
     workloadProfileName: 'consumption'
   }
 }
@@ -736,7 +736,7 @@ module acaPlaceholderJob 'br/public:avm/res/app/job:0.7.1' = if (contains(comput
         ]
       }
     ]
-    environmentResourceId: appEnvironment!.outputs.resourceId
+    environmentResourceId: appEnvironment.?outputs.resourceId ?? ''
     workloadProfileName: 'consumption'
   }
 }
@@ -748,7 +748,7 @@ module deploymentScriptPrivateDNSZone 'br/public:avm/res/network/private-dns-zon
       {
         virtualNetworkResourceId: networkingConfiguration.networkType == 'useExisting'
           ? networkingConfiguration.virtualNetworkResourceId
-          : newVnet!.outputs.resourceId
+          : newVnet.?outputs.resourceId
       }
     ]
     enableTelemetry: enableTelemetry
@@ -781,7 +781,7 @@ module deploymentScriptStg 'br/public:avm/res/storage/storage-account:0.26.2' = 
         subnetResourceId: networkingConfiguration.networkType == 'useExisting'
           ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.computeNetworking.containerAppDeploymentScriptSubnetName}'
           : filter(
-              newVnet!.outputs.subnetResourceIds,
+              newVnet.?outputs.subnetResourceIds ?? [],
               subnetId =>
                 contains(
                   subnetId,
@@ -826,7 +826,7 @@ module deploymentScriptAcrStg 'br/public:avm/res/storage/storage-account:0.26.2'
         subnetResourceId: networkingConfiguration.networkType == 'useExisting'
           ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.?containerRegistryPrivateEndpointSubnetName}'
           : filter(
-              newVnet!.outputs.subnetResourceIds,
+              newVnet.?outputs.subnetResourceIds ?? [],
               subnetId =>
                 contains(subnetId, networkingConfiguration.?containerRegistryPrivateEndpointSubnetName ?? 'acr-subnet')
             )[0]
@@ -865,11 +865,11 @@ module runPlaceHolderAgent 'br/public:avm/res/resources/deployment-script:0.5.1'
       ]
     }
     enableTelemetry: enableTelemetry
-    storageAccountResourceId: privateNetworking ? deploymentScriptStg!.outputs.resourceId : null
+    storageAccountResourceId: privateNetworking ? deploymentScriptStg.?outputs.resourceId : null
     subnetResourceIds: privateNetworking && networkingConfiguration.networkType == 'createNew'
       ? [
           filter(
-            newVnet!.outputs.subnetResourceIds,
+            newVnet.?outputs.subnetResourceIds ?? [],
             subnetId => contains(subnetId, networkingConfiguration.?containerInstanceSubnetName ?? 'aci-subnet')
           )[0]
         ]
@@ -878,7 +878,7 @@ module runPlaceHolderAgent 'br/public:avm/res/resources/deployment-script:0.5.1'
               '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.computeNetworking.?containerInstanceSubnetName}'
             ]
           : null
-    arguments: '-resourceGroup ${resourceGroup().name} -jobName ${acaPlaceholderJob!.outputs.name} -subscriptionId ${subscription().subscriptionId}'
+    arguments: '-resourceGroup ${resourceGroup().name} -jobName ${acaPlaceholderJob.?outputs.name} -subscriptionId ${subscription().subscriptionId}'
     scriptContent: loadTextContent('./scripts/startAzureDevOpsContainerJob.ps1')
   }
 }
@@ -897,11 +897,11 @@ module acrNetworkByPassTasks 'br/public:avm/res/resources/deployment-script:0.5.
       ]
     }
     enableTelemetry: enableTelemetry
-    storageAccountResourceId: privateNetworking ? deploymentScriptAcrStg!.outputs.resourceId : null
+    storageAccountResourceId: privateNetworking ? deploymentScriptAcrStg.?outputs.resourceId : null
     subnetResourceIds: (privateNetworking && networkingConfiguration.networkType == 'createNew')
       ? [
           filter(
-            newVnet!.outputs.subnetResourceIds,
+            newVnet.?outputs.subnetResourceIds ?? [],
             subnetId =>
               contains(
                 subnetId,

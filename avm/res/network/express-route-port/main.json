@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "7068607226996768601"
+      "version": "0.38.5.1644",
+      "templateHash": "11200223443040609847"
     },
     "name": "ExpressRoute Ports",
     "description": "This module deploys an Express Route Port resource used by Express Route Direct."
@@ -317,10 +317,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/ExpressRoutePorts@2024-05-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     }
   },
   "variables": {

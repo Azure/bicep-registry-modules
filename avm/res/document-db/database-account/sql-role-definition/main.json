@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "12119240119487993734"
+      "version": "0.38.33.27573",
+      "templateHash": "8600771348637416058"
     },
     "name": "DocumentDB Database Account SQL Role Definitions.",
     "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
@@ -26,6 +26,13 @@
           "type": "string",
           "metadata": {
             "description": "Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription."
+          }
+        },
+        "scope": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level."
           }
         }
       },
@@ -60,9 +67,9 @@
       "items": {
         "type": "string"
       },
-      "defaultValue": [],
+      "minLength": 1,
       "metadata": {
-        "description": "Optional. An array of data actions that are allowed."
+        "description": "Required. An array of data actions that are allowed."
       }
     },
     "assignableScopes": {
@@ -84,9 +91,39 @@
       "metadata": {
         "description": "Optional. An array of SQL Role Assignments to be created for the SQL Role Definition."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
+  "variables": {
+    "enableReferencedModulesTelemetry": false
+  },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.doctdb-dbacct-sqlroledefinition.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -96,7 +133,7 @@
     "sqlRoleDefinition": {
       "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
       "apiVersion": "2024-11-15",
-      "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role')))]",
+      "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName'))))]",
       "properties": {
         "assignableScopes": "[coalesce(parameters('assignableScopes'), createArray(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))))]",
         "permissions": [
@@ -114,7 +151,7 @@
         "count": "[length(coalesce(parameters('sqlRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-sqlra-{1}', uniqueString(deployment().name), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -125,14 +162,17 @@
           "databaseAccountName": {
             "value": "[parameters('databaseAccountName')]"
           },
-          "roleDefinitionId": {
-            "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role')))]"
+          "roleDefinitionIdOrName": {
+            "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName'))))]"
           },
           "principalId": {
             "value": "[coalesce(parameters('sqlRoleAssignments'), createArray())[copyIndex()].principalId]"
           },
           "name": {
             "value": "[tryGet(coalesce(parameters('sqlRoleAssignments'), createArray())[copyIndex()], 'name')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -142,8 +182,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "11941443499827753966"
+              "version": "0.38.33.27573",
+              "templateHash": "17007224102611744259"
             },
             "name": "DocumentDB Database Account SQL Role Assignments.",
             "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -168,14 +208,56 @@
                 "description": "Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription."
               }
             },
-            "roleDefinitionId": {
+            "roleDefinitionIdOrName": {
               "type": "string",
               "metadata": {
                 "description": "Required. The unique identifier of the associated SQL Role Definition."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
+            "scope": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level."
+              }
             }
           },
+          "variables": {
+            "builtInDataPlaneRoleNames": {
+              "Cosmos DB Built-in Data Reader": "[format('{0}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))]",
+              "Cosmos DB Built-in Data Contributor": "[format('{0}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))]"
+            },
+            "formattedRoleDefinition": "[coalesce(tryGet(variables('builtInDataPlaneRoleNames'), parameters('roleDefinitionIdOrName')), if(contains(parameters('roleDefinitionIdOrName'), '/sqlRoleDefinitions/'), parameters('roleDefinitionIdOrName'), format('{0}/sqlRoleDefinitions/{1}', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('roleDefinitionIdOrName'))))]",
+            "formattedScope": "[replace(replace(coalesce(parameters('scope'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))), '/sqlDatabases/', '/dbs/'), '/containers/', '/colls/')]"
+          },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.doctdb-dbacct-sqlroleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -185,11 +267,11 @@
             "sqlRoleAssignment": {
               "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
               "apiVersion": "2024-11-15",
-              "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))))]",
+              "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(variables('formattedRoleDefinition'), parameters('principalId'), variables('formattedScope'))))]",
               "properties": {
                 "principalId": "[parameters('principalId')]",
-                "roleDefinitionId": "[parameters('roleDefinitionId')]",
-                "scope": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))]"
+                "roleDefinitionId": "[variables('formattedRoleDefinition')]",
+                "scope": "[variables('formattedScope')]"
               }
             }
           },
@@ -199,14 +281,14 @@
               "metadata": {
                 "description": "The name of the SQL Role Assignment."
               },
-              "value": "[coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))))]"
+              "value": "[coalesce(parameters('name'), guid(variables('formattedRoleDefinition'), parameters('principalId'), variables('formattedScope')))]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the SQL Role Assignment."
               },
-              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments', parameters('databaseAccountName'), coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))))]"
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments', parameters('databaseAccountName'), coalesce(parameters('name'), guid(variables('formattedRoleDefinition'), parameters('principalId'), variables('formattedScope'))))]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -229,14 +311,14 @@
       "metadata": {
         "description": "The name of the SQL Role Definition."
       },
-      "value": "[coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role'))]"
+      "value": "[coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName')))]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the SQL Role Definition."
       },
-      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role')))]"
+      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName'))))]"
     },
     "resourceGroupName": {
       "type": "string",

@@ -8,6 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Minor metadata update
 - Recompiled template with latest Bicep version
+- Updated references to `avm-common-types` to latest `0.6.1`
 
 ### Breaking Changes
 

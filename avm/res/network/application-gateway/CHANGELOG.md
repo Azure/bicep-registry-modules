@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/application-gateway/CHANGELOG.md).
 
+## 0.7.2
+
+### Changes
+
+- Updated API version to `2024-10-01`
+- Added many resource-derived types for improved module usability
+
+### Breaking Changes
+
+- None
+
 ## 0.7.1
 
 ### Changes
