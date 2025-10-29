@@ -441,6 +441,9 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
       version: 'latest'
     }
     osType: 'Windows'
+    // WAF aligned configuration - Enable automatic patching with platform management
+    patchMode: 'AutomaticByPlatform'
+    bypassPlatformSafetyChecksOnUserSchedule: true
     osDisk: {
       name: 'osdisk-${jumpboxVmName}'
       managedDisk: {
@@ -484,12 +487,12 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
   }
 }
 
-module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.1' = {
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.2' = {
   name: take('${jumpboxVmName}-jumpbox-maintenance-config', 64)
   params: {
     name: 'mc-${jumpboxVmName}'
-    location: location
-    tags: tags
+    location: solutionLocation
+    tags: allTags
     enableTelemetry: enableTelemetry
     extensionProperties: {
       InGuestPatchMode: 'User'

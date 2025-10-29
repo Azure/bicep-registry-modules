@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "13415411744618479785"
+      "templateHash": "1087249569551582634"
     },
     "name": "Build Your Own Copilot Solution Accelerator",
     "description": "This module deploys a comprehensive Build Your Own Copilot solution accelerator with Azure AI Services, CosmosDB, SQL Database, Key Vault, Storage Account, Azure AI Search, and a containerized web application. The solution includes AI Foundry services for GPT and embedding models, supporting both private and public networking configurations with optional WAF-aligned features for monitoring, scalability, and redundancy.",
@@ -9888,6 +9888,12 @@
           "osType": {
             "value": "Windows"
           },
+          "patchMode": {
+            "value": "AutomaticByPlatform"
+          },
+          "bypassPlatformSafetyChecksOnUserSchedule": {
+            "value": true
+          },
           "osDisk": {
             "value": {
               "name": "[format('osdisk-{0}', variables('jumpboxVmName'))]",
@@ -18744,10 +18750,10 @@
             "value": "[format('mc-{0}', variables('jumpboxVmName'))]"
           },
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[variables('solutionLocation')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('allTags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -18796,8 +18802,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "16060601297152129929"
+              "version": "0.38.33.27573",
+              "templateHash": "9651684292850651586"
             },
             "name": "Maintenance Configurations",
             "description": "This module deploys a Maintenance Configuration."
@@ -18824,12 +18830,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             },
@@ -18925,10 +18938,13 @@
             },
             "extensionProperties": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Maintenance/maintenanceConfigurations@2023-04-01#properties/properties/properties/extensionProperties"
+                },
                 "description": "Optional. Gets or sets extensionProperties of the maintenanceConfiguration."
-              }
+              },
+              "defaultValue": {}
             },
             "location": {
               "type": "string",
@@ -18961,10 +18977,13 @@
             },
             "maintenanceWindow": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Maintenance/maintenanceConfigurations@2023-04-01#properties/properties/properties/maintenanceWindow"
+                },
                 "description": "Optional. Definition of a MaintenanceWindow."
-              }
+              },
+              "defaultValue": {}
             },
             "namespace": {
               "type": "string",
@@ -18985,10 +19004,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Maintenance/maintenanceConfigurations@2023-04-01#properties/tags"
+                },
                 "description": "Optional. Gets or sets tags of the resource."
-              }
+              },
+              "nullable": true
             },
             "visibility": {
               "type": "string",
@@ -19004,10 +19026,13 @@
             },
             "installPatches": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Maintenance/maintenanceConfigurations@2023-04-01#properties/properties/properties/installPatches"
+                },
                 "description": "Optional. Configuration settings for VM guest patching with Azure Update Manager."
-              }
+              },
+              "defaultValue": {}
             }
           },
           "variables": {
@@ -19032,7 +19057,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.maintenance-maintenanceconfiguration.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.maintenance-maintenanceconfiguration.{0}.{1}', replace('0.3.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -19071,7 +19096,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "maintenanceConfiguration"
@@ -29446,9 +29471,9 @@
         }
       },
       "dependsOn": [
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -40624,8 +40649,8 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "keyvault",
         "userAssignedIdentity",
         "virtualNetwork"
