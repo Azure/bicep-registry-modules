@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "4901912554181697994"
+      "templateHash": "11095450118541660951"
     },
     "name": "Build Your Own Copilot Solution Accelerator",
     "description": "This module deploys a comprehensive Build Your Own Copilot solution accelerator with Azure AI Services, CosmosDB, SQL Database, Key Vault, Storage Account, Azure AI Search, and a containerized web application. The solution includes AI Foundry services for GPT and embedding models, supporting both private and public networking configurations with optional WAF-aligned features for monitoring, scalability, and redundancy.",
@@ -132,7 +132,7 @@
       }
     },
     "solutionUniqueToken": {
-      "type": "string",
+      "type": "securestring",
       "defaultValue": "[substring(uniqueString(subscription().id, resourceGroup().name, parameters('solutionName')), 0, 5)]",
       "maxLength": 5,
       "metadata": {
@@ -9912,7 +9912,7 @@
             "value": "[coalesce(parameters('vmAdminUsername'), 'JumpboxAdminUser')]"
           },
           "adminPassword": {
-            "value": "[coalesce(parameters('vmAdminPassword'), 'JumpboxAdminP@ssw0rd1234!')]"
+            "value": "[coalesce(parameters('vmAdminPassword'), uniqueString(resourceGroup().id, deployment().name, 'vmAdminPassword', variables('solutionSuffix')))]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -25666,7 +25666,7 @@
             "value": "[parameters('azureAiServiceLocation')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('allTags')]"
           },
           "projectName": {
             "value": "[variables('aiFoundryAiServicesAiProjectResourceName')]"
@@ -29082,8 +29082,8 @@
       },
       "dependsOn": [
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -51063,6 +51063,9 @@
           "location": {
             "value": "[variables('solutionLocation')]"
           },
+          "clientAffinityEnabled": {
+            "value": false
+          },
           "managedIdentities": {
             "value": {
               "userAssignedResourceIds": [
@@ -51080,7 +51083,10 @@
           "siteConfig": {
             "value": {
               "linuxFxVersion": "[format('DOCKER|{0}/{1}:{2}', parameters('containerRegistryHostname'), parameters('containerImageName'), parameters('imageTag'))]",
-              "minTlsVersion": "1.2"
+              "minTlsVersion": "1.2",
+              "http20Enabled": true,
+              "alwaysOn": true,
+              "ftpsState": "FtpsOnly"
             }
           },
           "configs": {

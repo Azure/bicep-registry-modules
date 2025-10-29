@@ -81,6 +81,7 @@ var solutionLocation = empty(location) ? resourceGroup().location : location
 
 @maxLength(5)
 @description('Optional. A unique token for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name.')
+@secure()
 param solutionUniqueToken string = substring(uniqueString(subscription().id, resourceGroup().name, solutionName), 0, 5)
 
 var solutionSuffix = toLower(trim(replace(
@@ -464,7 +465,13 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
     vmSize: vmSize ?? 'Standard_DS2_v2'
     location: solutionLocation
     adminUsername: vmAdminUsername ?? 'JumpboxAdminUser'
-    adminPassword: vmAdminPassword ?? 'JumpboxAdminP@ssw0rd1234!'
+    // WAF aligned configuration - Use provided password or generate a secure unique password
+    adminPassword: vmAdminPassword ?? uniqueString(
+      resourceGroup().id,
+      deployment().name,
+      'vmAdminPassword',
+      solutionSuffix
+    )
     tags: tags
     // WAF aligned configuration for Redundancy - use availability zone when redundancy is enabled
     availabilityZone: enableRedundancy ? 1 : -1
@@ -705,7 +712,7 @@ module aiFoundryAiServices 'modules/ai-services.bicep' = {
   params: {
     name: aiFoundryAiServicesResourceName
     location: azureAiServiceLocation
-    tags: tags
+    tags: allTags
     projectName: aiFoundryAiServicesAiProjectResourceName
     projectDescription: 'AI Foundry Project'
     sku: 'S0'
@@ -1178,6 +1185,7 @@ module webSite 'modules/web-sites.bicep' = {
     name: webSiteResourceName
     tags: tags
     location: solutionLocation
+    clientAffinityEnabled: false
     managedIdentities: {
       userAssignedResourceIds: [userAssignedIdentity!.outputs.resourceId, sqlUserAssignedIdentity!.outputs.resourceId]
     }
@@ -1186,6 +1194,11 @@ module webSite 'modules/web-sites.bicep' = {
     siteConfig: {
       linuxFxVersion: 'DOCKER|${containerRegistryHostname}/${containerImageName}:${imageTag}'
       minTlsVersion: '1.2'
+      // WAF aligned configuration - Enable HTTP/2 for improved protocol efficiency
+      http20Enabled: true
+      // Preserve default values from module
+      alwaysOn: true
+      ftpsState: 'FtpsOnly'
     }
     configs: [
       {
