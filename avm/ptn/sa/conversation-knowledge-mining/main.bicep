@@ -901,12 +901,12 @@ module searchSearchServices 'br/public:avm/res/search/search-service:0.11.1' = {
       }
       {
         roleDefinitionIdOrName: '1407120a-92aa-4202-b7e9-c0e197c71c8f' // Search Index Data Reader
-        principalId: aiFoundryAiServices.outputs.aiProjectInfo.aiprojectSystemAssignedMIPrincipalId
+        principalId: aiFoundryAiServices.outputs.aiProjectInfo.?aiprojectSystemAssignedMIPrincipalId
         principalType: 'ServicePrincipal'
       }
       {
         roleDefinitionIdOrName: '7ca78c08-252a-4471-8644-bb5ff32d4ba0' // Search Service Contributor
-        principalId: aiFoundryAiServices.outputs.aiProjectInfo.aiprojectSystemAssignedMIPrincipalId
+        principalId: aiFoundryAiServices.outputs.aiProjectInfo.?aiprojectSystemAssignedMIPrincipalId
         principalType: 'ServicePrincipal'
       }
     ]

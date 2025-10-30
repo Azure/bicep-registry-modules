@@ -270,7 +270,7 @@ output endpoint string = cognitiveServiceNew.properties.endpoint
 output endpoints endpointType = cognitiveServiceNew.properties.endpoints
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string? = cognitiveServiceNew.identity.principalId
+output systemAssignedMIPrincipalId string? = cognitiveServiceNew.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = cognitiveServiceNew.location

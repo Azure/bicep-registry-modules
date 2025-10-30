@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "14909551203784947049"
+      "templateHash": "3985241988626148196"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -26241,7 +26241,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "5933464226809694974"
+              "templateHash": "12263416082803883874"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service."
@@ -27454,7 +27454,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.38.33.27573",
-                      "templateHash": "3906215661050745307"
+                      "templateHash": "287944693409999275"
                     }
                   },
                   "definitions": {
@@ -28343,13 +28343,6 @@
                       "type": "string",
                       "metadata": {
                         "description": "Optional. Description  for the project which needs to be created."
-                      }
-                    },
-                    "existingFoundryProjectResourceId": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Optional. Provide the existing project resource id in case if it needs to be reused"
                       }
                     }
                   },
@@ -29289,7 +29282,7 @@
                       }
                     },
                     "aiProject": {
-                      "condition": "[or(not(empty(parameters('projectName'))), not(empty(parameters('existingFoundryProjectResourceId'))))]",
+                      "condition": "[not(empty(parameters('projectName')))]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
                       "name": "[take(format('{0}-ai-project-{1}-deployment', parameters('name'), parameters('projectName')), 64)]",
@@ -29313,9 +29306,6 @@
                           },
                           "tags": {
                             "value": "[parameters('tags')]"
-                          },
-                          "existingFoundryProjectResourceId": {
-                            "value": "[parameters('existingFoundryProjectResourceId')]"
                           }
                         },
                         "template": {
@@ -29326,7 +29316,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.38.33.27573",
-                              "templateHash": "4031460352679500277"
+                              "templateHash": "8755414938534395268"
                             }
                           },
                           "definitions": {
@@ -29397,22 +29387,7 @@
                               "metadata": {
                                 "description": "Optional. Tags to be applied to the resources."
                               }
-                            },
-                            "existingFoundryProjectResourceId": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. Use this parameter to use an existing AI project resource ID from different resource group"
-                              }
                             }
-                          },
-                          "variables": {
-                            "useExistingProject": "[not(empty(parameters('existingFoundryProjectResourceId')))]",
-                            "existingProjName": "[if(variables('useExistingProject'), last(split(parameters('existingFoundryProjectResourceId'), '/')), '')]",
-                            "existingAiFoundryAiServicesSubscriptionId": "[if(variables('useExistingProject'), split(parameters('existingFoundryProjectResourceId'), '/')[2], '')]",
-                            "existingAiFoundryAiServicesResourceGroupName": "[if(variables('useExistingProject'), split(parameters('existingFoundryProjectResourceId'), '/')[4], '')]",
-                            "existingAiFoundryAiServicesServiceName": "[if(variables('useExistingProject'), split(parameters('existingFoundryProjectResourceId'), '/')[8], '')]",
-                            "existingProjEndpoint": "[if(variables('useExistingProject'), format('https://{0}.services.ai.azure.com/api/projects/{1}', variables('existingAiFoundryAiServicesServiceName'), variables('existingProjName')), '')]"
                           },
                           "resources": {
                             "cogServiceReference": {
@@ -29422,7 +29397,6 @@
                               "name": "[parameters('aiServicesName')]"
                             },
                             "aiProject": {
-                              "condition": "[not(variables('useExistingProject'))]",
                               "type": "Microsoft.CognitiveServices/accounts/projects",
                               "apiVersion": "2025-06-01",
                               "name": "[format('{0}/{1}', parameters('aiServicesName'), parameters('name'))]",
@@ -29435,15 +29409,6 @@
                                 "description": "[parameters('desc')]",
                                 "displayName": "[parameters('name')]"
                               }
-                            },
-                            "existingAiProject": {
-                              "condition": "[variables('useExistingProject')]",
-                              "existing": true,
-                              "type": "Microsoft.CognitiveServices/accounts/projects",
-                              "apiVersion": "2025-06-01",
-                              "subscriptionId": "[variables('existingAiFoundryAiServicesSubscriptionId')]",
-                              "resourceGroup": "[variables('existingAiFoundryAiServicesResourceGroupName')]",
-                              "name": "[format('{0}/{1}', variables('existingAiFoundryAiServicesServiceName'), variables('existingProjName'))]"
                             }
                           },
                           "outputs": {
@@ -29453,10 +29418,10 @@
                                 "description": "AI Project metadata including name, resource ID, and API endpoint."
                               },
                               "value": {
-                                "name": "[if(variables('useExistingProject'), variables('existingProjName'), parameters('name'))]",
-                                "resourceId": "[if(variables('useExistingProject'), parameters('existingFoundryProjectResourceId'), resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('name')))]",
-                                "apiEndpoint": "[if(variables('useExistingProject'), variables('existingProjEndpoint'), reference('aiProject').endpoints['AI Foundry API'])]",
-                                "aiprojectSystemAssignedMIPrincipalId": "[if(variables('useExistingProject'), reference('existingAiProject', '2025-06-01', 'full').identity.principalId, reference('aiProject', '2025-06-01', 'full').identity.principalId)]"
+                                "name": "[parameters('name')]",
+                                "resourceId": "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('name'))]",
+                                "apiEndpoint": "[reference('aiProject').endpoints['AI Foundry API']]",
+                                "aiprojectSystemAssignedMIPrincipalId": "[reference('aiProject', '2025-06-01', 'full').identity.principalId]"
                               }
                             }
                           }
@@ -29552,7 +29517,7 @@
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[reference('cognitiveServiceNew', '2025-06-01', 'full').identity.principalId]"
+              "value": "[tryGet(tryGet(reference('cognitiveServiceNew', '2025-06-01', 'full'), 'identity'), 'principalId')]"
             },
             "location": {
               "type": "string",
@@ -29586,9 +29551,9 @@
         }
       },
       "dependsOn": [
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -32190,9 +32155,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -32263,12 +32228,12 @@
               },
               {
                 "roleDefinitionIdOrName": "1407120a-92aa-4202-b7e9-c0e197c71c8f",
-                "principalId": "[reference('aiFoundryAiServices').outputs.aiProjectInfo.value.aiprojectSystemAssignedMIPrincipalId]",
+                "principalId": "[tryGet(reference('aiFoundryAiServices').outputs.aiProjectInfo.value, 'aiprojectSystemAssignedMIPrincipalId')]",
                 "principalType": "ServicePrincipal"
               },
               {
                 "roleDefinitionIdOrName": "7ca78c08-252a-4471-8644-bb5ff32d4ba0",
-                "principalId": "[reference('aiFoundryAiServices').outputs.aiProjectInfo.value.aiprojectSystemAssignedMIPrincipalId]",
+                "principalId": "[tryGet(reference('aiFoundryAiServices').outputs.aiProjectInfo.value, 'aiprojectSystemAssignedMIPrincipalId')]",
                 "principalType": "ServicePrincipal"
               }
             ]
@@ -41226,9 +41191,9 @@
       },
       "dependsOn": [
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageDfs)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "userAssignedIdentity",
         "virtualNetwork"
       ]
