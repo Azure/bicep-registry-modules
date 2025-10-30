@@ -11,9 +11,6 @@ metadata description = 'This instance deploys the [Conversation Knowledge Mining
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-sa.ckm-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'sckmswaf'
 
@@ -24,11 +21,18 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param vmAdminPassword string = newGuid()
 
+// ============ //
+// Dependencies //
+// ============ //
+
+#disable-next-line no-hardcoded-location // A value to avoid the allowed location list validation to unnecessarily fail
+var enforcedLocation = 'australiaeast'
+
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-07-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 // ============== //
@@ -39,11 +43,11 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-07-01' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       solutionName: take('${namePrefix}${serviceShort}001', 16)
-      location: resourceLocation
-      aiServiceLocation: resourceLocation
+      location: enforcedLocation
+      aiServiceLocation: enforcedLocation
       enableScalability: true
       enableTelemetry: true
       enableMonitoring: true
