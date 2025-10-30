@@ -454,6 +454,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
     encryptionAtHost: false // Some Azure subscriptions do not support encryption at host
     // WAF aligned configuration - VM maintenance configuration for reduced unplanned disruptions
     maintenanceConfigurationResourceId: maintenanceConfiguration.outputs.resourceId
+
     nicConfigurations: [
       {
         name: 'nic-${jumpboxVmName}'
@@ -463,24 +464,26 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
             subnetResourceId: virtualNetwork!.outputs.jumpboxSubnetResourceId
           }
         ]
-        diagnosticSettings: [
-          {
-            name: 'jumpboxDiagnostics'
-            workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId
-            logCategoriesAndGroups: [
+        diagnosticSettings: enableMonitoring
+          ? [
               {
-                categoryGroup: 'allLogs'
-                enabled: true
+                name: 'jumpboxNicDiagnostics'
+                workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId
+                logCategoriesAndGroups: [
+                  {
+                    categoryGroup: 'allLogs'
+                    enabled: true
+                  }
+                ]
+                metricCategories: [
+                  {
+                    category: 'AllMetrics'
+                    enabled: true
+                  }
+                ]
               }
             ]
-            metricCategories: [
-              {
-                category: 'AllMetrics'
-                enabled: true
-              }
-            ]
-          }
-        ]
+          : []
       }
     ]
     enableTelemetry: enableTelemetry
