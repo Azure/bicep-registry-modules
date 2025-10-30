@@ -1298,6 +1298,10 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
       : []
     tags: tags
   }
+  dependsOn: [
+    storageAccount
+    keyVault
+  ]
 }
 
 //========== Deployment script to upload data ========== //

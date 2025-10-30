@@ -22,7 +22,7 @@ param namePrefix string = '#_namePrefix_#'
 // ============ //
 
 #disable-next-line no-hardcoded-location // A value to avoid the allowed location list validation to unnecessarily fail
-var enforcedLocation = 'australiaeast'
+var enforcedLocation = 'westus'
 
 // General resources
 // =================
@@ -41,6 +41,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
+      solutionName: take('${namePrefix}${serviceShort}001', 16)
       aiServiceLocation: enforcedLocation
     }
   }

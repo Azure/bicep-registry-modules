@@ -144,7 +144,10 @@ This instance deploys the [Conversation Knowledge Mining Solution Accelerator](h
 module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>' = {
   name: 'conversationKnowledgeMiningDeployment'
   params: {
+    // Required parameters
     aiServiceLocation: '<aiServiceLocation>'
+    // Non-required parameters
+    solutionName: '<solutionName>'
   }
 }
 ```
@@ -161,8 +164,13 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "aiServiceLocation": {
       "value": "<aiServiceLocation>"
+    },
+    // Non-required parameters
+    "solutionName": {
+      "value": "<solutionName>"
     }
   }
 }
@@ -178,7 +186,10 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
 ```bicep-params
 using 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>'
 
+// Required parameters
 param aiServiceLocation = '<aiServiceLocation>'
+// Non-required parameters
+param solutionName = '<solutionName>'
 ```
 
 </details>
@@ -205,6 +216,7 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
     enableRedundancy: true
     enableScalability: true
     enableTelemetry: true
+    solutionName: '<solutionName>'
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'adminuser'
   }
@@ -243,6 +255,9 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
     "enableTelemetry": {
       "value": true
     },
+    "solutionName": {
+      "value": "<solutionName>"
+    },
     "vmAdminPassword": {
       "value": "<vmAdminPassword>"
     },
@@ -271,6 +286,7 @@ param enablePrivateNetworking = true
 param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
+param solutionName = '<solutionName>'
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'adminuser'
 ```
