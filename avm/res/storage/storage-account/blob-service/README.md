@@ -48,7 +48,6 @@ This module deploys a Storage Account Blob Service.
 | [`lastAccessTimeTrackingPolicyEnabled`](#parameter-lastaccesstimetrackingpolicyenabled) | bool | The blob service property to configure last access time based tracking policy. When set to true last access time based tracking is enabled. |
 | [`restorePolicyDays`](#parameter-restorepolicydays) | int | How long this blob can be restored. It should be less than DeleteRetentionPolicy days. |
 | [`restorePolicyEnabled`](#parameter-restorepolicyenabled) | bool | The blob service properties for blob restore policy. If point-in-time restore is enabled, then versioning, change feed, and blob soft delete must also be enabled. |
-| [`usingExtendedLocation`](#parameter-usingextendedlocation) | bool | Whether the storage account is using an extended location. |
 
 ### Parameter: `storageAccountName`
 
@@ -605,14 +604,6 @@ How long this blob can be restored. It should be less than DeleteRetentionPolicy
 ### Parameter: `restorePolicyEnabled`
 
 The blob service properties for blob restore policy. If point-in-time restore is enabled, then versioning, change feed, and blob soft delete must also be enabled.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `usingExtendedLocation`
-
-Whether the storage account is using an extended location.
 
 - Required: No
 - Type: bool

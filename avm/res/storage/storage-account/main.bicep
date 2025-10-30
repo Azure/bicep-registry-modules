@@ -662,7 +662,6 @@ module storageAccount_blobServices 'blob-service/main.bicep' = if (!empty(blobSe
     restorePolicyEnabled: blobServices.?restorePolicyEnabled
     restorePolicyDays: blobServices.?restorePolicyDays
     diagnosticSettings: blobServices.?diagnosticSettings
-    usingExtendedLocation: !empty(extendedLocationZone)
   }
 }
 

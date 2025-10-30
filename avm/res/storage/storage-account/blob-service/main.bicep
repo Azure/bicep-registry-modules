@@ -64,9 +64,6 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-@description('Optional. Whether the storage account is using an extended location.')
-param usingExtendedLocation bool = false
-
 #disable-next-line no-unused-vars
 var immutabilityValidation = storageAccount.properties.isHnsEnabled == true && isVersioningEnabled
   ? fail('Configuration error: Versioning for blobs cannot be enabled when hierarchical namespace is enabled.')
@@ -112,7 +109,7 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2025-01-01
     }
     isVersioningEnabled: isVersioningEnabled
     // lastAccessTimeTrackingPolicy not supported for old storage kinds or for extended zones
-    lastAccessTimeTrackingPolicy: storageAccount.kind != 'Storage' && !usingExtendedLocation
+    lastAccessTimeTrackingPolicy: storageAccount.kind != 'Storage' && empty(storageAccount.?extendedLocation)
       ? {
           enable: lastAccessTimeTrackingPolicyEnabled
           name: lastAccessTimeTrackingPolicyEnabled == true ? 'AccessTimeTracking' : null
