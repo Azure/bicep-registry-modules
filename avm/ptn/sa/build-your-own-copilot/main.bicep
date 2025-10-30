@@ -392,18 +392,20 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePr
     skuName: 'Standard'
     location: solutionLocation
     virtualNetworkResourceId: virtualNetwork!.outputs.resourceId
-    diagnosticSettings: [
-      {
-        name: 'bastionDiagnostics'
-        //workspaceResourceId: logAnalyticsWorkspaceResourceId
-        logCategoriesAndGroups: [
+    diagnosticSettings: enableMonitoring
+      ? [
           {
-            categoryGroup: 'allLogs'
-            enabled: true
+            name: 'bastionDiagnostics'
+            workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId
+            logCategoriesAndGroups: [
+              {
+                categoryGroup: 'allLogs'
+                enabled: true
+              }
+            ]
           }
         ]
-      }
-    ]
+      : []
     tags: allTags
     enableTelemetry: enableTelemetry
     publicIPAddressObject: {
@@ -1283,6 +1285,7 @@ module searchService 'br/public:avm/res/search/search-service:0.11.1' = {
     diagnosticSettings: enableMonitoring
       ? [
           {
+            name: 'searchServiceDiagnostics'
             workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId
           }
         ]

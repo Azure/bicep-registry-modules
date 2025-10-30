@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "3461700325374783022"
+      "templateHash": "5585523745809185056"
     },
     "name": "Build Your Own Copilot Solution Accelerator",
     "description": "This module deploys a comprehensive Build Your Own Copilot solution accelerator with Azure AI Services, CosmosDB, SQL Database, Key Vault, Storage Account, Azure AI Search, and a containerized web application. The solution includes AI Foundry services for GPT and embedding models, supporting both private and public networking configurations with optional WAF-aligned features for monitoring, scalability, and redundancy.",
@@ -8153,19 +8153,7 @@
           "virtualNetworkResourceId": {
             "value": "[reference('virtualNetwork').outputs.resourceId.value]"
           },
-          "diagnosticSettings": {
-            "value": [
-              {
-                "name": "bastionDiagnostics",
-                "logCategoriesAndGroups": [
-                  {
-                    "categoryGroup": "allLogs",
-                    "enabled": true
-                  }
-                ]
-              }
-            ]
-          },
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('name', 'bastionDiagnostics', 'workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value, 'logCategoriesAndGroups', createArray(createObject('categoryGroup', 'allLogs', 'enabled', true()))))), createObject('value', createArray()))]",
           "tags": {
             "value": "[variables('allTags')]"
           },
@@ -9844,6 +9832,7 @@
         }
       },
       "dependsOn": [
+        "logAnalyticsWorkspace",
         "virtualNetwork"
       ]
     },
@@ -29454,9 +29443,9 @@
         }
       },
       "dependsOn": [
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -40632,8 +40621,8 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "keyvault",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -53442,7 +53431,7 @@
               }
             }
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', null()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('name', 'searchServiceDiagnostics', 'workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', null()))]",
           "disableLocalAuth": {
             "value": false
           },
