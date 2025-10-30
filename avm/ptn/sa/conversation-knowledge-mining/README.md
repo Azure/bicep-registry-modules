@@ -123,10 +123,13 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/conversation-knowledge-mining:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Waf-Aligned](#example-2-waf-aligned)
+- [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
+- [WAF-aligned configuration with default parameter values](#example-2-waf-aligned-configuration-with-default-parameter-values)
 
-### Example 1: _Defaults_
+### Example 1: _Sandbox configuration with default parameter values_
+
+This instance deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
+
 
 <details>
 
@@ -138,7 +141,9 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
   params: {
     // Required parameters
     aiServiceLocation: '<aiServiceLocation>'
+    // Non-required parameters
     location: '<location>'
+    solutionName: '<solutionName>'
   }
 }
 ```
@@ -159,8 +164,12 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
     "aiServiceLocation": {
       "value": "<aiServiceLocation>"
     },
+    // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "solutionName": {
+      "value": "<solutionName>"
     }
   }
 }
@@ -178,13 +187,18 @@ using 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>'
 
 // Required parameters
 param aiServiceLocation = '<aiServiceLocation>'
+// Non-required parameters
 param location = '<location>'
+param solutionName = '<solutionName>'
 ```
 
 </details>
 <p>
 
-### Example 2: _Waf-Aligned_
+### Example 2: _WAF-aligned configuration with default parameter values_
+
+This instance deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for WAF-aligned environments.
+
 
 <details>
 
@@ -196,7 +210,16 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
   params: {
     // Required parameters
     aiServiceLocation: '<aiServiceLocation>'
+    // Non-required parameters
+    enableMonitoring: true
+    enablePrivateNetworking: true
+    enableRedundancy: true
+    enableScalability: true
+    enableTelemetry: true
     location: '<location>'
+    solutionName: '<solutionName>'
+    vmAdminPassword: '<vmAdminPassword>'
+    vmAdminUsername: 'adminuser'
   }
 }
 ```
@@ -217,8 +240,33 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
     "aiServiceLocation": {
       "value": "<aiServiceLocation>"
     },
+    // Non-required parameters
+    "enableMonitoring": {
+      "value": true
+    },
+    "enablePrivateNetworking": {
+      "value": true
+    },
+    "enableRedundancy": {
+      "value": true
+    },
+    "enableScalability": {
+      "value": true
+    },
+    "enableTelemetry": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
+    },
+    "solutionName": {
+      "value": "<solutionName>"
+    },
+    "vmAdminPassword": {
+      "value": "<vmAdminPassword>"
+    },
+    "vmAdminUsername": {
+      "value": "adminuser"
     }
   }
 }
@@ -236,7 +284,16 @@ using 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>'
 
 // Required parameters
 param aiServiceLocation = '<aiServiceLocation>'
+// Non-required parameters
+param enableMonitoring = true
+param enablePrivateNetworking = true
+param enableRedundancy = true
+param enableScalability = true
+param enableTelemetry = true
 param location = '<location>'
+param solutionName = '<solutionName>'
+param vmAdminPassword = '<vmAdminPassword>'
+param vmAdminUsername = 'adminuser'
 ```
 
 </details>
@@ -249,8 +306,6 @@ param location = '<location>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`aiServiceLocation`](#parameter-aiservicelocation) | string | Location for AI Foundry deployment. This is the location where the AI Foundry resources will be deployed. |
-| [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). |
-| [`solutionName`](#parameter-solutionname) | string | A unique prefix for all resources in this deployment. This should be 3-20 characters long: |
 
 **Optional parameters**
 
@@ -261,24 +316,26 @@ param location = '<location>'
 | [`backendContainerImageName`](#parameter-backendcontainerimagename) | string | The Container Image Name to deploy on the backend. |
 | [`backendContainerImageTag`](#parameter-backendcontainerimagetag) | string | The Container Image Tag to deploy on the backend. |
 | [`backendContainerRegistryHostname`](#parameter-backendcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the backend are located. |
-| [`contentUnderstandingLocation`](#parameter-contentunderstandinglocation) | string | Location for the Content Understanding service deployment: |
-| [`createdBy`](#parameter-createdby) | string | created by user name |
-| [`deploymentType`](#parameter-deploymenttype) | string | GPT model deployment type: |
+| [`contentUnderstandingLocation`](#parameter-contentunderstandinglocation) | string | Location for the Content Understanding service deployment. |
+| [`createdBy`](#parameter-createdby) | string | created by user name. |
+| [`deploymentType`](#parameter-deploymenttype) | string | GPT model deployment type. |
 | [`embeddingDeploymentCapacity`](#parameter-embeddingdeploymentcapacity) | int | Capacity of the Embedding Model deployment. |
-| [`embeddingModel`](#parameter-embeddingmodel) | string | Name of the Text Embedding model to deploy: |
+| [`embeddingModel`](#parameter-embeddingmodel) | string | Name of the Text Embedding model to deploy. |
 | [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
-| [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Enable purge protection for the Key Vault |
+| [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Enable purge protection for the Key Vault. |
 | [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`frontendContainerImageName`](#parameter-frontendcontainerimagename) | string | The Container Image Name to deploy on the frontend. |
 | [`frontendContainerImageTag`](#parameter-frontendcontainerimagetag) | string | The Container Image Tag to deploy on the frontend. |
 | [`frontendContainerRegistryHostname`](#parameter-frontendcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the frontend are located. |
-| [`gptDeploymentCapacity`](#parameter-gptdeploymentcapacity) | int | Capacity of the GPT deployment: |
-| [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy: |
-| [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy: |
-| [`secondaryLocation`](#parameter-secondarylocation) | string | Secondary location for databases creation(example:eastus2): |
+| [`gptDeploymentCapacity`](#parameter-gptdeploymentcapacity) | int | Capacity of the GPT deployment. |
+| [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. |
+| [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy. |
+| [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). |
+| [`secondaryLocation`](#parameter-secondarylocation) | string | Secondary location for databases creation(example:eastus2). |
+| [`solutionName`](#parameter-solutionname) | string | A unique prefix for all resources in this deployment. This should be 3-20 characters long: |
 | [`solutionUniqueText`](#parameter-solutionuniquetext) | string | A unique text value for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
 | [`tags`](#parameter-tags) | object | The tags to apply to all deployed Azure resources. |
 | [`vmAdminPassword`](#parameter-vmadminpassword) | securestring | Admin password for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true. |
@@ -305,34 +362,6 @@ Location for AI Foundry deployment. This is the location where the AI Foundry re
     'westus3'
   ]
   ```
-
-### Parameter: `location`
-
-Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'australiaeast'
-    'centralus'
-    'eastasia'
-    'eastus2'
-    'japaneast'
-    'northeurope'
-    'southeastasia'
-    'uksouth'
-  ]
-  ```
-
-### Parameter: `solutionName`
-
-A unique prefix for all resources in this deployment. This should be 3-20 characters long:
-
-- Required: No
-- Type: string
-- Default: `'kmgen'`
 
 ### Parameter: `azureAiAgentApiVersion`
 
@@ -376,7 +405,7 @@ The Container Registry hostname where the docker images for the backend are loca
 
 ### Parameter: `contentUnderstandingLocation`
 
-Location for the Content Understanding service deployment:
+Location for the Content Understanding service deployment.
 
 - Required: No
 - Type: string
@@ -391,7 +420,7 @@ Location for the Content Understanding service deployment:
 
 ### Parameter: `createdBy`
 
-created by user name
+created by user name.
 
 - Required: No
 - Type: string
@@ -399,7 +428,7 @@ created by user name
 
 ### Parameter: `deploymentType`
 
-GPT model deployment type:
+GPT model deployment type.
 
 - Required: No
 - Type: string
@@ -423,7 +452,7 @@ Capacity of the Embedding Model deployment.
 
 ### Parameter: `embeddingModel`
 
-Name of the Text Embedding model to deploy:
+Name of the Text Embedding model to deploy.
 
 - Required: No
 - Type: string
@@ -453,7 +482,7 @@ Enable private networking for applicable resources, aligned with the Well Archit
 
 ### Parameter: `enablePurgeProtection`
 
-Enable purge protection for the Key Vault
+Enable purge protection for the Key Vault.
 
 - Required: No
 - Type: bool
@@ -509,7 +538,7 @@ The Container Registry hostname where the docker images for the frontend are loc
 
 ### Parameter: `gptDeploymentCapacity`
 
-Capacity of the GPT deployment:
+Capacity of the GPT deployment.
 
 - Required: No
 - Type: int
@@ -518,7 +547,7 @@ Capacity of the GPT deployment:
 
 ### Parameter: `gptModelName`
 
-Name of the GPT model to deploy:
+Name of the GPT model to deploy.
 
 - Required: No
 - Type: string
@@ -526,19 +555,35 @@ Name of the GPT model to deploy:
 
 ### Parameter: `gptModelVersion`
 
-Version of the GPT model to deploy:
+Version of the GPT model to deploy.
 
 - Required: No
 - Type: string
 - Default: `'2024-07-18'`
 
+### Parameter: `location`
+
+Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
+
 ### Parameter: `secondaryLocation`
 
-Secondary location for databases creation(example:eastus2):
+Secondary location for databases creation(example:eastus2).
 
 - Required: No
 - Type: string
 - Default: `'eastus2'`
+
+### Parameter: `solutionName`
+
+A unique prefix for all resources in this deployment. This should be 3-20 characters long:
+
+- Required: No
+- Type: string
+- Default: `'kmgen'`
 
 ### Parameter: `solutionUniqueText`
 

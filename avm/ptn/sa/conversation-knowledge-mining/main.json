@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "925817227684075697"
+      "templateHash": "2210906008546856085"
     }
   },
   "parameters": {
@@ -16,26 +16,17 @@
       "minLength": 3,
       "maxLength": 16,
       "metadata": {
-        "description": "Required. A unique prefix for all resources in this deployment. This should be 3-20 characters long:"
+        "description": "Optional. A unique prefix for all resources in this deployment. This should be 3-20 characters long:"
       }
     },
     "location": {
       "type": "string",
-      "allowedValues": [
-        "australiaeast",
-        "centralus",
-        "eastasia",
-        "eastus2",
-        "japaneast",
-        "northeurope",
-        "southeastasia",
-        "uksouth"
-      ],
+      "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "azd": {
           "type": "location"
         },
-        "description": "Required. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions)."
+        "description": "Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions)."
       }
     },
     "aiServiceLocation": {
@@ -73,7 +64,7 @@
         "azd": {
           "type": "location"
         },
-        "description": "Optional. Location for the Content Understanding service deployment:"
+        "description": "Optional. Location for the Content Understanding service deployment."
       },
       "minLength": 1
     },
@@ -82,7 +73,7 @@
       "defaultValue": "eastus2",
       "minLength": 1,
       "metadata": {
-        "description": "Optional. Secondary location for databases creation(example:eastus2):"
+        "description": "Optional. Secondary location for databases creation(example:eastus2)."
       }
     },
     "deploymentType": {
@@ -94,21 +85,21 @@
       ],
       "minLength": 1,
       "metadata": {
-        "description": "Optional. GPT model deployment type:"
+        "description": "Optional. GPT model deployment type."
       }
     },
     "gptModelName": {
       "type": "string",
       "defaultValue": "gpt-4o-mini",
       "metadata": {
-        "description": "Optional. Name of the GPT model to deploy:"
+        "description": "Optional. Name of the GPT model to deploy."
       }
     },
     "gptModelVersion": {
       "type": "string",
       "defaultValue": "2024-07-18",
       "metadata": {
-        "description": "Optional. Version of the GPT model to deploy:"
+        "description": "Optional. Version of the GPT model to deploy."
       }
     },
     "azureOpenAIApiVersion": {
@@ -130,7 +121,7 @@
       "defaultValue": 150,
       "minValue": 10,
       "metadata": {
-        "description": "Optional. Capacity of the GPT deployment:"
+        "description": "Optional. Capacity of the GPT deployment."
       }
     },
     "embeddingModel": {
@@ -141,7 +132,7 @@
       ],
       "minLength": 1,
       "metadata": {
-        "description": "Optional. Name of the Text Embedding model to deploy:"
+        "description": "Optional. Name of the Text Embedding model to deploy."
       }
     },
     "embeddingDeploymentCapacity": {
@@ -243,7 +234,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Enable purge protection for the Key Vault"
+        "description": "Optional. Enable purge protection for the Key Vault."
       }
     },
     "vmAdminUsername": {
@@ -271,7 +262,7 @@
       "type": "string",
       "defaultValue": "[if(contains(deployer(), 'userPrincipalName'), split(deployer().userPrincipalName, '@')[0], deployer().objectId)]",
       "metadata": {
-        "description": "Optional. created by user name"
+        "description": "Optional. created by user name."
       }
     },
     "solutionUniqueText": {
@@ -371,7 +362,7 @@
       }
     ],
     "aiFoundryAiServicesCUResourceName": "[format('aif-{0}-cu', variables('solutionSuffix'))]",
-    "aiServicesName_cu": "[format('aisa-{0}-cu', variables('solutionSuffix'))]",
+    "aiServicesNameCu": "[format('aisa-{0}-cu', variables('solutionSuffix'))]",
     "aiSearchName": "[format('srch-{0}', variables('solutionSuffix'))]",
     "storageAccountName": "[format('st{0}', variables('solutionSuffix'))]",
     "cosmosDbResourceName": "[format('cosmos-{0}', variables('solutionSuffix'))]",
@@ -397,7 +388,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.ptn.sa-multiagentcustauteng.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.ptn.sa-convknowledgemining.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -22098,7 +22089,7 @@
         }
       }
     },
-    "keyvault": {
+    "keyVault": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[take(format('avm.res.key-vault.vault.{0}', variables('keyVaultName')), 64)]",
@@ -22231,7 +22222,7 @@
               },
               {
                 "name": "AZURE-OPENAI-CU-ENDPOINT",
-                "value": "[reference('cognitiveServicesCu').outputs.endpoints.value['OpenAI Language Model Instance API']]"
+                "value": "[format('https://{0}.openai.azure.com/', variables('aiServicesNameCu'))]"
               },
               {
                 "name": "AZURE-OPENAI-CU-VERSION",
@@ -25666,7 +25657,6 @@
       "dependsOn": [
         "aiFoundryAiServices",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').keyVault)]",
-        "cognitiveServicesCu",
         "cosmosDb",
         "logAnalyticsWorkspace",
         "searchSearchServices",
@@ -29115,9 +29105,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -29134,7 +29124,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('aiServicesName_cu')]"
+            "value": "[variables('aiServicesNameCu')]"
           },
           "location": {
             "value": "[parameters('contentUnderstandingLocation')]"
@@ -29170,7 +29160,7 @@
             "value": false
           },
           "customSubDomainName": {
-            "value": "[variables('aiServicesName_cu')]"
+            "value": "[variables('aiServicesNameCu')]"
           },
           "apiProperties": {
             "value": {}
@@ -31719,9 +31709,9 @@
         }
       },
       "dependsOn": [
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -31739,6 +31729,9 @@
         "parameters": {
           "name": {
             "value": "[variables('aiSearchName')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "authOptions": {
             "value": {
@@ -40750,9 +40743,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageDfs)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -45311,6 +45304,9 @@
         "parameters": {
           "name": {
             "value": "[variables('sqlServerResourceName')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "administrators": {
             "value": {

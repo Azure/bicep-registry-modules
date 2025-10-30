@@ -2,22 +2,12 @@ targetScope = 'resourceGroup'
 
 @minLength(3)
 @maxLength(16)
-@description('Required. A unique prefix for all resources in this deployment. This should be 3-20 characters long:')
+@description('Optional. A unique prefix for all resources in this deployment. This should be 3-20 characters long:')
 param solutionName string = 'kmgen'
 
 @metadata({ azd: { type: 'location' } })
-@description('Required. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).')
-@allowed([
-  'australiaeast'
-  'centralus'
-  'eastasia'
-  'eastus2'
-  'japaneast'
-  'northeurope'
-  'southeastasia'
-  'uksouth'
-])
-param location string
+@description('Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).')
+param location string = resourceGroup().location
 
 @allowed([
   'australiaeast'
@@ -43,7 +33,7 @@ param location string
 param aiServiceLocation string
 
 @minLength(1)
-@description('Optional. Location for the Content Understanding service deployment:')
+@description('Optional. Location for the Content Understanding service deployment.')
 @allowed(['swedencentral', 'australiaeast'])
 @metadata({
   azd: {
@@ -53,21 +43,21 @@ param aiServiceLocation string
 param contentUnderstandingLocation string = 'swedencentral'
 
 @minLength(1)
-@description('Optional. Secondary location for databases creation(example:eastus2):')
+@description('Optional. Secondary location for databases creation(example:eastus2).')
 param secondaryLocation string = 'eastus2'
 
 @minLength(1)
-@description('Optional. GPT model deployment type:')
+@description('Optional. GPT model deployment type.')
 @allowed([
   'Standard'
   'GlobalStandard'
 ])
 param deploymentType string = 'GlobalStandard'
 
-@description('Optional. Name of the GPT model to deploy:')
+@description('Optional. Name of the GPT model to deploy.')
 param gptModelName string = 'gpt-4o-mini'
 
-@description('Optional. Version of the GPT model to deploy:')
+@description('Optional. Version of the GPT model to deploy.')
 param gptModelVersion string = '2024-07-18'
 
 @description('Optional. Version of the OpenAI.')
@@ -77,11 +67,11 @@ param azureOpenAIApiVersion string = '2025-01-01-preview'
 param azureAiAgentApiVersion string = '2025-05-01'
 
 @minValue(10)
-@description('Optional. Capacity of the GPT deployment:')
+@description('Optional. Capacity of the GPT deployment.')
 param gptDeploymentCapacity int = 150
 
 @minLength(1)
-@description('Optional. Name of the Text Embedding model to deploy:')
+@description('Optional. Name of the Text Embedding model to deploy.')
 @allowed([
   'text-embedding-ada-002'
 ])
@@ -127,7 +117,7 @@ param enableRedundancy bool = false
 @description('Optional. Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.')
 param enableScalability bool = false
 
-@description('Optional. Enable purge protection for the Key Vault')
+@description('Optional. Enable purge protection for the Key Vault.')
 param enablePurgeProtection bool = false
 
 @description('Optional. Admin username for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true.')
@@ -141,7 +131,7 @@ param vmAdminPassword string?
 @description('Optional. Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true.')
 param vmSize string = 'Standard_DS2_v2'
 
-@description('Optional. created by user name')
+@description('Optional. created by user name.')
 param createdBy string = contains(deployer(), 'userPrincipalName')
   ? split(deployer().userPrincipalName, '@')[0]
   : deployer().objectId
@@ -210,7 +200,7 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2024-07-01' = {
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.sa-multiagentcustauteng.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.ptn.sa-convknowledgemining.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -483,7 +473,7 @@ module sqlUserAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned
 
 // ========== Key Vault Module ========== //
 var keyVaultName = 'kv-${solutionSuffix}'
-module keyvault 'br/public:avm/res/key-vault/vault:0.13.3' = {
+module keyVault 'br/public:avm/res/key-vault/vault:0.13.3' = {
   name: take('avm.res.key-vault.vault.${keyVaultName}', 64)
   params: {
     name: keyVaultName
@@ -598,7 +588,7 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.3' = {
       }
       {
         name: 'AZURE-OPENAI-CU-ENDPOINT'
-        value: cognitiveServicesCu.outputs.endpoints['OpenAI Language Model Instance API']
+        value: 'https://${aiServicesNameCu}.openai.azure.com/'
       }
       {
         name: 'AZURE-OPENAI-CU-VERSION'
@@ -752,11 +742,11 @@ module aiFoundryAiServices 'modules/ai-services.bicep' = {
 
 // AI Foundry: AI Services Content Understanding
 var aiFoundryAiServicesCUResourceName = 'aif-${solutionSuffix}-cu'
-var aiServicesName_cu = 'aisa-${solutionSuffix}-cu'
+var aiServicesNameCu = 'aisa-${solutionSuffix}-cu'
 module cognitiveServicesCu 'br/public:avm/res/cognitive-services/account:0.13.2' = {
   name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesCUResourceName}', 64)
   params: {
-    name: aiServicesName_cu
+    name: aiServicesNameCu
     location: contentUnderstandingLocation
     tags: tags
     enableTelemetry: enableTelemetry
@@ -770,7 +760,7 @@ module cognitiveServicesCu 'br/public:avm/res/cognitive-services/account:0.13.2'
     }
     managedIdentities: { userAssignedResourceIds: [userAssignedIdentity!.outputs.resourceId] } //To create accounts or projects, you must enable a managed identity on your resource
     disableLocalAuth: false //Added this in order to retrieve the keys. Evaluate alternatives
-    customSubDomainName: aiServicesName_cu
+    customSubDomainName: aiServicesNameCu
     apiProperties: {
       // staticsEnabled: false
     }
@@ -815,8 +805,8 @@ var aiSearchName = 'srch-${solutionSuffix}'
 module searchSearchServices 'br/public:avm/res/search/search-service:0.11.1' = {
   name: take('avm.res.search.search-service.${aiSearchName}', 64)
   params: {
-    // Required parameters
     name: aiSearchName
+    enableTelemetry: enableTelemetry
     authOptions: {
       aadOrApiKey: {
         aadAuthFailureMode: 'http401WithBearerChallenge'
@@ -1129,6 +1119,7 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
   name: take('avm.res.sql.server.${sqlServerResourceName}', 64)
   params: {
     name: sqlServerResourceName
+    enableTelemetry: enableTelemetry
     administrators: {
       azureADOnlyAuthentication: true
       login: userAssignedIdentity.outputs.name
