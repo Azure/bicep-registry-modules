@@ -94,64 +94,64 @@ param certificate certificateType?
 @description('Optional. The AppLogsConfiguration for the Managed Environment.')
 param appLogsConfiguration appLogsConfigurationType?
 
-// var formattedUserAssignedIdentities = reduce(
-//   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
-//   {},
-//   (cur, next) => union(cur, next)
-// ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-// var identity = !empty(managedIdentities)
-//   ? {
-//       type: (managedIdentities.?systemAssigned ?? false)
-//         ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-//         : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
-//       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
-//     }
-//   : null
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
-// var builtInRoleNames = {
-//   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-//   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
-//   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-//   'Role Based Access Control Administrator': subscriptionResourceId(
-//     'Microsoft.Authorization/roleDefinitions',
-//     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
-//   )
-//   'User Access Administrator': subscriptionResourceId(
-//     'Microsoft.Authorization/roleDefinitions',
-//     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
-//   )
-// }
+var builtInRoleNames = {
+  Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+  Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+  Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+  'Role Based Access Control Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
+}
 
-// var formattedRoleAssignments = [
-//   for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
-//     roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
-//         roleAssignment.roleDefinitionIdOrName,
-//         '/providers/Microsoft.Authorization/roleDefinitions/'
-//       )
-//       ? roleAssignment.roleDefinitionIdOrName
-//       : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
-//   })
-// ]
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
-// #disable-next-line no-deployments-resources
-// resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableTelemetry) {
-//   name: '46d3xbcp.res.app-managedenvironment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-//   properties: {
-//     mode: 'Incremental'
-//     template: {
-//       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-//       contentVersion: '1.0.0.0'
-//       resources: []
-//       outputs: {
-//         telemetry: {
-//           type: 'String'
-//           value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-//         }
-//       }
-//     }
-//   }
-// }
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.app-managedenvironment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' existing = if (!empty(appLogsConfiguration.?logAnalyticsWorkspaceResourceId)) {
   name: last(split(appLogsConfiguration.?logAnalyticsWorkspaceResourceId!, '/'))!
@@ -161,159 +161,159 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02
   )
 }
 
-// resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-preview' = {
-//   name: name
-//   location: location
-//   tags: tags
-//   identity: identity
-//   properties: {
-//     appInsightsConfiguration: {
-//       connectionString: appInsightsConnectionString
-//     }
-//     appLogsConfiguration: !empty(appLogsConfiguration)
-//       ? {
-//           destination: appLogsConfiguration!.destination
-//           ...(!empty(appLogsConfiguration.?logAnalyticsWorkspaceResourceId)
-//             ? {
-//                 logAnalyticsConfiguration: {
-//                   customerId: logAnalyticsWorkspace!.properties.customerId
-//                   sharedKey: logAnalyticsWorkspace!.listKeys().primarySharedKey
-//                 }
-//               }
-//             : {})
-//         }
-//       : null
-//     daprAIConnectionString: daprAIConnectionString
-//     daprAIInstrumentationKey: daprAIInstrumentationKey
-//     customDomainConfiguration: {
-//       certificatePassword: certificatePassword
-//       certificateValue: certificateValue
-//       dnsSuffix: dnsSuffix
-//       certificateKeyVaultProperties: !empty(certificate.?certificateKeyVaultProperties)
-//         ? {
-//             identity: certificate!.?certificateKeyVaultProperties!.identityResourceId
-//             keyVaultUrl: certificate!.?certificateKeyVaultProperties!.keyVaultUrl
-//           }
-//         : null
-//     }
-//     openTelemetryConfiguration: openTelemetryConfiguration
-//     peerTrafficConfiguration: {
-//       encryption: {
-//         enabled: peerTrafficEncryption
-//       }
-//     }
-//     publicNetworkAccess: publicNetworkAccess
-//     vnetConfiguration: {
-//       internal: internal
-//       infrastructureSubnetId: infrastructureSubnetResourceId
-//       dockerBridgeCidr: !empty(infrastructureSubnetResourceId) ? dockerBridgeCidr : null
-//       platformReservedCidr: empty(workloadProfiles) && !empty(infrastructureSubnetResourceId)
-//         ? platformReservedCidr
-//         : null
-//       platformReservedDnsIP: empty(workloadProfiles) && !empty(infrastructureSubnetResourceId)
-//         ? platformReservedDnsIP
-//         : null
-//     }
-//     workloadProfiles: workloadProfiles
-//     zoneRedundant: zoneRedundant
-//     infrastructureResourceGroup: infrastructureResourceGroupName
-//   }
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-preview' = {
+  name: name
+  location: location
+  tags: tags
+  identity: identity
+  properties: {
+    appInsightsConfiguration: {
+      connectionString: appInsightsConnectionString
+    }
+    appLogsConfiguration: !empty(appLogsConfiguration)
+      ? {
+          destination: appLogsConfiguration!.destination
+          ...(!empty(appLogsConfiguration.?logAnalyticsWorkspaceResourceId)
+            ? {
+                logAnalyticsConfiguration: {
+                  customerId: logAnalyticsWorkspace!.properties.customerId
+                  sharedKey: logAnalyticsWorkspace!.listKeys().primarySharedKey
+                }
+              }
+            : {})
+        }
+      : null
+    daprAIConnectionString: daprAIConnectionString
+    daprAIInstrumentationKey: daprAIInstrumentationKey
+    customDomainConfiguration: {
+      certificatePassword: certificatePassword
+      certificateValue: certificateValue
+      dnsSuffix: dnsSuffix
+      certificateKeyVaultProperties: !empty(certificate.?certificateKeyVaultProperties)
+        ? {
+            identity: certificate!.?certificateKeyVaultProperties!.identityResourceId
+            keyVaultUrl: certificate!.?certificateKeyVaultProperties!.keyVaultUrl
+          }
+        : null
+    }
+    openTelemetryConfiguration: openTelemetryConfiguration
+    peerTrafficConfiguration: {
+      encryption: {
+        enabled: peerTrafficEncryption
+      }
+    }
+    publicNetworkAccess: publicNetworkAccess
+    vnetConfiguration: {
+      internal: internal
+      infrastructureSubnetId: infrastructureSubnetResourceId
+      dockerBridgeCidr: !empty(infrastructureSubnetResourceId) ? dockerBridgeCidr : null
+      platformReservedCidr: empty(workloadProfiles) && !empty(infrastructureSubnetResourceId)
+        ? platformReservedCidr
+        : null
+      platformReservedDnsIP: empty(workloadProfiles) && !empty(infrastructureSubnetResourceId)
+        ? platformReservedDnsIP
+        : null
+    }
+    workloadProfiles: workloadProfiles
+    zoneRedundant: zoneRedundant
+    infrastructureResourceGroup: infrastructureResourceGroupName
+  }
 
-//   resource storage 'storages' = [
-//     for storage in (storages ?? []): {
-//       name: storage.shareName
-//       properties: {
-//         nfsAzureFile: storage.kind == 'NFS'
-//           ? {
-//               accessMode: storage.accessMode
-//               server: '${storage.storageAccountName}.file.${environment().suffixes.storage}'
-//               shareName: '/${storage.storageAccountName}/${storage.shareName}'
-//             }
-//           : null
-//         azureFile: storage.kind == 'SMB'
-//           ? {
-//               accessMode: storage.accessMode
-//               accountName: storage.storageAccountName
-//               accountKey: listkeys(
-//                 resourceId('Microsoft.Storage/storageAccounts', storage.storageAccountName),
-//                 '2025-01-01'
-//               ).keys[0].value
-//               shareName: storage.shareName
-//             }
-//           : null
-//       }
-//     }
-//   ]
-// }
+  resource storage 'storages' = [
+    for storage in (storages ?? []): {
+      name: storage.shareName
+      properties: {
+        nfsAzureFile: storage.kind == 'NFS'
+          ? {
+              accessMode: storage.accessMode
+              server: '${storage.storageAccountName}.file.${environment().suffixes.storage}'
+              shareName: '/${storage.storageAccountName}/${storage.shareName}'
+            }
+          : null
+        azureFile: storage.kind == 'SMB'
+          ? {
+              accessMode: storage.accessMode
+              accountName: storage.storageAccountName
+              accountKey: listkeys(
+                resourceId('Microsoft.Storage/storageAccounts', storage.storageAccountName),
+                '2025-01-01'
+              ).keys[0].value
+              shareName: storage.shareName
+            }
+          : null
+      }
+    }
+  ]
+}
 
-// resource managedEnvironment_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-//   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
-//     name: roleAssignment.?name ?? guid(
-//       managedEnvironment.id,
-//       roleAssignment.principalId,
-//       roleAssignment.roleDefinitionId
-//     )
-//     properties: {
-//       roleDefinitionId: roleAssignment.roleDefinitionId
-//       principalId: roleAssignment.principalId
-//       description: roleAssignment.?description
-//       principalType: roleAssignment.?principalType
-//       condition: roleAssignment.?condition
-//       conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-//       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
-//     }
-//     scope: managedEnvironment
-//   }
-// ]
+resource managedEnvironment_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(
+      managedEnvironment.id,
+      roleAssignment.principalId,
+      roleAssignment.roleDefinitionId
+    )
+    properties: {
+      roleDefinitionId: roleAssignment.roleDefinitionId
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: managedEnvironment
+  }
+]
 
-// resource managedEnvironment_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-//   name: lock.?name ?? 'lock-${name}'
-//   properties: {
-//     level: lock.?kind ?? ''
-//     notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
-//       ? 'Cannot delete resource or child resources.'
-//       : 'Cannot delete or modify the resource or child resources.')
-//   }
-//   scope: managedEnvironment
-// }
+resource managedEnvironment_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
+  }
+  scope: managedEnvironment
+}
 
-// module managedEnvironment_certificate 'certificates/main.bicep' = if (!empty(certificate)) {
-//   name: '${uniqueString(deployment().name)}-Managed-Environment-Certificate'
-//   params: {
-//     name: certificate.?name ?? 'cert-${name}'
-//     managedEnvironmentName: managedEnvironment.name
-//     certificateKeyVaultProperties: certificate.?certificateKeyVaultProperties
-//     certificateType: certificate.?certificateType
-//     certificateValue: certificate.?certificateValue
-//     certificatePassword: certificate.?certificatePassword
-//     location: certificate.?location
-//     tags: certificate.?tags
-//   }
-// }
+module managedEnvironment_certificate 'certificates/main.bicep' = if (!empty(certificate)) {
+  name: '${uniqueString(deployment().name)}-Managed-Environment-Certificate'
+  params: {
+    name: certificate.?name ?? 'cert-${name}'
+    managedEnvironmentName: managedEnvironment.name
+    certificateKeyVaultProperties: certificate.?certificateKeyVaultProperties
+    certificateType: certificate.?certificateType
+    certificateValue: certificate.?certificateValue
+    certificatePassword: certificate.?certificatePassword
+    location: certificate.?location
+    tags: certificate.?tags
+  }
+}
 
-// @description('The name of the resource group the Managed Environment was deployed into.')
-// output resourceGroupName string = resourceGroup().name
+@description('The name of the resource group the Managed Environment was deployed into.')
+output resourceGroupName string = resourceGroup().name
 
-// @description('The location the resource was deployed into.')
-// output location string = managedEnvironment.location
+@description('The location the resource was deployed into.')
+output location string = managedEnvironment.location
 
-// @description('The name of the Managed Environment.')
-// output name string = managedEnvironment.name
+@description('The name of the Managed Environment.')
+output name string = managedEnvironment.name
 
-// @description('The resource ID of the Managed Environment.')
-// output resourceId string = managedEnvironment.id
+@description('The resource ID of the Managed Environment.')
+output resourceId string = managedEnvironment.id
 
-// @description('The principal ID of the system assigned identity.')
-// output systemAssignedMIPrincipalId string? = managedEnvironment.?identity.?principalId
+@description('The principal ID of the system assigned identity.')
+output systemAssignedMIPrincipalId string? = managedEnvironment.?identity.?principalId
 
-// @description('The Default domain of the Managed Environment.')
-// output defaultDomain string = managedEnvironment.properties.defaultDomain
+@description('The Default domain of the Managed Environment.')
+output defaultDomain string = managedEnvironment.properties.defaultDomain
 
-// @description('The IP address of the Managed Environment.')
-// output staticIp string = managedEnvironment.properties.staticIp
+@description('The IP address of the Managed Environment.')
+output staticIp string = managedEnvironment.properties.staticIp
 
-// @description('The domain verification id for custom domains.')
-// output domainVerificationId string = managedEnvironment.properties.customDomainConfiguration.customDomainVerificationId
+@description('The domain verification id for custom domains.')
+output domainVerificationId string = managedEnvironment.properties.customDomainConfiguration.customDomainVerificationId
 
 output tempOutput object? = !empty(appLogsConfiguration)
   ? {
