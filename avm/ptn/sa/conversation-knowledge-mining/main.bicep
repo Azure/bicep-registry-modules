@@ -1,8 +1,15 @@
 targetScope = 'resourceGroup'
 
+metadata name = 'Conversation Knowledge Mining Solution Accelerator'
+metadata description = '''This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).
+
+> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
+'''
+
+// ========== Parameters ========== //
 @minLength(3)
 @maxLength(16)
-@description('Optional. A unique prefix for all resources in this deployment. This should be 3-20 characters long:')
+@description('Optional. A unique prefix for all resources in this deployment. This should be 3-20 characters long.')
 param solutionName string = 'kmgen'
 
 @metadata({ azd: { type: 'location' } })
@@ -130,6 +137,9 @@ param vmAdminPassword string?
 
 @description('Optional. Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true.')
 param vmSize string = 'Standard_DS2_v2'
+
+@description('Optional. Resource ID of the maintenance configuration to assign to the jumpbox virtual machine. If not provided, a default maintenance configuration will be created.')
+param maintenanceConfigurationResourceId string?
 
 @description('Optional. created by user name.')
 param createdBy string = contains(deployer(), 'userPrincipalName')
@@ -339,6 +349,44 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePr
   }
 }
 
+// ========== Maintenance Configuration ========== //
+var maintenanceConfigurationName = 'mc-${solutionSuffix}'
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.2' = if (enablePrivateNetworking && maintenanceConfigurationResourceId == null) {
+  name: take('avm.res.maintenance.maintenance-configuration.${maintenanceConfigurationName}', 64)
+  params: {
+    name: maintenanceConfigurationName
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    extensionProperties: {
+      InGuestPatchMode: 'User'
+    }
+    maintenanceScope: 'InGuestPatch'
+    maintenanceWindow: {
+      startDateTime: '2024-06-16 00:00'
+      duration: '03:55'
+      timeZone: 'W. Europe Standard Time'
+      recurEvery: '1Day'
+    }
+    visibility: 'Custom'
+    installPatches: {
+      rebootSetting: 'IfRequired'
+      windowsParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+      linuxParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+    }
+  }
+}
+
 // Jumpbox Virtual Machine
 var jumpboxVmName = take('vm-jumpbox-${solutionSuffix}', 15)
 module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enablePrivateNetworking) {
@@ -365,6 +413,8 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
       }
     }
     encryptionAtHost: false // Some Azure subscriptions do not support encryption at host
+    // Assign maintenance configuration for PSRule compliance
+    maintenanceConfigurationResourceId: maintenanceConfigurationResourceId ?? maintenanceConfiguration!.outputs.resourceId
     nicConfigurations: [
       {
         name: 'nic-${jumpboxVmName}'
@@ -861,7 +911,7 @@ module searchSearchServices 'br/public:avm/res/search/search-service:0.11.1' = {
       }
     ]
     partitionCount: 1
-    replicaCount: 1
+    replicaCount: 3 // Minimum 3 replicas for Azure.Search.IndexSLA and minimum 2 for Azure.Search.QuerySLA (PSRule compliance)
     sku: 'standard'
     semanticSearch: 'free'
     // Use the deployment tags provided to the template
@@ -949,11 +999,11 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.27.1' = {
     ]
     networkAcls: {
       bypass: 'AzureServices, Logging, Metrics'
-      defaultAction: 'Allow'
+      defaultAction: enablePrivateNetworking ? 'Deny' : 'Allow'
       virtualNetworkRules: []
     }
     allowSharedKeyAccess: true
-    allowBlobPublicAccess: true
+    allowBlobPublicAccess: false
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     privateEndpoints: enablePrivateNetworking
       ? [
@@ -1014,14 +1064,16 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.27.1' = {
     blobServices: {
       corsRules: []
       deleteRetentionPolicyEnabled: false
-      changeFeedEnabled: false
-      restorePolicyEnabled: false
-      isVersioningEnabled: false
+      containerDeleteRetentionPolicyDays: 7
       containerDeleteRetentionPolicyEnabled: false
-      lastAccessTimeTrackingPolicyEnabled: false
       containers: [
         {
           name: 'data'
+        }
+        // WAF aligned configuration - Container for SQL Vulnerability Assessment scans
+        {
+          name: 'sqlvascans'
+          publicAccess: 'None'
         }
       ]
     }
@@ -1146,6 +1198,8 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
           capacity: 2
         }
         zoneRedundant: enableRedundancy ? true : false
+        // Configure maintenance window for PSRule compliance (Azure.SQL.MaintenanceWindow)
+        maintenanceConfigurationId: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_Default'
       }
     ]
     location: secondaryLocation
@@ -1156,6 +1210,18 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
       ]
     }
     primaryUserAssignedIdentityResourceId: userAssignedIdentity.outputs.resourceId
+    // WAF aligned configuration - SQL Vulnerability Assessment for security monitoring
+    vulnerabilityAssessmentsObj: enableMonitoring
+      ? {
+          name: 'default'
+          storageAccountResourceId: storageAccount.outputs.resourceId
+          storageContainerName: 'sqlvascans'
+          storageContainerPath: 'https://${storageAccountName}.blob.${environment().suffixes.storage}/sqlvascans'
+          recurringScansIsEnabled: true
+          recurringScansEmailSubscriptionAdmins: false
+          recurringScansEmails: []
+        }
+      : null
     privateEndpoints: enablePrivateNetworking
       ? [
           {
