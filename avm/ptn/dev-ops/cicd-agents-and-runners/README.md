@@ -93,7 +93,6 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults for Azure DevOps self-hosted agents using Private networking in an existing vnet.](#example-7-using-only-defaults-for-azure-devops-self-hosted-agents-using-private-networking-in-an-existing-vnet)
 - [Using only defaults for GitHub self-hosted runners using Private networking in an existing vnet.](#example-8-using-only-defaults-for-github-self-hosted-runners-using-private-networking-in-an-existing-vnet)
 - [Using only defaults for GitHub self-hosted runners using Private networking.](#example-9-using-only-defaults-for-github-self-hosted-runners-using-private-networking)
-- [Waf-Aligned](#example-10-waf-aligned)
 
 ### Example 1: _Using only defaults for Azure DevOps self-hosted agents using both Azure Container Instances and Azure Container Apps._
 
@@ -1312,64 +1311,6 @@ param selfHostedConfig = {
 // Non-required parameters
 param location = '<location>'
 param privateNetworking = true
-```
-
-</details>
-<p>
-
-### Example 10: _Waf-Aligned_
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
-  name: 'cicdAgentsAndRunnersDeployment'
-  params: {
-    // Required parameters
-    location: '<location>'
-    name: 'docaarwaf001'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "name": {
-      "value": "docaarwaf001"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>'
-
-// Required parameters
-param location = '<location>'
-param name = 'docaarwaf001'
 ```
 
 </details>
