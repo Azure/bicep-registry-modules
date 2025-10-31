@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.5.1644",
-      "templateHash": "15765748930843496261"
+      "version": "0.38.33.27573",
+      "templateHash": "12976346642080910341"
     },
     "name": "Network Security Perimeter",
     "description": "This module deploys a Network Security Perimeter (NSP)."
@@ -40,6 +40,13 @@
     "resourceAssociationType": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 80,
+          "metadata": {
+            "description": "Required. The name of the resource association."
+          }
+        },
         "privateLinkResource": {
           "type": "string",
           "metadata": {
@@ -508,7 +515,7 @@
       },
       "type": "Microsoft.Network/networkSecurityPerimeters/resourceAssociations",
       "apiVersion": "2024-07-01",
-      "name": "[format('{0}/{1}', parameters('name'), format('{0}-nsp-ra', guid(coalesce(parameters('resourceAssociations'), createArray())[copyIndex()].privateLinkResource, parameters('name'), coalesce(parameters('resourceAssociations'), createArray())[copyIndex()].profile)))]",
+      "name": "[format('{0}/{1}', parameters('name'), coalesce(parameters('resourceAssociations'), createArray())[copyIndex()].name)]",
       "properties": {
         "privateLinkResource": {
           "id": "[coalesce(parameters('resourceAssociations'), createArray())[copyIndex()].privateLinkResource]"
@@ -622,8 +629,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "13724757346685873442"
+              "version": "0.38.33.27573",
+              "templateHash": "3178550593460166182"
             },
             "name": "Network Security Perimeter Profile",
             "description": "This module deploys a Network Security Perimeter Profile."
@@ -812,8 +819,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.5.1644",
-                      "templateHash": "17487169384960629052"
+                      "version": "0.38.33.27573",
+                      "templateHash": "15729882010132355819"
                     },
                     "name": "Network Security Perimeter Access Rule",
                     "description": "This module deploys a Network Security Perimeter Access Rule."
