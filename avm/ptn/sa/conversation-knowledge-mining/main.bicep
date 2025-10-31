@@ -129,17 +129,14 @@ param enablePurgeProtection bool = false
 
 @description('Optional. Admin username for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true.')
 @secure()
-param vmAdminUsername string?
+param vmAdminUsername string = ''
 
 @description('Optional. Admin password for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true.')
 @secure()
-param vmAdminPassword string?
+param vmAdminPassword string = ''
 
 @description('Optional. Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true.')
 param vmSize string = 'Standard_DS2_v2'
-
-@description('Optional. Resource ID of the maintenance configuration to assign to the jumpbox virtual machine. If not provided, a default maintenance configuration will be created.')
-param maintenanceConfigurationResourceId string?
 
 @description('Optional. created by user name.')
 param createdBy string = contains(deployer(), 'userPrincipalName')
@@ -350,11 +347,10 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePr
 }
 
 // ========== Maintenance Configuration ========== //
-var maintenanceConfigurationName = 'mc-${solutionSuffix}'
-module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.2' = if (enablePrivateNetworking && maintenanceConfigurationResourceId == null) {
-  name: take('avm.res.maintenance.maintenance-configuration.${maintenanceConfigurationName}', 64)
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.2' = if (enablePrivateNetworking) {
+  name: take('${jumpboxVmName}-jumpbox-maintenance-config', 64)
   params: {
-    name: maintenanceConfigurationName
+    name: 'mc-${jumpboxVmName}'
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
@@ -395,8 +391,8 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
     name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
     vmSize: vmSize ?? 'Standard_DS2_v2'
     location: location
-    adminUsername: vmAdminUsername ?? 'JumpboxAdminUser'
-    adminPassword: vmAdminPassword ?? 'JumpboxAdminP@ssw0rd1234!'
+    adminUsername: !empty(vmAdminUsername) ? 'JumpboxAdminUser' : vmAdminUsername
+    adminPassword: !empty(vmAdminPassword) ? 'JumpboxAdminP@ssw0rd1234!' : vmAdminPassword
     tags: tags
     availabilityZone: 1
     imageReference: {
@@ -414,7 +410,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
     }
     encryptionAtHost: false // Some Azure subscriptions do not support encryption at host
     // Assign maintenance configuration for PSRule compliance
-    maintenanceConfigurationResourceId: maintenanceConfigurationResourceId ?? maintenanceConfiguration!.outputs.resourceId
+    maintenanceConfigurationResourceId: maintenanceConfiguration!.outputs.resourceId
     nicConfigurations: [
       {
         name: 'nic-${jumpboxVmName}'
@@ -1084,7 +1080,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.27.1' = {
 var cosmosDbResourceName = 'cosmos-${solutionSuffix}'
 var cosmosDbDatabaseName = 'db_conversation_history'
 var collectionName = 'conversations'
-module cosmosDb 'br/public:avm/res/document-db/database-account:0.17.0' = {
+module cosmosDb 'br/public:avm/res/document-db/database-account:0.18.0' = {
   name: take('avm.res.document-db.database-account.${cosmosDbResourceName}', 64)
   params: {
     name: cosmosDbResourceName
@@ -1104,7 +1100,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.17.0' = {
         ]
       }
     ]
-    dataPlaneRoleDefinitions: [
+    sqlRoleDefinitions: [
       {
         roleName: 'Cosmos DB SQL Data Contributor'
         dataActions: [
@@ -1242,11 +1238,11 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
           family: 'Gen5'
           capacity: 2
         }
-        zoneRedundant: enableRedundancy ? true : false
+        zoneRedundant: enableRedundancy
         maintenanceConfigurationId: shouldConfigureMaintenance ? maintenanceWindow.id : null
       }
     ]
-    location: secondaryLocation
+    location: location
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -1299,8 +1295,8 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
     tags: tags
   }
   dependsOn: [
-    storageAccount
     keyVault
+    maintenanceWindow
   ]
 }
 
