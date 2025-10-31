@@ -1,7 +1,16 @@
 targetScope = 'subscription'
 
 metadata name = 'Using extended zones'
-metadata description = 'This instance deploys the module within an Azure Extended Zone.'
+metadata description = '''
+This instance deploys the module within an Azure Extended Zone.
+
+> Note: To run a deployment with an extended location, the subscription must be registered for the feature. For example:
+> ```pwsh
+> az provider register --namespace 'Microsoft.EdgeZones'
+> az edge-zones extended-zone register --extended-zone-name 'losangeles'
+> ```
+> Please refer to the [documentation](https://learn.microsoft.com/en-us/azure/extended-zones/request-access) for more information.
+'''
 
 // ========== //
 // Parameters //
