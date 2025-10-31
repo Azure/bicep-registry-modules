@@ -8,6 +8,10 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Added user-configurable 'name' to resource association to support updating associations.
 
+### Breaking Changes
+
+- None
+
 ## 0.1.2
 
 ### Changes
