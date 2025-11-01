@@ -705,6 +705,7 @@ param tags = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`networkAcls`](#parameter-networkacls) | object | IP addresses to allow access to the cluster from. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Controls public network access to the cluster. Allowed values: "Enabled", "Disabled". |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the Database Account resource. |
 
@@ -1487,6 +1488,21 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 
 - Required: No
 - Type: object
+
+### Parameter: `publicNetworkAccess`
+
+Controls public network access to the cluster. Allowed values: "Enabled", "Disabled".
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Enabled'
+    'Disabled'
+  ]
+  ```
+- Default: 'Enabled'
 
 ### Parameter: `roleAssignments`
 
