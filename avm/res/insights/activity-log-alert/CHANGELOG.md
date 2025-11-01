@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/insights/activity-log-alert/CHANGELOG.md).
 
+## 0.4.2
+
+### Changes
+
+- Fixed incorrect `conditions` type
+
+### Breaking Changes
+
+- None
+
 ## 0.4.1
 
 ### Changes

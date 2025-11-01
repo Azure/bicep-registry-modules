@@ -520,7 +520,6 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
         actionGroupId: '<actionGroupId>'
       }
     ]
-    location: 'global'
     scopes: [
       '<id>'
     ]
@@ -591,9 +590,6 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
         }
       ]
     },
-    "location": {
-      "value": "global"
-    },
     "scopes": {
       "value": [
         "<id>"
@@ -660,7 +656,6 @@ param actions = [
     actionGroupId: '<actionGroupId>'
   }
 ]
-param location = 'global'
 param scopes = [
   '<id>'
 ]

@@ -22,7 +22,7 @@ param scopes string[] = [
 param actions array = []
 
 @description('Required. An Array of objects containing conditions that will cause this alert to activate. Conditions can also be combined with logical operators `allOf` and `anyOf`. Each condition can specify only one field between `equals` and `containsAny`. An alert rule condition must have exactly one category (Administrative, ServiceHealth, ResourceHealth, Alert, Autoscale, Recommendation, Security, or Policy).')
-param conditions resourceInput<'Microsoft.Insights/activityLogAlerts@2020-10-01'>.properties.condition[]
+param conditions resourceInput<'Microsoft.Insights/activityLogAlerts@2020-10-01'>.properties.condition.allOf
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
@@ -37,13 +37,6 @@ param tags resourceInput<'Microsoft.Insights/activityLogAlerts@2020-10-01'>.tags
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
-
-var actionGroups = [
-  for action in actions: {
-    actionGroupId: action.?actionGroupId ?? action
-    webhookProperties: action.?webhookProperties
-  }
-]
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -99,7 +92,12 @@ resource activityLogAlert 'Microsoft.Insights/activityLogAlerts@2020-10-01' = {
       allOf: conditions
     }
     actions: {
-      actionGroups: actionGroups
+      actionGroups: [
+        for action in actions: {
+          actionGroupId: action.?actionGroupId ?? action
+          webhookProperties: action.?webhookProperties
+        }
+      ]
     }
     enabled: enabled
     description: alertDescription
