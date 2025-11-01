@@ -153,7 +153,6 @@ module networkSecurityPerimeter 'br/public:avm/res/network/network-security-peri
     resourceAssociations: [
       {
         accessMode: 'Learning'
-        name: 'resassoc-01'
         privateLinkResource: '<privateLinkResource>'
         profile: 'profile-01'
       }
@@ -250,7 +249,6 @@ module networkSecurityPerimeter 'br/public:avm/res/network/network-security-peri
       "value": [
         {
           "accessMode": "Learning",
-          "name": "resassoc-01",
           "privateLinkResource": "<privateLinkResource>",
           "profile": "profile-01"
         }
@@ -339,7 +337,6 @@ param profiles = [
 param resourceAssociations = [
   {
     accessMode: 'Learning'
-    name: 'resassoc-01'
     privateLinkResource: '<privateLinkResource>'
     profile: 'profile-01'
   }
@@ -423,7 +420,6 @@ module networkSecurityPerimeter 'br/public:avm/res/network/network-security-peri
     resourceAssociations: [
       {
         accessMode: 'Learning'
-        name: 'resassoc-01'
         privateLinkResource: '<privateLinkResource>'
         profile: 'profile-01'
       }
@@ -495,7 +491,6 @@ module networkSecurityPerimeter 'br/public:avm/res/network/network-security-peri
       "value": [
         {
           "accessMode": "Learning",
-          "name": "resassoc-01",
           "privateLinkResource": "<privateLinkResource>",
           "profile": "profile-01"
         }
@@ -559,7 +554,6 @@ param profiles = [
 param resourceAssociations = [
   {
     accessMode: 'Learning'
-    name: 'resassoc-01'
     privateLinkResource: '<privateLinkResource>'
     profile: 'profile-01'
   }
@@ -912,7 +906,6 @@ Array of resource associations to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-resourceassociationsname) | string | The name of the resource association. |
 | [`privateLinkResource`](#parameter-resourceassociationsprivatelinkresource) | string | The resource identifier of the resource association. |
 | [`profile`](#parameter-resourceassociationsprofile) | string | The name of the resource association. |
 
@@ -921,13 +914,7 @@ Array of resource associations to create.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`accessMode`](#parameter-resourceassociationsaccessmode) | string | The access mode of the resource association. |
-
-### Parameter: `resourceAssociations.name`
-
-The name of the resource association.
-
-- Required: Yes
-- Type: string
+| [`name`](#parameter-resourceassociationsname) | string | The name of the resource association. |
 
 ### Parameter: `resourceAssociations.privateLinkResource`
 
@@ -957,6 +944,13 @@ The access mode of the resource association.
     'Learning'
   ]
   ```
+
+### Parameter: `resourceAssociations.name`
+
+The name of the resource association.
+
+- Required: No
+- Type: string
 
 ### Parameter: `roleAssignments`
 

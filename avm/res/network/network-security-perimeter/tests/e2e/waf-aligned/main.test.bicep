@@ -87,7 +87,6 @@ module testDeployment '../../../main.bicep' = [
       ]
       resourceAssociations: [
         {
-          name: 'resassoc-01'
           profile: 'profile-01'
           privateLinkResource: nestedDependencies.outputs.storageAccountResourceId
           accessMode: 'Learning'

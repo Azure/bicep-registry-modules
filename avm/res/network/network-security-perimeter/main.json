@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "12976346642080910341"
+      "templateHash": "6583044312878642629"
     },
     "name": "Network Security Perimeter",
     "description": "This module deploys a Network Security Perimeter (NSP)."
@@ -42,9 +42,10 @@
       "properties": {
         "name": {
           "type": "string",
+          "nullable": true,
           "maxLength": 80,
           "metadata": {
-            "description": "Required. The name of the resource association."
+            "description": "Optional. The name of the resource association."
           }
         },
         "privateLinkResource": {
@@ -515,7 +516,7 @@
       },
       "type": "Microsoft.Network/networkSecurityPerimeters/resourceAssociations",
       "apiVersion": "2024-07-01",
-      "name": "[format('{0}/{1}', parameters('name'), coalesce(parameters('resourceAssociations'), createArray())[copyIndex()].name)]",
+      "name": "[format('{0}/{1}', parameters('name'), coalesce(coalesce(parameters('resourceAssociations'), createArray())[copyIndex()].name, format('{0}-nsp-ra', guid(coalesce(parameters('resourceAssociations'), createArray())[copyIndex()].privateLinkResource, parameters('name'), coalesce(parameters('resourceAssociations'), createArray())[copyIndex()].profile))))]",
       "properties": {
         "privateLinkResource": {
           "id": "[coalesce(parameters('resourceAssociations'), createArray())[copyIndex()].privateLinkResource]"
