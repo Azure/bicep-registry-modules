@@ -1550,9 +1550,11 @@ function Set-UsageExamplesSection {
     $moduleTargetVersion = Get-ModuleTargetVersion -ModuleFolderPath $ModuleRoot
     if ((Get-ModulesToPublish -ModuleFolderPath $ModuleRoot).Count -ge 1 -or $moduleTargetVersion -eq '0.1.0') {
         # The module will be published
+        Write-Verbose 'As the module is modified, a new module version is assumed and used in the readme' -Verbose
         $targetVersion = $moduleTargetVersion
     } else {
         # Since the module is not being published, the version remains the same. Let's get the latest published
+        Write-Verbose 'As the module was not modified, the latest published module version remains valid and is used in the readme' -Verbose
         $publishedTags = Get-PublishedModuleVersionsList -ModuleType $moduleType -ModuleName $FullModuleIdentifier
         $targetVersion = ($publishedTags | ForEach-Object { [version]$_ } | Sort-Object)[-1]
     }
