@@ -32,7 +32,7 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: managedHsm::key
   properties: {
     principalId: managedIdentity.properties.principalId
-    roleDefinitionId: 'Microsoft.KeyVault/providers/Microsoft.Authorization/roleDefinitions/0cdd0d7f-585f-4dd2-85f1-130c6e6fc820' // Managed HSM Crypto Service Encryption User
+    roleDefinitionId: 'Microsoft.KeyVault/providers/Microsoft.Authorization/roleDefinitions/0cdd0d7f-585f-4dd2-85f1-130c6e6fc820' // Managed HSM Crypto User
     // roleDefinitionId: subscriptionResourceId(
     //   'Microsoft.Authorization/roleDefinitions',
     //   '33413926-3206-4cdd-b39a-83574fe37a17'
