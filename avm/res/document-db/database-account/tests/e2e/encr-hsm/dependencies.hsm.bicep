@@ -27,19 +27,19 @@ resource managedHsm 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = {
 //     principalId: '89be5ce4-5546-47bb-ab81-006425375abf'
 //   }
 // }
-resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${managedHsm::key.id}-${location}-${managedIdentity.id}-Key-Reader-RoleAssignment')
-  scope: managedHsm::key
-  properties: {
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: 'Microsoft.KeyVault/providers/Microsoft.Authorization/roleDefinitions/0cdd0d7f-585f-4dd2-85f1-130c6e6fc820' // Managed HSM Crypto User
-    // roleDefinitionId: subscriptionResourceId(
-    //   'Microsoft.Authorization/roleDefinitions',
-    //   '33413926-3206-4cdd-b39a-83574fe37a17'
-    // ) // Managed HSM Crypto Service Encryption User
-    principalType: 'ServicePrincipal'
-  }
-}
+// resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+//   name: guid('msi-${managedHsm::key.id}-${location}-${managedIdentity.id}-Key-Reader-RoleAssignment')
+//   scope: managedHsm::key
+//   properties: {
+//     principalId: managedIdentity.properties.principalId
+//     roleDefinitionId: 'Microsoft.KeyVault/providers/Microsoft.Authorization/roleDefinitions/0cdd0d7f-585f-4dd2-85f1-130c6e6fc820' // Managed HSM Crypto User
+//     // roleDefinitionId: subscriptionResourceId(
+//     //   'Microsoft.Authorization/roleDefinitions',
+//     //   '33413926-3206-4cdd-b39a-83574fe37a17'
+//     // ) // Managed HSM Crypto Service Encryption User
+//     principalType: 'ServicePrincipal'
+//   }
+// }
 
 @description('The resource ID of the HSM Key Vault.')
 output keyVaultResourceId string = managedHsm.id
