@@ -318,7 +318,9 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
       ? defaultIdentity!.name
       : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
     keyVaultKeyUri: !empty(customerManagedKey)
-      ? (isHsmVault ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUri : cMKKeyVault::cMKKey!.properties.keyUri)
+      ? (customerManagedKeyIsHsmVault
+          ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUri
+          : cMKKeyVault::cMKKey!.properties.keyUri)
       : null
     cors: cors
     enablePartitionMerge: enablePartitionMerge
