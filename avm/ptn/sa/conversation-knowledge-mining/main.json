@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "8146380603835537891"
+      "templateHash": "3657658698028708919"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -69,14 +69,6 @@
         "description": "Optional. Location for the Content Understanding service deployment."
       },
       "minLength": 1
-    },
-    "secondaryLocation": {
-      "type": "string",
-      "defaultValue": "eastus2",
-      "minLength": 1,
-      "metadata": {
-        "description": "Optional. Secondary location for databases creation(example:eastus2)."
-      }
     },
     "deploymentType": {
       "type": "string",
@@ -277,6 +269,7 @@
     }
   },
   "variables": {
+    "solutionLocation": "[if(empty(parameters('location')), resourceGroup().location, parameters('location'))]",
     "solutionSuffix": "[toLower(trim(replace(replace(replace(replace(replace(replace(format('{0}{1}', parameters('solutionName'), parameters('solutionUniqueText')), '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''), '*', '')))]",
     "replicaRegionPairs": {
       "australiaeast": "australiasoutheast",
@@ -404,7 +397,7 @@
       "southafricanorth": "SQL_SouthAfricaNorth_DB_1",
       "uaenorth": "SQL_UAENorth_DB_1"
     },
-    "defaultMaintenanceConfigName": "[coalesce(tryGet(variables('sqlMaintenanceConfigMapping'), parameters('location')), '')]",
+    "defaultMaintenanceConfigName": "[coalesce(tryGet(variables('sqlMaintenanceConfigMapping'), variables('solutionLocation')), '')]",
     "shouldConfigureMaintenance": "[not(empty(variables('defaultMaintenanceConfigName')))]",
     "sqlServerResourceName": "[format('sql-{0}', variables('solutionSuffix'))]",
     "sqlDbModuleName": "[format('sqldb-{0}', variables('solutionSuffix'))]",
@@ -9334,8 +9327,8 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "adminUsername": "[if(not(empty(parameters('vmAdminUsername'))), createObject('value', 'JumpboxAdminUser'), createObject('value', parameters('vmAdminUsername')))]",
-          "adminPassword": "[if(not(empty(parameters('vmAdminPassword'))), createObject('value', 'JumpboxAdminP@ssw0rd1234!'), createObject('value', parameters('vmAdminPassword')))]",
+          "adminUsername": "[if(empty(parameters('vmAdminUsername')), createObject('value', 'JumpboxAdminUser'), createObject('value', parameters('vmAdminUsername')))]",
+          "adminPassword": "[if(empty(parameters('vmAdminPassword')), createObject('value', 'JumpboxAdminP@ssw0rd1234!'), createObject('value', parameters('vmAdminPassword')))]",
           "tags": {
             "value": "[parameters('tags')]"
           },
@@ -9363,6 +9356,12 @@
           },
           "encryptionAtHost": {
             "value": false
+          },
+          "patchMode": {
+            "value": "AutomaticByPlatform"
+          },
+          "bypassPlatformSafetyChecksOnUserSchedule": {
+            "value": true
           },
           "maintenanceConfigurationResourceId": {
             "value": "[reference('maintenanceConfiguration').outputs.resourceId.value]"
@@ -26229,7 +26228,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "12263416082803883874"
+              "templateHash": "13669835237973123404"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service."
@@ -27442,7 +27441,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.38.33.27573",
-                      "templateHash": "287944693409999275"
+                      "templateHash": "12417227306648087285"
                     }
                   },
                   "definitions": {
@@ -29123,7 +29122,10 @@
                             }
                           }
                         }
-                      }
+                      },
+                      "dependsOn": [
+                        "cognitiveService_deployments"
+                      ]
                     },
                     "secretsExport": {
                       "condition": "[not(equals(parameters('secretsExportConfiguration'), null()))]",
@@ -29539,9 +29541,9 @@
         }
       },
       "dependsOn": [
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -32143,9 +32145,9 @@
         }
       },
       "dependsOn": [
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -41178,10 +41180,10 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageDfs)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "userAssignedIdentity",
         "virtualNetwork"
       ]
@@ -47168,7 +47170,7 @@
             ]
           },
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[variables('solutionLocation')]"
           },
           "managedIdentities": {
             "value": {
@@ -47181,7 +47183,8 @@
           "primaryUserAssignedIdentityResourceId": {
             "value": "[reference('userAssignedIdentity').outputs.resourceId.value]"
           },
-          "vulnerabilityAssessmentsObj": "[if(parameters('enableMonitoring'), createObject('value', createObject('name', 'default', 'storageAccountResourceId', reference('storageAccount').outputs.resourceId.value, 'storageContainerName', 'sqlvascans', 'storageContainerPath', format('https://{0}.blob.{1}/sqlvascans', variables('storageAccountName'), environment().suffixes.storage), 'recurringScansIsEnabled', true(), 'recurringScansEmailSubscriptionAdmins', false(), 'recurringScansEmails', createArray())), createObject('value', null()))]",
+          "securityAlertPolicies": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('name', 'Default', 'state', 'Enabled', 'emailAccountAdmins', true()))), createObject('value', createArray()))]",
+          "vulnerabilityAssessmentsObj": "[if(parameters('enableMonitoring'), createObject('value', createObject('name', 'default', 'storageAccountResourceId', reference('storageAccount').outputs.resourceId.value, 'recurringScans', createObject('isEnabled', true(), 'emailSubscriptionAdmins', false(), 'emails', createArray()))), createObject('value', null()))]",
           "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').sqlServer)).outputs.resourceId.value))), 'service', 'sqlServer', 'subnetResourceId', reference('virtualNetwork').outputs.pepsSubnetResourceId.value, 'tags', parameters('tags')))), createObject('value', createArray()))]",
           "firewallRules": "[if(not(parameters('enablePrivateNetworking')), createObject('value', createArray(createObject('endIpAddress', '255.255.255.255', 'name', 'AllowSpecificRange', 'startIpAddress', '0.0.0.0'), createObject('endIpAddress', '0.0.0.0', 'name', 'AllowAllWindowsAzureIps', 'startIpAddress', '0.0.0.0'))), createObject('value', createArray()))]",
           "tags": {

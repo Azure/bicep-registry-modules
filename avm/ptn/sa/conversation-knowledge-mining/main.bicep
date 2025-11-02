@@ -50,10 +50,6 @@ param aiServiceLocation string
 param contentUnderstandingLocation string = 'swedencentral'
 
 @minLength(1)
-@description('Optional. Secondary location for databases creation(example:eastus2).')
-param secondaryLocation string = 'eastus2'
-
-@minLength(1)
 @description('Optional. GPT model deployment type.')
 @allowed([
   'Standard'
@@ -146,7 +142,7 @@ param createdBy string = contains(deployer(), 'userPrincipalName')
 @maxLength(5)
 @description('Optional. A unique text value for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name.')
 param solutionUniqueText string = substring(uniqueString(subscription().id, resourceGroup().name, solutionName), 0, 5)
-
+var solutionLocation = empty(location) ? resourceGroup().location : location
 var solutionSuffix = toLower(trim(replace(
   replace(
     replace(replace(replace(replace('${solutionName}${solutionUniqueText}', '-', ''), '_', ''), '.', ''), '/', ''),
@@ -391,8 +387,8 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
     name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
     vmSize: vmSize ?? 'Standard_DS2_v2'
     location: location
-    adminUsername: !empty(vmAdminUsername) ? 'JumpboxAdminUser' : vmAdminUsername
-    adminPassword: !empty(vmAdminPassword) ? 'JumpboxAdminP@ssw0rd1234!' : vmAdminPassword
+    adminUsername: empty(vmAdminUsername) ? 'JumpboxAdminUser' : vmAdminUsername
+    adminPassword: empty(vmAdminPassword) ? 'JumpboxAdminP@ssw0rd1234!' : vmAdminPassword
     tags: tags
     availabilityZone: 1
     imageReference: {
@@ -409,6 +405,9 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
       }
     }
     encryptionAtHost: false // Some Azure subscriptions do not support encryption at host
+    // WAF aligned configuration - Enable automatic patching with platform management
+    patchMode: 'AutomaticByPlatform'
+    bypassPlatformSafetyChecksOnUserSchedule: true
     // Assign maintenance configuration for PSRule compliance
     maintenanceConfigurationResourceId: maintenanceConfiguration!.outputs.resourceId
     nicConfigurations: [
@@ -1197,7 +1196,7 @@ var sqlMaintenanceConfigMapping = {
 }
 
 // Determine the maintenance configuration name to use - use solutionLocation and consider WAF alignment
-var defaultMaintenanceConfigName = sqlMaintenanceConfigMapping[?location] ?? ''
+var defaultMaintenanceConfigName = sqlMaintenanceConfigMapping[?solutionLocation] ?? ''
 var shouldConfigureMaintenance = !empty(defaultMaintenanceConfigName)
 
 resource maintenanceWindow 'Microsoft.Maintenance/publicMaintenanceConfigurations@2023-04-01' existing = if (shouldConfigureMaintenance) {
@@ -1242,7 +1241,7 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
         maintenanceConfigurationId: shouldConfigureMaintenance ? maintenanceWindow.id : null
       }
     ]
-    location: location
+    location: solutionLocation
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -1250,16 +1249,26 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
       ]
     }
     primaryUserAssignedIdentityResourceId: userAssignedIdentity.outputs.resourceId
+    // WAF aligned configuration - Microsoft Defender for SQL (required for Vulnerability Assessment)
+    securityAlertPolicies: enableMonitoring
+      ? [
+          {
+            name: 'Default'
+            state: 'Enabled'
+            emailAccountAdmins: true
+          }
+        ]
+      : []
     // WAF aligned configuration - SQL Vulnerability Assessment for security monitoring
     vulnerabilityAssessmentsObj: enableMonitoring
       ? {
           name: 'default'
           storageAccountResourceId: storageAccount.outputs.resourceId
-          storageContainerName: 'sqlvascans'
-          storageContainerPath: 'https://${storageAccountName}.blob.${environment().suffixes.storage}/sqlvascans'
-          recurringScansIsEnabled: true
-          recurringScansEmailSubscriptionAdmins: false
-          recurringScansEmails: []
+          recurringScans: {
+            isEnabled: true
+            emailSubscriptionAdmins: false
+            emails: []
+          }
         }
       : null
     privateEndpoints: enablePrivateNetworking
