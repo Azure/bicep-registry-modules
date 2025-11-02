@@ -292,6 +292,19 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empt
   }
 }
 
+var isHsmVault = contains(customerManagedKey.?keyVaultResourceId ?? '', 'managedHSMs')
+resource hSMCMKKeyVault 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = if (isHsmVault) {
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
+  scope: resourceGroup(
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+  )
+
+  resource hSMCMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName!
+  }
+}
+
 resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
   name: name
   location: location
@@ -304,7 +317,9 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
     defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
       ? defaultIdentity!.name
       : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
-    keyVaultKeyUri: !empty(customerManagedKey) ? cMKKeyVault::cMKKey!.properties.keyUri : null
+    keyVaultKeyUri: !empty(customerManagedKey)
+      ? (isHsmVault ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUri : cMKKeyVault::cMKKey!.properties.keyUri)
+      : null
     cors: cors
     enablePartitionMerge: enablePartitionMerge
     enablePerRegionPerPartitionAutoscale: enablePerRegionPerPartitionAutoscale

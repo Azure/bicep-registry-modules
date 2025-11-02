@@ -15,7 +15,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
 resource managedHsm 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = {
   name: managedHsmName
 
-  resource key 'keys@2024-11-01' existing = {
+  resource key 'keys@2025-05-01' existing = {
     name: 'rsa-hsm-4096-key-1'
   }
 }
