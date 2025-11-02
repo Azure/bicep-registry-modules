@@ -31,7 +31,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/key-vault/vault:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/key-vault/vault:0.13.3`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [With EC key type](#example-2-with-ec-key-type)
@@ -49,7 +49,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module vault 'br/public:avm/res/key-vault/vault:<version>' = {
+module vault 'br/public:avm/res/key-vault/vault:0.13.3' = {
   name: 'vaultDeployment'
   params: {
     // Required parameters
@@ -92,7 +92,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/res/key-vault/vault:<version>'
+using 'br/public:avm/res/key-vault/vault:0.13.3'
 
 // Required parameters
 param name = 'kvvmin002'
@@ -113,7 +113,7 @@ This instance deploys the module with the parameters needed for an EC key.
 <summary>via Bicep module</summary>
 
 ```bicep
-module vault 'br/public:avm/res/key-vault/vault:<version>' = {
+module vault 'br/public:avm/res/key-vault/vault:0.13.3' = {
   name: 'vaultDeployment'
   params: {
     // Required parameters
@@ -226,7 +226,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/res/key-vault/vault:<version>'
+using 'br/public:avm/res/key-vault/vault:0.13.3'
 
 // Required parameters
 param name = 'kvvec002'
@@ -281,7 +281,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module vault 'br/public:avm/res/key-vault/vault:<version>' = {
+module vault 'br/public:avm/res/key-vault/vault:0.13.3' = {
   name: 'vaultDeployment'
   params: {
     // Required parameters
@@ -810,7 +810,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/res/key-vault/vault:<version>'
+using 'br/public:avm/res/key-vault/vault:0.13.3'
 
 // Required parameters
 param name = 'kvvmax002'
@@ -1063,7 +1063,7 @@ This instance deploys the module with the parameters needed for an RSA key.
 <summary>via Bicep module</summary>
 
 ```bicep
-module vault 'br/public:avm/res/key-vault/vault:<version>' = {
+module vault 'br/public:avm/res/key-vault/vault:0.13.3' = {
   name: 'vaultDeployment'
   params: {
     // Required parameters
@@ -1176,7 +1176,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/res/key-vault/vault:<version>'
+using 'br/public:avm/res/key-vault/vault:0.13.3'
 
 // Required parameters
 param name = 'kvvrsa002'
@@ -1231,7 +1231,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 <summary>via Bicep module</summary>
 
 ```bicep
-module vault 'br/public:avm/res/key-vault/vault:<version>' = {
+module vault 'br/public:avm/res/key-vault/vault:0.13.3' = {
   name: 'vaultDeployment'
   params: {
     // Required parameters
@@ -1444,7 +1444,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/res/key-vault/vault:<version>'
+using 'br/public:avm/res/key-vault/vault:0.13.3'
 
 // Required parameters
 param name = 'kvvwaf002'
