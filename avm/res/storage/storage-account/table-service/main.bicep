@@ -5,13 +5,13 @@ metadata description = 'This module deploys a Storage Account Table Service.'
 @description('Conditional. The name of the parent Storage Account. Required if the template is used in a standalone deployment.')
 param storageAccountName string
 
-@description('Optional. tables to create.')
-param tables array = []
+@description('Optional. Tables to create.')
+param tables tableType[]?
 
 @description('Optional. The List of CORS rules. You can include up to five CorsRule elements in the request.')
 param corsRules corsRuleType[]?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -64,7 +64,7 @@ resource tableServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings
 ]
 
 module tableServices_tables 'table/main.bicep' = [
-  for (table, index) in tables: {
+  for (table, index) in (tables ?? []): {
     name: '${deployment().name}-Table-${index}'
     params: {
       name: table.name
@@ -104,4 +104,16 @@ type corsRuleType = {
 
   @description('Required. The number of seconds that the client/browser should cache a preflight response.')
   maxAgeInSeconds: int
+}
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+
+@export()
+@description('The type for a table.')
+type tableType = {
+  @description('Required. The name of the table.')
+  name: string
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
 }

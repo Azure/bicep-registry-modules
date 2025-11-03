@@ -6,16 +6,16 @@ metadata description = 'This module deploys a Storage Account Queue Service.'
 param storageAccountName string
 
 @description('Optional. Queues to create.')
-param queues array?
+param queues queueType[] = []
 
 @description('Optional. The List of CORS rules. You can include up to five CorsRule elements in the request.')
 param corsRules corsRuleType[]?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-// The name of the blob services
+// The name of the queue services
 var name = 'default'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
@@ -75,13 +75,13 @@ module queueServices_queues 'queue/main.bicep' = [
   }
 ]
 
-@description('The name of the deployed file share service.')
+@description('The name of the deployed queue service.')
 output name string = queueServices.name
 
-@description('The resource ID of the deployed file share service.')
+@description('The resource ID of the deployed queue service.')
 output resourceId string = queueServices.id
 
-@description('The resource group of the deployed file share service.')
+@description('The resource group of the deployed queue service.')
 output resourceGroupName string = resourceGroup().name
 
 // =============== //
@@ -105,4 +105,19 @@ type corsRuleType = {
 
   @description('Required. The number of seconds that the client/browser should cache a preflight response.')
   maxAgeInSeconds: int
+}
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+
+@export()
+@description('The type for a queue.')
+type queueType = {
+  @description('Required. The name of the queue.')
+  name: string
+
+  @description('Optional. Metadata to set on the queue.')
+  metadata: resourceInput<'Microsoft.Storage/storageAccounts/queueServices/queues@2024-01-01'>.properties.metadata?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
 }
