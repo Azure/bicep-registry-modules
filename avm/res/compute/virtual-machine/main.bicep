@@ -307,7 +307,6 @@ param configurationProfile string = ''
 @description('Optional. Capacity reservation group resource id that should be used for allocating the virtual machine vm instances provided enough capacity has been reserved.')
 param capacityReservationGroupResourceId string = ''
 
-
 @allowed([
   'AllowAll'
   'AllowPrivate'
@@ -567,11 +566,11 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         : null
     }
     storageProfile: {
-      imageReference:
-        contains(imageReference, 'id')
+      imageReference: contains(imageReference, 'id')
         ? {
-            id: imageReference.id
+            id: imageReference.?id
           }
+        : imageReference
       osDisk: {
         name: osDisk.?name ?? '${name}-disk-os-01'
         createOption: osDisk.?createOption ?? 'FromImage'
@@ -761,6 +760,15 @@ module vm_domainJoinExtension 'extension/main.bicep' = if (contains(extensionDom
   }
 }
 
+var aadJoinSettings = extensionAadJoinConfig.?settings ?? {}
+var filteredAadJoinSettings = contains(aadJoinSettings, 'mdmId') && empty(aadJoinSettings.mdmId)
+  ? reduce(
+      items(aadJoinSettings),
+      {},
+      (cur, item) => item.key == 'mdmId' ? cur : union(cur, { '${item.key}': item.value })
+    )
+  : aadJoinSettings
+
 module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-AADLogin'
   params: {
@@ -772,7 +780,7 @@ module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.e
     typeHandlerVersion: extensionAadJoinConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '2.0' : '1.0')
     autoUpgradeMinorVersion: extensionAadJoinConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionAadJoinConfig.?enableAutomaticUpgrade ?? false
-    settings: extensionAadJoinConfig.?settings ?? {}
+    settings: filteredAadJoinSettings
     supressFailures: extensionAadJoinConfig.?supressFailures ?? false
     tags: extensionAadJoinConfig.?tags ?? tags
   }
