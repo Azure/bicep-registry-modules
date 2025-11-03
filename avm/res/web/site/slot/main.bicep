@@ -123,6 +123,9 @@ param dailyMemoryTimeQuota int?
 @description('Optional. Setting this value to false disables the app (takes the app offline).')
 param enabled bool = true
 
+@description('Optional. Whether to enable SSH access for the web app slot.')
+param sshEnabled bool?
+
 @description('Optional. Hostname SSL states are used to manage the SSL bindings for app\'s hostnames.')
 param hostNameSslStates resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.hostNameSslStates?
 
@@ -286,6 +289,7 @@ resource slot 'Microsoft.Web/sites/slots@2024-11-01' = {
     customDomainVerificationId: customDomainVerificationId
     dailyMemoryTimeQuota: dailyMemoryTimeQuota
     enabled: enabled
+    sshEnabled: sshEnabled
     hostNameSslStates: hostNameSslStates
     hyperV: hyperV
     publicNetworkAccess: publicNetworkAccess
