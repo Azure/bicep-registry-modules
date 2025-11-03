@@ -427,6 +427,9 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
       enabled: true
       tags: tags
       typeHandlerVersion: '1.0'
+      settings: {
+        mdmId: '0000000a-0000-0000-c000-000000000000'
+      }
     }
     extensionAntiMalwareConfig: {
       enabled: true
@@ -471,13 +474,8 @@ var privateDnsZones = [
   'privatelink.contentunderstanding.ai.azure.com'
   'privatelink.blob.${environment().suffixes.storage}'
   'privatelink.queue.${environment().suffixes.storage}'
-  'privatelink.file.${environment().suffixes.storage}'
-  'privatelink.api.azureml.ms'
-  'privatelink.notebooks.azure.net'
   'privatelink.mongo.cosmos.azure.com'
   'privatelink.azconfig.io'
-  'privatelink.vaultcore.azure.net'
-  'privatelink.azurecr.io'
 ]
 
 // DNS Zone Index Constants
@@ -488,13 +486,8 @@ var dnsZoneIndex = {
   contentUnderstanding: 3
   storageBlob: 4
   storageQueue: 5
-  storageFile: 6
-  aiFoundry: 7
-  notebooks: 8
-  cosmosDB: 9
-  appConfig: 10
-  keyVault: 11
-  containerRegistry: 12
+  cosmosDB: 6
+  appConfig: 7
 }
 
 @batchSize(5)

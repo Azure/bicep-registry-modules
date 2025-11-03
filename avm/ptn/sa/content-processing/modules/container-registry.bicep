@@ -42,7 +42,7 @@ module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3
       ? [
           {
             location: secondaryLocation
-            name: 'acr-replica-${secondaryLocation}'
+            name: 'acrrepl${replace(secondaryLocation, '-', '')}'
           }
         ]
       : null

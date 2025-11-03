@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "3999079212107243657"
+      "templateHash": "6237985030125623547"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Content Processing solution accelerator](https://github.com/microsoft/content-processing-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -276,13 +276,8 @@
       "privatelink.contentunderstanding.ai.azure.com",
       "[format('privatelink.blob.{0}', environment().suffixes.storage)]",
       "[format('privatelink.queue.{0}', environment().suffixes.storage)]",
-      "[format('privatelink.file.{0}', environment().suffixes.storage)]",
-      "privatelink.api.azureml.ms",
-      "privatelink.notebooks.azure.net",
       "privatelink.mongo.cosmos.azure.com",
-      "privatelink.azconfig.io",
-      "privatelink.vaultcore.azure.net",
-      "privatelink.azurecr.io"
+      "privatelink.azconfig.io"
     ],
     "dnsZoneIndex": {
       "cognitiveServices": 0,
@@ -291,13 +286,8 @@
       "contentUnderstanding": 3,
       "storageBlob": 4,
       "storageQueue": 5,
-      "storageFile": 6,
-      "aiFoundry": 7,
-      "notebooks": 8,
-      "cosmosDB": 9,
-      "appConfig": 10,
-      "keyVault": 11,
-      "containerRegistry": 12
+      "cosmosDB": 6,
+      "appConfig": 7
     },
     "logAnalyticsWorkspaceResourceName": "[format('log-{0}', variables('solutionSuffix'))]"
   },
@@ -7023,7 +7013,10 @@
             "value": {
               "enabled": true,
               "tags": "[parameters('tags')]",
-              "typeHandlerVersion": "1.0"
+              "typeHandlerVersion": "1.0",
+              "settings": {
+                "mdmId": "0000000a-0000-0000-c000-000000000000"
+              }
             }
           },
           "extensionAntiMalwareConfig": {
@@ -23682,7 +23675,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "10585346572797290269"
+              "templateHash": "14012963224129509549"
             },
             "name": "Container Registry Module"
           },
@@ -23778,7 +23771,7 @@
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
                   },
-                  "replications": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('location', parameters('secondaryLocation'), 'name', format('acr-replica-{0}', parameters('secondaryLocation'))))), createObject('value', null()))]"
+                  "replications": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('location', parameters('secondaryLocation'), 'name', format('acrrepl{0}', replace(parameters('secondaryLocation'), '-', ''))))), createObject('value', null()))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -40649,10 +40642,10 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "logAnalyticsWorkspace",
         "virtualNetwork"
       ]
