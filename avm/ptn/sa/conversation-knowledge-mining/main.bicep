@@ -414,6 +414,10 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
     bypassPlatformSafetyChecksOnUserSchedule: true
     // Assign maintenance configuration for PSRule compliance
     maintenanceConfigurationResourceId: maintenanceConfiguration!.outputs.resourceId
+    // Fix for AAD Login extension - disable it to avoid mdmId requirement
+    extensionAadJoinConfig: {
+      enabled: false
+    }
     nicConfigurations: [
       {
         name: 'nic-${jumpboxVmName}'
