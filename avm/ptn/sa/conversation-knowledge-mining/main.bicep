@@ -17,7 +17,7 @@ param solutionName string = 'kmgen'
 param location string = resourceGroup().location
 
 @minLength(1)
-@description('Optional. Secondary location for databases creation(example:eastus2):')
+@description('Optional. Secondary location for databases creation(example:eastus2).')
 param secondaryLocation string = 'eastus2'
 
 @allowed([
@@ -414,9 +414,13 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
     bypassPlatformSafetyChecksOnUserSchedule: true
     // Assign maintenance configuration for PSRule compliance
     maintenanceConfigurationResourceId: maintenanceConfiguration!.outputs.resourceId
-    // Fix for AAD Login extension - disable it to avoid mdmId requirement
     extensionAadJoinConfig: {
-      enabled: false
+      enabled: true
+      tags: tags
+      typeHandlerVersion: '1.0'
+      settings: {
+        mdmId: '0000000a-0000-0000-c000-000000000000'
+      }
     }
     nicConfigurations: [
       {
