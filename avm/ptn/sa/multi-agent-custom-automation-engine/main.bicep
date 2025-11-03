@@ -839,7 +839,7 @@ var cosmosDbResourceName = 'cosmos-${solutionSuffix}'
 var cosmosDbDatabaseName = 'macae'
 var cosmosDbDatabaseMemoryContainerName = 'memory'
 
-module cosmosDb 'br/public:avm/res/document-db/database-account:0.17.0' = {
+module cosmosDb 'br/public:avm/res/document-db/database-account:0.18.0' = {
   name: take('avm.res.document-db.database-account.${cosmosDbResourceName}', 64)
   params: {
     name: cosmosDbResourceName
@@ -861,7 +861,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.17.0' = {
         ]
       }
     ]
-    dataPlaneRoleDefinitions: [
+    sqlRoleDefinitions: [
       {
         // Cosmos DB Built-in Data Contributor: https://docs.azure.cn/en-us/cosmos-db/nosql/security/reference-data-plane-roles#cosmos-db-built-in-data-contributor
         roleName: 'Cosmos DB SQL Data Contributor'
@@ -1321,7 +1321,7 @@ module webSite 'modules/web-sites.bicep' = {
 // ========== Storage Account ========== //
 var storageAccountName = replace('st${solutionSuffix}', '-', '')
 var storageContainerName = 'sample-dataset'
-module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.27.1' = {
+module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
   name: take('avm.res.storage.storage-account.${storageAccountName}', 64)
   params: {
     name: storageAccountName
