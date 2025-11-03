@@ -280,7 +280,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableT
   }
 }
 
-var customerManagedKeyIsHsmVault = contains(customerManagedKey.?keyVaultResourceId ?? '', 'managedHSMs')
+var customerManagedKeyIsHsmVault = contains(customerManagedKey.?keyVaultResourceId ?? '', '/managedHSMs/')
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey) && !customerManagedKeyIsHsmVault) {
   name: last(split((customerManagedKey!.keyVaultResourceId!), '/'))
   scope: resourceGroup(
