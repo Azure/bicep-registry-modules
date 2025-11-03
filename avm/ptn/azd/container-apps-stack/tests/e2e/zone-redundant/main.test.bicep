@@ -56,6 +56,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       acrSku: 'Standard'
       zoneRedundant: true
+      publicNetworkAccess: 'Disabled'
       workloadProfiles: [
         {
           workloadProfileType: 'D4'

@@ -68,6 +68,7 @@ module containerAppsStack 'br/public:avm/ptn/azd/container-apps-stack:<version>'
     location: '<location>'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
+    publicNetworkAccess: 'Disabled'
     workloadProfiles: [
       {
         maximumCount: 3
@@ -128,6 +129,9 @@ module containerAppsStack 'br/public:avm/ptn/azd/container-apps-stack:<version>'
     "platformReservedDnsIP": {
       "value": "172.17.17.17"
     },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    },
     "workloadProfiles": {
       "value": [
         {
@@ -168,6 +172,7 @@ param internal = true
 param location = '<location>'
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
+param publicNetworkAccess = 'Disabled'
 param workloadProfiles = [
   {
     maximumCount: 3
