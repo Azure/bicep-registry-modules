@@ -16,6 +16,10 @@ param solutionName string = 'kmgen'
 @description('Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).')
 param location string = resourceGroup().location
 
+@minLength(1)
+@description('Optional. Secondary location for databases creation(example:eastus2):')
+param secondaryLocation string = 'eastus2'
+
 @allowed([
   'australiaeast'
   'eastus'
@@ -960,7 +964,7 @@ resource projectAISearchConnection 'Microsoft.CognitiveServices/accounts/project
 
 // ========== Storage account module ========== //
 var storageAccountName = 'st${solutionSuffix}'
-module storageAccount 'br/public:avm/res/storage/storage-account:0.27.1' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
   name: take('avm.res.storage.storage-account.${storageAccountName}', 64)
   params: {
     name: storageAccountName
@@ -1222,7 +1226,7 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
     connectionPolicy: 'Redirect'
     databases: [
       {
-        availabilityZone: enableRedundancy ? 1 : -1
+        availabilityZone: -1
         collation: 'SQL_Latin1_General_CP1_CI_AS'
         diagnosticSettings: enableMonitoring
           ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }]
