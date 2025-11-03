@@ -1,16 +1,16 @@
 /****************************************************************************************************************************/
 // Networking - NSGs, VNET and Subnets. Each subnet has its own NSG
 /****************************************************************************************************************************/
-@description('Name of the virtual network.')
+@description('Required. Name of the virtual network.')
 param name string
 
-@description('Azure region to deploy resources.')
+@description('Optional. Azure region to deploy resources.')
 param location string = resourceGroup().location
 
 @description('Required. An Array of 1 or more IP Address Prefixes for the Virtual Network.')
 param addressPrefixes array
 
-@description('An array of subnets to be created within the virtual network. Each subnet can have its own configuration and associated Network Security Group (NSG).')
+@description('Optional. An array of subnets to be created within the virtual network. Each subnet can have its own configuration and associated Network Security Group (NSG).')
 param subnets subnetType[] = [
   {
     name: 'containers'
@@ -201,7 +201,7 @@ param subnets subnetType[] = [
 @description('Optional. Tags to be applied to the resources.')
 param tags object = {}
 
-@description('Optional. The resource ID of the Log Analytics Workspace to send diagnostic logs to.')
+@description('Required. The resource ID of the Log Analytics Workspace to send diagnostic logs to.')
 param logAnalyticsWorkspaceId string
 
 @description('Optional. Enable/Disable usage telemetry for module.')

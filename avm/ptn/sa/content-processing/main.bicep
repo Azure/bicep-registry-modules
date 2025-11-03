@@ -7,14 +7,14 @@ metadata description = '''This module contains the resources required to deploy 
 '''
 
 // ========== Parameters ========== //
-@description('Required. Name of the solution to deploy.')
+@description('Optional. Name of the solution to deploy.')
 param solutionName string = 'cps'
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
 @minLength(1)
-@description('Optional. Location for the Azure AI Content Understanding service deployment:')
+@description('Optional. Location for the Azure AI Content Understanding service deployment.')
 @allowed(['WestUS', 'SwedenCentral', 'AustraliaEast'])
 @metadata({
   azd: {
@@ -23,7 +23,7 @@ param location string = resourceGroup().location
 })
 param contentUnderstandingLocation string = 'WestUS'
 
-@description('Optional. Location for the Azure AI Services deployment:')
+@description('Required. Location for the Azure AI Services deployment.')
 @metadata({
   azd: {
     type: 'location'
@@ -53,7 +53,7 @@ param gptModelName string = 'gpt-4o'
 param gptModelVersion string = '2024-08-06'
 
 @minValue(1)
-@description('Required. Capacity of the GPT deployment: (minimum 10).')
+@description('Optional. Capacity of the GPT deployment: (minimum 10).')
 param gptDeploymentCapacity int = 100
 
 @description('Optional. Location used for Azure Cosmos DB, Azure Container App deployment.')
@@ -590,7 +590,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.1' = if (en
     tags: tags
   }
 }
-@description('Optional. Tag, Created by user name')
+@description('Optional. Tag, Created by user name.')
 param createdBy string = contains(deployer(), 'userPrincipalName')
   ? split(deployer().userPrincipalName, '@')[0]
   : deployer().objectId

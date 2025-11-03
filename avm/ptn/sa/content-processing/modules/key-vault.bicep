@@ -15,49 +15,49 @@ metadata name = 'Key Vault Module'
 // param createMode string = 'default'
 // param enableTelemetry bool = true
 
-@description('The name of the Key Vault')
+@description('Required. The name of the Key Vault.')
 param keyvaultName string
 
-@description('The location of the Key Vault')
+@description('Required. The location of the Key Vault.')
 param location string
 
-@description('Tags to be applied to the Key Vault')
+@description('Required. Tags to be applied to the Key Vault.')
 param tags object
 
-@description('Role assignments for the Key Vault')
+@description('Optional. Role assignments for the Key Vault.')
 param roleAssignments array = []
 
-@description('Enable purge protection for the Key Vault')
+@description('Optional. Enable purge protection for the Key Vault.')
 param enablePurgeProtection bool = false
 
-@description('Enable soft delete for the Key Vault')
+@description('Optional. Enable soft delete for the Key Vault.')
 param enableSoftDelete bool = true
 
-@description('Enable vault for disk encryption')
+@description('Optional. Enable vault for disk encryption.')
 param enableVaultForDiskEncryption bool = true
 
-@description('Enable vault for template deployment')
+@description('Optional. Enable vault for template deployment.')
 param enableVaultForTemplateDeployment bool = true
 
-@description('Public network access setting for the Key Vault')
+@description('Optional. Public network access setting for the Key Vault.')
 param publicNetworkAccess string = 'Enabled'
 
-@description('SKU of the Key Vault')
+@description('Optional. SKU of the Key Vault.')
 param keyvaultsku string = 'standard'
 
-@description('Soft delete retention period in days')
+@description('Optional. Soft delete retention period in days.')
 param softDeleteRetentionInDays int = 7
 
-@description('Enable RBAC authorization for the Key Vault')
+@description('Optional. Enable RBAC authorization for the Key Vault.')
 param enableRbacAuthorization bool = true
 
-@description('Create mode for the Key Vault')
+@description('Optional. Create mode for the Key Vault.')
 param createMode string = 'default'
 
-@description('Enable telemetry for the Key Vault')
+@description('Optional. Enable telemetry for the Key Vault.')
 param enableTelemetry bool = true
 
-@description('Network ACLs for the Key Vault')
+@description('Optional. Network ACLs for the Key Vault.')
 param networkAcls object = {
   bypass: 'AzureServices'
   defaultAction: 'Deny'
@@ -68,7 +68,7 @@ param networkAcls object = {
 //   enabled: true
 // }
 
-@description('Log Analytics Workspace Resource ID for diagnostic settings')
+@description('Optional. Log Analytics Workspace Resource ID for diagnostic settings.')
 @secure()
 param logAnalyticsWorkspaceResourceId string = ''
 

@@ -1,31 +1,31 @@
 metadata name = 'Container Registry Module'
 // AVM-compliant Azure Container Registry deployment
 
-@description('The name of the Azure Container Registry')
+@description('Required. The name of the Azure Container Registry.')
 param acrName string
 
-@description('The location of the Azure Container Registry')
+@description('Required. The location of the Azure Container Registry.')
 param location string
 
-@description('SKU for the Azure Container Registry')
+@description('Optional. SKU for the Azure Container Registry.')
 param acrSku string = 'Basic'
 
-@description('Public network access setting for the Azure Container Registry')
+@description('Optional. Public network access setting for the Azure Container Registry.')
 param publicNetworkAccess string = 'Enabled'
 
-@description('Zone redundancy setting for the Azure Container Registry')
+@description('Optional. Zone redundancy setting for the Azure Container Registry.')
 param zoneRedundancy string = 'Disabled'
 
-@description('Tags to be applied to the Container Registry')
+@description('Optional. Tags to be applied to the Container Registry.')
 param tags object = {}
 
-@description('Enable telemetry for the AVM deployment')
+@description('Required. Enable telemetry for the AVM deployment.')
 param enableTelemetry bool
 
-@description('Enable Redundancy for the AVM deployment')
+@description('Required. Enable Redundancy for the AVM deployment.')
 param enableRedundancy bool
 
-@description('The secondary location for the Azure Container Registry replication, if redundancy is enabled.')
+@description('Required. The secondary location for the Azure Container Registry replication, if redundancy is enabled.')
 param secondaryLocation string
 
 module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3' = {

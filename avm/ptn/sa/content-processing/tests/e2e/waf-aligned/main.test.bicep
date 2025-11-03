@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-waf-${namePrefix}-sa.cps-${serviceShort}-r
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints. Remove.')
-param serviceShort string = 'scpeg'
+param serviceShort string = 'scpegwaf'
 
 param namePrefix string = '#_namePrefix_#'
 
