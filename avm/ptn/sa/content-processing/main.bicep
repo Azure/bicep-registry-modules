@@ -364,12 +364,13 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
     tags: tags
     enableTelemetry: enableTelemetry
     availabilityZone: virtualMachineAvailabilityZone
-    intent: { vmSizes: [vmSize] }
+    intent: { vmSizes: [virtualMachineSize] }
   }
 }
 
 var virtualMachineResourceName = 'vm-${solutionSuffix}'
 var virtualMachineAvailabilityZone = 1
+var virtualMachineSize = empty(vmSize) ? 'Standard_DS2_v2' : vmSize
 module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${virtualMachineResourceName}', 64)
   params: {
@@ -379,7 +380,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
     enableTelemetry: enableTelemetry
     computerName: take(virtualMachineResourceName, 15)
     osType: 'Windows'
-    vmSize: empty(vmSize) ? 'Standard_DS2_v2' : vmSize
+    vmSize: virtualMachineSize
     adminUsername: empty(vmAdminUsername) ? 'JumpboxAdminUser' : vmAdminUsername
     adminPassword: empty(vmAdminPassword) ? 'JumpboxAdminP@ssw0rd1234!' : vmAdminPassword
     patchMode: 'AutomaticByPlatform'
@@ -615,40 +616,6 @@ module avmManagedIdentity './modules/managed-identity.bicep' = {
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-  }
-}
-
-// ========== Key Vault Module ========== //
-
-module avmKeyVault './modules/key-vault.bicep' = {
-  name: take('module.key-vault.${solutionSuffix}', 64)
-  params: {
-    keyvaultName: 'kv-${solutionSuffix}'
-    location: location
-    tags: tags
-    roleAssignments: [
-      {
-        principalId: avmManagedIdentity.outputs.principalId
-        roleDefinitionIdOrName: 'Key Vault Administrator'
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    enablePurgeProtection: false
-    enableSoftDelete: true
-    keyvaultsku: 'standard'
-    enableRbacAuthorization: true
-    createMode: 'default'
-    enableTelemetry: enableTelemetry
-    enableVaultForDiskEncryption: true
-    enableVaultForTemplateDeployment: true
-    softDeleteRetentionInDays: 7
-    publicNetworkAccess: (enablePrivateNetworking) ? 'Disabled' : 'Enabled'
-    logAnalyticsWorkspaceResourceId: enableMonitoring ? logAnalyticsWorkspace!.outputs.resourceId : ''
-    networkAcls: {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-    }
-    // privateEndpoints omitted for now, as not in strongly-typed params
   }
 }
 
@@ -1644,6 +1611,5 @@ output containerApiAppName string = avmContainerApp_API.outputs.name
 output containerWebAppFqdn string = avmContainerApp_Web.outputs.fqdn
 @description('The resource ID of the Container App API.')
 output containerApiAppFqdn string = avmContainerApp_API.outputs.fqdn
-
 @description('The resource group the resources were deployed into.')
 output resourceGroupName string = resourceGroup().name
