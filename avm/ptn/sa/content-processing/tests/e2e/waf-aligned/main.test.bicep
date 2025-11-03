@@ -49,6 +49,7 @@ module testDeployment '../../../main.bicep' = [
       enableTelemetry: true
       enablePrivateNetworking: true
       enableMonitoring: true
+      enableRedundancy: true
     }
   }
 ]
