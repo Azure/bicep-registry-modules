@@ -22,6 +22,12 @@ param tags object = {}
 @description('Enable telemetry for the AVM deployment')
 param enableTelemetry bool
 
+@description('Enable Redundancy for the AVM deployment')
+param enableRedundancy bool
+
+@description('The secondary location for the Azure Container Registry replication, if redundancy is enabled.')
+param secondaryLocation string
+
 module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3' = {
   name: acrName
   params: {
@@ -32,6 +38,14 @@ module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3
     zoneRedundancy: zoneRedundancy
     tags: tags
     enableTelemetry: enableTelemetry
+    replications: enableRedundancy
+      ? [
+          {
+            location: secondaryLocation
+            name: 'acr-replica-${secondaryLocation}'
+          }
+        ]
+      : null
   }
 }
 

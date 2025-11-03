@@ -59,9 +59,6 @@ param gptDeploymentCapacity int = 100
 @description('Optional. Location used for Azure Cosmos DB, Azure Container App deployment.')
 param secondaryLocation string = (location == 'eastus2') ? 'westus2' : 'eastus2'
 
-@description('Optional. The resource group location.')
-param resourceGroupLocation string = resourceGroup().location
-
 @description('Optional. Enable WAF for the deployment.')
 param enablePrivateNetworking bool = true
 
@@ -182,7 +179,7 @@ module virtualNetwork './modules/virtualNetwork.bicep' = if (enablePrivateNetwor
   params: {
     name: 'vnet-${solutionSuffix}'
     addressPrefixes: ['10.0.0.0/8']
-    location: resourceGroupLocation
+    location: location
     tags: tags
     logAnalyticsWorkspaceId: enableMonitoring ? logAnalyticsWorkspace!.outputs.resourceId : ''
     resourceSuffix: solutionSuffix
@@ -196,29 +193,23 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePr
   name: take('avm.res.network.bastion-host.${bastionHostName}', 64)
   params: {
     name: bastionHostName
+    location: location
     skuName: 'Standard'
-    location: resourceGroupLocation
-    virtualNetworkResourceId: virtualNetwork!.outputs.resourceId
-    diagnosticSettings: enableMonitoring
-      ? [
-          {
-            name: 'bastionDiagnostics'
-            workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId
-            logCategoriesAndGroups: [
-              {
-                categoryGroup: 'allLogs'
-                enabled: true
-              }
-            ]
-          }
-        ]
-      : null
-    tags: tags
     enableTelemetry: enableTelemetry
+    tags: tags
+    virtualNetworkResourceId: virtualNetwork!.?outputs.?resourceId
+    availabilityZones: []
     publicIPAddressObject: {
-      name: 'pip-${bastionHostName}'
-      availabilityZones: []
+      name: 'pip-bas${solutionSuffix}'
+      diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : null
+      tags: tags
     }
+    disableCopyPaste: true
+    enableFileCopy: false
+    enableIpConnect: false
+    enableShareableLink: false
+    scaleUnits: 4
+    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : null
   }
 }
 
@@ -621,7 +612,7 @@ module avmManagedIdentity './modules/managed-identity.bicep' = {
   name: take('module.managed-identity.${solutionSuffix}', 64)
   params: {
     name: 'id-${solutionSuffix}'
-    location: resourceGroupLocation
+    location: location
     tags: tags
     enableTelemetry: enableTelemetry
   }
@@ -633,7 +624,7 @@ module avmKeyVault './modules/key-vault.bicep' = {
   name: take('module.key-vault.${solutionSuffix}', 64)
   params: {
     keyvaultName: 'kv-${solutionSuffix}'
-    location: resourceGroupLocation
+    location: location
     tags: tags
     roleAssignments: [
       {
@@ -665,21 +656,23 @@ module avmContainerRegistry 'modules/container-registry.bicep' = {
   name: take('module.container-registry.${solutionSuffix}', 64)
   params: {
     acrName: 'cr${replace(solutionSuffix, '-', '')}'
-    location: resourceGroupLocation
+    location: location
     acrSku: 'Standard'
     publicNetworkAccess: 'Enabled'
     zoneRedundancy: 'Disabled'
     tags: tags
     enableTelemetry: enableTelemetry
+    enableRedundancy: enableRedundancy
+    secondaryLocation: secondaryLocation
   }
 }
 
 // // ========== Storage Account ========== //
-module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.27.1' = {
+module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
   name: take('module.storage-account.${solutionSuffix}', 64)
   params: {
     name: 'st${replace(solutionSuffix, '-', '')}'
-    location: resourceGroupLocation
+    location: location
     managedIdentities: { systemAssigned: true }
     minimumTlsVersion: 'TLS1_2'
     enableTelemetry: enableTelemetry
@@ -860,7 +853,7 @@ module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.13.2' = 
     kind: 'AIServices'
     tags: {
       app: solutionSuffix
-      location: resourceGroupLocation
+      location: location
     }
     customSubDomainName: 'aicu-${solutionSuffix}'
     disableLocalAuth: true
@@ -908,10 +901,10 @@ module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.3' = {
   name: take('avm.res.app.managed-environment.${solutionSuffix}', 64)
   params: {
     name: 'cae-${solutionSuffix}'
-    location: resourceGroupLocation
+    location: location
     tags: {
       app: solutionSuffix
-      location: resourceGroupLocation
+      location: location
     }
     managedIdentities: { systemAssigned: true }
     appLogsConfiguration: enableMonitoring
@@ -948,7 +941,7 @@ module avmContainerRegistryReader 'br/public:avm/res/managed-identity/user-assig
   name: take('avm.res.managed-identity.user-assigned-identity.${solutionSuffix}', 64)
   params: {
     name: 'id-acr-${solutionSuffix}'
-    location: resourceGroupLocation
+    location: location
     tags: tags
     enableTelemetry: enableTelemetry
   }
@@ -959,7 +952,7 @@ module avmContainerApp 'br/public:avm/res/app/container-app:0.19.0' = {
   name: take('avm.res.app.container-app.${solutionSuffix}', 64)
   params: {
     name: 'ca-${solutionSuffix}-app'
-    location: resourceGroupLocation
+    location: location
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
     enableTelemetry: enableTelemetry
@@ -1016,7 +1009,7 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.19.0' = {
   name: take('avm.res.app.container-app-api.${solutionSuffix}', 64)
   params: {
     name: 'ca-${solutionSuffix}-api'
-    location: resourceGroupLocation
+    location: location
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
     enableTelemetry: enableTelemetry
@@ -1136,7 +1129,7 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.19.0' = {
   name: take('avm.res.app.container-app-web.${solutionSuffix}', 64)
   params: {
     name: 'ca-${solutionSuffix}-web'
-    location: resourceGroupLocation
+    location: location
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
     enableTelemetry: enableTelemetry
@@ -1218,7 +1211,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.18.0' = {
   name: take('avm.res.document-db.database-account.${solutionSuffix}', 64)
   params: {
     name: 'cosmos-${solutionSuffix}'
-    location: resourceGroupLocation
+    location: location
     mongodbDatabases: [
       {
         name: 'default'
@@ -1273,11 +1266,11 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9
   name: take('avm.res.app.configuration-store.${solutionSuffix}', 64)
   params: {
     name: 'appcs-${solutionSuffix}'
-    location: resourceGroupLocation
+    location: location
     enablePurgeProtection: enablePurgeProtection
     tags: {
       app: solutionSuffix
-      location: resourceGroupLocation
+      location: location
     }
     enableTelemetry: enableTelemetry
     managedIdentities: { systemAssigned: true }
@@ -1296,7 +1289,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9
         ]
       : null
     disableLocalAuth: false
-    replicaLocations: (resourceGroupLocation != secondaryLocation) ? [{ replicaLocation: secondaryLocation }] : []
+    replicaLocations: (location != secondaryLocation) ? [{ replicaLocation: secondaryLocation }] : []
     roleAssignments: [
       {
         principalId: avmContainerApp.outputs.?systemAssignedMIPrincipalId!
@@ -1425,7 +1418,7 @@ module avmAppConfig_update 'br/public:avm/res/app-configuration/configuration-st
   name: take('avm.res.app.configuration-store.update.${solutionSuffix}', 64)
   params: {
     name: 'appcs-${solutionSuffix}'
-    location: resourceGroupLocation
+    location: location
     enableTelemetry: enableTelemetry
     tags: tags
     publicNetworkAccess: 'Disabled'
@@ -1456,7 +1449,7 @@ module avmContainerApp_update 'br/public:avm/res/app/container-app:0.19.0' = {
   name: take('avm.res.app.container-app-update.${solutionSuffix}', 64)
   params: {
     name: 'ca-${solutionSuffix}-app'
-    location: resourceGroupLocation
+    location: location
     enableTelemetry: enableTelemetry
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
@@ -1523,7 +1516,7 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.19.0' =
   name: take('avm.res.app.container-app-api.update.${solutionSuffix}', 64)
   params: {
     name: 'ca-${solutionSuffix}-api'
-    location: resourceGroupLocation
+    location: location
     enableTelemetry: enableTelemetry
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
