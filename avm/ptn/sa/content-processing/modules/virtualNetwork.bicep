@@ -180,6 +180,63 @@ param subnets subnetType[] = [
     networkSecurityGroup: {
       name: 'nsg-admin'
       securityRules: [
+        // Allow outbound HTTPS for Azure AD join and management
+        {
+          name: 'AllowAzureADOutbound'
+          properties: {
+            access: 'Allow'
+            direction: 'Outbound'
+            priority: 100
+            protocol: 'Tcp'
+            sourceAddressPrefix: '10.0.1.0/27'
+            sourcePortRange: '*'
+            destinationAddressPrefix: 'AzureActiveDirectory'
+            destinationPortRange: '443'
+          }
+        }
+        // Allow outbound HTTPS for Azure services (for updates, etc.)
+        {
+          name: 'AllowAzureCloudOutbound'
+          properties: {
+            access: 'Allow'
+            direction: 'Outbound'
+            priority: 110
+            protocol: 'Tcp'
+            sourceAddressPrefix: '10.0.1.0/27'
+            sourcePortRange: '*'
+            destinationAddressPrefix: 'AzureCloud'
+            destinationPortRange: '443'
+          }
+        }
+        // Allow outbound DNS
+        {
+          name: 'AllowDNSOutbound'
+          properties: {
+            access: 'Allow'
+            direction: 'Outbound'
+            priority: 120
+            protocol: 'Udp'
+            sourceAddressPrefix: '10.0.1.0/27'
+            sourcePortRange: '*'
+            destinationAddressPrefix: '*'
+            destinationPortRange: '53'
+          }
+        }
+        // Allow outbound NTP for time synchronization
+        {
+          name: 'AllowNTPOutbound'
+          properties: {
+            access: 'Allow'
+            direction: 'Outbound'
+            priority: 130
+            protocol: 'Udp'
+            sourceAddressPrefix: '10.0.1.0/27'
+            sourcePortRange: '*'
+            destinationAddressPrefix: 'Internet'
+            destinationPortRange: '123'
+          }
+        }
+        // Deny hop-to-hop communication (keeping existing security)
         {
           name: 'Deny-hop-outbound'
           properties: {

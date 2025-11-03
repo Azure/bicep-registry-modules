@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "6237985030125623547"
+      "templateHash": "14091925329017166877"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Content Processing solution accelerator](https://github.com/microsoft/content-processing-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -365,7 +365,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "18421381145511279077"
+              "templateHash": "12043919099630994573"
             }
           },
           "definitions": {
@@ -747,6 +747,58 @@
                   "networkSecurityGroup": {
                     "name": "nsg-admin",
                     "securityRules": [
+                      {
+                        "name": "AllowAzureADOutbound",
+                        "properties": {
+                          "access": "Allow",
+                          "direction": "Outbound",
+                          "priority": 100,
+                          "protocol": "Tcp",
+                          "sourceAddressPrefix": "10.0.1.0/27",
+                          "sourcePortRange": "*",
+                          "destinationAddressPrefix": "AzureActiveDirectory",
+                          "destinationPortRange": "443"
+                        }
+                      },
+                      {
+                        "name": "AllowAzureCloudOutbound",
+                        "properties": {
+                          "access": "Allow",
+                          "direction": "Outbound",
+                          "priority": 110,
+                          "protocol": "Tcp",
+                          "sourceAddressPrefix": "10.0.1.0/27",
+                          "sourcePortRange": "*",
+                          "destinationAddressPrefix": "AzureCloud",
+                          "destinationPortRange": "443"
+                        }
+                      },
+                      {
+                        "name": "AllowDNSOutbound",
+                        "properties": {
+                          "access": "Allow",
+                          "direction": "Outbound",
+                          "priority": 120,
+                          "protocol": "Udp",
+                          "sourceAddressPrefix": "10.0.1.0/27",
+                          "sourcePortRange": "*",
+                          "destinationAddressPrefix": "*",
+                          "destinationPortRange": "53"
+                        }
+                      },
+                      {
+                        "name": "AllowNTPOutbound",
+                        "properties": {
+                          "access": "Allow",
+                          "direction": "Outbound",
+                          "priority": 130,
+                          "protocol": "Udp",
+                          "sourceAddressPrefix": "10.0.1.0/27",
+                          "sourcePortRange": "*",
+                          "destinationAddressPrefix": "Internet",
+                          "destinationPortRange": "123"
+                        }
+                      },
                       {
                         "name": "Deny-hop-outbound",
                         "properties": {
@@ -7015,7 +7067,9 @@
               "tags": "[parameters('tags')]",
               "typeHandlerVersion": "1.0",
               "settings": {
-                "mdmId": "0000000a-0000-0000-c000-000000000000"
+                "mdmId": "0000000a-0000-0000-c000-000000000000",
+                "options": 4,
+                "restart": true
               }
             }
           },
@@ -23675,7 +23729,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "14012963224129509549"
+              "templateHash": "16823216925192889863"
             },
             "name": "Container Registry Module"
           },
@@ -23694,7 +23748,7 @@
             },
             "acrSku": {
               "type": "string",
-              "defaultValue": "Basic",
+              "defaultValue": "Premium",
               "metadata": {
                 "description": "Optional. SKU for the Azure Container Registry."
               }
@@ -40642,10 +40696,10 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "logAnalyticsWorkspace",
         "virtualNetwork"
       ]
@@ -43247,8 +43301,8 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "virtualNetwork"
       ]
     },

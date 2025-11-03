@@ -429,6 +429,8 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
       typeHandlerVersion: '1.0'
       settings: {
         mdmId: '0000000a-0000-0000-c000-000000000000'
+        options: 4 // AAD join option
+        restart: true
       }
     }
     extensionAntiMalwareConfig: {
