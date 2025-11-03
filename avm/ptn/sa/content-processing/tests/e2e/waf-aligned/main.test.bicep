@@ -23,7 +23,7 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 #disable-next-line no-hardcoded-location // A value to avoid ongoing capacity challenges with Server Farm for frontend webapp in AVM Azure testing subscription
-var enforcedLocation = 'swedencentral'
+var enforcedLocation = 'australiaeast'
 
 // General resources
 // =================
@@ -42,12 +42,13 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      contentUnderstandingLocation: enforcedLocation
-      environmentName: '${namePrefix}${serviceShort}'
+      solutionName: '${namePrefix}${serviceShort}'
+      aiServiceLocation: enforcedLocation
       gptDeploymentCapacity: 1
-      enableScaling: true
+      enableScalability: true
       enableTelemetry: true
       enablePrivateNetworking: true
+      enableMonitoring: true
     }
   }
 ]

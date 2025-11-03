@@ -127,10 +127,13 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/content-processing:<version>`.
 
-- [Enterprise-Grade](#example-1-enterprise-grade)
-- [Sandbox](#example-2-sandbox)
+- [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
+- [Waf-aligned configuration with default parameter values](#example-2-waf-aligned-configuration-with-default-parameter-values)
 
-### Example 1: _Enterprise-Grade_
+### Example 1: _Sandbox configuration with default parameter values_
+
+This instance deploys the Content Processing Solution Accelerator using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
+
 
 <details>
 
@@ -141,13 +144,14 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
   name: 'contentProcessingDeployment'
   params: {
     // Required parameters
+    aiServiceLocation: '<aiServiceLocation>'
     // Non-required parameters
-    contentUnderstandingLocation: '<contentUnderstandingLocation>'
-    enablePrivateNetworking: true
-    enableScaling: true
+    enableMonitoring: false
+    enablePrivateNetworking: false
+    enablePurgeProtection: false
+    enableRedundancy: false
+    enableScalability: false
     enableTelemetry: true
-    environmentName: 'scpeg'
-    gptDeploymentCapacity: 1
   }
 }
 ```
@@ -165,24 +169,116 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "contentUnderstandingLocation": {
-      "value": "<contentUnderstandingLocation>"
+    "aiServiceLocation": {
+      "value": "<aiServiceLocation>"
     },
     // Non-required parameters
+    "enableMonitoring": {
+      "value": false
+    },
+    "enablePrivateNetworking": {
+      "value": false
+    },
+    "enablePurgeProtection": {
+      "value": false
+    },
+    "enableRedundancy": {
+      "value": false
+    },
+    "enableScalability": {
+      "value": false
+    },
+    "enableTelemetry": {
+      "value": true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/content-processing:<version>'
+
+// Required parameters
+param aiServiceLocation = '<aiServiceLocation>'
+// Non-required parameters
+param enableMonitoring = false
+param enablePrivateNetworking = false
+param enablePurgeProtection = false
+param enableRedundancy = false
+param enableScalability = false
+param enableTelemetry = true
+```
+
+</details>
+<p>
+
+### Example 2: _Waf-aligned configuration with default parameter values_
+
+This instance deploys the Content Processing Solution Accelerator
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
+  name: 'contentProcessingDeployment'
+  params: {
+    // Required parameters
+    aiServiceLocation: '<aiServiceLocation>'
+    // Non-required parameters
+    enableMonitoring: true
+    enablePrivateNetworking: true
+    enableScalability: true
+    enableTelemetry: true
+    gptDeploymentCapacity: 1
+    solutionName: 'scpeg'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "aiServiceLocation": {
+      "value": "<aiServiceLocation>"
+    },
+    // Non-required parameters
+    "enableMonitoring": {
+      "value": true
+    },
     "enablePrivateNetworking": {
       "value": true
     },
-    "enableScaling": {
+    "enableScalability": {
       "value": true
     },
     "enableTelemetry": {
       "value": true
     },
-    "environmentName": {
+    "gptDeploymentCapacity": {
+      "value": 1
+    },
+    "solutionName": {
       "value": "scpeg"
-    },
-    "gptDeploymentCapacity": {
-      "value": 1
     }
   }
 }
@@ -199,84 +295,14 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
 using 'br/public:avm/ptn/sa/content-processing:<version>'
 
 // Required parameters
+param aiServiceLocation = '<aiServiceLocation>'
 // Non-required parameters
-param contentUnderstandingLocation = '<contentUnderstandingLocation>'
+param enableMonitoring = true
 param enablePrivateNetworking = true
-param enableScaling = true
+param enableScalability = true
 param enableTelemetry = true
-param environmentName = 'scpeg'
 param gptDeploymentCapacity = 1
-```
-
-</details>
-<p>
-
-### Example 2: _Sandbox_
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
-  name: 'contentProcessingDeployment'
-  params: {
-    // Required parameters
-    // Non-required parameters
-    contentUnderstandingLocation: '<contentUnderstandingLocation>'
-    enablePrivateNetworking: false
-    environmentName: 'scpmin'
-    gptDeploymentCapacity: 1
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "contentUnderstandingLocation": {
-      "value": "<contentUnderstandingLocation>"
-    },
-    // Non-required parameters
-    "enablePrivateNetworking": {
-      "value": false
-    },
-    "environmentName": {
-      "value": "scpmin"
-    },
-    "gptDeploymentCapacity": {
-      "value": 1
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/sa/content-processing:<version>'
-
-// Required parameters
-// Non-required parameters
-param contentUnderstandingLocation = '<contentUnderstandingLocation>'
-param enablePrivateNetworking = false
-param environmentName = 'scpmin'
-param gptDeploymentCapacity = 1
+param solutionName = 'scpeg'
 ```
 
 </details>
@@ -425,7 +451,7 @@ Enable monitoring applicable resources, aligned with the Well Architected Framew
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `enablePrivateNetworking`
 
@@ -557,6 +583,7 @@ Admin password for the Jumpbox Virtual Machine. Set to custom value if enablePri
 
 - Required: No
 - Type: securestring
+- Default: `''`
 
 ### Parameter: `vmAdminUsername`
 
@@ -564,6 +591,7 @@ Admin username for the Jumpbox Virtual Machine. Set to custom value if enablePri
 
 - Required: No
 - Type: securestring
+- Default: `''`
 
 ### Parameter: `vmSize`
 
@@ -571,6 +599,7 @@ Size of the Jumpbox Virtual Machine when created. Set to custom value if enableP
 
 - Required: No
 - Type: string
+- Default: `''`
 
 ### Parameter: `webContainerImageName`
 

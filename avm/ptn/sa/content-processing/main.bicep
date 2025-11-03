@@ -9,6 +9,7 @@ metadata description = '''This module contains the resources required to deploy 
 // ========== Parameters ========== //
 @description('Required. Name of the solution to deploy.')
 param solutionName string = 'cps'
+
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
@@ -40,28 +41,35 @@ param aiServiceLocation string
   'GlobalStandard'
 ])
 param deploymentType string = 'GlobalStandard'
+
 @description('Optional. Name of the GPT model to deploy: gpt-4o-mini | gpt-4o | gpt-4.')
 param gptModelName string = 'gpt-4o'
+
 @minLength(1)
 @description('Optional. Version of the GPT model to deploy:.')
 @allowed([
   '2024-08-06'
 ])
 param gptModelVersion string = '2024-08-06'
+
 @minValue(1)
 @description('Required. Capacity of the GPT deployment: (minimum 10).')
 param gptDeploymentCapacity int = 100
+
 @description('Optional. Location used for Azure Cosmos DB, Azure Container App deployment.')
 param secondaryLocation string = (location == 'eastus2') ? 'westus2' : 'eastus2'
+
 @description('Optional. The resource group location.')
 param resourceGroupLocation string = resourceGroup().location
+
 @description('Optional. Enable WAF for the deployment.')
 param enablePrivateNetworking bool = true
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false.')
-param enableMonitoring bool = false
+param enableMonitoring bool = true
 
 @description('Optional. Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.')
 param enableRedundancy bool = false
@@ -77,6 +85,7 @@ param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags =
   app: 'Content Processing Solution Accelerator'
   location: resourceGroup().location
 }
+
 @description('Optional. Set to true to use local build for container app images, otherwise use container registry images.')
 param useLocalBuild bool = false
 
@@ -102,15 +111,15 @@ param apiContainerImageName string = 'contentprocessorapi'
 param apiContainerImageTag string = 'latest'
 
 @description('Optional. Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true.')
-param vmSize string?
+param vmSize string = ''
 
 @description('Optional. Admin username for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true.')
 @secure()
-param vmAdminUsername string?
+param vmAdminUsername string = ''
 
 @description('Optional. Admin password for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true.')
 @secure()
-param vmAdminPassword string?
+param vmAdminPassword string = ''
 
 @maxLength(5)
 @description('Optional. A unique text value for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name.')
@@ -218,10 +227,10 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
   name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
   params: {
     name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
-    vmSize: vmSize ?? 'Standard_DS2_v2'
+    vmSize: empty(vmSize) ? 'Standard_DS2_v2' : vmSize
     location: resourceGroupLocation
-    adminUsername: vmAdminUsername ?? 'JumpboxAdminUser'
-    adminPassword: vmAdminPassword ?? 'JumpboxAdminP@ssw0rd1234!'
+    adminUsername: empty(vmAdminUsername) ? 'JumpboxAdminUser' : vmAdminUsername
+    adminPassword: empty(vmAdminPassword) ? 'JumpboxAdminP@ssw0rd1234!' : vmAdminPassword
     tags: tags
     availabilityZone: -1
     maintenanceConfigurationResourceId: maintenanceConfiguration.outputs.resourceId

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "6051739988894709914"
+      "templateHash": "9938989014603670658"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Content Processing solution accelerator](https://github.com/microsoft/content-processing-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -122,7 +122,7 @@
     },
     "enableMonitoring": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false."
       }
@@ -219,21 +219,21 @@
     },
     "vmSize": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "",
       "metadata": {
         "description": "Optional. Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true."
       }
     },
     "vmAdminUsername": {
       "type": "securestring",
-      "nullable": true,
+      "defaultValue": "",
       "metadata": {
         "description": "Optional. Admin username for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true."
       }
     },
     "vmAdminPassword": {
       "type": "securestring",
-      "nullable": true,
+      "defaultValue": "",
       "metadata": {
         "description": "Optional. Admin password for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true."
       }
@@ -4940,18 +4940,12 @@
           "name": {
             "value": "[take(variables('jumpboxVmName'), 15)]"
           },
-          "vmSize": {
-            "value": "[coalesce(parameters('vmSize'), 'Standard_DS2_v2')]"
-          },
+          "vmSize": "[if(empty(parameters('vmSize')), createObject('value', 'Standard_DS2_v2'), createObject('value', parameters('vmSize')))]",
           "location": {
             "value": "[parameters('resourceGroupLocation')]"
           },
-          "adminUsername": {
-            "value": "[coalesce(parameters('vmAdminUsername'), 'JumpboxAdminUser')]"
-          },
-          "adminPassword": {
-            "value": "[coalesce(parameters('vmAdminPassword'), 'JumpboxAdminP@ssw0rd1234!')]"
-          },
+          "adminUsername": "[if(empty(parameters('vmAdminUsername')), createObject('value', 'JumpboxAdminUser'), createObject('value', parameters('vmAdminUsername')))]",
+          "adminPassword": "[if(empty(parameters('vmAdminPassword')), createObject('value', 'JumpboxAdminP@ssw0rd1234!'), createObject('value', parameters('vmAdminPassword')))]",
           "tags": {
             "value": "[parameters('tags')]"
           },
@@ -35562,8 +35556,8 @@
         "avmContainerApp",
         "avmContainerApp_API",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "virtualNetwork"
       ]
     },
@@ -41302,9 +41296,9 @@
         "avmContainerApp",
         "avmManagedIdentity",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "logAnalyticsWorkspace",
         "virtualNetwork"
       ]
@@ -43906,8 +43900,8 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "virtualNetwork"
       ]
     },
