@@ -72,7 +72,7 @@ param networkAcls object = {
 @secure()
 param logAnalyticsWorkspaceResourceId string = ''
 
-module avmKeyVault 'br/public:avm/res/key-vault/vault:0.13.0' = {
+module avmKeyVault 'br/public:avm/res/key-vault/vault:0.13.3' = {
   name: 'deploy_keyvault'
   params: {
     name: keyvaultName
