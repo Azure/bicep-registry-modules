@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "14382045290198346824"
+      "templateHash": "10731621435591897912"
     },
     "name": "avm/ptn/azd/container-apps-stack",
     "description": "Creates an Azure Container Registry and an Azure Container Apps environment.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case"
@@ -34,7 +34,7 @@
     },
     "publicNetworkAccess": {
       "type": "string",
-      "defaultValue": "Disabled",
+      "defaultValue": "Enabled",
       "allowedValues": [
         "Enabled",
         "Disabled"

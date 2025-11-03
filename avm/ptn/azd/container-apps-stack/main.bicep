@@ -17,7 +17,7 @@ param containerAppsEnvironmentName string
   'Disabled'
 ])
 @description('Optional. Whether to allow or block all public traffic.')
-param publicNetworkAccess string = 'Disabled'
+param publicNetworkAccess string = 'Enabled'
 
 @description('Required. Name of the Azure Container Registry.')
 param containerRegistryName string

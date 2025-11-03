@@ -366,7 +366,7 @@ Whether to allow or block all public traffic.
 
 - Required: No
 - Type: string
-- Default: `'Disabled'`
+- Default: `'Enabled'`
 - Allowed:
   ```Bicep
   [
