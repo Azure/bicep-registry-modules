@@ -63,8 +63,13 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: '${namePrefix}${serviceShort}002'
       availabilityZone: -1
+      managedIdentities: {
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
       customerManagedKey: {
         keyName: nestedHsmDependencies.outputs.keyName
         keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId

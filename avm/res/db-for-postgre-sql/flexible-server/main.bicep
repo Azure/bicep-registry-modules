@@ -329,23 +329,23 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-pr
       geoRedundantBackup: createMode != 'Replica' ? geoRedundantBackup : null
     }
     createMode: createMode
-    // dataEncryption: !empty(customerManagedKey)
-    //   ? {
-    //       primaryKeyURI: !empty(customerManagedKey.?keyVersion)
-    //         ? (customerManagedKeyIsHsmVault
-    //             ? '${hSMCMKKeyVault::hSMCMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
-    //             : '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}')
-    //         : (customerManagedKey.?autoRotationEnabled ?? true)
-    //             ? (customerManagedKeyIsHsmVault
-    //                 ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUri
-    //                 : cMKKeyVault::cMKKey!.properties.keyUri)
-    //             : (customerManagedKeyIsHsmVault
-    //                 ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUriWithVersion
-    //                 : cMKKeyVault::cMKKey!.properties.keyUriWithVersion)
-    //       primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
-    //       type: 'AzureKeyVault'
-    //     }
-    //   : null
+    dataEncryption: !empty(customerManagedKey)
+      ? {
+          primaryKeyURI: !empty(customerManagedKey.?keyVersion)
+            ? (customerManagedKeyIsHsmVault
+                ? '${hSMCMKKeyVault::hSMCMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+                : '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}')
+            : (customerManagedKey.?autoRotationEnabled ?? true)
+                ? (customerManagedKeyIsHsmVault
+                    ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUri
+                    : cMKKeyVault::cMKKey!.properties.keyUri)
+                : (customerManagedKeyIsHsmVault
+                    ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUriWithVersion
+                    : cMKKeyVault::cMKKey!.properties.keyUriWithVersion)
+          primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
+          type: 'AzureKeyVault'
+        }
+      : null
     maintenanceWindow: !empty(maintenanceWindow)
       ? {
           customWindow: maintenanceWindow.customWindow
