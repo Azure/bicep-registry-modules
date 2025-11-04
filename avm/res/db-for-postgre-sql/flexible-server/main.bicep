@@ -329,23 +329,23 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-pr
       geoRedundantBackup: createMode != 'Replica' ? geoRedundantBackup : null
     }
     createMode: createMode
-    dataEncryption: !empty(customerManagedKey)
-      ? {
-          primaryKeyURI: !empty(customerManagedKey.?keyVersion)
-            ? (customerManagedKeyIsHsmVault
-                ? '${hSMCMKKeyVault::hSMCMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
-                : '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}')
-            : (customerManagedKey.?autoRotationEnabled ?? true)
-                ? (customerManagedKeyIsHsmVault
-                    ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUri
-                    : cMKKeyVault::cMKKey!.properties.keyUri)
-                : (customerManagedKeyIsHsmVault
-                    ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUriWithVersion
-                    : cMKKeyVault::cMKKey!.properties.keyUriWithVersion)
-          primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
-          type: 'AzureKeyVault'
-        }
-      : null
+    // dataEncryption: !empty(customerManagedKey)
+    //   ? {
+    //       primaryKeyURI: !empty(customerManagedKey.?keyVersion)
+    //         ? (customerManagedKeyIsHsmVault
+    //             ? '${hSMCMKKeyVault::hSMCMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+    //             : '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}')
+    //         : (customerManagedKey.?autoRotationEnabled ?? true)
+    //             ? (customerManagedKeyIsHsmVault
+    //                 ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUri
+    //                 : cMKKeyVault::cMKKey!.properties.keyUri)
+    //             : (customerManagedKeyIsHsmVault
+    //                 ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUriWithVersion
+    //                 : cMKKeyVault::cMKKey!.properties.keyUriWithVersion)
+    //       primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
+    //       type: 'AzureKeyVault'
+    //     }
+    //   : null
     maintenanceWindow: !empty(maintenanceWindow)
       ? {
           customWindow: maintenanceWindow.customWindow
@@ -587,6 +587,24 @@ output privateEndpoints privateEndpointOutputType[] = [
 
 @description('The principal ID of the system assigned managed identity.')
 output systemAssignedMIPrincipalId string? = flexibleServer.?identity.?principalId
+
+output dataEncryption object? = !empty(customerManagedKey)
+  ? {
+      primaryKeyURI: !empty(customerManagedKey.?keyVersion)
+        ? (customerManagedKeyIsHsmVault
+            ? '${hSMCMKKeyVault::hSMCMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+            : '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}')
+        : (customerManagedKey.?autoRotationEnabled ?? true)
+            ? (customerManagedKeyIsHsmVault
+                ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUri
+                : cMKKeyVault::cMKKey!.properties.keyUri)
+            : (customerManagedKeyIsHsmVault
+                ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUriWithVersion
+                : cMKKeyVault::cMKKey!.properties.keyUriWithVersion)
+      primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
+      type: 'AzureKeyVault'
+    }
+  : null
 
 // =============== //
 //   Definitions   //

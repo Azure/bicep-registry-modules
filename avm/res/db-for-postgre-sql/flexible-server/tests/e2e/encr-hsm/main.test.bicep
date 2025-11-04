@@ -82,3 +82,5 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+output dataEncryption object? = testDeployment[0].outputs.?dataEncryption
