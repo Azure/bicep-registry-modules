@@ -49,14 +49,15 @@ resource configureHSM 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     }
   }
   properties: {
-    azCliVersion: '2.40.0'
+    azCliVersion: '2.67.0'
     retentionInterval: 'P1D'
     arguments: '"${managedHsmName}" "${managedIdentity.properties.principalId}"'
     scriptContent: '''
       # Allow key reference via managedIdentity
       echo $1
       echo $2
-      az keyvault role assignment create --hsm-name $1 --role "Managed HSM Crypto Service Encryption User" --assignee $2 --scope '/keys'
+      # Does not work as the deployment script MSI would need local-rbac admin permissions on the HSM in order to grant anyone else permissions
+      # az keyvault role assignment create --hsm-name $1 --role "Managed HSM Crypto Service Encryption User" --assignee $2 --scope '/keys'
 
       # Allow usage via ARM
       az keyvault setting update --hsm-name $1 --name 'AllowKeyManagementOperationsThroughARM' --value 'true'
