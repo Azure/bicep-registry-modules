@@ -1025,6 +1025,8 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHo
     settings: {
       modulesUrl: extensionHostPoolRegistration.modulesUrl
       configurationFunction: extensionHostPoolRegistration.configurationFunction
+    }
+    protectedSettings: {
       properties: {
         hostPoolName: extensionHostPoolRegistration.hostPoolName
         registrationInfoToken: extensionHostPoolRegistration.registrationInfoToken
