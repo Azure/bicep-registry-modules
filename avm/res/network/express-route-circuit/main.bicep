@@ -177,9 +177,6 @@ resource expressRouteCircuit_peering_connections 'Microsoft.Network/expressRoute
   for connection in (connections ?? []): {
     name: '${name}/${connection.peeringName}/${connection.name}'
     properties: {
-      // peerExpressRouteCircuitPeering: {
-      //   id: connection.peerExpressRouteCircuitPeeringId
-      // }
       peerExpressRouteCircuitPeering: {
         id: '${connection.peerExpressRouteCircuitPeeringId}/peerings/${connection.peeringName}'
       }
@@ -271,6 +268,7 @@ output serviceProviderProvisioningState string = expressRouteCircuit.properties.
 @description('The location the resource was deployed into.')
 output location string = expressRouteCircuit.location
 
+@description('The authorizations of the express route circuit.')
 output authorizations array = expressRouteCircuit.properties.authorizations
 
 @export()

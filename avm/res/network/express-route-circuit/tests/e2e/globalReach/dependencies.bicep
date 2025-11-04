@@ -82,5 +82,9 @@ module testDeploymentCircuit1 '../../../main.bicep' = {
     }
   }
 }
+
+@description('The resource ID of the created Express Route Circuit 1.')
 output circuit1ResourceId string = testDeploymentCircuit1.outputs.resourceId
+
+@description('The resource ID of the created Express Route Port 2.')
 output port2ResourceId string = testDeploymentPort2.outputs.resourceId
