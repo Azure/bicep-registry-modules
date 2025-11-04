@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "7354762545108927053"
+      "templateHash": "9318009978756115039"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -274,47 +274,12 @@
       "metadata": {
         "description": "Optional. A unique text value for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name."
       }
-    },
-    "scriptCopyDataConfiguration": {
-      "type": "object",
-      "defaultValue": {
-        "name": "[format('{0}-scrp-cpdt', parameters('solutionUniqueText'))]",
-        "location": "[parameters('location')]",
-        "githubBaseUrl": "https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/",
-        "scriptUrl": "https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/infra/scripts/copy_kb_files.sh"
-      },
-      "metadata": {
-        "description": "Optional. The configuration to apply for the Conversation Knowledge Mining Copy Data Script resource."
-      }
-    },
-    "scriptIndexDataConfiguration": {
-      "type": "object",
-      "defaultValue": {
-        "name": "[format('{0}-scrp-indt', parameters('solutionUniqueText'))]",
-        "location": "[parameters('location')]",
-        "githubBaseUrl": "https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/",
-        "scriptUrl": "https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/infra/scripts/run_create_index_scripts.sh"
-      },
-      "metadata": {
-        "description": "Optional. The configuration to apply for the Conversation Knowledge Mining Index Data Script resource."
-      }
-    },
-    "scriptSqlUserConfiguration": {
-      "type": "object",
-      "defaultValue": {
-        "name": "[format('{0}-scrp-sql', parameters('solutionUniqueText'))]",
-        "location": "[parameters('location')]",
-        "githubBaseUrl": "https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/",
-        "scriptUrl": "https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/infra/scripts/add_user_scripts/create-sql-user-and-role.ps1"
-      },
-      "metadata": {
-        "description": "Optional. The configuration to apply for the Conversation Knowledge Mining SQL User Creation Script resource."
-      }
     }
   },
   "variables": {
     "solutionLocation": "[if(empty(parameters('location')), resourceGroup().location, parameters('location'))]",
     "solutionSuffix": "[toLower(trim(replace(replace(replace(replace(replace(replace(format('{0}{1}', parameters('solutionName'), parameters('solutionUniqueText')), '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''), '*', '')))]",
+    "baseUrl": "https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/main/",
     "replicaRegionPairs": {
       "australiaeast": "australiasoutheast",
       "centralus": "westus",
@@ -341,17 +306,6 @@
       "westeurope": "northeurope"
     },
     "cosmosDbHaLocation": "[variables('cosmosDbZoneRedundantHaRegionPairs')[resourceGroup().location]]",
-    "scriptCopyDataResourceName": "[coalesce(tryGet(parameters('scriptCopyDataConfiguration'), 'name'), format('{0}-scrp-cpdt', parameters('solutionUniqueText')))]",
-    "scriptCopyDataLocation": "[coalesce(tryGet(parameters('scriptCopyDataConfiguration'), 'location'), variables('solutionLocation'))]",
-    "scriptCopyDataGithubBaseUrl": "[coalesce(tryGet(parameters('scriptCopyDataConfiguration'), 'githubBaseUrl'), 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/')]",
-    "scriptCopyDataScriptUrl": "[coalesce(tryGet(parameters('scriptCopyDataConfiguration'), 'scriptUrl'), 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/infra/scripts/copy_kb_files.sh')]",
-    "scriptIndexDataResourceName": "[coalesce(tryGet(parameters('scriptIndexDataConfiguration'), 'name'), format('{0}-scrp-indt', parameters('solutionUniqueText')))]",
-    "scriptIndexDataLocation": "[coalesce(tryGet(parameters('scriptIndexDataConfiguration'), 'location'), variables('solutionLocation'))]",
-    "scriptIndexDataGithubBaseUrl": "[coalesce(tryGet(parameters('scriptIndexDataConfiguration'), 'githubBaseUrl'), 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/')]",
-    "scriptIndexDataScriptUrl": "[coalesce(tryGet(parameters('scriptIndexDataConfiguration'), 'scriptUrl'), 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/infra/scripts/run_create_index_scripts.sh')]",
-    "scriptSqlUserResourceName": "[coalesce(tryGet(parameters('scriptSqlUserConfiguration'), 'name'), format('{0}-scrp-sql', parameters('solutionUniqueText')))]",
-    "scriptSqlUserLocation": "[coalesce(tryGet(parameters('scriptSqlUserConfiguration'), 'location'), variables('solutionLocation'))]",
-    "scriptSqlUserScriptUrl": "[coalesce(tryGet(parameters('scriptSqlUserConfiguration'), 'scriptUrl'), 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/infra/scripts/add_user_scripts/create-sql-user-and-role.ps1')]",
     "logAnalyticsWorkspaceResourceName": "[format('log-{0}', variables('solutionSuffix'))]",
     "applicationInsightsResourceName": "[format('appi-{0}', variables('solutionSuffix'))]",
     "bastionHostName": "[format('bas-{0}', variables('solutionSuffix'))]",
@@ -29600,9 +29554,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -32204,9 +32158,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -42591,10 +42545,10 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageDfs)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "userAssignedIdentity",
         "virtualNetwork"
       ]
@@ -55311,7 +55265,7 @@
             "value": "AzureCLI"
           },
           "name": {
-            "value": "[variables('scriptCopyDataResourceName')]"
+            "value": "[format('copy_demo_Data-{0}', parameters('solutionUniqueText'))]"
           },
           "azCliVersion": {
             "value": "2.52.0"
@@ -55320,7 +55274,7 @@
             "value": "Always"
           },
           "location": {
-            "value": "[variables('scriptCopyDataLocation')]"
+            "value": "[parameters('location')]"
           },
           "managedIdentities": {
             "value": {
@@ -55336,10 +55290,10 @@
             "value": true
           },
           "primaryScriptUri": {
-            "value": "[variables('scriptCopyDataScriptUrl')]"
+            "value": "[format('{0}infra/scripts/copy_kb_files.sh', variables('baseUrl'))]"
           },
           "arguments": {
-            "value": "[format('{0} data {1} {2}', reference('storageAccount').outputs.name.value, variables('scriptCopyDataGithubBaseUrl'), reference('userAssignedIdentity').outputs.clientId.value)]"
+            "value": "[format('{0} data {1} {2}', reference('storageAccount').outputs.name.value, variables('baseUrl'), reference('userAssignedIdentity').outputs.clientId.value)]"
           },
           "storageAccountResourceId": {
             "value": "[reference('storageAccount').outputs.resourceId.value]"
@@ -55900,13 +55854,13 @@
             "value": "AzureCLI"
           },
           "name": {
-            "value": "[variables('scriptIndexDataResourceName')]"
+            "value": "[format('create_search_indexes-{0}', parameters('solutionUniqueText'))]"
           },
           "azCliVersion": {
             "value": "2.52.0"
           },
           "location": {
-            "value": "[variables('scriptIndexDataLocation')]"
+            "value": "[parameters('location')]"
           },
           "managedIdentities": {
             "value": {
@@ -55919,10 +55873,10 @@
             "value": true
           },
           "primaryScriptUri": {
-            "value": "[format('{0}infra/scripts/run_create_index_scripts.sh', variables('scriptIndexDataScriptUrl'))]"
+            "value": "[format('{0}infra/scripts/run_create_index_scripts.sh', variables('baseUrl'))]"
           },
           "arguments": {
-            "value": "[format('{0} {1} {2}', variables('scriptIndexDataGithubBaseUrl'), reference('keyVault').outputs.name.value, reference('userAssignedIdentity').outputs.clientId.value)]"
+            "value": "[format('{0} {1} {2}', variables('baseUrl'), reference('keyVault').outputs.name.value, reference('userAssignedIdentity').outputs.clientId.value)]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -56492,13 +56446,13 @@
             "value": "AzurePowerShell"
           },
           "name": {
-            "value": "[variables('scriptSqlUserResourceName')]"
+            "value": "[format('create_sql_user_and_role-{0}', parameters('solutionUniqueText'))]"
           },
           "azPowerShellVersion": {
             "value": "11.0"
           },
           "location": {
-            "value": "[variables('scriptSqlUserLocation')]"
+            "value": "[parameters('location')]"
           },
           "managedIdentities": {
             "value": {
@@ -56514,7 +56468,7 @@
             "value": "[join(createArray(format('-SqlServerName ''{0}''', variables('sqlServerResourceName')), format('-SqlDatabaseName ''{0}''', variables('sqlDbModuleName')), format('-ClientId ''{0}''', reference('sqlUserAssignedIdentity').outputs.clientId.value), format('-DisplayName ''{0}''', reference('sqlUserAssignedIdentity').outputs.name.value), format('-DatabaseRoles ''{0}''', join(variables('databaseRoles'), ','))), ' ')]"
           },
           "scriptContent": {
-            "value": "[variables('scriptSqlUserScriptUrl')]"
+            "value": "[format('{0}infra/scripts/add_user_scripts/create-sql-user-and-role.ps1', variables('baseUrl'))]"
           },
           "tags": {
             "value": "[parameters('tags')]"
