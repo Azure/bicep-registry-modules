@@ -193,32 +193,106 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePr
   name: take('avm.res.network.bastion-host.${bastionHostName}', 64)
   params: {
     name: bastionHostName
-    location: location
     skuName: 'Standard'
-    enableTelemetry: enableTelemetry
+    location: location
+    virtualNetworkResourceId: virtualNetwork!.outputs.resourceId
+    diagnosticSettings: enableMonitoring
+      ? [
+          {
+            name: 'bastionDiagnostics'
+            workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId
+            logCategoriesAndGroups: [
+              {
+                categoryGroup: 'allLogs'
+                enabled: true
+              }
+            ]
+          }
+        ]
+      : []
     tags: tags
-    virtualNetworkResourceId: virtualNetwork!.?outputs.?resourceId
-    availabilityZones: []
+    enableTelemetry: enableTelemetry
     publicIPAddressObject: {
-      name: 'pip-bas${solutionSuffix}'
-      diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : null
-      tags: tags
+      name: 'pip-${bastionHostName}'
     }
-    disableCopyPaste: true
-    enableFileCopy: false
-    enableIpConnect: false
-    enableShareableLink: false
-    scaleUnits: 4
-    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : null
   }
 }
 
-// ========== Virtual machine ========== //
-var maintenanceConfigurationResourceName = 'mc-${solutionSuffix}'
-module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.2' = if (enablePrivateNetworking) {
-  name: take('avm.res.compute.virtual-machine.${maintenanceConfigurationResourceName}', 64)
+// ========== VM Maintenance Configuration Mapping ========== //
+
+// Jumpbox Virtual Machine
+var jumpboxVmName = take('vm-jumpbox-${solutionSuffix}', 15)
+module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enablePrivateNetworking) {
+  name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
   params: {
-    name: maintenanceConfigurationResourceName
+    name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
+    vmSize: empty(vmSize) ? 'Standard_DS2_v2' : vmSize
+    location: location
+    adminUsername: empty(vmAdminUsername) ? 'JumpboxAdminUser' : vmAdminUsername
+    adminPassword: empty(vmAdminPassword) ? 'JumpboxAdminP@ssw0rd1234!' : vmAdminPassword
+    tags: tags
+    // WAF aligned configuration for Redundancy - use availability zone when redundancy is enabled
+    availabilityZone: enableRedundancy ? 1 : -1
+    imageReference: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2019-datacenter'
+      version: 'latest'
+    }
+    osType: 'Windows'
+    // WAF aligned configuration - Enable automatic patching with platform management
+    patchMode: 'AutomaticByPlatform'
+    bypassPlatformSafetyChecksOnUserSchedule: true
+    osDisk: {
+      name: 'osdisk-${jumpboxVmName}'
+      managedDisk: {
+        // WAF aligned configuration - use Premium storage for better SLA when redundancy is enabled
+        storageAccountType: enableRedundancy ? 'Premium_LRS' : 'Standard_LRS'
+      }
+    }
+    encryptionAtHost: false // Some Azure subscriptions do not support encryption at host
+    // WAF aligned configuration - VM maintenance configuration for reduced unplanned disruptions
+    maintenanceConfigurationResourceId: maintenanceConfiguration.outputs.resourceId
+
+    nicConfigurations: [
+      {
+        name: 'nic-${jumpboxVmName}'
+        ipConfigurations: [
+          {
+            name: 'ipconfig1'
+            subnetResourceId: virtualNetwork!.outputs.adminSubnetResourceId
+          }
+        ]
+        diagnosticSettings: enableMonitoring
+          ? [
+              {
+                name: 'jumpboxNicDiagnostics'
+                workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId
+                logCategoriesAndGroups: [
+                  {
+                    categoryGroup: 'allLogs'
+                    enabled: true
+                  }
+                ]
+                metricCategories: [
+                  {
+                    category: 'AllMetrics'
+                    enabled: true
+                  }
+                ]
+              }
+            ]
+          : []
+      }
+    ]
+    enableTelemetry: enableTelemetry
+  }
+}
+
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.2' = {
+  name: take('${jumpboxVmName}-jumpbox-maintenance-config', 64)
+  params: {
+    name: 'mc-${jumpboxVmName}'
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
@@ -247,224 +321,6 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
           'Security'
         ]
       }
-    }
-  }
-}
-
-var dataCollectionRulesResourceName = 'dcr-${solutionSuffix}'
-module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-rule:0.8.0' = if (enablePrivateNetworking && enableMonitoring) {
-  name: take('avm.res.insights.data-collection-rule.${dataCollectionRulesResourceName}', 64)
-  params: {
-    name: dataCollectionRulesResourceName
-    tags: tags
-    enableTelemetry: enableTelemetry
-    location: logAnalyticsWorkspace!.outputs.location
-    dataCollectionRuleProperties: {
-      kind: 'Windows'
-      dataSources: {
-        performanceCounters: [
-          {
-            streams: [
-              'Microsoft-Perf'
-            ]
-            samplingFrequencyInSeconds: 60
-            counterSpecifiers: [
-              '\\Processor Information(_Total)\\% Processor Time'
-              '\\Processor Information(_Total)\\% Privileged Time'
-              '\\Processor Information(_Total)\\% User Time'
-              '\\Processor Information(_Total)\\Processor Frequency'
-              '\\System\\Processes'
-              '\\Process(_Total)\\Thread Count'
-              '\\Process(_Total)\\Handle Count'
-              '\\System\\System Up Time'
-              '\\System\\Context Switches/sec'
-              '\\System\\Processor Queue Length'
-              '\\Memory\\% Committed Bytes In Use'
-              '\\Memory\\Available Bytes'
-              '\\Memory\\Committed Bytes'
-              '\\Memory\\Cache Bytes'
-              '\\Memory\\Pool Paged Bytes'
-              '\\Memory\\Pool Nonpaged Bytes'
-              '\\Memory\\Pages/sec'
-              '\\Memory\\Page Faults/sec'
-              '\\Process(_Total)\\Working Set'
-              '\\Process(_Total)\\Working Set - Private'
-              '\\LogicalDisk(_Total)\\% Disk Time'
-              '\\LogicalDisk(_Total)\\% Disk Read Time'
-              '\\LogicalDisk(_Total)\\% Disk Write Time'
-              '\\LogicalDisk(_Total)\\% Idle Time'
-              '\\LogicalDisk(_Total)\\Disk Bytes/sec'
-              '\\LogicalDisk(_Total)\\Disk Read Bytes/sec'
-              '\\LogicalDisk(_Total)\\Disk Write Bytes/sec'
-              '\\LogicalDisk(_Total)\\Disk Transfers/sec'
-              '\\LogicalDisk(_Total)\\Disk Reads/sec'
-              '\\LogicalDisk(_Total)\\Disk Writes/sec'
-              '\\LogicalDisk(_Total)\\Avg. Disk sec/Transfer'
-              '\\LogicalDisk(_Total)\\Avg. Disk sec/Read'
-              '\\LogicalDisk(_Total)\\Avg. Disk sec/Write'
-              '\\LogicalDisk(_Total)\\Avg. Disk Queue Length'
-              '\\LogicalDisk(_Total)\\Avg. Disk Read Queue Length'
-              '\\LogicalDisk(_Total)\\Avg. Disk Write Queue Length'
-              '\\LogicalDisk(_Total)\\% Free Space'
-              '\\LogicalDisk(_Total)\\Free Megabytes'
-              '\\Network Interface(*)\\Bytes Total/sec'
-              '\\Network Interface(*)\\Bytes Sent/sec'
-              '\\Network Interface(*)\\Bytes Received/sec'
-              '\\Network Interface(*)\\Packets/sec'
-              '\\Network Interface(*)\\Packets Sent/sec'
-              '\\Network Interface(*)\\Packets Received/sec'
-              '\\Network Interface(*)\\Packets Outbound Errors'
-              '\\Network Interface(*)\\Packets Received Errors'
-            ]
-            name: 'perfCounterDataSource60'
-          }
-        ]
-        windowsEventLogs: [
-          {
-            name: 'SecurityAuditEvents'
-            streams: [
-              'Microsoft-WindowsEvent'
-            ]
-            xPathQueries: [
-              'Security!*[System[(EventID=4624 or EventID=4625)]]'
-            ]
-          }
-        ]
-      }
-      destinations: {
-        logAnalytics: [
-          {
-            workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId
-            name: 'la--1264800308'
-          }
-        ]
-      }
-      dataFlows: [
-        {
-          streams: [
-            'Microsoft-Perf'
-          ]
-          destinations: [
-            'la--1264800308'
-          ]
-          transformKql: 'source'
-          outputStream: 'Microsoft-Perf'
-        }
-      ]
-    }
-  }
-}
-
-var proximityPlacementGroupResourceName = 'ppg-${solutionSuffix}'
-module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-group:0.4.1' = if (enablePrivateNetworking) {
-  name: take('avm.res.compute.proximity-placement-group.${proximityPlacementGroupResourceName}', 64)
-  params: {
-    name: proximityPlacementGroupResourceName
-    location: location
-    tags: tags
-    enableTelemetry: enableTelemetry
-    availabilityZone: virtualMachineAvailabilityZone
-    intent: { vmSizes: [virtualMachineSize] }
-  }
-}
-
-var virtualMachineResourceName = 'vm-${solutionSuffix}'
-var virtualMachineAvailabilityZone = 1
-var virtualMachineSize = empty(vmSize) ? 'Standard_DS2_v2' : vmSize
-module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enablePrivateNetworking) {
-  name: take('avm.res.compute.virtual-machine.${virtualMachineResourceName}', 64)
-  params: {
-    name: virtualMachineResourceName
-    location: location
-    tags: tags
-    enableTelemetry: enableTelemetry
-    computerName: take(virtualMachineResourceName, 15)
-    osType: 'Windows'
-    vmSize: virtualMachineSize
-    adminUsername: empty(vmAdminUsername) ? 'JumpboxAdminUser' : vmAdminUsername
-    adminPassword: empty(vmAdminPassword) ? 'JumpboxAdminP@ssw0rd1234!' : vmAdminPassword
-    patchMode: 'AutomaticByPlatform'
-    bypassPlatformSafetyChecksOnUserSchedule: true
-    maintenanceConfigurationResourceId: maintenanceConfiguration!.outputs.resourceId
-    enableAutomaticUpdates: true
-    encryptionAtHost: true
-    availabilityZone: virtualMachineAvailabilityZone
-    proximityPlacementGroupResourceId: proximityPlacementGroup!.outputs.resourceId
-    imageReference: {
-      publisher: 'microsoft-dsvm'
-      offer: 'dsvm-win-2022'
-      sku: 'winserver-2022'
-      version: 'latest'
-    }
-    osDisk: {
-      name: 'osdisk-${virtualMachineResourceName}'
-      caching: 'ReadWrite'
-      createOption: 'FromImage'
-      deleteOption: 'Delete'
-      diskSizeGB: 128
-      managedDisk: { storageAccountType: 'Premium_LRS' }
-    }
-    nicConfigurations: [
-      {
-        name: 'nic-${virtualMachineResourceName}'
-        tags: tags
-        deleteOption: 'Delete'
-        diagnosticSettings: enableMonitoring //WAF aligned configuration for Monitoring
-          ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }]
-          : null
-        ipConfigurations: [
-          {
-            name: '${virtualMachineResourceName}-nic01-ipconfig01'
-            subnetResourceId: virtualNetwork!.outputs.adminSubnetResourceId
-            diagnosticSettings: enableMonitoring //WAF aligned configuration for Monitoring
-              ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }]
-              : null
-          }
-        ]
-      }
-    ]
-    extensionAadJoinConfig: {
-      enabled: true
-      tags: tags
-      typeHandlerVersion: '2.0'
-      settings: {
-        // Remove mdmId or set to empty string to avoid Intune enrollment issues
-        // mdmId: '' // Only set if you need Intune enrollment
-        options: 4 // AAD join option
-        restart: true
-      }
-    }
-    extensionAntiMalwareConfig: {
-      enabled: true
-      settings: {
-        AntimalwareEnabled: 'true'
-        Exclusions: {}
-        RealtimeProtectionEnabled: 'true'
-        ScheduledScanSettings: {
-          day: '7'
-          isEnabled: 'true'
-          scanType: 'Quick'
-          time: '120'
-        }
-      }
-      tags: tags
-    }
-    //WAF aligned configuration for Monitoring
-    extensionMonitoringAgentConfig: enableMonitoring
-      ? {
-          dataCollectionRuleAssociations: [
-            {
-              dataCollectionRuleResourceId: windowsVmDataCollectionRules!.outputs.resourceId
-              name: 'send-${logAnalyticsWorkspace!.outputs.name}'
-            }
-          ]
-          enabled: true
-          tags: tags
-        }
-      : null
-    extensionNetworkWatcherAgentConfig: {
-      enabled: true
-      tags: tags
     }
   }
 }
