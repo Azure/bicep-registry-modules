@@ -64,6 +64,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}002'
+      geoRedundantBackup: 'Disabled' // If enabled, leads to error 'Data encryption parameters are invalid. Must provide user assigned identity and encryption key used to access data in the geographically redundant backup storage.'
       availabilityZone: -1
       managedIdentities: {
         userAssignedResourceIds: [
