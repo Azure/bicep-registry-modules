@@ -1,7 +1,7 @@
 ---
 mode: 'agent'
 description: 'Triage Open GitHub Issues related to the specific resource module.'
-tools: ['search', 'runCommands', 'runTasks', 'usages', 'think', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos', 'documentation', 'search', 'get_issue', 'get_issue_comments', 'get_pull_request', 'get_pull_request_comments', 'list_issues', 'search_issues', 'search_pull_requests']
+tools: ['search', 'runCommands', 'runTasks', 'Azure MCP/search', 'Azure MCP/search', 'Microsoft Learn/*', 'github/assign_copilot_to_issue', 'github/issue_read', 'github/list_issue_types', 'github/list_issues', 'github/search_issues', 'github/search_pull_requests', 'usages', 'think', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos']
 ---
 
 # Triage Open GitHub Issues for Resource Module
