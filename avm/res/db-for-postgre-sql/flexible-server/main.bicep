@@ -292,7 +292,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-var customerManagedKeyIsHsmVault = contains(customerManagedKey.?keyVaultResourceId ?? '', 'managedHSMs')
+var customerManagedKeyIsHsmVault = contains(customerManagedKey.?keyVaultResourceId ?? '', '/managedHSMs/')
 resource hSMCMKKeyVault 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = if (!empty(customerManagedKey) && customerManagedKeyIsHsmVault) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
