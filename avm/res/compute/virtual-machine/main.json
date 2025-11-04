@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "15762033762131096972"
+      "templateHash": "15292737993811718258"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -8150,7 +8150,11 @@
           "settings": {
             "value": {
               "modulesUrl": "[parameters('extensionHostPoolRegistration').modulesUrl]",
-              "configurationFunction": "[parameters('extensionHostPoolRegistration').configurationFunction]",
+              "configurationFunction": "[parameters('extensionHostPoolRegistration').configurationFunction]"
+            }
+          },
+          "protectedSettings": {
+            "value": {
               "properties": {
                 "hostPoolName": "[parameters('extensionHostPoolRegistration').hostPoolName]",
                 "registrationInfoToken": "[parameters('extensionHostPoolRegistration').registrationInfoToken]",
