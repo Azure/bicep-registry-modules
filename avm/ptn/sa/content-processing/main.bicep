@@ -426,9 +426,10 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
     extensionAadJoinConfig: {
       enabled: true
       tags: tags
-      typeHandlerVersion: '1.0'
+      typeHandlerVersion: '2.0'
       settings: {
-        mdmId: '0000000a-0000-0000-c000-000000000000'
+        // Remove mdmId or set to empty string to avoid Intune enrollment issues
+        // mdmId: '' // Only set if you need Intune enrollment
         options: 4 // AAD join option
         restart: true
       }
@@ -619,7 +620,7 @@ module avmContainerRegistry 'modules/container-registry.bicep' = {
   params: {
     acrName: 'cr${replace(solutionSuffix, '-', '')}'
     location: location
-    acrSku: 'Standard'
+    acrSku: 'Premium'
     publicNetworkAccess: 'Enabled'
     zoneRedundancy: 'Disabled'
     tags: tags

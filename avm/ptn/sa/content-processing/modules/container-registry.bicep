@@ -8,7 +8,7 @@ param acrName string
 param location string
 
 @description('Optional. SKU for the Azure Container Registry.')
-param acrSku string = 'Premium'
+param acrSku string = 'Basic'
 
 @description('Optional. Public network access setting for the Azure Container Registry.')
 param publicNetworkAccess string = 'Enabled'

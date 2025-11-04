@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "14091925329017166877"
+      "templateHash": "7346978580989468666"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Content Processing solution accelerator](https://github.com/microsoft/content-processing-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -7065,9 +7065,8 @@
             "value": {
               "enabled": true,
               "tags": "[parameters('tags')]",
-              "typeHandlerVersion": "1.0",
+              "typeHandlerVersion": "2.0",
               "settings": {
-                "mdmId": "0000000a-0000-0000-c000-000000000000",
                 "options": 4,
                 "restart": true
               }
@@ -23701,7 +23700,7 @@
             "value": "[parameters('location')]"
           },
           "acrSku": {
-            "value": "Standard"
+            "value": "Premium"
           },
           "publicNetworkAccess": {
             "value": "Enabled"
@@ -23729,7 +23728,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "16823216925192889863"
+              "templateHash": "14012963224129509549"
             },
             "name": "Container Registry Module"
           },
@@ -23748,7 +23747,7 @@
             },
             "acrSku": {
               "type": "string",
-              "defaultValue": "Premium",
+              "defaultValue": "Basic",
               "metadata": {
                 "description": "Optional. SKU for the Azure Container Registry."
               }
@@ -34957,8 +34956,8 @@
         "avmContainerApp",
         "avmContainerApp_API",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "virtualNetwork"
       ]
     },
@@ -40696,10 +40695,10 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "virtualNetwork"
       ]
@@ -43301,8 +43300,8 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "virtualNetwork"
       ]
     },
