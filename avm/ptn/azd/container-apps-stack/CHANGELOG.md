@@ -6,12 +6,12 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Expose new `publicNetworkAccess` parameter to allow enabling/disabling public network access on the Container Apps environment. The default value is `"Enabled"`.
+- Expose new `publicNetworkAccess` parameter to allow enabling/disabling public network access on the Container Apps environment. The default value is `"Disabled"`.
 
 ### Breaking Changes
 
-- Default value for `publicNetworkAccess` is now `"Enabled"`. In the previous version (0.2.0), public network access was **disabled by default** and could not be enabled.
-- This means container apps will now be **publicly accessible by default** after upgrade. If you want to keep them private, set `publicNetworkAccess = "Disabled"` explicitly.
+- Default value for `publicNetworkAccess` is now `"Disabled"`. In the previous version (0.2.0), public network access was **disabled by default** and could not be enabled.
+- You can now explicitly set `publicNetworkAccess = "Enabled"` to make your container apps publicly accessible.
 
 ## 0.2.0
 
