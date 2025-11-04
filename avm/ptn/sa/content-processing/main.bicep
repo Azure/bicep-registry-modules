@@ -335,6 +335,7 @@ var privateDnsZones = [
   'privatelink.queue.${environment().suffixes.storage}'
   'privatelink.mongo.cosmos.azure.com'
   'privatelink.azconfig.io'
+  'privatelink.azurecr.io'
 ]
 
 // DNS Zone Index Constants
@@ -347,6 +348,7 @@ var dnsZoneIndex = {
   storageQueue: 5
   cosmosDB: 6
   appConfig: 7
+  containerRegistry: 8
 }
 
 @batchSize(5)
@@ -477,12 +479,18 @@ module avmContainerRegistry 'modules/container-registry.bicep' = {
     acrName: 'cr${replace(solutionSuffix, '-', '')}'
     location: location
     acrSku: 'Premium'
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     zoneRedundancy: 'Disabled'
     tags: tags
     enableTelemetry: enableTelemetry
     enableRedundancy: enableRedundancy
     secondaryLocation: secondaryLocation
+    enablePrivateNetworking: enablePrivateNetworking
+    virtualNetworkResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.resourceId : ''
+    backendSubnetResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.backendSubnetResourceId : ''
+    privateDnsZoneResourceId: enablePrivateNetworking
+      ? avmPrivateDnsZones[dnsZoneIndex.containerRegistry]!.outputs.resourceId
+      : ''
   }
 }
 

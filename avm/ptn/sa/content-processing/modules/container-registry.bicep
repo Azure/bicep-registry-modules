@@ -28,13 +28,25 @@ param enableRedundancy bool
 @description('Required. The secondary location for the Azure Container Registry replication, if redundancy is enabled.')
 param secondaryLocation string
 
+@description('Optional. Enable private networking for the Container Registry.')
+param enablePrivateNetworking bool = false
+
+@description('Optional. Virtual network resource ID for private endpoints.')
+param virtualNetworkResourceId string = ''
+
+@description('Optional. Backend subnet resource ID for private endpoints.')
+param backendSubnetResourceId string = ''
+
+@description('Optional. Private DNS zone resource ID for Container Registry.')
+param privateDnsZoneResourceId string = ''
+
 module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3' = {
   name: acrName
   params: {
     name: acrName
     location: location
     acrSku: acrSku
-    publicNetworkAccess: publicNetworkAccess
+    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : publicNetworkAccess
     zoneRedundancy: zoneRedundancy
     tags: tags
     enableTelemetry: enableTelemetry
@@ -46,6 +58,28 @@ module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3
           }
         ]
       : null
+    // WAF aligned configuration for Private Networking - Network access restrictions
+    networkRuleSetDefaultAction: enablePrivateNetworking ? 'Deny' : 'Allow'
+    networkRuleSetIpRules: enablePrivateNetworking ? [] : []
+    privateEndpoints: enablePrivateNetworking && !empty(virtualNetworkResourceId) && !empty(backendSubnetResourceId)
+      ? [
+          {
+            name: 'pep-acr-${acrName}'
+            customNetworkInterfaceName: 'nic-acr-${acrName}'
+            privateDnsZoneGroup: !empty(privateDnsZoneResourceId)
+              ? {
+                  privateDnsZoneGroupConfigs: [
+                    {
+                      name: 'acr-dns-zone-group'
+                      privateDnsZoneResourceId: privateDnsZoneResourceId
+                    }
+                  ]
+                }
+              : null
+            subnetResourceId: backendSubnetResourceId
+          }
+        ]
+      : []
   }
 }
 

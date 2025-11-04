@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "13562224036461896280"
+      "templateHash": "13709279843989019630"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Content Processing solution accelerator](https://github.com/microsoft/content-processing-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -272,7 +272,8 @@
       "[format('privatelink.blob.{0}', environment().suffixes.storage)]",
       "[format('privatelink.queue.{0}', environment().suffixes.storage)]",
       "privatelink.mongo.cosmos.azure.com",
-      "privatelink.azconfig.io"
+      "privatelink.azconfig.io",
+      "privatelink.azurecr.io"
     ],
     "dnsZoneIndex": {
       "cognitiveServices": 0,
@@ -282,7 +283,8 @@
       "storageBlob": 4,
       "storageQueue": 5,
       "cosmosDB": 6,
-      "appConfig": 7
+      "appConfig": 7,
+      "containerRegistry": 8
     },
     "logAnalyticsWorkspaceResourceName": "[format('log-{0}', variables('solutionSuffix'))]"
   },
@@ -22058,9 +22060,7 @@
           "acrSku": {
             "value": "Premium"
           },
-          "publicNetworkAccess": {
-            "value": "Enabled"
-          },
+          "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "zoneRedundancy": {
             "value": "Disabled"
           },
@@ -22075,7 +22075,13 @@
           },
           "secondaryLocation": {
             "value": "[parameters('secondaryLocation')]"
-          }
+          },
+          "enablePrivateNetworking": {
+            "value": "[parameters('enablePrivateNetworking')]"
+          },
+          "virtualNetworkResourceId": "[if(parameters('enablePrivateNetworking'), createObject('value', reference('virtualNetwork').outputs.resourceId.value), createObject('value', ''))]",
+          "backendSubnetResourceId": "[if(parameters('enablePrivateNetworking'), createObject('value', reference('virtualNetwork').outputs.backendSubnetResourceId.value), createObject('value', ''))]",
+          "privateDnsZoneResourceId": "[if(parameters('enablePrivateNetworking'), createObject('value', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').containerRegistry)).outputs.resourceId.value), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -22084,7 +22090,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "14012963224129509549"
+              "templateHash": "14940234645599052380"
             },
             "name": "Container Registry Module"
           },
@@ -22146,6 +22152,34 @@
               "metadata": {
                 "description": "Required. The secondary location for the Azure Container Registry replication, if redundancy is enabled."
               }
+            },
+            "enablePrivateNetworking": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Enable private networking for the Container Registry."
+              }
+            },
+            "virtualNetworkResourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Virtual network resource ID for private endpoints."
+              }
+            },
+            "backendSubnetResourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Backend subnet resource ID for private endpoints."
+              }
+            },
+            "privateDnsZoneResourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Private DNS zone resource ID for Container Registry."
+              }
             }
           },
           "resources": [
@@ -22168,9 +22202,7 @@
                   "acrSku": {
                     "value": "[parameters('acrSku')]"
                   },
-                  "publicNetworkAccess": {
-                    "value": "[parameters('publicNetworkAccess')]"
-                  },
+                  "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', parameters('publicNetworkAccess')))]",
                   "zoneRedundancy": {
                     "value": "[parameters('zoneRedundancy')]"
                   },
@@ -22180,7 +22212,10 @@
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
                   },
-                  "replications": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('location', parameters('secondaryLocation'), 'name', format('acrrepl{0}', replace(parameters('secondaryLocation'), '-', ''))))), createObject('value', null()))]"
+                  "replications": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('location', parameters('secondaryLocation'), 'name', format('acrrepl{0}', replace(parameters('secondaryLocation'), '-', ''))))), createObject('value', null()))]",
+                  "networkRuleSetDefaultAction": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Deny'), createObject('value', 'Allow'))]",
+                  "networkRuleSetIpRules": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray()), createObject('value', createArray()))]",
+                  "privateEndpoints": "[if(and(and(parameters('enablePrivateNetworking'), not(empty(parameters('virtualNetworkResourceId')))), not(empty(parameters('backendSubnetResourceId')))), createObject('value', createArray(createObject('name', format('pep-acr-{0}', parameters('acrName')), 'customNetworkInterfaceName', format('nic-acr-{0}', parameters('acrName')), 'privateDnsZoneGroup', if(not(empty(parameters('privateDnsZoneResourceId'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'acr-dns-zone-group', 'privateDnsZoneResourceId', parameters('privateDnsZoneResourceId')))), null()), 'subnetResourceId', parameters('backendSubnetResourceId')))), createObject('value', createArray()))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -25335,7 +25370,11 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').containerRegistry)]",
+        "virtualNetwork"
+      ]
     },
     "avmStorageAccount": {
       "type": "Microsoft.Resources/deployments",
@@ -39051,10 +39090,10 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "logAnalyticsWorkspace",
         "virtualNetwork"
       ]
@@ -41656,8 +41695,8 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "virtualNetwork"
       ]
     },
