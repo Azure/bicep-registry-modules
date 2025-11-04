@@ -14,26 +14,16 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
   name: last(split(managedIdentityResourceId, '/'))
   scope: resourceGroup(split(managedIdentityResourceId, '/')[2], split(managedIdentityResourceId, '/')[4])
 }
+// resource deploymentMSI 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = {
+//   name: 'deploymentMSIName'
+//   scope: resourceGroup('deploymenyMSILocation')
+// }
 
 resource managedHsm 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = {
   name: managedHsmName
 
   resource key 'keys@2025-05-01' existing = {
     name: 'general-hsm-test-key'
-  }
-}
-
-// Grant identity (which is also used for the deployment script) to manage HSM instance
-resource hsmPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${managedHsm.id}-${location}-${managedIdentity.id}-Key-Contributor-RoleAssignment')
-  scope: managedHsm
-  properties: {
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      'b24988ac-6180-42a0-ab88-20f7382dd24c'
-    ) // Contributor
-    principalType: 'ServicePrincipal'
   }
 }
 
@@ -45,7 +35,7 @@ resource hsmPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 //   identity: {
 //     type: 'UserAssigned'
 //     userAssignedIdentities: {
-//       '${managedIdentity.id}': {}
+//       '${deploymentMSI.id}': {}
 //     }
 //   }
 //   properties: {
