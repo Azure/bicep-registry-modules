@@ -45,7 +45,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 module nestedHsmDependencies 'dependencies.hsm.bicep' = {
   scope: az.resourceGroup('rsg-permanent-managed-hsm')
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedHSMDependencies'
   params: {
     managedHsmName: 'mhsm-perm-avm-core-001'
     managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
