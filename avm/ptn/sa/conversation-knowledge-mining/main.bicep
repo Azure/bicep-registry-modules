@@ -157,8 +157,22 @@ var solutionSuffix = toLower(trim(replace(
   ''
 )))
 
-// var acrName = 'kmcontainerreg'
-// var baseUrl = 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/main/'
+// @description('Optional. The configuration to apply for the Conversation Knowledge Mining Copy Data Script resource.')
+// param scriptCopyDataConfiguration object = {
+//   name: '${solutionUniqueText}-scrp-cpdt'
+//   location: location
+//   githubBaseUrl: 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/'
+//   scriptUrl: 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/infra/scripts/copy_kb_files.sh'
+// }
+
+// @description('Optional. The configuration to apply for the Conversation Knowledge Mining Copy Data Script resource.')
+// param scriptIndexDataConfiguration object = {
+//   name: '${solutionUniqueText}-scrp-indt'
+//   location: location
+//   githubBaseUrl: 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/'
+//   scriptUrl: 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/infra/scripts/run_create_index_scripts.sh'
+// }
+
 // Replica regions list based on article in [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Enhance resilience by replicating your Log Analytics workspace across regions](https://learn.microsoft.com/azure/azure-monitor/logs/workspace-replication#supported-regions) for supported regions for Log Analytics Workspace.
 var replicaRegionPairs = {
   australiaeast: 'australiasoutheast'
@@ -188,6 +202,18 @@ var cosmosDbZoneRedundantHaRegionPairs = {
 }
 // Paired location calculated based on 'location' parameter. This location will be used by applicable resources if `enableScalability` is set to `true`
 var cosmosDbHaLocation = cosmosDbZoneRedundantHaRegionPairs[resourceGroup().location]
+
+// // VARIABLES: Script Copy Data configuration defaults
+// var scriptCopyDataResourceName = scriptCopyDataConfiguration.?name ?? '${solutionUniqueText}-scrp-cpdt'
+// var scriptCopyDataLocation = scriptCopyDataConfiguration.?location ?? solutionLocation
+// var scriptCopyDataGithubBaseUrl = scriptCopyDataConfiguration.?githubBaseUrl ?? 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/'
+// var scriptCopyDataScriptUrl = scriptCopyDataConfiguration.?scriptUrl ?? 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/infra/scripts/copy_kb_files.sh'
+
+// // VARIABLES: Script Index Data configuration defaults
+// var scriptIndexDataResourceName = scriptIndexDataConfiguration.?name ?? '${solutionPrefix}-scrp-indt'
+// var scriptIndexDataLocation = scriptIndexDataConfiguration.?location ?? solutionLocation
+// var scriptIndexDataGithubBaseUrl = scriptIndexDataConfiguration.?githubBaseUrl ?? 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/'
+// var scriptIndexDataScriptUrl = scriptIndexDataConfiguration.?scriptUrl ?? 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/infra/scripts/run_create_index_scripts.sh'
 
 // ========== Resource Group Tag ========== //
 resource resourceGroupTags 'Microsoft.Resources/tags@2024-07-01' = {
@@ -414,16 +440,6 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
     bypassPlatformSafetyChecksOnUserSchedule: true
     // Assign maintenance configuration for PSRule compliance
     maintenanceConfigurationResourceId: maintenanceConfiguration!.outputs.resourceId
-    extensionAadJoinConfig: {
-      enabled: true
-      tags: tags
-      typeHandlerVersion: '1.0'
-      settings: {
-        mdmId: '0000000a-0000-0000-c000-000000000000'
-        options: 4 // AAD join option
-        restart: true
-      }
-    }
     nicConfigurations: [
       {
         name: 'nic-${jumpboxVmName}'
@@ -1339,8 +1355,8 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
 //     }
 //     retentionInterval: 'P1D'
 //     runOnce: true
-//     primaryScriptUri: '${baseUrl}infra/scripts/copy_kb_files.sh'
-//     arguments: '${storageAccount.outputs.name} data ${baseUrl} ${userAssignedIdentity.outputs.clientId}'
+//     primaryScriptUri: scriptCopyDataScriptUrl
+//     arguments: '${storageAccount.outputs.name} data ${scriptCopyDataGithubBaseUrl} ${userAssignedIdentity.outputs.clientId}'
 //     storageAccountResourceId: storageAccount.outputs.resourceId
 //     subnetResourceIds: enablePrivateNetworking
 //       ? [
