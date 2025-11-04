@@ -1378,6 +1378,7 @@ module uploadFiles 'br/public:avm/res/resources/deployment-script:0.5.1' = {
       : null
     tags: tags
     timeout: 'PT1H'
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -1407,6 +1408,7 @@ module createIndex 'br/public:avm/res/resources/deployment-script:0.5.1' = {
           virtualNetwork!.outputs.deploymentScriptsSubnetResourceId
         ]
       : null
+    enableTelemetry: enableTelemetry
   }
   dependsOn: [sqlDBModule, uploadFiles]
 }
@@ -1450,6 +1452,7 @@ module createSqlUserAndRole 'br/public:avm/res/resources/deployment-script:0.5.1
           virtualNetwork!.outputs.deploymentScriptsSubnetResourceId
         ]
       : null
+    enableTelemetry: enableTelemetry
   }
   dependsOn: [sqlDBModule]
 }
