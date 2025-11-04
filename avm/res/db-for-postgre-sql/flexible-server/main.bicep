@@ -272,7 +272,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+var customerManagedKeyIsHsmVault = contains(customerManagedKey.?keyVaultResourceId ?? '', '/managedHSMs/')
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey) && !customerManagedKeyIsHsmVault) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
@@ -292,7 +293,6 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-var customerManagedKeyIsHsmVault = contains(customerManagedKey.?keyVaultResourceId ?? '', '/managedHSMs/')
 resource hSMCMKKeyVault 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = if (!empty(customerManagedKey) && customerManagedKeyIsHsmVault) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
