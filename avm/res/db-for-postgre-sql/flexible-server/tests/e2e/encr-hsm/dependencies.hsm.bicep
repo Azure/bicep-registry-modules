@@ -19,7 +19,7 @@ resource managedHsm 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = {
   name: managedHsmName
 
   resource key 'keys@2025-05-01' existing = {
-    name: 'rsa-hsm-4096-key-1'
+    name: 'general-hsm-test-key'
   }
 }
 
@@ -38,33 +38,33 @@ resource hsmPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 }
 
 // Configure HSM
-resource configureHSM 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
-  name: hsmDeploymentScriptName
-  location: location
-  kind: 'AzureCLI'
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${managedIdentity.id}': {}
-    }
-  }
-  properties: {
-    azCliVersion: '2.67.0'
-    retentionInterval: 'P1D'
-    arguments: '"${managedHsmName}" "${managedIdentity.properties.principalId}"'
-    scriptContent: '''
-      # Allow key reference via managedIdentity
-      echo $1
-      echo $2
-      # Does not work as the deployment script MSI would need local-rbac admin permissions on the HSM in order to grant anyone else permissions
-      # az keyvault role assignment create --hsm-name $1 --role "Managed HSM Crypto Service Encryption User" --assignee $2 --scope '/keys'
+// resource configureHSM 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+//   name: hsmDeploymentScriptName
+//   location: location
+//   kind: 'AzureCLI'
+//   identity: {
+//     type: 'UserAssigned'
+//     userAssignedIdentities: {
+//       '${managedIdentity.id}': {}
+//     }
+//   }
+//   properties: {
+//     azCliVersion: '2.67.0'
+//     retentionInterval: 'P1D'
+//     arguments: '"${managedHsmName}" "${managedIdentity.properties.principalId}"'
+//     scriptContent: '''
+//       # Allow key reference via managedIdentity
+//       echo $1
+//       echo $2
+//       # Does not work as the deployment script MSI would need local-rbac admin permissions on the HSM in order to grant anyone else permissions
+//       # az keyvault role assignment create --hsm-name $1 --role "Managed HSM Crypto Service Encryption User" --assignee $2 --scope '/keys'
 
-      # Allow usage via ARM
-      az keyvault setting update --hsm-name $1 --name 'AllowKeyManagementOperationsThroughARM' --value 'true'
-    '''
-  }
-  dependsOn: [hsmPermissions]
-}
+//       # Allow usage via ARM
+//       az keyvault setting update --hsm-name $1 --name 'AllowKeyManagementOperationsThroughARM' --value 'true'
+//     '''
+//   }
+//   dependsOn: [hsmPermissions]
+// }
 
 // https://mhsm-perm-avm-core-001.managedhsm.azure.net/keys/rsa-hsm-4096-key-1/providers/Microsoft.Authorization/roleAssignments/0cdd0d7f-585f-4dd2-85f1-130c6e6fc820?api-version=7.6
 // {
