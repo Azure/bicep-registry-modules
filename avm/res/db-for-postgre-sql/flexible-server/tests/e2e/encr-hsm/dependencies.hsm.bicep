@@ -53,12 +53,12 @@ resource configureHSM 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     retentionInterval: 'P1D'
     arguments: '"${managedHsmName}" "${managedIdentity.properties.principalId}"'
     scriptContent: '''
-      // Allow key reference via managedIdentity
+      # Allow key reference via managedIdentity
       echo $1
       echo $2
       az keyvault role assignment create --hsm-name $1 --role "Managed HSM Crypto Service Encryption User" --assignee $2 --scope '/keys'
 
-      // Allow usage via ARM
+      # Allow usage via ARM
       az keyvault setting update --hsm-name $1 --name 'AllowKeyManagementOperationsThroughARM' --value 'true'
     '''
   }
