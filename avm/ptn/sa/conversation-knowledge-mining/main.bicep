@@ -16,10 +16,6 @@ param solutionName string = 'kmgen'
 @description('Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).')
 param location string = resourceGroup().location
 
-@minLength(1)
-@description('Optional. Secondary location for databases creation(example:eastus2).')
-param secondaryLocation string = 'eastus2'
-
 @allowed([
   'australiaeast'
   'eastus'
@@ -969,10 +965,8 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
   params: {
     name: storageAccountName
     location: location
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [userAssignedIdentity!.outputs.resourceId]
-    }
+    // Use only user-assigned identities
+    managedIdentities: { systemAssigned: false, userAssignedResourceIds: [] }
     minimumTlsVersion: 'TLS1_2'
     supportsHttpsTrafficOnly: true
     accessTier: 'Hot'

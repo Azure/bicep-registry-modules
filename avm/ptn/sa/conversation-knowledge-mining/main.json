@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "9318009978756115039"
+      "templateHash": "14052804893278335059"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -29,14 +29,6 @@
           "type": "location"
         },
         "description": "Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions)."
-      }
-    },
-    "secondaryLocation": {
-      "type": "string",
-      "defaultValue": "eastus2",
-      "minLength": 1,
-      "metadata": {
-        "description": "Optional. Secondary location for databases creation(example:eastus2)."
       }
     },
     "aiServiceLocation": {
@@ -29554,9 +29546,9 @@
         }
       },
       "dependsOn": [
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -32158,9 +32150,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -34575,10 +34567,8 @@
           },
           "managedIdentities": {
             "value": {
-              "systemAssigned": true,
-              "userAssignedResourceIds": [
-                "[reference('userAssignedIdentity').outputs.resourceId.value]"
-              ]
+              "systemAssigned": false,
+              "userAssignedResourceIds": []
             }
           },
           "minimumTlsVersion": {
@@ -42545,9 +42535,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageDfs)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageDfs)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -56467,7 +56457,7 @@
           "arguments": {
             "value": "[join(createArray(format('-SqlServerName ''{0}''', variables('sqlServerResourceName')), format('-SqlDatabaseName ''{0}''', variables('sqlDbModuleName')), format('-ClientId ''{0}''', reference('sqlUserAssignedIdentity').outputs.clientId.value), format('-DisplayName ''{0}''', reference('sqlUserAssignedIdentity').outputs.name.value), format('-DatabaseRoles ''{0}''', join(variables('databaseRoles'), ','))), ' ')]"
           },
-          "scriptContent": {
+          "primaryScriptUri": {
             "value": "[format('{0}infra/scripts/add_user_scripts/create-sql-user-and-role.ps1', variables('baseUrl'))]"
           },
           "tags": {
