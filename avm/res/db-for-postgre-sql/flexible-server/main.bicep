@@ -292,6 +292,19 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
+var customerManagedKeyIsHsmVault = contains(customerManagedKey.?keyVaultResourceId ?? '', 'managedHSMs')
+resource hSMCMKKeyVault 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = if (!empty(customerManagedKey) && customerManagedKeyIsHsmVault) {
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
+  scope: resourceGroup(
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+  )
+
+  resource hSMCMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName!
+  }
+}
+
 resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview' = {
   name: name
   location: location
@@ -319,10 +332,16 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-pr
     dataEncryption: !empty(customerManagedKey)
       ? {
           primaryKeyURI: !empty(customerManagedKey.?keyVersion)
-            ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+            ? (customerManagedKeyIsHsmVault
+                ? '${hSMCMKKeyVault::hSMCMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+                : '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}')
             : (customerManagedKey.?autoRotationEnabled ?? true)
-                ? cMKKeyVault::cMKKey!.properties.keyUri
-                : cMKKeyVault::cMKKey!.properties.keyUriWithVersion
+                ? (customerManagedKeyIsHsmVault
+                    ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUri
+                    : cMKKeyVault::cMKKey!.properties.keyUri)
+                : (customerManagedKeyIsHsmVault
+                    ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUriWithVersion
+                    : cMKKeyVault::cMKKey!.properties.keyUriWithVersion)
           primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
           type: 'AzureKeyVault'
         }
