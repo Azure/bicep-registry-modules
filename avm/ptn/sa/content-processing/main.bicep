@@ -1226,6 +1226,7 @@ module avmAppConfig_update 'br/public:avm/res/app-configuration/configuration-st
   params: {
     name: 'appcs-${solutionSuffix}'
     location: location
+    enablePurgeProtection: enablePurgeProtection
     enableTelemetry: enableTelemetry
     tags: tags
     publicNetworkAccess: 'Disabled'
