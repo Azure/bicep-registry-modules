@@ -11,11 +11,14 @@ param administratorLogin string?
 @secure()
 param administratorLoginPassword string?
 
-@description('Optional. Tenant id of the server.')
-param tenantId string?
-
 @description('Optional. The Azure AD administrators when AAD authentication enabled.')
 param administrators administratorType[]?
+
+@description('Optional. The authentication configuration for the server.')
+param authConfig resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview'>.properties.authConfig = {
+  activeDirectoryAuth: 'Enabled'
+  passwordAuth: 'Disabled'
+}
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -114,9 +117,9 @@ param version string = '17'
 @description('Optional. The mode to create a new PostgreSQL server.')
 param createMode string = 'Default'
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Conditional. The managed identity definition for this resource. Required if \'cMKKeyName\' is not empty.')
-param managedIdentities managedIdentityOnlyUserAssignedType?
+param managedIdentities managedIdentityAllType?
 
 @allowed([
   'Disabled'
@@ -130,7 +133,7 @@ import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/av
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Optional. Properties for the maintenence window. If provided, \'customWindow\' property must exist and set to \'Enabled\'.')
-param maintenanceWindow resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01'>.properties.maintenanceWindow = {
+param maintenanceWindow resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview'>.properties.maintenanceWindow = {
   customWindow: 'Enabled'
   dayOfWeek: 0
   startHour: 1
@@ -172,6 +175,15 @@ param lock lockType?
 @description('Optional. The replication settings for the server. Can only be set on existing flexible servers.')
 param replica replicaType?
 
+@description('Optional. The replication role for the server.')
+@allowed([
+  'Primary'
+  'AsyncReplica'
+  'GeoAsyncReplica'
+  'None'
+])
+param replicationRole string = 'None'
+
 @description('Optional. Enable/Disable advanced threat protection.')
 param enableAdvancedThreatProtection bool = true
 
@@ -180,7 +192,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01'>.tags?
+param tags resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -209,7 +221,9 @@ var formattedUserAssignedIdentities = reduce(
 
 var identity = !empty(managedIdentities)
   ? {
-      type: !empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None'
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -278,7 +292,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' = {
+resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -291,11 +305,7 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' =
     administratorLogin: administratorLogin
     #disable-next-line use-secure-value-for-secure-inputs // Is defined as secure(). False-positive
     administratorLoginPassword: administratorLoginPassword
-    authConfig: {
-      activeDirectoryAuth: !empty(administrators) ? 'enabled' : 'disabled'
-      passwordAuth: !empty(administratorLogin) && !empty(administratorLoginPassword) ? 'enabled' : 'disabled'
-      tenantId: tenantId
-    }
+    authConfig: authConfig
     availabilityZone: availabilityZone != -1 ? string(availabilityZone) : null
     highAvailability: {
       mode: highAvailability
@@ -303,7 +313,7 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' =
     }
     backup: {
       backupRetentionDays: backupRetentionDays
-      geoRedundantBackup: geoRedundantBackup
+      geoRedundantBackup: createMode != 'Replica' ? geoRedundantBackup : null
     }
     createMode: createMode
     dataEncryption: !empty(customerManagedKey)
@@ -334,6 +344,7 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' =
       : { publicNetworkAccess: publicNetworkAccess }
     pointInTimeUTC: createMode == 'PointInTimeRestore' ? pointInTimeUTC : null
     replica: !empty(replica) ? replica : null
+    replicationRole: replicationRole
     sourceServerResourceId: (createMode == 'PointInTimeRestore' || createMode == 'Replica')
       ? sourceServerResourceId
       : null
@@ -542,7 +553,7 @@ output resourceGroupName string = resourceGroup().name
 output location string = flexibleServer.location
 
 @description('The FQDN of the PostgreSQL Flexible server.')
-output fqdn string = flexibleServer.properties.fullyQualifiedDomainName
+output fqdn string? = flexibleServer.properties.?fullyQualifiedDomainName
 
 @description('The private endpoints of the PostgreSQL Flexible server.')
 output privateEndpoints privateEndpointOutputType[] = [
@@ -554,6 +565,9 @@ output privateEndpoints privateEndpointOutputType[] = [
     networkInterfaceResourceIds: server_privateEndpoints[index]!.outputs.networkInterfaceResourceIds
   }
 ]
+
+@description('The principal ID of the system assigned managed identity.')
+output systemAssignedMIPrincipalId string? = flexibleServer.?identity.?principalId
 
 // =============== //
 //   Definitions   //
@@ -584,6 +598,7 @@ type privateEndpointOutputType = {
 }
 
 @export()
+@description('The type of replication settings for the server. Can only be set on existing flexible servers.')
 type replicaType = {
   @description('Conditional. Sets the promote mode for a replica server. This is a write only property. Required if enabling replication.')
   promoteMode: ('standalone' | 'switchover')

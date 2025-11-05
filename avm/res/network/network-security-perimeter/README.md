@@ -914,6 +914,7 @@ Array of resource associations to create.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`accessMode`](#parameter-resourceassociationsaccessmode) | string | The access mode of the resource association. |
+| [`name`](#parameter-resourceassociationsname) | string | The name of the resource association. |
 
 ### Parameter: `resourceAssociations.privateLinkResource`
 
@@ -943,6 +944,13 @@ The access mode of the resource association.
     'Learning'
   ]
   ```
+
+### Parameter: `resourceAssociations.name`
+
+The name of the resource association.
+
+- Required: No
+- Type: string
 
 ### Parameter: `roleAssignments`
 

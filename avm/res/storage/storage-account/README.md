@@ -19,9 +19,9 @@ This module deploys a Storage Account.
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
-| `Microsoft.Storage/storageAccounts` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Storage/storageAccounts` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers_immutabilitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers/immutabilityPolicies)</li></ul> |
@@ -29,6 +29,7 @@ This module deploys a Storage Account.
 | `Microsoft.Storage/storageAccounts/fileServices/shares` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices_shares.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices/shares)</li></ul> |
 | `Microsoft.Storage/storageAccounts/localUsers` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_localusers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/localUsers)</li></ul> |
 | `Microsoft.Storage/storageAccounts/managementPolicies` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_managementpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/managementPolicies)</li></ul> |
+| `Microsoft.Storage/storageAccounts/objectReplicationPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_objectreplicationpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/objectReplicationPolicies)</li></ul> |
 | `Microsoft.Storage/storageAccounts/queueServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/queueServices)</li></ul> |
 | `Microsoft.Storage/storageAccounts/queueServices/queues` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices_queues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/queueServices/queues)</li></ul> |
 | `Microsoft.Storage/storageAccounts/tableServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_tableservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/tableServices)</li></ul> |
@@ -46,15 +47,16 @@ The following section provides usage examples for the module, which were used to
 - [Deploying as a Block Blob Storage](#example-2-deploying-as-a-block-blob-storage)
 - [Using only changefeed configuration](#example-3-using-only-changefeed-configuration)
 - [Using only defaults](#example-4-using-only-defaults)
-- [With immutability policy](#example-5-with-immutability-policy)
-- [Deploying with a key vault reference to save secrets](#example-6-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-7-using-large-parameter-set)
-- [Deploying with a NFS File Share](#example-8-deploying-with-a-nfs-file-share)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-9-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-10-using-customer-managed-keys-with-user-assigned-identity)
-- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-11-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
-- [Deploying as Storage Account version 1](#example-12-deploying-as-storage-account-version-1)
-- [WAF-aligned](#example-13-waf-aligned)
+- [Using extended zones](#example-5-using-extended-zones)
+- [With immutability policy](#example-6-with-immutability-policy)
+- [Deploying with a key vault reference to save secrets](#example-7-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-8-using-large-parameter-set)
+- [Deploying with a NFS File Share](#example-9-deploying-with-a-nfs-file-share)
+- [Using object replication](#example-10-using-object-replication)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-11-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-12-using-customer-managed-keys-with-user-assigned-identity)
+- [Deploying as Storage Account version 1](#example-13-deploying-as-storage-account-version-1)
+- [WAF-aligned](#example-14-waf-aligned)
 
 ### Example 1: _Deploying as a Blob Storage_
 
@@ -347,7 +349,99 @@ param networkAcls = {
 </details>
 <p>
 
-### Example 5: _With immutability policy_
+### Example 5: _Using extended zones_
+
+This instance deploys the module within an Azure Extended Zone.
+
+> Note: To run a deployment with an extended location, the subscription must be registered for the feature. For example:
+> ```pwsh
+> az provider register --namespace 'Microsoft.EdgeZones'
+> az edge-zones extended-zone register --extended-zone-name 'losangeles'
+> ```
+> Please refer to the [documentation](https://learn.microsoft.com/en-us/azure/extended-zones/request-access) for more information.
+
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  name: 'storageAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'ssaexzn001'
+    // Non-required parameters
+    allowBlobPublicAccess: false
+    extendedLocationZone: '<extendedLocationZone>'
+    kind: 'StorageV2'
+    location: '<location>'
+    skuName: 'Premium_LRS'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssaexzn001"
+    },
+    // Non-required parameters
+    "allowBlobPublicAccess": {
+      "value": false
+    },
+    "extendedLocationZone": {
+      "value": "<extendedLocationZone>"
+    },
+    "kind": {
+      "value": "StorageV2"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "skuName": {
+      "value": "Premium_LRS"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssaexzn001'
+// Non-required parameters
+param allowBlobPublicAccess = false
+param extendedLocationZone = '<extendedLocationZone>'
+param kind = 'StorageV2'
+param location = '<location>'
+param skuName = 'Premium_LRS'
+```
+
+</details>
+<p>
+
+### Example 6: _With immutability policy_
 
 This instance deploys the module with the immutability policy enabled.
 
@@ -501,7 +595,7 @@ param networkAcls = {
 </details>
 <p>
 
-### Example 6: _Deploying with a key vault reference to save secrets_
+### Example 7: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving all its secrets in a key vault.
 
@@ -583,7 +677,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 7: _Using large parameter set_
+### Example 8: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -675,7 +769,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           workspaceResourceId: '<workspaceResourceId>'
         }
       ]
+      isVersioningEnabled: false
       lastAccessTimeTrackingPolicyEnabled: true
+      versionDeletePolicyDays: 3
     }
     diagnosticSettings: [
       {
@@ -1209,7 +1305,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             "workspaceResourceId": "<workspaceResourceId>"
           }
         ],
-        "lastAccessTimeTrackingPolicyEnabled": true
+        "isVersioningEnabled": false,
+        "lastAccessTimeTrackingPolicyEnabled": true,
+        "versionDeletePolicyDays": 3
       }
     },
     "diagnosticSettings": {
@@ -1777,7 +1875,9 @@ param blobServices = {
       workspaceResourceId: '<workspaceResourceId>'
     }
   ]
+  isVersioningEnabled: false
   lastAccessTimeTrackingPolicyEnabled: true
+  versionDeletePolicyDays: 3
 }
 param diagnosticSettings = [
   {
@@ -2216,7 +2316,7 @@ param tags = {
 </details>
 <p>
 
-### Example 8: _Deploying with a NFS File Share_
+### Example 9: _Deploying with a NFS File Share_
 
 This instance deploys the module with a NFS File Share.
 
@@ -2311,7 +2411,153 @@ param skuName = 'Premium_LRS'
 </details>
 <p>
 
-### Example 9: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 10: _Using object replication_
+
+This instance deploys the module with Object Replication features to async replicate blobs from one account to another.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  name: 'storageAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'ssaobre001'
+    // Non-required parameters
+    blobServices: {
+      changeFeedEnabled: true
+      containers: [
+        {
+          name: 'container01'
+        }
+      ]
+      isVersioningEnabled: true
+    }
+    objectReplicationPolicies: [
+      {
+        destinationStorageAccountResourceId: '<destinationStorageAccountResourceId>'
+        rules: [
+          {
+            containerName: 'container01'
+            filters: {
+              minCreationTime: '2025-01-01T00:00:00Z'
+              prefixMatch: [
+                'documents/'
+                'images/'
+              ]
+            }
+          }
+        ]
+      }
+    ]
+    skuName: 'Standard_LRS'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssaobre001"
+    },
+    // Non-required parameters
+    "blobServices": {
+      "value": {
+        "changeFeedEnabled": true,
+        "containers": [
+          {
+            "name": "container01"
+          }
+        ],
+        "isVersioningEnabled": true
+      }
+    },
+    "objectReplicationPolicies": {
+      "value": [
+        {
+          "destinationStorageAccountResourceId": "<destinationStorageAccountResourceId>",
+          "rules": [
+            {
+              "containerName": "container01",
+              "filters": {
+                "minCreationTime": "2025-01-01T00:00:00Z",
+                "prefixMatch": [
+                  "documents/",
+                  "images/"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "skuName": {
+      "value": "Standard_LRS"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssaobre001'
+// Non-required parameters
+param blobServices = {
+  changeFeedEnabled: true
+  containers: [
+    {
+      name: 'container01'
+    }
+  ]
+  isVersioningEnabled: true
+}
+param objectReplicationPolicies = [
+  {
+    destinationStorageAccountResourceId: '<destinationStorageAccountResourceId>'
+    rules: [
+      {
+        containerName: 'container01'
+        filters: {
+          minCreationTime: '2025-01-01T00:00:00Z'
+          prefixMatch: [
+            'documents/'
+            'images/'
+          ]
+        }
+      }
+    ]
+  }
+]
+param skuName = 'Standard_LRS'
+```
+
+</details>
+<p>
+
+### Example 11: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
@@ -2462,7 +2708,7 @@ param privateEndpoints = [
 </details>
 <p>
 
-### Example 10: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 12: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -2636,129 +2882,7 @@ param privateEndpoints = [
 </details>
 <p>
 
-### Example 11: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
-
-This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
-  params: {
-    // Required parameters
-    name: 'ssauhsm016'
-    // Non-required parameters
-    blobServices: {
-      containers: [
-        {
-          name: 'container'
-          publicAccess: 'None'
-        }
-      ]
-    }
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      keyVersion: '<keyVersion>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "ssauhsm016"
-    },
-    // Non-required parameters
-    "blobServices": {
-      "value": {
-        "containers": [
-          {
-            "name": "container",
-            "publicAccess": "None"
-          }
-        ]
-      }
-    },
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "keyVersion": "<keyVersion>",
-        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/storage/storage-account:<version>'
-
-// Required parameters
-param name = 'ssauhsm016'
-// Non-required parameters
-param blobServices = {
-  containers: [
-    {
-      name: 'container'
-      publicAccess: 'None'
-    }
-  ]
-}
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-  keyVersion: '<keyVersion>'
-  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-}
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
-```
-
-</details>
-<p>
-
-### Example 12: _Deploying as Storage Account version 1_
+### Example 13: _Deploying as Storage Account version 1_
 
 This instance deploys the module as Storage Account version 1.
 
@@ -2822,7 +2946,7 @@ param kind = 'Storage'
 </details>
 <p>
 
-### Example 13: _WAF-aligned_
+### Example 14: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -2877,7 +3001,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           workspaceResourceId: '<workspaceResourceId>'
         }
       ]
+      isVersioningEnabled: true
       lastAccessTimeTrackingPolicyEnabled: true
+      versionDeletePolicyDays: 3
     }
     diagnosticSettings: [
       {
@@ -3135,7 +3261,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             "workspaceResourceId": "<workspaceResourceId>"
           }
         ],
-        "lastAccessTimeTrackingPolicyEnabled": true
+        "isVersioningEnabled": true,
+        "lastAccessTimeTrackingPolicyEnabled": true,
+        "versionDeletePolicyDays": 3
       }
     },
     "diagnosticSettings": {
@@ -3415,7 +3543,9 @@ param blobServices = {
       workspaceResourceId: '<workspaceResourceId>'
     }
   ]
+  isVersioningEnabled: true
   lastAccessTimeTrackingPolicyEnabled: true
+  versionDeletePolicyDays: 3
 }
 param diagnosticSettings = [
   {
@@ -3649,6 +3779,7 @@ param tags = {
 | [`enableNfsV3`](#parameter-enablenfsv3) | bool | If true, enables NFS 3.0 support for the storage account. Requires enableHierarchicalNamespace to be true. |
 | [`enableSftp`](#parameter-enablesftp) | bool | If true, enables Secure File Transfer Protocol for the storage account. Requires enableHierarchicalNamespace to be true. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`extendedLocationZone`](#parameter-extendedlocationzone) | string | Extended Zone location (ex 'losangeles'). When supplied, the storage account will be created in the specified zone under the parent location. The extended zone must be available in the supplied parent location. |
 | [`fileServices`](#parameter-fileservices) | object | File service and shares to deploy. |
 | [`immutableStorageWithVersioning`](#parameter-immutablestoragewithversioning) | object | The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default. Cannot be enabled for ADLS Gen2 storage accounts. |
 | [`isLocalUserEnabled`](#parameter-islocaluserenabled) | bool | Enables local users feature, if set to true. |
@@ -3662,6 +3793,7 @@ param tags = {
 | [`managementPolicyRules`](#parameter-managementpolicyrules) | array | The Storage Account ManagementPolicies Rules. |
 | [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | Set the minimum TLS version on request to storage. The TLS versions 1.0 and 1.1 are deprecated and not supported anymore. |
 | [`networkAcls`](#parameter-networkacls) | object | Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny. |
+| [`objectReplicationPolicies`](#parameter-objectreplicationpolicies) | array | Object replication policies for the storage account. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. |
 | [`queueServices`](#parameter-queueservices) | object | Queue service and queues to create. |
@@ -3780,6 +3912,7 @@ Blob service and containers to deploy.
 | [`lastAccessTimeTrackingPolicyEnabled`](#parameter-blobserviceslastaccesstimetrackingpolicyenabled) | bool | The blob service property to configure last access time based tracking policy. When set to true last access time based tracking is enabled. |
 | [`restorePolicyDays`](#parameter-blobservicesrestorepolicydays) | int | How long this blob can be restored. It should be less than DeleteRetentionPolicy days. |
 | [`restorePolicyEnabled`](#parameter-blobservicesrestorepolicyenabled) | bool | The blob service properties for blob restore policy. If point-in-time restore is enabled, then versioning, change feed, and blob soft delete must also be enabled. |
+| [`versionDeletePolicyDays`](#parameter-blobservicesversiondeletepolicydays) | int | Number of days to keep a version before deleting. If set, a lifecycle management policy will be created to handle deleting previous versions. |
 
 ### Parameter: `blobServices.automaticSnapshotPolicyEnabled`
 
@@ -4323,6 +4456,13 @@ The blob service properties for blob restore policy. If point-in-time restore is
 - Required: No
 - Type: bool
 
+### Parameter: `blobServices.versionDeletePolicyDays`
+
+Number of days to keep a version before deleting. If set, a lifecycle management policy will be created to handle deleting previous versions.
+
+- Required: No
+- Type: int
+
 ### Parameter: `customDomainName`
 
 Sets the custom domain name assigned to the storage account. Name is the CNAME source.
@@ -4551,6 +4691,13 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `extendedLocationZone`
+
+Extended Zone location (ex 'losangeles'). When supplied, the storage account will be created in the specified zone under the parent location. The extended zone must be available in the supplied parent location.
+
+- Required: No
+- Type: string
+
 ### Parameter: `fileServices`
 
 File service and shares to deploy.
@@ -4558,6 +4705,422 @@ File service and shares to deploy.
 - Required: No
 - Type: object
 - Default: `{}`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`corsRules`](#parameter-fileservicescorsrules) | array | The List of CORS rules. You can include up to five CorsRule elements in the request. |
+| [`diagnosticSettings`](#parameter-fileservicesdiagnosticsettings) | array | The diagnostic settings of the service. |
+| [`protocolSettings`](#parameter-fileservicesprotocolsettings) | object | Protocol settings for file service. |
+| [`shareDeleteRetentionPolicy`](#parameter-fileservicessharedeleteretentionpolicy) | object | The service properties for soft delete. |
+| [`shares`](#parameter-fileservicesshares) | array | File shares to create. |
+
+### Parameter: `fileServices.corsRules`
+
+The List of CORS rules. You can include up to five CorsRule elements in the request.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowedHeaders`](#parameter-fileservicescorsrulesallowedheaders) | array | A list of headers allowed to be part of the cross-origin request. |
+| [`allowedMethods`](#parameter-fileservicescorsrulesallowedmethods) | array | A list of HTTP methods that are allowed to be executed by the origin. |
+| [`allowedOrigins`](#parameter-fileservicescorsrulesallowedorigins) | array | A list of origin domains that will be allowed via CORS, or "*" to allow all domains. |
+| [`exposedHeaders`](#parameter-fileservicescorsrulesexposedheaders) | array | A list of response headers to expose to CORS clients. |
+| [`maxAgeInSeconds`](#parameter-fileservicescorsrulesmaxageinseconds) | int | The number of seconds that the client/browser should cache a preflight response. |
+
+### Parameter: `fileServices.corsRules.allowedHeaders`
+
+A list of headers allowed to be part of the cross-origin request.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `fileServices.corsRules.allowedMethods`
+
+A list of HTTP methods that are allowed to be executed by the origin.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'CONNECT'
+    'DELETE'
+    'GET'
+    'HEAD'
+    'MERGE'
+    'OPTIONS'
+    'PATCH'
+    'POST'
+    'PUT'
+    'TRACE'
+  ]
+  ```
+
+### Parameter: `fileServices.corsRules.allowedOrigins`
+
+A list of origin domains that will be allowed via CORS, or "*" to allow all domains.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `fileServices.corsRules.exposedHeaders`
+
+A list of response headers to expose to CORS clients.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `fileServices.corsRules.maxAgeInSeconds`
+
+The number of seconds that the client/browser should cache a preflight response.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `fileServices.diagnosticSettings`
+
+The diagnostic settings of the service.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-fileservicesdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-fileservicesdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-fileservicesdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-fileservicesdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-fileservicesdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-fileservicesdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-fileservicesdiagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-fileservicesdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-fileservicesdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `fileServices.diagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+
+### Parameter: `fileServices.diagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `fileServices.diagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `fileServices.diagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-fileservicesdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-fileservicesdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-fileservicesdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `fileServices.diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `fileServices.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `fileServices.diagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `fileServices.diagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `fileServices.diagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-fileservicesdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-fileservicesdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `fileServices.diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `fileServices.diagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `fileServices.diagnosticSettings.name`
+
+The name of the diagnostic setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `fileServices.diagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `fileServices.diagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `fileServices.protocolSettings`
+
+Protocol settings for file service.
+
+- Required: No
+- Type: object
+
+### Parameter: `fileServices.shareDeleteRetentionPolicy`
+
+The service properties for soft delete.
+
+- Required: No
+- Type: object
+
+### Parameter: `fileServices.shares`
+
+File shares to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-fileservicessharesname) | string | The name of the file share. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`accessTier`](#parameter-fileservicessharesaccesstier) | string | Access tier for specific share. Required if the Storage Account kind is set to FileStorage (should be set to "Premium"). GpV2 account can choose between TransactionOptimized (default), Hot, and Cool. |
+| [`enabledProtocols`](#parameter-fileservicessharesenabledprotocols) | string | The authentication protocol that is used for the file share. Can only be specified when creating a share. |
+| [`roleAssignments`](#parameter-fileservicessharesroleassignments) | array | Array of role assignments to create. |
+| [`rootSquash`](#parameter-fileservicessharesrootsquash) | string | Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares. |
+| [`shareQuota`](#parameter-fileservicessharessharequota) | int | The maximum size of the share, in gigabytes. Must be greater than 0, and less than or equal to 5120 (5TB). For Large File Shares, the maximum size is 102400 (100TB). |
+
+### Parameter: `fileServices.shares.name`
+
+The name of the file share.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `fileServices.shares.accessTier`
+
+Access tier for specific share. Required if the Storage Account kind is set to FileStorage (should be set to "Premium"). GpV2 account can choose between TransactionOptimized (default), Hot, and Cool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Cool'
+    'Hot'
+    'Premium'
+    'TransactionOptimized'
+  ]
+  ```
+
+### Parameter: `fileServices.shares.enabledProtocols`
+
+The authentication protocol that is used for the file share. Can only be specified when creating a share.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NFS'
+    'SMB'
+  ]
+  ```
+
+### Parameter: `fileServices.shares.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-fileservicessharesroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-fileservicessharesroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-fileservicessharesroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-fileservicessharesroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-fileservicessharesroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-fileservicessharesroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-fileservicessharesroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-fileservicessharesroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `fileServices.shares.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `fileServices.shares.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `fileServices.shares.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `fileServices.shares.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `fileServices.shares.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `fileServices.shares.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `fileServices.shares.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `fileServices.shares.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `fileServices.shares.rootSquash`
+
+Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AllSquash'
+    'NoRootSquash'
+    'RootSquash'
+  ]
+  ```
+
+### Parameter: `fileServices.shares.shareQuota`
+
+The maximum size of the share, in gigabytes. Must be greater than 0, and less than or equal to 5120 (5TB). For Large File Shares, the maximum size is 102400 (100TB).
+
+- Required: No
+- Type: int
 
 ### Parameter: `immutableStorageWithVersioning`
 
@@ -4942,6 +5505,118 @@ Sets the virtual network rules.
 
 - Required: No
 - Type: array
+
+### Parameter: `objectReplicationPolicies`
+
+Object replication policies for the storage account.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destinationStorageAccountResourceId`](#parameter-objectreplicationpoliciesdestinationstorageaccountresourceid) | string | The resource ID of the destination storage account. |
+| [`rules`](#parameter-objectreplicationpoliciesrules) | array | The storage account object replication rules. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enableMetrics`](#parameter-objectreplicationpoliciesenablemetrics) | bool | Indicates whether metrics are enabled for the object replication policy. |
+| [`name`](#parameter-objectreplicationpoliciesname) | string | The name of the object replication policy. If not provided, a GUID will be generated. |
+
+### Parameter: `objectReplicationPolicies.destinationStorageAccountResourceId`
+
+The resource ID of the destination storage account.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `objectReplicationPolicies.rules`
+
+The storage account object replication rules.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`containerName`](#parameter-objectreplicationpoliciesrulescontainername) | string | The name of the source container. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destinationContainerName`](#parameter-objectreplicationpoliciesrulesdestinationcontainername) | string | The name of the destination container. If not provided, the same name as the source container will be used. |
+| [`filters`](#parameter-objectreplicationpoliciesrulesfilters) | object | The filters for the object replication policy rule. |
+| [`ruleId`](#parameter-objectreplicationpoliciesrulesruleid) | string | The ID of the rule. Auto-generated on destination account. Required for source account. |
+
+### Parameter: `objectReplicationPolicies.rules.containerName`
+
+The name of the source container.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `objectReplicationPolicies.rules.destinationContainerName`
+
+The name of the destination container. If not provided, the same name as the source container will be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `objectReplicationPolicies.rules.filters`
+
+The filters for the object replication policy rule.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`minCreationTime`](#parameter-objectreplicationpoliciesrulesfiltersmincreationtime) | string | The minimum creation time to match for the replication policy rule. |
+| [`prefixMatch`](#parameter-objectreplicationpoliciesrulesfiltersprefixmatch) | array | The prefix to match for the replication policy rule. |
+
+### Parameter: `objectReplicationPolicies.rules.filters.minCreationTime`
+
+The minimum creation time to match for the replication policy rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `objectReplicationPolicies.rules.filters.prefixMatch`
+
+The prefix to match for the replication policy rule.
+
+- Required: No
+- Type: array
+
+### Parameter: `objectReplicationPolicies.rules.ruleId`
+
+The ID of the rule. Auto-generated on destination account. Required for source account.
+
+- Required: No
+- Type: string
+
+### Parameter: `objectReplicationPolicies.enableMetrics`
+
+Indicates whether metrics are enabled for the object replication policy.
+
+- Required: No
+- Type: bool
+
+### Parameter: `objectReplicationPolicies.name`
+
+The name of the object replication policy. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints`
 
@@ -5384,6 +6059,358 @@ Queue service and queues to create.
 - Type: object
 - Default: `{}`
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`corsRules`](#parameter-queueservicescorsrules) | array | The List of CORS rules. You can include up to five CorsRule elements in the request. |
+| [`diagnosticSettings`](#parameter-queueservicesdiagnosticsettings) | array | The diagnostic settings of the service. |
+| [`queues`](#parameter-queueservicesqueues) | array | Queues to create. |
+
+### Parameter: `queueServices.corsRules`
+
+The List of CORS rules. You can include up to five CorsRule elements in the request.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowedHeaders`](#parameter-queueservicescorsrulesallowedheaders) | array | A list of headers allowed to be part of the cross-origin request. |
+| [`allowedMethods`](#parameter-queueservicescorsrulesallowedmethods) | array | A list of HTTP methods that are allowed to be executed by the origin. |
+| [`allowedOrigins`](#parameter-queueservicescorsrulesallowedorigins) | array | A list of origin domains that will be allowed via CORS, or "*" to allow all domains. |
+| [`exposedHeaders`](#parameter-queueservicescorsrulesexposedheaders) | array | A list of response headers to expose to CORS clients. |
+| [`maxAgeInSeconds`](#parameter-queueservicescorsrulesmaxageinseconds) | int | The number of seconds that the client/browser should cache a preflight response. |
+
+### Parameter: `queueServices.corsRules.allowedHeaders`
+
+A list of headers allowed to be part of the cross-origin request.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `queueServices.corsRules.allowedMethods`
+
+A list of HTTP methods that are allowed to be executed by the origin.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'CONNECT'
+    'DELETE'
+    'GET'
+    'HEAD'
+    'MERGE'
+    'OPTIONS'
+    'PATCH'
+    'POST'
+    'PUT'
+    'TRACE'
+  ]
+  ```
+
+### Parameter: `queueServices.corsRules.allowedOrigins`
+
+A list of origin domains that will be allowed via CORS, or "*" to allow all domains.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `queueServices.corsRules.exposedHeaders`
+
+A list of response headers to expose to CORS clients.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `queueServices.corsRules.maxAgeInSeconds`
+
+The number of seconds that the client/browser should cache a preflight response.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `queueServices.diagnosticSettings`
+
+The diagnostic settings of the service.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-queueservicesdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-queueservicesdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-queueservicesdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-queueservicesdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-queueservicesdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-queueservicesdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-queueservicesdiagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-queueservicesdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-queueservicesdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `queueServices.diagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+
+### Parameter: `queueServices.diagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `queueServices.diagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `queueServices.diagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-queueservicesdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-queueservicesdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-queueservicesdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `queueServices.diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `queueServices.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `queueServices.diagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `queueServices.diagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `queueServices.diagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-queueservicesdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-queueservicesdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `queueServices.diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `queueServices.diagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `queueServices.diagnosticSettings.name`
+
+The name of the diagnostic setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `queueServices.diagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `queueServices.diagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `queueServices.queues`
+
+Queues to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-queueservicesqueuesname) | string | The name of the queue. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metadata`](#parameter-queueservicesqueuesmetadata) | object | Metadata to set on the queue. |
+| [`roleAssignments`](#parameter-queueservicesqueuesroleassignments) | array | Array of role assignments to create. |
+
+### Parameter: `queueServices.queues.name`
+
+The name of the queue.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `queueServices.queues.metadata`
+
+Metadata to set on the queue.
+
+- Required: No
+- Type: object
+
+### Parameter: `queueServices.queues.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-queueservicesqueuesroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-queueservicesqueuesroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-queueservicesqueuesroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-queueservicesqueuesroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-queueservicesqueuesroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-queueservicesqueuesroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-queueservicesqueuesroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-queueservicesqueuesroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `queueServices.queues.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `queueServices.queues.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `queueServices.queues.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `queueServices.queues.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `queueServices.queues.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `queueServices.queues.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `queueServices.queues.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `queueServices.queues.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
 ### Parameter: `requireInfrastructureEncryption`
 
 A Boolean indicating whether or not the service applies a secondary layer of encryption with platform managed keys for data at rest. For security reasons, it is recommended to set it to true.
@@ -5637,6 +6664,375 @@ Table service and tables to create.
 - Type: object
 - Default: `{}`
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`corsRules`](#parameter-tableservicescorsrules) | array | The List of CORS rules. You can include up to five CorsRule elements in the request. |
+| [`diagnosticSettings`](#parameter-tableservicesdiagnosticsettings) | array | The diagnostic settings of the service. |
+| [`tables`](#parameter-tableservicestables) | array | Tables to create. |
+
+### Parameter: `tableServices.corsRules`
+
+The List of CORS rules. You can include up to five CorsRule elements in the request.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowedHeaders`](#parameter-tableservicescorsrulesallowedheaders) | array | A list of headers allowed to be part of the cross-origin request. |
+| [`allowedMethods`](#parameter-tableservicescorsrulesallowedmethods) | array | A list of HTTP methods that are allowed to be executed by the origin. |
+| [`allowedOrigins`](#parameter-tableservicescorsrulesallowedorigins) | array | A list of origin domains that will be allowed via CORS, or "*" to allow all domains. |
+| [`exposedHeaders`](#parameter-tableservicescorsrulesexposedheaders) | array | A list of response headers to expose to CORS clients. |
+| [`maxAgeInSeconds`](#parameter-tableservicescorsrulesmaxageinseconds) | int | The number of seconds that the client/browser should cache a preflight response. |
+
+### Parameter: `tableServices.corsRules.allowedHeaders`
+
+A list of headers allowed to be part of the cross-origin request.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `tableServices.corsRules.allowedMethods`
+
+A list of HTTP methods that are allowed to be executed by the origin.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'CONNECT'
+    'DELETE'
+    'GET'
+    'HEAD'
+    'MERGE'
+    'OPTIONS'
+    'PATCH'
+    'POST'
+    'PUT'
+    'TRACE'
+  ]
+  ```
+
+### Parameter: `tableServices.corsRules.allowedOrigins`
+
+A list of origin domains that will be allowed via CORS, or "*" to allow all domains.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `tableServices.corsRules.exposedHeaders`
+
+A list of response headers to expose to CORS clients.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `tableServices.corsRules.maxAgeInSeconds`
+
+The number of seconds that the client/browser should cache a preflight response.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `tableServices.diagnosticSettings`
+
+The diagnostic settings of the service.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-tableservicesdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-tableservicesdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-tableservicesdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-tableservicesdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-tableservicesdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-tableservicesdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-tableservicesdiagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-tableservicesdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-tableservicesdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `tableServices.diagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+
+### Parameter: `tableServices.diagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `tableServices.diagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `tableServices.diagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-tableservicesdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-tableservicesdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-tableservicesdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `tableServices.diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `tableServices.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `tableServices.diagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `tableServices.diagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `tableServices.diagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-tableservicesdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-tableservicesdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `tableServices.diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tableServices.diagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `tableServices.diagnosticSettings.name`
+
+The name of the diagnostic setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `tableServices.diagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `tableServices.diagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `tableServices.tables`
+
+Tables to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-tableservicestablesname) | string | The name of the table. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`roleAssignments`](#parameter-tableservicestablesroleassignments) | array | Array of role assignments to create. |
+
+### Parameter: `tableServices.tables.name`
+
+The name of the table.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tableServices.tables.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Reader and Data Access'`
+  - `'Role Based Access Control Administrator'`
+  - `'Storage Account Backup Contributor'`
+  - `'Storage Account Contributor'`
+  - `'Storage Account Key Operator Service Role'`
+  - `'Storage Blob Data Contributor'`
+  - `'Storage Blob Data Owner'`
+  - `'Storage Blob Data Reader'`
+  - `'Storage Blob Delegator'`
+  - `'Storage File Data Privileged Contributor'`
+  - `'Storage File Data Privileged Reader'`
+  - `'Storage File Data SMB Share Contributor'`
+  - `'Storage File Data SMB Share Elevated Contributor'`
+  - `'Storage File Data SMB Share Reader'`
+  - `'Storage Queue Data Contributor'`
+  - `'Storage Queue Data Message Processor'`
+  - `'Storage Queue Data Message Sender'`
+  - `'Storage Queue Data Reader'`
+  - `'Storage Table Data Contributor'`
+  - `'Storage Table Data Reader'`
+  - `'User Access Administrator'`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-tableservicestablesroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-tableservicestablesroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-tableservicestablesroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-tableservicestablesroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-tableservicestablesroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-tableservicestablesroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-tableservicestablesroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-tableservicestablesroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `tableServices.tables.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tableServices.tables.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tableServices.tables.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `tableServices.tables.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `tableServices.tables.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `tableServices.tables.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `tableServices.tables.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `tableServices.tables.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
 ### Parameter: `tags`
 
 Tags of the resource.
@@ -5668,7 +7064,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 

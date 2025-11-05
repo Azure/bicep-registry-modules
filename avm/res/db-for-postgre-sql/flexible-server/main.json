@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "1650616786476786045"
+      "version": "0.38.3.11034",
+      "templateHash": "6100129735673640657"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server."
@@ -112,7 +112,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of replication settings for the server. Can only be set on existing flexible servers."
       }
     },
     "administratorType": {
@@ -494,9 +495,16 @@
         }
       }
     },
-    "managedIdentityOnlyUserAssignedType": {
+    "managedIdentityAllType": {
       "type": "object",
       "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
         "userAssignedResourceIds": {
           "type": "array",
           "items": {
@@ -509,7 +517,7 @@
         }
       },
       "metadata": {
-        "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
@@ -757,13 +765,6 @@
         "description": "Optional. The administrator login password."
       }
     },
-    "tenantId": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Tenant id of the server."
-      }
-    },
     "administrators": {
       "type": "array",
       "items": {
@@ -772,6 +773,19 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. The Azure AD administrators when AAD authentication enabled."
+      }
+    },
+    "authConfig": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview#properties/properties/properties/authConfig"
+        },
+        "description": "Optional. The authentication configuration for the server."
+      },
+      "defaultValue": {
+        "activeDirectoryAuth": "Enabled",
+        "passwordAuth": "Disabled"
       }
     },
     "location": {
@@ -917,7 +931,7 @@
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentityOnlyUserAssignedType",
+      "$ref": "#/definitions/managedIdentityAllType",
       "nullable": true,
       "metadata": {
         "description": "Conditional. The managed identity definition for this resource. Required if 'cMKKeyName' is not empty."
@@ -945,7 +959,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01#properties/properties/properties/maintenanceWindow"
+          "source": "Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview#properties/properties/properties/maintenanceWindow"
         },
         "description": "Optional. Properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'."
       },
@@ -1033,6 +1047,19 @@
         "description": "Optional. The replication settings for the server. Can only be set on existing flexible servers."
       }
     },
+    "replicationRole": {
+      "type": "string",
+      "defaultValue": "None",
+      "allowedValues": [
+        "Primary",
+        "AsyncReplica",
+        "GeoAsyncReplica",
+        "None"
+      ],
+      "metadata": {
+        "description": "Optional. The replication role for the server."
+      }
+    },
     "enableAdvancedThreatProtection": {
       "type": "bool",
       "defaultValue": true,
@@ -1054,7 +1081,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01#properties/tags"
+          "source": "Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -1099,7 +1126,7 @@
     "enableReferencedModulesTelemetry": false,
     "standByAvailabilityZone": "[tryGet(createObject('Disabled', -1, 'SameZone', parameters('availabilityZone'), 'ZoneRedundant', parameters('highAvailabilityZone')), parameters('highAvailability'))]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None'), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -1158,7 +1185,7 @@
     },
     "flexibleServer": {
       "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-      "apiVersion": "2024-08-01",
+      "apiVersion": "2025-06-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1170,11 +1197,7 @@
       "properties": {
         "administratorLogin": "[parameters('administratorLogin')]",
         "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
-        "authConfig": {
-          "activeDirectoryAuth": "[if(not(empty(parameters('administrators'))), 'enabled', 'disabled')]",
-          "passwordAuth": "[if(and(not(empty(parameters('administratorLogin'))), not(empty(parameters('administratorLoginPassword')))), 'enabled', 'disabled')]",
-          "tenantId": "[parameters('tenantId')]"
-        },
+        "authConfig": "[parameters('authConfig')]",
         "availabilityZone": "[if(not(equals(parameters('availabilityZone'), -1)), string(parameters('availabilityZone')), null())]",
         "highAvailability": {
           "mode": "[parameters('highAvailability')]",
@@ -1182,7 +1205,7 @@
         },
         "backup": {
           "backupRetentionDays": "[parameters('backupRetentionDays')]",
-          "geoRedundantBackup": "[parameters('geoRedundantBackup')]"
+          "geoRedundantBackup": "[if(not(equals(parameters('createMode'), 'Replica')), parameters('geoRedundantBackup'), null())]"
         },
         "createMode": "[parameters('createMode')]",
         "dataEncryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('primaryKeyURI', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), reference('cMKKeyVault::cMKKey').keyUri, reference('cMKKeyVault::cMKKey').keyUriWithVersion)), 'primaryUserAssignedIdentityId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), 'type', 'AzureKeyVault'), null())]",
@@ -1190,6 +1213,7 @@
         "network": "[if(and(not(empty(parameters('delegatedSubnetResourceId'))), empty(parameters('firewallRules'))), createObject('delegatedSubnetResourceId', parameters('delegatedSubnetResourceId'), 'privateDnsZoneArmResourceId', parameters('privateDnsZoneArmResourceId'), 'publicNetworkAccess', parameters('publicNetworkAccess')), createObject('publicNetworkAccess', parameters('publicNetworkAccess')))]",
         "pointInTimeUTC": "[if(equals(parameters('createMode'), 'PointInTimeRestore'), parameters('pointInTimeUTC'), null())]",
         "replica": "[if(not(empty(parameters('replica'))), parameters('replica'), null())]",
+        "replicationRole": "[parameters('replicationRole')]",
         "sourceServerResourceId": "[if(or(equals(parameters('createMode'), 'PointInTimeRestore'), equals(parameters('createMode'), 'Replica')), parameters('sourceServerResourceId'), null())]",
         "storage": {
           "storageSizeGB": "[parameters('storageSizeGB')]",
@@ -1312,8 +1336,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "13996950782804145803"
+              "version": "0.38.3.11034",
+              "templateHash": "11505124559032350127"
             },
             "name": "DBforPostgreSQL Flexible Server Databases",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Database."
@@ -1350,12 +1374,12 @@
             "flexibleServer": {
               "existing": true,
               "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-              "apiVersion": "2024-08-01",
+              "apiVersion": "2025-06-01-preview",
               "name": "[parameters('flexibleServerName')]"
             },
             "database": {
               "type": "Microsoft.DBforPostgreSQL/flexibleServers/databases",
-              "apiVersion": "2024-08-01",
+              "apiVersion": "2025-06-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
                 "collation": "[parameters('collation')]",
@@ -1426,8 +1450,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "12405928219820583734"
+              "version": "0.38.3.11034",
+              "templateHash": "13527321289541801347"
             },
             "name": "DBforPostgreSQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule."
@@ -1461,7 +1485,7 @@
           "resources": [
             {
               "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
-              "apiVersion": "2024-08-01",
+              "apiVersion": "2025-06-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
                 "endIpAddress": "[parameters('endIpAddress')]",
@@ -1535,8 +1559,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "13127094029729870970"
+              "version": "0.38.3.11034",
+              "templateHash": "5501425413439159414"
             },
             "name": "DBforPostgreSQL Flexible Server Configurations",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration."
@@ -1573,12 +1597,12 @@
             "flexibleServer": {
               "existing": true,
               "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-              "apiVersion": "2024-08-01",
+              "apiVersion": "2025-06-01-preview",
               "name": "[parameters('flexibleServerName')]"
             },
             "configuration": {
               "type": "Microsoft.DBforPostgreSQL/flexibleServers/configurations",
-              "apiVersion": "2024-08-01",
+              "apiVersion": "2025-06-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
                 "source": "[parameters('source')]",
@@ -1652,8 +1676,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "5774112338486843191"
+              "version": "0.38.3.11034",
+              "templateHash": "11061977454382131650"
             },
             "name": "DBforPostgreSQL Flexible Server Administrators",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator."
@@ -1700,7 +1724,7 @@
           "resources": [
             {
               "type": "Microsoft.DBforPostgreSQL/flexibleServers/administrators",
-              "apiVersion": "2024-08-01",
+              "apiVersion": "2025-06-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('objectId'))]",
               "properties": {
                 "principalName": "[parameters('principalName')]",
@@ -1763,8 +1787,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "10199784573034431868"
+              "version": "0.38.3.11034",
+              "templateHash": "5415256190346612056"
             },
             "name": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
             "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection."
@@ -1790,7 +1814,7 @@
           "resources": [
             {
               "type": "Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings",
-              "apiVersion": "2024-08-01",
+              "apiVersion": "2025-06-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'PostgreSQL-advancedThreatProtection')]",
               "properties": {
                 "state": "[parameters('serverThreatProtection')]"
@@ -1817,7 +1841,7 @@
               "metadata": {
                 "description": "The advanced threat protection state for the flexible server."
               },
-              "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'PostgreSQL-advancedThreatProtection'), '2024-08-01').state]"
+              "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'PostgreSQL-advancedThreatProtection'), '2025-06-01-preview').state]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -2523,14 +2547,15 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('flexibleServer', '2024-08-01', 'full').location]"
+      "value": "[reference('flexibleServer', '2025-06-01-preview', 'full').location]"
     },
     "fqdn": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The FQDN of the PostgreSQL Flexible server."
       },
-      "value": "[reference('flexibleServer').fullyQualifiedDomainName]"
+      "value": "[tryGet(reference('flexibleServer'), 'fullyQualifiedDomainName')]"
     },
     "privateEndpoints": {
       "type": "array",
@@ -2550,6 +2575,14 @@
           "networkInterfaceResourceIds": "[reference(format('server_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
         }
       }
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The principal ID of the system assigned managed identity."
+      },
+      "value": "[tryGet(tryGet(reference('flexibleServer', '2025-06-01-preview', 'full'), 'identity'), 'principalId')]"
     }
   }
 }
