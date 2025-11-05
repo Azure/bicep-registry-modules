@@ -205,7 +205,7 @@ module testDeployment '../../../main.bicep' = {
       }
     }
     osType: 'Linux'
-    vmSize: 'Standard_D2s_v4'
+    vmSize: 'Standard_D2s_v5'
     availabilityZone: 1
     backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName
     backupVaultName: nestedDependencies.outputs.recoveryServicesVaultName

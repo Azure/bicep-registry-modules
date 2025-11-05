@@ -83,7 +83,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Windows'
-      vmSize: 'Standard_D2s_v4'
+      vmSize: 'Standard_D2s_v5'
       adminPassword: password
     }
   }
