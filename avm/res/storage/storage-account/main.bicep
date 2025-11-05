@@ -434,7 +434,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
                     ? null
                     : (!isHSMKeyVault
                         ? last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
-                        : last(split(hSMCMKKeyVault::hSMCMKKey!.properties.keyUriWithVersion, '/')))
+                        : fail('Managed HSM CMK encryption requires either keyVersion in input or autorotation to be enabled'))
             }
           : null
         identity: {
