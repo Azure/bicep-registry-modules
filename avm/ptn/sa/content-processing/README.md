@@ -150,7 +150,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     enableScalability: false
     enableTelemetry: true
     gptDeploymentCapacity: 10
-    solutionName: 'abscpmin'
+    solutionName: 'amscpmin'
   }
 }
 ```
@@ -191,7 +191,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
       "value": 10
     },
     "solutionName": {
-      "value": "abscpmin"
+      "value": "amscpmin"
     }
   }
 }
@@ -216,7 +216,7 @@ param enableRedundancy = false
 param enableScalability = false
 param enableTelemetry = true
 param gptDeploymentCapacity = 10
-param solutionName = 'abscpmin'
+param solutionName = 'amscpmin'
 ```
 
 </details>
@@ -244,7 +244,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     enableScalability: true
     enableTelemetry: true
     gptDeploymentCapacity: 10
-    solutionName: 'muscpegwaf'
+    solutionName: 'amscpegwaf'
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'adminuser'
   }
@@ -287,7 +287,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
       "value": 10
     },
     "solutionName": {
-      "value": "muscpegwaf"
+      "value": "amscpegwaf"
     },
     "vmAdminPassword": {
       "value": "<vmAdminPassword>"
@@ -318,7 +318,7 @@ param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
 param gptDeploymentCapacity = 10
-param solutionName = 'muscpegwaf'
+param solutionName = 'amscpegwaf'
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'adminuser'
 ```
