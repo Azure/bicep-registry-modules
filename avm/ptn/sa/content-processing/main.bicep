@@ -74,6 +74,9 @@ param enableRedundancy bool = false
 @description('Optional. Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.')
 param enableScalability bool = false
 
+@description('Optional. Enable purge protection. Defaults to false.')
+param enablePurgeProtection bool = false
+
 @description('Optional. Tags to be applied to the resources.')
 param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {
   app: 'Content Processing Solution Accelerator'
@@ -1091,6 +1094,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9
   params: {
     name: 'appcs-${solutionSuffix}'
     location: location
+    enablePurgeProtection: enablePurgeProtection
     tags: {
       app: solutionSuffix
       location: location
@@ -1214,26 +1218,6 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9
     ]
 
     publicNetworkAccess: 'Enabled'
-    // WAF related parameters
-
-    // privateEndpoints: (enablePrivateNetworking)
-    //   ? [
-    //       {
-    //         name: 'appconfig-private-endpoint'
-    //         privateEndpointResourceId: avmVirtualNetwork.outputs.resourceId
-    //         privateDnsZoneGroup: {
-    //           privateDnsZoneGroupConfigs: [
-    //             {
-    //               name: 'appconfig-dns-zone-group'
-    //               privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.appConfig].outputs.resourceId
-    //               //privateDnsZoneResourceId: avmPrivateDnsZoneAppConfig.outputs.resourceId
-    //             }
-    //           ]
-    //         }
-    //         subnetResourceId: avmVirtualNetwork.outputs.subnetResourceIds[0] // Use the backend subnet
-    //       }
-    //     ]
-    //   : []
   }
 }
 

@@ -149,6 +149,8 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     enableRedundancy: false
     enableScalability: false
     enableTelemetry: true
+    gptDeploymentCapacity: 10
+    solutionName: 'abscpmin'
   }
 }
 ```
@@ -184,6 +186,12 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     },
     "enableTelemetry": {
       "value": true
+    },
+    "gptDeploymentCapacity": {
+      "value": 10
+    },
+    "solutionName": {
+      "value": "abscpmin"
     }
   }
 }
@@ -207,6 +215,8 @@ param enablePrivateNetworking = false
 param enableRedundancy = false
 param enableScalability = false
 param enableTelemetry = true
+param gptDeploymentCapacity = 10
+param solutionName = 'abscpmin'
 ```
 
 </details>
@@ -233,8 +243,10 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     enableRedundancy: true
     enableScalability: true
     enableTelemetry: true
-    gptDeploymentCapacity: 1
-    solutionName: 'scpegwaf'
+    gptDeploymentCapacity: 10
+    solutionName: 'muscpegwaf'
+    vmAdminPassword: '<vmAdminPassword>'
+    vmAdminUsername: 'adminuser'
   }
 }
 ```
@@ -272,10 +284,16 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
       "value": true
     },
     "gptDeploymentCapacity": {
-      "value": 1
+      "value": 10
     },
     "solutionName": {
-      "value": "scpegwaf"
+      "value": "muscpegwaf"
+    },
+    "vmAdminPassword": {
+      "value": "<vmAdminPassword>"
+    },
+    "vmAdminUsername": {
+      "value": "adminuser"
     }
   }
 }
@@ -299,8 +317,10 @@ param enablePrivateNetworking = true
 param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
-param gptDeploymentCapacity = 1
-param solutionName = 'scpegwaf'
+param gptDeploymentCapacity = 10
+param solutionName = 'muscpegwaf'
+param vmAdminPassword = '<vmAdminPassword>'
+param vmAdminUsername = 'adminuser'
 ```
 
 </details>
@@ -327,6 +347,7 @@ param solutionName = 'scpegwaf'
 | [`deploymentType`](#parameter-deploymenttype) | string | Type of GPT deployment to use: Standard | GlobalStandard. |
 | [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable WAF for the deployment. |
+| [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Enable purge protection. Defaults to false. |
 | [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -439,6 +460,14 @@ Enable WAF for the deployment.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `enablePurgeProtection`
+
+Enable purge protection. Defaults to false.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `enableRedundancy`
 

@@ -9,7 +9,7 @@ metadata description = 'This instance deploys the Content Processing Solution Ac
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-waf-${namePrefix}-sa.cps-${serviceShort}-rg'
+param resourceGroupName string = 'mudep-waf-${namePrefix}-sa.cps-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -19,11 +19,15 @@ param serviceShort string = 'scpegwaf'
 
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. The password to set for the Virtual Machine.')
+@secure()
+param virtualMachineAdminPassword string = newGuid()
+
 // ============ //
 // Dependencies //
 // ============ //
 #disable-next-line no-hardcoded-location // A value to avoid ongoing capacity challenges with Server Farm for frontend webapp in AVM Azure testing subscription
-var enforcedLocation = 'japaneast'
+var enforcedLocation = 'australiaeast'
 
 // General resources
 // =================
@@ -42,14 +46,16 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      solutionName: '${namePrefix}${serviceShort}'
+      solutionName: 'mu${namePrefix}${serviceShort}'
       aiServiceLocation: enforcedLocation
-      gptDeploymentCapacity: 1
+      gptDeploymentCapacity: 10
       enableScalability: true
       enableTelemetry: true
       enablePrivateNetworking: true
       enableMonitoring: true
       enableRedundancy: true
+      vmAdminUsername: 'adminuser'
+      vmAdminPassword: virtualMachineAdminPassword
     }
   }
 ]
