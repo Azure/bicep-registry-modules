@@ -272,8 +272,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-var useHsmForCMK = contains(customerManagedKey.?keyVaultResourceId ?? '', '/managedHSMs/')
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey) && !useHsmForCMK) {
+var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
@@ -320,16 +320,16 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-pr
     dataEncryption: !empty(customerManagedKey)
       ? {
           primaryKeyURI: !empty(customerManagedKey.?keyVersion)
-            ? (!useHsmForCMK
+            ? (!isHSMManagedCMK
                 ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
                 : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/${customerManagedKey!.keyVersion!}')
             : (customerManagedKey.?autoRotationEnabled ?? true)
-                ? (!useHsmForCMK
+                ? (!isHSMManagedCMK
                     ? cMKKeyVault::cMKKey!.properties.keyUri
                     : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/')
-                : (!useHsmForCMK
+                : (!isHSMManagedCMK
                     ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
-                    : fail('For Managed HSM CMK encryption you must either provide the \'keyVersion\' or set \'autoRotationEnabled\' to `true`.'))
+                    : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
           primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
           type: 'AzureKeyVault'
         }
@@ -579,14 +579,14 @@ output systemAssignedMIPrincipalId string? = flexibleServer.?identity.?principal
 // output dataEncryption object? = !empty(customerManagedKey)
 //   ? {
 //       primaryKeyURI: !empty(customerManagedKey.?keyVersion)
-//         ? (useHsmForCMK
+//         ? (isHSMManagedCMK
 //             ? '${hSMCMKKeyVault::hSMCMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
 //             : '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}')
 //         : (customerManagedKey.?autoRotationEnabled ?? true)
-//             ? (useHsmForCMK
+//             ? (isHSMManagedCMK
 //                 ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUri
 //                 : cMKKeyVault::cMKKey!.properties.keyUri)
-//             : (useHsmForCMK
+//             : (isHSMManagedCMK
 //                 ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUriWithVersion
 //                 : cMKKeyVault::cMKKey!.properties.keyUriWithVersion)
 //       primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
