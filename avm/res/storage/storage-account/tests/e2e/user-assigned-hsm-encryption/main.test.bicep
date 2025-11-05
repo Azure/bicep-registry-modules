@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using Customer-Managed-Keys with User-Assigned identity'
-metadata description = 'This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.'
+metadata name = 'Using managed HSM Customer-Managed-Keys with User-Assigned identity'
+metadata description = 'This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.'
 
 // ========== //
 // Parameters //
@@ -18,9 +18,6 @@ var enforcedLocation = 'uksouth'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'ssauhsm'
-
-@description('Generated. Used as a basis for unique resource names.')
-param baseTime string = utcNow('u')
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
