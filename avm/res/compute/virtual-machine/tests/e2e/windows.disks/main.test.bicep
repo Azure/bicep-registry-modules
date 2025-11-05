@@ -16,7 +16,7 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${se
 var enforcedLocation = 'germanywestcentral'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmwindisk'
+param serviceShort string = 'vmwindisk'
 
 @description('Optional. The password to leverage for the login.')
 @secure()

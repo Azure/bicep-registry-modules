@@ -75,7 +75,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '22_04-lts-gen2'
       version: 'latest'
     }
-    name: 'cvmlinatmg'
+    name: 'vmlinatmg'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -145,7 +145,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmlinatmg"
+      "value": "vmlinatmg"
     },
     "nicConfigurations": {
       "value": [
@@ -223,7 +223,7 @@ param imageReference = {
   sku: '22_04-lts-gen2'
   version: 'latest'
 }
-param name = 'cvmlinatmg'
+param name = 'vmlinatmg'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -288,7 +288,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '22_04-lts-gen2'
       version: 'latest'
     }
-    name: 'cvmlinmin'
+    name: 'vmlinmin'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -350,7 +350,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmlinmin"
+      "value": "vmlinmin"
     },
     "nicConfigurations": {
       "value": [
@@ -418,7 +418,7 @@ param imageReference = {
   sku: '22_04-lts-gen2'
   version: 'latest'
 }
-param name = 'cvmlinmin'
+param name = 'vmlinmin'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -475,7 +475,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '<sku>'
       version: 'latest'
     }
-    name: 'cvmlimax'
+    name: 'vmlimax'
     nicConfigurations: [
       {
         deleteOption: 'Delete'
@@ -779,7 +779,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmlimax"
+      "value": "vmlimax"
     },
     "nicConfigurations": {
       "value": [
@@ -1129,7 +1129,7 @@ param imageReference = {
   sku: '<sku>'
   version: 'latest'
 }
-param name = 'cvmlimax'
+param name = 'vmlimax'
 param nicConfigurations = [
   {
     deleteOption: 'Delete'
@@ -1428,7 +1428,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2019-datacenter'
       version: 'latest'
     }
-    name: 'cvmwinwaf'
+    name: 'vmwinwaf'
     nicConfigurations: [
       {
         deleteOption: 'Delete'
@@ -1711,7 +1711,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwinwaf"
+      "value": "vmwinwaf"
     },
     "nicConfigurations": {
       "value": [
@@ -2042,7 +2042,7 @@ param imageReference = {
   sku: '2019-datacenter'
   version: 'latest'
 }
-param name = 'cvmwinwaf'
+param name = 'vmwinwaf'
 param nicConfigurations = [
   {
     deleteOption: 'Delete'
@@ -2320,7 +2320,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
-    name: 'cvmwinmin'
+    name: 'vmwinmin'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -2376,7 +2376,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwinmin"
+      "value": "vmwinmin"
     },
     "nicConfigurations": {
       "value": [
@@ -2436,7 +2436,7 @@ param imageReference = {
   sku: '2022-datacenter-azure-edition'
   version: 'latest'
 }
-param name = 'cvmwinmin'
+param name = 'vmwinmin'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -2487,7 +2487,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
-    name: 'cvmwindisk'
+    name: 'vmwindisk'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -2564,7 +2564,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwindisk"
+      "value": "vmwindisk"
     },
     "nicConfigurations": {
       "value": [
@@ -2649,7 +2649,7 @@ param imageReference = {
   sku: '2022-datacenter-azure-edition'
   version: 'latest'
 }
-param name = 'cvmwindisk'
+param name = 'vmwindisk'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -2745,7 +2745,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     extensionGuestConfigurationExtension: {
@@ -2842,7 +2842,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2s_v6"
     },
     // Non-required parameters
     "adminPassword": {
@@ -2933,7 +2933,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param extensionGuestConfigurationExtension = {
@@ -3238,7 +3238,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2019-datacenter'
       version: 'latest'
     }
-    name: 'cvmwinmax'
+    name: 'vmwinmax'
     nicConfigurations: [
       {
         deleteOption: 'Delete'
@@ -3583,7 +3583,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwinmax"
+      "value": "vmwinmax"
     },
     "nicConfigurations": {
       "value": [
@@ -3980,7 +3980,7 @@ param imageReference = {
   sku: '2019-datacenter'
   version: 'latest'
 }
-param name = 'cvmwinmax'
+param name = 'vmwinmax'
 param nicConfigurations = [
   {
     deleteOption: 'Delete'
@@ -4320,7 +4320,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
-    name: 'cvmwinnv'
+    name: 'vmwinnv'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -4380,7 +4380,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwinnv"
+      "value": "vmwinnv"
     },
     "nicConfigurations": {
       "value": [
@@ -4448,7 +4448,7 @@ param imageReference = {
   sku: '2022-datacenter-azure-edition'
   version: 'latest'
 }
-param name = 'cvmwinnv'
+param name = 'vmwinnv'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -4503,7 +4503,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2019-datacenter'
       version: 'latest'
     }
-    name: 'cvmwincmk'
+    name: 'vmwincmk'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -4568,7 +4568,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwincmk"
+      "value": "vmwincmk"
     },
     "nicConfigurations": {
       "value": [
@@ -4639,7 +4639,7 @@ param imageReference = {
   sku: '2019-datacenter'
   version: 'latest'
 }
-param name = 'cvmwincmk'
+param name = 'vmwincmk'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -4699,7 +4699,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
-    name: 'cvmwinvmss'
+    name: 'vmwinvmss'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -4756,7 +4756,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwinvmss"
+      "value": "vmwinvmss"
     },
     "nicConfigurations": {
       "value": [
@@ -4819,7 +4819,7 @@ param imageReference = {
   sku: '2022-datacenter-azure-edition'
   version: 'latest'
 }
-param name = 'cvmwinvmss'
+param name = 'vmwinvmss'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -4871,7 +4871,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
-    name: 'cvmwinzrs'
+    name: 'vmwinzrs'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -4936,7 +4936,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwinzrs"
+      "value": "vmwinzrs"
     },
     "nicConfigurations": {
       "value": [
@@ -5007,7 +5007,7 @@ param imageReference = {
   sku: '2022-datacenter-azure-edition'
   version: 'latest'
 }
-param name = 'cvmwinzrs'
+param name = 'vmwinzrs'
 param nicConfigurations = [
   {
     ipConfigurations: [

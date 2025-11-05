@@ -13,10 +13,10 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${se
 
 // Capacity constraints for VM type
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'germanywestcentral'
+var enforcedLocation = 'uksouth'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmwinhp'
+param serviceShort string = 'vmwinhp'
 
 @description('Optional. The password to leverage for the login.')
 @secure()
