@@ -13,6 +13,12 @@ param acrSku string = 'Basic'
 @description('Public network access setting for the Azure Container Registry')
 param publicNetworkAccess string = 'Enabled'
 
+@description('Required. Enable Redundancy for the AVM deployment.')
+param enableRedundancy bool
+
+@description('Required. The secondary location for the Azure Container Registry replication, if redundancy is enabled.')
+param secondaryLocation string
+
 @description('Zone redundancy setting for the Azure Container Registry')
 param zoneRedundancy string = 'Disabled'
 
@@ -23,7 +29,7 @@ param roleAssignments roleAssignmentType[]?
 @description('Tags to be applied to the Container Registry')
 param tags object = {}
 
-module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = {
+module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3' = {
   name: acrName
   params: {
     name: acrName
@@ -33,6 +39,14 @@ module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.1
     zoneRedundancy: zoneRedundancy
     roleAssignments: roleAssignments
     tags: tags
+    replications: enableRedundancy
+      ? [
+          {
+            location: secondaryLocation
+            name: 'acrrepl${replace(secondaryLocation, '-', '')}'
+          }
+        ]
+      : null
   }
 }
 

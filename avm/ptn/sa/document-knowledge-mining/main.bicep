@@ -488,9 +488,11 @@ module avmContainerRegistry './modules/container-registry.bicep' = {
   params: {
     acrName: 'cr${replace(solutionSuffix, '-', '')}'
     location: solutionLocation
-    acrSku: 'Standard'
+    acrSku: enableRedundancy ? 'Premium' : 'Standard'
     publicNetworkAccess: 'Enabled'
     zoneRedundancy: 'Disabled'
+    enableRedundancy: enableRedundancy
+    secondaryLocation: replicaLocation
     roleAssignments: [
       {
         principalId: managedCluster.outputs.systemAssignedMIPrincipalId
