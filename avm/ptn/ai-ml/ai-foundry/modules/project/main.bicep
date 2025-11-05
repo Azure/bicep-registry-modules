@@ -33,7 +33,7 @@ param aiSearchConnection azureConnectionType?
 @description('Optional. Storage Account connection for the project.')
 param storageAccountConnection azureConnectionType?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
