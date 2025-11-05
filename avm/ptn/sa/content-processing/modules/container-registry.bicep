@@ -31,9 +31,6 @@ param secondaryLocation string
 @description('Optional. Enable private networking for the Container Registry.')
 param enablePrivateNetworking bool = false
 
-@description('Optional. Virtual network resource ID for private endpoints.')
-param virtualNetworkResourceId string = ''
-
 @description('Optional. Backend subnet resource ID for private endpoints.')
 param backendSubnetResourceId string = ''
 
@@ -46,7 +43,7 @@ module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3
     name: acrName
     location: location
     acrSku: acrSku
-    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : publicNetworkAccess
+    publicNetworkAccess: publicNetworkAccess
     zoneRedundancy: zoneRedundancy
     tags: tags
     enableTelemetry: enableTelemetry
@@ -62,7 +59,7 @@ module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3
     networkRuleSetDefaultAction: enablePrivateNetworking ? 'Deny' : 'Allow'
     networkRuleSetIpRules: enablePrivateNetworking ? [] : []
     exportPolicyStatus: enablePrivateNetworking ? 'disabled' : 'enabled'
-    privateEndpoints: enablePrivateNetworking && !empty(virtualNetworkResourceId) && !empty(backendSubnetResourceId)
+    privateEndpoints: enablePrivateNetworking
       ? [
           {
             name: 'pep-acr-${acrName}'

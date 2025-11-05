@@ -59,6 +59,9 @@ param gptDeploymentCapacity int = 100
 @description('Optional. Location used for Azure Cosmos DB, Azure Container App deployment.')
 param secondaryLocation string = (location == 'eastus2') ? 'westus2' : 'eastus2'
 
+@description('Optional. The public container image endpoint.')
+param publicContainerImageEndpoint string = 'cpscontainerreg.azurecr.io'
+
 @description('Optional. Enable WAF for the deployment.')
 param enablePrivateNetworking bool = true
 
@@ -82,30 +85,6 @@ param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags =
   app: 'Content Processing Solution Accelerator'
   location: resourceGroup().location
 }
-
-@description('Optional. Set to true to use local build for container app images, otherwise use container registry images.')
-param useLocalBuild bool = false
-
-@description('Optional. The public container image endpoint.')
-param publicContainerImageEndpoint string = 'cpscontainerreg.azurecr.io'
-
-@description('Optional. The Container Image Name to deploy on the Web Container App.')
-param webContainerImageName string = 'contentprocessorweb'
-
-@description('Optional. The Container Image Tag to deploy on the Web Container App.')
-param webContainerImageTag string = 'latest'
-
-@description('Optional. The Container Image Name to deploy on the App Container App.')
-param appContainerImageName string = 'contentprocessor'
-
-@description('Optional. The Container Image Tag to deploy on the backend.')
-param appContainerImageTag string = 'latest'
-
-@description('Optional. The Container Image Name to deploy on the Api Container App.')
-param apiContainerImageName string = 'contentprocessorapi'
-
-@description('Optional. The Container Image Tag to deploy on the backend.')
-param apiContainerImageTag string = 'latest'
 
 @description('Optional. Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true.')
 param vmSize string = ''
@@ -171,7 +150,7 @@ var replicaRegionPairs = {
   uksouth: 'westeurope'
   westeurope: 'northeurope'
 }
-var replicaLocation = replicaRegionPairs[resourceGroup().location]
+var replicaLocation = replicaRegionPairs[?location]
 
 // ========== Virtual Network ========== //
 module virtualNetwork './modules/virtualNetwork.bicep' = if (enablePrivateNetworking) {
@@ -455,6 +434,8 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
   name: 'default'
   properties: {
     tags: {
+      ...resourceGroup().tags
+      ...tags
       TemplateName: 'Content Processing'
       Type: enablePrivateNetworking ? 'WAF' : 'Non-WAF'
       CreatedBy: createdBy
@@ -478,7 +459,7 @@ module avmContainerRegistry 'modules/container-registry.bicep' = {
   params: {
     acrName: 'cr${replace(solutionSuffix, '-', '')}'
     location: location
-    acrSku: 'Premium'
+    acrSku: enableRedundancy || enablePrivateNetworking ? 'Premium' : 'Standard'
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     zoneRedundancy: 'Disabled'
     tags: tags
@@ -486,7 +467,6 @@ module avmContainerRegistry 'modules/container-registry.bicep' = {
     enableRedundancy: enableRedundancy
     secondaryLocation: secondaryLocation
     enablePrivateNetworking: enablePrivateNetworking
-    virtualNetworkResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.resourceId : ''
     backendSubnetResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.backendSubnetResourceId : ''
     privateDnsZoneResourceId: enablePrivateNetworking
       ? avmPrivateDnsZones[dnsZoneIndex.containerRegistry]!.outputs.resourceId
@@ -783,15 +763,7 @@ module avmContainerApp 'br/public:avm/res/app/container-app:0.19.0' = {
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
     enableTelemetry: enableTelemetry
-    registries: useLocalBuild == 'localbuild'
-      ? [
-          {
-            server: publicContainerImageEndpoint
-            identity: avmContainerRegistryReader.outputs.principalId
-          }
-        ]
-      : null
-
+    registries: null
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -802,7 +774,7 @@ module avmContainerApp 'br/public:avm/res/app/container-app:0.19.0' = {
     containers: [
       {
         name: 'ca-${solutionSuffix}'
-        image: '${publicContainerImageEndpoint}/${appContainerImageName}:${appContainerImageTag}'
+        image: '${publicContainerImageEndpoint}/contentprocessor:latest'
 
         resources: {
           cpu: 4
@@ -840,14 +812,7 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.19.0' = {
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
     enableTelemetry: enableTelemetry
-    registries: useLocalBuild == 'localbuild'
-      ? [
-          {
-            server: avmContainerRegistry.outputs.loginServer
-            identity: avmContainerRegistryReader.outputs.principalId
-          }
-        ]
-      : null
+    registries: null
     tags: tags
     managedIdentities: {
       systemAssigned: true
@@ -858,9 +823,7 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.19.0' = {
     containers: [
       {
         name: 'ca-${solutionSuffix}-api'
-        image: (useLocalBuild != 'localbuild')
-          ? '${publicContainerImageEndpoint}/${apiContainerImageName}:${apiContainerImageTag}'
-          : avmContainerRegistry.outputs.loginServer
+        image: '${publicContainerImageEndpoint}/contentprocessorapi:latest'
         resources: {
           cpu: 4
           memory: '8.0Gi'
@@ -960,14 +923,7 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.19.0' = {
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
     enableTelemetry: enableTelemetry
-    registries: useLocalBuild == 'localbuild'
-      ? [
-          {
-            server: avmContainerRegistry.outputs.loginServer
-            identity: avmContainerRegistryReader.outputs.principalId
-          }
-        ]
-      : null
+    registries: null
     tags: tags
     managedIdentities: {
       systemAssigned: true
@@ -995,9 +951,7 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.19.0' = {
     containers: [
       {
         name: 'ca-${solutionSuffix}-web'
-        image: (useLocalBuild != 'localbuild')
-          ? '${publicContainerImageEndpoint}/${webContainerImageName}:${webContainerImageTag}'
-          : avmContainerRegistry.outputs.loginServer
+        image: '${publicContainerImageEndpoint}/contentprocessorweb:latest'
         resources: {
           cpu: 4
           memory: '8.0Gi'
@@ -1261,14 +1215,7 @@ module avmContainerApp_update 'br/public:avm/res/app/container-app:0.19.0' = {
     enableTelemetry: enableTelemetry
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
-    registries: useLocalBuild == 'localbuild'
-      ? [
-          {
-            server: publicContainerImageEndpoint
-            identity: avmContainerRegistryReader.outputs.principalId
-          }
-        ]
-      : null
+    registries: null
     tags: tags
     managedIdentities: {
       systemAssigned: true
@@ -1328,14 +1275,7 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.19.0' =
     enableTelemetry: enableTelemetry
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
-    registries: useLocalBuild == 'localbuild'
-      ? [
-          {
-            server: avmContainerRegistry.outputs.loginServer
-            identity: avmContainerRegistryReader.outputs.principalId
-          }
-        ]
-      : null
+    registries: null
     tags: tags
     managedIdentities: {
       systemAssigned: true
@@ -1347,9 +1287,7 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.19.0' =
     containers: [
       {
         name: 'ca-${solutionSuffix}-api'
-        image: (useLocalBuild != 'localbuild')
-          ? '${publicContainerImageEndpoint}/${apiContainerImageName}:${apiContainerImageTag}'
-          : avmContainerRegistry.outputs.loginServer
+        image: '${publicContainerImageEndpoint}/contentprocessorapi:latest'
         resources: {
           cpu: 4
           memory: '8.0Gi'

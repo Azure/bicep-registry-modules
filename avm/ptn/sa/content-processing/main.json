@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "12816210756076110661"
+      "templateHash": "14676531806508735707"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Content Processing solution accelerator](https://github.com/microsoft/content-processing-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -99,6 +99,13 @@
         "description": "Optional. Location used for Azure Cosmos DB, Azure Container App deployment."
       }
     },
+    "publicContainerImageEndpoint": {
+      "type": "string",
+      "defaultValue": "cpscontainerreg.azurecr.io",
+      "metadata": {
+        "description": "Optional. The public container image endpoint."
+      }
+    },
     "enablePrivateNetworking": {
       "type": "bool",
       "defaultValue": true,
@@ -154,62 +161,6 @@
         "location": "[resourceGroup().location]"
       }
     },
-    "useLocalBuild": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Set to true to use local build for container app images, otherwise use container registry images."
-      }
-    },
-    "publicContainerImageEndpoint": {
-      "type": "string",
-      "defaultValue": "cpscontainerreg.azurecr.io",
-      "metadata": {
-        "description": "Optional. The public container image endpoint."
-      }
-    },
-    "webContainerImageName": {
-      "type": "string",
-      "defaultValue": "contentprocessorweb",
-      "metadata": {
-        "description": "Optional. The Container Image Name to deploy on the Web Container App."
-      }
-    },
-    "webContainerImageTag": {
-      "type": "string",
-      "defaultValue": "latest",
-      "metadata": {
-        "description": "Optional. The Container Image Tag to deploy on the Web Container App."
-      }
-    },
-    "appContainerImageName": {
-      "type": "string",
-      "defaultValue": "contentprocessor",
-      "metadata": {
-        "description": "Optional. The Container Image Name to deploy on the App Container App."
-      }
-    },
-    "appContainerImageTag": {
-      "type": "string",
-      "defaultValue": "latest",
-      "metadata": {
-        "description": "Optional. The Container Image Tag to deploy on the backend."
-      }
-    },
-    "apiContainerImageName": {
-      "type": "string",
-      "defaultValue": "contentprocessorapi",
-      "metadata": {
-        "description": "Optional. The Container Image Name to deploy on the Api Container App."
-      }
-    },
-    "apiContainerImageTag": {
-      "type": "string",
-      "defaultValue": "latest",
-      "metadata": {
-        "description": "Optional. The Container Image Tag to deploy on the backend."
-      }
-    },
     "vmSize": {
       "type": "string",
       "defaultValue": "",
@@ -261,7 +212,7 @@
       "uksouth": "westeurope",
       "westeurope": "northeurope"
     },
-    "replicaLocation": "[variables('replicaRegionPairs')[resourceGroup().location]]",
+    "replicaLocation": "[tryGet(variables('replicaRegionPairs'), parameters('location'))]",
     "bastionHostName": "[format('bas-{0}', variables('solutionSuffix'))]",
     "jumpboxVmName": "[take(format('vm-jumpbox-{0}', variables('solutionSuffix')), 15)]",
     "privateDnsZones": [
@@ -314,11 +265,7 @@
       "apiVersion": "2025-04-01",
       "name": "default",
       "properties": {
-        "tags": {
-          "TemplateName": "Content Processing",
-          "Type": "[if(parameters('enablePrivateNetworking'), 'WAF', 'Non-WAF')]",
-          "CreatedBy": "[parameters('createdBy')]"
-        }
+        "tags": "[shallowMerge(createArray(resourceGroup().tags, parameters('tags'), createObject('TemplateName', 'Content Processing', 'Type', if(parameters('enablePrivateNetworking'), 'WAF', 'Non-WAF'), 'CreatedBy', parameters('createdBy'))))]"
       }
     },
     "virtualNetwork": {
@@ -22005,9 +21952,7 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "acrSku": {
-            "value": "Premium"
-          },
+          "acrSku": "[if(or(parameters('enableRedundancy'), parameters('enablePrivateNetworking')), createObject('value', 'Premium'), createObject('value', 'Standard'))]",
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "zoneRedundancy": {
             "value": "Disabled"
@@ -22027,7 +21972,6 @@
           "enablePrivateNetworking": {
             "value": "[parameters('enablePrivateNetworking')]"
           },
-          "virtualNetworkResourceId": "[if(parameters('enablePrivateNetworking'), createObject('value', reference('virtualNetwork').outputs.resourceId.value), createObject('value', ''))]",
           "backendSubnetResourceId": "[if(parameters('enablePrivateNetworking'), createObject('value', reference('virtualNetwork').outputs.backendSubnetResourceId.value), createObject('value', ''))]",
           "privateDnsZoneResourceId": "[if(parameters('enablePrivateNetworking'), createObject('value', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').containerRegistry)).outputs.resourceId.value), createObject('value', ''))]"
         },
@@ -22038,7 +21982,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "11238187605512656065"
+              "templateHash": "16451507170337245275"
             },
             "name": "Container Registry Module"
           },
@@ -22108,13 +22052,6 @@
                 "description": "Optional. Enable private networking for the Container Registry."
               }
             },
-            "virtualNetworkResourceId": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. Virtual network resource ID for private endpoints."
-              }
-            },
             "backendSubnetResourceId": {
               "type": "string",
               "defaultValue": "",
@@ -22150,7 +22087,9 @@
                   "acrSku": {
                     "value": "[parameters('acrSku')]"
                   },
-                  "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', parameters('publicNetworkAccess')))]",
+                  "publicNetworkAccess": {
+                    "value": "[parameters('publicNetworkAccess')]"
+                  },
                   "zoneRedundancy": {
                     "value": "[parameters('zoneRedundancy')]"
                   },
@@ -22164,7 +22103,7 @@
                   "networkRuleSetDefaultAction": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Deny'), createObject('value', 'Allow'))]",
                   "networkRuleSetIpRules": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray()), createObject('value', createArray()))]",
                   "exportPolicyStatus": "[if(parameters('enablePrivateNetworking'), createObject('value', 'disabled'), createObject('value', 'enabled'))]",
-                  "privateEndpoints": "[if(and(and(parameters('enablePrivateNetworking'), not(empty(parameters('virtualNetworkResourceId')))), not(empty(parameters('backendSubnetResourceId')))), createObject('value', createArray(createObject('name', format('pep-acr-{0}', parameters('acrName')), 'customNetworkInterfaceName', format('nic-acr-{0}', parameters('acrName')), 'privateDnsZoneGroup', if(not(empty(parameters('privateDnsZoneResourceId'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'acr-dns-zone-group', 'privateDnsZoneResourceId', parameters('privateDnsZoneResourceId')))), null()), 'subnetResourceId', parameters('backendSubnetResourceId')))), createObject('value', createArray()))]"
+                  "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-acr-{0}', parameters('acrName')), 'customNetworkInterfaceName', format('nic-acr-{0}', parameters('acrName')), 'privateDnsZoneGroup', if(not(empty(parameters('privateDnsZoneResourceId'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'acr-dns-zone-group', 'privateDnsZoneResourceId', parameters('privateDnsZoneResourceId')))), null()), 'subnetResourceId', parameters('backendSubnetResourceId')))), createObject('value', createArray()))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -39039,9 +38978,9 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "virtualNetwork"
@@ -43102,7 +43041,9 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "registries": "[if(equals(parameters('useLocalBuild'), 'localbuild'), createObject('value', createArray(createObject('server', parameters('publicContainerImageEndpoint'), 'identity', reference('avmContainerRegistryReader').outputs.principalId.value))), createObject('value', null()))]",
+          "registries": {
+            "value": null
+          },
           "managedIdentities": {
             "value": {
               "systemAssigned": true,
@@ -43115,7 +43056,7 @@
             "value": [
               {
                 "name": "[format('ca-{0}', variables('solutionSuffix'))]",
-                "image": "[format('{0}/{1}:{2}', parameters('publicContainerImageEndpoint'), parameters('appContainerImageName'), parameters('appContainerImageTag'))]",
+                "image": "[format('{0}/contentprocessor:latest', parameters('publicContainerImageEndpoint'))]",
                 "resources": {
                   "cpu": 4,
                   "memory": "8.0Gi"
@@ -44697,7 +44638,9 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "registries": "[if(equals(parameters('useLocalBuild'), 'localbuild'), createObject('value', createArray(createObject('server', reference('avmContainerRegistry').outputs.loginServer.value, 'identity', reference('avmContainerRegistryReader').outputs.principalId.value))), createObject('value', null()))]",
+          "registries": {
+            "value": null
+          },
           "tags": {
             "value": "[parameters('tags')]"
           },
@@ -44713,7 +44656,7 @@
             "value": [
               {
                 "name": "[format('ca-{0}-api', variables('solutionSuffix'))]",
-                "image": "[if(not(equals(parameters('useLocalBuild'), 'localbuild')), format('{0}/{1}:{2}', parameters('publicContainerImageEndpoint'), parameters('apiContainerImageName'), parameters('apiContainerImageTag')), reference('avmContainerRegistry').outputs.loginServer.value)]",
+                "image": "[format('{0}/contentprocessorapi:latest', parameters('publicContainerImageEndpoint'))]",
                 "resources": {
                   "cpu": 4,
                   "memory": "8.0Gi"
@@ -46328,7 +46271,6 @@
       },
       "dependsOn": [
         "avmContainerAppEnv",
-        "avmContainerRegistry",
         "avmContainerRegistryReader"
       ]
     },
@@ -46357,7 +46299,9 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "registries": "[if(equals(parameters('useLocalBuild'), 'localbuild'), createObject('value', createArray(createObject('server', reference('avmContainerRegistry').outputs.loginServer.value, 'identity', reference('avmContainerRegistryReader').outputs.principalId.value))), createObject('value', null()))]",
+          "registries": {
+            "value": null
+          },
           "tags": {
             "value": "[parameters('tags')]"
           },
@@ -46398,7 +46342,7 @@
             "value": [
               {
                 "name": "[format('ca-{0}-web', variables('solutionSuffix'))]",
-                "image": "[if(not(equals(parameters('useLocalBuild'), 'localbuild')), format('{0}/{1}:{2}', parameters('publicContainerImageEndpoint'), parameters('webContainerImageName'), parameters('webContainerImageTag')), reference('avmContainerRegistry').outputs.loginServer.value)]",
+                "image": "[format('{0}/contentprocessorweb:latest', parameters('publicContainerImageEndpoint'))]",
                 "resources": {
                   "cpu": 4,
                   "memory": "8.0Gi"
@@ -47951,7 +47895,6 @@
       "dependsOn": [
         "avmContainerApp_API",
         "avmContainerAppEnv",
-        "avmContainerRegistry",
         "avmContainerRegistryReader"
       ]
     },
@@ -58496,7 +58439,9 @@
           "workloadProfileName": {
             "value": "Consumption"
           },
-          "registries": "[if(equals(parameters('useLocalBuild'), 'localbuild'), createObject('value', createArray(createObject('server', parameters('publicContainerImageEndpoint'), 'identity', reference('avmContainerRegistryReader').outputs.principalId.value))), createObject('value', null()))]",
+          "registries": {
+            "value": null
+          },
           "tags": {
             "value": "[parameters('tags')]"
           },
@@ -60093,7 +60038,9 @@
           "workloadProfileName": {
             "value": "Consumption"
           },
-          "registries": "[if(equals(parameters('useLocalBuild'), 'localbuild'), createObject('value', createArray(createObject('server', reference('avmContainerRegistry').outputs.loginServer.value, 'identity', reference('avmContainerRegistryReader').outputs.principalId.value))), createObject('value', null()))]",
+          "registries": {
+            "value": null
+          },
           "tags": {
             "value": "[parameters('tags')]"
           },
@@ -60109,7 +60056,7 @@
             "value": [
               {
                 "name": "[format('ca-{0}-api', variables('solutionSuffix'))]",
-                "image": "[if(not(equals(parameters('useLocalBuild'), 'localbuild')), format('{0}/{1}:{2}', parameters('publicContainerImageEndpoint'), parameters('apiContainerImageName'), parameters('apiContainerImageTag')), reference('avmContainerRegistry').outputs.loginServer.value)]",
+                "image": "[format('{0}/contentprocessorapi:latest', parameters('publicContainerImageEndpoint'))]",
                 "resources": {
                   "cpu": 4,
                   "memory": "8.0Gi"
@@ -61725,7 +61672,6 @@
       "dependsOn": [
         "avmAppConfig",
         "avmContainerAppEnv",
-        "avmContainerRegistry",
         "avmContainerRegistryReader"
       ]
     }
