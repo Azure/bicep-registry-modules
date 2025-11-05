@@ -86,7 +86,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Windows'
-      vmSize: 'Standard_D2s_v5'
+      vmSize: 'Standard_D2s_v6'
       adminPassword: password
       virtualMachineScaleSetResourceId: nestedDependencies.outputs.vmssResourceId
     }
