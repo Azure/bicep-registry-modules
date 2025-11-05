@@ -1,4 +1,4 @@
-// targetScope = 'subscription'
+targetScope = 'subscription'
 
 metadata name = 'Using Customer-Managed-Keys with User-Assigned identity'
 metadata description = 'This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.'
@@ -9,10 +9,12 @@ metadata description = 'This instance deploys the module using Customer-Managed-
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'rsg-mhsm-temp-testing'
+// param resourceGroupName string = 'rsg-mhsm-temp-testing'
+param resourceGroupName string = 'dep-${namePrefix}-storage.storageaccounts-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = 'uksouth'
+// enforcing location due to quote restrictions
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'uksouth'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'ssauhsm'
@@ -21,7 +23,7 @@ param serviceShort string = 'ssauhsm'
 param baseTime string = utcNow('u')
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = 'avmh'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -29,29 +31,14 @@ param namePrefix string = 'avmh'
 
 // General resources
 // =================
-// resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' existing = {
-//   name: resourceGroupName
-//   // location: resourceLocation
-// }
-
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'uksouth'
-var keyName = 'rsa-hsm-4096-key-1'
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+  name: resourceGroupName
+  location: enforcedLocation
+}
+var keyName = 'rsa-hsm-4096-key-stg'
 var keyVaultResourceId = '/subscriptions/cfa4dc0b-3d25-4e58-a70a-7085359080c5/resourceGroups/rsg-permanent-managed-hsm/providers/Microsoft.KeyVault/managedHSMs/mhsm-perm-avm-core-001'
-var managedIdentityResourceId = '/subscriptions/cfa4dc0b-3d25-4e58-a70a-7085359080c5/resourceGroups/rsg-mhsm-temp-testing/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dep-avmx-msi-ssauhsmuk02'
-var keyVersion = 'd01d10f4bfe940a2354b0dd02613052a'
-
-// module nestedDependencies 'dependencies.bicep' = {
-//   // scope: resourceGroup
-//   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-//   params: {
-//     location: resourceLocation
-//     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
-//     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
-//     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-//     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-//   }
-// }
+var managedIdentityResourceId = '/subscriptions/cfa4dc0b-3d25-4e58-a70a-7085359080c5/resourceGroups/rsg-permanent-managed-hsm/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dep-avmx-msi-ssauhsm-001'
+var keyVersion = '2fac56db8d0040899d98128d705ae038'
 
 // ============== //
 // Test Execution //
@@ -60,27 +47,10 @@ var keyVersion = 'd01d10f4bfe940a2354b0dd02613052a'
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
-    // scope: resourceGroup
+    scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}014'
-      // networkAcls: {
-      //   bypass: 'AzureServices'
-      //   defaultAction: 'Deny'
-      // }
-      // privateEndpoints: [
-      //   {
-      //     service: 'blob'
-      //     subnetResourceId: nestedDependencies.outputs.subnetResourceId
-      //     privateDnsZoneGroup: {
-      //       privateDnsZoneGroupConfigs: [
-      //         {
-      //           privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
-      //         }
-      //       ]
-      //     }
-      //   }
-      // ]
+      name: '${namePrefix}${serviceShort}016'
       blobServices: {
         containers: [
           {
@@ -99,71 +69,7 @@ module testDeployment '../../../main.bicep' = [
         keyVaultResourceId: keyVaultResourceId
         keyVersion: keyVersion
         userAssignedIdentityResourceId: managedIdentityResourceId
-        // autoRotationEnabled: false
       }
     }
   }
 ]
-
-// resource key 'Microsoft.KeyVault/vaults/keys@2024-11-01' = {
-//   name: name
-//   parent: keyVault
-//   tags: tags
-//   properties: {
-//     attributes: {
-//       enabled: attributesEnabled
-//       exp: attributesExp
-//       nbf: attributesNbf
-//     }
-//     curveName: curveName
-//     keyOps: keyOps
-//     keySize: keySize
-//     kty: kty
-//     release_policy: releasePolicy ?? {}
-//     ...(!empty(rotationPolicy)
-//       ? {
-//           rotationPolicy: rotationPolicy
-//         }
-//       : {})
-//   }
-// }
-
-// module testDeployment 'module/hsmkeyrbac.bicep' = {
-//   // scope: resourceGroup
-//   name: '${uniqueString(deployment().name, enforcedLocation)}-testrbac-${serviceShort}'
-//   params: {
-//     keyVaultResourceId: keyVaultResourceId
-//     // networkAcls: {
-//     //   bypass: 'AzureServices'
-//     //   defaultAction: 'Deny'
-//     // }
-//     // privateEndpoints: [
-//     //   {
-//     //     service: 'blob'
-//     //     subnetResourceId: nestedDependencies.outputs.subnetResourceId
-//     //     privateDnsZoneGroup: {
-//     //       privateDnsZoneGroupConfigs: [
-//     //         {
-//     //           privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
-//     //         }
-//     //       ]
-//     //     }
-//     //   }
-//     // ]
-//   }
-// }
-
-// resource hSMCMKKeyVault 'Microsoft.KeyVault/managedHSMs@2024-11-01' existing = {
-//   name: last(split((keyVaultResourceId), '/'))
-//   scope: resourceGroup(split(keyVaultResourceId, '/')[2], split(keyVaultResourceId, '/')[4])
-// }
-
-// resource key_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-//   name: guid(keyVaultResourceId, principalId, roleDefinitionId)
-//   properties: {
-//     roleDefinitionId: roleDefinitionId
-//     principalId: principalId
-//   }
-//   // scope: hSMCMKKey
-//   scope: hSMCMKKeyVault
-// }
