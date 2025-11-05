@@ -23,7 +23,7 @@ param roleAssignments roleAssignmentType[]?
 @description('Tags to be applied to the Container Registry')
 param tags object = {}
 
-module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = {
+module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3' = {
   name: acrName
   params: {
     name: acrName

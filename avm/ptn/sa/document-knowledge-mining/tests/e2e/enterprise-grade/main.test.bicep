@@ -45,6 +45,8 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
+      //generate unique solution name for each test run, should be less than 15 characters
+      solutionName: substring(uniqueString('kmgs', deployment().name), 0, 10)
       location: enforcedLocation
       aiDeploymentsLocation: enforcedLocation
       enablePrivateNetworking: true

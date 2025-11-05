@@ -35,8 +35,8 @@ This module contains the resources required to deploy the [Document Knowledge Mi
 | `Microsoft.ContainerRegistry/registries/webhooks` | 2023-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_webhooks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/webhooks)</li></ul> |
 | `Microsoft.ContainerService/managedClusters` | 2025-05-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2025-05-02-preview/managedClusters)</li></ul> |
 | `Microsoft.ContainerService/managedClusters/agentPools` | 2025-05-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters_agentpools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2025-05-02-preview/managedClusters/agentPools)</li></ul> |
-| `Microsoft.ContainerService/managedClusters/maintenanceConfigurations` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters_maintenanceconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-10-01/managedClusters/maintenanceConfigurations)</li></ul> |
 | `Microsoft.ContainerService/managedClusters/maintenanceConfigurations` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters_maintenanceconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2025-05-01/managedClusters/maintenanceConfigurations)</li></ul> |
+| `Microsoft.ContainerService/managedClusters/maintenanceConfigurations` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters_maintenanceconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-10-01/managedClusters/maintenanceConfigurations)</li></ul> |
 | `Microsoft.DevTestLab/schedules` | 2018-09-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_schedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandrakeyspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/cassandraKeyspaces)</li></ul> |
@@ -79,10 +79,8 @@ This module contains the resources required to deploy the [Document Knowledge Mi
 | `Microsoft.Network/privateDnsZones/TXT` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_txt.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT)</li></ul> |
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | 2024-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_virtualnetworklinks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
 | `Microsoft.Network/virtualNetworks` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks)</li></ul> |
@@ -150,6 +148,7 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
     enableScalability: true
     enableTelemetry: true
     location: '<location>'
+    solutionName: '<solutionName>'
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'adminuser'
   }
@@ -194,6 +193,9 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
     "location": {
       "value": "<location>"
     },
+    "solutionName": {
+      "value": "<solutionName>"
+    },
     "vmAdminPassword": {
       "value": "<vmAdminPassword>"
     },
@@ -224,6 +226,7 @@ param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
 param location = '<location>'
+param solutionName = '<solutionName>'
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'adminuser'
 ```
@@ -254,6 +257,7 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
     enableScalability: false
     enableTelemetry: true
     location: '<location>'
+    solutionName: '<solutionName>'
   }
 }
 ```
@@ -295,6 +299,9 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
     },
     "location": {
       "value": "<location>"
+    },
+    "solutionName": {
+      "value": "<solutionName>"
     }
   }
 }
@@ -320,6 +327,7 @@ param enableRedundancy = false
 param enableScalability = false
 param enableTelemetry = true
 param location = '<location>'
+param solutionName = '<solutionName>'
 ```
 
 </details>
@@ -589,16 +597,16 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/app-configuration/configuration-store:0.9.2` | Remote reference |
 | `br/public:avm/res/cognitive-services/account:0.13.2` | Remote reference |
 | `br/public:avm/res/compute/virtual-machine:0.20.0` | Remote reference |
-| `br/public:avm/res/container-registry/registry:0.9.1` | Remote reference |
+| `br/public:avm/res/container-registry/registry:0.9.3` | Remote reference |
 | `br/public:avm/res/container-service/managed-cluster:0.11.0` | Remote reference |
 | `br/public:avm/res/document-db/database-account:0.18.0` | Remote reference |
 | `br/public:avm/res/insights/component:0.6.1` | Remote reference |
 | `br/public:avm/res/maintenance/maintenance-configuration:0.3.2` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.2` | Remote reference |
 | `br/public:avm/res/network/bastion-host:0.8.0` | Remote reference |
-| `br/public:avm/res/network/network-security-group:0.5.1` | Remote reference |
+| `br/public:avm/res/network/network-security-group:0.5.2` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.8.0` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.7.1` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.12.0` | Remote reference |
 | `br/public:avm/res/search/search-service:0.11.1` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.28.0` | Remote reference |
