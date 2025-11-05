@@ -146,7 +146,6 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     // Non-required parameters
     enableMonitoring: false
     enablePrivateNetworking: false
-    enablePurgeProtection: false
     enableRedundancy: false
     enableScalability: false
     enableTelemetry: true
@@ -177,9 +176,6 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     "enablePrivateNetworking": {
       "value": false
     },
-    "enablePurgeProtection": {
-      "value": false
-    },
     "enableRedundancy": {
       "value": false
     },
@@ -208,7 +204,6 @@ param aiServiceLocation = '<aiServiceLocation>'
 // Non-required parameters
 param enableMonitoring = false
 param enablePrivateNetworking = false
-param enablePurgeProtection = false
 param enableRedundancy = false
 param enableScalability = false
 param enableTelemetry = true
@@ -332,7 +327,6 @@ param solutionName = 'scpegwaf'
 | [`deploymentType`](#parameter-deploymenttype) | string | Type of GPT deployment to use: Standard | GlobalStandard. |
 | [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable WAF for the deployment. |
-| [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Enable purge protection. Defaults to false. |
 | [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -445,14 +439,6 @@ Enable WAF for the deployment.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `enablePurgeProtection`
-
-Enable purge protection. Defaults to false.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `enableRedundancy`
 

@@ -43,7 +43,6 @@ module testDeployment '../../../main.bicep' = [
       aiServiceLocation: enforcedLocation
       enablePrivateNetworking: false
       enableMonitoring: false
-      enablePurgeProtection: false
       enableRedundancy: false
       enableScalability: false
       enableTelemetry: true

@@ -61,6 +61,7 @@ module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3
     // WAF aligned configuration for Private Networking - Network access restrictions
     networkRuleSetDefaultAction: enablePrivateNetworking ? 'Deny' : 'Allow'
     networkRuleSetIpRules: enablePrivateNetworking ? [] : []
+    exportPolicyStatus: enablePrivateNetworking ? 'disabled' : 'enabled'
     privateEndpoints: enablePrivateNetworking && !empty(virtualNetworkResourceId) && !empty(backendSubnetResourceId)
       ? [
           {
