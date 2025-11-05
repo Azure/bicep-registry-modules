@@ -12,7 +12,7 @@ param serviceShort string = 'scpmin'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-sa.cps-${serviceShort}-rg'
+param resourceGroupName string = 'abdep-${namePrefix}-sa.cps-${serviceShort}-rg'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -21,7 +21,7 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 #disable-next-line no-hardcoded-location // A value to avoid ongoing capacity challenges with Server Farm for frontend webapp in AVM Azure testing subscription
-var enforcedLocation = 'japaneast'
+var enforcedLocation = 'australiaeast'
 
 // General resources
 // =================
@@ -40,7 +40,9 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
+      solutionName: 'ab${namePrefix}${serviceShort}'
       aiServiceLocation: enforcedLocation
+      gptDeploymentCapacity: 10
       enablePrivateNetworking: false
       enableMonitoring: false
       enableRedundancy: false
