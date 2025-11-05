@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "11255024745956203428"
+      "templateHash": "5058063116088198295"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -2330,7 +2330,10 @@
       "Storage Table Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')]",
       "Storage Table Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76199698-9eea-4c19-bc75-cec21354c6b6')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "formattedManagementPolicies": "[union(coalesce(parameters('managementPolicyRules'), createArray()), if(and(and(not(empty(parameters('blobServices'))), coalesce(tryGet(parameters('blobServices'), 'isVersioningEnabled'), false())), not(equals(tryGet(parameters('blobServices'), 'versionDeletePolicyDays'), null()))), createArray(createObject('name', 'DeletePreviousVersions (auto-created)', 'enabled', true(), 'type', 'Lifecycle', 'definition', createObject('actions', createObject('version', createObject('delete', createObject('daysAfterCreationGreaterThan', parameters('blobServices').versionDeletePolicyDays))), 'filters', createObject('blobTypes', createArray('blockBlob', 'appendBlob'))))), createArray()))]",
+    "keyVaultType": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[7], '')]",
+    "isHSMKeyVault": "[contains(variables('keyVaultType'), 'managedHSMs')]"
   },
   "resources": {
     "cMKKeyVault::cMKKey": {
@@ -2366,7 +2369,7 @@
       "condition": "[and(not(variables('isHSMKeyVault')), not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2025-05-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -3499,8 +3502,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "9925173705553594819"
+              "version": "0.38.33.27573",
+              "templateHash": "16519807023802262557"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service."
@@ -4169,8 +4172,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "5026123498979497429"
+                      "version": "0.38.33.27573",
+                      "templateHash": "18247497253572624333"
                     },
                     "name": "Storage Account Blob Containers",
                     "description": "This module deploys a Storage Account Blob Container."
@@ -4694,8 +4697,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "2735186993322606805"
+              "version": "0.38.33.27573",
+              "templateHash": "18014560633119842738"
             },
             "name": "Storage Account File Share Services",
             "description": "This module deploys a Storage Account File Share Service."
@@ -5163,8 +5166,8 @@
                 "count": "[length(coalesce(parameters('shares'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-shares-{1}', deployment().name, copyIndex())]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-FileShare-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -5206,8 +5209,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "15881640847294537074"
+                      "version": "0.38.33.27573",
+                      "templateHash": "6562391216093407918"
                     },
                     "name": "Storage Account File Shares",
                     "description": "This module deploys a Storage Account File Share."
@@ -5668,8 +5671,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "1100093319443502715"
+              "version": "0.38.33.27573",
+              "templateHash": "14320740623684459446"
             },
             "name": "Storage Account Queue Services",
             "description": "This module deploys a Storage Account Queue Service."
@@ -6100,8 +6103,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "17963799770990303971"
+                      "version": "0.38.33.27573",
+                      "templateHash": "17820569818642693530"
                     },
                     "name": "Storage Account Queues",
                     "description": "This module deploys a Storage Account Queue."
@@ -6373,8 +6376,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13069389074590786512"
+              "version": "0.38.33.27573",
+              "templateHash": "15397070691540239144"
             },
             "name": "Storage Account Table Services",
             "description": "This module deploys a Storage Account Table Service."
@@ -6792,8 +6795,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "10905926757212375091"
+                      "version": "0.38.33.27573",
+                      "templateHash": "2494851345252564065"
                     },
                     "name": "Storage Account Table",
                     "description": "This module deploys a Storage Account Table."

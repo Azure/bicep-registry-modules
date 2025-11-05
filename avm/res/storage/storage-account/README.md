@@ -55,8 +55,9 @@ The following section provides usage examples for the module, which were used to
 - [Using object replication](#example-10-using-object-replication)
 - [Using Customer-Managed-Keys with System-Assigned identity](#example-11-using-customer-managed-keys-with-system-assigned-identity)
 - [Using Customer-Managed-Keys with User-Assigned identity](#example-12-using-customer-managed-keys-with-user-assigned-identity)
-- [Deploying as Storage Account version 1](#example-13-deploying-as-storage-account-version-1)
-- [WAF-aligned](#example-14-waf-aligned)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-13-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Deploying as Storage Account version 1](#example-14-deploying-as-storage-account-version-1)
+- [WAF-aligned](#example-15-waf-aligned)
 
 ### Example 1: _Deploying as a Blob Storage_
 
@@ -2882,7 +2883,129 @@ param privateEndpoints = [
 </details>
 <p>
 
-### Example 13: _Deploying as Storage Account version 1_
+### Example 13: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  name: 'storageAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'ssauhsm016'
+    // Non-required parameters
+    blobServices: {
+      containers: [
+        {
+          name: 'container'
+          publicAccess: 'None'
+        }
+      ]
+    }
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssauhsm016"
+    },
+    // Non-required parameters
+    "blobServices": {
+      "value": {
+        "containers": [
+          {
+            "name": "container",
+            "publicAccess": "None"
+          }
+        ]
+      }
+    },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssauhsm016'
+// Non-required parameters
+param blobServices = {
+  containers: [
+    {
+      name: 'container'
+      publicAccess: 'None'
+    }
+  ]
+}
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+```
+
+</details>
+<p>
+
+### Example 14: _Deploying as Storage Account version 1_
 
 This instance deploys the module as Storage Account version 1.
 
@@ -2946,7 +3069,7 @@ param kind = 'Storage'
 </details>
 <p>
 
-### Example 14: _WAF-aligned_
+### Example 15: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
