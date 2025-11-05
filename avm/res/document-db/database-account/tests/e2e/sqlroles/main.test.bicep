@@ -49,7 +49,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      dataPlaneRoleDefinitions: [
+      sqlRoleDefinitions: [
         {
           name: guid('optional-role-identifier') // MUST be a guid
           roleName: 'cosmos-sql-role-test'
@@ -103,7 +103,7 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       ]
-      dataPlaneRoleAssignments: [
+      sqlRoleAssignments: [
         {
           principalId: nestedDependencies.outputs.identityPrincipalId
           roleDefinitionId: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}${serviceShort}001/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001' // 'Cosmos DB Built-in Data Reader'
