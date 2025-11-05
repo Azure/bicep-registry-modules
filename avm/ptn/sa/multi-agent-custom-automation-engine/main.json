@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "15774862085934529152"
+      "templateHash": "13928777437778235795"
     },
     "name": "Multi-Agent Custom Automation Engine",
     "description": "This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -413,7 +413,7 @@
       "apiVersion": "2024-07-01",
       "name": "default",
       "properties": {
-        "tags": "[shallowMerge(createArray(variables('allTags'), createObject('TemplateName', 'MACAE', 'Type', if(parameters('enablePrivateNetworking'), 'WAF', 'Non-WAF'), 'CreatedBy', parameters('createdBy'), 'DeploymentName', deployment().name)))]"
+        "tags": "[shallowMerge(createArray(resourceGroup().tags, variables('allTags'), createObject('TemplateName', 'MACAE', 'Type', if(parameters('enablePrivateNetworking'), 'WAF', 'Non-WAF'), 'CreatedBy', parameters('createdBy'), 'DeploymentName', deployment().name)))]"
       }
     },
     "avmTelemetry": {
@@ -26285,9 +26285,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -53127,6 +53127,237 @@
         "description": "The default url of the website to connect to the Multi-Agent Custom Automation Engine solution."
       },
       "value": "[reference('webSite').outputs.defaultHostname.value]"
+    },
+    "azureStorageBlobUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure Storage blob service endpoint URL."
+      },
+      "value": "[reference('avmStorageAccount').outputs.serviceEndpoints.value.blob]"
+    },
+    "azureStorageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure Storage account."
+      },
+      "value": "[variables('storageAccountName')]"
+    },
+    "azureStorageContainerName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure Storage container."
+      },
+      "value": "[variables('storageContainerName')]"
+    },
+    "azureAiSearchEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure AI Search service endpoint URL."
+      },
+      "value": "[reference('searchService').outputs.endpoint.value]"
+    },
+    "azureAiSearchName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure AI Search service."
+      },
+      "value": "[reference('searchService').outputs.name.value]"
+    },
+    "azureAiSearchIndexName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure AI Search index."
+      },
+      "value": "[variables('aiSearchIndexName')]"
+    },
+    "cosmosDbEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "The Cosmos DB endpoint URL."
+      },
+      "value": "[format('https://{0}.documents.azure.com:443/', variables('cosmosDbResourceName'))]"
+    },
+    "cosmosDbDatabase": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Cosmos DB database."
+      },
+      "value": "[variables('cosmosDbDatabaseName')]"
+    },
+    "cosmosDbContainer": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Cosmos DB container."
+      },
+      "value": "[variables('cosmosDbDatabaseMemoryContainerName')]"
+    },
+    "azureOpenAiEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure OpenAI service endpoint URL."
+      },
+      "value": "[format('https://{0}.openai.azure.com/', variables('aiFoundryAiServicesResourceName'))]"
+    },
+    "azureOpenAiModelName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure OpenAI model."
+      },
+      "value": "[variables('aiFoundryAiServicesModelDeployment').name]"
+    },
+    "azureOpenAiDeploymentName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure OpenAI deployment."
+      },
+      "value": "[variables('aiFoundryAiServicesModelDeployment').name]"
+    },
+    "azureOpenAiApiVersion": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure OpenAI API version."
+      },
+      "value": "[parameters('azureopenaiVersion')]"
+    },
+    "azureAiSubscriptionId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure subscription ID."
+      },
+      "value": "[subscription().subscriptionId]"
+    },
+    "azureAiResourceGroup": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure resource group name."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "azureAiProjectName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure AI project."
+      },
+      "value": "[reference('aiFoundryAiServicesProject').outputs.name.value]"
+    },
+    "azureAiModelDeploymentName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure AI model deployment."
+      },
+      "value": "[variables('aiFoundryAiServicesModelDeployment').name]"
+    },
+    "azureAiAgentModelDeploymentName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure AI agent model deployment."
+      },
+      "value": "[variables('aiFoundryAiServicesModelDeployment').name]"
+    },
+    "azureAiAgentEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure AI agent endpoint URL."
+      },
+      "value": "[reference('aiFoundryAiServicesProject').outputs.apiEndpoint.value]"
+    },
+    "appEnv": {
+      "type": "string",
+      "metadata": {
+        "description": "The application environment."
+      },
+      "value": "Prod"
+    },
+    "aiFoundryResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure AI Foundry resource ID."
+      },
+      "value": "[reference('aiFoundryAiServices').outputs.resourceId.value]"
+    },
+    "cosmosDbAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Cosmos DB account."
+      },
+      "value": "[variables('cosmosDbResourceName')]"
+    },
+    "azureSearchEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure Search service endpoint URL."
+      },
+      "value": "[reference('searchService').outputs.endpoint.value]"
+    },
+    "azureClientId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure client ID for the user-assigned managed identity."
+      },
+      "value": "[reference('userAssignedIdentity').outputs.clientId.value]"
+    },
+    "azureTenantId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure tenant ID."
+      },
+      "value": "[tenant().tenantId]"
+    },
+    "azureAiSearchConnectionName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure AI Search connection."
+      },
+      "value": "[variables('aiSearchConnectionName')]"
+    },
+    "azureCognitiveServices": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure Cognitive Services scope URL."
+      },
+      "value": "https://cognitiveservices.azure.com/.default"
+    },
+    "reasoningModelName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the reasoning model."
+      },
+      "value": "[variables('aiFoundryAiServicesReasoningModelDeployment').name]"
+    },
+    "mcpServerName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the MCP server."
+      },
+      "value": "MacaeMcpServer"
+    },
+    "mcpServerDescription": {
+      "type": "string",
+      "metadata": {
+        "description": "The description of the MCP server."
+      },
+      "value": "MCP server with greeting, HR, and planning tools"
+    },
+    "supportedModels": {
+      "type": "string",
+      "metadata": {
+        "description": "The list of supported models."
+      },
+      "value": "[[\"o3\",\"o4-mini\",\"gpt-4.1\",\"gpt-4.1-mini\"]"
+    },
+    "azureAiSearchApiKey": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure AI Search API key."
+      },
+      "value": "<Deployed-Search-ApiKey>"
+    },
+    "backendUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "The backend URL for the container app."
+      },
+      "value": "[format('https://{0}', reference('containerApp').outputs.fqdn.value)]"
     }
   }
 }

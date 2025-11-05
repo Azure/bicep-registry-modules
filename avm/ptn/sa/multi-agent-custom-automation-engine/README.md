@@ -686,7 +686,40 @@ The user name for the administrator account of the virtual machine. Allows to cu
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `aiFoundryResourceId` | string | The Azure AI Foundry resource ID. |
+| `appEnv` | string | The application environment. |
+| `azureAiAgentEndpoint` | string | The Azure AI agent endpoint URL. |
+| `azureAiAgentModelDeploymentName` | string | The name of the Azure AI agent model deployment. |
+| `azureAiModelDeploymentName` | string | The name of the Azure AI model deployment. |
+| `azureAiProjectName` | string | The name of the Azure AI project. |
+| `azureAiResourceGroup` | string | The Azure resource group name. |
+| `azureAiSearchApiKey` | string | The Azure AI Search API key. |
+| `azureAiSearchConnectionName` | string | The name of the Azure AI Search connection. |
+| `azureAiSearchEndpoint` | string | The Azure AI Search service endpoint URL. |
+| `azureAiSearchIndexName` | string | The name of the Azure AI Search index. |
+| `azureAiSearchName` | string | The name of the Azure AI Search service. |
+| `azureAiSubscriptionId` | string | The Azure subscription ID. |
+| `azureClientId` | string | The Azure client ID for the user-assigned managed identity. |
+| `azureCognitiveServices` | string | The Azure Cognitive Services scope URL. |
+| `azureOpenAiApiVersion` | string | The Azure OpenAI API version. |
+| `azureOpenAiDeploymentName` | string | The name of the Azure OpenAI deployment. |
+| `azureOpenAiEndpoint` | string | The Azure OpenAI service endpoint URL. |
+| `azureOpenAiModelName` | string | The name of the Azure OpenAI model. |
+| `azureSearchEndpoint` | string | The Azure Search service endpoint URL. |
+| `azureStorageAccountName` | string | The name of the Azure Storage account. |
+| `azureStorageBlobUrl` | string | The Azure Storage blob service endpoint URL. |
+| `azureStorageContainerName` | string | The name of the Azure Storage container. |
+| `azureTenantId` | string | The Azure tenant ID. |
+| `backendUrl` | string | The backend URL for the container app. |
+| `cosmosDbAccountName` | string | The name of the Cosmos DB account. |
+| `cosmosDbContainer` | string | The name of the Cosmos DB container. |
+| `cosmosDbDatabase` | string | The name of the Cosmos DB database. |
+| `cosmosDbEndpoint` | string | The Cosmos DB endpoint URL. |
+| `mcpServerDescription` | string | The description of the MCP server. |
+| `mcpServerName` | string | The name of the MCP server. |
+| `reasoningModelName` | string | The name of the reasoning model. |
 | `resourceGroupName` | string | The resource group the resources were deployed into. |
+| `supportedModels` | string | The list of supported models. |
 | `webSiteDefaultHostname` | string | The default url of the website to connect to the Multi-Agent Custom Automation Engine solution. |
 
 ## Cross-referenced modules
