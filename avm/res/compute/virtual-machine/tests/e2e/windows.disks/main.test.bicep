@@ -100,7 +100,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       osType: 'Windows'
-      vmSize: 'Standard_D2s_v3'
+      vmSize: 'Standard_D2s_v4'
       adminPassword: password
       tags: {
         'hidden-title': 'This is visible in the resource name'
