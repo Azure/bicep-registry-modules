@@ -272,8 +272,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-var customerManagedKeyIsHsmVault = contains(customerManagedKey.?keyVaultResourceId ?? '', '/managedHSMs/')
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey) && !customerManagedKeyIsHsmVault) {
+var useHsmForCMK = contains(customerManagedKey.?keyVaultResourceId ?? '', '/managedHSMs/')
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey) && !useHsmForCMK) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
@@ -291,18 +291,6 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
-}
-
-resource hSMCMKKeyVault 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = if (!empty(customerManagedKey) && customerManagedKeyIsHsmVault) {
-  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
-  scope: resourceGroup(
-    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
-    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
-  )
-
-  resource hSMCMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName!
-  }
 }
 
 resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview' = {
@@ -332,16 +320,16 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-pr
     dataEncryption: !empty(customerManagedKey)
       ? {
           primaryKeyURI: !empty(customerManagedKey.?keyVersion)
-            ? (customerManagedKeyIsHsmVault
-                ? '${hSMCMKKeyVault::hSMCMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
-                : '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}')
+            ? (!useHsmForCMK
+                ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+                : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/${customerManagedKey!.keyVersion!}')
             : (customerManagedKey.?autoRotationEnabled ?? true)
-                ? (customerManagedKeyIsHsmVault
-                    ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUri
-                    : cMKKeyVault::cMKKey!.properties.keyUri)
-                : (customerManagedKeyIsHsmVault
-                    ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUriWithVersion
-                    : cMKKeyVault::cMKKey!.properties.keyUriWithVersion)
+                ? (!useHsmForCMK
+                    ? cMKKeyVault::cMKKey!.properties.keyUri
+                    : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/')
+                : (!useHsmForCMK
+                    ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
+                    : fail('For Managed HSM CMK encryption you must either provide the \'keyVersion\' or set \'autoRotationEnabled\' to `true`.'))
           primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
           type: 'AzureKeyVault'
         }
@@ -588,23 +576,23 @@ output privateEndpoints privateEndpointOutputType[] = [
 @description('The principal ID of the system assigned managed identity.')
 output systemAssignedMIPrincipalId string? = flexibleServer.?identity.?principalId
 
-output dataEncryption object? = !empty(customerManagedKey)
-  ? {
-      primaryKeyURI: !empty(customerManagedKey.?keyVersion)
-        ? (customerManagedKeyIsHsmVault
-            ? '${hSMCMKKeyVault::hSMCMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
-            : '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}')
-        : (customerManagedKey.?autoRotationEnabled ?? true)
-            ? (customerManagedKeyIsHsmVault
-                ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUri
-                : cMKKeyVault::cMKKey!.properties.keyUri)
-            : (customerManagedKeyIsHsmVault
-                ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUriWithVersion
-                : cMKKeyVault::cMKKey!.properties.keyUriWithVersion)
-      primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
-      type: 'AzureKeyVault'
-    }
-  : null
+// output dataEncryption object? = !empty(customerManagedKey)
+//   ? {
+//       primaryKeyURI: !empty(customerManagedKey.?keyVersion)
+//         ? (useHsmForCMK
+//             ? '${hSMCMKKeyVault::hSMCMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+//             : '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}')
+//         : (customerManagedKey.?autoRotationEnabled ?? true)
+//             ? (useHsmForCMK
+//                 ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUri
+//                 : cMKKeyVault::cMKKey!.properties.keyUri)
+//             : (useHsmForCMK
+//                 ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUriWithVersion
+//                 : cMKKeyVault::cMKKey!.properties.keyUriWithVersion)
+//       primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
+//       type: 'AzureKeyVault'
+//     }
+//   : null
 
 // =============== //
 //   Definitions   //
