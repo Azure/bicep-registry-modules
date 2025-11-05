@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "2896725910887936363"
+      "templateHash": "6372849576366278037"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -24688,7 +24688,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "13728026360859565809"
+              "templateHash": "4456142376294516992"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -24854,7 +24854,6 @@
             }
           },
           "variables": {
-            "hasConnection": "[or(or(not(empty(parameters('cosmosDbConnection'))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]",
             "createProjectCapabilityHostInternal": "[and(and(and(parameters('createProjectCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]",
             "createAccountCapabilityHostInternal": "[and(and(and(parameters('createAccountCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]"
           },
@@ -24894,7 +24893,7 @@
             },
             "project": {
               "type": "Microsoft.CognitiveServices/accounts/projects",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-07-01-preview",
               "name": "[format('{0}/{1}', parameters('accountName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "identity": {
@@ -24909,7 +24908,7 @@
             "cosmosDbConnectionResource": {
               "condition": "[not(empty(parameters('cosmosDbConnection')))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-07-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), parameters('cosmosDbConnection').resourceName)]",
               "properties": {
                 "category": "CosmosDB",
@@ -24924,14 +24923,13 @@
               "dependsOn": [
                 "cosmosDb",
                 "cosmosDbRoleAssignments",
-                "project",
-                "waitForProjectScript"
+                "project"
               ]
             },
             "storageAccountConnectionResource": {
               "condition": "[not(empty(parameters('storageAccountConnection')))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-07-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), parameters('storageAccountConnection').resourceName)]",
               "properties": {
                 "category": "AzureStorageAccount",
@@ -24947,14 +24945,13 @@
                 "cosmosDbConnectionResource",
                 "project",
                 "storageAccount",
-                "storageAccountRoleAssignments",
-                "waitForProjectScript"
+                "storageAccountRoleAssignments"
               ]
             },
             "aiSearchConnectionResource": {
               "condition": "[not(empty(parameters('aiSearchConnection')))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-07-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), parameters('aiSearchConnection').resourceName)]",
               "properties": {
                 "category": "CognitiveSearch",
@@ -24971,14 +24968,13 @@
                 "aiSearchRoleAssignments",
                 "cosmosDbConnectionResource",
                 "project",
-                "storageAccountConnectionResource",
-                "waitForProjectScript"
+                "storageAccountConnectionResource"
               ]
             },
             "accountCapabilityHost": {
               "condition": "[variables('createAccountCapabilityHostInternal')]",
               "type": "Microsoft.CognitiveServices/accounts/capabilityHosts",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-07-01-preview",
               "name": "[format('{0}/{1}', parameters('accountName'), format('chagent{0}', replace(parameters('accountName'), '-', '')))]",
               "properties": {
                 "capabilityHostKind": "Agents",
@@ -24988,14 +24984,13 @@
                 "aiSearchConnectionResource",
                 "cosmosDbConnectionResource",
                 "project",
-                "storageAccountConnectionResource",
-                "waitForConnectionsScript"
+                "storageAccountConnectionResource"
               ]
             },
             "capabilityHost": {
               "condition": "[variables('createProjectCapabilityHostInternal')]",
               "type": "Microsoft.CognitiveServices/accounts/projects/capabilityHosts",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-07-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), format('chagent{0}', replace(parameters('name'), '-', '')))]",
               "properties": {
                 "capabilityHostKind": "Agents",
@@ -25015,8 +25010,7 @@
                 "aiSearchConnectionResource",
                 "cosmosDbConnectionResource",
                 "project",
-                "storageAccountConnectionResource",
-                "waitForConnectionsScript"
+                "storageAccountConnectionResource"
               ]
             },
             "projectLock": {
@@ -25031,79 +25025,6 @@
               },
               "dependsOn": [
                 "capabilityHost",
-                "project"
-              ]
-            },
-            "waitForProjectScript": {
-              "condition": "[variables('hasConnection')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2025-04-01",
-              "name": "[take(format('module.project.waitDeploymentScript.waitForProject.{0}', parameters('name')), 64)]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "name": {
-                    "value": "[format('script-wait-proj-{0}', parameters('name'))]"
-                  },
-                  "location": {
-                    "value": "[parameters('location')]"
-                  },
-                  "seconds": {
-                    "value": 30
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "16818353602719638288"
-                    }
-                  },
-                  "parameters": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. Name of the deployment script."
-                      }
-                    },
-                    "location": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. Location for the deployment script."
-                      }
-                    },
-                    "seconds": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. Sleep/wait time for the deployment script in seconds."
-                      }
-                    }
-                  },
-                  "resources": [
-                    {
-                      "type": "Microsoft.Resources/deploymentScripts",
-                      "apiVersion": "2023-08-01",
-                      "name": "[parameters('name')]",
-                      "location": "[parameters('location')]",
-                      "kind": "AzurePowerShell",
-                      "properties": {
-                        "azPowerShellVersion": "11.0",
-                        "scriptContent": "[format('Write-Host \"Waiting for {0} seconds...\" ; Start-Sleep -Seconds {1}; Write-Host \"Wait complete.\"', parameters('seconds'), parameters('seconds'))]",
-                        "timeout": "P1D",
-                        "cleanupPreference": "Always",
-                        "retentionInterval": "P1D"
-                      }
-                    }
-                  ]
-                }
-              },
-              "dependsOn": [
                 "project"
               ]
             },
@@ -25124,7 +25045,7 @@
                     "value": "[parameters('cosmosDbConnection').resourceName]"
                   },
                   "projectIdentityPrincipalId": {
-                    "value": "[reference('project', '2025-04-01-preview', 'full').identity.principalId]"
+                    "value": "[reference('project', '2025-07-01-preview', 'full').identity.principalId]"
                   }
                 },
                 "template": {
@@ -25167,8 +25088,7 @@
                 }
               },
               "dependsOn": [
-                "project",
-                "waitForProjectScript"
+                "project"
               ]
             },
             "storageAccountRoleAssignments": {
@@ -25188,7 +25108,7 @@
                     "value": "[parameters('storageAccountConnection').resourceName]"
                   },
                   "projectIdentityPrincipalId": {
-                    "value": "[reference('project', '2025-04-01-preview', 'full').identity.principalId]"
+                    "value": "[reference('project', '2025-07-01-preview', 'full').identity.principalId]"
                   }
                 },
                 "template": {
@@ -25231,8 +25151,7 @@
                 }
               },
               "dependsOn": [
-                "project",
-                "waitForProjectScript"
+                "project"
               ]
             },
             "aiSearchRoleAssignments": {
@@ -25252,7 +25171,7 @@
                     "value": "[parameters('aiSearchConnection').resourceName]"
                   },
                   "projectIdentityPrincipalId": {
-                    "value": "[reference('project', '2025-04-01-preview', 'full').identity.principalId]"
+                    "value": "[reference('project', '2025-07-01-preview', 'full').identity.principalId]"
                   }
                 },
                 "template": {
@@ -25306,85 +25225,7 @@
                 }
               },
               "dependsOn": [
-                "project",
-                "waitForProjectScript"
-              ]
-            },
-            "waitForConnectionsScript": {
-              "condition": "[and(variables('hasConnection'), or(variables('createAccountCapabilityHostInternal'), variables('createProjectCapabilityHostInternal')))]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2025-04-01",
-              "name": "[take(format('module.project.waitDeploymentScript.waitForConn.{0}', parameters('name')), 64)]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "name": {
-                    "value": "[format('script-wait-conns-{0}', parameters('name'))]"
-                  },
-                  "location": {
-                    "value": "[parameters('location')]"
-                  },
-                  "seconds": {
-                    "value": 60
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "16818353602719638288"
-                    }
-                  },
-                  "parameters": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. Name of the deployment script."
-                      }
-                    },
-                    "location": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. Location for the deployment script."
-                      }
-                    },
-                    "seconds": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. Sleep/wait time for the deployment script in seconds."
-                      }
-                    }
-                  },
-                  "resources": [
-                    {
-                      "type": "Microsoft.Resources/deploymentScripts",
-                      "apiVersion": "2023-08-01",
-                      "name": "[parameters('name')]",
-                      "location": "[parameters('location')]",
-                      "kind": "AzurePowerShell",
-                      "properties": {
-                        "azPowerShellVersion": "11.0",
-                        "scriptContent": "[format('Write-Host \"Waiting for {0} seconds...\" ; Start-Sleep -Seconds {1}; Write-Host \"Wait complete.\"', parameters('seconds'), parameters('seconds'))]",
-                        "timeout": "P1D",
-                        "cleanupPreference": "Always",
-                        "retentionInterval": "P1D"
-                      }
-                    }
-                  ]
-                }
-              },
-              "dependsOn": [
-                "aiSearchConnectionResource",
-                "cosmosDbConnectionResource",
-                "project",
-                "storageAccountConnectionResource",
-                "waitForProjectScript"
+                "project"
               ]
             },
             "cosmosDbSqlRoleAssignments": {
@@ -25404,7 +25245,7 @@
                     "value": "[parameters('cosmosDbConnection').resourceName]"
                   },
                   "projectIdentityPrincipalId": {
-                    "value": "[reference('project', '2025-04-01-preview', 'full').identity.principalId]"
+                    "value": "[reference('project', '2025-07-01-preview', 'full').identity.principalId]"
                   },
                   "projectWorkspaceId": {
                     "value": "[format('{0}-{1}-{2}-{3}-{4}', if(greaterOrEquals(length(reference('project').internalId), 8), substring(reference('project').internalId, 0, 8), ''), if(greaterOrEquals(length(reference('project').internalId), 12), substring(reference('project').internalId, 8, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 16), substring(reference('project').internalId, 12, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 20), substring(reference('project').internalId, 16, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 32), substring(reference('project').internalId, 20, 12), ''))]"
@@ -25491,7 +25332,7 @@
                     "value": "[parameters('storageAccountConnection').resourceName]"
                   },
                   "projectIdentityPrincipalId": {
-                    "value": "[reference('project', '2025-04-01-preview', 'full').identity.principalId]"
+                    "value": "[reference('project', '2025-07-01-preview', 'full').identity.principalId]"
                   },
                   "projectWorkspaceId": {
                     "value": "[format('{0}-{1}-{2}-{3}-{4}', if(greaterOrEquals(length(reference('project').internalId), 8), substring(reference('project').internalId, 0, 8), ''), if(greaterOrEquals(length(reference('project').internalId), 12), substring(reference('project').internalId, 8, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 16), substring(reference('project').internalId, 12, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 20), substring(reference('project').internalId, 16, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 32), substring(reference('project').internalId, 20, 12), ''))]"
