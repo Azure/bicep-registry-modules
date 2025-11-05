@@ -63,7 +63,7 @@ module testDeployment '../../../main.bicep' = [
     // scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}012'
+      name: '${namePrefix}${serviceShort}014'
       // networkAcls: {
       //   bypass: 'AzureServices'
       //   defaultAction: 'Deny'
@@ -97,7 +97,7 @@ module testDeployment '../../../main.bicep' = [
       customerManagedKey: {
         keyName: keyName
         keyVaultResourceId: keyVaultResourceId
-        // keyVersion: keyVersion
+        keyVersion: keyVersion
         userAssignedIdentityResourceId: managedIdentityResourceId
         // autoRotationEnabled: false
       }
