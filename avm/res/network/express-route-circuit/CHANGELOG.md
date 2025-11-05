@@ -2,11 +2,12 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/express-route-circuit/CHANGELOG.md).
 
-## 0.7.1
+## 0.8.0
 
 ### Changes
 
 - Added support for Global Reach peerings connections.
+- Updated API version `Microsoft.Network/expressRouteCircuits@2024-10-01`
 
 ### Breaking Changes
 
