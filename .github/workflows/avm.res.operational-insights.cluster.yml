@@ -24,16 +24,20 @@ on:
         required: false
   push:
     branches:
-      - users/alsehr/lacHSM # TODO: Reset to main
+      - users/alsehr/lacHSM
     paths:
-      - ".github/actions/templates/avm-**"
-      - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.operational-insights.cluster.yml"
-      - "avm/res/operational-insights/cluster/**"
-      - "utilities/pipelines/**"
-      - "!utilities/pipelines/platform/**"
-      - "!*/**/child-module-publish-allowed-list.json"
-      - "!*/**/README.md"
+      - "avm/res/operational-insights/cluster/version.json"
+    # branches:
+    #   - main
+    # paths:
+    #   - ".github/actions/templates/avm-**"
+    #   - ".github/workflows/avm.template.module.yml"
+    #   - ".github/workflows/avm.res.operational-insights.cluster.yml"
+    #   - "avm/res/operational-insights/cluster/**"
+    #   - "utilities/pipelines/**"
+    #   - "!utilities/pipelines/platform/**"
+    #   - "!*/**/child-module-publish-allowed-list.json"
+    #   - "!*/**/README.md"
 
 env:
   modulePath: "avm/res/operational-insights/cluster"

@@ -27,13 +27,16 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/operational-insights/cluster:<version>`.
 
-- [Defaults](#example-1-defaults)
+- [Using only defaults](#example-1-using-only-defaults)
 - [Using HSM Customer-Managed-Keys with User-Assigned identity](#example-2-using-hsm-customer-managed-keys-with-user-assigned-identity)
 - [Using Customer-Managed-Keys with User-Assigned identity](#example-3-using-customer-managed-keys-with-user-assigned-identity)
 - [Using large parameter set](#example-4-using-large-parameter-set)
-- [Waf-Aligned](#example-5-waf-aligned)
+- [WAF-aligned](#example-5-waf-aligned)
 
-### Example 1: _Defaults_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -483,7 +486,10 @@ param roleAssignments = [
 </details>
 <p>
 
-### Example 5: _Waf-Aligned_
+### Example 5: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
