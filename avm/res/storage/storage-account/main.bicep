@@ -376,12 +376,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-var keyVaultType = !empty(customerManagedKey.?keyVaultResourceId)
-  ? split(customerManagedKey.?keyVaultResourceId!, '/')[7]
-  : ''
-var isHSMKeyVault = contains(keyVaultType, 'managedHSMs')
+// var keyVaultType = !empty(customerManagedKey.?keyVaultResourceId)
+//   ? split(customerManagedKey.?keyVaultResourceId!, '/')[7]
+//   : ''
+// var isHSMManagedCMK = contains(keyVaultType, 'managedHSMs')
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!isHSMKeyVault && !empty(customerManagedKey.?keyVaultResourceId)) {
+var isHSMManagedCMK = contains(split(customerManagedKey.?keyVaultResourceId ?? '', '/')[7], 'managedHSMs')
+
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!isHSMManagedCMK && !empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
@@ -453,14 +455,14 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
         keyvaultproperties: !empty(customerManagedKey)
           ? {
               keyname: customerManagedKey!.keyName
-              keyvaulturi: !isHSMKeyVault
-                ? 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}${environment().suffixes.keyvaultDns}/'
+              keyvaulturi: !isHSMManagedCMK
+                ? cMKKeyVault!.properties.vaultUri
                 : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/'
               keyversion: !empty(customerManagedKey.?keyVersion)
                 ? customerManagedKey!.keyVersion!
                 : (customerManagedKey.?autoRotationEnabled ?? true)
                     ? null
-                    : (!isHSMKeyVault
+                    : (!isHSMManagedCMK
                         ? last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
                         : fail('Managed HSM CMK encryption requires either keyVersion in input or autorotation to be enabled'))
             }
