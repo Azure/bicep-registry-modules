@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "18349812174770646102"
+      "templateHash": "3796381225889918898"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -2332,7 +2332,8 @@
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
     "formattedManagementPolicies": "[union(coalesce(parameters('managementPolicyRules'), createArray()), if(and(and(not(empty(parameters('blobServices'))), coalesce(tryGet(parameters('blobServices'), 'isVersioningEnabled'), false())), not(equals(tryGet(parameters('blobServices'), 'versionDeletePolicyDays'), null()))), createArray(createObject('name', 'DeletePreviousVersions (auto-created)', 'enabled', true(), 'type', 'Lifecycle', 'definition', createObject('actions', createObject('version', createObject('delete', createObject('daysAfterCreationGreaterThan', parameters('blobServices').versionDeletePolicyDays))), 'filters', createObject('blobTypes', createArray('blockBlob', 'appendBlob'))))), createArray()))]",
-    "isHSMManagedCMK": "[contains(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/')[7], 'managedHSMs')]"
+    "keyVaultType": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[7], '')]",
+    "isHSMManagedCMK": "[contains(variables('keyVaultType'), 'managedHSMs')]"
   },
   "resources": {
     "cMKKeyVault::cMKKey": {
