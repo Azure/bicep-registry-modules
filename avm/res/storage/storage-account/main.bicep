@@ -376,10 +376,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-var keyVaultType = !empty(customerManagedKey.?keyVaultResourceId)
-  ? split(customerManagedKey.?keyVaultResourceId!, '/')[7]
-  : ''
-var isHSMManagedCMK = contains(keyVaultType, 'managedHSMs')
+// var keyVaultType = !empty(customerManagedKey.?keyVaultResourceId)
+//   ? split(customerManagedKey.?keyVaultResourceId!, '/')[7]
+//   : ''
+// var isHSMManagedCMK = contains(keyVaultType, 'managedHSMs')
+var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
 
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!isHSMManagedCMK && !empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
