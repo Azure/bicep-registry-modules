@@ -16,10 +16,6 @@ param solutionName string = 'kmgen'
 @description('Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).')
 param location string = resourceGroup().location
 
-@minLength(1)
-@description('Optional. Secondary location for databases creation(example:eastus2).')
-param secondaryLocation string = 'eastus2'
-
 @allowed([
   'australiaeast'
   'eastus'
@@ -157,21 +153,7 @@ var solutionSuffix = toLower(trim(replace(
   ''
 )))
 
-// @description('Optional. The configuration to apply for the Conversation Knowledge Mining Copy Data Script resource.')
-// param scriptCopyDataConfiguration object = {
-//   name: '${solutionUniqueText}-scrp-cpdt'
-//   location: location
-//   githubBaseUrl: 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/'
-//   scriptUrl: 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/infra/scripts/copy_kb_files.sh'
-// }
-
-// @description('Optional. The configuration to apply for the Conversation Knowledge Mining Copy Data Script resource.')
-// param scriptIndexDataConfiguration object = {
-//   name: '${solutionUniqueText}-scrp-indt'
-//   location: location
-//   githubBaseUrl: 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/'
-//   scriptUrl: 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/infra/scripts/run_create_index_scripts.sh'
-// }
+var baseUrl = 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/main/'
 
 // Replica regions list based on article in [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Enhance resilience by replicating your Log Analytics workspace across regions](https://learn.microsoft.com/azure/azure-monitor/logs/workspace-replication#supported-regions) for supported regions for Log Analytics Workspace.
 var replicaRegionPairs = {
@@ -202,18 +184,6 @@ var cosmosDbZoneRedundantHaRegionPairs = {
 }
 // Paired location calculated based on 'location' parameter. This location will be used by applicable resources if `enableScalability` is set to `true`
 var cosmosDbHaLocation = cosmosDbZoneRedundantHaRegionPairs[resourceGroup().location]
-
-// // VARIABLES: Script Copy Data configuration defaults
-// var scriptCopyDataResourceName = scriptCopyDataConfiguration.?name ?? '${solutionUniqueText}-scrp-cpdt'
-// var scriptCopyDataLocation = scriptCopyDataConfiguration.?location ?? solutionLocation
-// var scriptCopyDataGithubBaseUrl = scriptCopyDataConfiguration.?githubBaseUrl ?? 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/'
-// var scriptCopyDataScriptUrl = scriptCopyDataConfiguration.?scriptUrl ?? 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/infra/scripts/copy_kb_files.sh'
-
-// // VARIABLES: Script Index Data configuration defaults
-// var scriptIndexDataResourceName = scriptIndexDataConfiguration.?name ?? '${solutionPrefix}-scrp-indt'
-// var scriptIndexDataLocation = scriptIndexDataConfiguration.?location ?? solutionLocation
-// var scriptIndexDataGithubBaseUrl = scriptIndexDataConfiguration.?githubBaseUrl ?? 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/'
-// var scriptIndexDataScriptUrl = scriptIndexDataConfiguration.?scriptUrl ?? 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/infra/scripts/run_create_index_scripts.sh'
 
 // ========== Resource Group Tag ========== //
 resource resourceGroupTags 'Microsoft.Resources/tags@2024-07-01' = {
@@ -995,10 +965,8 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
   params: {
     name: storageAccountName
     location: location
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [userAssignedIdentity!.outputs.resourceId]
-    }
+    // Use only user-assigned identities
+    managedIdentities: { systemAssigned: false, userAssignedResourceIds: [] }
     minimumTlsVersion: 'TLS1_2'
     supportsHttpsTrafficOnly: true
     accessTier: 'Hot'
@@ -1340,106 +1308,109 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
 }
 
 //========== Deployment script to upload data ========== //
-// module uploadFiles 'br/public:avm/res/resources/deployment-script:0.5.1' = {
-//   name: take('avm.res.resources.deployment-script.uploadFiles', 64)
-//   params: {
-//     kind: 'AzureCLI'
-//     name: 'copy_demo_Data'
-//     azCliVersion: '2.52.0'
-//     cleanupPreference: 'Always'
-//     location: enablePrivateNetworking ? location : secondaryLocation
-//     managedIdentities: {
-//       userAssignedResourceIds: [
-//         userAssignedIdentity.outputs.resourceId
-//       ]
-//     }
-//     retentionInterval: 'P1D'
-//     runOnce: true
-//     primaryScriptUri: scriptCopyDataScriptUrl
-//     arguments: '${storageAccount.outputs.name} data ${scriptCopyDataGithubBaseUrl} ${userAssignedIdentity.outputs.clientId}'
-//     storageAccountResourceId: storageAccount.outputs.resourceId
-//     subnetResourceIds: enablePrivateNetworking
-//       ? [
-//           virtualNetwork!.outputs.deploymentScriptsSubnetResourceId
-//         ]
-//       : null
-//     tags: tags
-//     timeout: 'PT1H'
-//   }
-// }
+module uploadFiles 'br/public:avm/res/resources/deployment-script:0.5.1' = {
+  name: take('avm.res.resources.deployment-script.uploadFiles', 64)
+  params: {
+    kind: 'AzureCLI'
+    name: 'copy_demo_Data-${solutionUniqueText}'
+    azCliVersion: '2.52.0'
+    cleanupPreference: 'Always'
+    location: location
+    managedIdentities: {
+      userAssignedResourceIds: [
+        userAssignedIdentity.outputs.resourceId
+      ]
+    }
+    retentionInterval: 'P1D'
+    runOnce: true
+    primaryScriptUri: '${baseUrl}infra/scripts/copy_kb_files.sh'
+    arguments: '${storageAccount.outputs.name} data ${baseUrl} ${userAssignedIdentity.outputs.clientId}'
+    storageAccountResourceId: storageAccount.outputs.resourceId
+    subnetResourceIds: enablePrivateNetworking
+      ? [
+          virtualNetwork!.outputs.deploymentScriptsSubnetResourceId
+        ]
+      : null
+    tags: tags
+    timeout: 'PT1H'
+    enableTelemetry: enableTelemetry
+  }
+}
 
-// //========== Deployment script to create index ========== //
-// module createIndex 'br/public:avm/res/resources/deployment-script:0.5.1' = {
-//   name: take('avm.res.resources.deployment-script.createIndex', 64)
-//   params: {
-//     kind: 'AzureCLI'
-//     name: 'create_search_indexes'
-//     azCliVersion: '2.52.0'
-//     location: enablePrivateNetworking ? location : secondaryLocation
-//     managedIdentities: {
-//       userAssignedResourceIds: [
-//         userAssignedIdentity.outputs.resourceId
-//       ]
-//     }
-//     runOnce: true
-//     primaryScriptUri: '${baseUrl}infra/scripts/run_create_index_scripts.sh'
-//     arguments: '${baseUrl} ${keyvault.outputs.name} ${userAssignedIdentity.outputs.clientId}'
-//     tags: tags
-//     timeout: 'PT1H'
-//     retentionInterval: 'P1D'
-//     cleanupPreference: 'OnSuccess'
-//     storageAccountResourceId: storageAccount.outputs.resourceId
-//     subnetResourceIds: enablePrivateNetworking
-//       ? [
-//           virtualNetwork!.outputs.deploymentScriptsSubnetResourceId
-//         ]
-//       : null
-//   }
-//   dependsOn: [sqlDBModule, uploadFiles]
-// }
+//========== Deployment script to create index ========== //
+module createIndex 'br/public:avm/res/resources/deployment-script:0.5.1' = {
+  name: take('avm.res.resources.deployment-script.createIndex', 64)
+  params: {
+    kind: 'AzureCLI'
+    name: 'create_search_indexes-${solutionUniqueText}'
+    azCliVersion: '2.52.0'
+    location: location
+    managedIdentities: {
+      userAssignedResourceIds: [
+        userAssignedIdentity.outputs.resourceId
+      ]
+    }
+    runOnce: true
+    primaryScriptUri: '${baseUrl}infra/scripts/run_create_index_scripts.sh'
+    arguments: '${baseUrl} ${keyVault.outputs.name} ${userAssignedIdentity.outputs.clientId}'
+    tags: tags
+    timeout: 'PT1H'
+    retentionInterval: 'P1D'
+    cleanupPreference: 'OnSuccess'
+    storageAccountResourceId: storageAccount.outputs.resourceId
+    subnetResourceIds: enablePrivateNetworking
+      ? [
+          virtualNetwork!.outputs.deploymentScriptsSubnetResourceId
+        ]
+      : null
+    enableTelemetry: enableTelemetry
+  }
+  dependsOn: [sqlDBModule, uploadFiles]
+}
 
-// var databaseRoles = [
-//   'db_datareader'
-//   'db_datawriter'
-// ]
-// //========== Deployment script to create Sql User and Role  ========== //
-// module createSqlUserAndRole 'br/public:avm/res/resources/deployment-script:0.5.1' = {
-//   name: take('avm.res.resources.deployment-script.createSqlUserAndRole', 64)
-//   params: {
-//     kind: 'AzurePowerShell'
-//     name: 'create_sql_user_and_role'
-//     azPowerShellVersion: '11.0'
-//     location: enablePrivateNetworking ? location : secondaryLocation
-//     managedIdentities: {
-//       userAssignedResourceIds: [
-//         userAssignedIdentity.outputs.resourceId
-//       ]
-//     }
-//     runOnce: true
-//     arguments: join(
-//       [
-//         '-SqlServerName \'${sqlServerResourceName}\''
-//         '-SqlDatabaseName \'${sqlDbModuleName}\''
-//         '-ClientId \'${sqlUserAssignedIdentity.outputs.clientId}\''
-//         '-DisplayName \'${sqlUserAssignedIdentity.outputs.name}\''
-//         '-DatabaseRoles \'${join(databaseRoles, ',')}\''
-//       ],
-//       ' '
-//     )
-//     scriptContent: loadTextContent('./scripts/add_user_scripts/create-sql-user-and-role.ps1')
-//     tags: tags
-//     timeout: 'PT1H'
-//     retentionInterval: 'PT1H'
-//     cleanupPreference: 'OnSuccess'
-//     storageAccountResourceId: storageAccount.outputs.resourceId
-//     subnetResourceIds: enablePrivateNetworking
-//       ? [
-//           virtualNetwork!.outputs.deploymentScriptsSubnetResourceId
-//         ]
-//       : null
-//   }
-//   dependsOn: [sqlDBModule]
-// }
+var databaseRoles = [
+  'db_datareader'
+  'db_datawriter'
+]
+//========== Deployment script to create Sql User and Role  ========== //
+module createSqlUserAndRole 'br/public:avm/res/resources/deployment-script:0.5.1' = {
+  name: take('avm.res.resources.deployment-script.createSqlUserAndRole', 64)
+  params: {
+    kind: 'AzurePowerShell'
+    name: 'create_sql_user_and_role-${solutionUniqueText}'
+    azPowerShellVersion: '11.0'
+    location: location
+    managedIdentities: {
+      userAssignedResourceIds: [
+        userAssignedIdentity.outputs.resourceId
+      ]
+    }
+    runOnce: true
+    arguments: join(
+      [
+        '-SqlServerName \'${sqlServerResourceName}\''
+        '-SqlDatabaseName \'${sqlDbModuleName}\''
+        '-ClientId \'${sqlUserAssignedIdentity.outputs.clientId}\''
+        '-DisplayName \'${sqlUserAssignedIdentity.outputs.name}\''
+        '-DatabaseRoles \'${join(databaseRoles, ',')}\''
+      ],
+      ' '
+    )
+    primaryScriptUri: '${baseUrl}infra/scripts/add_user_scripts/create-sql-user-and-role.ps1'
+    tags: tags
+    timeout: 'PT1H'
+    retentionInterval: 'PT1H'
+    cleanupPreference: 'OnSuccess'
+    storageAccountResourceId: storageAccount.outputs.resourceId
+    subnetResourceIds: enablePrivateNetworking
+      ? [
+          virtualNetwork!.outputs.deploymentScriptsSubnetResourceId
+        ]
+      : null
+    enableTelemetry: enableTelemetry
+  }
+  dependsOn: [sqlDBModule]
+}
 
 // ========== AVM WAF server farm ========== //
 var webServerFarmResourceName = 'asp-${solutionSuffix}'
