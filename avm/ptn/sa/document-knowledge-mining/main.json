@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "4299417816738150590"
+      "templateHash": "7361153361281225978"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-knowledge-mining-solution) for both Sandbox environments and enterprise-grade environments."
@@ -21275,18 +21275,14 @@
           "location": {
             "value": "[variables('solutionLocation')]"
           },
-          "acrSku": "[if(parameters('enableRedundancy'), createObject('value', 'Premium'), createObject('value', 'Standard'))]",
+          "acrSku": {
+            "value": "Standard"
+          },
           "publicNetworkAccess": {
             "value": "Enabled"
           },
           "zoneRedundancy": {
             "value": "Disabled"
-          },
-          "enableRedundancy": {
-            "value": "[parameters('enableRedundancy')]"
-          },
-          "secondaryLocation": {
-            "value": "[variables('replicaLocation')]"
           },
           "roleAssignments": {
             "value": [
@@ -21309,7 +21305,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "1561059076250825336"
+              "templateHash": "2199238771574437325"
             },
             "name": "Container Registry Module"
           },
@@ -21417,18 +21413,6 @@
                 "description": "Public network access setting for the Azure Container Registry"
               }
             },
-            "enableRedundancy": {
-              "type": "bool",
-              "metadata": {
-                "description": "Required. Enable Redundancy for the AVM deployment."
-              }
-            },
-            "secondaryLocation": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The secondary location for the Azure Container Registry replication, if redundancy is enabled."
-              }
-            },
             "zoneRedundancy": {
               "type": "string",
               "defaultValue": "Disabled",
@@ -21485,8 +21469,7 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
-                  },
-                  "replications": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('location', parameters('secondaryLocation'), 'name', format('acrrepl{0}', replace(parameters('secondaryLocation'), '-', ''))))), createObject('value', null()))]"
+                  }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -43133,8 +43116,8 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "userAssignedIdentity",
         "virtualNetwork"
       ]
