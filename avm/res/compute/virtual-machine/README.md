@@ -1511,7 +1511,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v6'
+    vmSize: 'Standard_D4s_v6'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     backupPolicyName: '<backupPolicyName>'
@@ -1802,7 +1802,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v6"
+      "value": "Standard_D4s_v6"
     },
     // Non-required parameters
     "adminPassword": {
@@ -2125,7 +2125,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v6'
+param vmSize = 'Standard_D4s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param backupPolicyName = '<backupPolicyName>'
@@ -3013,7 +3013,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v6'
+    vmSize: 'Standard_D4s_v3'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     extensionAadJoinConfig: {
@@ -3101,7 +3101,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v6"
+      "value": "Standard_D4s_v3"
     },
     // Non-required parameters
     "adminPassword": {
@@ -3183,7 +3183,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v6'
+param vmSize = 'Standard_D4s_v3'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param extensionAadJoinConfig = {
@@ -3345,7 +3345,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       name: 'osdisk01'
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v6'
+    vmSize: 'Standard_D4s_v6'
     // Non-required parameters
     additionalUnattendContent: [
       {
@@ -3698,7 +3698,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v6"
+      "value": "Standard_D4s_v6"
     },
     // Non-required parameters
     "additionalUnattendContent": {
@@ -4087,7 +4087,7 @@ param osDisk = {
   name: 'osdisk01'
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v6'
+param vmSize = 'Standard_D4s_v6'
 // Non-required parameters
 param additionalUnattendContent = [
   {
@@ -4523,7 +4523,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v6'
+    vmSize: 'Standard_D2s_v5'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     dataDisks: [
@@ -4596,7 +4596,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v6"
+      "value": "Standard_D2s_v5"
     },
     // Non-required parameters
     "adminPassword": {
@@ -4659,7 +4659,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v6'
+param vmSize = 'Standard_D2s_v5'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param dataDisks = [
@@ -4891,7 +4891,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v6'
+    vmSize: 'Standard_D4s_v6'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     dataDisks: [
@@ -4964,7 +4964,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v6"
+      "value": "Standard_D4s_v6"
     },
     // Non-required parameters
     "adminPassword": {
@@ -5027,7 +5027,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v6'
+param vmSize = 'Standard_D4s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param dataDisks = [

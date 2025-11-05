@@ -13,7 +13,7 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${se
 
 // Capacity constraints for VM type
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'uksouth'
+var enforcedLocation = 'eastus2'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'vmwinhp'
@@ -89,7 +89,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Windows'
-      vmSize: 'Standard_D2s_v6'
+      vmSize: 'Standard_D4s_v3'
       adminPassword: password
       extensionAadJoinConfig: {
         enabled: true
