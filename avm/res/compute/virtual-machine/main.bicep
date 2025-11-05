@@ -33,6 +33,13 @@ param imageReference imageReferenceType
 @description('Optional. Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use.')
 param plan planType?
 
+@allowed([
+  'NVMe'
+  'SCSI'
+])
+@description('Optional. Specifies the disk controller type.')
+param diskControllerType string?
+
 @description('Required. Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object.  Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param osDisk osDiskType
 
@@ -95,7 +102,7 @@ param licenseType string?
 @description('Optional. The list of SSH public keys used to authenticate with linux based VMs.')
 param publicKeys publicKeyType[] = []
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource. The system-assigned managed identity will automatically be enabled if extensionAadJoinConfig.enabled = "True".')
 param managedIdentities managedIdentityAllType?
 
@@ -229,11 +236,11 @@ param extensionGuestConfigurationExtensionProtectedSettings object = {}
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -504,8 +511,8 @@ module vm_nic 'modules/nic-configuration.bicep' = [
       networkInterfaceName: nicConfiguration.?name ?? '${name}${nicConfiguration.?nicSuffix}'
       virtualMachineName: name
       location: location
-      enableIPForwarding: nicConfiguration.?enableIPForwarding ?? false
-      enableAcceleratedNetworking: nicConfiguration.?enableAcceleratedNetworking ?? true
+      enableIPForwarding: nicConfiguration.?enableIPForwarding
+      enableAcceleratedNetworking: nicConfiguration.?enableAcceleratedNetworking
       dnsServers: contains(nicConfiguration, 'dnsServers')
         ? (!empty(nicConfiguration.?dnsServers) ? nicConfiguration.?dnsServers : [])
         : []
@@ -566,6 +573,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         : null
     }
     storageProfile: {
+      diskControllerType: diskControllerType
       imageReference: imageReference
       osDisk: {
         name: osDisk.?name ?? '${name}-disk-os-01'
@@ -1068,7 +1076,7 @@ module vm_backup 'modules/protected-item.bicep' = if (!empty(backupVaultName)) {
   params: {
     name: 'vm;iaasvmcontainerv2;${resourceGroup().name};${vm.name}'
     location: location
-    policyId: az.resourceId(
+    policyResourceId: az.resourceId(
       backupVaultResourceGroup,
       'Microsoft.RecoveryServices/vaults/backupPolicies',
       backupVaultName,
@@ -1127,7 +1135,7 @@ output systemAssignedMIPrincipalId string? = vm.?identity.?principalId
 @description('The location the resource was deployed into.')
 output location string = vm.location
 
-import { networkInterfaceIPConfigurationOutputType } from 'br/public:avm/res/network/network-interface:0.5.1'
+import { networkInterfaceIPConfigurationOutputType } from 'br/public:avm/res/network/network-interface:0.5.3'
 @description('The list of NIC configurations of the virtual machine.')
 output nicConfigurations nicConfigurationOutputType[] = [
   for (nicConfiguration, index) in nicConfigurations: {
@@ -1240,8 +1248,8 @@ type publicKeyType = {
 }
 
 import { ipConfigurationType } from 'modules/nic-configuration.bicep'
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-import { subResourceType } from 'br/public:avm/res/network/network-interface:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { subResourceType } from 'br/public:avm/res/network/network-interface:0.5.3'
 
 @export()
 @description('The type for the NIC configuration.')

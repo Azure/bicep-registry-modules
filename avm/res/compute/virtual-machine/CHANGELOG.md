@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/virtual-machine/CHANGELOG.md).
 
+## 0.21.0
+
+### Changes
+
+- Introduced new parameter `diskControllerType ` to specify the disk controller type to allow to deploy NVME enabled virtual machines.
+- Updated to the newest versions of cross-referenced modules.
+
+### Breaking Changes
+
+- Fixed (removed) default values of `enableAcceleratedNetworking` and `enableIPForwarding` parameters when passing them to the cross-referenced module. Now relying on the default values of `br/public:avm/res/network/network-interface`
+
 ## 0.20.0
 
 ### Changes
