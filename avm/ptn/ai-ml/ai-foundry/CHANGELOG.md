@@ -6,6 +6,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
+- Updated `accounts/projects` endpoint API version to 2025-07-01-preview
+- Removed instances of `deploymentScript` that were used as waiting placeholders when deploying project connections and capability hosts
 - Updated interior module versions
 
 ### Breaking Changes
