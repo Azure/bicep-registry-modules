@@ -72,8 +72,11 @@ resource configureHSM 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
 @description('The resource ID of the HSM Key Vault.')
 output keyVaultResourceId string = managedHsm.id
 
-@description('The name of the first HSMKey Vault Encryption Key.')
+@description('The name of the HSMKey Vault Encryption Key.')
 output cmkName string = managedHsm::key.name
 
-@description('The name of the second HSMKey Vault Encryption Key.')
+@description('The version of the HSMKey Vault Encryption Key.')
+output cmkVersion string = last(split(managedHsm::key.properties.keyUriWithVersion, '/'))
+
+@description('The name of the Disk HSMKey Vault Encryption Key.')
 output cmkDiskName string = managedHsm::keyDisk.name
