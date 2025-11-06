@@ -90,8 +90,8 @@ var formattedUserAssignedIdentities = reduce(
 var identity = {
   type: (managedIdentities.?systemAssigned ?? false)
     ? 'SystemAssigned'
-    : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
-  ...(!empty(formattedUserAssignedIdentities) ? { userAssignedIdentities: formattedUserAssignedIdentities } : {})
+    : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None')
+  userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
 }
 
 #disable-next-line no-deployments-resources
