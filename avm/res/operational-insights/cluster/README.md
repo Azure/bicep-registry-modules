@@ -1,5 +1,10 @@
 # Log Analytics Dedicated Clusters `[Microsoft.OperationalInsights/clusters]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+>
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys a Log Analytics Dedicated Cluster.
 
 ## Navigation
@@ -125,7 +130,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
-    name: 'oichsm001'
+    name: 'oicmhsm002'
     sku: {
       capacity: 100
       name: 'CapacityReservation'
@@ -155,7 +160,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "oichsm001"
+      "value": "oicmhsm002"
     },
     "sku": {
       "value": {
@@ -189,7 +194,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
 using 'br/public:avm/res/operational-insights/cluster:<version>'
 
 // Required parameters
-param name = 'oichsm001'
+param name = 'oichsm002'
 param sku = {
   capacity: 100
   name: 'CapacityReservation'
@@ -332,7 +337,6 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
       name: 'myCustomLockName'
     }
     managedIdentities: {
-      systemAssigned: true
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
@@ -400,7 +404,6 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
@@ -458,7 +461,6 @@ param lock = {
   name: 'myCustomLockName'
 }
 param managedIdentities = {
-  systemAssigned: true
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
