@@ -3018,7 +3018,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     adminPassword: '<adminPassword>'
     extensionAadJoinConfig: {
       enabled: true
-      settings: {}
+      settings: {
+        mdmId: ''
+      }
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -3110,7 +3112,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionAadJoinConfig": {
       "value": {
         "enabled": true,
-        "settings": {},
+        "settings": {
+          "mdmId": ""
+        },
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -3188,7 +3192,9 @@ param vmSize = 'Standard_D4s_v3'
 param adminPassword = '<adminPassword>'
 param extensionAadJoinConfig = {
   enabled: true
-  settings: {}
+  settings: {
+    mdmId: ''
+  }
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -3345,7 +3351,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       name: 'osdisk01'
     }
     osType: 'Windows'
-    vmSize: 'Standard_D4s_v6'
+    vmSize: 'Standard_D4s_v3'
     // Non-required parameters
     additionalUnattendContent: [
       {
@@ -3404,7 +3410,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     extensionAadJoinConfig: {
       enabled: true
       name: 'myAADLogin'
-      settings: {}
+      settings: {
+        mdmId: ''
+      }
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -3698,7 +3706,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D4s_v6"
+      "value": "Standard_D4s_v3"
     },
     // Non-required parameters
     "additionalUnattendContent": {
@@ -3779,7 +3787,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": {
         "enabled": true,
         "name": "myAADLogin",
-        "settings": {},
+        "settings": {
+          "mdmId": ""
+        },
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -4087,7 +4097,7 @@ param osDisk = {
   name: 'osdisk01'
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D4s_v6'
+param vmSize = 'Standard_D4s_v3'
 // Non-required parameters
 param additionalUnattendContent = [
   {
@@ -4146,7 +4156,9 @@ param encryptionAtHost = false
 param extensionAadJoinConfig = {
   enabled: true
   name: 'myAADLogin'
-  settings: {}
+  settings: {
+    mdmId: ''
+  }
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -4523,7 +4535,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v5'
+    vmSize: 'Standard_D2s_v3'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     dataDisks: [
@@ -4596,7 +4608,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v5"
+      "value": "Standard_D2s_v3"
     },
     // Non-required parameters
     "adminPassword": {
@@ -4659,7 +4671,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v5'
+param vmSize = 'Standard_D2s_v3'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param dataDisks = [
