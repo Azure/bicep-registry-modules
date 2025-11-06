@@ -12,7 +12,7 @@ param serviceShort string = 'scpmin'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'amdep-${namePrefix}-sa.cps-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-sa.cps-${serviceShort}-rg'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -40,7 +40,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      solutionName: 'am${namePrefix}${serviceShort}'
+      solutionName: '${namePrefix}${serviceShort}'
       aiServiceLocation: enforcedLocation
       gptDeploymentCapacity: 10
       enablePrivateNetworking: false

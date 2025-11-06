@@ -44,11 +44,6 @@ module testDeployment '../../../main.bicep' = [
       solutionName: '${namePrefix}${serviceShort}'
       azureAiServiceLocation: enforcedLocation
       location: enforcedLocation
-      enableMonitoring: false
-      enablePrivateNetworking: false
-      enableRedundancy: false
-      enableScalability: false
-      enableTelemetry: true
     }
   }
 ]

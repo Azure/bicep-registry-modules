@@ -150,7 +150,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     enableScalability: false
     enableTelemetry: true
     gptDeploymentCapacity: 10
-    solutionName: 'amscpmin'
+    solutionName: 'scpmin'
   }
 }
 ```
@@ -191,7 +191,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
       "value": 10
     },
     "solutionName": {
-      "value": "amscpmin"
+      "value": "scpmin"
     }
   }
 }
@@ -216,7 +216,7 @@ param enableRedundancy = false
 param enableScalability = false
 param enableTelemetry = true
 param gptDeploymentCapacity = 10
-param solutionName = 'amscpmin'
+param solutionName = 'scpmin'
 ```
 
 </details>
@@ -244,7 +244,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     enableScalability: true
     enableTelemetry: true
     gptDeploymentCapacity: 10
-    solutionName: 'amscpegwaf'
+    solutionName: 'scpegwaf'
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'adminuser'
   }
@@ -287,7 +287,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
       "value": 10
     },
     "solutionName": {
-      "value": "amscpegwaf"
+      "value": "scpegwaf"
     },
     "vmAdminPassword": {
       "value": "<vmAdminPassword>"
@@ -318,7 +318,7 @@ param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
 param gptDeploymentCapacity = 10
-param solutionName = 'amscpegwaf'
+param solutionName = 'scpegwaf'
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'adminuser'
 ```
@@ -338,10 +338,6 @@ param vmAdminUsername = 'adminuser'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`apiContainerImageName`](#parameter-apicontainerimagename) | string | The Container Image Name to deploy on the Api Container App. |
-| [`apiContainerImageTag`](#parameter-apicontainerimagetag) | string | The Container Image Tag to deploy on the backend. |
-| [`appContainerImageName`](#parameter-appcontainerimagename) | string | The Container Image Name to deploy on the App Container App. |
-| [`appContainerImageTag`](#parameter-appcontainerimagetag) | string | The Container Image Tag to deploy on the backend. |
 | [`contentUnderstandingLocation`](#parameter-contentunderstandinglocation) | string | Location for the Azure AI Content Understanding service deployment. |
 | [`createdBy`](#parameter-createdby) | string | Tag, Created by user name. |
 | [`deploymentType`](#parameter-deploymenttype) | string | Type of GPT deployment to use: Standard | GlobalStandard. |
@@ -360,12 +356,9 @@ param vmAdminUsername = 'adminuser'
 | [`solutionName`](#parameter-solutionname) | string | Name of the solution to deploy. |
 | [`solutionUniqueText`](#parameter-solutionuniquetext) | string | A unique text value for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
 | [`tags`](#parameter-tags) | object | Tags to be applied to the resources. |
-| [`useLocalBuild`](#parameter-uselocalbuild) | bool | Set to true to use local build for container app images, otherwise use container registry images. |
 | [`vmAdminPassword`](#parameter-vmadminpassword) | securestring | Admin password for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true. |
 | [`vmAdminUsername`](#parameter-vmadminusername) | securestring | Admin username for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true. |
 | [`vmSize`](#parameter-vmsize) | string | Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true. |
-| [`webContainerImageName`](#parameter-webcontainerimagename) | string | The Container Image Name to deploy on the Web Container App. |
-| [`webContainerImageTag`](#parameter-webcontainerimagetag) | string | The Container Image Tag to deploy on the Web Container App. |
 
 ### Parameter: `aiServiceLocation`
 
@@ -373,38 +366,6 @@ Location for the Azure AI Services deployment.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `apiContainerImageName`
-
-The Container Image Name to deploy on the Api Container App.
-
-- Required: No
-- Type: string
-- Default: `'contentprocessorapi'`
-
-### Parameter: `apiContainerImageTag`
-
-The Container Image Tag to deploy on the backend.
-
-- Required: No
-- Type: string
-- Default: `'latest'`
-
-### Parameter: `appContainerImageName`
-
-The Container Image Name to deploy on the App Container App.
-
-- Required: No
-- Type: string
-- Default: `'contentprocessor'`
-
-### Parameter: `appContainerImageTag`
-
-The Container Image Tag to deploy on the backend.
-
-- Required: No
-- Type: string
-- Default: `'latest'`
 
 ### Parameter: `contentUnderstandingLocation`
 
@@ -578,14 +539,6 @@ Tags to be applied to the resources.
   }
   ```
 
-### Parameter: `useLocalBuild`
-
-Set to true to use local build for container app images, otherwise use container registry images.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
 ### Parameter: `vmAdminPassword`
 
 Admin password for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true.
@@ -609,22 +562,6 @@ Size of the Jumpbox Virtual Machine when created. Set to custom value if enableP
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `webContainerImageName`
-
-The Container Image Name to deploy on the Web Container App.
-
-- Required: No
-- Type: string
-- Default: `'contentprocessorweb'`
-
-### Parameter: `webContainerImageTag`
-
-The Container Image Tag to deploy on the Web Container App.
-
-- Required: No
-- Type: string
-- Default: `'latest'`
 
 ## Outputs
 

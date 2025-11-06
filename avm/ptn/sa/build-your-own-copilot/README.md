@@ -545,7 +545,7 @@ The Container Image Tag to deploy on the webapp.
 
 - Required: No
 - Type: string
-- Default: `'latest_waf_2025-09-18_794'`
+- Default: `'latest_waf_2025-11-03_914'`
 
 ### Parameter: `location`
 

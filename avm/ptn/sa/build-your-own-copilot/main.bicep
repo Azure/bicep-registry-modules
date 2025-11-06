@@ -116,7 +116,7 @@ param containerRegistryHostname string = 'bycwacontainerreg.azurecr.io'
 param containerImageName string = 'byc-wa-app'
 
 @description('Optional. The Container Image Tag to deploy on the webapp.')
-param imageTag string = 'latest_waf_2025-09-18_794'
+param imageTag string = 'latest_waf_2025-11-03_914'
 
 @description('Optional. Enable purge protection for the Key Vault.')
 param enablePurgeProtection bool = false
@@ -427,12 +427,6 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
     adminUsername: vmAdminUsername ?? 'JumpboxAdminUser'
     // WAF aligned configuration - Use provided password or generate a secure unique password
     adminPassword: vmAdminPassword
-    // adminPassword: vmAdminPassword ?? uniqueString(
-    //   resourceGroup().id,
-    //   deployment().name,
-    //   'vmAdminPassword',
-    //   solutionSuffix
-    // )
     tags: allTags
     // WAF aligned configuration for Redundancy - use availability zone when redundancy is enabled
     availabilityZone: enableRedundancy ? 1 : -1
@@ -912,6 +906,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.27.1' = {
     // WAF aligned configuration - Disable shared key access to enforce Azure AD authentication
     allowSharedKeyAccess: false
     defaultToOAuthAuthentication: true
+    enableHierarchicalNamespace: true
     roleAssignments: [
       {
         principalId: userAssignedIdentity.outputs.principalId
@@ -959,10 +954,10 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.27.1' = {
       : []
     blobServices: {
       corsRules: []
-      deleteRetentionPolicyEnabled: false
-      //deleteRetentionPolicyDays: 7
-      containerDeleteRetentionPolicyEnabled: false
-      //containerDeleteRetentionPolicyDays: 7
+      deleteRetentionPolicyEnabled: true
+      deleteRetentionPolicyDays: 7
+      containerDeleteRetentionPolicyEnabled: true
+      containerDeleteRetentionPolicyDays: 7
       containers: [
         {
           name: 'data'
