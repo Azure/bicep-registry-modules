@@ -358,7 +358,9 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
               ? {
                   keySource: 'Microsoft.Keyvault'
                   keyVaultProperties: {
-                    keyVaultUri: cMKKeyVaultRef!.outputs.vaultUri
+                    keyVaultUri: !isHSMManagedCMK
+                      ? cMKKeyVaultRef!.outputs.vaultUri
+                      : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/'
                     keyName: customerManagedKey!.keyName
                     keyVersion: !empty(customerManagedKey.?keyVersion)
                       ? customerManagedKey!.?keyVersion!
@@ -372,13 +374,17 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
               ? {
                   keySource: 'Microsoft.Keyvault'
                   keyVaultProperties: {
-                    keyVaultUri: cMKManagedKeyVaultDiskRef!.outputs.vaultUri
+                    keyVaultUri: !isHSMManagedCMK
+                      ? cMKManagedKeyVaultDiskRef!.outputs.vaultUri
+                      : 'https://${last(split((customerManagedKeyManagedDisk.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/'
                     keyName: customerManagedKeyManagedDisk!.keyName
                     keyVersion: !empty(customerManagedKeyManagedDisk.?keyVersion)
                       ? customerManagedKeyManagedDisk!.?keyVersion!
-                      : (!isHSMManagedCMK
-                          ? cMKManagedKeyVaultDiskRef!.outputs.keyVersion
-                          : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
+                      : (customerManagedKeyManagedDisk.?autoRotationEnabled ?? true)
+                          ? ''
+                          : (!isHSMManagedCMK
+                              ? cMKManagedKeyVaultDiskRef!.outputs.keyVersion
+                              : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
                   }
                   rotationToLatestKeyVersionEnabled: (customerManagedKeyManagedDisk.?autoRotationEnabled ?? true) ?? false
                 }
