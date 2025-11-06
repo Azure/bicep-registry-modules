@@ -68,6 +68,17 @@ param requestSource string?
 @description('Optional. The kind of application that this component refers to, used to customize UI. This value is a freeform string, values should typically be one of the following: web, ios, other, store, java, phone.')
 param kind string = ''
 
+@description('Optional. Purge data immediately after 30 days.')
+param immediatePurgeDataOn30Days bool?
+
+@description('Optional. Indicates the flow of the ingestion.')
+@allowed([
+  'ApplicationInsights'
+  'ApplicationInsightsWithDiagnosticSettings'
+  'LogAnalytics'
+])
+param ingestionMode string?
+
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
@@ -166,6 +177,8 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
     SamplingPercentage: samplingPercentage
     Flow_Type: flowType
     Request_Source: requestSource
+    ImmediatePurgeDataOn30Days: immediatePurgeDataOn30Days
+    IngestionMode: ingestionMode
   }
 }
 
