@@ -143,12 +143,7 @@ module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
-    enableMonitoring: false
-    enablePrivateNetworking: false
-    enableRedundancy: false
-    enableScalability: false
     // Non-required parameters
-    enableTelemetry: true
     location: '<location>'
     solutionName: 'macaemin'
   }
@@ -171,22 +166,7 @@ module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
     },
-    "enableMonitoring": {
-      "value": false
-    },
-    "enablePrivateNetworking": {
-      "value": false
-    },
-    "enableRedundancy": {
-      "value": false
-    },
-    "enableScalability": {
-      "value": false
-    },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": true
-    },
     "location": {
       "value": "<location>"
     },
@@ -209,12 +189,7 @@ using 'br/public:avm/ptn/sa/multi-agent-custom-automation-engine:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
-param enableMonitoring = false
-param enablePrivateNetworking = false
-param enableRedundancy = false
-param enableScalability = false
 // Non-required parameters
-param enableTelemetry = true
 param location = '<location>'
 param solutionName = 'macaemin'
 ```
@@ -237,11 +212,11 @@ module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
+    // Non-required parameters
     enableMonitoring: true
     enablePrivateNetworking: true
     enableRedundancy: true
     enableScalability: true
-    // Non-required parameters
     enableTelemetry: true
     location: '<location>'
     solutionName: 'macaewaf'
@@ -267,6 +242,7 @@ module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
     },
+    // Non-required parameters
     "enableMonitoring": {
       "value": true
     },
@@ -279,7 +255,6 @@ module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom
     "enableScalability": {
       "value": true
     },
-    // Non-required parameters
     "enableTelemetry": {
       "value": true
     },
@@ -311,11 +286,11 @@ using 'br/public:avm/ptn/sa/multi-agent-custom-automation-engine:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
+// Non-required parameters
 param enableMonitoring = true
 param enablePrivateNetworking = true
 param enableRedundancy = true
 param enableScalability = true
-// Non-required parameters
 param enableTelemetry = true
 param location = '<location>'
 param solutionName = 'macaewaf'
@@ -397,29 +372,33 @@ Location for all AI service resources. This should be one of the supported Azure
 
 Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false.
 
-- Required: Yes
+- Required: No
 - Type: bool
+- Default: `False`
 
 ### Parameter: `enablePrivateNetworking`
 
 Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
 
-- Required: Yes
+- Required: No
 - Type: bool
+- Default: `False`
 
 ### Parameter: `enableRedundancy`
 
 Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
 
-- Required: Yes
+- Required: No
 - Type: bool
+- Default: `False`
 
 ### Parameter: `enableScalability`
 
 Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
 
-- Required: Yes
+- Required: No
 - Type: bool
+- Default: `False`
 
 ### Parameter: `azureopenaiVersion`
 

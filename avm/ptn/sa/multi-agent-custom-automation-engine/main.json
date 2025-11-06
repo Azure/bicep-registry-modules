@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "13928777437778235795"
+      "templateHash": "2862861575614927513"
     },
     "name": "Multi-Agent Custom Automation Engine",
     "description": "This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -184,24 +184,28 @@
     },
     "enableMonitoring": {
       "type": "bool",
+      "defaultValue": false,
       "metadata": {
         "description": "Required. Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false."
       }
     },
     "enableScalability": {
       "type": "bool",
+      "defaultValue": false,
       "metadata": {
         "description": "Required. Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false."
       }
     },
     "enableRedundancy": {
       "type": "bool",
+      "defaultValue": false,
       "metadata": {
         "description": "Required. Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false."
       }
     },
     "enablePrivateNetworking": {
       "type": "bool",
+      "defaultValue": false,
       "metadata": {
         "description": "Required. Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false."
       }
