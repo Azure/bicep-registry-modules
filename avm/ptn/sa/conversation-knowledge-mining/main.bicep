@@ -195,6 +195,7 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2024-07-01' = {
         TemplateName: 'KM-Generic'
         Type: enablePrivateNetworking ? 'WAF' : 'Non-WAF'
         CreatedBy: createdBy
+        SecurityControl: 'Ignore'
       },
       tags
     )
@@ -906,8 +907,8 @@ module searchSearchServices 'br/public:avm/res/search/search-service:0.11.1' = {
       }
     ]
     partitionCount: 1
-    replicaCount: 3 // Minimum 3 replicas for Azure.Search.IndexSLA and minimum 2 for Azure.Search.QuerySLA (PSRule compliance)
-    sku: 'standard'
+    replicaCount: enableScalability ? 3 : 1
+    sku: enableScalability ? 'standard' : 'basic'
     semanticSearch: 'free'
     // Use the deployment tags provided to the template
     tags: tags

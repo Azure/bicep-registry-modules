@@ -29,9 +29,6 @@ var enforcedLocation = 'australiaeast'
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-07-01' = {
   name: resourceGroupName
   location: enforcedLocation
-  tags: {
-    SecurityControl: 'Ignore'
-  }
 }
 
 // ============== //
