@@ -137,6 +137,7 @@ module component 'br/public:avm/res/insights/component:<version>' = {
     disableLocalAuth: true
     flowType: 'Redfield'
     forceCustomerStorageForProfiler: true
+    immediatePurgeDataOn30Days: true
     linkedStorageAccountResourceId: '<linkedStorageAccountResourceId>'
     location: '<location>'
     lock: {
@@ -220,6 +221,9 @@ module component 'br/public:avm/res/insights/component:<version>' = {
     "forceCustomerStorageForProfiler": {
       "value": true
     },
+    "immediatePurgeDataOn30Days": {
+      "value": true
+    },
     "linkedStorageAccountResourceId": {
       "value": "<linkedStorageAccountResourceId>"
     },
@@ -299,6 +303,7 @@ param disableIpMasking = false
 param disableLocalAuth = true
 param flowType = 'Redfield'
 param forceCustomerStorageForProfiler = true
+immediatePurgeDataOn30Days: true
 param linkedStorageAccountResourceId = '<linkedStorageAccountResourceId>'
 param location = '<location>'
 param lock = {
@@ -485,6 +490,8 @@ param tags = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`flowType`](#parameter-flowtype) | string | Used by the Application Insights system to determine what kind of flow this component was created by. This is to be set to 'Bluefield' when creating/updating a component via the REST API. |
 | [`forceCustomerStorageForProfiler`](#parameter-forcecustomerstorageforprofiler) | bool | Force users to create their own storage account for profiler and debugger. |
+| [`immediatePurgeDataOn30Days`](#parameter-immediatepurgedataon30days) | bool | Purge data immediately after 30 days. |
+| [`ingestionMode`](#parameter-ingestionmode) | string | Indicates the flow of the ingestion. |
 | [`kind`](#parameter-kind) | string | The kind of application that this component refers to, used to customize UI. This value is a freeform string, values should typically be one of the following: web, ios, other, store, java, phone. |
 | [`linkedStorageAccountResourceId`](#parameter-linkedstorageaccountresourceid) | string | Linked storage account resource ID. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -710,6 +717,28 @@ Force users to create their own storage account for profiler and debugger.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `immediatePurgeDataOn30Days`
+
+Purge data immediately after 30 days.
+
+- Required: No
+- Type: bool
+
+### Parameter: `ingestionMode`
+
+Indicates the flow of the ingestion.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ApplicationInsights'
+    'ApplicationInsightsWithDiagnosticSettings'
+    'LogAnalytics'
+  ]
+  ```
 
 ### Parameter: `kind`
 
@@ -979,8 +1008,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.3.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
