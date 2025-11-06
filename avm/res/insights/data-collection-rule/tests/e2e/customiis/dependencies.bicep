@@ -7,7 +7,7 @@ param dataCollectionEndpointName string
 @description('Required. The name of the log analytics workspace to create.')
 param logAnalyticsWorkspaceName string
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
   name: logAnalyticsWorkspaceName
   location: location
 }

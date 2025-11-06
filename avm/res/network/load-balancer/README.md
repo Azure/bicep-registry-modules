@@ -22,6 +22,8 @@ This module deploys a Load Balancer.
 | `Microsoft.Network/loadBalancers` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_loadbalancers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/loadBalancers)</li></ul> |
 | `Microsoft.Network/loadBalancers/backendAddressPools` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_loadbalancers_backendaddresspools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/loadBalancers/backendAddressPools)</li></ul> |
 | `Microsoft.Network/loadBalancers/inboundNatRules` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_loadbalancers_inboundnatrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/loadBalancers/inboundNatRules)</li></ul> |
+| `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
+| `Microsoft.Network/publicIPPrefixes` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipprefixes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/publicIPPrefixes)</li></ul> |
 
 ## Usage examples
 
@@ -32,11 +34,13 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/load-balancer:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using external load balancer parameter - VNet backend addresses](#example-2-using-external-load-balancer-parameter---vnet-backend-addresses)
-- [Using external load balancer parameter - NIC backend addresses](#example-3-using-external-load-balancer-parameter---nic-backend-addresses)
-- [Using internal load balancer parameter](#example-4-using-internal-load-balancer-parameter)
-- [Using large parameter set](#example-5-using-large-parameter-set)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using public IP load balancer parameter - public IP addresses](#example-2-using-public-ip-load-balancer-parameter---public-ip-addresses)
+- [Using public IP load balancer parameter - public IP address prefixes](#example-3-using-public-ip-load-balancer-parameter---public-ip-address-prefixes)
+- [Using external load balancer parameter - VNet backend addresses](#example-4-using-external-load-balancer-parameter---vnet-backend-addresses)
+- [Using external load balancer parameter - NIC backend addresses](#example-5-using-external-load-balancer-parameter---nic-backend-addresses)
+- [Using internal load balancer parameter](#example-6-using-internal-load-balancer-parameter)
+- [Using large parameter set](#example-7-using-large-parameter-set)
+- [WAF-aligned](#example-8-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -55,7 +59,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     frontendIPConfigurations: [
       {
         name: 'publicIPConfig1'
-        publicIPAddressId: '<publicIPAddressId>'
+        publicIPAddressResourceId: '<publicIPAddressResourceId>'
       }
     ]
     name: 'nlbmin001'
@@ -82,7 +86,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
       "value": [
         {
           "name": "publicIPConfig1",
-          "publicIPAddressId": "<publicIPAddressId>"
+          "publicIPAddressResourceId": "<publicIPAddressResourceId>"
         }
       ]
     },
@@ -111,7 +115,7 @@ using 'br/public:avm/res/network/load-balancer:<version>'
 param frontendIPConfigurations = [
   {
     name: 'publicIPConfig1'
-    publicIPAddressId: '<publicIPAddressId>'
+    publicIPAddressResourceId: '<publicIPAddressResourceId>'
   }
 ]
 param name = 'nlbmin001'
@@ -122,7 +126,216 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Using external load balancer parameter - VNet backend addresses_
+### Example 2: _Using public IP load balancer parameter - public IP addresses_
+
+This instance deploys the module with the minimum set of required parameters and creates an external public IP for the frontend.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
+  name: 'loadBalancerDeployment'
+  params: {
+    // Required parameters
+    frontendIPConfigurations: [
+      {
+        name: 'publicIPConfig1'
+        publicIPAddressConfiguration: {
+          name: 'nlbpip-pip-001'
+          publicIPAllocationMethod: 'Static'
+          skuName: 'Standard'
+          skuTier: 'Regional'
+        }
+      }
+      {
+        name: 'publicIPConfig2'
+        publicIPAddressConfiguration: {
+          name: 'nlbpip-pip-002'
+          publicIPAllocationMethod: 'Static'
+          skuName: 'Standard'
+          skuTier: 'Regional'
+        }
+      }
+    ]
+    name: 'nlbpip001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "frontendIPConfigurations": {
+      "value": [
+        {
+          "name": "publicIPConfig1",
+          "publicIPAddressConfiguration": {
+            "name": "nlbpip-pip-001",
+            "publicIPAllocationMethod": "Static",
+            "skuName": "Standard",
+            "skuTier": "Regional"
+          }
+        },
+        {
+          "name": "publicIPConfig2",
+          "publicIPAddressConfiguration": {
+            "name": "nlbpip-pip-002",
+            "publicIPAllocationMethod": "Static",
+            "skuName": "Standard",
+            "skuTier": "Regional"
+          }
+        }
+      ]
+    },
+    "name": {
+      "value": "nlbpip001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/load-balancer:<version>'
+
+// Required parameters
+param frontendIPConfigurations = [
+  {
+    name: 'publicIPConfig1'
+    publicIPAddressConfiguration: {
+      name: 'nlbpip-pip-001'
+      publicIPAllocationMethod: 'Static'
+      skuName: 'Standard'
+      skuTier: 'Regional'
+    }
+  }
+  {
+    name: 'publicIPConfig2'
+    publicIPAddressConfiguration: {
+      name: 'nlbpip-pip-002'
+      publicIPAllocationMethod: 'Static'
+      skuName: 'Standard'
+      skuTier: 'Regional'
+    }
+  }
+]
+param name = 'nlbpip001'
+```
+
+</details>
+<p>
+
+### Example 3: _Using public IP load balancer parameter - public IP address prefixes_
+
+This instance deploys the module with the minimum set of required parameters and creates an external public IP prefix for the frontend.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
+  name: 'loadBalancerDeployment'
+  params: {
+    // Required parameters
+    frontendIPConfigurations: [
+      {
+        name: 'publicIPprefix1'
+        publicIPPrefixConfiguration: {
+          name: 'nlbpipfix-pipfix-001'
+          prefixLength: 28
+          publicIPAddressVersion: 'IPv4'
+          tier: 'Regional'
+        }
+      }
+    ]
+    name: 'nlbpipfix001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "frontendIPConfigurations": {
+      "value": [
+        {
+          "name": "publicIPprefix1",
+          "publicIPPrefixConfiguration": {
+            "name": "nlbpipfix-pipfix-001",
+            "prefixLength": 28,
+            "publicIPAddressVersion": "IPv4",
+            "tier": "Regional"
+          }
+        }
+      ]
+    },
+    "name": {
+      "value": "nlbpipfix001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/load-balancer:<version>'
+
+// Required parameters
+param frontendIPConfigurations = [
+  {
+    name: 'publicIPprefix1'
+    publicIPPrefixConfiguration: {
+      name: 'nlbpipfix-pipfix-001'
+      prefixLength: 28
+      publicIPAddressVersion: 'IPv4'
+      tier: 'Regional'
+    }
+  }
+]
+param name = 'nlbpipfix001'
+```
+
+</details>
+<p>
+
+### Example 4: _Using external load balancer parameter - VNet backend addresses_
 
 This instance deploys the module with an externally facing load balancer with a public IP address and VNet backend address pool.
 
@@ -139,7 +352,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     frontendIPConfigurations: [
       {
         name: 'publicIPConfig1'
-        publicIPAddressId: '<publicIPAddressId>'
+        publicIPAddressResourceId: '<publicIPAddressResourceId>'
       }
     ]
     name: 'nlbnet001'
@@ -296,7 +509,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
       "value": [
         {
           "name": "publicIPConfig1",
-          "publicIPAddressId": "<publicIPAddressId>"
+          "publicIPAddressResourceId": "<publicIPAddressResourceId>"
         }
       ]
     },
@@ -471,7 +684,7 @@ using 'br/public:avm/res/network/load-balancer:<version>'
 param frontendIPConfigurations = [
   {
     name: 'publicIPConfig1'
-    publicIPAddressId: '<publicIPAddressId>'
+    publicIPAddressResourceId: '<publicIPAddressResourceId>'
   }
 ]
 param name = 'nlbnet001'
@@ -612,7 +825,7 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _Using external load balancer parameter - NIC backend addresses_
+### Example 5: _Using external load balancer parameter - NIC backend addresses_
 
 This instance deploys the module with an externally facing load balancer with a public IP address and NIC backend address pool.
 
@@ -629,7 +842,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     frontendIPConfigurations: [
       {
         name: 'publicIPConfig1'
-        publicIPAddressId: '<publicIPAddressId>'
+        publicIPAddressResourceId: '<publicIPAddressResourceId>'
       }
     ]
     name: 'nlbext001'
@@ -773,7 +986,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
       "value": [
         {
           "name": "publicIPConfig1",
-          "publicIPAddressId": "<publicIPAddressId>"
+          "publicIPAddressResourceId": "<publicIPAddressResourceId>"
         }
       ]
     },
@@ -937,7 +1150,7 @@ using 'br/public:avm/res/network/load-balancer:<version>'
 param frontendIPConfigurations = [
   {
     name: 'publicIPConfig1'
-    publicIPAddressId: '<publicIPAddressId>'
+    publicIPAddressResourceId: '<publicIPAddressResourceId>'
   }
 ]
 param name = 'nlbext001'
@@ -1065,7 +1278,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _Using internal load balancer parameter_
+### Example 6: _Using internal load balancer parameter_
 
 This instance deploys the module with the minimum set of required parameters to deploy an internal load balancer with a private IP address and empty backend address pool.
 
@@ -1082,7 +1295,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     frontendIPConfigurations: [
       {
         name: 'privateIPConfig1'
-        subnetId: '<subnetId>'
+        subnetResourceId: '<subnetResourceId>'
       }
     ]
     name: 'nlbint001'
@@ -1181,7 +1394,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
       "value": [
         {
           "name": "privateIPConfig1",
-          "subnetId": "<subnetId>"
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -1296,7 +1509,7 @@ using 'br/public:avm/res/network/load-balancer:<version>'
 param frontendIPConfigurations = [
   {
     name: 'privateIPConfig1'
-    subnetId: '<subnetId>'
+    subnetResourceId: '<subnetResourceId>'
   }
 ]
 param name = 'nlbint001'
@@ -1379,7 +1592,7 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _Using large parameter set_
+### Example 7: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1396,7 +1609,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     frontendIPConfigurations: [
       {
         name: 'publicIPConfig1'
-        publicIPAddressId: '<publicIPAddressId>'
+        publicIPAddressResourceId: '<publicIPAddressResourceId>'
       }
     ]
     name: 'nlbmax001'
@@ -1544,7 +1757,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
       "value": [
         {
           "name": "publicIPConfig1",
-          "publicIPAddressId": "<publicIPAddressId>"
+          "publicIPAddressResourceId": "<publicIPAddressResourceId>"
         }
       ]
     },
@@ -1712,7 +1925,7 @@ using 'br/public:avm/res/network/load-balancer:<version>'
 param frontendIPConfigurations = [
   {
     name: 'publicIPConfig1'
-    publicIPAddressId: '<publicIPAddressId>'
+    publicIPAddressResourceId: '<publicIPAddressResourceId>'
   }
 ]
 param name = 'nlbmax001'
@@ -1844,7 +2057,7 @@ param tags = {
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 8: _WAF-aligned_
 
 This instance deploys the module with the minimum set of required parameters to deploy a WAF-aligned internal load balancer.
 
@@ -1860,13 +2073,13 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     // Required parameters
     frontendIPConfigurations: [
       {
-        name: 'privateIPConfig1'
-        subnetId: '<subnetId>'
-        zones: [
+        availabilityZones: [
           1
           2
           3
         ]
+        name: 'privateIPConfig1'
+        subnetResourceId: '<subnetResourceId>'
       }
     ]
     name: 'nlbwaf001'
@@ -1964,13 +2177,13 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     "frontendIPConfigurations": {
       "value": [
         {
-          "name": "privateIPConfig1",
-          "subnetId": "<subnetId>",
-          "zones": [
+          "availabilityZones": [
             1,
             2,
             3
-          ]
+          ],
+          "name": "privateIPConfig1",
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -2084,13 +2297,13 @@ using 'br/public:avm/res/network/load-balancer:<version>'
 // Required parameters
 param frontendIPConfigurations = [
   {
-    name: 'privateIPConfig1'
-    subnetId: '<subnetId>'
-    zones: [
+    availabilityZones: [
       1
       2
       3
     ]
+    name: 'privateIPConfig1'
+    subnetResourceId: '<subnetResourceId>'
   }
 ]
 param name = 'nlbwaf001'
@@ -2205,6 +2418,891 @@ Array of objects containing all frontend IP configurations.
 
 - Required: Yes
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-frontendipconfigurationsname) | string | The name of the frontend IP configuration. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`availabilityZones`](#parameter-frontendipconfigurationsavailabilityzones) | array | A list of availability zones denoting the IP allocated for the resource needs to come from. |
+| [`gatewayLoadBalancerResourceId`](#parameter-frontendipconfigurationsgatewayloadbalancerresourceid) | string | The resource ID of the gateway load balancer. |
+| [`privateIPAddress`](#parameter-frontendipconfigurationsprivateipaddress) | string | The private IP address to use for a private frontend IP configuration. Requires subnetResourceId. |
+| [`privateIPAddressVersion`](#parameter-frontendipconfigurationsprivateipaddressversion) | string | The private IP address version. Only applicable for private frontend IP configurations. |
+| [`publicIPAddressConfiguration`](#parameter-frontendipconfigurationspublicipaddressconfiguration) | object | The configuration to create a new public IP address. Cannot be used together with publicIPAddressResourceId. |
+| [`publicIPAddressResourceId`](#parameter-frontendipconfigurationspublicipaddressresourceid) | string | The resource ID of an existing public IP address to use. Cannot be used together with publicIPAddressConfiguration. |
+| [`publicIPPrefixConfiguration`](#parameter-frontendipconfigurationspublicipprefixconfiguration) | object | The configuration to create a new public IP prefix. Cannot be used together with publicIPPrefixResourceId. |
+| [`publicIPPrefixResourceId`](#parameter-frontendipconfigurationspublicipprefixresourceid) | string | The resource ID of an existing public IP prefix to use. Cannot be used together with publicIPPrefixConfiguration. |
+| [`subnetResourceId`](#parameter-frontendipconfigurationssubnetresourceid) | string | The resource ID of the subnet to use for a private frontend IP configuration. |
+| [`tags`](#parameter-frontendipconfigurationstags) | object | Tags of the frontend IP configuration. |
+
+### Parameter: `frontendIPConfigurations.name`
+
+The name of the frontend IP configuration.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `frontendIPConfigurations.availabilityZones`
+
+A list of availability zones denoting the IP allocated for the resource needs to come from.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+
+### Parameter: `frontendIPConfigurations.gatewayLoadBalancerResourceId`
+
+The resource ID of the gateway load balancer.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.privateIPAddress`
+
+The private IP address to use for a private frontend IP configuration. Requires subnetResourceId.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.privateIPAddressVersion`
+
+The private IP address version. Only applicable for private frontend IP configurations.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'IPv4'
+    'IPv6'
+  ]
+  ```
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration`
+
+The configuration to create a new public IP address. Cannot be used together with publicIPAddressResourceId.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`availabilityZones`](#parameter-frontendipconfigurationspublicipaddressconfigurationavailabilityzones) | array | A list of availability zones denoting the IP allocated for the resource needs to come from. |
+| [`ddosSettings`](#parameter-frontendipconfigurationspublicipaddressconfigurationddossettings) | object | The DDoS protection plan configuration associated with the public IP address. |
+| [`diagnosticSettings`](#parameter-frontendipconfigurationspublicipaddressconfigurationdiagnosticsettings) | array | The diagnostic settings of the public IP address. |
+| [`dnsSettings`](#parameter-frontendipconfigurationspublicipaddressconfigurationdnssettings) | object | The DNS settings of the public IP address. |
+| [`enableTelemetry`](#parameter-frontendipconfigurationspublicipaddressconfigurationenabletelemetry) | bool | Enable/Disable usage telemetry for the public IP address module. |
+| [`idleTimeoutInMinutes`](#parameter-frontendipconfigurationspublicipaddressconfigurationidletimeoutinminutes) | int | The idle timeout of the public IP address. |
+| [`ipTags`](#parameter-frontendipconfigurationspublicipaddressconfigurationiptags) | array | The list of tags associated with the public IP address. |
+| [`name`](#parameter-frontendipconfigurationspublicipaddressconfigurationname) | string | The name of the Public IP Address. If not provided, a default name will be generated. |
+| [`publicIPAddressVersion`](#parameter-frontendipconfigurationspublicipaddressconfigurationpublicipaddressversion) | string | IP address version. |
+| [`publicIPAllocationMethod`](#parameter-frontendipconfigurationspublicipaddressconfigurationpublicipallocationmethod) | string | The public IP address allocation method. |
+| [`publicIpPrefixResourceId`](#parameter-frontendipconfigurationspublicipaddressconfigurationpublicipprefixresourceid) | string | Resource ID of the Public IP Prefix. This is only needed if you want your Public IPs created in a PIP Prefix. |
+| [`roleAssignments`](#parameter-frontendipconfigurationspublicipaddressconfigurationroleassignments) | array | Array of role assignments to create for the public IP address. |
+| [`skuName`](#parameter-frontendipconfigurationspublicipaddressconfigurationskuname) | string | Name of a public IP address SKU. |
+| [`skuTier`](#parameter-frontendipconfigurationspublicipaddressconfigurationskutier) | string | Tier of a public IP address SKU. |
+| [`tags`](#parameter-frontendipconfigurationspublicipaddressconfigurationtags) | object | Tags of the public IP address resource. |
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.availabilityZones`
+
+A list of availability zones denoting the IP allocated for the resource needs to come from.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.ddosSettings`
+
+The DDoS protection plan configuration associated with the public IP address.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`protectionMode`](#parameter-frontendipconfigurationspublicipaddressconfigurationddossettingsprotectionmode) | string | The DDoS protection policy customizations. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ddosProtectionPlan`](#parameter-frontendipconfigurationspublicipaddressconfigurationddossettingsddosprotectionplan) | object | The DDoS protection plan associated with the public IP address. |
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.ddosSettings.protectionMode`
+
+The DDoS protection policy customizations.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.ddosSettings.ddosProtectionPlan`
+
+The DDoS protection plan associated with the public IP address.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-frontendipconfigurationspublicipaddressconfigurationddossettingsddosprotectionplanid) | string | The resource ID of the DDOS protection plan associated with the public IP address. |
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.ddosSettings.ddosProtectionPlan.id`
+
+The resource ID of the DDOS protection plan associated with the public IP address.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.diagnosticSettings`
+
+The diagnostic settings of the public IP address.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-frontendipconfigurationspublicipaddressconfigurationdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-frontendipconfigurationspublicipaddressconfigurationdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-frontendipconfigurationspublicipaddressconfigurationdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-frontendipconfigurationspublicipaddressconfigurationdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-frontendipconfigurationspublicipaddressconfigurationdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-frontendipconfigurationspublicipaddressconfigurationdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-frontendipconfigurationspublicipaddressconfigurationdiagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-frontendipconfigurationspublicipaddressconfigurationdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-frontendipconfigurationspublicipaddressconfigurationdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.diagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.diagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.diagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.diagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-frontendipconfigurationspublicipaddressconfigurationdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-frontendipconfigurationspublicipaddressconfigurationdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-frontendipconfigurationspublicipaddressconfigurationdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.diagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.diagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.diagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-frontendipconfigurationspublicipaddressconfigurationdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-frontendipconfigurationspublicipaddressconfigurationdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.diagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.diagnosticSettings.name`
+
+The name of the diagnostic setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.diagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.diagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.dnsSettings`
+
+The DNS settings of the public IP address.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`domainNameLabel`](#parameter-frontendipconfigurationspublicipaddressconfigurationdnssettingsdomainnamelabel) | string | The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`domainNameLabelScope`](#parameter-frontendipconfigurationspublicipaddressconfigurationdnssettingsdomainnamelabelscope) | string | The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN. |
+| [`fqdn`](#parameter-frontendipconfigurationspublicipaddressconfigurationdnssettingsfqdn) | string | The Fully Qualified Domain Name of the A DNS record associated with the public IP. This is the concatenation of the domainNameLabel and the regionalized DNS zone. |
+| [`reverseFqdn`](#parameter-frontendipconfigurationspublicipaddressconfigurationdnssettingsreversefqdn) | string | The reverse FQDN. A user-visible, fully qualified domain name that resolves to this public IP address. If the reverseFqdn is specified, then a PTR DNS record is created pointing from the IP address in the in-addr.arpa domain to the reverse FQDN. |
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.dnsSettings.domainNameLabel`
+
+The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.dnsSettings.domainNameLabelScope`
+
+The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NoReuse'
+    'ResourceGroupReuse'
+    'SubscriptionReuse'
+    'TenantReuse'
+  ]
+  ```
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.dnsSettings.fqdn`
+
+The Fully Qualified Domain Name of the A DNS record associated with the public IP. This is the concatenation of the domainNameLabel and the regionalized DNS zone.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.dnsSettings.reverseFqdn`
+
+The reverse FQDN. A user-visible, fully qualified domain name that resolves to this public IP address. If the reverseFqdn is specified, then a PTR DNS record is created pointing from the IP address in the in-addr.arpa domain to the reverse FQDN.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.enableTelemetry`
+
+Enable/Disable usage telemetry for the public IP address module.
+
+- Required: No
+- Type: bool
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.idleTimeoutInMinutes`
+
+The idle timeout of the public IP address.
+
+- Required: No
+- Type: int
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.ipTags`
+
+The list of tags associated with the public IP address.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipTagType`](#parameter-frontendipconfigurationspublicipaddressconfigurationiptagsiptagtype) | string | The IP tag type. |
+| [`tag`](#parameter-frontendipconfigurationspublicipaddressconfigurationiptagstag) | string | The IP tag. |
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.ipTags.ipTagType`
+
+The IP tag type.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.ipTags.tag`
+
+The IP tag.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.name`
+
+The name of the Public IP Address. If not provided, a default name will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.publicIPAddressVersion`
+
+IP address version.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'IPv4'
+    'IPv6'
+  ]
+  ```
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.publicIPAllocationMethod`
+
+The public IP address allocation method.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dynamic'
+    'Static'
+  ]
+  ```
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.publicIpPrefixResourceId`
+
+Resource ID of the Public IP Prefix. This is only needed if you want your Public IPs created in a PIP Prefix.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.roleAssignments`
+
+Array of role assignments to create for the public IP address.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-frontendipconfigurationspublicipaddressconfigurationroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-frontendipconfigurationspublicipaddressconfigurationroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-frontendipconfigurationspublicipaddressconfigurationroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-frontendipconfigurationspublicipaddressconfigurationroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-frontendipconfigurationspublicipaddressconfigurationroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-frontendipconfigurationspublicipaddressconfigurationroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-frontendipconfigurationspublicipaddressconfigurationroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-frontendipconfigurationspublicipaddressconfigurationroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.skuName`
+
+Name of a public IP address SKU.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Standard'
+  ]
+  ```
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.skuTier`
+
+Tier of a public IP address SKU.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Global'
+    'Regional'
+  ]
+  ```
+
+### Parameter: `frontendIPConfigurations.publicIPAddressConfiguration.tags`
+
+Tags of the public IP address resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `frontendIPConfigurations.publicIPAddressResourceId`
+
+The resource ID of an existing public IP address to use. Cannot be used together with publicIPAddressConfiguration.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration`
+
+The configuration to create a new public IP prefix. Cannot be used together with publicIPPrefixResourceId.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`availabilityZones`](#parameter-frontendipconfigurationspublicipprefixconfigurationavailabilityzones) | array | A list of availability zones denoting the IP allocated for the resource needs to come from. This is only applicable for regional public IP prefixes and must be empty for global public IP prefixes. |
+| [`customIPPrefix`](#parameter-frontendipconfigurationspublicipprefixconfigurationcustomipprefix) | object | The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range. |
+| [`enableTelemetry`](#parameter-frontendipconfigurationspublicipprefixconfigurationenabletelemetry) | bool | Enable/Disable usage telemetry for the public IP prefix module. |
+| [`ipTags`](#parameter-frontendipconfigurationspublicipprefixconfigurationiptags) | array | The list of tags associated with the public IP prefix. |
+| [`lock`](#parameter-frontendipconfigurationspublicipprefixconfigurationlock) | object | The lock settings of the public IP prefix. |
+| [`name`](#parameter-frontendipconfigurationspublicipprefixconfigurationname) | string | The name of the Public IP Prefix. If not provided, a default name will be generated. |
+| [`prefixLength`](#parameter-frontendipconfigurationspublicipprefixconfigurationprefixlength) | int | Length of the Public IP Prefix. |
+| [`publicIPAddressVersion`](#parameter-frontendipconfigurationspublicipprefixconfigurationpublicipaddressversion) | string | The public IP address version. |
+| [`roleAssignments`](#parameter-frontendipconfigurationspublicipprefixconfigurationroleassignments) | array | Array of role assignments to create for the public IP prefix. |
+| [`tags`](#parameter-frontendipconfigurationspublicipprefixconfigurationtags) | object | Tags of the public IP prefix resource. |
+| [`tier`](#parameter-frontendipconfigurationspublicipprefixconfigurationtier) | string | Tier of a public IP prefix SKU. If set to `Global`, the `zones` property must be empty. |
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.availabilityZones`
+
+A list of availability zones denoting the IP allocated for the resource needs to come from. This is only applicable for regional public IP prefixes and must be empty for global public IP prefixes.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.customIPPrefix`
+
+The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range.
+
+- Required: No
+- Type: object
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.enableTelemetry`
+
+Enable/Disable usage telemetry for the public IP prefix module.
+
+- Required: No
+- Type: bool
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.ipTags`
+
+The list of tags associated with the public IP prefix.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipTagType`](#parameter-frontendipconfigurationspublicipprefixconfigurationiptagsiptagtype) | string | The IP tag type. |
+| [`tag`](#parameter-frontendipconfigurationspublicipprefixconfigurationiptagstag) | string | The IP tag. |
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.ipTags.ipTagType`
+
+The IP tag type.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.ipTags.tag`
+
+The IP tag.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.lock`
+
+The lock settings of the public IP prefix.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-frontendipconfigurationspublicipprefixconfigurationlockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-frontendipconfigurationspublicipprefixconfigurationlockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-frontendipconfigurationspublicipprefixconfigurationlocknotes) | string | Specify the notes of the lock. |
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.name`
+
+The name of the Public IP Prefix. If not provided, a default name will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.prefixLength`
+
+Length of the Public IP Prefix.
+
+- Required: No
+- Type: int
+- MinValue: 28
+- MaxValue: 127
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.publicIPAddressVersion`
+
+The public IP address version.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'IPv4'
+    'IPv6'
+  ]
+  ```
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.roleAssignments`
+
+Array of role assignments to create for the public IP prefix.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-frontendipconfigurationspublicipprefixconfigurationroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-frontendipconfigurationspublicipprefixconfigurationroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-frontendipconfigurationspublicipprefixconfigurationroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-frontendipconfigurationspublicipprefixconfigurationroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-frontendipconfigurationspublicipprefixconfigurationroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-frontendipconfigurationspublicipprefixconfigurationroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-frontendipconfigurationspublicipprefixconfigurationroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-frontendipconfigurationspublicipprefixconfigurationroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.tags`
+
+Tags of the public IP prefix resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixConfiguration.tier`
+
+Tier of a public IP prefix SKU. If set to `Global`, the `zones` property must be empty.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Global'
+    'Regional'
+  ]
+  ```
+
+### Parameter: `frontendIPConfigurations.publicIPPrefixResourceId`
+
+The resource ID of an existing public IP prefix to use. Cannot be used together with publicIPPrefixConfiguration.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.subnetResourceId`
+
+The resource ID of the subnet to use for a private frontend IP configuration.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontendIPConfigurations.tags`
+
+Tags of the frontend IP configuration.
+
+- Required: No
+- Type: object
 
 ### Parameter: `name`
 
@@ -2598,6 +3696,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
+| `br/public:avm/res/network/public-ip-address:0.9.1` | Remote reference |
+| `br/public:avm/res/network/public-ip-prefix:0.7.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 

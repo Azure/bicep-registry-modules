@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "17365480520348784928"
+      "templateHash": "15130791660840705978"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile."
@@ -1648,7 +1648,7 @@
             "value": "[tryGet(coalesce(parameters('secrets'), createArray())[copyIndex()], 'useLatestVersion')]"
           },
           "secretVersion": {
-            "value": "[coalesce(parameters('secrets'), createArray())[copyIndex()].secretVersion]"
+            "value": "[tryGet(coalesce(parameters('secrets'), createArray())[copyIndex()], 'secretVersion')]"
           }
         },
         "template": {
