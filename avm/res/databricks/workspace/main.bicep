@@ -207,7 +207,7 @@ module cMKKeyVaultRef 'modules/cmkReferences.bicep' = if (!empty(customerManaged
 }
 
 module cMKManagedDiskKeyVaultRef 'modules/cmkReferences.bicep' = if (!empty(customerManagedKeyManagedDisk)) {
-  name: '${uniqueString(deployment().name)}-cmkKeyVault'
+  name: '${uniqueString(deployment().name)}-cmkDiskKeyVault'
   params: {
     keyVaultResourceId: customerManagedKeyManagedDisk!.keyVaultResourceId
     keyName: customerManagedKeyManagedDisk!.keyName
