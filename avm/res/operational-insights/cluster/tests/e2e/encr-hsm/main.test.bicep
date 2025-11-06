@@ -20,7 +20,11 @@ param serviceShort string = 'oichsm'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Required. The name of the Resource Group containing the Managed Identity used by the deployment script. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-BackupManagementServiceEnterpriseApplicationObjectId\'.')
+@description('Required. The name of the Managed Identity used by the deployment script. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-deploymentMSIName\'.')
+@secure()
+param deploymentMSIName string = ''
+
+@description('Required. The name of the Resource Group containing the Managed Identity used by the deployment script. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-deploymentMSIResourceGroupName\'.')
 @secure()
 param deploymentMSIResourceGroupName string = ''
 
@@ -51,7 +55,7 @@ module nestedHsmDependencies 'dependencies.hsm.bicep' = {
     managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
     hsmKeyName: '${serviceShort}-${namePrefix}-key'
     hsmDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-    deploymentMSIName: deployer().userPrincipalName
+    deploymentMSIName: deploymentMSIName
     deploymentMSIResourceGroupName: deploymentMSIResourceGroupName
   }
 }
