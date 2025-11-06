@@ -1,9 +1,6 @@
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-@description('Required. The name of the HSM Vault to use.')
-param managedHsmName string
-
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityResourceId string
 
@@ -13,11 +10,13 @@ param hsmDeploymentScriptName string
 @description('Required. The name of the key to create in the HSM.')
 param hsmKeyName string
 
-@description('Required. The name of the Managed Identity used by the deployment script. Must be an identity with permissions to assign roles on the HSM.')
-param deploymentMSIName string
+@description('Required. The resource ID of the Managed Identity used by the deployment script. Must be an identity with permissions to assign roles on the HSM.')
+@secure()
+param deploymentMSIResourceId string
 
-@description('Required. The name of the Resource Group containing the Managed Identity used by the deployment script.')
-param deploymentMSIResourceGroupName string
+@description('Required. The name of the managed HSM used for encryption.')
+@secure()
+param managedHSMName string
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = {
   name: last(split(managedIdentityResourceId, '/'))
@@ -25,12 +24,12 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
 }
 
 resource deploymentMSI 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = {
-  name: deploymentMSIName
-  scope: resourceGroup(deploymentMSIResourceGroupName)
+  name: last(split(deploymentMSIResourceId, '/'))!
+  scope: resourceGroup(split(deploymentMSIResourceId, '/')[2], split(deploymentMSIResourceId, '/')[4])
 }
 
 resource managedHsm 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = {
-  name: managedHsmName
+  name: managedHSMName
 
   resource key 'keys@2025-05-01' = {
     name: hsmKeyName
