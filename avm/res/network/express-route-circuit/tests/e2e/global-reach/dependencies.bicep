@@ -47,7 +47,7 @@ module testDeploymentPort2 'br/public:avm/res/network/express-route-port:0.3.1' 
 }
 
 // Deploy second circuit
-module testDeploymentCircuit1 '../../../main.bicep' = {
+module testDeploymentCircuit1 'br/public:avm/res/network/express-route-circuit:0.7.0' = {
   name: '${uniqueString(deployment().name, location)}-test-circuit1'
   params: {
     name: expressRouteCircuit1
