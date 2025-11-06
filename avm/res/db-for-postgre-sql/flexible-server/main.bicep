@@ -576,24 +576,6 @@ output privateEndpoints privateEndpointOutputType[] = [
 @description('The principal ID of the system assigned managed identity.')
 output systemAssignedMIPrincipalId string? = flexibleServer.?identity.?principalId
 
-// output dataEncryption object? = !empty(customerManagedKey)
-//   ? {
-//       primaryKeyURI: !empty(customerManagedKey.?keyVersion)
-//         ? (isHSMManagedCMK
-//             ? '${hSMCMKKeyVault::hSMCMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
-//             : '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}')
-//         : (customerManagedKey.?autoRotationEnabled ?? true)
-//             ? (isHSMManagedCMK
-//                 ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUri
-//                 : cMKKeyVault::cMKKey!.properties.keyUri)
-//             : (isHSMManagedCMK
-//                 ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUriWithVersion
-//                 : cMKKeyVault::cMKKey!.properties.keyUriWithVersion)
-//       primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
-//       type: 'AzureKeyVault'
-//     }
-//   : null
-
 // =============== //
 //   Definitions   //
 // =============== //
