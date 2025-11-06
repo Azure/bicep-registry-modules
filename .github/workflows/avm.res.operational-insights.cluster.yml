@@ -91,7 +91,8 @@ jobs:
       # moduleTestFilePaths: '[{"path":"tests/e2e/encr/main.test.bicep","name":"encr","e2eIgnore":false},{"path":"tests/e2e/max/main.test.bicep","name":"max","e2eIgnore":false},{"path":"tests/e2e/defaults/main.test.bicep","name":"defaults","e2eIgnore":false}]'
       # moduleTestFilePaths: '[{"path":"tests/e2e/max/main.test.bicep","name":"max","e2eIgnore":false}]' # works
       # moduleTestFilePaths: '[{"path":"tests/e2e/defaults/main.test.bicep","name":"defaults","e2eIgnore":false}]' # works
-      moduleTestFilePaths: '[{"path":"tests/e2e/encr/main.test.bicep","name":"encr","e2eIgnore":false}]'
+      # moduleTestFilePaths: '[{"path":"tests/e2e/encr/main.test.bicep","name":"encr","e2eIgnore":false}]' # works
+      moduleTestFilePaths: '[{"path":"tests/e2e/encr-hsm/main.test.bicep","name":"encr-hsm","e2eIgnore":false}]' # works
       psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
       modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath}}"
     secrets: inherit
