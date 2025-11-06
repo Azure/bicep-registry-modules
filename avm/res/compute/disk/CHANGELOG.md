@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added support for managed HSM key encryption
+- Added support for encryption-at-rest via existing Disk Encryption Set.
 
 ### Breaking Changes
 

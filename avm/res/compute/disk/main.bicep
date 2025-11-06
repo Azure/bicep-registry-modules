@@ -52,7 +52,7 @@ param completionPercent int = 100
 @description('Optional. Sources of a disk creation.')
 param createOption string = 'Empty'
 
-@description('Optional. The disk encryption set resource Id.')
+@description('Optional. The resource ID of the disk encryption set to use for enabling encryption-at-rest.')
 param diskEncryptionSetResourceId string?
 
 @description('Optional. A relative uri containing either a Platform Image Repository or user image reference.')
@@ -210,7 +210,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource disk 'Microsoft.Compute/disks@2023-10-02' = {
+resource disk 'Microsoft.Compute/disks@2025-01-02' = {
   name: name
   location: location
   tags: tags
@@ -243,10 +243,11 @@ resource disk 'Microsoft.Compute/disks@2023-10-02' = {
     diskIOPSReadWrite: contains(sku, 'Ultra') ? diskIOPSReadWrite : null
     diskMBpsReadWrite: contains(sku, 'Ultra') ? diskMBpsReadWrite : null
     diskSizeGB: createOption == 'Empty' ? diskSizeGB : null
-    encryption: {
-      // type: 'EncryptionAtRestWithCustomerKey'
-      diskEncryptionSetId: diskEncryptionSetResourceId
-    }
+    encryption: !empty(diskEncryptionSetResourceId)
+      ? {
+          diskEncryptionSetId: diskEncryptionSetResourceId
+        }
+      : null
     hyperVGeneration: !empty(osType) ? hyperVGeneration : null
     maxShares: maxShares
     networkAccessPolicy: networkAccessPolicy
@@ -283,7 +284,7 @@ resource disk_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-0
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
       condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condition is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
     scope: disk

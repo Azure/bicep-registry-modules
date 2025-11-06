@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module with encryption-at-rest
 param resourceGroupName string = 'dep-${namePrefix}-compute.disks-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param resourceLocation string = 'uksouth'
+param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'cdcmk'
@@ -57,7 +57,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}-${serviceShort}001'
-      location: resourceLocation
       sku: 'Standard_LRS'
       availabilityZone: -1
       diskSizeGB: 1
