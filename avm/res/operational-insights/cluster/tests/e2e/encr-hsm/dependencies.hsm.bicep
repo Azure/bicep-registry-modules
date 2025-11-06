@@ -61,7 +61,7 @@ resource configureHSM 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
       echo $2
       echo $3
       # Does not work as the deployment script MSI would need local-rbac admin permissions on the HSM in order to grant anyone else permissions
-      az keyvault role assignment create --hsm-name $1 --role "Managed HSM Crypto Service Encryption User" --scope '/keys/$2' --assignee $3
+      az keyvault role assignment create --hsm-name $1 --role "Managed HSM Crypto Service Encryption User" --scope /keys/$2 --assignee $3
 
       # Allow usage via ARM
       # az keyvault setting update --hsm-name $1 --name 'AllowKeyManagementOperationsThroughARM' --value 'true'
