@@ -148,7 +148,6 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
     enableScalability: true
     enableTelemetry: true
     location: '<location>'
-    solutionName: '<solutionName>'
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'adminuser'
   }
@@ -193,9 +192,6 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
     "location": {
       "value": "<location>"
     },
-    "solutionName": {
-      "value": "<solutionName>"
-    },
     "vmAdminPassword": {
       "value": "<vmAdminPassword>"
     },
@@ -226,7 +222,6 @@ param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
 param location = '<location>'
-param solutionName = '<solutionName>'
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'adminuser'
 ```
@@ -257,7 +252,6 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
     enableScalability: false
     enableTelemetry: true
     location: '<location>'
-    solutionName: '<solutionName>'
   }
 }
 ```
@@ -299,9 +293,6 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
     },
     "location": {
       "value": "<location>"
-    },
-    "solutionName": {
-      "value": "<solutionName>"
     }
   }
 }
@@ -327,7 +318,6 @@ param enableRedundancy = false
 param enableScalability = false
 param enableTelemetry = true
 param location = '<location>'
-param solutionName = '<solutionName>'
 ```
 
 </details>

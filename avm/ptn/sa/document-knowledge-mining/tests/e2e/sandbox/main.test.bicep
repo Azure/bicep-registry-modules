@@ -43,7 +43,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       // You parameters go here
       // name: '${namePrefix}${serviceShort}001'
-      solutionName: substring(uniqueString('kmgs', deployment().name), 0, 10)
       location: enforcedLocation
       aiDeploymentsLocation: enforcedLocation
       enablePrivateNetworking: false
