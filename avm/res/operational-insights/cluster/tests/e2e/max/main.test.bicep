@@ -65,11 +65,6 @@ module testDeployment '../../../main.bicep' = [
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
-      customerManagedKey: {
-        keyName: nestedDependencies.outputs.keyVaultKeyName
-        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-        userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-      }
       roleAssignments: [
         {
           name: guid('Custom seed ${namePrefix}${serviceShort}')
@@ -93,9 +88,6 @@ module testDeployment '../../../main.bicep' = [
       ]
       managedIdentities: {
         systemAssigned: true
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
       }
     }
   }
