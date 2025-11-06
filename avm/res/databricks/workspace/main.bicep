@@ -194,7 +194,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module cMKKeyVaultRef 'modules/cmkReferences.bicep' = if (!empty(customerManagedKey)) {
+var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+module cMKKeyVaultRef 'modules/cmkReferences.bicep' = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
   name: '${uniqueString(deployment().name)}-cmkKeyVault'
   params: {
     keyVaultResourceId: customerManagedKey!.keyVaultResourceId
@@ -206,7 +207,8 @@ module cMKKeyVaultRef 'modules/cmkReferences.bicep' = if (!empty(customerManaged
   )
 }
 
-module cMKManagedDiskKeyVaultRef 'modules/cmkReferences.bicep' = if (!empty(customerManagedKeyManagedDisk)) {
+var isHSMManagedCMKDisk = split(customerManagedKeyManagedDisk.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+module cMKManagedKeyVaultDiskRef 'modules/cmkReferences.bicep' = if (!empty(customerManagedKeyManagedDisk) && !isHSMManagedCMKDisk) {
   name: '${uniqueString(deployment().name)}-cmkDiskKeyVault'
   params: {
     keyVaultResourceId: customerManagedKeyManagedDisk!.keyVaultResourceId
@@ -360,7 +362,9 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
                     keyName: customerManagedKey!.keyName
                     keyVersion: !empty(customerManagedKey.?keyVersion)
                       ? customerManagedKey!.?keyVersion!
-                      : cMKKeyVaultRef!.outputs.keyVersion
+                      : !isHSMManagedCMK
+                          ? cMKKeyVaultRef!.outputs.keyVersion
+                          : fail('Managed HSM CMK encryption requires specifying the \'keyVersion\'.')
                   }
                 }
               : null
@@ -368,11 +372,13 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
               ? {
                   keySource: 'Microsoft.Keyvault'
                   keyVaultProperties: {
-                    keyVaultUri: cMKManagedDiskKeyVaultRef!.outputs.vaultUri
+                    keyVaultUri: cMKManagedKeyVaultDiskRef!.outputs.vaultUri
                     keyName: customerManagedKeyManagedDisk!.keyName
                     keyVersion: !empty(customerManagedKeyManagedDisk.?keyVersion)
                       ? customerManagedKeyManagedDisk!.?keyVersion!
-                      : cMKManagedDiskKeyVaultRef!.outputs.keyVersion
+                      : (!isHSMManagedCMK
+                          ? cMKManagedKeyVaultDiskRef!.outputs.keyVersion
+                          : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
                   }
                   rotationToLatestKeyVersionEnabled: (customerManagedKeyManagedDisk.?autoRotationEnabled ?? true) ?? false
                 }
