@@ -998,7 +998,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.19.0' = {
     // WAF aligned configuration for Scalability
     scaleSettings: {
       maxReplicas: enableScalability ? 4 : 2
-      minReplicas: 2
+      minReplicas: 1
       rules: [
         {
           name: 'http-scaler'
@@ -1187,7 +1187,7 @@ module containerAppMcp 'br/public:avm/res/app/container-app:0.19.0' = {
     // WAF aligned configuration for Scalability
     scaleSettings: {
       maxReplicas: enableScalability ? 4 : 2
-      minReplicas: 2
+      minReplicas: 1
       rules: [
         {
           name: 'http-scaler'
@@ -1347,7 +1347,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
     // WAF aligned networking
     networkAcls: {
       bypass: 'AzureServices'
-      defaultAction: 'Deny'
+      defaultAction: enablePrivateNetworking ? 'Deny' : 'Allow'
     }
     allowBlobPublicAccess: false
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
