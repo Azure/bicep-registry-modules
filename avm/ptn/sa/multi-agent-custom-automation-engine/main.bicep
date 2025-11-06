@@ -998,7 +998,8 @@ module containerApp 'br/public:avm/res/app/container-app:0.19.0' = {
     // WAF aligned configuration for Scalability
     scaleSettings: {
       maxReplicas: enableScalability ? 4 : 2
-      minReplicas: 1 // PSRule ignore AZR-000413 - Cost optimization for sandbox scenarios
+      #disable-next-line AZR-000413
+      minReplicas: 1
       rules: [
         {
           name: 'http-scaler'
@@ -1187,7 +1188,8 @@ module containerAppMcp 'br/public:avm/res/app/container-app:0.19.0' = {
     // WAF aligned configuration for Scalability
     scaleSettings: {
       maxReplicas: enableScalability ? 4 : 2
-      minReplicas: 1 // PSRule ignore AZR-000413 - Cost optimization for sandbox scenarios
+      #disable-next-line AZR-000413
+      minReplicas: 1
       rules: [
         {
           name: 'http-scaler'
