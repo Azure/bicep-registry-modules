@@ -39,15 +39,15 @@ param agentSubnetResourceId string?
 @description('Required. Allow only Azure AD authentication. Should be enabled for security reasons.')
 param disableLocalAuth bool
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Specifies the role assignments for the AI Foundry resource.')
 param roleAssignments roleAssignmentType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of AI Foundry resources.')
 param lock lockType?
 
-import { deploymentType } from 'br/public:avm/res/cognitive-services/account:0.12.0'
+import { deploymentType } from 'br/public:avm/res/cognitive-services/account:0.13.2'
 @description('Optional. Specifies the OpenAI deployments to create.')
 param aiModelDeployments deploymentType[] = []
 
