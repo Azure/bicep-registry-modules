@@ -17,12 +17,16 @@ param serviceShort string = 'dddahsm'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Generated. Used as a basis for unique resource names.')
-param baseTime string = utcNow('u')
+@description('Required. The resource ID of the Managed Identity used by the deployment script. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-deploymentMSIName\'.')
+@secure()
+param deploymentMSIResourceId string = ''
 
-// The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'eastus2'
+@description('Required. The resource ID of the managed HSM used for encryption. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-managedHSMResourceId\'.')
+@secure()
+param managedHSMResourceId string = ''
+
+// Enforce location of HSM
+var enforcedLocation = 'uksouth'
 
 // ============ //
 // Dependencies //
@@ -44,12 +48,15 @@ module nestedDependencies 'dependencies.bicep' = {
 }
 
 module nestedHsmDependencies 'dependencies.hsm.bicep' = {
-  scope: az.resourceGroup('rsg-permanent-managed-hsm')
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name)}-nestedHSMDependencies'
   params: {
-    managedHsmName: 'mhsm-perm-avm-core-001'
     managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+    hsmKeyName: '${serviceShort}-${namePrefix}-key'
+    hsmDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+    deploymentMSIResourceId: deploymentMSIResourceId
+    managedHSMName: last(split(managedHSMResourceId, '/'))
   }
+  scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
 }
 
 // ============== //
@@ -65,7 +72,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       zoneRedundant: false
       customerManagedKey: {
-        keyName: nestedHsmDependencies.outputs.keyVaultEncryptionKeyName
+        keyName: nestedHsmDependencies.outputs.keyName
         keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
       }
       defaultIdentity: {

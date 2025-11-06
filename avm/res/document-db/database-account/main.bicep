@@ -222,8 +222,8 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : null)
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -292,28 +292,16 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableT
   }
 }
 
-var customerManagedKeyIsHsmVault = contains(customerManagedKey.?keyVaultResourceId ?? '', '/managedHSMs/')
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey) && !customerManagedKeyIsHsmVault) {
+var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
   name: last(split((customerManagedKey!.keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey!.keyVaultResourceId!, '/')[2],
     split(customerManagedKey!.keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
     name: customerManagedKey!.keyName
-  }
-}
-
-resource hSMCMKKeyVault 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = if (!empty(customerManagedKey) && customerManagedKeyIsHsmVault) {
-  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
-  scope: resourceGroup(
-    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
-    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
-  )
-
-  resource hSMCMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName!
   }
 }
 
@@ -331,9 +319,9 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
       ? defaultIdentity!.name
       : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
     keyVaultKeyUri: !empty(customerManagedKey)
-      ? (customerManagedKeyIsHsmVault
-          ? hSMCMKKeyVault::hSMCMKKey!.properties.keyUri
-          : cMKKeyVault::cMKKey!.properties.keyUri)
+      ? !isHSMManagedCMK
+          ? '${cMKKeyVault::cMKKey!.properties.keyUri}'
+          : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName!}'
       : null
     cors: cors
     enablePartitionMerge: enablePartitionMerge

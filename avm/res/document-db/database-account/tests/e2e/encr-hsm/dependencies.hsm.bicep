@@ -1,43 +1,67 @@
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-@description('Required. The name of the HSM Vault to use.')
-param managedHsmName string
-
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityResourceId string
+
+@description('Required. The name of the Deployment script used to configure the HSM.')
+param hsmDeploymentScriptName string
+
+@description('Required. The name of the key to create in the HSM.')
+param hsmKeyName string
+
+@description('Required. The resource ID of the Managed Identity used by the deployment script. Must be an identity with permissions to assign roles on the HSM.')
+@secure()
+param deploymentMSIResourceId string
+
+@description('Required. The name of the managed HSM used for encryption.')
+@secure()
+param managedHSMName string
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = {
   name: last(split(managedIdentityResourceId, '/'))
   scope: resourceGroup(split(managedIdentityResourceId, '/')[2], split(managedIdentityResourceId, '/')[4])
 }
 
-resource managedHsm 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = {
-  name: managedHsmName
+resource deploymentMSI 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = {
+  name: last(split(deploymentMSIResourceId, '/'))!
+  scope: resourceGroup(split(deploymentMSIResourceId, '/')[2], split(deploymentMSIResourceId, '/')[4])
+}
 
-  resource key 'keys@2025-05-01' existing = {
-    name: 'rsa-hsm-4096-key-1'
+resource managedHsm 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = {
+  name: managedHSMName
+
+  resource key 'keys@2025-05-01' = {
+    name: hsmKeyName
+    properties: {
+      keySize: 4096
+      kty: 'RSA-HSM'
+    }
   }
 }
 
-// https://mhsm-perm-avm-core-001.managedhsm.azure.net/keys/rsa-hsm-4096-key-1/providers/Microsoft.Authorization/roleAssignments/0cdd0d7f-585f-4dd2-85f1-130c6e6fc820?api-version=7.6
-// {
-//   properties: {
-//     roleDefinitionId: 'Microsoft.KeyVault/providers/Microsoft.Authorization/roleDefinitions/21dbd100-6940-42c2-9190-5d6cb909625b'
-//     principalId: '89be5ce4-5546-47bb-ab81-006425375abf'
-//   }
-// }
-resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${managedHsm::key.id}-${location}-${managedIdentity.id}-Key-Reader-RoleAssignment')
-  scope: managedHsm::key
+// Configure HSM
+resource configureHSM 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  name: hsmDeploymentScriptName
+  location: location
+  kind: 'AzureCLI'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${deploymentMSI.id}': {}
+    }
+  }
   properties: {
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: 'Microsoft.KeyVault/providers/Microsoft.Authorization/roleDefinitions/0cdd0d7f-585f-4dd2-85f1-130c6e6fc820' // Managed HSM Crypto User
-    // roleDefinitionId: subscriptionResourceId(
-    //   'Microsoft.Authorization/roleDefinitions',
-    //   '33413926-3206-4cdd-b39a-83574fe37a17'
-    // ) // Managed HSM Crypto Service Encryption User
-    principalType: 'ServicePrincipal'
+    azCliVersion: '2.67.0'
+    retentionInterval: 'P1D'
+    arguments: '"${managedHsm.name}" "${managedHsm::key.name}" "${managedIdentity.properties.principalId}"'
+    scriptContent: '''
+      # Allow key reference via managedIdentity
+      az keyvault role assignment create --hsm-name $1 --role "Managed HSM Crypto Service Encryption User" --scope /keys/$2 --assignee $3
+
+      # Allow usage via ARM
+      az keyvault setting update --hsm-name $1 --name 'AllowKeyManagementOperationsThroughARM' --value 'true'
+    '''
   }
 }
 
@@ -45,4 +69,7 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 output keyVaultResourceId string = managedHsm.id
 
 @description('The name of the HSMKey Vault Encryption Key.')
-output keyVaultEncryptionKeyName string = managedHsm::key.name
+output keyName string = managedHsm::key.name
+
+@description('The resource ID of the created Managed Identity.')
+output managedIdentityResourceId string = managedIdentity.id
