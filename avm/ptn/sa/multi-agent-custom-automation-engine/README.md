@@ -308,10 +308,6 @@ param virtualMachineAdminUsername = 'adminuser'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`azureAiServiceLocation`](#parameter-azureaiservicelocation) | string | Location for all AI service resources. This should be one of the supported Azure AI Service locations. |
-| [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
-| [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
-| [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
-| [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 
 **Optional parameters**
 
@@ -322,6 +318,10 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`backendContainerImageTag`](#parameter-backendcontainerimagetag) | string | The Container Image Tag to deploy on the backend. |
 | [`backendContainerRegistryHostname`](#parameter-backendcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the backend are located. |
 | [`createdBy`](#parameter-createdby) | string | Tag, Created by user name. |
+| [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
+| [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
+| [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
+| [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`frontendContainerImageName`](#parameter-frontendcontainerimagename) | string | The Container Image Name to deploy on the frontend. |
 | [`frontendContainerImageTag`](#parameter-frontendcontainerimagetag) | string | The Container Image Tag to deploy on the frontend. |
@@ -368,38 +368,6 @@ Location for all AI service resources. This should be one of the supported Azure
   ]
   ```
 
-### Parameter: `enableMonitoring`
-
-Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `enablePrivateNetworking`
-
-Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `enableRedundancy`
-
-Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `enableScalability`
-
-Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
 ### Parameter: `azureopenaiVersion`
 
 Version of the Azure OpenAI service to deploy. Defaults to 2025-01-01-preview.
@@ -439,6 +407,38 @@ Tag, Created by user name.
 - Required: No
 - Type: string
 - Default: `[if(contains(deployer(), 'userPrincipalName'), split(deployer().userPrincipalName, '@')[0], deployer().objectId)]`
+
+### Parameter: `enableMonitoring`
+
+Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enablePrivateNetworking`
+
+Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enableRedundancy`
+
+Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enableScalability`
+
+Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `enableTelemetry`
 
