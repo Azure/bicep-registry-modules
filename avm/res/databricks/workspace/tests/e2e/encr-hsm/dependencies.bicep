@@ -26,7 +26,7 @@ resource deploymentMSI 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11
 resource managedHsm 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = {
   name: managedHSMName
 
-  resource key1 'keys@2025-05-01' = {
+  resource key 'keys@2025-05-01' = {
     name: '${hsmKeyNamePrefix}-cmk'
     properties: {
       keySize: 4096
@@ -34,7 +34,7 @@ resource managedHsm 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = {
     }
   }
 
-  resource key2 'keys@2025-05-01' = {
+  resource keyDisk 'keys@2025-05-01' = {
     name: '${hsmKeyNamePrefix}-cmk-disk'
     properties: {
       keySize: 4096
@@ -73,7 +73,7 @@ resource configureHSM 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
 output keyVaultResourceId string = managedHsm.id
 
 @description('The name of the first HSMKey Vault Encryption Key.')
-output cmkName string = managedHsm::key1.name
+output cmkName string = managedHsm::key.name
 
 @description('The name of the second HSMKey Vault Encryption Key.')
-output cmkDiskName string = managedHsm::key2.name
+output cmkDiskName string = managedHsm::keyDisk.name
