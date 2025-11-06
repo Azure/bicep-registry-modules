@@ -57,7 +57,7 @@ resource configureHSM 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   properties: {
     azCliVersion: '2.67.0'
     retentionInterval: 'P1D'
-    arguments: '"${managedHsm.name}" "${managedHsm::key1.name}" "${managedHsm::key2.name}" "${databricksApplicationObjectId}"'
+    arguments: '"${managedHsm.name}" "${managedHsm::key.name}" "${managedHsm::keyDisk.name}" "${databricksApplicationObjectId}"'
     scriptContent: '''
       # Allow key reference via managedIdentity
       az keyvault role assignment create --hsm-name $1 --role "Managed HSM Crypto Service Encryption User" --scope /keys/$2 --assignee $4
