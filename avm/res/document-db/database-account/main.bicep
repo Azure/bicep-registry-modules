@@ -730,6 +730,12 @@ output secondaryReadWriteConnectionString string = databaseAccount.listConnectio
 @description('The secondary read-only connection string.')
 output secondaryReadOnlyConnectionString string = databaseAccount.listConnectionStrings().connectionStrings[3].connectionString
 
+output testOutput string? = !empty(customerManagedKey)
+  ? !isHSMManagedCMK
+      ? '${cMKKeyVault::cMKKey!.properties.keyUri}'
+      : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName!}'
+  : null
+
 // =============== //
 //   Definitions   //
 // =============== //
