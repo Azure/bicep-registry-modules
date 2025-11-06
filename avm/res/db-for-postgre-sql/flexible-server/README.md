@@ -36,12 +36,13 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/db-for-postgre-sql/flexible-server:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-2-using-customer-managed-keys-with-user-assigned-identity)
-- [Private access](#example-3-private-access)
-- [Public access with private endpoints](#example-4-public-access-with-private-endpoints)
-- [Public access](#example-5-public-access)
-- [Primary server and Readonly Replication server](#example-6-primary-server-and-readonly-replication-server)
-- [WAF-aligned](#example-7-waf-aligned)
+- [Using encryption with HSM Customer-Managed-Key](#example-2-using-encryption-with-hsm-customer-managed-key)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-3-using-customer-managed-keys-with-user-assigned-identity)
+- [Private access](#example-4-private-access)
+- [Public access with private endpoints](#example-5-public-access-with-private-endpoints)
+- [Public access](#example-6-public-access)
+- [Primary server and Readonly Replication server](#example-7-primary-server-and-readonly-replication-server)
+- [WAF-aligned](#example-8-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -140,7 +141,126 @@ param administrators = [
 </details>
 <p>
 
-### Example 2: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 2: _Using encryption with HSM Customer-Managed-Key_
+
+This instance deploys the module using HSM Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
+  name: 'flexibleServerDeployment'
+  params: {
+    // Required parameters
+    availabilityZone: -1
+    name: 'dfpshsm003'
+    skuName: 'Standard_D2s_v3'
+    tier: 'GeneralPurpose'
+    // Non-required parameters
+    administrators: [
+      {
+        objectId: '<objectId>'
+        principalName: '<principalName>'
+        principalType: 'ServicePrincipal'
+      }
+    ]
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    geoRedundantBackup: 'Disabled'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
+    "name": {
+      "value": "dfpshsm003"
+    },
+    "skuName": {
+      "value": "Standard_D2s_v3"
+    },
+    "tier": {
+      "value": "GeneralPurpose"
+    },
+    // Non-required parameters
+    "administrators": {
+      "value": [
+        {
+          "objectId": "<objectId>",
+          "principalName": "<principalName>",
+          "principalType": "ServicePrincipal"
+        }
+      ]
+    },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "geoRedundantBackup": {
+      "value": "Disabled"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
+
+// Required parameters
+param availabilityZone = -1
+param name = 'dfpshsm003'
+param skuName = 'Standard_D2s_v3'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param administrators = [
+  {
+    objectId: '<objectId>'
+    principalName: '<principalName>'
+    principalType: 'ServicePrincipal'
+  }
+]
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param geoRedundantBackup = 'Disabled'
+```
+
+</details>
+<p>
+
+### Example 3: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -305,7 +425,7 @@ param serverThreatProtection = 'Enabled'
 </details>
 <p>
 
-### Example 3: _Private access_
+### Example 4: _Private access_
 
 This instance deploys the module with private access only.
 
@@ -585,7 +705,7 @@ param roleAssignments = [
 </details>
 <p>
 
-### Example 4: _Public access with private endpoints_
+### Example 5: _Public access with private endpoints_
 
 This instance deploys the module with public access and private endpoints.
 
@@ -766,7 +886,7 @@ param privateEndpoints = [
 </details>
 <p>
 
-### Example 5: _Public access_
+### Example 6: _Public access_
 
 This instance deploys the module with public access and most of its features enabled.
 
@@ -1103,7 +1223,7 @@ param version = '14'
 </details>
 <p>
 
-### Example 6: _Primary server and Readonly Replication server_
+### Example 7: _Primary server and Readonly Replication server_
 
 This instance deploys a primary and readonly replication server using the module with the minimum set of required parameters.
 
@@ -1207,7 +1327,7 @@ param version = '17'
 </details>
 <p>
 
-### Example 7: _WAF-aligned_
+### Example 8: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
