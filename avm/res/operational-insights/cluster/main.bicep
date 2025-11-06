@@ -86,12 +86,14 @@ var formattedUserAssignedIdentities = reduce(
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
+// Null is not allowed, so always assigning a value
 var identity = {
   type: (managedIdentities.?systemAssigned ?? false)
     ? 'SystemAssigned'
     : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
   ...(!empty(formattedUserAssignedIdentities) ? { userAssignedIdentities: formattedUserAssignedIdentities } : {})
 }
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.operationalinsights-cluster.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
