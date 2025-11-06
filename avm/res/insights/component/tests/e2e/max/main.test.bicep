@@ -72,6 +72,7 @@ module testDeployment '../../../main.bicep' = {
     workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
     flowType: 'Redfield'
     requestSource: 'Azure'
+    immediatePurgeDataOn30Days: true
     diagnosticSettings: [
       {
         name: 'customSetting'
