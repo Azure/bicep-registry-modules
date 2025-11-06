@@ -17,8 +17,13 @@ param serviceShort string = 'dfpshsm'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Generated. Used as a basis for unique resource names.')
-param baseTime string = utcNow('u')
+@description('Required. The resource ID of the Managed Identity used by the deployment script. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-deploymentMSIName\'.')
+@secure()
+param deploymentMSIResourceId string = ''
+
+@description('Required. The resource ID of the managed HSM used for encryption. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-managedHSMResourceId\'.')
+@secure()
+param managedHSMResourceId string = ''
 
 var enforcedLocation = 'uksouth'
 
@@ -38,19 +43,19 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
-    // hsmKeyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
   }
 }
 
 module nestedHsmDependencies 'dependencies.hsm.bicep' = {
-  scope: az.resourceGroup('rsg-permanent-managed-hsm')
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedHSMDependencies'
+  name: '${uniqueString(deployment().name)}-nestedHSMDependencies'
   params: {
-    managedHsmName: 'mhsm-perm-avm-core-001'
     managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+    hsmKeyName: '${serviceShort}-${namePrefix}-key'
     hsmDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+    deploymentMSIResourceId: deploymentMSIResourceId
+    managedHSMName: last(split(managedHSMResourceId, '/'))
   }
+  scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
 }
 
 // ============== //
@@ -66,11 +71,6 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}003'
       geoRedundantBackup: 'Disabled' // If enabled, leads to error 'Data encryption parameters are invalid. Must provide user assigned identity and encryption key used to access data in the geographically redundant backup storage.'
       availabilityZone: -1
-      managedIdentities: {
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
-      }
       customerManagedKey: {
         keyName: nestedHsmDependencies.outputs.keyName
         keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
@@ -88,5 +88,3 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
-
-output dataEncryption object? = testDeployment[0].outputs.?dataEncryption
