@@ -2,6 +2,32 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/db-for-postgre-sql/flexible-server/CHANGELOG.md).
 
+## 0.14.0
+
+### Changes
+
+- Updated API version to `2025-06-01-preview`
+- Added read replica example
+- Added authConfigType as a resource defined type to address replica servers deployments. The existing administrators block was being passed
+- Added replicationRole parameter
+- Added conditional output for the fullyQualifiedDomainName property. In rare instances the deployment of the module would fail if the fullyQualifiedDomainName property was not returned from Azure. There is a long standing support ticket with the Flexible Server product group to address the issue permanently.
+- Added support for SystemAssigned identities
+
+### Breaking Changes
+
+- None
+
+## 0.13.2
+
+### Changes
+
+- Changed the type and implementation for customer managed keys to enable the now possible auto-key rotation. Parameter `customerManagedKey`.
+- Updated references to 'avm-common-types version' to latest `0.6.1`
+
+### Breaking Changes
+
+- None
+
 ## 0.13.1
 
 ### Changes

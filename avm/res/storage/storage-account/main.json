@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "18330630485971773183"
+      "version": "0.38.33.27573",
+      "templateHash": "11255024745956203428"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -254,69 +254,361 @@
         "description": "The type of a local user."
       }
     },
-    "_1.secretSetOutputType": {
+    "blobServiceType": {
       "type": "object",
       "properties": {
-        "secretResourceId": {
-          "type": "string",
+        "automaticSnapshotPolicyEnabled": {
+          "type": "bool",
+          "nullable": true,
           "metadata": {
-            "description": "The resourceId of the exported secret."
+            "description": "Optional. Automatic Snapshot is enabled if set to true."
           }
         },
-        "secretUri": {
-          "type": "string",
+        "changeFeedEnabled": {
+          "type": "bool",
+          "nullable": true,
           "metadata": {
-            "description": "The secret URI of the exported secret."
+            "description": "Optional. The blob service properties for change feed events. Indicates whether change feed event logging is enabled for the Blob service."
           }
         },
-        "secretUriWithVersion": {
-          "type": "string",
+        "changeFeedRetentionInDays": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 1,
+          "maxValue": 146000,
           "metadata": {
-            "description": "The secret URI with version of the exported secret."
+            "description": "Optional. Indicates whether change feed event logging is enabled for the Blob service. Indicates the duration of changeFeed retention in days. If left blank, it indicates an infinite retention of the change feed."
+          }
+        },
+        "containerDeleteRetentionPolicyEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The blob service properties for container soft delete. Indicates whether DeleteRetentionPolicy is enabled."
+          }
+        },
+        "containerDeleteRetentionPolicyDays": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 1,
+          "maxValue": 365,
+          "metadata": {
+            "description": "Optional. Indicates the number of days that the deleted item should be retained."
+          }
+        },
+        "containerDeleteRetentionPolicyAllowPermanentDelete": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. This property when set to true allows deletion of the soft deleted blob versions and snapshots. This property cannot be used with blob restore policy. This property only applies to blob service and does not apply to containers or file share."
+          }
+        },
+        "corsRules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/blobCorsRuleType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The List of CORS rules. You can include up to five CorsRule elements in the request."
+          }
+        },
+        "defaultServiceVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates the default version to use for requests to the Blob service if an incoming request's version is not specified. Possible values include version 2008-10-27 and all more recent versions."
+          }
+        },
+        "deleteRetentionPolicyEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The blob service properties for blob soft delete."
+          }
+        },
+        "deleteRetentionPolicyDays": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 1,
+          "maxValue": 365,
+          "metadata": {
+            "description": "Optional. Indicates the number of days that the deleted blob should be retained."
+          }
+        },
+        "deleteRetentionPolicyAllowPermanentDelete": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. This property when set to true allows deletion of the soft deleted blob versions and snapshots. This property cannot be used with blob restore policy. This property only applies to blob service and does not apply to containers or file share."
+          }
+        },
+        "isVersioningEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Use versioning to automatically maintain previous versions of your blobs. Cannot be enabled for ADLS Gen2 storage accounts."
+          }
+        },
+        "versionDeletePolicyDays": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Number of days to keep a version before deleting. If set, a lifecycle management policy will be created to handle deleting previous versions."
+          }
+        },
+        "lastAccessTimeTrackingPolicyEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The blob service property to configure last access time based tracking policy. When set to true last access time based tracking is enabled."
+          }
+        },
+        "restorePolicyEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The blob service properties for blob restore policy. If point-in-time restore is enabled, then versioning, change feed, and blob soft delete must also be enabled."
+          }
+        },
+        "restorePolicyDays": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 1,
+          "metadata": {
+            "description": "Optional. How long this blob can be restored. It should be less than DeleteRetentionPolicy days."
+          }
+        },
+        "containers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/containerType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Blob containers to create."
+          }
+        },
+        "diagnosticSettings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/diagnosticSettingFullType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The diagnostic settings of the service."
           }
         }
       },
       "metadata": {
-        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
-        }
+        "__bicep_export!": true,
+        "description": "The type of a blob service."
       }
     },
-    "_2.lockType": {
+    "fileServiceType": {
+      "type": "object",
+      "properties": {
+        "protocolSettings": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Storage/storageAccounts/fileServices@2024-01-01#properties/properties/properties/protocolSettings"
+            },
+            "description": "Optional. Protocol settings for file service."
+          },
+          "nullable": true
+        },
+        "shareDeleteRetentionPolicy": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Storage/storageAccounts/fileServices@2024-01-01#properties/properties/properties/shareDeleteRetentionPolicy"
+            },
+            "description": "Optional. The service properties for soft delete."
+          },
+          "nullable": true
+        },
+        "shares": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/fileShareType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. File shares to create."
+          }
+        },
+        "corsRules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/fileCorsRuleType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The List of CORS rules. You can include up to five CorsRule elements in the request."
+          }
+        },
+        "diagnosticSettings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/diagnosticSettingFullType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The diagnostic settings of the service."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a file service."
+      }
+    },
+    "queueServiceType": {
+      "type": "object",
+      "properties": {
+        "queues": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/queueType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Queues to create."
+          }
+        },
+        "corsRules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/queueCorsRuleType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The List of CORS rules. You can include up to five CorsRule elements in the request."
+          }
+        },
+        "diagnosticSettings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/diagnosticSettingFullType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The diagnostic settings of the service."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a queue service."
+      }
+    },
+    "tableServiceType": {
+      "type": "object",
+      "properties": {
+        "tables": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/tableType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tables to create."
+          }
+        },
+        "corsRules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/tableCorsRuleType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The List of CORS rules. You can include up to five CorsRule elements in the request."
+          }
+        },
+        "diagnosticSettings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/diagnosticSettingFullType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The diagnostic settings of the service."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a table service."
+      }
+    },
+    "objectReplicationPolicyType": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specify the name of lock."
+            "description": "Optional. The name of the object replication policy. If not provided, a GUID will be generated."
           }
         },
-        "kind": {
+        "destinationStorageAccountResourceId": {
           "type": "string",
-          "allowedValues": [
-            "CanNotDelete",
-            "None",
-            "ReadOnly"
-          ],
-          "nullable": true,
           "metadata": {
-            "description": "Optional. Specify the type of lock."
+            "description": "Required. The resource ID of the destination storage account."
           }
         },
-        "notes": {
-          "type": "string",
+        "enableMetrics": {
+          "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specify the notes of the lock."
+            "description": "Optional. Indicates whether metrics are enabled for the object replication policy."
+          }
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/objectReplicationPolicyRuleType"
+          },
+          "metadata": {
+            "description": "Required. The storage account object replication rules."
           }
         }
       },
       "metadata": {
-        "description": "An AVM-aligned type for a lock.",
+        "__bicep_export!": true,
+        "description": "The type of an object replication policy."
+      }
+    },
+    "_1.immutabilityPolicyType": {
+      "type": "object",
+      "properties": {
+        "immutabilityPeriodSinceCreationInDays": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The immutability period for the blobs in the container since the policy creation, in days."
+          }
+        },
+        "allowProtectedAppendWrites": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API."
+          }
+        },
+        "allowProtectedAppendWritesAll": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both \"Append and Block Blobs\" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The \"allowProtectedAppendWrites\" and \"allowProtectedAppendWritesAll\" properties are mutually exclusive."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for an immutability policy.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "blob-service/container/main.bicep"
         }
       }
     },
@@ -429,78 +721,186 @@
         }
       }
     },
-    "_2.roleAssignmentType": {
+    "_2.secretSetOutputType": {
       "type": "object",
       "properties": {
-        "name": {
+        "secretResourceId": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+            "description": "The resourceId of the exported secret."
           }
         },
-        "roleDefinitionIdOrName": {
+        "secretUri": {
           "type": "string",
           "metadata": {
-            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+            "description": "The secret URI of the exported secret."
           }
         },
-        "principalId": {
+        "secretUriWithVersion": {
           "type": "string",
           "metadata": {
-            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-          }
-        },
-        "principalType": {
-          "type": "string",
-          "allowedValues": [
-            "Device",
-            "ForeignGroup",
-            "Group",
-            "ServicePrincipal",
-            "User"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The principal type of the assigned principal ID."
-          }
-        },
-        "description": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The description of the role assignment."
-          }
-        },
-        "condition": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-          }
-        },
-        "conditionVersion": {
-          "type": "string",
-          "allowedValues": [
-            "2.0"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Version of the condition."
-          }
-        },
-        "delegatedManagedIdentityResourceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The Resource Id of the delegated managed identity resource."
+            "description": "The secret URI with version of the exported secret."
           }
         }
       },
       "metadata": {
-        "description": "An AVM-aligned type for a role assignment.",
+        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "blobCorsRuleType": {
+      "type": "object",
+      "properties": {
+        "allowedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of headers allowed to be part of the cross-origin request."
+          }
+        },
+        "allowedMethods": {
+          "type": "array",
+          "allowedValues": [
+            "CONNECT",
+            "DELETE",
+            "GET",
+            "HEAD",
+            "MERGE",
+            "OPTIONS",
+            "PATCH",
+            "POST",
+            "PUT",
+            "TRACE"
+          ],
+          "metadata": {
+            "description": "Required. A list of HTTP methods that are allowed to be executed by the origin."
+          }
+        },
+        "allowedOrigins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains."
+          }
+        },
+        "exposedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of response headers to expose to CORS clients."
+          }
+        },
+        "maxAgeInSeconds": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The number of seconds that the client/browser should cache a preflight response."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a cors rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "blob-service/main.bicep",
+          "originalIdentifier": "corsRuleType"
+        }
+      }
+    },
+    "containerType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Storage Container to deploy."
+          }
+        },
+        "defaultEncryptionScope": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default the container to use specified encryption scope for all writes."
+          }
+        },
+        "denyEncryptionScopeOverride": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Block override of encryption scope from the container default."
+          }
+        },
+        "enableNfsV3AllSquash": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable NFSv3 all squash on blob container."
+          }
+        },
+        "enableNfsV3RootSquash": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable NFSv3 root squash on blob container."
+          }
+        },
+        "immutableStorageWithVersioningEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. This is an immutable property, when set to true it enables object level immutability at the container level. The property is immutable and can only be set to true at the container creation time. Existing containers must undergo a migration process."
+          }
+        },
+        "immutabilityPolicy": {
+          "$ref": "#/definitions/_1.immutabilityPolicyType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Configure immutability policy."
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01#properties/properties/properties/metadata"
+            },
+            "description": "Optional. A name-value pair to associate with the container as metadata."
+          },
+          "nullable": true
+        },
+        "publicAccess": {
+          "type": "string",
+          "allowedValues": [
+            "Blob",
+            "Container",
+            "None"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies whether data in the container may be accessed publicly and the level of access."
+          }
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of role assignments to create."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type of a storage container.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "blob-service/main.bicep"
         }
       }
     },
@@ -544,7 +944,129 @@
       "metadata": {
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "diagnosticSettingFullType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the diagnostic setting."
+          }
+        },
+        "logCategoriesAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "metricCategories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -633,7 +1155,140 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if only metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "fileCorsRuleType": {
+      "type": "object",
+      "properties": {
+        "allowedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of headers allowed to be part of the cross-origin request."
+          }
+        },
+        "allowedMethods": {
+          "type": "array",
+          "allowedValues": [
+            "CONNECT",
+            "DELETE",
+            "GET",
+            "HEAD",
+            "MERGE",
+            "OPTIONS",
+            "PATCH",
+            "POST",
+            "PUT",
+            "TRACE"
+          ],
+          "metadata": {
+            "description": "Required. A list of HTTP methods that are allowed to be executed by the origin."
+          }
+        },
+        "allowedOrigins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains."
+          }
+        },
+        "exposedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of response headers to expose to CORS clients."
+          }
+        },
+        "maxAgeInSeconds": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The number of seconds that the client/browser should cache a preflight response."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a cors rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "file-service/main.bicep",
+          "originalIdentifier": "corsRuleType"
+        }
+      }
+    },
+    "fileShareType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the file share."
+          }
+        },
+        "accessTier": {
+          "type": "string",
+          "allowedValues": [
+            "Cool",
+            "Hot",
+            "Premium",
+            "TransactionOptimized"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Access tier for specific share. Required if the Storage Account kind is set to FileStorage (should be set to \"Premium\"). GpV2 account can choose between TransactionOptimized (default), Hot, and Cool."
+          }
+        },
+        "enabledProtocols": {
+          "type": "string",
+          "allowedValues": [
+            "NFS",
+            "SMB"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The authentication protocol that is used for the file share. Can only be specified when creating a share."
+          }
+        },
+        "rootSquash": {
+          "type": "string",
+          "allowedValues": [
+            "AllSquash",
+            "NoRootSquash",
+            "RootSquash"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares."
+          }
+        },
+        "shareQuota": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The maximum size of the share, in gigabytes. Must be greater than 0, and less than or equal to 5120 (5TB). For Large File Shares, the maximum size is 102400 (100TB)."
+          }
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of role assignments to create."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a file share.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "file-service/main.bicep"
         }
       }
     },
@@ -670,7 +1325,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -698,7 +1353,64 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "objectReplicationPolicyRuleType": {
+      "type": "object",
+      "properties": {
+        "ruleId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The ID of the rule. Auto-generated on destination account. Required for source account."
+          }
+        },
+        "containerName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the source container."
+          }
+        },
+        "destinationContainerName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the destination container. If not provided, the same name as the source container will be used."
+          }
+        },
+        "filters": {
+          "type": "object",
+          "properties": {
+            "prefixMatch": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The prefix to match for the replication policy rule."
+              }
+            },
+            "minCreationTime": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The minimum creation time to match for the replication policy rule."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The filters for the object replication policy rule."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type of an object replication policy rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "object-replication-policy/policy/main.bicep"
         }
       }
     },
@@ -833,7 +1545,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/_2.lockType",
+          "$ref": "#/definitions/lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -842,7 +1554,7 @@
         "roleAssignments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_2.roleAssignmentType"
+            "$ref": "#/definitions/roleAssignmentType"
           },
           "nullable": true,
           "metadata": {
@@ -871,6 +1583,106 @@
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...).",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "queueCorsRuleType": {
+      "type": "object",
+      "properties": {
+        "allowedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of headers allowed to be part of the cross-origin request."
+          }
+        },
+        "allowedMethods": {
+          "type": "array",
+          "allowedValues": [
+            "CONNECT",
+            "DELETE",
+            "GET",
+            "HEAD",
+            "MERGE",
+            "OPTIONS",
+            "PATCH",
+            "POST",
+            "PUT",
+            "TRACE"
+          ],
+          "metadata": {
+            "description": "Required. A list of HTTP methods that are allowed to be executed by the origin."
+          }
+        },
+        "allowedOrigins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains."
+          }
+        },
+        "exposedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of response headers to expose to CORS clients."
+          }
+        },
+        "maxAgeInSeconds": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The number of seconds that the client/browser should cache a preflight response."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a cors rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "queue-service/main.bicep",
+          "originalIdentifier": "corsRuleType"
+        }
+      }
+    },
+    "queueType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the queue."
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Storage/storageAccounts/queueServices/queues@2024-01-01#properties/properties/properties/metadata"
+            },
+            "description": "Optional. Metadata to set on the queue."
+          },
+          "nullable": true
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of role assignments to create."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a queue.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "queue-service/main.bicep"
         }
       }
     },
@@ -945,7 +1757,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -953,7 +1765,7 @@
       "type": "object",
       "properties": {},
       "additionalProperties": {
-        "$ref": "#/definitions/_1.secretSetOutputType",
+        "$ref": "#/definitions/_2.secretSetOutputType",
         "metadata": {
           "description": "An exported secret's references."
         }
@@ -961,7 +1773,7 @@
       "metadata": {
         "description": "A map of the exported secrets",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -987,6 +1799,96 @@
           "sourceTemplate": "local-user/main.bicep"
         }
       }
+    },
+    "tableCorsRuleType": {
+      "type": "object",
+      "properties": {
+        "allowedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of headers allowed to be part of the cross-origin request."
+          }
+        },
+        "allowedMethods": {
+          "type": "array",
+          "allowedValues": [
+            "CONNECT",
+            "DELETE",
+            "GET",
+            "HEAD",
+            "MERGE",
+            "OPTIONS",
+            "PATCH",
+            "POST",
+            "PUT",
+            "TRACE"
+          ],
+          "metadata": {
+            "description": "Required. A list of HTTP methods that are allowed to be executed by the origin."
+          }
+        },
+        "allowedOrigins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains."
+          }
+        },
+        "exposedHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of response headers to expose to CORS clients."
+          }
+        },
+        "maxAgeInSeconds": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The number of seconds that the client/browser should cache a preflight response."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a cors rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "table-service/main.bicep",
+          "originalIdentifier": "corsRuleType"
+        }
+      }
+    },
+    "tableType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the table."
+          }
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of role assignments to create."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a table.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "table-service/main.bicep"
+        }
+      }
     }
   },
   "parameters": {
@@ -1002,6 +1904,13 @@
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "Optional. Location for all resources."
+      }
+    },
+    "extendedLocationZone": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Extended Zone location (ex 'losangeles'). When supplied, the storage account will be created in the specified zone under the parent location. The extended zone must be available in the supplied parent location."
       }
     },
     "roleAssignments": {
@@ -1086,7 +1995,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Storage/storageAccounts@2024-01-01#properties/properties/properties/azureFilesIdentityBasedAuthentication"
+          "source": "Microsoft.Storage/storageAccounts@2025-01-01#properties/properties/properties/azureFilesIdentityBasedAuthentication"
         },
         "description": "Optional. Provides the identity based authentication settings for Azure Files."
       },
@@ -1118,10 +2027,13 @@
     },
     "managementPolicyRules": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Storage/storageAccounts/managementPolicies@2025-01-01#properties/properties/properties/policy/properties/rules"
+        },
         "description": "Optional. The Storage Account ManagementPolicies Rules."
-      }
+      },
+      "nullable": true
     },
     "networkAcls": {
       "$ref": "#/definitions/networkAclsType",
@@ -1170,28 +2082,28 @@
       }
     },
     "blobServices": {
-      "type": "object",
+      "$ref": "#/definitions/blobServiceType",
       "defaultValue": "[if(not(equals(parameters('kind'), 'FileStorage')), createObject('containerDeleteRetentionPolicyEnabled', true(), 'containerDeleteRetentionPolicyDays', 7, 'deleteRetentionPolicyEnabled', true(), 'deleteRetentionPolicyDays', 6), createObject())]",
       "metadata": {
         "description": "Optional. Blob service and containers to deploy."
       }
     },
     "fileServices": {
-      "type": "object",
+      "$ref": "#/definitions/fileServiceType",
       "defaultValue": {},
       "metadata": {
         "description": "Optional. File service and shares to deploy."
       }
     },
     "queueServices": {
-      "type": "object",
+      "$ref": "#/definitions/queueServiceType",
       "defaultValue": {},
       "metadata": {
         "description": "Optional. Queue service and queues to create."
       }
     },
     "tableServices": {
-      "type": "object",
+      "$ref": "#/definitions/tableServiceType",
       "defaultValue": {},
       "metadata": {
         "description": "Optional. Table service and tables to create."
@@ -1273,7 +2185,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Storage/storageAccounts@2024-01-01#properties/tags"
+          "source": "Microsoft.Storage/storageAccounts@2025-01-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -1357,6 +2269,26 @@
       "metadata": {
         "description": "Optional. Key vault reference and secret settings for the module's secrets export."
       }
+    },
+    "immutableStorageWithVersioning": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Storage/storageAccounts@2025-01-01#properties/properties/properties/immutableStorageWithVersioning"
+        },
+        "description": "Optional. The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default. Cannot be enabled for ADLS Gen2 storage accounts."
+      },
+      "nullable": true
+    },
+    "objectReplicationPolicies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/objectReplicationPolicyType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Object replication policies for the storage account."
+      }
     }
   },
   "variables": {
@@ -1368,6 +2300,7 @@
       }
     ],
     "enableReferencedModulesTelemetry": false,
+    "immutabilityValidation": "[if(and(equals(parameters('enableHierarchicalNamespace'), true()), not(empty(parameters('immutableStorageWithVersioning')))), fail('Configuration error: Immutable storage with versioning cannot be enabled when hierarchical namespace is enabled.'), null())]",
     "supportsBlobService": "[or(or(or(equals(parameters('kind'), 'BlockBlobStorage'), equals(parameters('kind'), 'BlobStorage')), equals(parameters('kind'), 'StorageV2')), equals(parameters('kind'), 'Storage'))]",
     "supportsFileService": "[or(or(equals(parameters('kind'), 'FileStorage'), equals(parameters('kind'), 'StorageV2')), equals(parameters('kind'), 'Storage'))]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
@@ -1397,7 +2330,8 @@
       "Storage Table Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')]",
       "Storage Table Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76199698-9eea-4c19-bc75-cec21354c6b6')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "formattedManagementPolicies": "[union(coalesce(parameters('managementPolicyRules'), createArray()), if(and(and(not(empty(parameters('blobServices'))), coalesce(tryGet(parameters('blobServices'), 'isVersioningEnabled'), false())), not(equals(tryGet(parameters('blobServices'), 'versionDeletePolicyDays'), null()))), createArray(createObject('name', 'DeletePreviousVersions (auto-created)', 'enabled', true(), 'type', 'Lifecycle', 'definition', createObject('actions', createObject('version', createObject('delete', createObject('daysAfterCreationGreaterThan', parameters('blobServices').versionDeletePolicyDays))), 'filters', createObject('blobTypes', createArray('blockBlob', 'appendBlob'))))), createArray()))]"
   },
   "resources": {
     "cMKKeyVault::cMKKey": {
@@ -1412,7 +2346,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -1433,7 +2367,7 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2024-11-01",
+      "apiVersion": "2025-05-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -1449,16 +2383,17 @@
     },
     "storageAccount": {
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
+      "extendedLocation": "[if(not(empty(parameters('extendedLocationZone'))), createObject('name', parameters('extendedLocationZone'), 'type', 'EdgeZone'), null())]",
       "kind": "[parameters('kind')]",
       "sku": {
         "name": "[parameters('skuName')]"
       },
       "identity": "[variables('identity')]",
       "tags": "[parameters('tags')]",
-      "properties": "[shallowMerge(createArray(createObject('allowSharedKeyAccess', parameters('allowSharedKeyAccess'), 'defaultToOAuthAuthentication', parameters('defaultToOAuthAuthentication'), 'allowCrossTenantReplication', parameters('allowCrossTenantReplication'), 'allowedCopyScope', parameters('allowedCopyScope'), 'customDomain', createObject('name', parameters('customDomainName'), 'useSubDomainName', parameters('customDomainUseSubDomainName')), 'dnsEndpointType', parameters('dnsEndpointType'), 'isLocalUserEnabled', parameters('isLocalUserEnabled'), 'encryption', union(createObject('keySource', if(not(empty(parameters('customerManagedKey'))), 'Microsoft.Keyvault', 'Microsoft.Storage'), 'services', createObject('blob', if(variables('supportsBlobService'), createObject('enabled', true()), null()), 'file', if(variables('supportsFileService'), createObject('enabled', true()), null()), 'table', createObject('enabled', true(), 'keyType', parameters('keyType')), 'queue', createObject('enabled', true(), 'keyType', parameters('keyType'))), 'keyvaultproperties', if(not(empty(parameters('customerManagedKey'))), createObject('keyname', parameters('customerManagedKey').keyName, 'keyvaulturi', reference('cMKKeyVault').vaultUri, 'keyversion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null()), 'identity', createObject('userAssignedIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), null()))), if(parameters('requireInfrastructureEncryption'), createObject('requireInfrastructureEncryption', if(not(equals(parameters('kind'), 'Storage')), parameters('requireInfrastructureEncryption'), null())), createObject())), 'accessTier', if(and(not(equals(parameters('kind'), 'Storage')), not(equals(parameters('kind'), 'BlockBlobStorage'))), parameters('accessTier'), null()), 'sasPolicy', if(not(empty(parameters('sasExpirationPeriod'))), createObject('expirationAction', parameters('sasExpirationAction'), 'sasExpirationPeriod', parameters('sasExpirationPeriod')), null()), 'supportsHttpsTrafficOnly', parameters('supportsHttpsTrafficOnly'), 'isSftpEnabled', parameters('enableSftp'), 'isNfsV3Enabled', if(parameters('enableNfsV3'), parameters('enableNfsV3'), ''), 'largeFileSharesState', if(or(equals(parameters('skuName'), 'Standard_LRS'), equals(parameters('skuName'), 'Standard_ZRS')), parameters('largeFileSharesState'), null()), 'minimumTlsVersion', parameters('minimumTlsVersion'), 'networkAcls', if(not(empty(parameters('networkAcls'))), union(createObject('resourceAccessRules', tryGet(parameters('networkAcls'), 'resourceAccessRules'), 'defaultAction', coalesce(tryGet(parameters('networkAcls'), 'defaultAction'), 'Deny'), 'virtualNetworkRules', tryGet(parameters('networkAcls'), 'virtualNetworkRules'), 'ipRules', tryGet(parameters('networkAcls'), 'ipRules')), if(contains(parameters('networkAcls'), 'bypass'), createObject('bypass', tryGet(parameters('networkAcls'), 'bypass')), createObject())), createObject('bypass', 'AzureServices', 'defaultAction', 'Deny')), 'allowBlobPublicAccess', parameters('allowBlobPublicAccess'), 'publicNetworkAccess', if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkAcls'))), 'Disabled', null()))), if(not(empty(parameters('azureFilesIdentityBasedAuthentication'))), createObject('azureFilesIdentityBasedAuthentication', parameters('azureFilesIdentityBasedAuthentication')), createObject()), if(not(equals(parameters('enableHierarchicalNamespace'), null())), createObject('isHnsEnabled', parameters('enableHierarchicalNamespace')), createObject())))]",
+      "properties": "[shallowMerge(createArray(createObject('allowSharedKeyAccess', parameters('allowSharedKeyAccess'), 'defaultToOAuthAuthentication', parameters('defaultToOAuthAuthentication'), 'allowCrossTenantReplication', parameters('allowCrossTenantReplication'), 'allowedCopyScope', parameters('allowedCopyScope'), 'customDomain', createObject('name', parameters('customDomainName'), 'useSubDomainName', parameters('customDomainUseSubDomainName')), 'dnsEndpointType', parameters('dnsEndpointType'), 'isLocalUserEnabled', parameters('isLocalUserEnabled'), 'encryption', union(createObject('keySource', if(not(empty(parameters('customerManagedKey'))), 'Microsoft.Keyvault', 'Microsoft.Storage'), 'services', createObject('blob', if(variables('supportsBlobService'), createObject('enabled', true()), null()), 'file', if(variables('supportsFileService'), createObject('enabled', true()), null()), 'table', createObject('enabled', true(), 'keyType', parameters('keyType')), 'queue', createObject('enabled', true(), 'keyType', parameters('keyType'))), 'keyvaultproperties', if(not(empty(parameters('customerManagedKey'))), createObject('keyname', parameters('customerManagedKey').keyName, 'keyvaulturi', reference('cMKKeyVault').vaultUri, 'keyversion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null()), 'identity', createObject('userAssignedIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), null()))), if(parameters('requireInfrastructureEncryption'), createObject('requireInfrastructureEncryption', if(not(equals(parameters('kind'), 'Storage')), parameters('requireInfrastructureEncryption'), null())), createObject())), 'accessTier', if(and(not(equals(parameters('kind'), 'Storage')), not(equals(parameters('kind'), 'BlockBlobStorage'))), parameters('accessTier'), null()), 'sasPolicy', if(not(empty(parameters('sasExpirationPeriod'))), createObject('expirationAction', parameters('sasExpirationAction'), 'sasExpirationPeriod', parameters('sasExpirationPeriod')), null()), 'supportsHttpsTrafficOnly', parameters('supportsHttpsTrafficOnly'), 'isSftpEnabled', parameters('enableSftp'), 'isNfsV3Enabled', if(parameters('enableNfsV3'), parameters('enableNfsV3'), ''), 'largeFileSharesState', if(or(equals(parameters('skuName'), 'Standard_LRS'), equals(parameters('skuName'), 'Standard_ZRS')), parameters('largeFileSharesState'), null()), 'minimumTlsVersion', parameters('minimumTlsVersion'), 'networkAcls', if(not(empty(parameters('networkAcls'))), union(createObject('resourceAccessRules', tryGet(parameters('networkAcls'), 'resourceAccessRules'), 'defaultAction', coalesce(tryGet(parameters('networkAcls'), 'defaultAction'), 'Deny'), 'virtualNetworkRules', tryGet(parameters('networkAcls'), 'virtualNetworkRules'), 'ipRules', tryGet(parameters('networkAcls'), 'ipRules')), if(contains(parameters('networkAcls'), 'bypass'), createObject('bypass', tryGet(parameters('networkAcls'), 'bypass')), createObject())), createObject('bypass', 'AzureServices', 'defaultAction', 'Deny')), 'allowBlobPublicAccess', parameters('allowBlobPublicAccess'), 'publicNetworkAccess', if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkAcls'))), 'Disabled', null()))), if(not(empty(parameters('azureFilesIdentityBasedAuthentication'))), createObject('azureFilesIdentityBasedAuthentication', parameters('azureFilesIdentityBasedAuthentication')), createObject()), if(not(equals(parameters('enableHierarchicalNamespace'), null())), createObject('isHnsEnabled', parameters('enableHierarchicalNamespace')), createObject()), createObject('immutableStorageWithVersioning', parameters('immutableStorageWithVersioning'))))]",
       "dependsOn": [
         "cMKKeyVault",
         "cMKKeyVault::cMKKey"
@@ -1538,7 +2473,7 @@
         "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-sa-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
@@ -1594,8 +2529,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "12389807800450456797"
+              "version": "0.38.5.1644",
+              "templateHash": "16604612898799598358"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -1622,115 +2557,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "ipConfigurationType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the resource that is unique within a resource group."
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "groupId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
-                      }
-                    },
-                    "memberName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
-                      }
-                    },
-                    "privateIPAddress": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. Properties of private endpoint IP configurations."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "privateLinkServiceConnectionType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the private link service connection."
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "groupIds": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "metadata": {
-                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
-                      }
-                    },
-                    "privateLinkServiceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The resource id of private link service."
-                      }
-                    },
-                    "requestMessage": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. Properties of private link service connection."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "customDnsConfigType": {
-              "type": "object",
-              "properties": {
-                "fqdn": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. FQDN that resolves to private endpoint IP address."
-                  }
-                },
-                "ipAddresses": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "metadata": {
-                    "description": "Required. A list of private IP addresses of the private endpoint."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of a private dns zone group."
               }
             },
             "lockType": {
@@ -1754,12 +2582,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -1781,6 +2616,7 @@
                 }
               },
               "metadata": {
+                "description": "The type of a private DNS zone group configuration.",
                 "__bicep_imported_from!": {
                   "sourceTemplate": "private-dns-zone-group/main.bicep"
                 }
@@ -1857,7 +2693,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -1894,13 +2730,13 @@
             },
             "ipConfigurations": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/ipConfigurationType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/ipConfigurations"
+                },
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
-              }
+              },
+              "nullable": true
             },
             "privateDnsZoneGroup": {
               "$ref": "#/definitions/privateDnsZoneGroupType",
@@ -1935,40 +2771,43 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/tags"
+                },
                 "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
-              }
+              },
+              "nullable": true
             },
             "customDnsConfigs": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/customDnsConfigType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs"
+                },
                 "description": "Optional. Custom DNS configurations."
-              }
+              },
+              "nullable": true
             },
             "manualPrivateLinkServiceConnections": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/privateLinkServiceConnectionType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/manualPrivateLinkServiceConnections"
+                },
                 "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
-              }
+              },
+              "nullable": true
             },
             "privateLinkServiceConnections": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/privateLinkServiceConnectionType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/privateLinkServiceConnections"
+                },
                 "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
-              }
+              },
+              "nullable": true
             },
             "enableTelemetry": {
               "type": "bool",
@@ -2003,8 +2842,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2022,7 +2861,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2024-10-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -2054,7 +2893,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "privateEndpoint"
@@ -2085,7 +2924,7 @@
             "privateEndpoint_privateDnsZoneGroup": {
               "condition": "[not(empty(parameters('privateDnsZoneGroup')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-PrivateEndpoint-PrivateDnsZoneGroup', uniqueString(deployment().name))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -2110,8 +2949,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "13997305779829540948"
+                      "version": "0.38.5.1644",
+                      "templateHash": "24141742673128945"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -2135,7 +2974,8 @@
                         }
                       },
                       "metadata": {
-                        "__bicep_export!": true
+                        "__bicep_export!": true,
+                        "description": "The type of a private DNS zone group configuration."
                       }
                     }
                   },
@@ -2165,33 +3005,30 @@
                       }
                     }
                   },
-                  "variables": {
-                    "copy": [
-                      {
-                        "name": "privateDnsZoneConfigsVar",
-                        "count": "[length(parameters('privateDnsZoneConfigs'))]",
-                        "input": {
-                          "name": "[coalesce(tryGet(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')], 'name'), last(split(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId, '/')))]",
-                          "properties": {
-                            "privateDnsZoneId": "[parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId]"
-                          }
-                        }
-                      }
-                    ]
-                  },
                   "resources": {
                     "privateEndpoint": {
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2024-10-01",
                       "name": "[parameters('privateEndpointName')]"
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2024-10-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
-                        "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
+                        "copy": [
+                          {
+                            "name": "privateDnsZoneConfigs",
+                            "count": "[length(parameters('privateDnsZoneConfigs'))]",
+                            "input": {
+                              "name": "[coalesce(tryGet(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')], 'name'), last(split(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')].privateDnsZoneResourceId, '/')))]",
+                              "properties": {
+                                "privateDnsZoneId": "[parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')].privateDnsZoneResourceId]"
+                              }
+                            }
+                          }
+                        ]
                       }
                     }
                   },
@@ -2252,14 +3089,15 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2024-10-01', 'full').location]"
             },
             "customDnsConfigs": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/customDnsConfigType"
-              },
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs",
+                  "output": true
+                },
                 "description": "The custom DNS configurations of the private endpoint."
               },
               "value": "[reference('privateEndpoint').customDnsConfigs]"
@@ -2290,9 +3128,9 @@
       ]
     },
     "storageAccount_managementPolicies": {
-      "condition": "[not(empty(coalesce(parameters('managementPolicyRules'), createArray())))]",
+      "condition": "[not(empty(coalesce(variables('formattedManagementPolicies'), createArray())))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Storage-ManagementPolicies', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2304,7 +3142,7 @@
             "value": "[parameters('name')]"
           },
           "rules": {
-            "value": "[parameters('managementPolicyRules')]"
+            "value": "[variables('formattedManagementPolicies')]"
           }
         },
         "template": {
@@ -2313,8 +3151,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "14529265638306912023"
+              "version": "0.38.33.27573",
+              "templateHash": "6960218931054567030"
             },
             "name": "Storage Account Management Policies",
             "description": "This module deploys a Storage Account Management Policy."
@@ -2385,7 +3223,7 @@
         "count": "[length(coalesce(parameters('localUsers'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Storage-LocalUsers-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2425,8 +3263,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "3261275799710495788"
+              "version": "0.38.33.27573",
+              "templateHash": "9436518181019837288"
             },
             "name": "Storage Account Local Users",
             "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication."
@@ -2593,7 +3431,7 @@
     "storageAccount_blobServices": {
       "condition": "[not(empty(parameters('blobServices')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Storage-BlobServices', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2663,8 +3501,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "1215393307957288546"
+              "version": "0.38.33.27573",
+              "templateHash": "16519807023802262557"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service."
@@ -2728,6 +3566,95 @@
               "metadata": {
                 "__bicep_export!": true,
                 "description": "The type for a cors rule."
+              }
+            },
+            "containerType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the Storage Container to deploy."
+                  }
+                },
+                "defaultEncryptionScope": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Default the container to use specified encryption scope for all writes."
+                  }
+                },
+                "denyEncryptionScopeOverride": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Block override of encryption scope from the container default."
+                  }
+                },
+                "enableNfsV3AllSquash": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enable NFSv3 all squash on blob container."
+                  }
+                },
+                "enableNfsV3RootSquash": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enable NFSv3 root squash on blob container."
+                  }
+                },
+                "immutableStorageWithVersioningEnabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. This is an immutable property, when set to true it enables object level immutability at the container level. The property is immutable and can only be set to true at the container creation time. Existing containers must undergo a migration process."
+                  }
+                },
+                "immutabilityPolicy": {
+                  "$ref": "#/definitions/immutabilityPolicyType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Configure immutability policy."
+                  }
+                },
+                "metadata": {
+                  "type": "object",
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01#properties/properties/properties/metadata"
+                    },
+                    "description": "Optional. A name-value pair to associate with the container as metadata."
+                  },
+                  "nullable": true
+                },
+                "publicAccess": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Blob",
+                    "Container",
+                    "None"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specifies whether data in the container may be accessed publicly and the level of access."
+                  }
+                },
+                "roleAssignments": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/roleAssignmentType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Array of role assignments to create."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type of a storage container."
               }
             },
             "diagnosticSettingFullType": {
@@ -2848,7 +3775,114 @@
               "metadata": {
                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                }
+              }
+            },
+            "immutabilityPolicyType": {
+              "type": "object",
+              "properties": {
+                "immutabilityPeriodSinceCreationInDays": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The immutability period for the blobs in the container since the policy creation, in days."
+                  }
+                },
+                "allowProtectedAppendWrites": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API."
+                  }
+                },
+                "allowProtectedAppendWritesAll": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both \"Append and Block Blobs\" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The \"allowProtectedAppendWrites\" and \"allowProtectedAppendWritesAll\" properties are mutually exclusive."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for an immutability policy.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "container/main.bicep"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -2951,7 +3985,7 @@
               "type": "bool",
               "defaultValue": false,
               "metadata": {
-                "description": "Optional. Use versioning to automatically maintain previous versions of your blobs."
+                "description": "Optional. Use versioning to automatically maintain previous versions of your blobs. Cannot be enabled for ADLS Gen2 storage accounts."
               }
             },
             "lastAccessTimeTrackingPolicyEnabled": {
@@ -2978,6 +4012,9 @@
             },
             "containers": {
               "type": "array",
+              "items": {
+                "$ref": "#/definitions/containerType"
+              },
               "nullable": true,
               "metadata": {
                 "description": "Optional. Blob containers to create."
@@ -3002,12 +4039,12 @@
             "storageAccount": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('storageAccountName')]"
             },
             "blobServices": {
               "type": "Microsoft.Storage/storageAccounts/blobServices",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), variables('name'))]",
               "properties": {
                 "automaticSnapshotPolicyEnabled": "[parameters('automaticSnapshotPolicyEnabled')]",
@@ -3025,7 +4062,7 @@
                   "allowPermanentDelete": "[if(and(parameters('deleteRetentionPolicyEnabled'), parameters('deleteRetentionPolicyAllowPermanentDelete')), true(), null())]"
                 },
                 "isVersioningEnabled": "[parameters('isVersioningEnabled')]",
-                "lastAccessTimeTrackingPolicy": "[if(not(equals(reference('storageAccount', '2024-01-01', 'full').kind, 'Storage')), createObject('enable', parameters('lastAccessTimeTrackingPolicyEnabled'), 'name', if(equals(parameters('lastAccessTimeTrackingPolicyEnabled'), true()), 'AccessTimeTracking', null()), 'trackingGranularityInDays', if(equals(parameters('lastAccessTimeTrackingPolicyEnabled'), true()), 1, null())), null())]",
+                "lastAccessTimeTrackingPolicy": "[if(and(not(equals(reference('storageAccount', '2025-01-01', 'full').kind, 'Storage')), empty(tryGet(reference('storageAccount', '2025-01-01', 'full'), 'extendedLocation'))), createObject('enable', parameters('lastAccessTimeTrackingPolicyEnabled'), 'name', if(equals(parameters('lastAccessTimeTrackingPolicyEnabled'), true()), 'AccessTimeTracking', null()), 'trackingGranularityInDays', if(equals(parameters('lastAccessTimeTrackingPolicyEnabled'), true()), 1, null())), null())]",
                 "restorePolicy": "[if(parameters('restorePolicyEnabled'), createObject('enabled', true(), 'days', parameters('restorePolicyDays')), null())]"
               },
               "dependsOn": [
@@ -3079,7 +4116,7 @@
                 "count": "[length(coalesce(parameters('containers'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-Container-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -3120,8 +4157,8 @@
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'roleAssignments')]"
                   },
-                  "immutabilityPolicyProperties": {
-                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'immutabilityPolicyProperties')]"
+                  "immutabilityPolicy": {
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'immutabilityPolicy')]"
                   },
                   "enableTelemetry": {
                     "value": "[variables('enableReferencedModulesTelemetry')]"
@@ -3134,13 +4171,43 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "15600440533481093288"
+                      "version": "0.38.33.27573",
+                      "templateHash": "18247497253572624333"
                     },
                     "name": "Storage Account Blob Containers",
                     "description": "This module deploys a Storage Account Blob Container."
                   },
                   "definitions": {
+                    "immutabilityPolicyType": {
+                      "type": "object",
+                      "properties": {
+                        "immutabilityPeriodSinceCreationInDays": {
+                          "type": "int",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The immutability period for the blobs in the container since the policy creation, in days."
+                          }
+                        },
+                        "allowProtectedAppendWrites": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API."
+                          }
+                        },
+                        "allowProtectedAppendWritesAll": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both \"Append and Block Blobs\" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The \"allowProtectedAppendWrites\" and \"allowProtectedAppendWritesAll\" properties are mutually exclusive."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "The type for an immutability policy."
+                      }
+                    },
                     "roleAssignmentType": {
                       "type": "object",
                       "properties": {
@@ -3212,7 +4279,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     }
@@ -3273,15 +4340,8 @@
                         "description": "Optional. This is an immutable property, when set to true it enables object level immutability at the container level. The property is immutable and can only be set to true at the container creation time. Existing containers must undergo a migration process."
                       }
                     },
-                    "immutabilityPolicyName": {
-                      "type": "string",
-                      "defaultValue": "default",
-                      "metadata": {
-                        "description": "Optional. Name of the immutable policy."
-                      }
-                    },
-                    "immutabilityPolicyProperties": {
-                      "type": "object",
+                    "immutabilityPolicy": {
+                      "$ref": "#/definitions/immutabilityPolicyType",
                       "nullable": true,
                       "metadata": {
                         "description": "Optional. Configure immutability policy."
@@ -3355,7 +4415,7 @@
                     "storageAccount::blobServices": {
                       "existing": true,
                       "type": "Microsoft.Storage/storageAccounts/blobServices",
-                      "apiVersion": "2024-01-01",
+                      "apiVersion": "2025-01-01",
                       "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('blobServiceName'))]"
                     },
                     "avmTelemetry": {
@@ -3381,19 +4441,19 @@
                     "storageAccount": {
                       "existing": true,
                       "type": "Microsoft.Storage/storageAccounts",
-                      "apiVersion": "2024-01-01",
+                      "apiVersion": "2025-01-01",
                       "name": "[parameters('storageAccountName')]"
                     },
                     "container": {
                       "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-                      "apiVersion": "2024-01-01",
+                      "apiVersion": "2025-01-01",
                       "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), parameters('blobServiceName'), parameters('name'))]",
                       "properties": {
                         "defaultEncryptionScope": "[parameters('defaultEncryptionScope')]",
                         "denyEncryptionScopeOverride": "[parameters('denyEncryptionScopeOverride')]",
                         "enableNfsV3AllSquash": "[if(equals(parameters('enableNfsV3AllSquash'), true()), parameters('enableNfsV3AllSquash'), null())]",
                         "enableNfsV3RootSquash": "[if(equals(parameters('enableNfsV3RootSquash'), true()), parameters('enableNfsV3RootSquash'), null())]",
-                        "immutableStorageWithVersioning": "[if(equals(parameters('immutableStorageWithVersioningEnabled'), true()), createObject('enabled', parameters('immutableStorageWithVersioningEnabled')), null())]",
+                        "immutableStorageWithVersioning": "[if(parameters('immutableStorageWithVersioningEnabled'), createObject('enabled', parameters('immutableStorageWithVersioningEnabled')), null())]",
                         "metadata": "[parameters('metadata')]",
                         "publicAccess": "[parameters('publicAccess')]"
                       }
@@ -3420,11 +4480,11 @@
                         "container"
                       ]
                     },
-                    "immutabilityPolicy": {
-                      "condition": "[not(empty(coalesce(parameters('immutabilityPolicyProperties'), createObject())))]",
+                    "container_immutabilityPolicy": {
+                      "condition": "[not(empty(coalesce(parameters('immutabilityPolicy'), createObject())))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-{1}', parameters('name'), parameters('immutabilityPolicyName'))]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[take(format('{0}-ImmutPol', deployment().name), 64)]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -3438,13 +4498,13 @@
                             "value": "[parameters('name')]"
                           },
                           "immutabilityPeriodSinceCreationInDays": {
-                            "value": "[tryGet(parameters('immutabilityPolicyProperties'), 'immutabilityPeriodSinceCreationInDays')]"
+                            "value": "[tryGet(parameters('immutabilityPolicy'), 'immutabilityPeriodSinceCreationInDays')]"
                           },
                           "allowProtectedAppendWrites": {
-                            "value": "[tryGet(parameters('immutabilityPolicyProperties'), 'allowProtectedAppendWrites')]"
+                            "value": "[tryGet(parameters('immutabilityPolicy'), 'allowProtectedAppendWrites')]"
                           },
                           "allowProtectedAppendWritesAll": {
-                            "value": "[tryGet(parameters('immutabilityPolicyProperties'), 'allowProtectedAppendWritesAll')]"
+                            "value": "[tryGet(parameters('immutabilityPolicy'), 'allowProtectedAppendWritesAll')]"
                           }
                         },
                         "template": {
@@ -3453,8 +4513,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.37.4.10188",
-                              "templateHash": "2858994808980111017"
+                              "version": "0.38.33.27573",
+                              "templateHash": "1872120962131123050"
                             },
                             "name": "Storage Account Blob Container Immutability Policies",
                             "description": "This module deploys a Storage Account Blob Container Immutability Policy."
@@ -3484,7 +4544,7 @@
                               "type": "bool",
                               "defaultValue": true,
                               "metadata": {
-                                "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API."
+                                "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The \"allowProtectedAppendWrites\" and \"allowProtectedAppendWritesAll\" properties are mutually exclusive."
                               }
                             },
                             "allowProtectedAppendWritesAll": {
@@ -3495,11 +4555,14 @@
                               }
                             }
                           },
+                          "variables": {
+                            "name": "default"
+                          },
                           "resources": [
                             {
                               "type": "Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies",
-                              "apiVersion": "2024-01-01",
-                              "name": "[format('{0}/{1}/{2}/{3}', parameters('storageAccountName'), 'default', parameters('containerName'), 'default')]",
+                              "apiVersion": "2025-01-01",
+                              "name": "[format('{0}/{1}/{2}/{3}', parameters('storageAccountName'), 'default', parameters('containerName'), variables('name'))]",
                               "properties": {
                                 "immutabilityPeriodSinceCreationInDays": "[parameters('immutabilityPeriodSinceCreationInDays')]",
                                 "allowProtectedAppendWrites": "[parameters('allowProtectedAppendWrites')]",
@@ -3513,14 +4576,14 @@
                               "metadata": {
                                 "description": "The name of the deployed immutability policy."
                               },
-                              "value": "default"
+                              "value": "[variables('name')]"
                             },
                             "resourceId": {
                               "type": "string",
                               "metadata": {
                                 "description": "The resource ID of the deployed immutability policy."
                               },
-                              "value": "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies', parameters('storageAccountName'), 'default', parameters('containerName'), 'default')]"
+                              "value": "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies', parameters('storageAccountName'), 'default', parameters('containerName'), variables('name'))]"
                             },
                             "resourceGroupName": {
                               "type": "string",
@@ -3599,7 +4662,7 @@
     "storageAccount_fileServices": {
       "condition": "[not(empty(parameters('fileServices')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Storage-FileServices', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -3623,7 +4686,7 @@
             "value": "[tryGet(parameters('fileServices'), 'shares')]"
           },
           "corsRules": {
-            "value": "[tryGet(parameters('queueServices'), 'corsRules')]"
+            "value": "[tryGet(parameters('fileServices'), 'corsRules')]"
           }
         },
         "template": {
@@ -3633,8 +4696,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "2735186993322606805"
+              "version": "0.38.33.27573",
+              "templateHash": "18014560633119842738"
             },
             "name": "Storage Account File Share Services",
             "description": "This module deploys a Storage Account File Share Service."
@@ -3698,6 +4761,74 @@
               "metadata": {
                 "__bicep_export!": true,
                 "description": "The type for a cors rule."
+              }
+            },
+            "fileShareType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the file share."
+                  }
+                },
+                "accessTier": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Cool",
+                    "Hot",
+                    "Premium",
+                    "TransactionOptimized"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Access tier for specific share. Required if the Storage Account kind is set to FileStorage (should be set to \"Premium\"). GpV2 account can choose between TransactionOptimized (default), Hot, and Cool."
+                  }
+                },
+                "enabledProtocols": {
+                  "type": "string",
+                  "allowedValues": [
+                    "NFS",
+                    "SMB"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The authentication protocol that is used for the file share. Can only be specified when creating a share."
+                  }
+                },
+                "rootSquash": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AllSquash",
+                    "NoRootSquash",
+                    "RootSquash"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares."
+                  }
+                },
+                "shareQuota": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The maximum size of the share, in gigabytes. Must be greater than 0, and less than or equal to 5120 (5TB). For Large File Shares, the maximum size is 102400 (100TB)."
+                  }
+                },
+                "roleAssignments": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/roleAssignmentType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Array of role assignments to create."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a file share."
               }
             },
             "diagnosticSettingFullType": {
@@ -3821,6 +4952,81 @@
                   "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                }
+              }
             }
           },
           "parameters": {
@@ -3883,6 +5089,9 @@
             },
             "shares": {
               "type": "array",
+              "items": {
+                "$ref": "#/definitions/fileShareType"
+              },
               "nullable": true,
               "metadata": {
                 "description": "Optional. File shares to create."
@@ -3956,8 +5165,8 @@
                 "count": "[length(coalesce(parameters('shares'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-shares-{1}', deployment().name, copyIndex())]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-FileShare-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -3999,8 +5208,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "15881640847294537074"
+                      "version": "0.38.33.27573",
+                      "templateHash": "6562391216093407918"
                     },
                     "name": "Storage Account File Shares",
                     "description": "This module deploys a Storage Account File Share."
@@ -4077,7 +5286,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     }
@@ -4237,7 +5446,7 @@
                         "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
                       },
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-Share-Rbac-{1}', uniqueString(deployment().name), copyIndex())]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -4433,7 +5642,7 @@
     "storageAccount_queueServices": {
       "condition": "[not(empty(parameters('queueServices')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Storage-QueueServices', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -4461,8 +5670,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "1100093319443502715"
+              "version": "0.38.33.27573",
+              "templateHash": "14320740623684459446"
             },
             "name": "Storage Account Queue Services",
             "description": "This module deploys a Storage Account Queue Service."
@@ -4526,6 +5735,41 @@
               "metadata": {
                 "__bicep_export!": true,
                 "description": "The type for a cors rule."
+              }
+            },
+            "queueType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the queue."
+                  }
+                },
+                "metadata": {
+                  "type": "object",
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Storage/storageAccounts/queueServices/queues@2024-01-01#properties/properties/properties/metadata"
+                    },
+                    "description": "Optional. Metadata to set on the queue."
+                  },
+                  "nullable": true
+                },
+                "roleAssignments": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/roleAssignmentType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Array of role assignments to create."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a queue."
               }
             },
             "diagnosticSettingFullType": {
@@ -4646,7 +5890,82 @@
               "metadata": {
                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -4661,7 +5980,10 @@
             },
             "queues": {
               "type": "array",
-              "nullable": true,
+              "items": {
+                "$ref": "#/definitions/queueType"
+              },
+              "defaultValue": [],
               "metadata": {
                 "description": "Optional. Queues to create."
               }
@@ -4752,7 +6074,7 @@
                 "count": "[length(coalesce(parameters('queues'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-Queue-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -4780,8 +6102,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "17963799770990303971"
+                      "version": "0.38.33.27573",
+                      "templateHash": "17820569818642693530"
                     },
                     "name": "Storage Account Queues",
                     "description": "This module deploys a Storage Account Queue."
@@ -4858,7 +6180,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     }
@@ -4997,21 +6319,21 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "The name of the deployed file share service."
+                "description": "The name of the deployed queue service."
               },
               "value": "[variables('name')]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
-                "description": "The resource ID of the deployed file share service."
+                "description": "The resource ID of the deployed queue service."
               },
               "value": "[resourceId('Microsoft.Storage/storageAccounts/queueServices', parameters('storageAccountName'), variables('name'))]"
             },
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The resource group of the deployed file share service."
+                "description": "The resource group of the deployed queue service."
               },
               "value": "[resourceGroup().name]"
             }
@@ -5025,7 +6347,7 @@
     "storageAccount_tableServices": {
       "condition": "[not(empty(parameters('tableServices')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Storage-TableServices', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -5053,8 +6375,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13069389074590786512"
+              "version": "0.38.33.27573",
+              "templateHash": "15397070691540239144"
             },
             "name": "Storage Account Table Services",
             "description": "This module deploys a Storage Account Table Service."
@@ -5118,6 +6440,31 @@
               "metadata": {
                 "__bicep_export!": true,
                 "description": "The type for a cors rule."
+              }
+            },
+            "tableType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the table."
+                  }
+                },
+                "roleAssignments": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/roleAssignmentType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Array of role assignments to create."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a table."
               }
             },
             "diagnosticSettingFullType": {
@@ -5238,7 +6585,82 @@
               "metadata": {
                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -5253,9 +6675,12 @@
             },
             "tables": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "$ref": "#/definitions/tableType"
+              },
+              "nullable": true,
               "metadata": {
-                "description": "Optional. tables to create."
+                "description": "Optional. Tables to create."
               }
             },
             "corsRules": {
@@ -5341,10 +6766,10 @@
             "tableServices_tables": {
               "copy": {
                 "name": "tableServices_tables",
-                "count": "[length(parameters('tables'))]"
+                "count": "[length(coalesce(parameters('tables'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-Table-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -5353,13 +6778,13 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[parameters('tables')[copyIndex()].name]"
+                    "value": "[coalesce(parameters('tables'), createArray())[copyIndex()].name]"
                   },
                   "storageAccountName": {
                     "value": "[parameters('storageAccountName')]"
                   },
                   "roleAssignments": {
-                    "value": "[tryGet(parameters('tables')[copyIndex()], 'roleAssignments')]"
+                    "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'roleAssignments')]"
                   }
                 },
                 "template": {
@@ -5369,8 +6794,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "10905926757212375091"
+                      "version": "0.38.33.27573",
+                      "templateHash": "2494851345252564065"
                     },
                     "name": "Storage Account Table",
                     "description": "This module deploys a Storage Account Table."
@@ -5447,7 +6872,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     }
@@ -5544,21 +6969,21 @@
                     "name": {
                       "type": "string",
                       "metadata": {
-                        "description": "The name of the deployed file share service."
+                        "description": "The name of the deployed table."
                       },
                       "value": "[parameters('name')]"
                     },
                     "resourceId": {
                       "type": "string",
                       "metadata": {
-                        "description": "The resource ID of the deployed file share service."
+                        "description": "The resource ID of the deployed table."
                       },
                       "value": "[resourceId('Microsoft.Storage/storageAccounts/tableServices/tables', parameters('storageAccountName'), 'default', parameters('name'))]"
                     },
                     "resourceGroupName": {
                       "type": "string",
                       "metadata": {
-                        "description": "The resource group of the deployed file share service."
+                        "description": "The resource group of the deployed table."
                       },
                       "value": "[resourceGroup().name]"
                     }
@@ -5599,7 +7024,7 @@
     "secretsExport": {
       "condition": "[not(equals(parameters('secretsExportConfiguration'), null()))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
       "subscriptionId": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[4]]",
@@ -5613,7 +7038,7 @@
             "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listKeys('storageAccount', '2024-01-01').keys[0].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'connectionString1Name'), 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2024-01-01').keys[0].value, environment().suffixes.storage))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listKeys('storageAccount', '2024-01-01').keys[1].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'connectionString2Name'), 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2024-01-01').keys[1].value, environment().suffixes.storage))), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listKeys('storageAccount', '2025-01-01').keys[0].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'connectionString1Name'), 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2025-01-01').keys[0].value, environment().suffixes.storage))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listKeys('storageAccount', '2025-01-01').keys[1].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'connectionString2Name'), 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2025-01-01').keys[1].value, environment().suffixes.storage))), createArray()))]"
           }
         },
         "template": {
@@ -5623,8 +7048,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "9368972709899985618"
+              "version": "0.38.33.27573",
+              "templateHash": "15162266628501794465"
             }
           },
           "definitions": {
@@ -5742,6 +7167,620 @@
       "dependsOn": [
         "storageAccount"
       ]
+    },
+    "storageAccount_objectReplicationPolicies": {
+      "copy": {
+        "name": "storageAccount_objectReplicationPolicies",
+        "count": "[length(coalesce(parameters('objectReplicationPolicies'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-Storage-ObjRepPolicy-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "storageAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "destinationAccountResourceId": {
+            "value": "[coalesce(parameters('objectReplicationPolicies'), createArray())[copyIndex()].destinationStorageAccountResourceId]"
+          },
+          "enableMetrics": {
+            "value": "[coalesce(tryGet(coalesce(parameters('objectReplicationPolicies'), createArray())[copyIndex()], 'enableMetrics'), false())]"
+          },
+          "rules": {
+            "value": "[tryGet(coalesce(parameters('objectReplicationPolicies'), createArray())[copyIndex()], 'rules')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.38.33.27573",
+              "templateHash": "7981342209922290627"
+            },
+            "name": "Storage Account Object Replication Policy",
+            "description": "This module deploys a Storage Account Object Replication Policy for both the source account and destination account."
+          },
+          "definitions": {
+            "objectReplicationPolicyRuleType": {
+              "type": "object",
+              "properties": {
+                "ruleId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The ID of the rule. Auto-generated on destination account. Required for source account."
+                  }
+                },
+                "containerName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the source container."
+                  }
+                },
+                "destinationContainerName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the destination container. If not provided, the same name as the source container will be used."
+                  }
+                },
+                "filters": {
+                  "type": "object",
+                  "properties": {
+                    "prefixMatch": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The prefix to match for the replication policy rule."
+                      }
+                    },
+                    "minCreationTime": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The minimum creation time to match for the replication policy rule."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The filters for the object replication policy rule."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type of an object replication policy rule.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "policy/main.bicep"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Name of the policy."
+              }
+            },
+            "storageAccountName": {
+              "type": "string",
+              "maxLength": 24,
+              "metadata": {
+                "description": "Required. The name of the parent Storage Account."
+              }
+            },
+            "destinationAccountResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Resource ID of the destination storage account for replication."
+              }
+            },
+            "enableMetrics": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Whether metrics are enabled for the object replication policy."
+              }
+            },
+            "rules": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/objectReplicationPolicyRuleType"
+              },
+              "metadata": {
+                "description": "Required. Rules for the object replication policy."
+              }
+            }
+          },
+          "variables": {
+            "destAccountResourceIdParts": "[split(parameters('destinationAccountResourceId'), '/')]",
+            "destAccountName": "[if(not(empty(variables('destAccountResourceIdParts'))), last(variables('destAccountResourceIdParts')), parameters('destinationAccountResourceId'))]",
+            "destAccountSubscription": "[if(greater(length(variables('destAccountResourceIdParts')), 2), variables('destAccountResourceIdParts')[2], subscription().subscriptionId)]",
+            "destAccountResourceGroupName": "[if(greater(length(variables('destAccountResourceIdParts')), 4), variables('destAccountResourceIdParts')[4], resourceGroup().name)]"
+          },
+          "resources": {
+            "storageAccount": {
+              "existing": true,
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2025-01-01",
+              "name": "[parameters('storageAccountName')]"
+            },
+            "destinationPolicy": {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[take(format('{0}-ObjRep-Policy-dest-{1}', deployment().name, variables('destAccountName')), 64)]",
+              "subscriptionId": "[variables('destAccountSubscription')]",
+              "resourceGroup": "[variables('destAccountResourceGroupName')]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[coalesce(parameters('name'), 'default')]"
+                  },
+                  "storageAccountName": {
+                    "value": "[variables('destAccountName')]"
+                  },
+                  "sourceStorageAccountResourceId": {
+                    "value": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+                  },
+                  "destinationAccountResourceId": {
+                    "value": "[parameters('destinationAccountResourceId')]"
+                  },
+                  "enableMetrics": {
+                    "value": "[parameters('enableMetrics')]"
+                  },
+                  "rules": {
+                    "value": "[parameters('rules')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.38.33.27573",
+                      "templateHash": "13231340475360081313"
+                    },
+                    "name": "Storage Account Object Replication Policy",
+                    "description": "This module deploys a Storage Account Object Replication Policy for a provided storage account."
+                  },
+                  "definitions": {
+                    "objectReplicationPolicyRuleType": {
+                      "type": "object",
+                      "properties": {
+                        "ruleId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The ID of the rule. Auto-generated on destination account. Required for source account."
+                          }
+                        },
+                        "containerName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The name of the source container."
+                          }
+                        },
+                        "destinationContainerName": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of the destination container. If not provided, the same name as the source container will be used."
+                          }
+                        },
+                        "filters": {
+                          "type": "object",
+                          "properties": {
+                            "prefixMatch": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The prefix to match for the replication policy rule."
+                              }
+                            },
+                            "minCreationTime": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The minimum creation time to match for the replication policy rule."
+                              }
+                            }
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The filters for the object replication policy rule."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "The type of an object replication policy rule."
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Name of the policy."
+                      }
+                    },
+                    "storageAccountName": {
+                      "type": "string",
+                      "maxLength": 24,
+                      "metadata": {
+                        "description": "Required. The name of the Storage Account on which to create the policy."
+                      }
+                    },
+                    "sourceStorageAccountResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Resource ID of the source storage account for replication."
+                      }
+                    },
+                    "destinationAccountResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Resource ID of the destination storage account for replication."
+                      }
+                    },
+                    "enableMetrics": {
+                      "type": "bool",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Whether metrics are enabled for the object replication policy."
+                      }
+                    },
+                    "rules": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/objectReplicationPolicyRuleType"
+                      },
+                      "metadata": {
+                        "description": "Required. Rules for the object replication policy."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "storageAccount": {
+                      "existing": true,
+                      "type": "Microsoft.Storage/storageAccounts",
+                      "apiVersion": "2025-01-01",
+                      "name": "[parameters('storageAccountName')]"
+                    },
+                    "objectReplicationPolicy": {
+                      "type": "Microsoft.Storage/storageAccounts/objectReplicationPolicies",
+                      "apiVersion": "2025-01-01",
+                      "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('name'))]",
+                      "properties": {
+                        "copy": [
+                          {
+                            "name": "rules",
+                            "count": "[length(parameters('rules'))]",
+                            "input": {
+                              "ruleId": "[tryGet(parameters('rules')[copyIndex('rules')], 'ruleId')]",
+                              "sourceContainer": "[parameters('rules')[copyIndex('rules')].containerName]",
+                              "destinationContainer": "[coalesce(tryGet(parameters('rules')[copyIndex('rules')], 'destinationContainerName'), parameters('rules')[copyIndex('rules')].containerName)]",
+                              "filters": "[if(not(equals(tryGet(parameters('rules')[copyIndex('rules')], 'filters'), null())), createObject('prefixMatch', tryGet(tryGet(parameters('rules')[copyIndex('rules')], 'filters'), 'prefixMatch'), 'minCreationTime', tryGet(tryGet(parameters('rules')[copyIndex('rules')], 'filters'), 'minCreationTime')), null())]"
+                            }
+                          }
+                        ],
+                        "destinationAccount": "[parameters('destinationAccountResourceId')]",
+                        "metrics": {
+                          "enabled": "[coalesce(parameters('enableMetrics'), false())]"
+                        },
+                        "sourceAccount": "[parameters('sourceStorageAccountResourceId')]"
+                      }
+                    }
+                  },
+                  "outputs": {
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Resource group name of the provisioned resources."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "objectReplicationPolicyId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Resource ID of the created Object Replication Policy."
+                      },
+                      "value": "[resourceId('Microsoft.Storage/storageAccounts/objectReplicationPolicies', parameters('storageAccountName'), parameters('name'))]"
+                    },
+                    "policyId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Policy ID of the created Object Replication Policy."
+                      },
+                      "value": "[reference('objectReplicationPolicy').policyId]"
+                    },
+                    "rules": {
+                      "type": "array",
+                      "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Storage/storageAccounts/objectReplicationPolicies@2025-01-01#properties/properties/properties/rules",
+                          "output": true
+                        },
+                        "description": "Rules created Object Replication Policy."
+                      },
+                      "value": "[reference('objectReplicationPolicy').rules]"
+                    }
+                  }
+                }
+              }
+            },
+            "sourcePolicy": {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[take(format('{0}-ObjRep-Policy-source-{1}', deployment().name, parameters('storageAccountName')), 64)]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[reference('destinationPolicy').outputs.policyId.value]"
+                  },
+                  "storageAccountName": {
+                    "value": "[parameters('storageAccountName')]"
+                  },
+                  "sourceStorageAccountResourceId": {
+                    "value": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+                  },
+                  "destinationAccountResourceId": {
+                    "value": "[parameters('destinationAccountResourceId')]"
+                  },
+                  "enableMetrics": {
+                    "value": "[parameters('enableMetrics')]"
+                  },
+                  "rules": {
+                    "copy": [
+                      {
+                        "name": "value",
+                        "count": "[length(parameters('rules'))]",
+                        "input": "[union(parameters('rules')[copyIndex('value')], createObject('ruleId', reference('destinationPolicy').outputs.rules.value[copyIndex('value')].ruleId))]"
+                      }
+                    ]
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.38.33.27573",
+                      "templateHash": "13231340475360081313"
+                    },
+                    "name": "Storage Account Object Replication Policy",
+                    "description": "This module deploys a Storage Account Object Replication Policy for a provided storage account."
+                  },
+                  "definitions": {
+                    "objectReplicationPolicyRuleType": {
+                      "type": "object",
+                      "properties": {
+                        "ruleId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The ID of the rule. Auto-generated on destination account. Required for source account."
+                          }
+                        },
+                        "containerName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The name of the source container."
+                          }
+                        },
+                        "destinationContainerName": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of the destination container. If not provided, the same name as the source container will be used."
+                          }
+                        },
+                        "filters": {
+                          "type": "object",
+                          "properties": {
+                            "prefixMatch": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The prefix to match for the replication policy rule."
+                              }
+                            },
+                            "minCreationTime": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The minimum creation time to match for the replication policy rule."
+                              }
+                            }
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The filters for the object replication policy rule."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "The type of an object replication policy rule."
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Name of the policy."
+                      }
+                    },
+                    "storageAccountName": {
+                      "type": "string",
+                      "maxLength": 24,
+                      "metadata": {
+                        "description": "Required. The name of the Storage Account on which to create the policy."
+                      }
+                    },
+                    "sourceStorageAccountResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Resource ID of the source storage account for replication."
+                      }
+                    },
+                    "destinationAccountResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Resource ID of the destination storage account for replication."
+                      }
+                    },
+                    "enableMetrics": {
+                      "type": "bool",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Whether metrics are enabled for the object replication policy."
+                      }
+                    },
+                    "rules": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/objectReplicationPolicyRuleType"
+                      },
+                      "metadata": {
+                        "description": "Required. Rules for the object replication policy."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "storageAccount": {
+                      "existing": true,
+                      "type": "Microsoft.Storage/storageAccounts",
+                      "apiVersion": "2025-01-01",
+                      "name": "[parameters('storageAccountName')]"
+                    },
+                    "objectReplicationPolicy": {
+                      "type": "Microsoft.Storage/storageAccounts/objectReplicationPolicies",
+                      "apiVersion": "2025-01-01",
+                      "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('name'))]",
+                      "properties": {
+                        "copy": [
+                          {
+                            "name": "rules",
+                            "count": "[length(parameters('rules'))]",
+                            "input": {
+                              "ruleId": "[tryGet(parameters('rules')[copyIndex('rules')], 'ruleId')]",
+                              "sourceContainer": "[parameters('rules')[copyIndex('rules')].containerName]",
+                              "destinationContainer": "[coalesce(tryGet(parameters('rules')[copyIndex('rules')], 'destinationContainerName'), parameters('rules')[copyIndex('rules')].containerName)]",
+                              "filters": "[if(not(equals(tryGet(parameters('rules')[copyIndex('rules')], 'filters'), null())), createObject('prefixMatch', tryGet(tryGet(parameters('rules')[copyIndex('rules')], 'filters'), 'prefixMatch'), 'minCreationTime', tryGet(tryGet(parameters('rules')[copyIndex('rules')], 'filters'), 'minCreationTime')), null())]"
+                            }
+                          }
+                        ],
+                        "destinationAccount": "[parameters('destinationAccountResourceId')]",
+                        "metrics": {
+                          "enabled": "[coalesce(parameters('enableMetrics'), false())]"
+                        },
+                        "sourceAccount": "[parameters('sourceStorageAccountResourceId')]"
+                      }
+                    }
+                  },
+                  "outputs": {
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Resource group name of the provisioned resources."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "objectReplicationPolicyId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Resource ID of the created Object Replication Policy."
+                      },
+                      "value": "[resourceId('Microsoft.Storage/storageAccounts/objectReplicationPolicies', parameters('storageAccountName'), parameters('name'))]"
+                    },
+                    "policyId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Policy ID of the created Object Replication Policy."
+                      },
+                      "value": "[reference('objectReplicationPolicy').policyId]"
+                    },
+                    "rules": {
+                      "type": "array",
+                      "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Storage/storageAccounts/objectReplicationPolicies@2025-01-01#properties/properties/properties/rules",
+                          "output": true
+                        },
+                        "description": "Rules created Object Replication Policy."
+                      },
+                      "value": "[reference('objectReplicationPolicy').rules]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "destinationPolicy"
+              ]
+            }
+          },
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource group name of the provisioned resources."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "objectReplicationPolicyId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of the created Object Replication Policy in the source account."
+              },
+              "value": "[reference('sourcePolicy').outputs.objectReplicationPolicyId.value]"
+            },
+            "policyId": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy ID of the created Object Replication Policy in the source account."
+              },
+              "value": "[reference('sourcePolicy').outputs.policyId.value]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "storageAccount",
+        "storageAccount_blobServices"
+      ]
     }
   },
   "outputs": {
@@ -5779,14 +7818,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('storageAccount', '2024-01-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('storageAccount', '2025-01-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('storageAccount', '2024-01-01', 'full').location]"
+      "value": "[reference('storageAccount', '2025-01-01', 'full').location]"
     },
     "serviceEndpoints": {
       "type": "object",
@@ -5826,28 +7865,28 @@
       "metadata": {
         "description": "The primary access key of the storage account."
       },
-      "value": "[listKeys('storageAccount', '2024-01-01').keys[0].value]"
+      "value": "[listKeys('storageAccount', '2025-01-01').keys[0].value]"
     },
     "secondaryAccessKey": {
       "type": "securestring",
       "metadata": {
         "description": "The secondary access key of the storage account."
       },
-      "value": "[listKeys('storageAccount', '2024-01-01').keys[1].value]"
+      "value": "[listKeys('storageAccount', '2025-01-01').keys[1].value]"
     },
     "primaryConnectionString": {
       "type": "securestring",
       "metadata": {
         "description": "The primary connection string of the storage account."
       },
-      "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2024-01-01').keys[0].value, environment().suffixes.storage)]"
+      "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2025-01-01').keys[0].value, environment().suffixes.storage)]"
     },
     "secondaryConnectionString": {
       "type": "securestring",
       "metadata": {
         "description": "The secondary connection string of the storage account."
       },
-      "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2024-01-01').keys[1].value, environment().suffixes.storage)]"
+      "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2025-01-01').keys[1].value, environment().suffixes.storage)]"
     }
   }
 }

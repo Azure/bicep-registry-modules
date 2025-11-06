@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "15803818087846229068"
+      "version": "0.38.5.1644",
+      "templateHash": "11814049283144062120"
     },
     "name": "Service Fabric Clusters",
     "description": "This module deploys a Service Fabric Cluster."
@@ -282,10 +282,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ServiceFabric/clusters@2021-04-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "lock": {
       "$ref": "#/definitions/lockType",
@@ -713,7 +716,7 @@
         "count": "[length(parameters('applicationTypes'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-SFC-{1}', uniqueString(deployment().name, parameters('location')), parameters('applicationTypes')[copyIndex()].name)]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -738,8 +741,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "18194873252053897414"
+              "version": "0.38.5.1644",
+              "templateHash": "13680418401617861921"
             },
             "name": "Service Fabric Cluster Application Types",
             "description": "This module deploys a Service Fabric Cluster Application Type."

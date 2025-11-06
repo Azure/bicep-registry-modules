@@ -22,7 +22,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/virtualWans@2024-10-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -79,13 +79,13 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource virtualWan 'Microsoft.Network/virtualWans@2024-07-01' = {
+resource virtualWan 'Microsoft.Network/virtualWans@2024-10-01' = {
   name: name
   location: location
   tags: tags
   properties: {
-    allowBranchToBranchTraffic: allowBranchToBranchTraffic
     type: type
+    allowBranchToBranchTraffic: allowBranchToBranchTraffic
   }
 }
 

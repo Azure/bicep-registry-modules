@@ -43,10 +43,24 @@ param logAnalyticsWorkspaceResourceId string
 @description('Required. The name of the disk to create.')
 param preCreatedDiskName string
 
+@description('Generated. Do not provide a value! This date value is used to generate a registration token.')
+param baseTime string = utcNow('u')
+
+@description('Optional. SAS token validity length to use to download files from storage accounts. Usage: \'PT8H\' - valid for 8 hours; \'P5D\' - valid for 5 days; \'P1Y\' - valid for 1 year. When not provided, the SAS token will be valid for 8 hours.')
+param sasTokenValidityLength string = 'PT8H'
+
 var storageAccountCSEFileName = 'scriptExtensionMasterInstaller.ps1'
 var addressPrefix = '10.0.0.0/16'
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+var accountSasProperties = {
+  signedServices: 'b'
+  signedPermission: 'r'
+  signedExpiry: dateTimeAdd(baseTime, sasTokenValidityLength)
+  signedResourceTypes: 'o'
+  signedProtocol: 'https'
+}
+
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -66,12 +80,12 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
-resource applicationSecurityGroup 'Microsoft.Network/applicationSecurityGroups@2023-04-01' = {
+resource applicationSecurityGroup 'Microsoft.Network/applicationSecurityGroups@2024-07-01' = {
   name: applicationSecurityGroupName
   location: location
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
@@ -89,7 +103,7 @@ resource msiRGContrRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-
   }
 }
 
-resource loadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
+resource loadBalancer 'Microsoft.Network/loadBalancers@2024-07-01' = {
   name: loadBalancerName
   location: location
   sku: {
@@ -125,16 +139,18 @@ resource pip 'Microsoft.Network/publicIPAddresses@2024-01-01' = {
   }
 }
 
-resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2022-04-01' = {
+resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2025-02-01' = {
   name: recoveryServicesVaultName
   location: location
   sku: {
     name: 'RS0'
     tier: 'Standard'
   }
-  properties: {}
+  properties: {
+    publicNetworkAccess: 'Enabled'
+  }
 
-  resource backupPolicy 'backupPolicies@2022-03-01' = {
+  resource backupPolicy 'backupPolicies@2025-02-01' = {
     name: 'backupPolicy'
     properties: {
       backupManagementType: 'AzureIaasVM'
@@ -217,7 +233,7 @@ resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2022-04-01' = 
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -234,7 +250,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2022-07-01' = {
+  resource key 'keys@2024-11-01' = {
     name: 'encryptionKey'
     properties: {
       kty: 'RSA'
@@ -268,7 +284,7 @@ resource msiKVReadRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-0
   }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
   name: storageAccountName
   location: location
   sku: {
@@ -276,16 +292,16 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   }
   kind: 'StorageV2'
 
-  resource blobService 'blobServices@2021-09-01' = {
+  resource blobService 'blobServices@2025-01-01' = {
     name: 'default'
 
-    resource container 'containers@2021-09-01' = {
+    resource container 'containers@2025-01-01' = {
       name: 'scripts'
     }
   }
 }
 
-resource storageUpload 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+resource storageUpload 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: storageUploadDeploymentScriptName
   location: location
   kind: 'AzurePowerShell'
@@ -296,7 +312,7 @@ resource storageUpload 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
     }
   }
   properties: {
-    azPowerShellVersion: '9.0'
+    azPowerShellVersion: '11.0'
     retentionInterval: 'P1D'
     arguments: '-StorageAccountName "${storageAccount.name}" -ResourceGroupName "${resourceGroup().name}" -ContainerName "${storageAccount::blobService::container.name}" -FileName "${storageAccountCSEFileName}"'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-BlobContent.ps1')
@@ -306,7 +322,7 @@ resource storageUpload 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   ]
 }
 
-resource proximityPlacementGroup 'Microsoft.Compute/proximityPlacementGroups@2022-03-01' = {
+resource proximityPlacementGroup 'Microsoft.Compute/proximityPlacementGroups@2024-11-01' = {
   name: proximityPlacementGroupName
   location: location
 }
@@ -460,6 +476,10 @@ output storageAccountCSEFileName string = storageAccountCSEFileName
 
 @description('The URL of the Custom Script Extension in the created Storage Account')
 output storageAccountCSEFileUrl string = '${storageAccount.properties.primaryEndpoints.blob}${storageAccount::blobService::container.name}/${storageAccountCSEFileName}'
+
+@secure()
+@description('The SAS token of the created Storage Account that holds the Custom Script Extension File.')
+output storageAccountContainerCSFileSasToken string = storageAccount.listAccountSas('2025-01-01', accountSasProperties).accountSasToken
 
 @description('The resource ID of the created Proximity Placement Group.')
 output proximityPlacementGroupResourceId string = proximityPlacementGroup.id

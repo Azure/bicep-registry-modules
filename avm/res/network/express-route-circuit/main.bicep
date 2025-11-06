@@ -28,31 +28,8 @@ param skuTier string = 'Standard'
 ])
 param skuFamily string = 'MeteredData'
 
-@description('Optional. Enabled BGP peering type for the Circuit.')
-param peering bool = false
-
-@description('Optional. BGP peering type for the Circuit. Choose from AzurePrivatePeering, AzurePublicPeering or MicrosoftPeering.')
-@allowed([
-  'AzurePrivatePeering'
-  'MicrosoftPeering'
-])
-param peeringType string = 'AzurePrivatePeering'
-
-@secure()
-@description('Optional. The shared key for peering configuration. Router does MD5 hash comparison to validate the packets sent by BGP connection. This parameter is optional and can be removed from peering configuration if not required.')
-param sharedKey string = ''
-
-@description('Optional. The autonomous system number of the customer/connectivity provider.')
-param peerASN int = 0
-
-@description('Optional. A /30 subnet used to configure IP addresses for interfaces on Link1.')
-param primaryPeerAddressPrefix string = ''
-
-@description('Optional. A /30 subnet used to configure IP addresses for interfaces on Link2.')
-param secondaryPeerAddressPrefix string = ''
-
-@description('Optional. Specifies the identifier that is used to identify the customer.')
-param vlanId int = 0
+@description('Optional. Array of peering configurations for the ExpressRoute circuit.')
+param peerings resourceInput<'Microsoft.Network/expressRouteCircuits@2024-07-01'>.properties.peerings?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -88,7 +65,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/expressRouteCircuits@2024-05-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -141,7 +118,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource expressRouteCircuit 'Microsoft.Network/expressRouteCircuits@2024-05-01' = {
+resource expressRouteCircuit 'Microsoft.Network/expressRouteCircuits@2024-07-01' = {
   name: name
   location: location
   tags: tags
@@ -172,21 +149,24 @@ resource expressRouteCircuit 'Microsoft.Network/expressRouteCircuits@2024-05-01'
           bandwidthInMbps: bandwidthInMbps
         }
       : null
-    peerings: peering
-      ? [
-          {
-            name: peeringType
-            properties: {
-              peeringType: peeringType
-              sharedKey: sharedKey
-              peerASN: peerASN
-              primaryPeerAddressPrefix: primaryPeerAddressPrefix
-              secondaryPeerAddressPrefix: secondaryPeerAddressPrefix
-              vlanId: vlanId
-            }
-          }
-        ]
-      : null
+    peerings: [
+      for peering in (peerings ?? []): {
+        name: peering.name
+        properties: {
+          peeringType: peering.properties.?peeringType
+          sharedKey: peering.properties.?sharedKey
+          azureASN: peering.properties.?azureASN ?? 12076
+          peerASN: peering.properties.?peerASN
+          primaryPeerAddressPrefix: peering.properties.?primaryPeerAddressPrefix
+          secondaryPeerAddressPrefix: peering.properties.?secondaryPeerAddressPrefix
+          vlanId: peering.properties.?vlanId
+          ipv6PeeringConfig: peering.properties.?ipv6PeeringConfig
+          microsoftPeeringConfig: peering.properties.?microsoftPeeringConfig
+          routeFilter: peering.properties.?routeFilter
+          state: peering.properties.?state
+        }
+      }
+    ]
   }
 }
 
@@ -250,13 +230,13 @@ resource expressRouteCircuit_roleAssignments 'Microsoft.Authorization/roleAssign
   }
 ]
 
-@description('The resource ID of express route curcuit.')
+@description('The resource ID of express route circuit.')
 output resourceId string = expressRouteCircuit.id
 
-@description('The resource group the express route curcuit was deployed into.')
+@description('The resource group the express route circuit was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
-@description('The name of express route curcuit.')
+@description('The name of express route circuit.')
 output name string = expressRouteCircuit.name
 
 @description('The service key of the express route circuit.')

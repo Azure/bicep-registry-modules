@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.37.4.10188",
+      "templateHash": "17424848140853757099"
+    },
+    "name": "Policy Assignments (Multi-Scope)",
+    "description": "This module's child-modules deploy a Policy Assignment at a Management Group (mg-scope), Subscription (sub-scope) or Resource Group (rg-scope) scope.\n\n> While this template is **not** published, you can find the actual published modules in the subfolders\n> - `mg-scope`\n> - `sub-scope`\n> - `rg-scope`\n"
+  },
+  "resources": []
+}

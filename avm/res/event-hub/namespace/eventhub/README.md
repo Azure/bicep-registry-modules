@@ -8,6 +8,7 @@ This module deploys an Event Hub Namespace Event Hub.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -25,29 +26,22 @@ This module deploys an Event Hub Namespace Event Hub.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the event hub. |
+| [`name`](#parameter-name) | string | The name of the Event Hub. |
 
 **Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`namespaceName`](#parameter-namespacename) | string | The name of the parent event hub namespace. Required if the template is used in a standalone deployment. |
+| [`namespaceName`](#parameter-namespacename) | string | The name of the parent Event Hub namespace. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`authorizationRules`](#parameter-authorizationrules) | array | Authorization Rules for the event hub. |
-| [`captureDescriptionDestinationArchiveNameFormat`](#parameter-capturedescriptiondestinationarchivenameformat) | string | Blob naming convention for archive, e.g. {Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}. Here all the parameters (Namespace,EventHub .. etc) are mandatory irrespective of order. |
-| [`captureDescriptionDestinationBlobContainer`](#parameter-capturedescriptiondestinationblobcontainer) | string | Blob container Name. |
-| [`captureDescriptionDestinationName`](#parameter-capturedescriptiondestinationname) | string | Name for capture destination. |
-| [`captureDescriptionDestinationStorageAccountResourceId`](#parameter-capturedescriptiondestinationstorageaccountresourceid) | string | Resource ID of the storage account to be used to create the blobs. |
-| [`captureDescriptionEnabled`](#parameter-capturedescriptionenabled) | bool | A value that indicates whether capture description is enabled. |
-| [`captureDescriptionEncoding`](#parameter-capturedescriptionencoding) | string | Enumerates the possible values for the encoding format of capture description. Note: "AvroDeflate" will be deprecated in New API Version. |
-| [`captureDescriptionIntervalInSeconds`](#parameter-capturedescriptionintervalinseconds) | int | The time window allows you to set the frequency with which the capture to Azure Blobs will happen. |
-| [`captureDescriptionSizeLimitInBytes`](#parameter-capturedescriptionsizelimitinbytes) | int | The size window defines the amount of data built up in your Event Hub before an capture operation. |
-| [`captureDescriptionSkipEmptyArchives`](#parameter-capturedescriptionskipemptyarchives) | bool | A value that indicates whether to Skip Empty Archives. |
-| [`consumergroups`](#parameter-consumergroups) | array | The consumer groups to create in this event hub instance. |
+| [`authorizationRules`](#parameter-authorizationrules) | array | Authorization Rules for the Event Hub. |
+| [`captureDescription`](#parameter-capturedescription) | object | Properties of capture description. Note: The chose identity needs the required permissions on the target before the assignment can be executed. For example 'Storage Data Blob Contributor' for a container. Also, the identity must be configured on the namespace level. |
+| [`consumergroups`](#parameter-consumergroups) | array | The consumer groups to create in this Event Hub instance. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`messageRetentionInDays`](#parameter-messageretentionindays) | int | Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Will be automatically set to infinite retention if cleanup policy is set to "Compact". |
 | [`partitionCount`](#parameter-partitioncount) | int | Number of partitions created for the Event Hub, allowed values are from 1 to 32 partitions. |
@@ -60,21 +54,21 @@ This module deploys an Event Hub Namespace Event Hub.
 
 ### Parameter: `name`
 
-The name of the event hub.
+The name of the Event Hub.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `namespaceName`
 
-The name of the parent event hub namespace. Required if the template is used in a standalone deployment.
+The name of the parent Event Hub namespace. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `authorizationRules`
 
-Authorization Rules for the event hub.
+Authorization Rules for the Event Hub.
 
 - Required: No
 - Type: array
@@ -92,53 +86,123 @@ Authorization Rules for the event hub.
   ]
   ```
 
-### Parameter: `captureDescriptionDestinationArchiveNameFormat`
+**Required parameters**
 
-Blob naming convention for archive, e.g. {Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}. Here all the parameters (Namespace,EventHub .. etc) are mandatory irrespective of order.
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-authorizationrulesname) | string | The name of the Event Hub authorization rule. |
+| [`rights`](#parameter-authorizationrulesrights) | array | The allowed rights for an Event Hub authorization rule. |
+
+### Parameter: `authorizationRules.name`
+
+The name of the Event Hub authorization rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `authorizationRules.rights`
+
+The allowed rights for an Event Hub authorization rule.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'Listen'
+    'Manage'
+    'Send'
+  ]
+  ```
+
+### Parameter: `captureDescription`
+
+Properties of capture description. Note: The chose identity needs the required permissions on the target before the assignment can be executed. For example 'Storage Data Blob Contributor' for a container. Also, the identity must be configured on the namespace level.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-capturedescriptiondestination) | object | Properties of Destination where capture will be stored. (Storage Account, Blob Names). |
+| [`enabled`](#parameter-capturedescriptionenabled) | bool | A value that indicates whether capture description is enabled. Defaults to true if `captureDescription` is provided. |
+| [`encoding`](#parameter-capturedescriptionencoding) | string | Enumerates the possible values for the encoding format of capture description. Note: "AvroDeflate" will be deprecated in New API Version. |
+| [`intervalInSeconds`](#parameter-capturedescriptionintervalinseconds) | int | The time window allows you to set the frequency with which the capture to Azure Blobs will happen. |
+| [`sizeLimitInBytes`](#parameter-capturedescriptionsizelimitinbytes) | int | The size window defines the amount of data built up in your Event Hub before an capture operation. |
+| [`skipEmptyArchives`](#parameter-capturedescriptionskipemptyarchives) | bool | A value that indicates whether to Skip Empty Archives. |
+
+### Parameter: `captureDescription.destination`
+
+Properties of Destination where capture will be stored. (Storage Account, Blob Names).
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`identity`](#parameter-capturedescriptiondestinationidentity) | object | The identity used for the capture destination. |
+| [`name`](#parameter-capturedescriptiondestinationname) | string | Name for capture destination. |
+| [`properties`](#parameter-capturedescriptiondestinationproperties) | object | Properties describing the storage account, blob container and archive name format for capture destination. |
+
+### Parameter: `captureDescription.destination.identity`
+
+The identity used for the capture destination.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-capturedescriptiondestinationidentitysystemassigned) | bool | Enables system assigned managed identity on the resource. Mutually exclusive with `userAssignedResourceId`. |
+| [`userAssignedResourceId`](#parameter-capturedescriptiondestinationidentityuserassignedresourceid) | string | The resource ID to assign to the resource. Mutually exclusive with `systemAssigned`. |
+
+### Parameter: `captureDescription.destination.identity.systemAssigned`
+
+Enables system assigned managed identity on the resource. Mutually exclusive with `userAssignedResourceId`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `captureDescription.destination.identity.userAssignedResourceId`
+
+The resource ID to assign to the resource. Mutually exclusive with `systemAssigned`.
 
 - Required: No
 - Type: string
-- Default: `'{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'`
 
-### Parameter: `captureDescriptionDestinationBlobContainer`
-
-Blob container Name.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `captureDescriptionDestinationName`
+### Parameter: `captureDescription.destination.name`
 
 Name for capture destination.
 
 - Required: No
 - Type: string
-- Default: `'EventHubArchive.AzureBlockBlob'`
 
-### Parameter: `captureDescriptionDestinationStorageAccountResourceId`
+### Parameter: `captureDescription.destination.properties`
 
-Resource ID of the storage account to be used to create the blobs.
+Properties describing the storage account, blob container and archive name format for capture destination.
 
 - Required: No
-- Type: string
-- Default: `''`
+- Type: object
 
-### Parameter: `captureDescriptionEnabled`
+### Parameter: `captureDescription.enabled`
 
-A value that indicates whether capture description is enabled.
+A value that indicates whether capture description is enabled. Defaults to true if `captureDescription` is provided.
 
 - Required: No
 - Type: bool
-- Default: `False`
 
-### Parameter: `captureDescriptionEncoding`
+### Parameter: `captureDescription.encoding`
 
 Enumerates the possible values for the encoding format of capture description. Note: "AvroDeflate" will be deprecated in New API Version.
 
 - Required: No
 - Type: string
-- Default: `'Avro'`
 - Allowed:
   ```Bicep
   [
@@ -147,37 +211,34 @@ Enumerates the possible values for the encoding format of capture description. N
   ]
   ```
 
-### Parameter: `captureDescriptionIntervalInSeconds`
+### Parameter: `captureDescription.intervalInSeconds`
 
 The time window allows you to set the frequency with which the capture to Azure Blobs will happen.
 
 - Required: No
 - Type: int
-- Default: `300`
 - MinValue: 60
 - MaxValue: 900
 
-### Parameter: `captureDescriptionSizeLimitInBytes`
+### Parameter: `captureDescription.sizeLimitInBytes`
 
 The size window defines the amount of data built up in your Event Hub before an capture operation.
 
 - Required: No
 - Type: int
-- Default: `314572800`
 - MinValue: 10485760
 - MaxValue: 524288000
 
-### Parameter: `captureDescriptionSkipEmptyArchives`
+### Parameter: `captureDescription.skipEmptyArchives`
 
 A value that indicates whether to Skip Empty Archives.
 
 - Required: No
 - Type: bool
-- Default: `False`
 
 ### Parameter: `consumergroups`
 
-The consumer groups to create in this event hub instance.
+The consumer groups to create in this Event Hub instance.
 
 - Required: No
 - Type: array
@@ -189,6 +250,40 @@ The consumer groups to create in this event hub instance.
     }
   ]
   ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-consumergroupsname) | string | The name of the consumer group. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userMetadata`](#parameter-consumergroupsusermetadata) | string | User Metadata is a placeholder to store user-defined string data with maximum length 1024. e.g. it can be used to store descriptive data, such as list of teams and their contact information also user-defined configuration settings can be stored. |
+
+### Parameter: `consumergroups.name`
+
+The name of the consumer group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `consumergroups.userMetadata`
+
+User Metadata is a placeholder to store user-defined string data with maximum length 1024. e.g. it can be used to store descriptive data, such as list of teams and their contact information also user-defined configuration settings can be stored.
+
+- Required: No
+- Type: string
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `lock`
 
@@ -409,29 +504,14 @@ Enumerates the possible values for the status of the Event Hub.
 
 - Required: No
 - Type: string
-- Default: `'Active'`
-- Allowed:
-  ```Bicep
-  [
-    'Active'
-    'Creating'
-    'Deleting'
-    'Disabled'
-    'ReceiveDisabled'
-    'Renaming'
-    'Restoring'
-    'SendDisabled'
-    'Unknown'
-  ]
-  ```
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the event hub. |
-| `resourceGroupName` | string | The resource group the event hub was deployed into. |
-| `resourceId` | string | The resource ID of the event hub. |
+| `name` | string | The name of the Event Hub. |
+| `resourceGroupName` | string | The resource group the Event Hub was deployed into. |
+| `resourceId` | string | The resource ID of the Event Hub. |
 
 ## Cross-referenced modules
 
@@ -439,5 +519,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

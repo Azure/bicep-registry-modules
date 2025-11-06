@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "8851117120311264419"
+      "version": "0.38.33.27573",
+      "templateHash": "8997226659817763257"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -172,6 +172,7 @@
     }
   },
   "variables": {
+    "hasConnection": "[or(or(not(empty(parameters('cosmosDbConnection'))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]",
     "createProjectCapabilityHostInternal": "[and(and(and(parameters('createProjectCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]",
     "createAccountCapabilityHostInternal": "[and(and(and(parameters('createAccountCapabilityHost'), not(empty(parameters('cosmosDbConnection')))), not(empty(parameters('aiSearchConnection')))), not(empty(parameters('storageAccountConnection'))))]"
   },
@@ -352,8 +353,9 @@
       ]
     },
     "waitForProjectScript": {
+      "condition": "[variables('hasConnection')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('module.project.waitDeploymentScript.waitForProject.{0}', parameters('name')), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -377,8 +379,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "12058385900108541348"
+              "version": "0.38.33.27573",
+              "templateHash": "16818353602719638288"
             }
           },
           "parameters": {
@@ -426,7 +428,7 @@
     "cosmosDbRoleAssignments": {
       "condition": "[not(empty(parameters('cosmosDbConnection')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('module.project.role-assign.cosmosDb.{0}', parameters('name')), 64)]",
       "subscriptionId": "[parameters('cosmosDbConnection').subscriptionId]",
       "resourceGroup": "[parameters('cosmosDbConnection').resourceGroupName]",
@@ -449,8 +451,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "4343866242768882577"
+              "version": "0.38.33.27573",
+              "templateHash": "2297586848184477491"
             }
           },
           "parameters": {
@@ -490,7 +492,7 @@
     "storageAccountRoleAssignments": {
       "condition": "[not(empty(parameters('storageAccountConnection')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('module.project.role-assign.storageAccount.{0}', parameters('name')), 64)]",
       "subscriptionId": "[parameters('storageAccountConnection').subscriptionId]",
       "resourceGroup": "[parameters('storageAccountConnection').resourceGroupName]",
@@ -513,8 +515,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "2328866770764276306"
+              "version": "0.38.33.27573",
+              "templateHash": "16405095293780360423"
             }
           },
           "parameters": {
@@ -536,7 +538,7 @@
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
-              "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), resourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'), parameters('storageAccountName'))]",
+              "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), resourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'), parameters('storageAccountName'), parameters('projectIdentityPrincipalId'))]",
               "properties": {
                 "principalId": "[parameters('projectIdentityPrincipalId')]",
                 "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
@@ -554,7 +556,7 @@
     "aiSearchRoleAssignments": {
       "condition": "[not(empty(parameters('aiSearchConnection')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('module.project.role-assign.aiSearch.{0}', parameters('name')), 64)]",
       "subscriptionId": "[parameters('aiSearchConnection').subscriptionId]",
       "resourceGroup": "[parameters('aiSearchConnection').resourceGroupName]",
@@ -577,8 +579,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13253222899830410134"
+              "version": "0.38.33.27573",
+              "templateHash": "16025941000331400340"
             }
           },
           "parameters": {
@@ -627,8 +629,9 @@
       ]
     },
     "waitForConnectionsScript": {
+      "condition": "[and(variables('hasConnection'), or(variables('createAccountCapabilityHostInternal'), variables('createProjectCapabilityHostInternal')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('module.project.waitDeploymentScript.waitForConn.{0}', parameters('name')), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -652,8 +655,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "12058385900108541348"
+              "version": "0.38.33.27573",
+              "templateHash": "16818353602719638288"
             }
           },
           "parameters": {
@@ -705,7 +708,7 @@
     "cosmosDbSqlRoleAssignments": {
       "condition": "[and(not(empty(parameters('cosmosDbConnection'))), variables('createProjectCapabilityHostInternal'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('module.project.role-assign.cosmosDbDataPlane.{0}', parameters('name')), 64)]",
       "subscriptionId": "[parameters('cosmosDbConnection').subscriptionId]",
       "resourceGroup": "[parameters('cosmosDbConnection').resourceGroupName]",
@@ -731,8 +734,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "1974052573238970785"
+              "version": "0.38.33.27573",
+              "templateHash": "11649050309693252000"
             }
           },
           "parameters": {
@@ -773,7 +776,7 @@
               },
               "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
               "apiVersion": "2025-04-15",
-              "name": "[format('{0}/{1}', parameters('cosmosDbName'), guid(variables('cosmosDefaultSqlRoleDefinitionId'), parameters('cosmosDbName'), variables('cosmosContainerNameSuffixes')[copyIndex()]))]",
+              "name": "[format('{0}/{1}', parameters('cosmosDbName'), guid(variables('cosmosDefaultSqlRoleDefinitionId'), parameters('cosmosDbName'), variables('cosmosContainerNameSuffixes')[copyIndex()], parameters('projectIdentityPrincipalId')))]",
               "properties": {
                 "principalId": "[parameters('projectIdentityPrincipalId')]",
                 "roleDefinitionId": "[variables('cosmosDefaultSqlRoleDefinitionId')]",
@@ -792,7 +795,7 @@
     "storageAccountContainerRoleAssignments": {
       "condition": "[and(not(empty(parameters('storageAccountConnection'))), variables('createProjectCapabilityHostInternal'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('module.project.role-assign.storageAccountDataPlane.{0}', parameters('name')), 64)]",
       "subscriptionId": "[parameters('storageAccountConnection').subscriptionId]",
       "resourceGroup": "[parameters('storageAccountConnection').resourceGroupName]",
@@ -818,8 +821,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "12946450716069874852"
+              "version": "0.38.33.27573",
+              "templateHash": "12109249428053532616"
             }
           },
           "parameters": {
@@ -847,7 +850,7 @@
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
-              "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), resourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'), parameters('storageAccountName'))]",
+              "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), resourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'), parameters('storageAccountName'), parameters('projectIdentityPrincipalId'))]",
               "properties": {
                 "principalId": "[parameters('projectIdentityPrincipalId')]",
                 "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
