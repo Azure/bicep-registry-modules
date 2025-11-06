@@ -1247,6 +1247,7 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
       ]
     }
     primaryUserAssignedIdentityResourceId: userAssignedIdentity.outputs.resourceId
+    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     // WAF aligned configuration - Microsoft Defender for SQL (required for Vulnerability Assessment)
     securityAlertPolicies: enableMonitoring
       ? [
@@ -1308,7 +1309,7 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
 }
 
 //========== Deployment script to upload data ========== //
-module uploadFiles 'br/public:avm/res/resources/deployment-script:0.5.1' = {
+module uploadFiles 'br/public:avm/res/resources/deployment-script:0.5.2' = {
   name: take('avm.res.resources.deployment-script.uploadFiles', 64)
   params: {
     kind: 'AzureCLI'
@@ -1338,7 +1339,7 @@ module uploadFiles 'br/public:avm/res/resources/deployment-script:0.5.1' = {
 }
 
 //========== Deployment script to create index ========== //
-module createIndex 'br/public:avm/res/resources/deployment-script:0.5.1' = {
+module createIndex 'br/public:avm/res/resources/deployment-script:0.5.2' = {
   name: take('avm.res.resources.deployment-script.createIndex', 64)
   params: {
     kind: 'AzureCLI'

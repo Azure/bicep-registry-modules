@@ -646,6 +646,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/virtual-network:0.7.1` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.12.0` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.5.2` | Remote reference |
 | `br/public:avm/res/search/search-service:0.11.1` | Remote reference |
 | `br/public:avm/res/sql/server:0.20.3` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.28.0` | Remote reference |

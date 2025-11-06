@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "14052804893278335059"
+      "templateHash": "567486419420336298"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -42535,10 +42535,10 @@
         }
       },
       "dependsOn": [
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageDfs)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "userAssignedIdentity",
         "virtualNetwork"
       ]
@@ -48538,6 +48538,7 @@
           "primaryUserAssignedIdentityResourceId": {
             "value": "[reference('userAssignedIdentity').outputs.resourceId.value]"
           },
+          "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "securityAlertPolicies": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('name', 'Default', 'state', 'Enabled', 'emailAccountAdmins', true()))), createObject('value', createArray()))]",
           "vulnerabilityAssessmentsObj": "[if(parameters('enableMonitoring'), createObject('value', createObject('name', 'default', 'storageAccountResourceId', reference('storageAccount').outputs.resourceId.value, 'recurringScans', createObject('isEnabled', true(), 'emailSubscriptionAdmins', false(), 'emails', createArray()))), createObject('value', null()))]",
           "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').sqlServer)).outputs.resourceId.value))), 'service', 'sqlServer', 'subnetResourceId', reference('virtualNetwork').outputs.pepsSubnetResourceId.value, 'tags', parameters('tags')))), createObject('value', createArray()))]",
@@ -55306,12 +55307,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "8965217851411422458"
+              "version": "0.38.5.1644",
+              "templateHash": "15708671729414029939"
             },
             "name": "Deployment Scripts",
-            "description": "This module deploys Deployment Scripts.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys Deployment Scripts."
           },
           "definitions": {
             "environmentVariableType": {
@@ -55360,12 +55360,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -55386,7 +55393,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -55461,7 +55468,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -55500,10 +55507,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Resources/deploymentScripts@2021-12-01#properties/tags"
+                },
                 "description": "Optional. Resource tags."
-              }
+              },
+              "nullable": true
             },
             "azPowerShellVersion": {
               "type": "string",
@@ -55545,6 +55555,9 @@
             },
             "supportingScriptUris": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
               "nullable": true,
               "metadata": {
                 "description": "Optional. List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent)."
@@ -55680,7 +55693,7 @@
               "condition": "[not(empty(parameters('storageAccountResourceId')))]",
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2023-05-01",
+              "apiVersion": "2025-01-01",
               "subscriptionId": "[split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '//'), '/')[2]]",
               "resourceGroup": "[split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '////'), '/')[4]]",
               "name": "[last(split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), 'dummyAccount'), '/'))]"
@@ -55689,7 +55702,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.resources-deploymentscript.{0}.{1}', replace('0.5.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.resources-deploymentscript.{0}.{1}', replace('0.5.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -55717,12 +55730,12 @@
                 "azPowerShellVersion": "[if(equals(parameters('kind'), 'AzurePowerShell'), parameters('azPowerShellVersion'), null())]",
                 "azCliVersion": "[if(equals(parameters('kind'), 'AzureCLI'), parameters('azCliVersion'), null())]",
                 "containerSettings": "[if(not(empty(variables('containerSettings'))), variables('containerSettings'), null())]",
-                "storageAccountSettings": "[if(not(empty(parameters('storageAccountResourceId'))), if(not(empty(parameters('storageAccountResourceId'))), createObject('storageAccountKey', if(empty(parameters('subnetResourceIds')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '//'), '/')[2], split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), 'dummyAccount'), '/'))), '2023-01-01').keys[0].value, null()), 'storageAccountName', last(split(parameters('storageAccountResourceId'), '/'))), null()), null())]",
+                "storageAccountSettings": "[if(not(empty(parameters('storageAccountResourceId'))), if(not(empty(parameters('storageAccountResourceId'))), createObject('storageAccountKey', if(empty(parameters('subnetResourceIds')), listKeys('storageAccount', '2025-01-01').keys[0].value, null()), 'storageAccountName', last(split(parameters('storageAccountResourceId'), '/'))), null()), null())]",
                 "arguments": "[parameters('arguments')]",
                 "environmentVariables": "[parameters('environmentVariables')]",
-                "scriptContent": "[if(not(empty(parameters('scriptContent'))), parameters('scriptContent'), null())]",
-                "primaryScriptUri": "[if(not(empty(parameters('primaryScriptUri'))), parameters('primaryScriptUri'), null())]",
-                "supportingScriptUris": "[if(not(empty(parameters('supportingScriptUris'))), parameters('supportingScriptUris'), null())]",
+                "scriptContent": "[parameters('scriptContent')]",
+                "primaryScriptUri": "[parameters('primaryScriptUri')]",
+                "supportingScriptUris": "[parameters('supportingScriptUris')]",
                 "cleanupPreference": "[parameters('cleanupPreference')]",
                 "forceUpdateTag": "[if(parameters('runOnce'), resourceGroup().name, parameters('baseTime'))]",
                 "retentionInterval": "[parameters('retentionInterval')]",
@@ -55737,7 +55750,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "deploymentScript"
@@ -55895,12 +55908,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "8965217851411422458"
+              "version": "0.38.5.1644",
+              "templateHash": "15708671729414029939"
             },
             "name": "Deployment Scripts",
-            "description": "This module deploys Deployment Scripts.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys Deployment Scripts."
           },
           "definitions": {
             "environmentVariableType": {
@@ -55949,12 +55961,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -55975,7 +55994,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -56050,7 +56069,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -56089,10 +56108,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Resources/deploymentScripts@2021-12-01#properties/tags"
+                },
                 "description": "Optional. Resource tags."
-              }
+              },
+              "nullable": true
             },
             "azPowerShellVersion": {
               "type": "string",
@@ -56134,6 +56156,9 @@
             },
             "supportingScriptUris": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
               "nullable": true,
               "metadata": {
                 "description": "Optional. List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent)."
@@ -56269,7 +56294,7 @@
               "condition": "[not(empty(parameters('storageAccountResourceId')))]",
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2023-05-01",
+              "apiVersion": "2025-01-01",
               "subscriptionId": "[split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '//'), '/')[2]]",
               "resourceGroup": "[split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '////'), '/')[4]]",
               "name": "[last(split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), 'dummyAccount'), '/'))]"
@@ -56278,7 +56303,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.resources-deploymentscript.{0}.{1}', replace('0.5.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.resources-deploymentscript.{0}.{1}', replace('0.5.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -56306,12 +56331,12 @@
                 "azPowerShellVersion": "[if(equals(parameters('kind'), 'AzurePowerShell'), parameters('azPowerShellVersion'), null())]",
                 "azCliVersion": "[if(equals(parameters('kind'), 'AzureCLI'), parameters('azCliVersion'), null())]",
                 "containerSettings": "[if(not(empty(variables('containerSettings'))), variables('containerSettings'), null())]",
-                "storageAccountSettings": "[if(not(empty(parameters('storageAccountResourceId'))), if(not(empty(parameters('storageAccountResourceId'))), createObject('storageAccountKey', if(empty(parameters('subnetResourceIds')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '//'), '/')[2], split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), 'dummyAccount'), '/'))), '2023-01-01').keys[0].value, null()), 'storageAccountName', last(split(parameters('storageAccountResourceId'), '/'))), null()), null())]",
+                "storageAccountSettings": "[if(not(empty(parameters('storageAccountResourceId'))), if(not(empty(parameters('storageAccountResourceId'))), createObject('storageAccountKey', if(empty(parameters('subnetResourceIds')), listKeys('storageAccount', '2025-01-01').keys[0].value, null()), 'storageAccountName', last(split(parameters('storageAccountResourceId'), '/'))), null()), null())]",
                 "arguments": "[parameters('arguments')]",
                 "environmentVariables": "[parameters('environmentVariables')]",
-                "scriptContent": "[if(not(empty(parameters('scriptContent'))), parameters('scriptContent'), null())]",
-                "primaryScriptUri": "[if(not(empty(parameters('primaryScriptUri'))), parameters('primaryScriptUri'), null())]",
-                "supportingScriptUris": "[if(not(empty(parameters('supportingScriptUris'))), parameters('supportingScriptUris'), null())]",
+                "scriptContent": "[parameters('scriptContent')]",
+                "primaryScriptUri": "[parameters('primaryScriptUri')]",
+                "supportingScriptUris": "[parameters('supportingScriptUris')]",
                 "cleanupPreference": "[parameters('cleanupPreference')]",
                 "forceUpdateTag": "[if(parameters('runOnce'), resourceGroup().name, parameters('baseTime'))]",
                 "retentionInterval": "[parameters('retentionInterval')]",
@@ -56326,7 +56351,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "deploymentScript"
