@@ -194,35 +194,59 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey)) {
-  name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
+module cMKKeyVaultRef 'modules/cmkReferences.bicep' = if (!empty(customerManagedKey)) {
+  name: '${uniqueString(deployment().name)}-cmkKeyVault'
+  params: {
+    keyVaultResourceId: customerManagedKey!.keyVaultResourceId
+    keyName: customerManagedKey!.keyName
+  }
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
-
-  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
-  }
-
-  // Used if 2 different keys are specified in the same key vault
-  resource cMKManagedDiskKey 'keys@2024-11-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && customerManagedKeyManagedDisk.?keyVaultResourceId == customerManagedKey.?keyVaultResourceId && customerManagedKeyManagedDisk.?keyName != customerManagedKey.?keyName) {
-    name: customerManagedKeyManagedDisk.?keyName ?? 'dummyKey'
-  }
 }
 
-// Added condition if the key vault for the managed disk is the same as for the default encryption. Without the condition, the same key vault would be defined twice in the same template, which is not allowed
-resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && customerManagedKeyManagedDisk.?keyVaultResourceId != customerManagedKey.?keyVaultResourceId) {
-  name: last(split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/'))
+module cMKManagedDiskKeyVaultRef 'modules/cmkReferences.bicep' = if (!empty(customerManagedKeyManagedDisk)) {
+  name: '${uniqueString(deployment().name)}-cmkKeyVault'
+  params: {
+    keyVaultResourceId: customerManagedKeyManagedDisk!.keyVaultResourceId
+    keyName: customerManagedKeyManagedDisk!.keyName
+  }
   scope: resourceGroup(
     split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/')[2],
     split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/')[4]
   )
-
-  resource cMKManagedDiskKey 'keys@2024-11-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && customerManagedKeyManagedDisk.?keyVaultResourceId != customerManagedKey.?keyVaultResourceId && !empty(customerManagedKeyManagedDisk.?keyName)) {
-    name: customerManagedKeyManagedDisk.?keyName ?? 'dummyKey'
-  }
 }
+
+// resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey)) {
+//   name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
+//   scope: resourceGroup(
+//     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+//     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+//   )
+
+//   resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey)) {
+//     name: customerManagedKey.?keyName ?? 'dummyKey'
+//   }
+
+//   // Used if 2 different keys are specified in the same key vault
+//   resource cMKManagedDiskKey 'keys@2024-11-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && customerManagedKeyManagedDisk.?keyVaultResourceId == customerManagedKey.?keyVaultResourceId && customerManagedKeyManagedDisk.?keyName != customerManagedKey.?keyName) {
+//     name: customerManagedKeyManagedDisk.?keyName ?? 'dummyKey'
+//   }
+// }
+
+// // Added condition if the key vault for the managed disk is the same as for the default encryption. Without the condition, the same key vault would be defined twice in the same template, which is not allowed
+// resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && customerManagedKeyManagedDisk.?keyVaultResourceId != customerManagedKey.?keyVaultResourceId) {
+//   name: last(split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/'))
+//   scope: resourceGroup(
+//     split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/')[2],
+//     split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/')[4]
+//   )
+
+//   resource cMKManagedDiskKey 'keys@2024-11-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && customerManagedKeyManagedDisk.?keyVaultResourceId != customerManagedKey.?keyVaultResourceId && !empty(customerManagedKeyManagedDisk.?keyName)) {
+//     name: customerManagedKeyManagedDisk.?keyName ?? 'dummyKey'
+//   }
+// }
 
 resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
   name: name
@@ -332,11 +356,11 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
               ? {
                   keySource: 'Microsoft.Keyvault'
                   keyVaultProperties: {
-                    keyVaultUri: cMKKeyVault!.properties.vaultUri
+                    keyVaultUri: cMKKeyVaultRef!.outputs.vaultUri
                     keyName: customerManagedKey!.keyName
                     keyVersion: !empty(customerManagedKey.?keyVersion)
                       ? customerManagedKey!.?keyVersion!
-                      : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
+                      : cMKKeyVaultRef!.outputs.keyVersion
                   }
                 }
               : null
@@ -344,24 +368,11 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
               ? {
                   keySource: 'Microsoft.Keyvault'
                   keyVaultProperties: {
-                    keyVaultUri: (customerManagedKeyManagedDisk!.?keyVaultResourceId != customerManagedKey!.?keyVaultResourceId)
-                      ? cMKManagedDiskKeyVault!.properties.vaultUri
-                      : cMKKeyVault!.properties.vaultUri
+                    keyVaultUri: cMKManagedDiskKeyVaultRef!.outputs.vaultUri
                     keyName: customerManagedKeyManagedDisk!.keyName
-                    // Cases
-                    // - If the defined vaults differ, use the managed disk key vault and key
-                    // - If the defined vaults are the same, but the keys differ, use the managed disk key
-                    // - If both the vault and key are the same, use the default key
                     keyVersion: !empty(customerManagedKeyManagedDisk.?keyVersion)
                       ? customerManagedKeyManagedDisk!.?keyVersion!
-                      : last(split(
-                          (customerManagedKeyManagedDisk!.?keyVaultResourceId != customerManagedKey!.?keyVaultResourceId)
-                            ? cMKManagedDiskKeyVault::cMKManagedDiskKey!.properties.keyUriWithVersion
-                            : (customerManagedKeyManagedDisk!.?keyName != customerManagedKey!.?keyName)
-                                ? cMKKeyVault::cMKManagedDiskKey!.properties.keyUriWithVersion
-                                : cMKKeyVault::cMKKey!.properties.keyUriWithVersion,
-                          '/'
-                        ))
+                      : cMKManagedDiskKeyVaultRef!.outputs.keyVersion
                   }
                   rotationToLatestKeyVersionEnabled: (customerManagedKeyManagedDisk.?autoRotationEnabled ?? true) ?? false
                 }
