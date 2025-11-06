@@ -52,6 +52,9 @@ param completionPercent int = 100
 @description('Optional. Sources of a disk creation.')
 param createOption string = 'Empty'
 
+@description('Optional. The disk encryption set resource Id.')
+param diskEncryptionSetResourceId string?
+
 @description('Optional. A relative uri containing either a Platform Image Repository or user image reference.')
 param imageReferenceId string = ''
 
@@ -240,6 +243,10 @@ resource disk 'Microsoft.Compute/disks@2023-10-02' = {
     diskIOPSReadWrite: contains(sku, 'Ultra') ? diskIOPSReadWrite : null
     diskMBpsReadWrite: contains(sku, 'Ultra') ? diskMBpsReadWrite : null
     diskSizeGB: createOption == 'Empty' ? diskSizeGB : null
+    encryption: {
+      // type: 'EncryptionAtRestWithCustomerKey'
+      diskEncryptionSetId: diskEncryptionSetResourceId
+    }
     hyperVGeneration: !empty(osType) ? hyperVGeneration : null
     maxShares: maxShares
     networkAccessPolicy: networkAccessPolicy
