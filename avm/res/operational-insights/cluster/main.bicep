@@ -91,7 +91,7 @@ var identity = !empty(managedIdentities)
       type: (managedIdentities.?systemAssigned ?? false)
         ? 'SystemAssigned'
         : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
-      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+      ...(!empty(formattedUserAssignedIdentities) ? { userAssignedIdentities: formattedUserAssignedIdentities } : {})
     }
   : null
 
