@@ -9,7 +9,7 @@ metadata description = 'This instance deploys the Content Processing Solution Ac
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'amdep-waf-${namePrefix}-sa.cps-${serviceShort}-rg'
+param resourceGroupName string = 'dep-waf-${namePrefix}-sa.cps-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -46,7 +46,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      solutionName: 'am${namePrefix}${serviceShort}'
+      solutionName: '${namePrefix}${serviceShort}'
       aiServiceLocation: enforcedLocation
       gptDeploymentCapacity: 10
       enableScalability: true
