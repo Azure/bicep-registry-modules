@@ -86,7 +86,7 @@ var formattedUserAssignedIdentities = reduce(
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-// Null is not allowed, so always assigning a value
+// Null is not allowed, so always assigning a value (even if it's just "type: 'None'")
 var identity = {
   type: (managedIdentities.?systemAssigned ?? false)
     ? 'SystemAssigned'
