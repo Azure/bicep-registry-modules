@@ -75,7 +75,8 @@ module testDeployment '../../../main.bicep' = [
       customerManagedKey: {
         keyName: nestedHsmDependencies.outputs.keyName
         keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
-        autoRotationEnabled: true
+        keyVersion: nestedHsmDependencies.outputs.keyVersion
+        // autoRotationEnabled: true
       }
       managedIdentities: {
         userAssignedResourceIds: [
