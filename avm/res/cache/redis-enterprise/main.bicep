@@ -156,20 +156,12 @@ var isEnterprise = startsWith(skuName, 'Enterprise') || startsWith(skuName, 'Ent
 var zones = isEnterprise ? map(availabilityZones, zone => string(zone)) : []
 
 var formattedUserAssignedIdentities = reduce(
-  map(
-    union(
-      (managedIdentities.?userAssignedResourceIds ?? []),
-      (!empty(customerManagedKey.?userAssignedIdentityResourceId)
-        ? [customerManagedKey.?userAssignedIdentityResourceId]
-        : [])
-    ),
-    (id) => { '${id}': {} }
-  ),
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities) || !empty(formattedUserAssignedIdentities)
+var identity = !empty(managedIdentities)
   ? {
       type: !empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None'
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
