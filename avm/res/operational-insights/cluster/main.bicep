@@ -73,15 +73,7 @@ var formattedRoleAssignments = [
 ]
 
 var formattedUserAssignedIdentities = reduce(
-  map(
-    union(
-      (managedIdentities.?userAssignedResourceIds ?? []),
-      (!empty(customerManagedKey.?userAssignedIdentityResourceId)
-        ? [customerManagedKey.?userAssignedIdentityResourceId]
-        : [])
-    ),
-    (id) => { '${id}': {} }
-  ),
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
@@ -142,7 +134,7 @@ resource cluster 'Microsoft.OperationalInsights/clusters@2025-02-01' = {
           keyName: customerManagedKey!.keyName
           keyVaultUri: !isHSMManagedCMK
             ? cMKKeyVault!.properties.vaultUri
-            : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/'
+            : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/'
           keyVersion: !empty(customerManagedKey.?keyVersion)
             ? customerManagedKey!.keyVersion!
             : (customerManagedKey.?autoRotationEnabled ?? true)
