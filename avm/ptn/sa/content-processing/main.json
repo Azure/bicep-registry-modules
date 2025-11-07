@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "7972390677248274061"
+      "templateHash": "16993749449503613607"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Content Processing solution accelerator](https://github.com/microsoft/content-processing-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -104,6 +104,34 @@
       "defaultValue": "cpscontainerreg.azurecr.io",
       "metadata": {
         "description": "Optional. The public container image endpoint."
+      }
+    },
+    "appContainerImageName": {
+      "type": "string",
+      "defaultValue": "contentprocessor",
+      "metadata": {
+        "description": "Optional. The Container Image Name to deploy on the App Container App."
+      }
+    },
+    "apiContainerImageName": {
+      "type": "string",
+      "defaultValue": "contentprocessorapi",
+      "metadata": {
+        "description": "Optional. The Container Image Name to deploy on the API Container App."
+      }
+    },
+    "webContainerImageName": {
+      "type": "string",
+      "defaultValue": "contentprocessorweb",
+      "metadata": {
+        "description": "Optional. The Container Image Name to deploy on the Web Container App."
+      }
+    },
+    "containerImageTag": {
+      "type": "string",
+      "defaultValue": "latest_2025-11-04_458",
+      "metadata": {
+        "description": "Optional. The container image tag to use for all container apps."
       }
     },
     "enablePrivateNetworking": {
@@ -38979,10 +39007,10 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "logAnalyticsWorkspace",
         "virtualNetwork"
       ]
@@ -41584,8 +41612,8 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "virtualNetwork"
       ]
     },
@@ -43057,7 +43085,7 @@
             "value": [
               {
                 "name": "[format('ca-{0}', variables('solutionSuffix'))]",
-                "image": "[format('{0}/contentprocessor:latest', parameters('publicContainerImageEndpoint'))]",
+                "image": "[format('{0}/{1}:{2}', parameters('publicContainerImageEndpoint'), parameters('appContainerImageName'), parameters('containerImageTag'))]",
                 "resources": {
                   "cpu": 4,
                   "memory": "8.0Gi"
@@ -44657,7 +44685,7 @@
             "value": [
               {
                 "name": "[format('ca-{0}-api', variables('solutionSuffix'))]",
-                "image": "[format('{0}/contentprocessorapi:latest', parameters('publicContainerImageEndpoint'))]",
+                "image": "[format('{0}/{1}:{2}', parameters('publicContainerImageEndpoint'), parameters('apiContainerImageName'), parameters('containerImageTag'))]",
                 "resources": {
                   "cpu": 4,
                   "memory": "8.0Gi"
@@ -46343,7 +46371,7 @@
             "value": [
               {
                 "name": "[format('ca-{0}-web', variables('solutionSuffix'))]",
-                "image": "[format('{0}/contentprocessorweb:latest', parameters('publicContainerImageEndpoint'))]",
+                "image": "[format('{0}/{1}:{2}', parameters('publicContainerImageEndpoint'), parameters('webContainerImageName'), parameters('containerImageTag'))]",
                 "resources": {
                   "cpu": 4,
                   "memory": "8.0Gi"
@@ -58458,7 +58486,7 @@
             "value": [
               {
                 "name": "[format('ca-{0}', variables('solutionSuffix'))]",
-                "image": "[format('{0}/contentprocessor:latest', parameters('publicContainerImageEndpoint'))]",
+                "image": "[format('{0}/{1}:{2}', parameters('publicContainerImageEndpoint'), parameters('appContainerImageName'), parameters('containerImageTag'))]",
                 "resources": {
                   "cpu": 4,
                   "memory": "8.0Gi"
@@ -60057,7 +60085,7 @@
             "value": [
               {
                 "name": "[format('ca-{0}-api', variables('solutionSuffix'))]",
-                "image": "[format('{0}/contentprocessorapi:latest', parameters('publicContainerImageEndpoint'))]",
+                "image": "[format('{0}/{1}:{2}', parameters('publicContainerImageEndpoint'), parameters('apiContainerImageName'), parameters('containerImageTag'))]",
                 "resources": {
                   "cpu": 4,
                   "memory": "8.0Gi"

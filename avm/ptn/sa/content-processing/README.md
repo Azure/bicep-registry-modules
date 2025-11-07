@@ -338,6 +338,9 @@ param vmAdminUsername = 'adminuser'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`apiContainerImageName`](#parameter-apicontainerimagename) | string | The Container Image Name to deploy on the API Container App. |
+| [`appContainerImageName`](#parameter-appcontainerimagename) | string | The Container Image Name to deploy on the App Container App. |
+| [`containerImageTag`](#parameter-containerimagetag) | string | The container image tag to use for all container apps. |
 | [`contentUnderstandingLocation`](#parameter-contentunderstandinglocation) | string | Location for the Azure AI Content Understanding service deployment. |
 | [`createdBy`](#parameter-createdby) | string | Tag, Created by user name. |
 | [`deploymentType`](#parameter-deploymenttype) | string | Type of GPT deployment to use: Standard | GlobalStandard. |
@@ -359,6 +362,7 @@ param vmAdminUsername = 'adminuser'
 | [`vmAdminPassword`](#parameter-vmadminpassword) | securestring | Admin password for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true. |
 | [`vmAdminUsername`](#parameter-vmadminusername) | securestring | Admin username for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true. |
 | [`vmSize`](#parameter-vmsize) | string | Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true. |
+| [`webContainerImageName`](#parameter-webcontainerimagename) | string | The Container Image Name to deploy on the Web Container App. |
 
 ### Parameter: `aiServiceLocation`
 
@@ -366,6 +370,30 @@ Location for the Azure AI Services deployment.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `apiContainerImageName`
+
+The Container Image Name to deploy on the API Container App.
+
+- Required: No
+- Type: string
+- Default: `'contentprocessorapi'`
+
+### Parameter: `appContainerImageName`
+
+The Container Image Name to deploy on the App Container App.
+
+- Required: No
+- Type: string
+- Default: `'contentprocessor'`
+
+### Parameter: `containerImageTag`
+
+The container image tag to use for all container apps.
+
+- Required: No
+- Type: string
+- Default: `'latest_2025-11-04_458'`
 
 ### Parameter: `contentUnderstandingLocation`
 
@@ -562,6 +590,14 @@ Size of the Jumpbox Virtual Machine when created. Set to custom value if enableP
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `webContainerImageName`
+
+The Container Image Name to deploy on the Web Container App.
+
+- Required: No
+- Type: string
+- Default: `'contentprocessorweb'`
 
 ## Outputs
 
