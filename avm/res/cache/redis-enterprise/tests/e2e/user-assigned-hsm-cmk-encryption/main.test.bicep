@@ -69,6 +69,14 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      customerManagedKey: {
+        keyName: nestedHsmDependencies.outputs.keyName
+        keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
+        userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+      }
+      database: {
+        persistence: { type: 'rdb', frequency: '6h' }
+      }
     }
   }
 ]

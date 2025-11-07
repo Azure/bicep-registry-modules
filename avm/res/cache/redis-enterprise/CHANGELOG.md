@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cache/redis-enterprise/CHANGELOG.md).
 
+## 0.4.0
+
+### Changes
+
+- Added HSM support
+- Made 'managedIdentities' parameter optional if specifying CMK
+
+### Breaking Changes
+
+- None
+
 ## 0.3.3
 
 ### Changes
