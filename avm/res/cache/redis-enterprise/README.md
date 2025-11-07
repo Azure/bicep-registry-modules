@@ -954,6 +954,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
     database: {
@@ -987,6 +988,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       "value": {
         "keyName": "<keyName>",
         "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>",
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
@@ -1018,6 +1020,7 @@ param name = 'creshsm001'
 param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
 param database = {

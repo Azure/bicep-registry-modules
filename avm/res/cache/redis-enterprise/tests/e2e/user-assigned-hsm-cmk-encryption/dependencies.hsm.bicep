@@ -74,5 +74,8 @@ output keyVaultResourceId string = managedHsm.id
 @description('The name of the HSMKey Vault Encryption Key.')
 output keyName string = managedHsm::key.name
 
+@description('The version of the HSMKey Vault Encryption Key.')
+output keyVersion string = last(split(managedHsm::key.properties.keyUriWithVersion, '/'))
+
 @description('The resource ID of the created Managed Identity.')
 output managedIdentityResourceId string = managedIdentity.id
