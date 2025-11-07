@@ -15,6 +15,9 @@ import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/av
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
+@description('Optional. Assign permissions to the Key Vault Key.')
+param enableSetKeyPermissions bool = false
+
 // @description('Required. Resource ID of the KeyVault containing the key or secret.')
 // param keyVaultResourceId string
 
@@ -29,6 +32,7 @@ param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Optional. The type of key used to encrypt the data of the disk. For security reasons, it is recommended to set encryptionType to EncryptionAtRestWithPlatformAndCustomerKeys.')
 @allowed([
+  'ConfidentialVmEncryptedWithCustomerKey'
   'EncryptionAtRestWithCustomerKey'
   'EncryptionAtRestWithPlatformAndCustomerKeys'
 ])
@@ -163,19 +167,22 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
 // }
 
 // Note: This is only enabled for user-assigned identities as the service's system-assigned identity isn't available during its initial deployment
-// module keyVaultPermissions 'modules/nested_keyVaultPermissions.bicep' = [
-//   for (userAssignedIdentityResourceId, index) in (managedIdentities.?userAssignedResourceIds ?? []): {
-//     name: '${uniqueString(deployment().name, location)}-DiskEncrSet-KVPermissions-${index}'
-//     params: {
-//       keyName: keyName
-//       keyVaultResourceId: keyVaultResourceId
-//       userAssignedIdentityResourceId: userAssignedIdentityResourceId
-//       rbacAuthorizationEnabled: keyVault.properties.enableRbacAuthorization
-//       location: location
-//     }
-//     scope: resourceGroup(split(keyVaultResourceId, '/')[2], split(keyVaultResourceId, '/')[4])
-//   }
-// ]
+module keyVaultPermissions 'modules/nested_keyVaultPermissions.bicep' = [
+  for (userAssignedIdentityResourceId, index) in (managedIdentities.?userAssignedResourceIds ?? []): if (enableSetKeyPermissions && !isHSMManagedCMK) {
+    name: '${uniqueString(deployment().name, location)}-DiskEncrSet-KVPermissions-${index}'
+    params: {
+      keyName: customerManagedKey!.keyName
+      keyVaultResourceId: customerManagedKey!.keyVaultResourceId
+      userAssignedIdentityResourceId: userAssignedIdentityResourceId
+      rbacAuthorizationEnabled: cMKKeyVault!.properties.enableRbacAuthorization
+      location: location
+    }
+    scope: resourceGroup(
+      split(customerManagedKey!.keyVaultResourceId, '/')[2],
+      split(customerManagedKey!.keyVaultResourceId, '/')[4]
+    )
+  }
+]
 
 resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' = {
   name: name
@@ -210,9 +217,9 @@ resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' = {
     federatedClientId: federatedClientId
     rotationToLatestKeyVersionEnabled: customerManagedKey.?autoRotationEnabled
   }
-  // dependsOn: [
-  //   keyVaultPermissions
-  // ]
+  dependsOn: [
+    keyVaultPermissions
+  ]
 }
 
 resource diskEncryptionSet_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
