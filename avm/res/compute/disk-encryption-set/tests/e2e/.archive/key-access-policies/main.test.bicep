@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using Key Vault with the Access Policy permission model'
-metadata description = 'This instance uses a Key Vault with the Access Policy permission model. If no permissions on the Key Vault are set, the module attempts to add the permissions for you.'
+metadata description = 'This instance uses a Key Vault with the Access Policy permission model. The option to add the permissions on the key via the module is enabled.'
 
 // ========== //
 // Parameters //
@@ -29,7 +29,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -56,7 +56,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
+      enableSetKeyPermissions: true
       keyName: nestedDependencies.outputs.keyName
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       roleAssignments: [
@@ -85,14 +85,6 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
-      }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
