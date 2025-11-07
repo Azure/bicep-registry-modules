@@ -80,3 +80,6 @@ output cmkVersion string = last(split(managedHsm::key.properties.keyUriWithVersi
 
 @description('The name of the Disk HSMKey Vault Encryption Key.')
 output cmkDiskName string = managedHsm::keyDisk.name
+
+@description('The version of the Disk HSMKey Vault Encryption Key.')
+output cmkDiskVersion string = last(split(managedHsm::keyDisk.properties.keyUriWithVersion, '/'))

@@ -74,6 +74,7 @@ module testDeployment '../../../main.bicep' = [
       customerManagedKeyManagedDisk: {
         keyName: nestedDependencies.outputs.cmkDiskName
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+        keyVersion: nestedDependencies.outputs.cmkDiskVersion
       }
     }
   }

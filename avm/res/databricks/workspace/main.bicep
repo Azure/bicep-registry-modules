@@ -370,6 +370,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
                   }
                 }
               : null
+            // NOTE: ⚠ Action Required: If using a Managed HSM key, a role assignment needs to be added to your HSM for the disk encryption set which is created during workspace deployment. After your workspace is created, please follow the steps outlined in the documentation. If this action is not taken, cluster creation will fail. Learn more: https://learn.microsoft.com/azure/databricks/security/keys/cmk-managed-disks-azure?WT.mc_id=Portal-Microsoft_Azure_Databricks
             managedDisk: !empty(customerManagedKeyManagedDisk)
               ? {
                   keySource: 'Microsoft.Keyvault'
@@ -380,11 +381,9 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
                     keyName: customerManagedKeyManagedDisk!.keyName
                     keyVersion: !empty(customerManagedKeyManagedDisk.?keyVersion)
                       ? customerManagedKeyManagedDisk!.?keyVersion!
-                      : (customerManagedKeyManagedDisk.?autoRotationEnabled ?? true)
-                          ? ''
-                          : (!isHSMManagedCMK
-                              ? cMKManagedKeyVaultDiskRef!.outputs.keyVersion
-                              : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
+                      : (!isHSMManagedCMK
+                          ? cMKManagedKeyVaultDiskRef!.outputs.keyVersion
+                          : fail('Managed HSM CMK encryption requires specifying the \'keyVersion\'.')) // Also if auto-rotation is enabled. An empty value / null is not allowed as a value for this property
                   }
                   rotationToLatestKeyVersionEnabled: (customerManagedKeyManagedDisk.?autoRotationEnabled ?? true) ?? false
                 }
