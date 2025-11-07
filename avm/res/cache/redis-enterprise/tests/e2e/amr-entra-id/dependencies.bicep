@@ -4,7 +4,7 @@ param location string = resourceGroup().location
 @description('Required. The name of the Managed Identity to be created.')
 param managedIdentityName string
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
