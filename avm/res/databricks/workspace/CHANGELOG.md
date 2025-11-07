@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/databricks/workspace/CHANGELOG.md).
 
+## 0.12.0
+
+### Changes
+
+- Adding support for HSM
+
+### Breaking Changes
+
+- None
+
 ## 0.11.5
 
 ### Changes
