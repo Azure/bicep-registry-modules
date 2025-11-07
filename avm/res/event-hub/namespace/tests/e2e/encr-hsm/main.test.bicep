@@ -9,10 +9,10 @@ metadata description = 'This instance deploys the module with the minimum set of
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-compute.diskencryptionsets-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-eventhub.namespaces-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cdeshsm'
+param serviceShort string = 'ehnhsm'
 
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
