@@ -3,6 +3,10 @@ targetScope = 'subscription'
 metadata name = 'Using only defaults'
 metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
+// NOTE
+// - There is a limit of seven clusters per subscription and region, five active, plus two that were deleted in past two weeks.
+// - A cluster's name remains reserved two weeks after deletion, and can't be used for creating a new cluster.
+
 // ========== //
 // Parameters //
 // ========== //
@@ -19,6 +23,9 @@ param serviceShort string = 'oicmin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
+
+@description('Generated. Used as a basis for unique resource names.')
+param baseTime string = utcNow('u')
 
 // ============ //
 // Dependencies //
@@ -41,8 +48,8 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
+      // Adding base time to make the name unique as soft-deletion is enabled by default
+      name: '${namePrefix}-${serviceShort}-${uniqueString(baseTime)}'
       sku: {
         capacity: 100
         name: 'CapacityReservation'

@@ -33,10 +33,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/operational-insights/cluster:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using HSM Customer-Managed-Keys with User-Assigned identity](#example-2-using-hsm-customer-managed-keys-with-user-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-3-using-customer-managed-keys-with-user-assigned-identity)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -52,100 +50,10 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
-    name: 'oicmin001'
+    name: '<name>'
     sku: {
       capacity: 100
       name: 'CapacityReservation'
-    }
-    // Non-required parameters
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "oicmin001"
-    },
-    "sku": {
-      "value": {
-        "capacity": 100,
-        "name": "CapacityReservation"
-      }
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/operational-insights/cluster:<version>'
-
-// Required parameters
-param name = 'oicmin001'
-param sku = {
-  capacity: 100
-  name: 'CapacityReservation'
-}
-// Non-required parameters
-param location = '<location>'
-```
-
-</details>
-<p>
-
-### Example 2: _Using HSM Customer-Managed-Keys with User-Assigned identity_
-
-This instance deploys the module using HSM Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
-  name: 'clusterDeployment'
-  params: {
-    // Required parameters
-    name: 'oicmhsm002'
-    sku: {
-      capacity: 100
-      name: 'CapacityReservation'
-    }
-    // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
-    location: '<location>'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
     }
   }
 }
@@ -165,30 +73,12 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "oicmhsm002"
+      "value": "<name>"
     },
     "sku": {
       "value": {
         "capacity": 100,
         "name": "CapacityReservation"
-      }
-    },
-    // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
-      }
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
       }
     }
   }
@@ -206,141 +96,17 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
 using 'br/public:avm/res/operational-insights/cluster:<version>'
 
 // Required parameters
-param name = 'oicmhsm002'
+param name = '<name>'
 param sku = {
   capacity: 100
   name: 'CapacityReservation'
 }
-// Non-required parameters
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-}
-param location = '<location>'
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
 ```
 
 </details>
 <p>
 
-### Example 3: _Using Customer-Managed-Keys with User-Assigned identity_
-
-This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
-  name: 'clusterDeployment'
-  params: {
-    // Required parameters
-    name: 'oicencr001'
-    sku: {
-      capacity: 100
-      name: 'CapacityReservation'
-    }
-    // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
-    location: '<location>'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "oicencr001"
-    },
-    "sku": {
-      "value": {
-        "capacity": 100,
-        "name": "CapacityReservation"
-      }
-    },
-    // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
-      }
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/operational-insights/cluster:<version>'
-
-// Required parameters
-param name = 'oicencr001'
-param sku = {
-  capacity: 100
-  name: 'CapacityReservation'
-}
-// Non-required parameters
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-}
-param location = '<location>'
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
-```
-
-</details>
-<p>
-
-### Example 4: _Using large parameter set_
+### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -354,7 +120,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
-    name: 'oicmax001'
+    name: '<name>'
     sku: {
       capacity: 100
       name: 'CapacityReservation'
@@ -411,7 +177,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "oicmax001"
+      "value": "<name>"
     },
     "sku": {
       "value": {
@@ -478,7 +244,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
 using 'br/public:avm/res/operational-insights/cluster:<version>'
 
 // Required parameters
-param name = 'oicmax001'
+param name = '<name>'
 param sku = {
   capacity: 100
   name: 'CapacityReservation'
@@ -522,7 +288,7 @@ param roleAssignments = [
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -536,13 +302,22 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
-    name: 'oicwaf001'
+    name: '<name>'
     sku: {
       capacity: 100
       name: 'CapacityReservation'
     }
     // Non-required parameters
-    location: '<location>'
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -566,7 +341,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "oicwaf001"
+      "value": "<name>"
     },
     "sku": {
       "value": {
@@ -575,8 +350,19 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
       }
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
     },
     "tags": {
       "value": {
@@ -600,13 +386,22 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
 using 'br/public:avm/res/operational-insights/cluster:<version>'
 
 // Required parameters
-param name = 'oicwaf001'
+param name = '<name>'
 param sku = {
   capacity: 100
   name: 'CapacityReservation'
 }
 // Non-required parameters
-param location = '<location>'
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -623,7 +418,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the Log Analytics cluster. |
+| [`name`](#parameter-name) | string | Name of the Log Analytics cluster. Can contain only 64 letters, numbers and '-'. |
 | [`sku`](#parameter-sku) | object | The sku properties. |
 
 **Optional parameters**
@@ -645,7 +440,7 @@ param tags = {
 
 ### Parameter: `name`
 
-Name of the Log Analytics cluster.
+Name of the Log Analytics cluster. Can contain only 64 letters, numbers and '-'.
 
 - Required: Yes
 - Type: string

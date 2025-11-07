@@ -1,7 +1,8 @@
 metadata name = 'Log Analytics Dedicated Clusters'
 metadata description = 'This module deploys a Log Analytics Dedicated Cluster.'
 
-@description('Required. Name of the Log Analytics cluster.')
+@description('Required. Name of the Log Analytics cluster. Can contain only 64 letters, numbers and \'-\'.')
+@maxLength(64)
 param name string
 
 @description('Optional. Location for all resources.')

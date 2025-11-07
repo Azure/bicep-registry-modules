@@ -3,6 +3,10 @@ targetScope = 'subscription'
 metadata name = 'Using large parameter set'
 metadata description = 'This instance deploys the module with most of its features enabled.'
 
+// NOTE
+// - There is a limit of seven clusters per subscription and region, five active, plus two that were deleted in past two weeks.
+// - A cluster's name remains reserved two weeks after deletion, and can't be used for creating a new cluster.
+
 // ========== //
 // Parameters //
 // ========== //
@@ -10,9 +14,6 @@ metadata description = 'This instance deploys the module with most of its featur
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-operational-insights-cluster-${serviceShort}-rg'
-
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'oicmax'
@@ -23,6 +24,17 @@ param baseTime string = utcNow('u')
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Required. The resource ID of the Managed Identity used by the deployment script. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-deploymentMSIName\'.')
+@secure()
+param deploymentMSIResourceId string = ''
+
+@description('Required. The resource ID of the managed HSM used for encryption. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-managedHSMResourceId\'.')
+@secure()
+param managedHSMResourceId string = ''
+
+// Enforce location of HSM
+var enforcedLocation = 'uksouth'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -31,18 +43,27 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
-    location: resourceLocation
   }
+}
+
+module nestedHsmDependencies 'dependencies.hsm.bicep' = {
+  name: '${uniqueString(deployment().name)}-nestedHSMDependencies'
+  params: {
+    managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+    hsmKeyName: '${serviceShort}-${namePrefix}-key'
+    hsmDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+    deploymentMSIResourceId: deploymentMSIResourceId
+    managedHSMName: last(split(managedHSMResourceId, '/'))
+  }
+  scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
 }
 
 // ============== //
@@ -53,10 +74,11 @@ module nestedDependencies 'dependencies.bicep' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
+      // Adding base time to make the name unique as soft-deletion is enabled by default
+      name: '${namePrefix}-${serviceShort}-${uniqueString(baseTime)}'
+      location: enforcedLocation
       sku: {
         capacity: 100
         name: 'CapacityReservation'
@@ -92,8 +114,8 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       customerManagedKey: {
-        keyName: nestedDependencies.outputs.keyVaultKeyName
-        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+        keyName: nestedHsmDependencies.outputs.keyName
+        keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
         userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       }
     }
