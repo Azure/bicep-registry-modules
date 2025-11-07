@@ -96,20 +96,12 @@ param enableTelemetry bool = true
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
-  map(
-    union(
-      (managedIdentities.?userAssignedResourceIds ?? []),
-      (!empty(customerManagedKey.?userAssignedIdentityResourceId)
-        ? [customerManagedKey.?userAssignedIdentityResourceId]
-        : [])
-    ),
-    (id) => { '${id}': {} }
-  ),
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities) || !empty(formattedUserAssignedIdentities)
+var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
         ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')

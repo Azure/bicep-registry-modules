@@ -120,6 +120,11 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
       keyVersion: '<keyVersion>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
   }
 }
 ```
@@ -148,6 +153,13 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         "keyVersion": "<keyVersion>",
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
     }
   }
 }
@@ -171,6 +183,11 @@ param customerManagedKey = {
   keyVaultResourceId: '<keyVaultResourceId>'
   keyVersion: '<keyVersion>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 ```
 

@@ -78,6 +78,11 @@ module testDeployment '../../../main.bicep' = [
         keyVersion: nestedHsmDependencies.outputs.keyVersion
         userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       }
+      managedIdentities: {
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
     }
   }
 ]
