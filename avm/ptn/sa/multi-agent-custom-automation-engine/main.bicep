@@ -998,7 +998,6 @@ module containerApp 'br/public:avm/res/app/container-app:0.19.0' = {
     // WAF aligned configuration for Scalability
     scaleSettings: {
       maxReplicas: enableScalability ? 4 : 2
-      #disable-next-line AZR-000413 // Application architecture requires single replica for proper functioning
       minReplicas: 1
       rules: [
         {
@@ -1188,7 +1187,6 @@ module containerAppMcp 'br/public:avm/res/app/container-app:0.19.0' = {
     // WAF aligned configuration for Scalability
     scaleSettings: {
       maxReplicas: enableScalability ? 4 : 2
-      #disable-next-line AZR-000413 // Application architecture requires single replica for proper functioning
       minReplicas: 1
       rules: [
         {
