@@ -601,6 +601,9 @@ output workspaceUrl string = workspace.properties.workspaceUrl
 @description('The unique identifier of the databricks workspace in databricks control plane.')
 output workspaceResourceId string = workspace.properties.workspaceId
 
+@description('The principal ID of the managed disk identity created by the workspace if CMK for managed disks is enabled.')
+output managedDiskIdentityPrincipalId string? = workspace.properties.?managedDiskIdentity.?principalId
+
 @description('The private endpoints of the Databricks Workspace.')
 output privateEndpoints privateEndpointOutputType[] = [
   for (item, index) in (privateEndpoints ?? []): {

@@ -2671,6 +2671,7 @@ Address prefix for Managed virtual network.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
+| `managedDiskIdentityPrincipalId` | string | The principal ID of the managed disk identity created by the workspace if CMK for managed disks is enabled. |
 | `managedResourceGroupName` | string | The name of the managed resource group. |
 | `managedResourceGroupResourceId` | string | The resource ID of the managed resource group. |
 | `name` | string | The name of the deployed databricks workspace. |

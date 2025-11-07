@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "3833124171634260737"
+      "templateHash": "16476630587062593968"
     },
     "name": "Azure Databricks Workspaces",
     "description": "This module deploys an Azure Databricks Workspace."
@@ -2601,6 +2601,14 @@
         "description": "The unique identifier of the databricks workspace in databricks control plane."
       },
       "value": "[reference('workspace').workspaceId]"
+    },
+    "managedDiskIdentityPrincipalId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The principal ID of the managed disk identity created by the workspace if CMK for managed disks is enabled."
+      },
+      "value": "[tryGet(tryGet(reference('workspace'), 'managedDiskIdentity'), 'principalId')]"
     },
     "privateEndpoints": {
       "type": "array",
