@@ -501,10 +501,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
           name: 'RediSearch'
         }
       ]
-      persistence: {
-        frequency: '1s'
-        type: 'aof'
-      }
     }
     diagnosticSettings: [
       {
@@ -625,11 +621,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
           {
             "name": "RediSearch"
           }
-        ],
-        "persistence": {
-          "frequency": "1s",
-          "type": "aof"
-        }
+        ]
       }
     },
     "diagnosticSettings": {
@@ -765,10 +757,6 @@ param database = {
       name: 'RediSearch'
     }
   ]
-  persistence: {
-    frequency: '1s'
-    type: 'aof'
-  }
 }
 param diagnosticSettings = [
   {

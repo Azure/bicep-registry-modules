@@ -79,10 +79,6 @@ module testDeployment '../../../main.bicep' = [
             name: 'RediSearch'
           }
         ]
-        persistence: {
-          type: 'aof'
-          frequency: '1s'
-        }
         diagnosticSettings: [
           {
             name: 'customSettingDatabase'
