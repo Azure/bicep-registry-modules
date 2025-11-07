@@ -854,6 +854,11 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         type: 'rdb'
       }
     }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
   }
 }
 ```
@@ -889,6 +894,13 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
           "type": "rdb"
         }
       }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
     }
   }
 }
@@ -917,6 +929,11 @@ param database = {
     frequency: '6h'
     type: 'rdb'
   }
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 ```
 
@@ -950,6 +967,11 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         frequency: '6h'
         type: 'rdb'
       }
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
     }
   }
 }
@@ -987,6 +1009,13 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
           "type": "rdb"
         }
       }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
     }
   }
 }
@@ -1016,6 +1045,11 @@ param database = {
     frequency: '6h'
     type: 'rdb'
   }
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 ```
 
