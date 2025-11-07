@@ -1,7 +1,0 @@
-# PSRule configuration for Multi-Agent Custom Automation Engine
-# Suppress Azure.ContainerApp.MinReplicas for architectural requirement
-
-rule:
-  exclude:
-    # Exclude Azure.ContainerApp.MinReplicas for this module due to architectural requirements
-    - Azure.ContainerApp.MinReplicas
