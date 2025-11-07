@@ -220,36 +220,6 @@ module cMKManagedKeyVaultDiskRef 'modules/cmkReferences.bicep' = if (!empty(cust
   )
 }
 
-// resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey)) {
-//   name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
-//   scope: resourceGroup(
-//     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
-//     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
-//   )
-
-//   resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey)) {
-//     name: customerManagedKey.?keyName ?? 'dummyKey'
-//   }
-
-//   // Used if 2 different keys are specified in the same key vault
-//   resource cMKManagedDiskKey 'keys@2024-11-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && customerManagedKeyManagedDisk.?keyVaultResourceId == customerManagedKey.?keyVaultResourceId && customerManagedKeyManagedDisk.?keyName != customerManagedKey.?keyName) {
-//     name: customerManagedKeyManagedDisk.?keyName ?? 'dummyKey'
-//   }
-// }
-
-// // Added condition if the key vault for the managed disk is the same as for the default encryption. Without the condition, the same key vault would be defined twice in the same template, which is not allowed
-// resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && customerManagedKeyManagedDisk.?keyVaultResourceId != customerManagedKey.?keyVaultResourceId) {
-//   name: last(split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/'))
-//   scope: resourceGroup(
-//     split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/')[2],
-//     split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/')[4]
-//   )
-
-//   resource cMKManagedDiskKey 'keys@2024-11-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && customerManagedKeyManagedDisk.?keyVaultResourceId != customerManagedKey.?keyVaultResourceId && !empty(customerManagedKeyManagedDisk.?keyName)) {
-//     name: customerManagedKeyManagedDisk.?keyName ?? 'dummyKey'
-//   }
-// }
-
 resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
   name: name
   location: location
