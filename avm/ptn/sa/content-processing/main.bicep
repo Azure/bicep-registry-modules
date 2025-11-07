@@ -223,7 +223,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
     adminPassword: empty(vmAdminPassword) ? 'JumpboxAdminP@ssw0rd1234!' : vmAdminPassword
     tags: tags
     // WAF aligned configuration for Redundancy - use availability zone when redundancy is enabled
-    availabilityZone: enableRedundancy ? 1 : -1
+    availabilityZone: 1
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -237,8 +237,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
     osDisk: {
       name: 'osdisk-${jumpboxVmName}'
       managedDisk: {
-        // WAF aligned configuration - use Premium storage for better SLA when redundancy is enabled
-        storageAccountType: enableRedundancy ? 'Premium_LRS' : 'Standard_LRS'
+        storageAccountType: 'Premium_LRS'
       }
     }
     encryptionAtHost: false // Some Azure subscriptions do not support encryption at host
