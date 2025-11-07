@@ -1273,7 +1273,7 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.5.0' = {
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : null
     // WAF aligned configuration for Scalability
     skuName: enableScalability || enableRedundancy ? 'P1v3' : 'B3'
-    skuCapacity: 1
+    skuCapacity: enableRedundancy ? 2 : 1
     // WAF aligned configuration for Redundancy
     zoneRedundant: enableRedundancy ? true : false
   }

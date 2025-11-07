@@ -1427,7 +1427,7 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.5.0' = {
     kind: 'linux'
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : null
     skuName: enableScalability || enableRedundancy ? 'P1v3' : 'B3'
-    skuCapacity: 1
+    skuCapacity: enableScalability ? 3 : 1
     zoneRedundant: enableRedundancy ? true : false
   }
 }
