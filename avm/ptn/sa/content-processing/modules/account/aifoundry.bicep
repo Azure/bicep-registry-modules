@@ -10,8 +10,6 @@ param projectName string
 @description('Optional: Description  for the project which needs to be created.')
 param projectDescription string
 
-param existingFoundryProjectResourceId string = ''
-
 @description('Required. Kind of the Cognitive Services account. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
 @allowed([
   'AIServices'
@@ -157,7 +155,7 @@ var identity = !empty(managedIdentities)
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
-  
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.cognitiveservices-account.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -197,9 +195,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-var useExistingService = !empty(existingFoundryProjectResourceId)
-
-resource cognitiveServiceNew 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' = if(!useExistingService) {
+resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' = {
   name: name
   kind: kind
   identity: identity
@@ -247,18 +243,11 @@ resource cognitiveServiceNew 'Microsoft.CognitiveServices/accounts@2025-04-01-pr
   }
 }
 
-var existingCognitiveServiceDetails = split(existingFoundryProjectResourceId, '/')
-
-resource cognitiveServiceExisting 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' existing = if(useExistingService) {
-  name: existingCognitiveServiceDetails[8]
-  scope: resourceGroup(existingCognitiveServiceDetails[2], existingCognitiveServiceDetails[4])
-}
-
-module cognitive_service_dependencies './modules/dependencies.bicep' = if(!useExistingService) {
+module cognitive_service_dependencies './modules/dependencies.bicep' = {
   params: {
     projectName: projectName
     projectDescription: projectDescription
-    name:  cognitiveServiceNew.name 
+    name: cognitiveService.name
     location: location
     deployments: deployments
     diagnosticSettings: diagnosticSettings
@@ -270,61 +259,40 @@ module cognitive_service_dependencies './modules/dependencies.bicep' = if(!useEx
     tags: tags
   }
 }
-
-module existing_cognitive_service_dependencies './modules/dependencies.bicep' = if(useExistingService) {
-  params: {
-    name:  cognitiveServiceExisting.name 
-    projectName: projectName
-    projectDescription: projectDescription
-    azureExistingAIProjectResourceId: existingFoundryProjectResourceId
-    location: location
-    deployments: deployments
-    diagnosticSettings: diagnosticSettings
-    lock: lock
-    privateEndpoints: privateEndpoints
-    roleAssignments: roleAssignments
-    secretsExportConfiguration: secretsExportConfiguration
-    sku: sku
-    tags: tags
-  }
-  scope: resourceGroup(existingCognitiveServiceDetails[2], existingCognitiveServiceDetails[4])
-}
-
-var cognitiveService = useExistingService ? cognitiveServiceExisting : cognitiveServiceNew
 
 @description('The name of the cognitive services account.')
-output name string = useExistingService ? cognitiveServiceExisting.name : cognitiveServiceNew.name
+output name string = cognitiveService.name
 
 @description('The resource ID of the cognitive services account.')
-output resourceId string = useExistingService ? cognitiveServiceExisting.id : cognitiveServiceNew.id
+output resourceId string = cognitiveService.id
 
 @description('The resource group the cognitive services account was deployed into.')
-output subscriptionId string =  useExistingService ? existingCognitiveServiceDetails[2] : subscription().subscriptionId
+output subscriptionId string = subscription().subscriptionId
 
 @description('The resource group the cognitive services account was deployed into.')
-output resourceGroupName string =  useExistingService ? existingCognitiveServiceDetails[4] : resourceGroup().name
+output resourceGroupName string = resourceGroup().name
 
 @description('The service endpoint of the cognitive services account.')
-output endpoint string = useExistingService ? cognitiveServiceExisting.properties.endpoint : cognitiveService.properties.endpoint
+output endpoint string = cognitiveService.properties.endpoint
 
 @description('All endpoints available for the cognitive services account, types depends on the cognitive service kind.')
-output endpoints endpointType = useExistingService ? cognitiveServiceExisting.properties.endpoints : cognitiveService.properties.endpoints
+output endpoints endpointType = cognitiveService.properties.endpoints
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string? = useExistingService ? cognitiveServiceExisting.identity.principalId : cognitiveService.?identity.?principalId
+output systemAssignedMIPrincipalId string? = cognitiveService.?identity.?principalId
 
 @description('The location the resource was deployed into.')
-output location string = useExistingService ? cognitiveServiceExisting.location : cognitiveService.location
+output location string = cognitiveService.location
 
 import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
-output exportedSecrets secretsOutputType = useExistingService ? existing_cognitive_service_dependencies.outputs.exportedSecrets : cognitive_service_dependencies.outputs.exportedSecrets
+output exportedSecrets secretsOutputType = cognitive_service_dependencies.outputs.exportedSecrets
 
 @description('The private endpoints of the congitive services account.')
-output privateEndpoints privateEndpointOutputType[] = useExistingService ? existing_cognitive_service_dependencies.outputs.privateEndpoints : cognitive_service_dependencies.outputs.privateEndpoints
+output privateEndpoints privateEndpointOutputType[] = cognitive_service_dependencies.outputs.privateEndpoints
 
 import { aiProjectOutputType } from './modules/project.bicep'
-output aiProjectInfo aiProjectOutputType = useExistingService ? existing_cognitive_service_dependencies.outputs.aiProjectInfo : cognitive_service_dependencies.outputs.aiProjectInfo
+output aiProjectInfo aiProjectOutputType = cognitive_service_dependencies.outputs.aiProjectInfo
 
 // ================ //
 // Definitions      //

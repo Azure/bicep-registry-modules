@@ -75,13 +75,13 @@ param webContainerImageName string = 'contentprocessorweb'
 param containerImageTag string = 'latest_2025-11-04_458'
 
 @description('Optional. Enable WAF for the deployment.')
-param enablePrivateNetworking bool = true
+param enablePrivateNetworking bool = false
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false.')
-param enableMonitoring bool = true
+param enableMonitoring bool = false
 
 @description('Optional. Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.')
 param enableRedundancy bool = false
@@ -200,7 +200,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePr
             ]
           }
         ]
-      : []
+      : null
     tags: tags
     enableTelemetry: enableTelemetry
     publicIPAddressObject: {
@@ -273,7 +273,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
                 ]
               }
             ]
-          : []
+          : null
       }
     ]
     enableTelemetry: enableTelemetry
@@ -474,6 +474,13 @@ module avmContainerRegistry 'modules/container-registry.bicep' = {
     acrSku: enableRedundancy || enablePrivateNetworking ? 'Premium' : 'Standard'
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     zoneRedundancy: 'Disabled'
+    roleAssignments: [
+      {
+        principalId: avmContainerRegistryReader.outputs.principalId
+        roleDefinitionIdOrName: 'AcrPull'
+        principalType: 'ServicePrincipal'
+      }
+    ]
     tags: tags
     enableTelemetry: enableTelemetry
     enableRedundancy: enableRedundancy

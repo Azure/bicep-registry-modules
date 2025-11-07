@@ -33,7 +33,7 @@ This module contains the resources required to deploy the [Content Processing so
 | `Microsoft.CognitiveServices/accounts/commitmentPlans` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_commitmentplans.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/commitmentPlans)</li></ul> |
 | `Microsoft.CognitiveServices/accounts/deployments` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_deployments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/deployments)</li></ul> |
 | `Microsoft.CognitiveServices/accounts/deployments` | 2025-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_deployments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts/deployments)</li></ul> |
-| `Microsoft.CognitiveServices/accounts/projects` | 2025-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts/projects)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/projects` | 2025-07-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-07-01-preview/accounts/projects)</li></ul> |
 | `Microsoft.Compute/disks` | 2024-03-02 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_disks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-02/disks)</li></ul> |
 | `Microsoft.Compute/virtualMachines` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachines)</li></ul> |
 | `Microsoft.Compute/virtualMachines/extensions` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-11-01/virtualMachines/extensions)</li></ul> |
@@ -440,7 +440,7 @@ Enable monitoring applicable resources, aligned with the Well Architected Framew
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 ### Parameter: `enablePrivateNetworking`
 
@@ -448,7 +448,7 @@ Enable WAF for the deployment.
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 ### Parameter: `enablePurgeProtection`
 
@@ -628,7 +628,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/bastion-host:0.8.0` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.2` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.8.0` | Remote reference |
-| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.7.1` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.12.0` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.28.0` | Remote reference |
