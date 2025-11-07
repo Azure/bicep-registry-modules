@@ -29,9 +29,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/disk-encryption-set:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using Key Vault with the Access Policy permission model](#example-2-using-key-vault-with-the-access-policy-permission-model)
-- [Using Key Vault with the Role Based Access Control (RBAC) permission model](#example-3-using-key-vault-with-the-role-based-access-control-rbac-permission-model)
-- [Using only defaults](#example-4-using-only-defaults)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using Key Vault with the Access Policy permission model](#example-3-using-key-vault-with-the-access-policy-permission-model)
+- [Using Key Vault with the Role Based Access Control (RBAC) permission model](#example-4-using-key-vault-with-the-role-based-access-control-rbac-permission-model)
 - [Using large parameter set](#example-5-using-large-parameter-set)
 - [WAF-aligned](#example-6-waf-aligned)
 
@@ -108,7 +108,100 @@ param customerManagedKey = {
 </details>
 <p>
 
-### Example 2: _Using Key Vault with the Access Policy permission model_
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version>' = {
+  name: 'diskEncryptionSetDeployment'
+  params: {
+    // Required parameters
+    name: 'cdeshsm001'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "cdeshsm001"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/disk-encryption-set:<version>'
+
+// Required parameters
+param name = 'cdeshsm001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using Key Vault with the Access Policy permission model_
 
 This instance uses a Key Vault with the Access Policy permission model. The option to add the permissions on the key via the module is enabled.
 
@@ -259,7 +352,7 @@ param roleAssignments = [
 </details>
 <p>
 
-### Example 3: _Using Key Vault with the Role Based Access Control (RBAC) permission model_
+### Example 4: _Using Key Vault with the Role Based Access Control (RBAC) permission model_
 
 This instance uses a Key Vault with the Role Based Access Control (RBAC) permission model. The option to add the permissions on the key via the module is enabled.
 
@@ -347,99 +440,6 @@ param customerManagedKey = {
   keyVaultResourceId: '<keyVaultResourceId>'
 }
 param enableSetKeyPermissions = true
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
-```
-
-</details>
-<p>
-
-### Example 4: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version>' = {
-  name: 'diskEncryptionSetDeployment'
-  params: {
-    // Required parameters
-    name: 'cdeshsm001'
-    // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      keyVersion: '<keyVersion>'
-    }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "cdeshsm001"
-    },
-    // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "keyVersion": "<keyVersion>"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/compute/disk-encryption-set:<version>'
-
-// Required parameters
-param name = 'cdeshsm001'
-// Non-required parameters
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-  keyVersion: '<keyVersion>'
-}
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
