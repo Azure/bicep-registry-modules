@@ -26,21 +26,28 @@ resource deploymentMSI 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11
 resource managedHsm 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = {
   name: managedHSMName
 
-  resource key 'keys@2025-05-01' = {
+  resource key 'keys@2025-05-01' existing = {
     name: '${hsmKeyNamePrefix}-cmk'
-    properties: {
-      keySize: 4096
-      kty: 'RSA-HSM'
-    }
   }
 
-  resource keyDisk 'keys@2025-05-01' = {
+  resource keyDisk 'keys@2025-05-01' existing = {
     name: '${hsmKeyNamePrefix}-cmk-disk'
-    properties: {
-      keySize: 4096
-      kty: 'RSA-HSM'
-    }
   }
+  // resource key 'keys@2025-05-01' = {
+  //   name: '${hsmKeyNamePrefix}-cmk'
+  //   properties: {
+  //     keySize: 4096
+  //     kty: 'RSA-HSM'
+  //   }
+  // }
+
+  // resource keyDisk 'keys@2025-05-01' = {
+  //   name: '${hsmKeyNamePrefix}-cmk-disk'
+  //   properties: {
+  //     keySize: 4096
+  //     kty: 'RSA-HSM'
+  //   }
+  // }
 }
 
 // Configure HSM
