@@ -57,7 +57,7 @@ param customerManagedKey customerManagedKeyType?
 
 import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('''Optional. The customer managed key definition to use for the managed disk.
-Action Required: If using a Managed HSM key, a role assignment needs to be added to your HSM for the disk encryption set which is created during workspace deployment. After your workspace is created, please follow the steps outlined in the documentation. If this action is not taken, cluster creation will fail ([learn more](https://learn.microsoft.com/azure/databricks/security/keys/cmk-managed-disks-azure?WT.mc_id=Portal-Microsoft_Azure_Databricks)).''')
+Action Required: A role assignment needs to be added to the key that is used by the Disk Encryption Set created during workspace deployment. After your workspace is created, please follow the steps outlined in the documentation. If this action is not taken, cluster creation will fail ([learn more](https://learn.microsoft.com/azure/databricks/security/keys/cmk-managed-disks-azure?WT.mc_id=Portal-Microsoft_Azure_Databricks)).''')
 param customerManagedKeyManagedDisk customerManagedKeyWithAutoRotateType?
 
 @description('Optional. Name of the outbound Load Balancer Backend Pool for Secure Cluster Connectivity (No Public IP).')
