@@ -37,9 +37,10 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/databricks/workspace:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [With encryption](#example-2-with-encryption)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using encryption with HSM Customer-Managed-Key](#example-2-using-encryption-with-hsm-customer-managed-key)
+- [With encryption](#example-3-with-encryption)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -94,9 +95,102 @@ param name = 'dwmin002'
 </details>
 <p>
 
-### Example 2: _With encryption_
+### Example 2: _Using encryption with HSM Customer-Managed-Key_
 
-This instance deploys the module with customer-managed keys for encryption, where 2 different keys are hosted in the same vault.
+This instance deploys the module with HSMcustomer-managed keys for encryption, where 2 different keys are hosted in the same vault and the AzureDatabricks Enterprise Application is used to pull the keys.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
+  name: 'workspaceDeployment'
+  params: {
+    // Required parameters
+    name: 'dwhsm001'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
+    customerManagedKeyManagedDisk: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dwhsm001"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>"
+      }
+    },
+    "customerManagedKeyManagedDisk": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/databricks/workspace:<version>'
+
+// Required parameters
+param name = 'dwhsm001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
+}
+param customerManagedKeyManagedDisk = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _With encryption_
+
+This instance deploys the module with customer-managed keys for encryption, where 2 different keys are hosted in the same vault and the AzureDatabricks Enterprise Application is used to pull the keys.
 
 
 <details>
@@ -181,7 +275,7 @@ param customerManagedKeyManagedDisk = {
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -635,7 +729,7 @@ param vnetAddressPrefix = '10.100'
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 

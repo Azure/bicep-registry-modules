@@ -1,14 +1,14 @@
-@description('Optional. The resource ID of the key vault to fetch the key from.')
+@description('Required. The resource ID of the key vault to fetch the key from.')
 param keyVaultResourceId string
 
-@description('Optional. The name of the key vault key.')
+@description('Required. The name of the key vault key.')
 param keyName string
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {
-  name: last(split(keyVaultResourceId!, '/'))
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = {
+  name: last(split(keyVaultResourceId, '/'))
 
-  resource cMKKey 'keys@2024-11-01' existing = {
-    name: keyName ?? 'dummyKey'
+  resource cMKKey 'keys@2025-05-01' existing = {
+    name: keyName
   }
 }
 
