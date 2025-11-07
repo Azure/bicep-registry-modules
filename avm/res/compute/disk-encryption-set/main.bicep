@@ -149,14 +149,6 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!isHS
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
-  scope: resourceGroup(
-    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
-    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
-  )
-}
-
 // resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {
 //   name: last(split(keyVaultResourceId, '/'))!
 //   scope: resourceGroup(split(keyVaultResourceId, '/')[2], split(keyVaultResourceId, '/')[4])
@@ -215,7 +207,7 @@ resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' = {
     }
     encryptionType: encryptionType
     federatedClientId: federatedClientId
-    rotationToLatestKeyVersionEnabled: customerManagedKey.?autoRotationEnabled
+    rotationToLatestKeyVersionEnabled: customerManagedKey.?autoRotationEnabled ?? true
   }
   dependsOn: [
     keyVaultPermissions
