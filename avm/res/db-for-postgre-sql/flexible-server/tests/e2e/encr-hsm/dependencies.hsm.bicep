@@ -32,7 +32,7 @@ resource managedHsm 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = {
   name: managedHSMName
 
   resource key 'keys@2025-05-01' existing = {
-    name: 'general-hsm-test-key'
+    name: hsmKeyName
   }
   // resource key 'keys@2025-05-01' = {
   //   name: hsmKeyName
