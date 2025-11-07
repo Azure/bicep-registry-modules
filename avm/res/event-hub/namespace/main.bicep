@@ -311,7 +311,7 @@ module eventHubNamespace_networkRuleSet 'network-rule-set/main.bicep' = if (!emp
   }
 }
 
-module eventHubNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module eventHubNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-namespace-PrivateEndpoint-${index}'
     scope: resourceGroup(
