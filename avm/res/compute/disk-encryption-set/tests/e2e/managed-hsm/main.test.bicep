@@ -65,22 +65,23 @@ module nestedHsmDependencies 'dependencies.hsm.bicep' = {
 // Test Execution //
 // ============== //
 
-// @batchSize(1)
-// module testDeployment '../../../main.bicep' = [
-//   for iteration in ['init', 'idem']: {
-//     scope: resourceGroup
-//     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
-//     params: {
-//       name: '${namePrefix}${serviceShort}001'
-//       customerManagedKey: {
-//         keyName: nestedHsmDependencies.outputs.keyName
-//         keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
-//       }
-//       managedIdentities: {
-//         userAssignedResourceIds: [
-//           nestedDependencies.outputs.managedIdentityResourceId
-//         ]
-//       }
-//     }
-//   }
-// ]
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      customerManagedKey: {
+        keyName: nestedHsmDependencies.outputs.keyName
+        keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
+        autoRotationEnabled: true
+      }
+      managedIdentities: {
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+    }
+  }
+]
