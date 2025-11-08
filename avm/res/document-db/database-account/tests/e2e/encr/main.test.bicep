@@ -70,10 +70,12 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
-      // Explicit
+      // Explicit 1
       networkRestrictions: {
         publicNetworkAccess: 'Enabled'
       }
+      // Explicit 2
+      disableKeyBasedMetadataWriteAccess: false
     }
   }
 ]
