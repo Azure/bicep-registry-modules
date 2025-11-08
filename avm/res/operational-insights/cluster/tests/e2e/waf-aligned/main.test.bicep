@@ -58,8 +58,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      // Adding base time to make the name unique as soft-deletion is enabled by default
-      name: '${namePrefix}-${serviceShort}-${uniqueString(baseTime)}'
+      name: '${namePrefix}${serviceShort}001'
       sku: {
         capacity: 100
         name: 'CapacityReservation'
