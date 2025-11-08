@@ -321,7 +321,7 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
     keyVaultKeyUri: !empty(customerManagedKey)
       ? !isHSMManagedCMK
           ? '${cMKKeyVault::cMKKey!.properties.keyUri}'
-          : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName!}'
+          : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}'
       : null
     cors: cors
     enablePartitionMerge: enablePartitionMerge
@@ -730,11 +730,15 @@ output secondaryReadWriteConnectionString string = databaseAccount.listConnectio
 @description('The secondary read-only connection string.')
 output secondaryReadOnlyConnectionString string = databaseAccount.listConnectionStrings().connectionStrings[3].connectionString
 
-output testOutput string? = !empty(customerManagedKey)
+output testKeyOutput string? = !empty(customerManagedKey)
   ? !isHSMManagedCMK
       ? '${cMKKeyVault::cMKKey!.properties.keyUri}'
-      : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName!}'
+      : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}'
   : null
+
+output testDefaultIdentityOutput string = !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
+  ? defaultIdentity!.name
+  : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
 
 // =============== //
 //   Definitions   //
