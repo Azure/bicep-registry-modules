@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using Key Vault with the Role Based Access Control (RBAC) permission model'
-metadata description = 'This instance uses a Key Vault with the Role Based Access Control (RBAC) permission model. The option to add the permissions on the key via the module is enabled.'
+metadata name = 'Using Key Vault with the Access Policy permission model'
+metadata description = 'This instance uses a Key Vault with the Access Policy permission model. If no permissions on the Key Vault are set, the module attempts to add the permissions for you.'
 
 // ========== //
 // Parameters //
@@ -15,12 +15,12 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.diskencryptionsets-$
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cdesrbac'
+param serviceShort string = 'cdesap'
 
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
 
-@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
+@description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
@@ -29,7 +29,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -56,17 +56,43 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      customerManagedKey: {
-        keyName: nestedDependencies.outputs.keyName
-        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-        autoRotationEnabled: false
-      }
-      enableSetKeyPermissions: true
+      location: resourceLocation
+      keyName: nestedDependencies.outputs.keyName
+      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
       managedIdentities: {
+        systemAssigned: true
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
+    dependsOn: [
+      nestedDependencies
+    ]
   }
 ]

@@ -11,28 +11,17 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
-@description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyWithAutoRotateType?
+@description('Required. Resource ID of the KeyVault containing the key or secret.')
+param keyVaultResourceId string
 
-@description('Optional. Assign permissions to the Key Vault Key.')
-param enableSetKeyPermissions bool = false
+@description('Required. The name of the key used for encryption.')
+param keyName string
 
-// @description('Required. Resource ID of the KeyVault containing the key or secret.')
-// param keyVaultResourceId string
-
-// @description('Required. The name of the key used for encryption.')
-// param keyName string
-
-// @description('Optional. The version of the customer managed key to reference for encryption. If not provided, the latest key version is used.')
-// param keyVersion string?
-
-// @description('Optional. Set this flag to true to enable auto-updating of this disk encryption set to the latest key version.')
-// param rotationToLatestKeyVersionEnabled bool = false
+@description('Optional. The version of the customer managed key to reference for encryption. If not provided, the latest key version is used.')
+param keyVersion string?
 
 @description('Optional. The type of key used to encrypt the data of the disk. For security reasons, it is recommended to set encryptionType to EncryptionAtRestWithPlatformAndCustomerKeys.')
 @allowed([
-  'ConfidentialVmEncryptedWithCustomerKey'
   'EncryptionAtRestWithCustomerKey'
   'EncryptionAtRestWithPlatformAndCustomerKeys'
 ])
@@ -40,6 +29,9 @@ param encryptionType string = 'EncryptionAtRestWithPlatformAndCustomerKeys'
 
 @description('Optional. Multi-tenant application client ID to access key vault in a different tenant. Setting the value to "None" will clear the property.')
 param federatedClientId string = 'None'
+
+@description('Optional. Set this flag to true to enable auto-updating of this disk encryption set to the latest key version.')
+param rotationToLatestKeyVersionEnabled bool = false
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
@@ -136,34 +128,27 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {
+  name: last(split(keyVaultResourceId, '/'))!
+  scope: resourceGroup(split(keyVaultResourceId, '/')[2], split(keyVaultResourceId, '/')[4])
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!isHSMManagedCMK) {
-  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
-  scope: resourceGroup(
-    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
-    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
-  )
-  resource cMKKey 'keys@2024-11-01' existing = {
-    name: customerManagedKey.?keyName!
+  resource key 'keys@2024-11-01' existing = {
+    name: keyName
   }
 }
 
 // Note: This is only enabled for user-assigned identities as the service's system-assigned identity isn't available during its initial deployment
 module keyVaultPermissions 'modules/nested_keyVaultPermissions.bicep' = [
-  for (userAssignedIdentityResourceId, index) in (managedIdentities.?userAssignedResourceIds ?? []): if (enableSetKeyPermissions && !isHSMManagedCMK) {
+  for (userAssignedIdentityResourceId, index) in (managedIdentities.?userAssignedResourceIds ?? []): {
     name: '${uniqueString(deployment().name, location)}-DiskEncrSet-KVPermissions-${index}'
     params: {
-      keyName: customerManagedKey!.keyName
-      keyVaultResourceId: customerManagedKey!.keyVaultResourceId
+      keyName: keyName
+      keyVaultResourceId: keyVaultResourceId
       userAssignedIdentityResourceId: userAssignedIdentityResourceId
-      rbacAuthorizationEnabled: cMKKeyVault!.properties.enableRbacAuthorization
+      rbacAuthorizationEnabled: keyVault.properties.enableRbacAuthorization
       location: location
     }
-    scope: resourceGroup(
-      split(customerManagedKey!.keyVaultResourceId, '/')[2],
-      split(customerManagedKey!.keyVaultResourceId, '/')[4]
-    )
+    scope: resourceGroup(split(keyVaultResourceId, '/')[2], split(keyVaultResourceId, '/')[4])
   }
 ]
 
@@ -174,33 +159,16 @@ resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' = {
   identity: identity
   properties: {
     activeKey: {
-      // sourceVault: {
-      //   id: keyVaultResourceId
-      // }
-      // keyUrl: !empty(keyVersion)
-      //   ? '${keyVault::key.properties.keyUri}/${keyVersion}'
-      //   : keyVault::key.properties.keyUriWithVersion
       sourceVault: {
-        id: customerManagedKey!.keyVaultResourceId
+        id: keyVaultResourceId
       }
-      keyUrl: !empty(customerManagedKey.?keyVersion)
-        ? (!isHSMManagedCMK
-            ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
-            : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName!}/${customerManagedKey!.keyVersion!}')
-        // : (customerManagedKey.?autoRotationEnabled ?? true)
-        //     ? (!isHSMManagedCMK
-        //         ? cMKKeyVault::cMKKey!.properties.keyUri
-        //         : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName!}}')
-        //     : (!isHSMManagedCMK
-        //         ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
-        //         : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
-        : (!isHSMManagedCMK
-            ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
-            : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
+      keyUrl: !empty(keyVersion)
+        ? '${keyVault::key.properties.keyUri}/${keyVersion}'
+        : keyVault::key.properties.keyUriWithVersion
     }
     encryptionType: encryptionType
     federatedClientId: federatedClientId
-    rotationToLatestKeyVersionEnabled: customerManagedKey.?autoRotationEnabled ?? true
+    rotationToLatestKeyVersionEnabled: rotationToLatestKeyVersionEnabled
   }
   dependsOn: [
     keyVaultPermissions
@@ -254,7 +222,7 @@ output systemAssignedMIPrincipalId string? = diskEncryptionSet.?identity.?princi
 output identities object = diskEncryptionSet.identity
 
 @description('The name of the key vault with the disk encryption key.')
-output keyVaultName string = cMKKeyVault.name
+output keyVaultName string = last(split(keyVaultResourceId, '/'))!
 
 @description('The location the resource was deployed into.')
 output location string = diskEncryptionSet.location

@@ -2,16 +2,6 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/disk-encryption-set/CHANGELOG.md).
 
-## 0.6.0
-
-### Changes
-
-- TODO: Update
-
-### Breaking Changes
-
-- TODO: Update
-
 ## 0.5.0
 
 ### Changes

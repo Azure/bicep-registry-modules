@@ -28,16 +28,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/disk-encryption-set:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
+- [Using Key Vault with the Access Policy permission model](#example-1-using-key-vault-with-the-access-policy-permission-model)
 - [Using only defaults](#example-2-using-only-defaults)
-- [Using Key Vault with the Access Policy permission model](#example-3-using-key-vault-with-the-access-policy-permission-model)
-- [Using Key Vault with the Role Based Access Control (RBAC) permission model](#example-4-using-key-vault-with-the-role-based-access-control-rbac-permission-model)
-- [Using large parameter set](#example-5-using-large-parameter-set)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using Key Vault with the Access Policy permission model_
 
-This instance deploys the module with the minimum set of required parameters. Note: The default configuration uses a system-assigned identity, which must be granted the necessary permissions on the Key Vault key after deployment.
+This instance uses a Key Vault with the Access Policy permission model. If no permissions on the Key Vault are set, the module attempts to add the permissions for you.
 
 
 <details>
@@ -49,179 +47,11 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
   name: 'diskEncryptionSetDeployment'
   params: {
     // Required parameters
-    name: 'cdesmin001'
-    // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "cdesmin001"
-    },
-    // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/compute/disk-encryption-set:<version>'
-
-// Required parameters
-param name = 'cdesmin001'
-// Non-required parameters
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-}
-```
-
-</details>
-<p>
-
-### Example 2: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version>' = {
-  name: 'diskEncryptionSetDeployment'
-  params: {
-    // Required parameters
-    name: 'cdeshsm001'
-    // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      keyVersion: '<keyVersion>'
-    }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "cdeshsm001"
-    },
-    // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "keyVersion": "<keyVersion>"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/compute/disk-encryption-set:<version>'
-
-// Required parameters
-param name = 'cdeshsm001'
-// Non-required parameters
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-  keyVersion: '<keyVersion>'
-}
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
-```
-
-</details>
-<p>
-
-### Example 3: _Using Key Vault with the Access Policy permission model_
-
-This instance uses a Key Vault with the Access Policy permission model. The option to add the permissions on the key via the module is enabled.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version>' = {
-  name: 'diskEncryptionSetDeployment'
-  params: {
-    // Required parameters
+    keyName: '<keyName>'
+    keyVaultResourceId: '<keyVaultResourceId>'
     name: 'cdesap001'
     // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-    }
-    enableSetKeyPermissions: true
+    location: '<location>'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -245,6 +75,11 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -262,18 +97,18 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "keyName": {
+      "value": "<keyName>"
+    },
+    "keyVaultResourceId": {
+      "value": "<keyVaultResourceId>"
+    },
     "name": {
       "value": "cdesap001"
     },
     // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>"
-      }
-    },
-    "enableSetKeyPermissions": {
-      "value": true
+    "location": {
+      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
@@ -301,6 +136,13 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
@@ -317,13 +159,11 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
 using 'br/public:avm/res/compute/disk-encryption-set:<version>'
 
 // Required parameters
+param keyName = '<keyName>'
+param keyVaultResourceId = '<keyVaultResourceId>'
 param name = 'cdesap001'
 // Non-required parameters
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-}
-param enableSetKeyPermissions = true
+param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
@@ -347,14 +187,19 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
 ```
 
 </details>
 <p>
 
-### Example 4: _Using Key Vault with the Role Based Access Control (RBAC) permission model_
+### Example 2: _Using only defaults_
 
-This instance uses a Key Vault with the Role Based Access Control (RBAC) permission model. The option to add the permissions on the key via the module is enabled.
+This instance deploys the module with the minimum set of required parameters.
 
 
 <details>
@@ -366,19 +211,11 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
   name: 'diskEncryptionSetDeployment'
   params: {
     // Required parameters
-    name: 'cdesrbac001'
+    keyName: '<keyName>'
+    keyVaultResourceId: '<keyVaultResourceId>'
+    name: 'cdesmin001'
     // Non-required parameters
-    customerManagedKey: {
-      autoRotationEnabled: false
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-    }
-    enableSetKeyPermissions: true
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
+    location: '<location>'
   }
 }
 ```
@@ -396,26 +233,18 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "keyName": {
+      "value": "<keyName>"
+    },
+    "keyVaultResourceId": {
+      "value": "<keyVaultResourceId>"
+    },
     "name": {
-      "value": "cdesrbac001"
+      "value": "cdesmin001"
     },
     // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "autoRotationEnabled": false,
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>"
-      }
-    },
-    "enableSetKeyPermissions": {
-      "value": true
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -432,25 +261,17 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
 using 'br/public:avm/res/compute/disk-encryption-set:<version>'
 
 // Required parameters
-param name = 'cdesrbac001'
+param keyName = '<keyName>'
+param keyVaultResourceId = '<keyVaultResourceId>'
+param name = 'cdesmin001'
 // Non-required parameters
-param customerManagedKey = {
-  autoRotationEnabled: false
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-}
-param enableSetKeyPermissions = true
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
+param location = '<location>'
 ```
 
 </details>
 <p>
 
-### Example 5: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -464,20 +285,16 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
   name: 'diskEncryptionSetDeployment'
   params: {
     // Required parameters
+    keyName: '<keyName>'
+    keyVaultResourceId: '<keyVaultResourceId>'
     name: 'cdesmax001'
     // Non-required parameters
-    customerManagedKey: {
-      autoRotationEnabled: false
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-    }
-    enableSetKeyPermissions: true
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
     managedIdentities: {
-      systemAssigned: true
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
@@ -523,19 +340,18 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "keyName": {
+      "value": "<keyName>"
+    },
+    "keyVaultResourceId": {
+      "value": "<keyVaultResourceId>"
+    },
     "name": {
       "value": "cdesmax001"
     },
     // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "autoRotationEnabled": false,
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>"
-      }
-    },
-    "enableSetKeyPermissions": {
-      "value": true
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -545,7 +361,6 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
@@ -594,20 +409,16 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
 using 'br/public:avm/res/compute/disk-encryption-set:<version>'
 
 // Required parameters
+param keyName = '<keyName>'
+param keyVaultResourceId = '<keyVaultResourceId>'
 param name = 'cdesmax001'
 // Non-required parameters
-param customerManagedKey = {
-  autoRotationEnabled: false
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-}
-param enableSetKeyPermissions = true
+param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
 param managedIdentities = {
-  systemAssigned: true
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
@@ -641,7 +452,7 @@ param tags = {
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -655,16 +466,20 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
   name: 'diskEncryptionSetDeployment'
   params: {
     // Required parameters
+    keyName: '<keyName>'
+    keyVaultResourceId: '<keyVaultResourceId>'
     name: 'cdeswaf001'
     // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-    }
+    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
+    }
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
     }
   }
 }
@@ -683,21 +498,31 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "keyName": {
+      "value": "<keyName>"
+    },
+    "keyVaultResourceId": {
+      "value": "<keyVaultResourceId>"
+    },
     "name": {
       "value": "cdeswaf001"
     },
     // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>"
-      }
+    "location": {
+      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
+      }
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
       }
     }
   }
@@ -715,16 +540,20 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
 using 'br/public:avm/res/compute/disk-encryption-set:<version>'
 
 // Required parameters
+param keyName = '<keyName>'
+param keyVaultResourceId = '<keyVaultResourceId>'
 param name = 'cdeswaf001'
 // Non-required parameters
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-}
+param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -737,22 +566,38 @@ param managedIdentities = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`keyName`](#parameter-keyname) | string | The name of the key used for encryption. |
+| [`keyVaultResourceId`](#parameter-keyvaultresourceid) | string | Resource ID of the KeyVault containing the key or secret. |
 | [`name`](#parameter-name) | string | The name of the disk encryption set that is being created. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
-| [`enableSetKeyPermissions`](#parameter-enablesetkeypermissions) | bool | Assign permissions to the Key Vault Key. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionType`](#parameter-encryptiontype) | string | The type of key used to encrypt the data of the disk. For security reasons, it is recommended to set encryptionType to EncryptionAtRestWithPlatformAndCustomerKeys. |
 | [`federatedClientId`](#parameter-federatedclientid) | string | Multi-tenant application client ID to access key vault in a different tenant. Setting the value to "None" will clear the property. |
+| [`keyVersion`](#parameter-keyversion) | string | The version of the customer managed key to reference for encryption. If not provided, the latest key version is used. |
 | [`location`](#parameter-location) | string | Resource location. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`rotationToLatestKeyVersionEnabled`](#parameter-rotationtolatestkeyversionenabled) | bool | Set this flag to true to enable auto-updating of this disk encryption set to the latest key version. |
 | [`tags`](#parameter-tags) | object | Tags of the disk encryption resource. |
+
+### Parameter: `keyName`
+
+The name of the key used for encryption.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `keyVaultResourceId`
+
+Resource ID of the KeyVault containing the key or secret.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `name`
 
@@ -760,71 +605,6 @@ The name of the disk encryption set that is being created.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `customerManagedKey`
-
-The customer managed key definition.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
-| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`autoRotationEnabled`](#parameter-customermanagedkeyautorotationenabled) | bool | Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used. |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting. |
-| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
-
-### Parameter: `customerManagedKey.keyName`
-
-The name of the customer managed key to use for encryption.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `customerManagedKey.keyVaultResourceId`
-
-The resource ID of a key vault to reference a customer managed key for encryption from.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `customerManagedKey.autoRotationEnabled`
-
-Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.
-
-- Required: No
-- Type: bool
-
-### Parameter: `customerManagedKey.keyVersion`
-
-The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting.
-
-- Required: No
-- Type: string
-
-### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
-
-User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
-
-- Required: No
-- Type: string
-
-### Parameter: `enableSetKeyPermissions`
-
-Assign permissions to the Key Vault Key.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `enableTelemetry`
 
@@ -844,7 +624,6 @@ The type of key used to encrypt the data of the disk. For security reasons, it i
 - Allowed:
   ```Bicep
   [
-    'ConfidentialVmEncryptedWithCustomerKey'
     'EncryptionAtRestWithCustomerKey'
     'EncryptionAtRestWithPlatformAndCustomerKeys'
   ]
@@ -857,6 +636,13 @@ Multi-tenant application client ID to access key vault in a different tenant. Se
 - Required: No
 - Type: string
 - Default: `'None'`
+
+### Parameter: `keyVersion`
+
+The version of the customer managed key to reference for encryption. If not provided, the latest key version is used.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 
@@ -1051,6 +837,14 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `rotationToLatestKeyVersionEnabled`
+
+Set this flag to true to enable auto-updating of this disk encryption set to the latest key version.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `tags`
 
