@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "971716421318252171"
+      "templateHash": "13378121816586146640"
     },
     "name": "Log Analytics Dedicated Clusters",
     "description": "This module deploys a Log Analytics Dedicated Cluster."
@@ -200,9 +200,9 @@
   "parameters": {
     "name": {
       "type": "string",
-      "maxLength": 64,
+      "maxLength": 63,
       "metadata": {
-        "description": "Required. Name of the Log Analytics cluster. Can contain only 64 letters, numbers and '-'."
+        "description": "Required. Name of the Log Analytics cluster. Can contain only 63 letters, numbers and '-'."
       }
     },
     "location": {

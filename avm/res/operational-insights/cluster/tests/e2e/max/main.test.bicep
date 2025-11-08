@@ -73,7 +73,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: '${namePrefix}${serviceShort}002'
       location: enforcedLocation
       sku: {
         capacity: 100

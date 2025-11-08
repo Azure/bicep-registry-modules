@@ -50,7 +50,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
-    name: 'oicmin001'
+    name: 'oicmin002'
     sku: {
       capacity: 100
       name: 'CapacityReservation'
@@ -73,7 +73,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "oicmin001"
+      "value": "oicmin002"
     },
     "sku": {
       "value": {
@@ -96,7 +96,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
 using 'br/public:avm/res/operational-insights/cluster:<version>'
 
 // Required parameters
-param name = 'oicmin001'
+param name = 'oicmin002'
 param sku = {
   capacity: 100
   name: 'CapacityReservation'
@@ -120,7 +120,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
-    name: 'oicmax001'
+    name: 'oicmax002'
     sku: {
       capacity: 100
       name: 'CapacityReservation'
@@ -177,7 +177,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "oicmax001"
+      "value": "oicmax002"
     },
     "sku": {
       "value": {
@@ -244,7 +244,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
 using 'br/public:avm/res/operational-insights/cluster:<version>'
 
 // Required parameters
-param name = 'oicmax001'
+param name = 'oicmax002'
 param sku = {
   capacity: 100
   name: 'CapacityReservation'
@@ -302,7 +302,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
-    name: 'oicwaf001'
+    name: 'oicwaf002'
     sku: {
       capacity: 100
       name: 'CapacityReservation'
@@ -341,7 +341,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "oicwaf001"
+      "value": "oicwaf002"
     },
     "sku": {
       "value": {
@@ -386,7 +386,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
 using 'br/public:avm/res/operational-insights/cluster:<version>'
 
 // Required parameters
-param name = 'oicwaf001'
+param name = 'oicwaf002'
 param sku = {
   capacity: 100
   name: 'CapacityReservation'
@@ -418,7 +418,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the Log Analytics cluster. Can contain only 64 letters, numbers and '-'. |
+| [`name`](#parameter-name) | string | Name of the Log Analytics cluster. Can contain only 63 letters, numbers and '-'. |
 | [`sku`](#parameter-sku) | object | The sku properties. |
 
 **Optional parameters**
@@ -440,7 +440,7 @@ param tags = {
 
 ### Parameter: `name`
 
-Name of the Log Analytics cluster. Can contain only 64 letters, numbers and '-'.
+Name of the Log Analytics cluster. Can contain only 63 letters, numbers and '-'.
 
 - Required: Yes
 - Type: string
