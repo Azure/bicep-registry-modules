@@ -50,7 +50,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
-    name: 'oicmin002'
+    name: '<name>'
     sku: {
       capacity: 100
       name: 'CapacityReservation'
@@ -73,7 +73,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "oicmin002"
+      "value": "<name>"
     },
     "sku": {
       "value": {
@@ -96,7 +96,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
 using 'br/public:avm/res/operational-insights/cluster:<version>'
 
 // Required parameters
-param name = 'oicmin002'
+param name = '<name>'
 param sku = {
   capacity: 100
   name: 'CapacityReservation'
@@ -120,7 +120,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
-    name: 'oicmax002'
+    name: '<name>'
     sku: {
       capacity: 100
       name: 'CapacityReservation'
@@ -177,7 +177,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "oicmax002"
+      "value": "<name>"
     },
     "sku": {
       "value": {
@@ -244,7 +244,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
 using 'br/public:avm/res/operational-insights/cluster:<version>'
 
 // Required parameters
-param name = 'oicmax002'
+param name = '<name>'
 param sku = {
   capacity: 100
   name: 'CapacityReservation'
@@ -302,7 +302,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
-    name: 'oicwaf002'
+    name: '<name>'
     sku: {
       capacity: 100
       name: 'CapacityReservation'
@@ -341,7 +341,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "oicwaf002"
+      "value": "<name>"
     },
     "sku": {
       "value": {
@@ -386,7 +386,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
 using 'br/public:avm/res/operational-insights/cluster:<version>'
 
 // Required parameters
-param name = 'oicwaf002'
+param name = '<name>'
 param sku = {
   capacity: 100
   name: 'CapacityReservation'

@@ -21,6 +21,9 @@ param serviceShort string = 'oicmax'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Generated. Used as a basis for unique resource names.')
+param baseTime string = utcNow('u')
+
 @description('Required. The resource ID of the Managed Identity used by the deployment script. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-deploymentMSIName\'.')
 @secure()
 param deploymentMSIResourceId string = ''
@@ -73,7 +76,8 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}002'
+      // Adding base time to make the name unique as soft-deletion is enabled by default
+      name: '${namePrefix}-${serviceShort}-${uniqueString(baseTime)}'
       location: enforcedLocation
       sku: {
         capacity: 100

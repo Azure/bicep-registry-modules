@@ -24,6 +24,9 @@ param serviceShort string = 'oicmin'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Generated. Used as a basis for unique resource names.')
+param baseTime string = utcNow('u')
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -45,7 +48,8 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}002'
+      // Adding base time to make the name unique as soft-deletion is enabled by default
+      name: '${namePrefix}-${serviceShort}-${uniqueString(baseTime)}'
       sku: {
         capacity: 100
         name: 'CapacityReservation'
