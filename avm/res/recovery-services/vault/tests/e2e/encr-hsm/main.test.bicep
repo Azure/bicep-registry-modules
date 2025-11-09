@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Using managed HSM Customer-Managed-Keys with User-Assigned identity'
+metadata description = 'This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.'
 
 // ========== //
 // Parameters //
@@ -9,10 +9,10 @@ metadata description = 'This instance deploys the module with the minimum set of
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-compute.diskencryptionsets-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-recoveryservices.vaults-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cdeshsm'
+param serviceShort string = 'rsvhsm'
 
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
