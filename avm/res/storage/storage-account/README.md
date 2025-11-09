@@ -2910,7 +2910,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
-      keyVersion: '<keyVersion>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
     managedIdentities: {
@@ -2953,7 +2952,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       "value": {
         "keyName": "<keyName>",
         "keyVaultResourceId": "<keyVaultResourceId>",
-        "keyVersion": "<keyVersion>",
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
@@ -2992,7 +2990,6 @@ param blobServices = {
 param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
-  keyVersion: '<keyVersion>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
 param managedIdentities = {

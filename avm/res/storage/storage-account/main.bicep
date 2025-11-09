@@ -452,7 +452,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
               keyname: customerManagedKey!.keyName
               keyvaulturi: !isHSMManagedCMK
                 ? cMKKeyVault!.properties.vaultUri
-                : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/'
+                : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/'
               keyversion: !empty(customerManagedKey.?keyVersion)
                 ? customerManagedKey!.keyVersion!
                 : (customerManagedKey.?autoRotationEnabled ?? true)
