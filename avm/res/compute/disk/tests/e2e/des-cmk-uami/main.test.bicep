@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using an imported image'
-metadata description = 'This instance deploys the module with a custom image that is imported from a VHD in a storage account.'
+metadata name = 'Enabling encryption-at-rest via a Disk Encryption Set (DES) using Customer-Managed-Keys (CMK) and a User-Assigned Identity'
+metadata description = 'This instance deploys the module with encryption-at-rest using a Disk Encryption Set (DES) secured by Customer-Managed Keys (CMK), and leveraging a User-Assigned Managed Identity to access the key.'
 
 // ========== //
 // Parameters //
@@ -15,10 +15,10 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.disks-${serviceShort
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cdimp'
+param serviceShort string = 'cdcmk'
 
-@description('Generated. Do not provide a value! This date value is used to generate a unique image template name as the resource is not idempotent.')
-param uniqueBaseTime string = utcNow('yyyy-MM-dd-HH-mm-ss')
+@description('Generated. Used as a basis for unique resource names.')
+param baseTime string = utcNow('u')
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -40,10 +40,10 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
-    imageTemplateName: 'dep-${namePrefix}-imgt-${serviceShort}-${uniqueString(uniqueBaseTime)}'
-    triggerImageDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-triggerImageTemplate'
-    copyVhdDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-copyVhdToStorage'
+    // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
+    diskEncryptionSetName: 'dep-${namePrefix}-des-${serviceShort}'
+    waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForPropagation'
   }
 }
 
@@ -57,12 +57,10 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}-${serviceShort}001'
-      location: resourceLocation
       sku: 'Standard_LRS'
       availabilityZone: -1
-      createOption: 'Import'
-      sourceUri: nestedDependencies.outputs.vhdUri
-      storageAccountId: nestedDependencies.outputs.storageAccountResourceId
+      diskSizeGB: 1
+      diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
     }
   }
 ]
