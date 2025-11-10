@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using encryption with HSM Customer-Managed-Key'
-metadata description = 'This instance deploys the module with HSMcustomer-managed keys for encryption, where 2 different keys are hosted in the same vault and the AzureDatabricks Enterprise Application is used to pull the keys.'
+metadata name = 'Using managed HSM Customer-Managed-Keys with User-Assigned identity'
+metadata description = 'This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.'
 
 // ========== //
 // Parameters //
