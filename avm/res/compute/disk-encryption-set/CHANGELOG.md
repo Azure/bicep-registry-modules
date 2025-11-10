@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- TODO: Update
+- Added support for managed HSM customer-managed key encryption
 
 ### Breaking Changes
 
