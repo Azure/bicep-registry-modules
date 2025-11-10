@@ -3,10 +3,6 @@ targetScope = 'subscription'
 metadata name = 'Using managed HSM Customer-Managed-Keys with User-Assigned identity'
 metadata description = 'This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.'
 
-// NOTE
-// - There is a limit of seven clusters per subscription and region, five active, plus two that were deleted in past two weeks.
-// - A cluster's name remains reserved two weeks after deletion, and can't be used for creating a new cluster.
-
 // ========== //
 // Parameters //
 // ========== //
