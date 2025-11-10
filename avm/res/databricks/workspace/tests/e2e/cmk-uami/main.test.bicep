@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'With encryption'
-metadata description = 'This instance deploys the module with customer-managed keys for encryption, where 2 different keys are hosted in the same vault.'
+metadata description = 'This instance deploys the module with customer-managed keys for encryption, where 2 different keys are hosted in the same vault and the AzureDatabricks Enterprise Application is used to pull the keys.'
 
 // ========== //
 // Parameters //
@@ -42,7 +42,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
     databricksApplicationObjectId: azureDatabricksEnterpriseApplicationObjectId
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
@@ -72,3 +71,31 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+// =============== //
+// Post-Deployment //
+// =============== //
+// The managed-disk's disk-encryption-set requires its identity to have at least 'Key Vault Crypto Service Encryption User' permissions on the used key.
+resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = {
+  name: last(split(nestedDependencies.outputs.keyVaultResourceId, '/'))
+
+  resource key 'keys@2025-05-01' existing = {
+    name: nestedDependencies.outputs.keyVaultDiskKeyName
+  }
+
+  scope: resourceGroup
+}
+
+module managedDiskEncryptionSetPermissions 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-managedDiskEncryptionSetPermissions'
+  scope: resourceGroup
+  params: {
+    principalId: testDeployment[1].outputs.managedDiskIdentityPrincipalId!
+    resourceId: keyVault::key.id
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'e147488a-f6f5-4113-8e2d-b22465e65bf6'
+    ) // Key Vault Crypto Service Encryption User
+    principalType: 'ServicePrincipal'
+  }
+}
