@@ -20,8 +20,8 @@ This module deploys an Azure SQL Server.
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Sql/servers` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers)</li></ul> |
 | `Microsoft.Sql/servers/auditingSettings` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_auditingsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/auditingSettings)</li></ul> |
 | `Microsoft.Sql/servers/connectionPolicies` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_connectionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/connectionPolicies)</li></ul> |
@@ -51,11 +51,12 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-4-using-only-defaults)
 - [Using elastic pool](#example-5-using-elastic-pool)
 - [Using failover groups](#example-6-using-failover-groups)
-- [Deploying with a key vault reference to save secrets](#example-7-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-8-using-large-parameter-set)
-- [With a secondary database](#example-9-with-a-secondary-database)
-- [With vulnerability assessment](#example-10-with-vulnerability-assessment)
-- [WAF-aligned](#example-11-waf-aligned)
+- [Using only defaults](#example-7-using-only-defaults)
+- [Deploying with a key vault reference to save secrets](#example-8-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-9-using-large-parameter-set)
+- [With a secondary database](#example-10-with-a-secondary-database)
+- [With vulnerability assessment](#example-11-with-vulnerability-assessment)
+- [WAF-aligned](#example-12-waf-aligned)
 
 ### Example 1: _With an administrator_
 
@@ -267,7 +268,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       tenantId: '<tenantId>'
     }
     customerManagedKey: {
-      autoRotationEnabled: true
+      autoRotationEnabled: false
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
       keyVersion: '<keyVersion>'
@@ -334,7 +335,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     },
     "customerManagedKey": {
       "value": {
-        "autoRotationEnabled": true,
+        "autoRotationEnabled": false,
         "keyName": "<keyName>",
         "keyVaultResourceId": "<keyVaultResourceId>",
         "keyVersion": "<keyVersion>"
@@ -401,7 +402,7 @@ param administrators = {
   tenantId: '<tenantId>'
 }
 param customerManagedKey = {
-  autoRotationEnabled: true
+  autoRotationEnabled: false
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
   keyVersion: '<keyVersion>'
@@ -979,7 +980,205 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 7: _Deploying with a key vault reference to save secrets_
+### Example 7: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  name: 'serverDeployment'
+  params: {
+    // Required parameters
+    name: 'sshsm001'
+    // Non-required parameters
+    administrators: {
+      azureADOnlyAuthentication: true
+      login: 'myspn'
+      principalType: 'Application'
+      sid: '<sid>'
+      tenantId: '<tenantId>'
+    }
+    customerManagedKey: {
+      autoRotationEnabled: false
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
+    databases: [
+      {
+        availabilityZone: -1
+        customerManagedKey: {
+          autoRotationEnabled: true
+          keyName: '<keyName>'
+          keyVaultResourceId: '<keyVaultResourceId>'
+          keyVersion: '<keyVersion>'
+        }
+        managedIdentities: {
+          userAssignedResourceIds: [
+            '<managedIdentityResourceId>'
+          ]
+        }
+        maxSizeBytes: 2147483648
+        name: 'sshsm-db-001'
+        sku: {
+          name: 'Basic'
+          tier: 'Basic'
+        }
+        zoneRedundant: false
+      }
+    ]
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sshsm001"
+    },
+    // Non-required parameters
+    "administrators": {
+      "value": {
+        "azureADOnlyAuthentication": true,
+        "login": "myspn",
+        "principalType": "Application",
+        "sid": "<sid>",
+        "tenantId": "<tenantId>"
+      }
+    },
+    "customerManagedKey": {
+      "value": {
+        "autoRotationEnabled": false,
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>"
+      }
+    },
+    "databases": {
+      "value": [
+        {
+          "availabilityZone": -1,
+          "customerManagedKey": {
+            "autoRotationEnabled": true,
+            "keyName": "<keyName>",
+            "keyVaultResourceId": "<keyVaultResourceId>",
+            "keyVersion": "<keyVersion>"
+          },
+          "managedIdentities": {
+            "userAssignedResourceIds": [
+              "<managedIdentityResourceId>"
+            ]
+          },
+          "maxSizeBytes": 2147483648,
+          "name": "sshsm-db-001",
+          "sku": {
+            "name": "Basic",
+            "tier": "Basic"
+          },
+          "zoneRedundant": false
+        }
+      ]
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": false,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "primaryUserAssignedIdentityResourceId": {
+      "value": "<primaryUserAssignedIdentityResourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sshsm001'
+// Non-required parameters
+param administrators = {
+  azureADOnlyAuthentication: true
+  login: 'myspn'
+  principalType: 'Application'
+  sid: '<sid>'
+  tenantId: '<tenantId>'
+}
+param customerManagedKey = {
+  autoRotationEnabled: false
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
+}
+param databases = [
+  {
+    availabilityZone: -1
+    customerManagedKey: {
+      autoRotationEnabled: true
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    maxSizeBytes: 2147483648
+    name: 'sshsm-db-001'
+    sku: {
+      name: 'Basic'
+      tier: 'Basic'
+    }
+    zoneRedundant: false
+  }
+]
+param managedIdentities = {
+  systemAssigned: false
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
+```
+
+</details>
+<p>
+
+### Example 8: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving all its secrets in a key vault.
 
@@ -1093,7 +1292,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 8: _Using large parameter set_
+### Example 9: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1702,7 +1901,7 @@ param vulnerabilityAssessmentsObj = {
 </details>
 <p>
 
-### Example 9: _With a secondary database_
+### Example 10: _With a secondary database_
 
 This instance deploys the module with a secondary database.
 
@@ -1837,7 +2036,7 @@ param tags = {
 </details>
 <p>
 
-### Example 10: _With vulnerability assessment_
+### Example 11: _With vulnerability assessment_
 
 This instance deploys the module with a vulnerability assessment.
 
@@ -2020,7 +2219,7 @@ param vulnerabilityAssessmentsObj = {
 </details>
 <p>
 
-### Example 11: _WAF-aligned_
+### Example 12: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -5148,7 +5347,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
