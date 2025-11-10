@@ -1,6 +1,5 @@
 # Fabric Capacities `[Microsoft.Fabric/capacities]`
 
-
 This module deploys Fabric capacities, which provide the compute resources for all the experiences in Fabric.
 
 ## Navigation
