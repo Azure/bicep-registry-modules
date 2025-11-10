@@ -31,17 +31,16 @@ resource deploymentMSI 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11
 resource managedHsm 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = {
   name: managedHSMName
 
-  // resource key 'keys@2025-05-01' existing = {
-  //   name: hsmKeyName
-  // }
-  resource key 'keys@2025-05-01' = {
+  resource key 'keys@2025-05-01' existing = {
     name: hsmKeyName
-    properties: {
-      // keySize: 4096 # The supported RSA Key Size for sql server is 2048 or 3072 and Key Type is RSA or RSA-HSM.
-      keySize: 3072
-      kty: 'RSA-HSM'
-    }
   }
+  // resource key 'keys@2025-05-01' = {
+  //   name: hsmKeyName
+  //   properties: {
+  //     keySize: 3072  // 4096 is not supported. The supported RSA Key Size for sql server is 2048 or 3072 and Key Type is RSA or RSA-HSM.
+  //     kty: 'RSA-HSM'
+  //   }
+  // }
 }
 
 // Configure HSM
