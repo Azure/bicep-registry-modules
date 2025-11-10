@@ -5,7 +5,7 @@ metadata description = 'This module deploys an Azure Databricks Workspace.'
 param name string
 
 @description('Optional. The managed resource group ID. It is created by the module as per the to-be resource ID you provide.')
-param managedResourceGroupResourceId string = ''
+param managedResourceGroupResourceId string?
 
 @description('Optional. The pricing tier of workspace.')
 @allowed([
@@ -230,7 +230,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
   }
   properties: {
     managedResourceGroupId: !empty(managedResourceGroupResourceId)
-      ? managedResourceGroupResourceId
+      ? managedResourceGroupResourceId!
       : '${subscription().id}/resourceGroups/rg-${name}-managed'
     parameters: {
       enableNoPublicIp: {
