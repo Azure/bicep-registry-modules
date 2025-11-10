@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Adding support for HSM
+- Adding support for managed HSM customer-managed key encryption
 - Added the output `managedDiskIdentityPrincipalId` which is available if CMK for the managed disk is configured
 
 ### Breaking Changes
