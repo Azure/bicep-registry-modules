@@ -52,9 +52,9 @@ The following section provides usage examples for the module, which were used to
 - [Using analytical storage](#example-1-using-analytical-storage)
 - [Using bounded consistency](#example-2-using-bounded-consistency)
 - [Cassandra Keyspaces - WAF-aligned](#example-3-cassandra-keyspaces---waf-aligned)
-- [Using only defaults](#example-4-using-only-defaults)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-4-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
 - [Using encryption with Customer-Managed-Key](#example-5-using-encryption-with-customer-managed-key)
-- [Using encryption with Customer-Managed-Key](#example-6-using-encryption-with-customer-managed-key)
+- [Using only defaults](#example-6-using-only-defaults)
 - [Gremlin Database](#example-7-gremlin-database)
 - [Deploying with Managed identities](#example-8-deploying-with-managed-identities)
 - [Mongo Database](#example-9-mongo-database)
@@ -753,7 +753,245 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _Using only defaults_
+### Example 4: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: 'databaseAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'dddamhsm001'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    defaultIdentity: {
+      name: 'UserAssignedIdentity'
+      resourceId: '<resourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    zoneRedundant: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddamhsm001"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "defaultIdentity": {
+      "value": {
+        "name": "UserAssignedIdentity",
+        "resourceId": "<resourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "zoneRedundant": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddamhsm001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param defaultIdentity = {
+  name: 'UserAssignedIdentity'
+  resourceId: '<resourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param zoneRedundant = false
+```
+
+</details>
+<p>
+
+### Example 5: _Using encryption with Customer-Managed-Key_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: 'databaseAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'dddaenc001'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    defaultIdentity: {
+      name: 'UserAssignedIdentity'
+      resourceId: '<resourceId>'
+    }
+    disableKeyBasedMetadataWriteAccess: false
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    networkRestrictions: {
+      publicNetworkAccess: 'Enabled'
+    }
+    zoneRedundant: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddaenc001"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "defaultIdentity": {
+      "value": {
+        "name": "UserAssignedIdentity",
+        "resourceId": "<resourceId>"
+      }
+    },
+    "disableKeyBasedMetadataWriteAccess": {
+      "value": false
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "networkRestrictions": {
+      "value": {
+        "publicNetworkAccess": "Enabled"
+      }
+    },
+    "zoneRedundant": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddaenc001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param defaultIdentity = {
+  name: 'UserAssignedIdentity'
+  resourceId: '<resourceId>'
+}
+param disableKeyBasedMetadataWriteAccess = false
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param networkRestrictions = {
+  publicNetworkAccess: 'Enabled'
+}
+param zoneRedundant = false
+```
+
+</details>
+<p>
+
+### Example 6: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -811,224 +1049,6 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'dddamin001'
 // Non-required parameters
-param zoneRedundant = false
-```
-
-</details>
-<p>
-
-### Example 5: _Using encryption with Customer-Managed-Key_
-
-This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
-  params: {
-    // Required parameters
-    name: 'dddahsm001'
-    // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-    }
-    defaultIdentity: {
-      name: 'UserAssignedIdentity'
-      resourceId: '<resourceId>'
-    }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    zoneRedundant: false
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "dddahsm001"
-    },
-    // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>"
-      }
-    },
-    "defaultIdentity": {
-      "value": {
-        "name": "UserAssignedIdentity",
-        "resourceId": "<resourceId>"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "zoneRedundant": {
-      "value": false
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/document-db/database-account:<version>'
-
-// Required parameters
-param name = 'dddahsm001'
-// Non-required parameters
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-}
-param defaultIdentity = {
-  name: 'UserAssignedIdentity'
-  resourceId: '<resourceId>'
-}
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
-param zoneRedundant = false
-```
-
-</details>
-<p>
-
-### Example 6: _Using encryption with Customer-Managed-Key_
-
-This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
-  params: {
-    // Required parameters
-    name: 'dddaencr001'
-    // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-    }
-    defaultIdentity: {
-      name: 'UserAssignedIdentity'
-      resourceId: '<resourceId>'
-    }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    zoneRedundant: false
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "dddaencr001"
-    },
-    // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>"
-      }
-    },
-    "defaultIdentity": {
-      "value": {
-        "name": "UserAssignedIdentity",
-        "resourceId": "<resourceId>"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "zoneRedundant": {
-      "value": false
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/document-db/database-account:<version>'
-
-// Required parameters
-param name = 'dddaencr001'
-// Non-required parameters
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-}
-param defaultIdentity = {
-  name: 'UserAssignedIdentity'
-  resourceId: '<resourceId>'
-}
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
 param zoneRedundant = false
 ```
 

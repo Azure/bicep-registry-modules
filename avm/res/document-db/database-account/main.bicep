@@ -318,12 +318,11 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
     defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
       ? defaultIdentity!.name
       : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
-    // keyVaultKeyUri: !empty(customerManagedKey)
-    //   ? !isHSMManagedCMK
-    //       ? '${cMKKeyVault::cMKKey!.properties.keyUri}'
-    //       : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}'
-    //   : null
-    keyVaultKeyUri: 'https://dep-avmx-kv-dddaenc-jip.vault.azure.net/keys/keyEncryptionKey'
+    keyVaultKeyUri: !empty(customerManagedKey)
+      ? !isHSMManagedCMK
+          ? '${cMKKeyVault::cMKKey!.properties.keyUri}'
+          : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}'
+      : null
     cors: cors
     enablePartitionMerge: enablePartitionMerge
     enablePerRegionPerPartitionAutoscale: enablePerRegionPerPartitionAutoscale
@@ -730,16 +729,6 @@ output secondaryReadWriteConnectionString string = databaseAccount.listConnectio
 @secure()
 @description('The secondary read-only connection string.')
 output secondaryReadOnlyConnectionString string = databaseAccount.listConnectionStrings().connectionStrings[3].connectionString
-
-output testKeyOutput string? = !empty(customerManagedKey)
-  ? !isHSMManagedCMK
-      ? '${cMKKeyVault::cMKKey!.properties.keyUri}'
-      : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}'
-  : null
-
-output testDefaultIdentityOutput string = !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
-  ? defaultIdentity!.name
-  : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
 
 // =============== //
 //   Definitions   //
