@@ -53,8 +53,8 @@ module nestedHsmDependencies 'dependencies.hsm.bicep' = {
   name: '${uniqueString(deployment().name)}-nestedHSMDependencies'
   params: {
     managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-    hsmKeyName: '${serviceShort}-${namePrefix}-srv-key'
-    hsmDeploymentScriptName: 'dep-${namePrefix}-ds-srv-${serviceShort}'
+    hsmKeyName: '${serviceShort}-srv-${namePrefix}-key'
+    hsmDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-srv'
     deploymentMSIResourceId: deploymentMSIResourceId
     managedHSMName: last(split(managedHSMResourceId, '/'))
   }
@@ -65,8 +65,8 @@ module nestedHsmDatabaseDependencies 'dependencies.hsm.bicep' = {
   name: '${uniqueString(deployment().name)}-nestedHSMDatabaseDependencies'
   params: {
     managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-    hsmKeyName: '${serviceShort}-${namePrefix}-db-key'
-    hsmDeploymentScriptName: 'dep-${namePrefix}-ds-db-${serviceShort}'
+    hsmKeyName: '${serviceShort}-db-${namePrefix}-key'
+    hsmDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-db'
     deploymentMSIResourceId: deploymentMSIResourceId
     managedHSMName: last(split(managedHSMResourceId, '/'))
   }
