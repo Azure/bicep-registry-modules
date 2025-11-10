@@ -18,7 +18,8 @@ This module deploys an Express Route Circuit.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/expressRouteCircuits` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_expressroutecircuits.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/expressRouteCircuits)</li></ul> |
+| `Microsoft.Network/expressRouteCircuits` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_expressroutecircuits.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/expressRouteCircuits)</li></ul> |
+| `Microsoft.Network/expressRouteCircuits/peerings/connections` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_expressroutecircuits_peerings_connections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/expressRouteCircuits/peerings/connections)</li></ul> |
 
 ## Usage examples
 
@@ -29,8 +30,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/express-route-circuit:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using Global Reach connections](#example-2-using-global-reach-connections)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -111,7 +113,190 @@ param serviceProviderName = 'Equinix'
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Using Global Reach connections_
+
+This instance deploys two ExpressRoute circuits with a Global Reach connection between them.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<version>' = {
+  name: 'expressRouteCircuitDeployment'
+  params: {
+    // Required parameters
+    name: 'nercgr002'
+    // Non-required parameters
+    bandwidthInGbps: 10
+    connections: [
+      {
+        addressPrefix: '192.168.8.0/29'
+        name: 'connection-to-circuit1'
+        peerExpressRouteCircuitPeeringId: '<peerExpressRouteCircuitPeeringId>'
+        peeringName: 'AzurePrivatePeering'
+      }
+    ]
+    expressRoutePortResourceId: '<expressRoutePortResourceId>'
+    globalReachEnabled: true
+    location: '<location>'
+    peeringLocation: 'Amsterdam'
+    peerings: [
+      {
+        name: 'AzurePrivatePeering'
+        properties: {
+          peerASN: 65001
+          peeringType: 'AzurePrivatePeering'
+          primaryPeerAddressPrefix: '10.0.0.0/30'
+          secondaryPeerAddressPrefix: '10.0.0.4/30'
+          state: 'Enabled'
+          vlanId: 100
+        }
+      }
+    ]
+    serviceProviderName: 'Equinix'
+    skuFamily: 'MeteredData'
+    skuTier: 'Premium'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "nercgr002"
+    },
+    // Non-required parameters
+    "bandwidthInGbps": {
+      "value": 10
+    },
+    "connections": {
+      "value": [
+        {
+          "addressPrefix": "192.168.8.0/29",
+          "name": "connection-to-circuit1",
+          "peerExpressRouteCircuitPeeringId": "<peerExpressRouteCircuitPeeringId>",
+          "peeringName": "AzurePrivatePeering"
+        }
+      ]
+    },
+    "expressRoutePortResourceId": {
+      "value": "<expressRoutePortResourceId>"
+    },
+    "globalReachEnabled": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "peeringLocation": {
+      "value": "Amsterdam"
+    },
+    "peerings": {
+      "value": [
+        {
+          "name": "AzurePrivatePeering",
+          "properties": {
+            "peerASN": 65001,
+            "peeringType": "AzurePrivatePeering",
+            "primaryPeerAddressPrefix": "10.0.0.0/30",
+            "secondaryPeerAddressPrefix": "10.0.0.4/30",
+            "state": "Enabled",
+            "vlanId": 100
+          }
+        }
+      ]
+    },
+    "serviceProviderName": {
+      "value": "Equinix"
+    },
+    "skuFamily": {
+      "value": "MeteredData"
+    },
+    "skuTier": {
+      "value": "Premium"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/express-route-circuit:<version>'
+
+// Required parameters
+param name = 'nercgr002'
+// Non-required parameters
+param bandwidthInGbps = 10
+param connections = [
+  {
+    addressPrefix: '192.168.8.0/29'
+    name: 'connection-to-circuit1'
+    peerExpressRouteCircuitPeeringId: '<peerExpressRouteCircuitPeeringId>'
+    peeringName: 'AzurePrivatePeering'
+  }
+]
+param expressRoutePortResourceId = '<expressRoutePortResourceId>'
+param globalReachEnabled = true
+param location = '<location>'
+param peeringLocation = 'Amsterdam'
+param peerings = [
+  {
+    name: 'AzurePrivatePeering'
+    properties: {
+      peerASN: 65001
+      peeringType: 'AzurePrivatePeering'
+      primaryPeerAddressPrefix: '10.0.0.0/30'
+      secondaryPeerAddressPrefix: '10.0.0.4/30'
+      state: 'Enabled'
+      vlanId: 100
+    }
+  }
+]
+param serviceProviderName = 'Equinix'
+param skuFamily = 'MeteredData'
+param skuTier = 'Premium'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -489,7 +674,7 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -682,6 +867,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`allowClassicOperations`](#parameter-allowclassicoperations) | bool | Allow classic operations. You can connect to virtual networks in the classic deployment model by setting allowClassicOperations to true. |
 | [`authorizationNames`](#parameter-authorizationnames) | array | List of names for ExpressRoute circuit authorizations to create. To fetch the `authorizationKey` for the authorization, use the `existing` resource reference for `Microsoft.Network/expressRouteCircuits/authorizations`. |
+| [`connections`](#parameter-connections) | array | Array of Global Reach connection configurations for peerings. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableDirectPortRateLimit`](#parameter-enabledirectportratelimit) | bool | Flag denoting rate-limiting status of the ExpressRoute direct-port circuit. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -753,6 +939,84 @@ List of names for ExpressRoute circuit authorizations to create. To fetch the `a
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `connections`
+
+Array of Global Reach connection configurations for peerings.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-connectionsname) | string | The name of the connection. |
+| [`peerExpressRouteCircuitPeeringId`](#parameter-connectionspeerexpressroutecircuitpeeringid) | string | The resource ID of the peer ExpressRoute circuit peering. |
+| [`peeringName`](#parameter-connectionspeeringname) | string | The name of the peering this connection belongs to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefix`](#parameter-connectionsaddressprefix) | string | The IPv4 address space (/29) to carve out customer addresses for tunnels. |
+| [`authorizationKey`](#parameter-connectionsauthorizationkey) | string | The authorization key for the connection. |
+| [`ipv6CircuitConnectionConfig`](#parameter-connectionsipv6circuitconnectionconfig) | object | IPv6 circuit connection configuration. |
+
+### Parameter: `connections.name`
+
+The name of the connection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connections.peerExpressRouteCircuitPeeringId`
+
+The resource ID of the peer ExpressRoute circuit peering.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connections.peeringName`
+
+The name of the peering this connection belongs to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connections.addressPrefix`
+
+The IPv4 address space (/29) to carve out customer addresses for tunnels.
+
+- Required: No
+- Type: string
+
+### Parameter: `connections.authorizationKey`
+
+The authorization key for the connection.
+
+- Required: No
+- Type: string
+
+### Parameter: `connections.ipv6CircuitConnectionConfig`
+
+IPv6 circuit connection configuration.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefix`](#parameter-connectionsipv6circuitconnectionconfigaddressprefix) | string | The IPv6 address space (/125) to carve out customer addresses for global reach. |
+
+### Parameter: `connections.ipv6CircuitConnectionConfig.addressPrefix`
+
+The IPv6 address space (/125) to carve out customer addresses for global reach.
+
+- Required: No
+- Type: string
 
 ### Parameter: `diagnosticSettings`
 
@@ -1129,6 +1393,7 @@ Tags of the resource.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `authorizations` | array | The authorizations of the express route circuit. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of express route circuit. |
 | `resourceGroupName` | string | The resource group the express route circuit was deployed into. |

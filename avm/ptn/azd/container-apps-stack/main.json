@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "17979867207448517123"
+      "templateHash": "14382045290198346824"
     },
     "name": "avm/ptn/azd/container-apps-stack",
     "description": "Creates an Azure Container Registry and an Azure Container Apps environment.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case"
@@ -30,6 +30,17 @@
       "type": "string",
       "metadata": {
         "description": "Required. Name of the Container Apps Managed Environment."
+      }
+    },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Whether to allow or block all public traffic."
       }
     },
     "containerRegistryName": {
@@ -208,6 +219,9 @@
                 "sharedKey": "[listKeys('logAnalyticsWorkspace', '2025-02-01').primarySharedKey]"
               }
             }
+          },
+          "publicNetworkAccess": {
+            "value": "[parameters('publicNetworkAccess')]"
           },
           "appInsightsConnectionString": {
             "value": "[parameters('appInsightsConnectionString')]"

@@ -194,15 +194,20 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey)) {
   name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey)) {
     name: customerManagedKey.?keyName ?? 'dummyKey'
+  }
+
+  // Used if 2 different keys are specified in the same key vault
+  resource cMKManagedDiskKey 'keys@2024-11-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && customerManagedKeyManagedDisk.?keyVaultResourceId == customerManagedKey.?keyVaultResourceId && customerManagedKeyManagedDisk.?keyName != customerManagedKey.?keyName) {
+    name: customerManagedKeyManagedDisk.?keyName ?? 'dummyKey'
   }
 }
 
@@ -214,7 +219,7 @@ resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing 
     split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && !empty(customerManagedKeyManagedDisk.?keyName)) {
+  resource cMKManagedDiskKey 'keys@2024-11-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && customerManagedKeyManagedDisk.?keyVaultResourceId != customerManagedKey.?keyVaultResourceId && !empty(customerManagedKeyManagedDisk.?keyName)) {
     name: customerManagedKeyManagedDisk.?keyName ?? 'dummyKey'
   }
 }
@@ -343,12 +348,20 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
                       ? cMKManagedDiskKeyVault!.properties.vaultUri
                       : cMKKeyVault!.properties.vaultUri
                     keyName: customerManagedKeyManagedDisk!.keyName
-                    keyVersion: last(split(
-                      (customerManagedKeyManagedDisk!.?keyVaultResourceId != customerManagedKey!.?keyVaultResourceId)
-                        ? cMKManagedDiskKeyVault::cMKKey!.properties.keyUriWithVersion
-                        : cMKKeyVault::cMKKey!.properties.keyUriWithVersion,
-                      '/'
-                    ))
+                    // Cases
+                    // - If the defined vaults differ, use the managed disk key vault and key
+                    // - If the defined vaults are the same, but the keys differ, use the managed disk key
+                    // - If both the vault and key are the same, use the default key
+                    keyVersion: !empty(customerManagedKeyManagedDisk.?keyVersion)
+                      ? customerManagedKeyManagedDisk!.?keyVersion!
+                      : last(split(
+                          (customerManagedKeyManagedDisk!.?keyVaultResourceId != customerManagedKey!.?keyVaultResourceId)
+                            ? cMKManagedDiskKeyVault::cMKManagedDiskKey!.properties.keyUriWithVersion
+                            : (customerManagedKeyManagedDisk!.?keyName != customerManagedKey!.?keyName)
+                                ? cMKKeyVault::cMKManagedDiskKey!.properties.keyUriWithVersion
+                                : cMKKeyVault::cMKKey!.properties.keyUriWithVersion,
+                          '/'
+                        ))
                   }
                   rotationToLatestKeyVersionEnabled: (customerManagedKeyManagedDisk.?autoRotationEnabled ?? true) ?? false
                 }
@@ -447,7 +460,7 @@ resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
 ]
 
 @batchSize(1)
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -511,7 +524,7 @@ var _storageAccountId = resourceId(
 )
 
 @batchSize(1)
-module storageAccount_storageAccountPrivateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module storageAccount_storageAccountPrivateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (storageAccountPrivateEndpoints ?? []): if (privateStorageAccount == 'Enabled') {
     name: '${uniqueString(deployment().name, location)}-workspacestorage-PrivateEndpoint-${index}'
     scope: resourceGroup(
