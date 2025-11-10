@@ -53,8 +53,8 @@ module nestedHsmDependencies 'dependencies.hsm.bicep' = {
   name: '${uniqueString(deployment().name)}-nestedHSMDependencies'
   params: {
     managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-    hsmKeyName: '${serviceShort}-${namePrefix}-key'
-    hsmDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+    hsmKeyName: '${serviceShort}-${namePrefix}-srv-key'
+    hsmDeploymentScriptName: 'dep-${namePrefix}-ds-srv-${serviceShort}'
     deploymentMSIResourceId: deploymentMSIResourceId
     managedHSMName: last(split(managedHSMResourceId, '/'))
   }
