@@ -92,7 +92,7 @@ module configureHSM 'br/public:avm/res/resources/deployment-script:0.5.2' = {
     name: 'dep-${namePrefix}-ds-configureHSMDisk-${serviceShort}'
     kind: 'AzureCLI'
     azCliVersion: '2.67.0'
-    arguments: '"${last(split(managedHSMResourceId, '/'))}" "${nestedDependencies.outputs.cmkDiskName}" "${azureDatabricksEnterpriseApplicationObjectId}"'
+    arguments: '"${last(split(managedHSMResourceId, '/'))}" "${nestedDependencies.outputs.cmkDiskName}" "${testDeployment[1].outputs.managedDiskIdentityPrincipalId!}"'
     scriptContent: '''
       # Allow key reference via identity
       az keyvault role assignment create --hsm-name $1 --role "Managed HSM Crypto Service Encryption User" --scope /keys/$2 --assignee $3
