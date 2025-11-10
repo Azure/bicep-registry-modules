@@ -6,7 +6,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Add managed HSM Customer-Managed-Key encryption support
+- Added managed HSM Customer-Managed-Key encryption support
+- Updated `avm/res/network/private-endpoint` cross-referenced module to version `0.11.1`
 
 ### Breaking Changes
 
