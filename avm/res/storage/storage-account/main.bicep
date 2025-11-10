@@ -376,7 +376,9 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!isHSMManagedCMK && !empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
@@ -448,12 +450,16 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
         keyvaultproperties: !empty(customerManagedKey)
           ? {
               keyname: customerManagedKey!.keyName
-              keyvaulturi: cMKKeyVault!.properties.vaultUri
+              keyvaulturi: !isHSMManagedCMK
+                ? cMKKeyVault!.properties.vaultUri
+                : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/'
               keyversion: !empty(customerManagedKey.?keyVersion)
                 ? customerManagedKey!.keyVersion!
                 : (customerManagedKey.?autoRotationEnabled ?? true)
                     ? null
-                    : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
+                    : (!isHSMManagedCMK
+                        ? last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
+                        : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
             }
           : null
         identity: {
