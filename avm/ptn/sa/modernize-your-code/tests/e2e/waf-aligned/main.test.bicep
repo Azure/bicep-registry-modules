@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Sandbox configuration with default parameter values'
-metadata description = 'This instance deploys the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-Your-Code-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.'
+metadata name = 'Default configuration with enterprise-grade parameter values'
+metadata description = 'This instance deploys the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-Your-Code-Solution-Accelerator) using parameters that deploy the enterprise-grade configuration.'
 
 // ========== //
 // Parameters //
@@ -16,10 +16,14 @@ param resourceGroupName string = 'dep-${namePrefix}-sa.moderncode-${serviceShort
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'samycmin'
+param serviceShort string = 'samyceg-waf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
+
+@description('Optional. The password used for VM authentication.')
+@secure()
+param vmAdminPassword string = newGuid()
 
 // ============ //
 // Dependencies //
@@ -47,7 +51,13 @@ module testDeployment '../../../main.bicep' = [
     params: {
       solutionName: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
+      enableMonitoring: true
+      enableRedundancy: true
+      enableScaling: true
+      enablePrivateNetworking: true
       azureAiServiceLocation: enforcedLocation
+      vmAdminUsername: 'adminuser'
+      vmAdminPassword: vmAdminPassword
     }
   }
 ]
