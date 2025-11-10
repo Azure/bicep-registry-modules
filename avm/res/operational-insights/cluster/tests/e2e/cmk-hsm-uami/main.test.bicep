@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using large parameter set'
-metadata description = 'This instance deploys the module with most of its features enabled.'
+metadata name = 'Using managed HSM Customer-Managed-Keys with User-Assigned identity'
+metadata description = 'This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.'
 
 // NOTE
 // - There is a limit of seven clusters per subscription and region, five active, plus two that were deleted in past two weeks.
@@ -16,7 +16,7 @@ metadata description = 'This instance deploys the module with most of its featur
 param resourceGroupName string = 'dep-${namePrefix}-operational-insights-cluster-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'oicmax'
+param serviceShort string = 'oichsmu'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -83,31 +83,6 @@ module testDeployment '../../../main.bicep' = [
         capacity: 100
         name: 'CapacityReservation'
       }
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
-      roleAssignments: [
-        {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
-          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: subscriptionResourceId(
-            'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7' // Reader
-          )
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: 'User Access Administrator'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-      ]
       managedIdentities: {
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
