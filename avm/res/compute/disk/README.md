@@ -29,11 +29,10 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Enabling encryption-at-rest via a Disk Encryption Set (DES) using Customer-Managed-Keys (CMK) and a User-Assigned Identity](#example-2-enabling-encryption-at-rest-via-a-disk-encryption-set-des-using-customer-managed-keys-cmk-and-a-user-assigned-identity)
-- [Enabling encryption-at-rest via a Disk Encryption Set (DES) using Managed HSM Customer-Managed-Keys (CMK) and a User-Assigned Identity](#example-3-enabling-encryption-at-rest-via-a-disk-encryption-set-des-using-managed-hsm-customer-managed-keys-cmk-and-a-user-assigned-identity)
-- [Using an image](#example-4-using-an-image)
-- [Using an imported image](#example-5-using-an-imported-image)
-- [Using large parameter set](#example-6-using-large-parameter-set)
-- [WAF-aligned](#example-7-waf-aligned)
+- [Using an image](#example-3-using-an-image)
+- [Using an imported image](#example-4-using-an-imported-image)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -193,86 +192,7 @@ param diskSizeGB = 1
 </details>
 <p>
 
-### Example 3: _Enabling encryption-at-rest via a Disk Encryption Set (DES) using Managed HSM Customer-Managed-Keys (CMK) and a User-Assigned Identity_
-
-This instance deploys the module with encryption-at-rest using a Disk Encryption Set (DES) secured by Managed HSM Customer-Managed Keys (CMK), and leveraging a User-Assigned Managed Identity to access the HSM key.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: 'diskDeployment'
-  params: {
-    // Required parameters
-    availabilityZone: -1
-    name: 'cdhsm-001'
-    sku: 'Standard_LRS'
-    // Non-required parameters
-    diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
-    diskSizeGB: 1
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "availabilityZone": {
-      "value": -1
-    },
-    "name": {
-      "value": "cdhsm-001"
-    },
-    "sku": {
-      "value": "Standard_LRS"
-    },
-    // Non-required parameters
-    "diskEncryptionSetResourceId": {
-      "value": "<diskEncryptionSetResourceId>"
-    },
-    "diskSizeGB": {
-      "value": 1
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/compute/disk:<version>'
-
-// Required parameters
-param availabilityZone = -1
-param name = 'cdhsm-001'
-param sku = 'Standard_LRS'
-// Non-required parameters
-param diskEncryptionSetResourceId = '<diskEncryptionSetResourceId>'
-param diskSizeGB = 1
-```
-
-</details>
-<p>
-
-### Example 4: _Using an image_
+### Example 3: _Using an image_
 
 This instance deploys the module with an image reference.
 
@@ -356,7 +276,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 5: _Using an imported image_
+### Example 4: _Using an imported image_
 
 This instance deploys the module with a custom image that is imported from a VHD in a storage account.
 
@@ -445,7 +365,7 @@ param storageAccountId = '<storageAccountId>'
 </details>
 <p>
 
-### Example 6: _Using large parameter set_
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -639,7 +559,7 @@ param tags = {
 </details>
 <p>
 
-### Example 7: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1290,8 +1210,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 

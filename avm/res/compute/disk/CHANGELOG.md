@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added support for encryption-at-rest via existing Disk Encryption Set.
+- Updated all 'avm-common-types' references to version `0.6.1`
 
 ### Breaking Changes
 
