@@ -37,7 +37,7 @@ resource managedHsm 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = {
   resource key 'keys@2025-05-01' = {
     name: hsmKeyName
     properties: {
-      keySize: 4096
+      // keySize: 4096 # The supported RSA Key Size for sql server is 2048 or 3072 and Key Type is RSA or RSA-HSM.
       kty: 'RSA-HSM'
     }
   }
