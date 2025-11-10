@@ -43,6 +43,9 @@ param authorizationNames string[] = []
 @description('Conditional. Required if \'serviceProviderName\', \'peeringLocation\', and \'bandwidthInMbps\' are not set. The bandwidth of the circuit when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. Default value of 0 will set the property to null.')
 param bandwidthInGbps int = 0
 
+@description('Optional. Array of Global Reach connection configurations for peerings.')
+param connections connectionType[]?
+
 @description('Conditional. Required if \'serviceProviderName\', \'peeringLocation\', and \'bandwidthInMbps\' are not set. The reference to the ExpressRoutePort resource when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct.')
 param expressRoutePortResourceId string = ''
 
@@ -118,7 +121,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource expressRouteCircuit 'Microsoft.Network/expressRouteCircuits@2024-07-01' = {
+resource expressRouteCircuit 'Microsoft.Network/expressRouteCircuits@2024-10-01' = {
   name: name
   location: location
   tags: tags
@@ -169,6 +172,23 @@ resource expressRouteCircuit 'Microsoft.Network/expressRouteCircuits@2024-07-01'
     ]
   }
 }
+
+resource expressRouteCircuit_peering_connections 'Microsoft.Network/expressRouteCircuits/peerings/connections@2024-10-01' = [
+  for connection in (connections ?? []): {
+    name: '${name}/${connection.peeringName}/${connection.name}'
+    properties: {
+      peerExpressRouteCircuitPeering: {
+        id: '${connection.peerExpressRouteCircuitPeeringId}/peerings/${connection.peeringName}'
+      }
+      expressRouteCircuitPeering: {
+        id: '${expressRouteCircuit.id}/peerings/${connection.peeringName}'
+      }
+      addressPrefix: connection.?addressPrefix
+      authorizationKey: connection.?authorizationKey
+      ipv6CircuitConnectionConfig: connection.?ipv6CircuitConnectionConfig
+    }
+  }
+]
 
 resource expressRouteCircuit_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
@@ -247,3 +267,30 @@ output serviceProviderProvisioningState string = expressRouteCircuit.properties.
 
 @description('The location the resource was deployed into.')
 output location string = expressRouteCircuit.location
+
+@description('The authorizations of the express route circuit.')
+output authorizations array = expressRouteCircuit.properties.authorizations
+
+@export()
+type connectionType = {
+  @description('Required. The name of the connection.')
+  name: string
+
+  @description('Required. The name of the peering this connection belongs to.')
+  peeringName: string
+
+  @description('Required. The resource ID of the peer ExpressRoute circuit peering.')
+  peerExpressRouteCircuitPeeringId: string
+
+  @description('Optional. The IPv4 address space (/29) to carve out customer addresses for tunnels.')
+  addressPrefix: string?
+
+  @description('Optional. The authorization key for the connection.')
+  authorizationKey: string?
+
+  @description('Optional. IPv6 circuit connection configuration.')
+  ipv6CircuitConnectionConfig: {
+    @description('Optional. The IPv6 address space (/125) to carve out customer addresses for global reach.')
+    addressPrefix: string?
+  }?
+}
