@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Using managed HSM Customer-Managed-Keys with User-Assigned identity'
+metadata description = 'This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.'
 
 // ========== //
 // Parameters //
@@ -13,9 +13,6 @@ param resourceGroupName string = 'dep-${namePrefix}-eventhub.namespaces-${servic
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'ehnhsm'
-
-@description('Generated. Used as a basis for unique resource names.')
-param baseTime string = utcNow('u')
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
