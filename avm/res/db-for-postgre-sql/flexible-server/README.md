@@ -35,8 +35,8 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/db-for-postgre-sql/flexible-server:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using encryption with HSM Customer-Managed-Key](#example-2-using-encryption-with-hsm-customer-managed-key)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-1-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using only defaults](#example-2-using-only-defaults)
 - [Using Customer-Managed-Keys with User-Assigned identity](#example-3-using-customer-managed-keys-with-user-assigned-identity)
 - [Private access](#example-4-private-access)
 - [Public access with private endpoints](#example-5-public-access-with-private-endpoints)
@@ -44,107 +44,14 @@ The following section provides usage examples for the module, which were used to
 - [Primary server and Readonly Replication server](#example-7-primary-server-and-readonly-replication-server)
 - [WAF-aligned](#example-8-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
 
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: 'flexibleServerDeployment'
-  params: {
-    // Required parameters
-    availabilityZone: 1
-    name: 'dfpsmin001'
-    skuName: 'Standard_D2s_v3'
-    tier: 'GeneralPurpose'
-    // Non-required parameters
-    administrators: [
-      {
-        objectId: '<objectId>'
-        principalName: '<principalName>'
-        principalType: 'ServicePrincipal'
-      }
-    ]
-  }
-}
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
 ```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "availabilityZone": {
-      "value": 1
-    },
-    "name": {
-      "value": "dfpsmin001"
-    },
-    "skuName": {
-      "value": "Standard_D2s_v3"
-    },
-    "tier": {
-      "value": "GeneralPurpose"
-    },
-    // Non-required parameters
-    "administrators": {
-      "value": [
-        {
-          "objectId": "<objectId>",
-          "principalName": "<principalName>",
-          "principalType": "ServicePrincipal"
-        }
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
-
-// Required parameters
-param availabilityZone = 1
-param name = 'dfpsmin001'
-param skuName = 'Standard_D2s_v3'
-param tier = 'GeneralPurpose'
-// Non-required parameters
-param administrators = [
-  {
-    objectId: '<objectId>'
-    principalName: '<principalName>'
-    principalType: 'ServicePrincipal'
-  }
-]
-```
-
-</details>
-<p>
-
-### Example 2: _Using encryption with HSM Customer-Managed-Key_
-
-This instance deploys the module using HSM Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
-
 
 <details>
 
@@ -272,6 +179,103 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
+  name: 'flexibleServerDeployment'
+  params: {
+    // Required parameters
+    availabilityZone: 1
+    name: 'dfpsmin001'
+    skuName: 'Standard_D2s_v3'
+    tier: 'GeneralPurpose'
+    // Non-required parameters
+    administrators: [
+      {
+        objectId: '<objectId>'
+        principalName: '<principalName>'
+        principalType: 'ServicePrincipal'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
+    "name": {
+      "value": "dfpsmin001"
+    },
+    "skuName": {
+      "value": "Standard_D2s_v3"
+    },
+    "tier": {
+      "value": "GeneralPurpose"
+    },
+    // Non-required parameters
+    "administrators": {
+      "value": [
+        {
+          "objectId": "<objectId>",
+          "principalName": "<principalName>",
+          "principalType": "ServicePrincipal"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
+
+// Required parameters
+param availabilityZone = 1
+param name = 'dfpsmin001'
+param skuName = 'Standard_D2s_v3'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param administrators = [
+  {
+    objectId: '<objectId>'
+    principalName: '<principalName>'
+    principalType: 'ServicePrincipal'
+  }
+]
 ```
 
 </details>
