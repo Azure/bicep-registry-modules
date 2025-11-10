@@ -102,7 +102,6 @@ module testDeployment '../../../main.bicep' = [
         keyName: nestedHsmDependencies.outputs.keyName
         keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
         keyVersion: nestedHsmDependencies.outputs.keyVersion
-        autoRotationEnabled: false
       }
       databases: [
         {
@@ -116,7 +115,6 @@ module testDeployment '../../../main.bicep' = [
             keyVaultResourceId: nestedHsmDatabaseDependencies.outputs.keyVaultResourceId
             keyName: nestedHsmDatabaseDependencies.outputs.keyName
             keyVersion: nestedHsmDatabaseDependencies.outputs.keyVersion
-            autoRotationEnabled: true
           }
           sku: {
             name: 'Basic'

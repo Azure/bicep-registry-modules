@@ -268,7 +268,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       tenantId: '<tenantId>'
     }
     customerManagedKey: {
-      autoRotationEnabled: false
+      autoRotationEnabled: true
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
       keyVersion: '<keyVersion>'
@@ -335,7 +335,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     },
     "customerManagedKey": {
       "value": {
-        "autoRotationEnabled": false,
+        "autoRotationEnabled": true,
         "keyName": "<keyName>",
         "keyVaultResourceId": "<keyVaultResourceId>",
         "keyVersion": "<keyVersion>"
@@ -402,7 +402,7 @@ param administrators = {
   tenantId: '<tenantId>'
 }
 param customerManagedKey = {
-  autoRotationEnabled: false
+  autoRotationEnabled: true
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
   keyVersion: '<keyVersion>'
@@ -1004,7 +1004,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       tenantId: '<tenantId>'
     }
     customerManagedKey: {
-      autoRotationEnabled: false
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
       keyVersion: '<keyVersion>'
@@ -1013,7 +1012,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       {
         availabilityZone: -1
         customerManagedKey: {
-          autoRotationEnabled: true
           keyName: '<keyName>'
           keyVaultResourceId: '<keyVaultResourceId>'
           keyVersion: '<keyVersion>'
@@ -1071,7 +1069,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     },
     "customerManagedKey": {
       "value": {
-        "autoRotationEnabled": false,
         "keyName": "<keyName>",
         "keyVaultResourceId": "<keyVaultResourceId>",
         "keyVersion": "<keyVersion>"
@@ -1082,7 +1079,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         {
           "availabilityZone": -1,
           "customerManagedKey": {
-            "autoRotationEnabled": true,
             "keyName": "<keyName>",
             "keyVaultResourceId": "<keyVaultResourceId>",
             "keyVersion": "<keyVersion>"
@@ -1138,7 +1134,6 @@ param administrators = {
   tenantId: '<tenantId>'
 }
 param customerManagedKey = {
-  autoRotationEnabled: false
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
   keyVersion: '<keyVersion>'
@@ -1147,7 +1142,6 @@ param databases = [
   {
     availabilityZone: -1
     customerManagedKey: {
-      autoRotationEnabled: true
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
       keyVersion: '<keyVersion>'
