@@ -47,11 +47,11 @@ The following section provides usage examples for the module, which were used to
 
 - [With an administrator](#example-1-with-an-administrator)
 - [With audit settings](#example-2-with-audit-settings)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-3-using-customer-managed-keys-with-user-assigned-identity)
-- [Using only defaults](#example-4-using-only-defaults)
-- [Using elastic pool](#example-5-using-elastic-pool)
-- [Using failover groups](#example-6-using-failover-groups)
-- [Using only defaults](#example-7-using-only-defaults)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-3-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-4-using-customer-managed-keys-with-user-assigned-identity)
+- [Using only defaults](#example-5-using-only-defaults)
+- [Using elastic pool](#example-6-using-elastic-pool)
+- [Using failover groups](#example-7-using-failover-groups)
 - [Deploying with a key vault reference to save secrets](#example-8-deploying-with-a-key-vault-reference-to-save-secrets)
 - [Using large parameter set](#example-9-using-large-parameter-set)
 - [With a secondary database](#example-10-with-a-secondary-database)
@@ -244,7 +244,199 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 3: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 3: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  name: 'serverDeployment'
+  params: {
+    // Required parameters
+    name: 'sshsm001'
+    // Non-required parameters
+    administrators: {
+      azureADOnlyAuthentication: true
+      login: 'myspn'
+      principalType: 'Application'
+      sid: '<sid>'
+      tenantId: '<tenantId>'
+    }
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
+    databases: [
+      {
+        availabilityZone: -1
+        customerManagedKey: {
+          keyName: '<keyName>'
+          keyVaultResourceId: '<keyVaultResourceId>'
+          keyVersion: '<keyVersion>'
+        }
+        managedIdentities: {
+          userAssignedResourceIds: [
+            '<managedIdentityResourceId>'
+          ]
+        }
+        maxSizeBytes: 2147483648
+        name: 'sshsm-db-001'
+        sku: {
+          name: 'Basic'
+          tier: 'Basic'
+        }
+        zoneRedundant: false
+      }
+    ]
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sshsm001"
+    },
+    // Non-required parameters
+    "administrators": {
+      "value": {
+        "azureADOnlyAuthentication": true,
+        "login": "myspn",
+        "principalType": "Application",
+        "sid": "<sid>",
+        "tenantId": "<tenantId>"
+      }
+    },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>"
+      }
+    },
+    "databases": {
+      "value": [
+        {
+          "availabilityZone": -1,
+          "customerManagedKey": {
+            "keyName": "<keyName>",
+            "keyVaultResourceId": "<keyVaultResourceId>",
+            "keyVersion": "<keyVersion>"
+          },
+          "managedIdentities": {
+            "userAssignedResourceIds": [
+              "<managedIdentityResourceId>"
+            ]
+          },
+          "maxSizeBytes": 2147483648,
+          "name": "sshsm-db-001",
+          "sku": {
+            "name": "Basic",
+            "tier": "Basic"
+          },
+          "zoneRedundant": false
+        }
+      ]
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": false,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "primaryUserAssignedIdentityResourceId": {
+      "value": "<primaryUserAssignedIdentityResourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sshsm001'
+// Non-required parameters
+param administrators = {
+  azureADOnlyAuthentication: true
+  login: 'myspn'
+  principalType: 'Application'
+  sid: '<sid>'
+  tenantId: '<tenantId>'
+}
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
+}
+param databases = [
+  {
+    availabilityZone: -1
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    maxSizeBytes: 2147483648
+    name: 'sshsm-db-001'
+    sku: {
+      name: 'Basic'
+      tier: 'Basic'
+    }
+    zoneRedundant: false
+  }
+]
+param managedIdentities = {
+  systemAssigned: false
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
+```
+
+</details>
+<p>
+
+### Example 4: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module with Customer-Managed-Keys using a User-Assigned Identity to access the key.
 
@@ -442,7 +634,7 @@ param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResou
 </details>
 <p>
 
-### Example 4: _Using only defaults_
+### Example 5: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -526,7 +718,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 5: _Using elastic pool_
+### Example 6: _Using elastic pool_
 
 This instance deploys the module with an elastic pool.
 
@@ -665,7 +857,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 6: _Using failover groups_
+### Example 7: _Using failover groups_
 
 This instance deploys the module with failover groups.
 
@@ -975,198 +1167,6 @@ param failoverGroups = [
   }
 ]
 param location = '<location>'
-```
-
-</details>
-<p>
-
-### Example 7: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module server 'br/public:avm/res/sql/server:<version>' = {
-  name: 'serverDeployment'
-  params: {
-    // Required parameters
-    name: 'sshsm001'
-    // Non-required parameters
-    administrators: {
-      azureADOnlyAuthentication: true
-      login: 'myspn'
-      principalType: 'Application'
-      sid: '<sid>'
-      tenantId: '<tenantId>'
-    }
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      keyVersion: '<keyVersion>'
-    }
-    databases: [
-      {
-        availabilityZone: -1
-        customerManagedKey: {
-          keyName: '<keyName>'
-          keyVaultResourceId: '<keyVaultResourceId>'
-          keyVersion: '<keyVersion>'
-        }
-        managedIdentities: {
-          userAssignedResourceIds: [
-            '<managedIdentityResourceId>'
-          ]
-        }
-        maxSizeBytes: 2147483648
-        name: 'sshsm-db-001'
-        sku: {
-          name: 'Basic'
-          tier: 'Basic'
-        }
-        zoneRedundant: false
-      }
-    ]
-    managedIdentities: {
-      systemAssigned: false
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "sshsm001"
-    },
-    // Non-required parameters
-    "administrators": {
-      "value": {
-        "azureADOnlyAuthentication": true,
-        "login": "myspn",
-        "principalType": "Application",
-        "sid": "<sid>",
-        "tenantId": "<tenantId>"
-      }
-    },
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "keyVersion": "<keyVersion>"
-      }
-    },
-    "databases": {
-      "value": [
-        {
-          "availabilityZone": -1,
-          "customerManagedKey": {
-            "keyName": "<keyName>",
-            "keyVaultResourceId": "<keyVaultResourceId>",
-            "keyVersion": "<keyVersion>"
-          },
-          "managedIdentities": {
-            "userAssignedResourceIds": [
-              "<managedIdentityResourceId>"
-            ]
-          },
-          "maxSizeBytes": 2147483648,
-          "name": "sshsm-db-001",
-          "sku": {
-            "name": "Basic",
-            "tier": "Basic"
-          },
-          "zoneRedundant": false
-        }
-      ]
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": false,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "primaryUserAssignedIdentityResourceId": {
-      "value": "<primaryUserAssignedIdentityResourceId>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/sql/server:<version>'
-
-// Required parameters
-param name = 'sshsm001'
-// Non-required parameters
-param administrators = {
-  azureADOnlyAuthentication: true
-  login: 'myspn'
-  principalType: 'Application'
-  sid: '<sid>'
-  tenantId: '<tenantId>'
-}
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-  keyVersion: '<keyVersion>'
-}
-param databases = [
-  {
-    availabilityZone: -1
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      keyVersion: '<keyVersion>'
-    }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    maxSizeBytes: 2147483648
-    name: 'sshsm-db-001'
-    sku: {
-      name: 'Basic'
-      tier: 'Basic'
-    }
-    zoneRedundant: false
-  }
-]
-param managedIdentities = {
-  systemAssigned: false
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
-param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
 ```
 
 </details>
