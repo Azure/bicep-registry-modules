@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/storage/storage-account/CHANGELOG.md).
 
+## 0.29.0
+
+### Changes
+
+- Added support for managed HSM key encryption
+
+### Breaking Changes
+
+- None
+
 ## 0.28.0
 
 ### Changes
