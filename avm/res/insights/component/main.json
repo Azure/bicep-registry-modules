@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "7046505361487497829"
+      "version": "0.38.33.27573",
+      "templateHash": "8576356756053854729"
     },
     "name": "Application Insights",
     "description": "This component deploys an Application Insights instance."
@@ -130,7 +130,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -167,7 +167,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -242,7 +242,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -369,6 +369,25 @@
         "description": "Optional. The kind of application that this component refers to, used to customize UI. This value is a freeform string, values should typically be one of the following: web, ios, other, store, java, phone."
       }
     },
+    "immediatePurgeDataOn30Days": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Purge data immediately after 30 days."
+      }
+    },
+    "ingestionMode": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "ApplicationInsights",
+        "ApplicationInsightsWithDiagnosticSettings",
+        "LogAnalytics"
+      ],
+      "metadata": {
+        "description": "Optional. Indicates the flow of the ingestion."
+      }
+    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
@@ -480,7 +499,9 @@
         "RetentionInDays": "[parameters('retentionInDays')]",
         "SamplingPercentage": "[parameters('samplingPercentage')]",
         "Flow_Type": "[parameters('flowType')]",
-        "Request_Source": "[parameters('requestSource')]"
+        "Request_Source": "[parameters('requestSource')]",
+        "ImmediatePurgeDataOn30Days": "[parameters('immediatePurgeDataOn30Days')]",
+        "IngestionMode": "[parameters('ingestionMode')]"
       }
     },
     "appInsights_roleAssignments": {
@@ -563,7 +584,7 @@
     "linkedStorageAccount": {
       "condition": "[not(empty(parameters('linkedStorageAccountResourceId')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-appInsights-linkedStorageAccount', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -584,8 +605,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "4224783821693719832"
+              "version": "0.38.33.27573",
+              "templateHash": "9567302051678045750"
             },
             "name": "Application Insights Linked Storage Account",
             "description": "This component deploys an Application Insights Linked Storage Account."

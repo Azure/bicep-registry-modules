@@ -469,12 +469,12 @@ var virtualWanHubConnectionName = 'vhc-${virtualNetworkName}-${substring(guid(vi
 var virtualWanHubConnectionAssociatedRouteTable = !empty(virtualNetworkVwanAssociatedRouteTableResourceId)
   ? virtualNetworkVwanAssociatedRouteTableResourceId
   : '${virtualHubResourceIdChecked}/hubRouteTables/defaultRouteTable'
-var virutalWanHubDefaultRouteTableId = {
+var virtualWanHubDefaultRouteTableId = {
   id: '${virtualHubResourceIdChecked}/hubRouteTables/defaultRouteTable'
 }
 var virtualWanHubConnectionPropogatedRouteTables = !empty(virtualNetworkVwanPropagatedRouteTablesResourceIds)
   ? virtualNetworkVwanPropagatedRouteTablesResourceIds
-  : array(virutalWanHubDefaultRouteTableId)
+  : array(virtualWanHubDefaultRouteTableId)
 var virtualWanHubConnectionPropogatedLabels = !empty(virtualNetworkVwanPropagatedLabels)
   ? virtualNetworkVwanPropagatedLabels
   : ['default']
@@ -1801,10 +1801,16 @@ module createAdditionalLzVirtualWanConnection 'hubVirtualNetworkConnections.bice
       routingConfiguration: !vHubRoutingIntentEnabled
         ? {
             associatedRouteTable: {
-              id: virtualWanHubConnectionAssociatedRouteTable
+              id: !empty(virtualNetworkVwanAssociatedRouteTableResourceId)
+                ? virtualNetworkVwanAssociatedRouteTableResourceId
+                : '${vnet.?alternativeVwanHubResourceId ?? virtualHubResourceIdChecked}/hubRouteTables/defaultRouteTable'
             }
             propagatedRouteTables: {
-              ids: virtualWanHubConnectionPropogatedRouteTables
+              ids: !empty(virtualNetworkVwanPropagatedRouteTablesResourceIds)
+                    ? virtualNetworkVwanPropagatedRouteTablesResourceIds
+                    : array({
+                        id: '${vnet.?alternativeVwanHubResourceId ?? virtualHubResourceIdChecked}/hubRouteTables/defaultRouteTable'
+                      })
               labels: virtualWanHubConnectionPropogatedLabels
             }
           }
