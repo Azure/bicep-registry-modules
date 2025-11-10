@@ -71,3 +71,31 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+// =============== //
+// Post-Deployment //
+// =============== //
+// The managed-disk's disk-encryption-set requires its identity to have at least 'Key Vault Crypto Service Encryption User' permissions on the used key.
+resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = {
+  name: last(split(nestedDependencies.outputs.keyVaultResourceId, '/'))
+
+  resource key 'keys@2025-05-01' existing = {
+    name: nestedDependencies.outputs.keyVaultDiskKeyName
+  }
+
+  scope: resourceGroup
+}
+
+module managedDiskEncryptionSetPermissions 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-managedDiskEncryptionSetPermissions'
+  scope: resourceGroup
+  params: {
+    principalId: testDeployment[1].outputs.managedDiskIdentityPrincipalId!
+    resourceId: keyVault::key.id
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'e147488a-f6f5-4113-8e2d-b22465e65bf6'
+    ) // Key Vault Crypto Service Encryption User
+    principalType: 'ServicePrincipal'
+  }
+}
