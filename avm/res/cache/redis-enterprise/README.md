@@ -36,11 +36,11 @@ The following section provides usage examples for the module, which were used to
 - [Active geo-replication](#example-1-active-geo-replication)
 - [Azure Managed Redis with Entra ID authentication](#example-2-azure-managed-redis-with-entra-id-authentication)
 - [Azure Managed Redis with non-clustered policy (Preview)](#example-3-azure-managed-redis-with-non-clustered-policy-preview)
-- [Using only defaults](#example-4-using-only-defaults)
-- [Deploying with a key vault reference to save secrets](#example-5-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-6-using-large-parameter-set)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-7-using-customer-managed-keys-with-user-assigned-identity)
-- [Using encryption with HSM Customer-Managed-Key](#example-8-using-encryption-with-hsm-customer-managed-key)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-4-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-5-using-customer-managed-keys-with-user-assigned-identity)
+- [Using only defaults](#example-6-using-only-defaults)
+- [Deploying with a key vault reference to save secrets](#example-7-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-8-using-large-parameter-set)
 - [WAF-aligned](#example-9-waf-aligned)
 
 ### Example 1: _Active geo-replication_
@@ -306,7 +306,240 @@ param database = {
 </details>
 <p>
 
-### Example 4: _Using only defaults_
+### Example 4: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
+  name: 'redisEnterpriseDeployment'
+  params: {
+    // Required parameters
+    name: 'creshsm001'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    database: {
+      persistence: {
+        frequency: '6h'
+        type: 'rdb'
+      }
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "creshsm001"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "database": {
+      "value": {
+        "persistence": {
+          "frequency": "6h",
+          "type": "rdb"
+        }
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cache/redis-enterprise:<version>'
+
+// Required parameters
+param name = 'creshsm001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param database = {
+  persistence: {
+    frequency: '6h'
+    type: 'rdb'
+  }
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
+  name: 'redisEnterpriseDeployment'
+  params: {
+    // Required parameters
+    name: 'creuace001'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    database: {
+      persistence: {
+        frequency: '6h'
+        type: 'rdb'
+      }
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "creuace001"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "database": {
+      "value": {
+        "persistence": {
+          "frequency": "6h",
+          "type": "rdb"
+        }
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cache/redis-enterprise:<version>'
+
+// Required parameters
+param name = 'creuace001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param database = {
+  persistence: {
+    frequency: '6h'
+    type: 'rdb'
+  }
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+```
+
+</details>
+<p>
+
+### Example 6: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -359,7 +592,7 @@ param name = 'cremin001'
 </details>
 <p>
 
-### Example 5: _Deploying with a key vault reference to save secrets_
+### Example 7: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving all its secrets in a key vault.
 
@@ -453,7 +686,7 @@ param database = {
 </details>
 <p>
 
-### Example 6: _Using large parameter set_
+### Example 8: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -821,235 +1054,6 @@ param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
-}
-```
-
-</details>
-<p>
-
-### Example 7: _Using Customer-Managed-Keys with User-Assigned identity_
-
-This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
-  name: 'redisEnterpriseDeployment'
-  params: {
-    // Required parameters
-    name: 'creuace001'
-    // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
-    database: {
-      persistence: {
-        frequency: '6h'
-        type: 'rdb'
-      }
-    }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "creuace001"
-    },
-    // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
-      }
-    },
-    "database": {
-      "value": {
-        "persistence": {
-          "frequency": "6h",
-          "type": "rdb"
-        }
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/cache/redis-enterprise:<version>'
-
-// Required parameters
-param name = 'creuace001'
-// Non-required parameters
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-}
-param database = {
-  persistence: {
-    frequency: '6h'
-    type: 'rdb'
-  }
-}
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
-```
-
-</details>
-<p>
-
-### Example 8: _Using encryption with HSM Customer-Managed-Key_
-
-This instance deploys the module using HSM Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
-  name: 'redisEnterpriseDeployment'
-  params: {
-    // Required parameters
-    name: 'creshsm001'
-    // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      keyVersion: '<keyVersion>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
-    database: {
-      persistence: {
-        frequency: '6h'
-        type: 'rdb'
-      }
-    }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "creshsm001"
-    },
-    // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "keyVersion": "<keyVersion>",
-        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
-      }
-    },
-    "database": {
-      "value": {
-        "persistence": {
-          "frequency": "6h",
-          "type": "rdb"
-        }
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/cache/redis-enterprise:<version>'
-
-// Required parameters
-param name = 'creshsm001'
-// Non-required parameters
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-  keyVersion: '<keyVersion>'
-  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-}
-param database = {
-  persistence: {
-    frequency: '6h'
-    type: 'rdb'
-  }
-}
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
 }
 ```
 
