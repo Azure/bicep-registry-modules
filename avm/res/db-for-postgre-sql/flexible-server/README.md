@@ -2805,7 +2805,7 @@ PostgreSQL Server version.
 
 - Required: No
 - Type: string
-- Default: `'17'`
+- Default: `'18'`
 - Allowed:
   ```Bicep
   [
@@ -2816,6 +2816,7 @@ PostgreSQL Server version.
     '15'
     '16'
     '17'
+    '18'
   ]
   ```
 

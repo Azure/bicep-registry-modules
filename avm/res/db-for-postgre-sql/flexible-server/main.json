@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.3.11034",
-      "templateHash": "6100129735673640657"
+      "version": "0.38.33.27573",
+      "templateHash": "8038199472698512269"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server."
@@ -901,7 +901,7 @@
     },
     "version": {
       "type": "string",
-      "defaultValue": "17",
+      "defaultValue": "18",
       "allowedValues": [
         "11",
         "12",
@@ -909,7 +909,8 @@
         "14",
         "15",
         "16",
-        "17"
+        "17",
+        "18"
       ],
       "metadata": {
         "description": "Optional. PostgreSQL Server version."
@@ -1336,8 +1337,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.3.11034",
-              "templateHash": "11505124559032350127"
+              "version": "0.38.33.27573",
+              "templateHash": "15121996463852129416"
             },
             "name": "DBforPostgreSQL Flexible Server Databases",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Database."
@@ -1450,8 +1451,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.3.11034",
-              "templateHash": "13527321289541801347"
+              "version": "0.38.33.27573",
+              "templateHash": "14658308371518245290"
             },
             "name": "DBforPostgreSQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule."
@@ -1559,8 +1560,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.3.11034",
-              "templateHash": "5501425413439159414"
+              "version": "0.38.33.27573",
+              "templateHash": "17845676385102341838"
             },
             "name": "DBforPostgreSQL Flexible Server Configurations",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration."
@@ -1676,8 +1677,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.3.11034",
-              "templateHash": "11061977454382131650"
+              "version": "0.38.33.27573",
+              "templateHash": "14368727868775146748"
             },
             "name": "DBforPostgreSQL Flexible Server Administrators",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator."
@@ -1787,8 +1788,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.3.11034",
-              "templateHash": "5415256190346612056"
+              "version": "0.38.33.27573",
+              "templateHash": "6780902290508782414"
             },
             "name": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
             "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection."
