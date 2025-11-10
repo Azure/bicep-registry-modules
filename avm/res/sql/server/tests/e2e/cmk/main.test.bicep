@@ -74,7 +74,7 @@ module testDeployment '../../../main.bicep' = [
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
         keyName: nestedDependencies.outputs.keyVaultKeyName
         keyVersion: last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))
-        autoRotationEnabled: true
+        autoRotationEnabled: false
       }
       databases: [
         {

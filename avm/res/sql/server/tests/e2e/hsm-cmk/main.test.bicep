@@ -9,10 +9,10 @@ metadata description = 'This instance deploys the module with the minimum set of
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-compute.diskencryptionsets-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-sql.servers-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cdeshsm'
+param serviceShort string = 'sshsm'
 
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
@@ -84,14 +84,25 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      customerManagedKey: {
-        keyName: nestedHsmDependencies.outputs.keyName
-        keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
+      primaryUserAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+      administrators: {
+        azureADOnlyAuthentication: true
+        login: 'myspn'
+        sid: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'Application'
+        tenantId: tenant().tenantId
       }
       managedIdentities: {
+        systemAssigned: false
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
+      }
+      customerManagedKey: {
+        keyName: nestedHsmDependencies.outputs.keyName
+        keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
+        keyVersion: nestedHsmDependencies.outputs.keyVersion
+        autoRotationEnabled: false
       }
       databases: [
         {
@@ -105,6 +116,7 @@ module testDeployment '../../../main.bicep' = [
             keyVaultResourceId: nestedHsmDatabaseDependencies.outputs.keyVaultResourceId
             keyName: nestedHsmDatabaseDependencies.outputs.keyName
             keyVersion: nestedHsmDatabaseDependencies.outputs.keyVersion
+            autoRotationEnabled: true
           }
           sku: {
             name: 'Basic'
