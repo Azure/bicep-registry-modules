@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "16476630587062593968"
+      "templateHash": "13513271010414656272"
     },
     "name": "Azure Databricks Workspaces",
     "description": "This module deploys an Azure Databricks Workspace."
@@ -648,7 +648,7 @@
     },
     "managedResourceGroupResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The managed resource group ID. It is created by the module as per the to-be resource ID you provide."
       }
