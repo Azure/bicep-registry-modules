@@ -102,9 +102,10 @@ param autoGrow string?
   '15'
   '16'
   '17'
+  '18'
 ])
 @description('Optional. PostgreSQL Server version.')
-param version string = '17'
+param version string = '18'
 
 @allowed([
   'Create'
