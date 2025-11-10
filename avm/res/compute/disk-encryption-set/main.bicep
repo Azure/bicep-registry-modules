@@ -200,7 +200,7 @@ resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' = {
     }
     encryptionType: encryptionType
     federatedClientId: federatedClientId
-    rotationToLatestKeyVersionEnabled: customerManagedKey.?autoRotationEnabled ?? true
+    rotationToLatestKeyVersionEnabled: customerManagedKey.?autoRotationEnabled
   }
   dependsOn: [
     keyVaultPermissions
