@@ -62,7 +62,7 @@ module nestedHsmDependencies 'dependencies.hsm.bicep' = {
 }
 
 module nestedHsmDatabaseDependencies 'dependencies.hsm.bicep' = {
-  name: '${uniqueString(deployment().name)}-nestedHSMDependencies'
+  name: '${uniqueString(deployment().name)}-nestedHSMDatabaseDependencies'
   params: {
     managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
     hsmKeyName: '${serviceShort}-${namePrefix}-db-key'
