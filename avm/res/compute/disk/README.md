@@ -17,7 +17,7 @@ This module deploys a Compute Disk
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.Compute/disks` | 2023-10-02 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_disks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-10-02/disks)</li></ul> |
+| `Microsoft.Compute/disks` | 2025-01-02 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_disks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2025-01-02/disks)</li></ul> |
 
 ## Usage examples
 
@@ -28,10 +28,11 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/disk:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using an image](#example-2-using-an-image)
-- [Using an imported image](#example-3-using-an-imported-image)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Enabling encryption-at-rest via a Disk Encryption Set (DES) using Customer-Managed-Keys (CMK) and a User-Assigned Identity](#example-2-enabling-encryption-at-rest-via-a-disk-encryption-set-des-using-customer-managed-keys-cmk-and-a-user-assigned-identity)
+- [Using an image](#example-3-using-an-image)
+- [Using an imported image](#example-4-using-an-imported-image)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -48,7 +49,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'cdmin001'
+    name: 'cdmin-001'
     sku: 'Standard_LRS'
     // Non-required parameters
     diskSizeGB: 1
@@ -74,7 +75,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
       "value": -1
     },
     "name": {
-      "value": "cdmin001"
+      "value": "cdmin-001"
     },
     "sku": {
       "value": "Standard_LRS"
@@ -102,7 +103,7 @@ using 'br/public:avm/res/compute/disk:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'cdmin001'
+param name = 'cdmin-001'
 param sku = 'Standard_LRS'
 // Non-required parameters
 param diskSizeGB = 1
@@ -112,7 +113,86 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Using an image_
+### Example 2: _Enabling encryption-at-rest via a Disk Encryption Set (DES) using Customer-Managed-Keys (CMK) and a User-Assigned Identity_
+
+This instance deploys the module with encryption-at-rest using a Disk Encryption Set (DES) secured by Customer-Managed Keys (CMK), and leveraging a User-Assigned Managed Identity to access the key.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module disk 'br/public:avm/res/compute/disk:<version>' = {
+  name: 'diskDeployment'
+  params: {
+    // Required parameters
+    availabilityZone: -1
+    name: 'cdcmk001'
+    sku: 'Standard_LRS'
+    // Non-required parameters
+    diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
+    diskSizeGB: 1
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
+    "name": {
+      "value": "cdcmk001"
+    },
+    "sku": {
+      "value": "Standard_LRS"
+    },
+    // Non-required parameters
+    "diskEncryptionSetResourceId": {
+      "value": "<diskEncryptionSetResourceId>"
+    },
+    "diskSizeGB": {
+      "value": 1
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/disk:<version>'
+
+// Required parameters
+param availabilityZone = -1
+param name = 'cdcmk001'
+param sku = 'Standard_LRS'
+// Non-required parameters
+param diskEncryptionSetResourceId = '<diskEncryptionSetResourceId>'
+param diskSizeGB = 1
+```
+
+</details>
+<p>
+
+### Example 3: _Using an image_
 
 This instance deploys the module with an image reference.
 
@@ -196,7 +276,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 3: _Using an imported image_
+### Example 4: _Using an imported image_
 
 This instance deploys the module with a custom image that is imported from a VHD in a storage account.
 
@@ -285,7 +365,7 @@ param storageAccountId = '<storageAccountId>'
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -479,7 +559,7 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -640,6 +720,7 @@ param tags = {
 | [`burstingEnabled`](#parameter-burstingenabled) | bool | Set to true to enable bursting beyond the provisioned performance target of the disk. |
 | [`completionPercent`](#parameter-completionpercent) | int | Percentage complete for the background copy when a resource is created via the CopyStart operation. |
 | [`createOption`](#parameter-createoption) | string | Sources of a disk creation. |
+| [`diskEncryptionSetResourceId`](#parameter-diskencryptionsetresourceid) | string | The resource ID of the disk encryption set to use for enabling encryption-at-rest. |
 | [`diskIOPSReadWrite`](#parameter-diskiopsreadwrite) | int | The number of IOPS allowed for this disk; only settable for UltraSSD disks. |
 | [`diskMBpsReadWrite`](#parameter-diskmbpsreadwrite) | int | The bandwidth allowed for this disk; only settable for UltraSSD disks. |
 | [`edgeZone`](#parameter-edgezone) | string | Specifies the Edge Zone within the Azure Region where this Managed Disk should exist. Changing this forces a new Managed Disk to be created. |
@@ -778,6 +859,13 @@ Sources of a disk creation.
     'UploadPreparedSecure'
   ]
   ```
+
+### Parameter: `diskEncryptionSetResourceId`
+
+The resource ID of the disk encryption set to use for enabling encryption-at-rest.
+
+- Required: No
+- Type: string
 
 ### Parameter: `diskIOPSReadWrite`
 
@@ -1122,8 +1210,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 

@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/CHANGELOG.md).
 
+## 0.21.0
+
+### Changes
+
+- Added support for managed HSM customer-managed key encryption for both server and database
+- Updated all 'avm-common-types' references to version `0.6.1`
+- Updated `avm/res/network/private-endpoint` cross-referenced module to version `0.11.1`
+
+### Breaking Changes
+
+- None
+
 ## 0.20.3
 
 ### Changes
