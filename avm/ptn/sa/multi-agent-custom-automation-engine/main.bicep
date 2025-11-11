@@ -129,7 +129,7 @@ param backendContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
 param backendContainerImageName string = 'macaebackend'
 
 @description('Optional. The Container Image Tag to deploy on the backend.')
-param backendContainerImageTag string = 'latest_v3'
+param backendContainerImageTag string = 'latest_v3_2025-11-10_1406'
 
 @description('Optional. The Container Registry hostname where the docker images for the frontend are located.')
 param frontendContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
@@ -138,7 +138,7 @@ param frontendContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
 param frontendContainerImageName string = 'macaefrontend'
 
 @description('Optional. The Container Image Tag to deploy on the frontend.')
-param frontendContainerImageTag string = 'latest_v3'
+param frontendContainerImageTag string = 'latest_v3_2025-11-10_1406'
 
 @description('Optional. The Container Registry hostname where the docker images for the MCP are located.')
 param mcpContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
@@ -147,7 +147,7 @@ param mcpContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
 param mcpContainerImageName string = 'macaemcp'
 
 @description('Optional. The Container Image Tag to deploy on the MCP.')
-param mcpContainerImageTag string = 'latest_v3'
+param mcpContainerImageTag string = 'latest_v3_2025-11-10_1406'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true

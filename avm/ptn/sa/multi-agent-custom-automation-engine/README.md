@@ -394,7 +394,7 @@ The Container Image Tag to deploy on the backend.
 
 - Required: No
 - Type: string
-- Default: `'latest_v3'`
+- Default: `'latest_v3_2025-11-10_1406'`
 
 ### Parameter: `backendContainerRegistryHostname`
 
@@ -466,7 +466,7 @@ The Container Image Tag to deploy on the frontend.
 
 - Required: No
 - Type: string
-- Default: `'latest_v3'`
+- Default: `'latest_v3_2025-11-10_1406'`
 
 ### Parameter: `frontendContainerRegistryHostname`
 
@@ -615,7 +615,7 @@ The Container Image Tag to deploy on the MCP.
 
 - Required: No
 - Type: string
-- Default: `'latest_v3'`
+- Default: `'latest_v3_2025-11-10_1406'`
 
 ### Parameter: `mcpContainerRegistryHostname`
 
