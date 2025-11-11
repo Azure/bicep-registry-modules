@@ -215,14 +215,6 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empt
   }
 }
 
-// resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-//   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
-//   scope: resourceGroup(
-//     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
-//     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
-//   )
-// }
-
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.sql-server.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'

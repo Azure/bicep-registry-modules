@@ -223,7 +223,7 @@ resource database 'Microsoft.Sql/servers/databases@2023-08-01' = {
     collation: collation
     createMode: createMode
     elasticPoolId: elasticPoolResourceId
-    encryptionProtector: !empty(customerManagedKey}
+    encryptionProtector: !empty(customerManagedKey)
       ? !empty(customerManagedKey.?keyVersion)
           ? (!isHSMManagedCMK
               ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
