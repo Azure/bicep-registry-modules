@@ -36,7 +36,7 @@ function Get-PublishedModuleVersionsList {
             Write-Verbose "Getting available tags at '$tagListUrl' (attempt $($i + 1))..." -Verbose
             $tagListResponse = Invoke-RestMethod -Uri $tagListUrl
             $publishedTags = $tagListResponse.tags | Sort-Object { [Version]$_ } -Culture 'en-US'
-            Write-Verbose "  Found tags: $($publishedTags -join ', ')" -Verbose
+            Write-Verbose "  Found tags: $($publishedTags -join ', ')"
             return $publishedTags
         } catch {
             if ($i -eq 4) {
