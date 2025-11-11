@@ -398,7 +398,7 @@ The Container Image Tag to deploy on the backend.
 
 - Required: No
 - Type: string
-- Default: `'latest_waf_2025-09-18_898'`
+- Default: `'latest_waf_2025-11-10_1006'`
 
 ### Parameter: `backendContainerRegistryHostname`
 
@@ -531,7 +531,7 @@ The Container Image Tag to deploy on the frontend.
 
 - Required: No
 - Type: string
-- Default: `'latest_waf_2025-09-18_898'`
+- Default: `'latest_waf_2025-11-10_1006'`
 
 ### Parameter: `frontendContainerRegistryHostname`
 

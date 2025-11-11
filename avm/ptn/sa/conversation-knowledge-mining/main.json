@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "5509707432387684889"
+      "templateHash": "13298984377622891850"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/blob/main/documents/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -153,7 +153,7 @@
     },
     "backendContainerImageTag": {
       "type": "string",
-      "defaultValue": "latest_waf_2025-09-18_898",
+      "defaultValue": "latest_waf_2025-11-10_1006",
       "metadata": {
         "description": "Optional. The Container Image Tag to deploy on the backend."
       }
@@ -174,7 +174,7 @@
     },
     "frontendContainerImageTag": {
       "type": "string",
-      "defaultValue": "latest_waf_2025-09-18_898",
+      "defaultValue": "latest_waf_2025-11-10_1006",
       "metadata": {
         "description": "Optional. The Container Image Tag to deploy on the frontend."
       }
