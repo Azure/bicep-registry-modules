@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added HSM support
+- Added managed HSM customer-managed key support
 - Updated all 'avm-common-types' reference to `0.6.1`
 
 ### Breaking Changes
