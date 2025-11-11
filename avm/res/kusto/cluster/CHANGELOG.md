@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/kusto/cluster/CHANGELOG.md).
 
+## 0.9.0
+
+### Changes
+
+- Added support for managed HSM customer-managed key encryption
+
+### Breaking Changes
+
+- Removing `enableZoneRedundant` parameter in favor of `availabilityZones` parameter. Note: The default is to deploy to all zones, i.e., to avoid this, set the value to of `availabilityZones` to `[]`
+
 ## 0.8.0
 
 ### Changes

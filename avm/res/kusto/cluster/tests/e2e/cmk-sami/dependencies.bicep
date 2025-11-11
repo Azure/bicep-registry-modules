@@ -7,7 +7,7 @@ param kustoClusterName string
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-resource kustoCluster 'Microsoft.Kusto/clusters@2023-08-15' = {
+resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' = {
   name: kustoClusterName
   location: location
   sku: {
@@ -19,7 +19,7 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2023-08-15' = {
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -37,7 +37,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2023-02-01' = {
+  resource key 'keys@2025-05-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'
