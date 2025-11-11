@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cache/redis-enterprise/CHANGELOG.md).
 
+## 0.4.0
+
+### Changes
+
+- Added managed HSM customer-managed key support
+- Updated `avm/res/network/private-endpoint` cross-referenced module to version `0.11.1`
+- Updated all 'avm-common-types' references to version `0.6.1`
+
+### Breaking Changes
+
+- None
+
 ## 0.3.3
 
 ### Changes
