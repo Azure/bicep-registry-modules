@@ -55,7 +55,7 @@ module nestedHsmDependencies 'dependencies.hsm.bicep' = {
   scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
 }
 
-module configureHSM 'br/public:avm/res/resources/deployment-script:0.5.2' = {
+module allowHsmAccess 'br/public:avm/res/resources/deployment-script:0.5.2' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-hmsKeyPermissions'
   scope: resourceGroup
 
