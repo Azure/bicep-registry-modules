@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "14054938968789284889"
+      "templateHash": "6272822721709121130"
     },
     "name": "Modernize Your Code Solution Accelerator",
     "description": "CSA CTO Gold Standard Solution Accelerator for Modernize Your Code.\n"
@@ -242,7 +242,7 @@
       "apiVersion": "2025-04-01",
       "name": "default",
       "properties": {
-        "tags": "[shallowMerge(createArray(resourceGroup().tags, variables('allTags'), createObject('TemplateName', 'Code Modernization', 'Type', if(parameters('enablePrivateNetworking'), 'WAF', 'Non-WAF'), 'CreatedBy', parameters('createdBy'))))]"
+        "tags": "[shallowMerge(createArray(resourceGroup().tags, variables('allTags'), createObject('TemplateName', 'Code Modernization', 'Type', if(parameters('enablePrivateNetworking'), 'WAF', 'Non-WAF'), 'CreatedBy', parameters('createdBy'), 'DeploymentName', deployment().name)))]"
       }
     },
     "avmTelemetry": {
@@ -35736,8 +35736,8 @@
       },
       "dependsOn": [
         "appIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "logAnalyticsWorkspace",
         "virtualNetwork"
       ]
