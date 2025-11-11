@@ -21,9 +21,9 @@ This module deploys a Redis Enterprise or Azure Managed Redis cache.
 | `Microsoft.Cache/redisEnterprise/databases` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redisenterprise_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-05-01-preview/redisEnterprise/databases)</li></ul> |
 | `Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redisenterprise_databases_accesspolicyassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-05-01-preview/redisEnterprise/databases/accessPolicyAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.KeyVault/vaults/secrets` | 2023-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2025-05-01/vaults/secrets)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -36,11 +36,12 @@ The following section provides usage examples for the module, which were used to
 - [Active geo-replication](#example-1-active-geo-replication)
 - [Azure Managed Redis with Entra ID authentication](#example-2-azure-managed-redis-with-entra-id-authentication)
 - [Azure Managed Redis with non-clustered policy (Preview)](#example-3-azure-managed-redis-with-non-clustered-policy-preview)
-- [Using only defaults](#example-4-using-only-defaults)
-- [Deploying with a key vault reference to save secrets](#example-5-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-6-using-large-parameter-set)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-7-using-customer-managed-keys-with-user-assigned-identity)
-- [WAF-aligned](#example-8-waf-aligned)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-4-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-5-using-customer-managed-keys-with-user-assigned-identity)
+- [Using only defaults](#example-6-using-only-defaults)
+- [Deploying with a key vault reference to save secrets](#example-7-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-8-using-large-parameter-set)
+- [WAF-aligned](#example-9-waf-aligned)
 
 ### Example 1: _Active geo-replication_
 
@@ -71,7 +72,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         ]
       }
     }
-    location: '<location>'
     skuName: 'Balanced_B10'
   }
 }
@@ -109,9 +109,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         }
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "skuName": {
       "value": "Balanced_B10"
     }
@@ -145,7 +142,6 @@ param database = {
     ]
   }
 }
-param location = '<location>'
 param skuName = 'Balanced_B10'
 ```
 
@@ -177,7 +173,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         }
       ]
     }
-    location: '<location>'
   }
 }
 ```
@@ -209,9 +204,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
           }
         ]
       }
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -239,7 +231,6 @@ param database = {
     }
   ]
 }
-param location = '<location>'
 ```
 
 </details>
@@ -315,7 +306,240 @@ param database = {
 </details>
 <p>
 
-### Example 4: _Using only defaults_
+### Example 4: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
+  name: 'redisEnterpriseDeployment'
+  params: {
+    // Required parameters
+    name: 'creshsm001'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    database: {
+      persistence: {
+        frequency: '6h'
+        type: 'rdb'
+      }
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "creshsm001"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "database": {
+      "value": {
+        "persistence": {
+          "frequency": "6h",
+          "type": "rdb"
+        }
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cache/redis-enterprise:<version>'
+
+// Required parameters
+param name = 'creshsm001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param database = {
+  persistence: {
+    frequency: '6h'
+    type: 'rdb'
+  }
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
+  name: 'redisEnterpriseDeployment'
+  params: {
+    // Required parameters
+    name: 'creuace001'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    database: {
+      persistence: {
+        frequency: '6h'
+        type: 'rdb'
+      }
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "creuace001"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "database": {
+      "value": {
+        "persistence": {
+          "frequency": "6h",
+          "type": "rdb"
+        }
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cache/redis-enterprise:<version>'
+
+// Required parameters
+param name = 'creuace001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param database = {
+  persistence: {
+    frequency: '6h'
+    type: 'rdb'
+  }
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+```
+
+</details>
+<p>
+
+### Example 6: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -368,7 +592,7 @@ param name = 'cremin001'
 </details>
 <p>
 
-### Example 5: _Deploying with a key vault reference to save secrets_
+### Example 7: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving all its secrets in a key vault.
 
@@ -462,7 +686,7 @@ param database = {
 </details>
 <p>
 
-### Example 6: _Using large parameter set_
+### Example 8: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -510,10 +734,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
           name: 'RediSearch'
         }
       ]
-      persistence: {
-        frequency: '1s'
-        type: 'aof'
-      }
     }
     diagnosticSettings: [
       {
@@ -634,11 +854,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
           {
             "name": "RediSearch"
           }
-        ],
-        "persistence": {
-          "frequency": "1s",
-          "type": "aof"
-        }
+        ]
       }
     },
     "diagnosticSettings": {
@@ -774,10 +990,6 @@ param database = {
       name: 'RediSearch'
     }
   ]
-  persistence: {
-    frequency: '1s'
-    type: 'aof'
-  }
 }
 param diagnosticSettings = [
   {
@@ -848,120 +1060,7 @@ param tags = {
 </details>
 <p>
 
-### Example 7: _Using Customer-Managed-Keys with User-Assigned identity_
-
-This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
-  name: 'redisEnterpriseDeployment'
-  params: {
-    // Required parameters
-    name: 'creuace001'
-    // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
-    database: {
-      persistence: {
-        frequency: '6h'
-        type: 'rdb'
-      }
-    }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "creuace001"
-    },
-    // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
-      }
-    },
-    "database": {
-      "value": {
-        "persistence": {
-          "frequency": "6h",
-          "type": "rdb"
-        }
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/cache/redis-enterprise:<version>'
-
-// Required parameters
-param name = 'creuace001'
-// Non-required parameters
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-}
-param database = {
-  persistence: {
-    frequency: '6h'
-    type: 'rdb'
-  }
-}
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
-```
-
-</details>
-<p>
-
-### Example 8: _WAF-aligned_
+### Example 9: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -977,11 +1076,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
     // Required parameters
     name: 'crewaf001'
     // Non-required parameters
-    availabilityZones: [
-      1
-      2
-      3
-    ]
     database: {
       diagnosticSettings: [
         {
@@ -1060,13 +1154,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       "value": "crewaf001"
     },
     // Non-required parameters
-    "availabilityZones": {
-      "value": [
-        1,
-        2,
-        3
-      ]
-    },
     "database": {
       "value": {
         "diagnosticSettings": [
@@ -1151,11 +1238,6 @@ using 'br/public:avm/res/cache/redis-enterprise:<version>'
 // Required parameters
 param name = 'crewaf001'
 // Non-required parameters
-param availabilityZones = [
-  1
-  2
-  3
-]
 param database = {
   diagnosticSettings: [
     {
@@ -1226,12 +1308,6 @@ param tags = {
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the cache resource. |
 
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Required if 'customerManagedKey' is not empty. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -1245,6 +1321,7 @@ param tags = {
 | [`highAvailability`](#parameter-highavailability) | string | Specifies whether to enable data replication for high availability. Used only with Azure Managed Redis SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | The minimum TLS version for the Redis cluster to support. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -1257,26 +1334,6 @@ The name of the cache resource.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `managedIdentities`
-
-The managed identity definition for this resource. Required if 'customerManagedKey' is not empty.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
-
-### Parameter: `managedIdentities.userAssignedResourceIds`
-
-The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
-
-- Required: No
-- Type: array
 
 ### Parameter: `availabilityZones`
 
@@ -2111,6 +2168,26 @@ Specify the notes of the lock.
 - Required: No
 - Type: string
 
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
+
 ### Parameter: `minimumTlsVersion`
 
 The minimum TLS version for the Redis cluster to support.
@@ -2745,7 +2822,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
