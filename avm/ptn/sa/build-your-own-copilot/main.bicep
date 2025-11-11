@@ -1112,6 +1112,14 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
       ]
     }
     primaryUserAssignedIdentityResourceId: userAssignedIdentity.outputs.resourceId
+    // WAF aligned configuration - Microsoft Defender for SQL (required for Vulnerability Assessment)
+    securityAlertPolicies: [
+      {
+        name: 'Default'
+        state: 'Enabled'
+        emailAccountAdmins: false
+      }
+    ]
     // WAF aligned configuration - SQL Vulnerability Assessment for security monitoring
     vulnerabilityAssessmentsObj: enableMonitoring
       ? {
@@ -1122,6 +1130,8 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
           recurringScansIsEnabled: true
           recurringScansEmailSubscriptionAdmins: false
           recurringScansEmails: []
+          useStorageAccountAccessKey: false
+          createStorageRoleAssignment: true
         }
       : null
     privateEndpoints: enablePrivateNetworking
