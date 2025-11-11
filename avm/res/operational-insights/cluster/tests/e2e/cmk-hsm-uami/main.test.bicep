@@ -25,11 +25,11 @@ param baseTime string = utcNow('u')
 param deploymentMSIResourceId string = ''
 
 @description('Required. The resource ID of the managed HSM used for encryption. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-managedHSMResourceId\'.')
-@secure()
-param managedHSMResourceId string = ''
+// @secure()
+var managedHSMResourceId string = '/subscriptions/${subscription().subscriptionId}/resourceGroups/rsg-permanent-managed-hsm/providers/Microsoft.KeyVault/managedHSMs/lac-test-cluster'
 
 // Enforce location of HSM
-var enforcedLocation = 'uksouth'
+var enforcedLocation = 'northeurope'
 
 // ============ //
 // Dependencies //
