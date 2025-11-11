@@ -941,6 +941,7 @@ Endpoint tags.
 | :-- | :-- | :-- |
 | `domainNames` | array | The list of the email domain names. |
 | `domainResourceIds` | array | The list of the email domain resource ids. |
+| `domainVerificationRecords` | array | The list of verification records for each domain. |
 | `location` | string | The location the email service was deployed into. |
 | `name` | string | The name of the email service. |
 | `resourceGroupName` | string | The resource group the email service was deployed into. |

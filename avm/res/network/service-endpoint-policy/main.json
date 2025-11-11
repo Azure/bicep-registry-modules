@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "6699299090565826989"
+      "version": "0.38.5.1644",
+      "templateHash": "15706675711896320974"
     },
     "name": "Service-Endpoint-Policy",
     "description": "This module deploys a Service Endpoint Policy."
@@ -150,17 +150,23 @@
     },
     "serviceEndpointPolicyDefinitions": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/serviceEndpointPolicies@2024-10-01#properties/properties/properties/serviceEndpointPolicyDefinitions"
+        },
         "description": "Optional. An Array of service endpoint policy definitions."
-      }
+      },
+      "nullable": true
     },
     "contextualServiceEndpointPolicies": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/serviceEndpointPolicies@2024-10-01#properties/properties/properties/contextualServiceEndpointPolicies"
+        },
         "description": "Optional. An Array of contextual service endpoint policy."
-      }
+      },
+      "nullable": true
     },
     "serviceAlias": {
       "type": "string",
@@ -188,10 +194,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/serviceEndpointPolicies@2024-10-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     }
   },
   "variables": {
@@ -234,7 +243,7 @@
     },
     "serviceEndpointPolicy": {
       "type": "Microsoft.Network/serviceEndpointPolicies",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-10-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -308,7 +317,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('serviceEndpointPolicy', '2023-04-01', 'full').location]"
+      "value": "[reference('serviceEndpointPolicy', '2024-10-01', 'full').location]"
     }
   }
 }

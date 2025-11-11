@@ -18,7 +18,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the storage account resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Resources/resourceGroups@2021-04-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true

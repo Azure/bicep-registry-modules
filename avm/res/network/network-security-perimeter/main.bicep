@@ -13,15 +13,15 @@ param profiles profileType[]?
 @description('Optional. Array of resource associations to create.')
 param resourceAssociations resourceAssociationType[]?
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -98,8 +98,8 @@ module networkSecurityPerimeter_profiles 'profile/main.bicep' = [
 
 @batchSize(1)
 resource networkSecurityPerimeter_resourceAssociations 'Microsoft.Network/networkSecurityPerimeters/resourceAssociations@2024-07-01' = [
-  for (resourceAssociation, index) in (resourceAssociations ?? []): {
-    name: '${guid(resourceAssociation.privateLinkResource, name, resourceAssociation.profile)}-nsp-ra'
+  for resourceAssociation in (resourceAssociations ?? []): {
+    name: resourceAssociation.?name ?? '${guid(resourceAssociation.privateLinkResource, name, resourceAssociation.profile)}-nsp-ra'
     parent: networkSecurityPerimeter
     properties: {
       privateLinkResource: {
@@ -201,6 +201,10 @@ type profileType = {
 @export()
 @description('The type for a resource association.')
 type resourceAssociationType = {
+  @description('Optional. The name of the resource association.')
+  @maxLength(80)
+  name: string?
+
   @description('Required. The resource identifier of the resource association.')
   privateLinkResource: string
 

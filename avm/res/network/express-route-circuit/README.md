@@ -18,7 +18,8 @@ This module deploys an Express Route Circuit.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/expressRouteCircuits` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_expressroutecircuits.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/expressRouteCircuits)</li></ul> |
+| `Microsoft.Network/expressRouteCircuits` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_expressroutecircuits.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/expressRouteCircuits)</li></ul> |
+| `Microsoft.Network/expressRouteCircuits/peerings/connections` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_expressroutecircuits_peerings_connections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/expressRouteCircuits/peerings/connections)</li></ul> |
 
 ## Usage examples
 
@@ -29,8 +30,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/express-route-circuit:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using Global Reach connections](#example-2-using-global-reach-connections)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -111,7 +113,190 @@ param serviceProviderName = 'Equinix'
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Using Global Reach connections_
+
+This instance deploys two ExpressRoute circuits with a Global Reach connection between them.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<version>' = {
+  name: 'expressRouteCircuitDeployment'
+  params: {
+    // Required parameters
+    name: 'nercgr002'
+    // Non-required parameters
+    bandwidthInGbps: 10
+    connections: [
+      {
+        addressPrefix: '192.168.8.0/29'
+        name: 'connection-to-circuit1'
+        peerExpressRouteCircuitPeeringId: '<peerExpressRouteCircuitPeeringId>'
+        peeringName: 'AzurePrivatePeering'
+      }
+    ]
+    expressRoutePortResourceId: '<expressRoutePortResourceId>'
+    globalReachEnabled: true
+    location: '<location>'
+    peeringLocation: 'Amsterdam'
+    peerings: [
+      {
+        name: 'AzurePrivatePeering'
+        properties: {
+          peerASN: 65001
+          peeringType: 'AzurePrivatePeering'
+          primaryPeerAddressPrefix: '10.0.0.0/30'
+          secondaryPeerAddressPrefix: '10.0.0.4/30'
+          state: 'Enabled'
+          vlanId: 100
+        }
+      }
+    ]
+    serviceProviderName: 'Equinix'
+    skuFamily: 'MeteredData'
+    skuTier: 'Premium'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "nercgr002"
+    },
+    // Non-required parameters
+    "bandwidthInGbps": {
+      "value": 10
+    },
+    "connections": {
+      "value": [
+        {
+          "addressPrefix": "192.168.8.0/29",
+          "name": "connection-to-circuit1",
+          "peerExpressRouteCircuitPeeringId": "<peerExpressRouteCircuitPeeringId>",
+          "peeringName": "AzurePrivatePeering"
+        }
+      ]
+    },
+    "expressRoutePortResourceId": {
+      "value": "<expressRoutePortResourceId>"
+    },
+    "globalReachEnabled": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "peeringLocation": {
+      "value": "Amsterdam"
+    },
+    "peerings": {
+      "value": [
+        {
+          "name": "AzurePrivatePeering",
+          "properties": {
+            "peerASN": 65001,
+            "peeringType": "AzurePrivatePeering",
+            "primaryPeerAddressPrefix": "10.0.0.0/30",
+            "secondaryPeerAddressPrefix": "10.0.0.4/30",
+            "state": "Enabled",
+            "vlanId": 100
+          }
+        }
+      ]
+    },
+    "serviceProviderName": {
+      "value": "Equinix"
+    },
+    "skuFamily": {
+      "value": "MeteredData"
+    },
+    "skuTier": {
+      "value": "Premium"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/express-route-circuit:<version>'
+
+// Required parameters
+param name = 'nercgr002'
+// Non-required parameters
+param bandwidthInGbps = 10
+param connections = [
+  {
+    addressPrefix: '192.168.8.0/29'
+    name: 'connection-to-circuit1'
+    peerExpressRouteCircuitPeeringId: '<peerExpressRouteCircuitPeeringId>'
+    peeringName: 'AzurePrivatePeering'
+  }
+]
+param expressRoutePortResourceId = '<expressRoutePortResourceId>'
+param globalReachEnabled = true
+param location = '<location>'
+param peeringLocation = 'Amsterdam'
+param peerings = [
+  {
+    name: 'AzurePrivatePeering'
+    properties: {
+      peerASN: 65001
+      peeringType: 'AzurePrivatePeering'
+      primaryPeerAddressPrefix: '10.0.0.0/30'
+      secondaryPeerAddressPrefix: '10.0.0.4/30'
+      state: 'Enabled'
+      vlanId: 100
+    }
+  }
+]
+param serviceProviderName = 'Equinix'
+param skuFamily = 'MeteredData'
+param skuTier = 'Premium'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -144,12 +329,59 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
       }
     ]
     enableDirectPortRateLimit: true
+    globalReachEnabled: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
     peeringLocation: 'Amsterdam'
+    peerings: [
+      {
+        name: 'AzurePrivatePeering'
+        properties: {
+          ipv6PeeringConfig: {
+            primaryPeerAddressPrefix: '2001:db8::/126'
+            secondaryPeerAddressPrefix: '2001:db8::8/126'
+          }
+          peerASN: 65001
+          peeringType: 'AzurePrivatePeering'
+          primaryPeerAddressPrefix: '10.0.0.0/30'
+          secondaryPeerAddressPrefix: '10.0.0.4/30'
+          state: 'Enabled'
+          vlanId: 100
+        }
+      }
+      {
+        name: 'MicrosoftPeering'
+        properties: {
+          ipv6PeeringConfig: {
+            microsoftPeeringConfig: {
+              advertisedPublicPrefixes: [
+                '2001:db8:200::/48'
+              ]
+              customerASN: 65002
+              routingRegistryName: 'ARIN'
+            }
+            primaryPeerAddressPrefix: '2001:db8:100::/126'
+            secondaryPeerAddressPrefix: '2001:db8:100::8/126'
+          }
+          microsoftPeeringConfig: {
+            advertisedPublicPrefixes: [
+              '203.0.113.0/24'
+            ]
+            customerASN: 65002
+            routingRegistryName: 'ARIN'
+          }
+          peerASN: 65002
+          peeringType: 'MicrosoftPeering'
+          primaryPeerAddressPrefix: '203.0.113.0/30'
+          secondaryPeerAddressPrefix: '203.0.113.4/30'
+          state: 'Disabled'
+          vlanId: 200
+        }
+      }
+    ]
     roleAssignments: [
       {
         name: 'd7aa3dfa-6ba6-4ed8-b561-2164fbb1327e'
@@ -223,6 +455,9 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
     "enableDirectPortRateLimit": {
       "value": true
     },
+    "globalReachEnabled": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
     },
@@ -234,6 +469,54 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
     },
     "peeringLocation": {
       "value": "Amsterdam"
+    },
+    "peerings": {
+      "value": [
+        {
+          "name": "AzurePrivatePeering",
+          "properties": {
+            "ipv6PeeringConfig": {
+              "primaryPeerAddressPrefix": "2001:db8::/126",
+              "secondaryPeerAddressPrefix": "2001:db8::8/126"
+            },
+            "peerASN": 65001,
+            "peeringType": "AzurePrivatePeering",
+            "primaryPeerAddressPrefix": "10.0.0.0/30",
+            "secondaryPeerAddressPrefix": "10.0.0.4/30",
+            "state": "Enabled",
+            "vlanId": 100
+          }
+        },
+        {
+          "name": "MicrosoftPeering",
+          "properties": {
+            "ipv6PeeringConfig": {
+              "microsoftPeeringConfig": {
+                "advertisedPublicPrefixes": [
+                  "2001:db8:200::/48"
+                ],
+                "customerASN": 65002,
+                "routingRegistryName": "ARIN"
+              },
+              "primaryPeerAddressPrefix": "2001:db8:100::/126",
+              "secondaryPeerAddressPrefix": "2001:db8:100::8/126"
+            },
+            "microsoftPeeringConfig": {
+              "advertisedPublicPrefixes": [
+                "203.0.113.0/24"
+              ],
+              "customerASN": 65002,
+              "routingRegistryName": "ARIN"
+            },
+            "peerASN": 65002,
+            "peeringType": "MicrosoftPeering",
+            "primaryPeerAddressPrefix": "203.0.113.0/30",
+            "secondaryPeerAddressPrefix": "203.0.113.4/30",
+            "state": "Disabled",
+            "vlanId": 200
+          }
+        }
+      ]
     },
     "roleAssignments": {
       "value": [
@@ -306,12 +589,59 @@ param diagnosticSettings = [
   }
 ]
 param enableDirectPortRateLimit = true
+param globalReachEnabled = true
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
 param peeringLocation = 'Amsterdam'
+param peerings = [
+  {
+    name: 'AzurePrivatePeering'
+    properties: {
+      ipv6PeeringConfig: {
+        primaryPeerAddressPrefix: '2001:db8::/126'
+        secondaryPeerAddressPrefix: '2001:db8::8/126'
+      }
+      peerASN: 65001
+      peeringType: 'AzurePrivatePeering'
+      primaryPeerAddressPrefix: '10.0.0.0/30'
+      secondaryPeerAddressPrefix: '10.0.0.4/30'
+      state: 'Enabled'
+      vlanId: 100
+    }
+  }
+  {
+    name: 'MicrosoftPeering'
+    properties: {
+      ipv6PeeringConfig: {
+        microsoftPeeringConfig: {
+          advertisedPublicPrefixes: [
+            '2001:db8:200::/48'
+          ]
+          customerASN: 65002
+          routingRegistryName: 'ARIN'
+        }
+        primaryPeerAddressPrefix: '2001:db8:100::/126'
+        secondaryPeerAddressPrefix: '2001:db8:100::8/126'
+      }
+      microsoftPeeringConfig: {
+        advertisedPublicPrefixes: [
+          '203.0.113.0/24'
+        ]
+        customerASN: 65002
+        routingRegistryName: 'ARIN'
+      }
+      peerASN: 65002
+      peeringType: 'MicrosoftPeering'
+      primaryPeerAddressPrefix: '203.0.113.0/30'
+      secondaryPeerAddressPrefix: '203.0.113.4/30'
+      state: 'Disabled'
+      vlanId: 200
+    }
+  }
+]
 param roleAssignments = [
   {
     name: 'd7aa3dfa-6ba6-4ed8-b561-2164fbb1327e'
@@ -344,7 +674,7 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -537,23 +867,18 @@ param tags = {
 | :-- | :-- | :-- |
 | [`allowClassicOperations`](#parameter-allowclassicoperations) | bool | Allow classic operations. You can connect to virtual networks in the classic deployment model by setting allowClassicOperations to true. |
 | [`authorizationNames`](#parameter-authorizationnames) | array | List of names for ExpressRoute circuit authorizations to create. To fetch the `authorizationKey` for the authorization, use the `existing` resource reference for `Microsoft.Network/expressRouteCircuits/authorizations`. |
+| [`connections`](#parameter-connections) | array | Array of Global Reach connection configurations for peerings. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableDirectPortRateLimit`](#parameter-enabledirectportratelimit) | bool | Flag denoting rate-limiting status of the ExpressRoute direct-port circuit. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`globalReachEnabled`](#parameter-globalreachenabled) | bool | Flag denoting global reach status. To enable ExpressRoute Global Reach between different geopolitical regions, your circuits must be Premium SKU. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`peerASN`](#parameter-peerasn) | int | The autonomous system number of the customer/connectivity provider. |
-| [`peering`](#parameter-peering) | bool | Enabled BGP peering type for the Circuit. |
-| [`peeringType`](#parameter-peeringtype) | string | BGP peering type for the Circuit. Choose from AzurePrivatePeering, AzurePublicPeering or MicrosoftPeering. |
-| [`primaryPeerAddressPrefix`](#parameter-primarypeeraddressprefix) | string | A /30 subnet used to configure IP addresses for interfaces on Link1. |
+| [`peerings`](#parameter-peerings) | array | Array of peering configurations for the ExpressRoute circuit. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`secondaryPeerAddressPrefix`](#parameter-secondarypeeraddressprefix) | string | A /30 subnet used to configure IP addresses for interfaces on Link2. |
-| [`sharedKey`](#parameter-sharedkey) | securestring | The shared key for peering configuration. Router does MD5 hash comparison to validate the packets sent by BGP connection. This parameter is optional and can be removed from peering configuration if not required. |
 | [`skuFamily`](#parameter-skufamily) | string | Chosen SKU family of ExpressRoute circuit. Choose from MeteredData or UnlimitedData SKU families. |
 | [`skuTier`](#parameter-skutier) | string | Chosen SKU Tier of ExpressRoute circuit. Choose from Local, Premium or Standard SKU tiers. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`vlanId`](#parameter-vlanid) | int | Specifies the identifier that is used to identify the customer. |
 
 ### Parameter: `name`
 
@@ -614,6 +939,84 @@ List of names for ExpressRoute circuit authorizations to create. To fetch the `a
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `connections`
+
+Array of Global Reach connection configurations for peerings.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-connectionsname) | string | The name of the connection. |
+| [`peerExpressRouteCircuitPeeringId`](#parameter-connectionspeerexpressroutecircuitpeeringid) | string | The resource ID of the peer ExpressRoute circuit peering. |
+| [`peeringName`](#parameter-connectionspeeringname) | string | The name of the peering this connection belongs to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefix`](#parameter-connectionsaddressprefix) | string | The IPv4 address space (/29) to carve out customer addresses for tunnels. |
+| [`authorizationKey`](#parameter-connectionsauthorizationkey) | string | The authorization key for the connection. |
+| [`ipv6CircuitConnectionConfig`](#parameter-connectionsipv6circuitconnectionconfig) | object | IPv6 circuit connection configuration. |
+
+### Parameter: `connections.name`
+
+The name of the connection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connections.peerExpressRouteCircuitPeeringId`
+
+The resource ID of the peer ExpressRoute circuit peering.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connections.peeringName`
+
+The name of the peering this connection belongs to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connections.addressPrefix`
+
+The IPv4 address space (/29) to carve out customer addresses for tunnels.
+
+- Required: No
+- Type: string
+
+### Parameter: `connections.authorizationKey`
+
+The authorization key for the connection.
+
+- Required: No
+- Type: string
+
+### Parameter: `connections.ipv6CircuitConnectionConfig`
+
+IPv6 circuit connection configuration.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefix`](#parameter-connectionsipv6circuitconnectionconfigaddressprefix) | string | The IPv6 address space (/125) to carve out customer addresses for global reach. |
+
+### Parameter: `connections.ipv6CircuitConnectionConfig.addressPrefix`
+
+The IPv6 address space (/125) to carve out customer addresses for global reach.
+
+- Required: No
+- Type: string
 
 ### Parameter: `diagnosticSettings`
 
@@ -837,44 +1240,12 @@ Specify the notes of the lock.
 - Required: No
 - Type: string
 
-### Parameter: `peerASN`
+### Parameter: `peerings`
 
-The autonomous system number of the customer/connectivity provider.
-
-- Required: No
-- Type: int
-- Default: `0`
-
-### Parameter: `peering`
-
-Enabled BGP peering type for the Circuit.
+Array of peering configurations for the ExpressRoute circuit.
 
 - Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `peeringType`
-
-BGP peering type for the Circuit. Choose from AzurePrivatePeering, AzurePublicPeering or MicrosoftPeering.
-
-- Required: No
-- Type: string
-- Default: `'AzurePrivatePeering'`
-- Allowed:
-  ```Bicep
-  [
-    'AzurePrivatePeering'
-    'MicrosoftPeering'
-  ]
-  ```
-
-### Parameter: `primaryPeerAddressPrefix`
-
-A /30 subnet used to configure IP addresses for interfaces on Link1.
-
-- Required: No
-- Type: string
-- Default: `''`
+- Type: array
 
 ### Parameter: `roleAssignments`
 
@@ -980,22 +1351,6 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `secondaryPeerAddressPrefix`
-
-A /30 subnet used to configure IP addresses for interfaces on Link2.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `sharedKey`
-
-The shared key for peering configuration. Router does MD5 hash comparison to validate the packets sent by BGP connection. This parameter is optional and can be removed from peering configuration if not required.
-
-- Required: No
-- Type: securestring
-- Default: `''`
-
 ### Parameter: `skuFamily`
 
 Chosen SKU family of ExpressRoute circuit. Choose from MeteredData or UnlimitedData SKU families.
@@ -1034,22 +1389,15 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-### Parameter: `vlanId`
-
-Specifies the identifier that is used to identify the customer.
-
-- Required: No
-- Type: int
-- Default: `0`
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `authorizations` | array | The authorizations of the express route circuit. |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of express route curcuit. |
-| `resourceGroupName` | string | The resource group the express route curcuit was deployed into. |
-| `resourceId` | string | The resource ID of express route curcuit. |
+| `name` | string | The name of express route circuit. |
+| `resourceGroupName` | string | The resource group the express route circuit was deployed into. |
+| `resourceId` | string | The resource ID of express route circuit. |
 | `serviceKey` | string | The service key of the express route circuit. |
 | `serviceProviderProvisioningState` | string | The service provider provisioning state of the express route circuit. |
 

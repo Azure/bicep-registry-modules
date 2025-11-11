@@ -1,6 +1,6 @@
 # Consumption Budgets `[Microsoft.Consumption/budgets]`
 
-This module deploys a Consumption Budget for Resource Groups.
+This module deploys a Consumption Budget for a Resource Group.
 
 ## Navigation
 

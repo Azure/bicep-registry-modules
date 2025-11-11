@@ -35,14 +35,14 @@ param enableClientCertificate bool = false
 @description('Optional. Custom hostname configuration of the API Management service.')
 param hostnameConfigurations resourceInput<'Microsoft.ApiManagement/service@2024-05-01'>.properties.hostnameConfigurations?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -61,7 +61,7 @@ param publisherName string
 @description('Optional. Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored.')
 param restore bool = false
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -94,7 +94,7 @@ param tags resourceInput<'Microsoft.ApiManagement/service@2025-05-01'>.tags?
 ])
 param virtualNetworkType string = 'None'
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -109,6 +109,10 @@ param availabilityZones int[] = [
   2
   3
 ]
+
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+@description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
+param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Necessary to create a new GUID.')
 param newGuidValue string = newGuid()
@@ -157,6 +161,9 @@ param publicIpAddressResourceId string?
 
 @description('Optional. Enable the Developer Portal. The developer portal is not supported on the Consumption SKU.')
 param enableDeveloperPortal bool = false
+
+@description('Optional. Whether or not public endpoint access is allowed for this API Management service. If set to \'Disabled\', private endpoints are the exclusive access method. MUST be enabled during service creation.')
+param publicNetworkAccess resourceInput<'Microsoft.ApiManagement/service@2024-05-01'>.properties.publicNetworkAccess?
 
 var enableReferencedModulesTelemetry bool = false
 
@@ -250,6 +257,9 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' = {
     publisherName: publisherName
     notificationSenderEmail: notificationSenderEmail
     hostnameConfigurations: hostnameConfigurations
+    publicNetworkAccess: !empty(publicNetworkAccess)
+      ? publicNetworkAccess
+      : (!empty(privateEndpoints ?? []) ? 'Disabled' : 'Enabled')
     additionalLocations: contains(sku, 'Premium') && !empty(additionalLocations)
       ? map((additionalLocations ?? []), additLoc => {
           location: additLoc.location
@@ -603,6 +613,61 @@ resource service_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-0
   }
 ]
 
+module service_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): {
+    name: '${uniqueString(deployment().name, location)}-service-PrivateEndpoint-${index}'
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(service.id, '/'))}-${privateEndpoint.?service ?? 'gateway'}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(service.id, '/'))}-${privateEndpoint.?service ?? 'gateway'}-${index}'
+              properties: {
+                privateLinkServiceId: service.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'Gateway' // Upper-case as per portal
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(service.id, '/'))}-${privateEndpoint.?service ?? 'gateway'}-${index}'
+              properties: {
+                privateLinkServiceId: service.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'Gateway' // Upper-case as per portal
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: enableReferencedModulesTelemetry
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
+  }
+]
+
 @description('The name of the API management service.')
 output name string = service.name
 
@@ -617,6 +682,17 @@ output systemAssignedMIPrincipalId string? = service.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = service.location
+
+@description('The private endpoints of the key vault.')
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: service_privateEndpoints[index].outputs.name
+    resourceId: service_privateEndpoints[index].outputs.resourceId
+    groupId: service_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: service_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: service_privateEndpoints[index].outputs.networkInterfaceResourceIds
+  }
+]
 
 // =============== //
 //   Definitions   //
@@ -831,6 +907,29 @@ type additionalLocationType = {
 }
 
 @export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
+
 @description('The type of a backend configuration.')
 type backendType = {
   @description('Required. Backend Name.')
@@ -997,7 +1096,7 @@ type namedValueType = {
   @description('Optional. KeyVault location details of the namedValue.')
   keyVault: resourceInput<'Microsoft.ApiManagement/service/namedValues@2024-05-01'>.properties.keyVault?
 
-  @description('Required. Named value Name.')
+  @description('Required. The name of the named value.')
   name: string
 
   @description('Optional. Tags that when provided can be used to filter the NamedValue list. - string.')
@@ -1008,6 +1107,7 @@ type namedValueType = {
   secret: bool?
 
   @description('Optional. Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on \'GET\' operations! Use \'/listSecrets\' POST request to get the value.')
+  @secure()
   value: string?
 }
 
@@ -1121,8 +1221,10 @@ type signUpPropertiesType = {
     termsOfService: {
       @description('Otional. Ask user for consent to the terms of service.')
       consentRequired: bool?
+
       @description('Otional. Display terms of service during a sign-up process.')
       enabled: bool?
+
       @description('Otional. A terms of service text.')
       text: string?
     }?

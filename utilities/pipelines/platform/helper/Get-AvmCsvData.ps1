@@ -13,7 +13,7 @@ Get-AvmCsvData -ModuleIndex 'Bicep-Resource'
 
 Parse the AVM Bicep modules
 #>
-Function Get-AvmCsvData {
+function Get-AvmCsvData {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
@@ -58,8 +58,6 @@ Function Get-AvmCsvData {
     foreach ($item in $formattedBicepFullCsv) {
         # Remove '@Azure/' from the ModuleOwnersGHTeam property
         $item.ModuleOwnersGHTeam = $item.ModuleOwnersGHTeam -replace '@Azure\/', ''
-        # Remove '@Azure/' from the ModuleContributorsGHTeam property
-        $item.ModuleContributorsGHTeam = $item.ModuleContributorsGHTeam -replace '@Azure\/', ''
     }
 
     # Return the modified data

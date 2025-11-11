@@ -17,8 +17,8 @@ This module deploys a Firewall Policy.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.Network/firewallPolicies` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_firewallpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/firewallPolicies)</li></ul> |
-| `Microsoft.Network/firewallPolicies/ruleCollectionGroups` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_firewallpolicies_rulecollectiongroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/firewallPolicies/ruleCollectionGroups)</li></ul> |
+| `Microsoft.Network/firewallPolicies` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_firewallpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/firewallPolicies)</li></ul> |
+| `Microsoft.Network/firewallPolicies/ruleCollectionGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_firewallpolicies_rulecollectiongroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/firewallPolicies/ruleCollectionGroups)</li></ul> |
 
 ## Usage examples
 
@@ -102,6 +102,7 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
     name: 'nfpmax001'
     // Non-required parameters
     allowSqlRedirect: true
+    enableProxy: true
     intrusionDetection: {
       mode: 'Alert'
     }
@@ -172,6 +173,10 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
         ]
       }
     ]
+    servers: [
+      '10.0.0.4'
+      '10.0.0.5'
+    ]
     snat: {
       autoLearnPrivateRanges: 'Enabled'
     }
@@ -203,6 +208,9 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
     },
     // Non-required parameters
     "allowSqlRedirect": {
+      "value": true
+    },
+    "enableProxy": {
       "value": true
     },
     "intrusionDetection": {
@@ -287,6 +295,12 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
         }
       ]
     },
+    "servers": {
+      "value": [
+        "10.0.0.4",
+        "10.0.0.5"
+      ]
+    },
     "snat": {
       "value": {
         "autoLearnPrivateRanges": "Enabled"
@@ -320,6 +334,7 @@ using 'br/public:avm/res/network/firewall-policy:<version>'
 param name = 'nfpmax001'
 // Non-required parameters
 param allowSqlRedirect = true
+param enableProxy = true
 param intrusionDetection = {
   mode: 'Alert'
 }
@@ -389,6 +404,10 @@ param ruleCollectionGroups = [
       }
     ]
   }
+]
+param servers = [
+  '10.0.0.4'
+  '10.0.0.5'
 ]
 param snat = {
   autoLearnPrivateRanges: 'Enabled'

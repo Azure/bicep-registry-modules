@@ -75,7 +75,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       monitorConfig: {
         protocol: 'https'
-        port: '443'
+        port: 443
         path: '/'
       }
       diagnosticSettings: [
