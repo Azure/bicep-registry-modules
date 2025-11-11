@@ -24,20 +24,16 @@ on:
         required: false
   push:
     branches:
-      - users/alsehr/lacHSM
+      - main
     paths:
-      - "avm/res/operational-insights/cluster/version.json"
-    # branches:
-    #   - main
-    # paths:
-    #   - ".github/actions/templates/avm-**"
-    #   - ".github/workflows/avm.template.module.yml"
-    #   - ".github/workflows/avm.res.operational-insights.cluster.yml"
-    #   - "avm/res/operational-insights/cluster/**"
-    #   - "utilities/pipelines/**"
-    #   - "!utilities/pipelines/platform/**"
-    #   - "!*/**/child-module-publish-allowed-list.json"
-    #   - "!*/**/README.md"
+      - ".github/actions/templates/avm-**"
+      - ".github/workflows/avm.template.module.yml"
+      - ".github/workflows/avm.res.operational-insights.cluster.yml"
+      - "avm/res/operational-insights/cluster/**"
+      - "utilities/pipelines/**"
+      - "!utilities/pipelines/platform/**"
+      - "!*/**/child-module-publish-allowed-list.json"
+      - "!*/**/README.md"
 
 env:
   modulePath: "avm/res/operational-insights/cluster"
@@ -87,9 +83,7 @@ jobs:
     uses: ./.github/workflows/avm.template.module.yml
     with:
       workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
-      # moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
-      # moduleTestFilePaths: '[{"path":"tests/e2e/max/main.test.bicep","name":"max","e2eIgnore":false}]' # works
-      moduleTestFilePaths: '[{"path":"tests/e2e/cmk-hsm-uami/main.test.bicep","name":"cmk-hsm-uami","e2eIgnore":false}]' # works
+      moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
       psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
       modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath}}"
     secrets: inherit
