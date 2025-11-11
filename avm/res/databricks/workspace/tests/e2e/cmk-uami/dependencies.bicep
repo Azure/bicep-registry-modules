@@ -1,19 +1,11 @@
 @description('Optional. The location to deploy to.')
 param location string = resourceGroup().location
 
-@description('Required. The name of the Managed Identity to create.')
-param managedIdentityName string
-
 @description('Required. The name of the Key Vault to create.')
 param keyVaultName string
 
 @description('Required. The object ID of the Databricks Enterprise Application. Required for Customer-Managed-Keys.')
 param databricksApplicationObjectId string
-
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' = {
-  name: managedIdentityName
-  location: location
-}
 
 resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
   name: keyVaultName
@@ -48,7 +40,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
 }
 
 resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Key-Vault-Crypto-User-RoleAssignment')
+  name: guid('msi-${keyVault::key.id}-${location}-${databricksApplicationObjectId}-Key-Key-Vault-Crypto-User-RoleAssignment')
   scope: keyVault::key
   properties: {
     principalId: databricksApplicationObjectId
@@ -61,7 +53,7 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 }
 
 resource keyDiskPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault::keyDisk.id}-${location}-${managedIdentity.id}-Key-Key-Vault-Crypto-User-RoleAssignment')
+  name: guid('msi-${keyVault::keyDisk.id}-${location}-${databricksApplicationObjectId}-Key-Key-Vault-Crypto-User-RoleAssignment')
   scope: keyVault::keyDisk
   properties: {
     principalId: databricksApplicationObjectId
