@@ -101,5 +101,8 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
     }
+    dependsOn: [
+      configureHSM
+    ]
   }
 ]
