@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "1102691711402093786"
+      "version": "0.38.33.27573",
+      "templateHash": "7601458273067087467"
     },
     "name": "Azure Managed Redis Database Access Policy Assignment",
     "description": "This module deploys an access policy assignment for an Azure Managed Redis database."

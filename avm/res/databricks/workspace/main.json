@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "10242520352146016910"
+      "templateHash": "13513271010414656272"
     },
     "name": "Azure Databricks Workspaces",
     "description": "This module deploys an Azure Databricks Workspace."
@@ -93,43 +93,6 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for a default catalog configuration."
-      }
-    },
-    "_1.lockType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the name of lock."
-          }
-        },
-        "kind": {
-          "type": "string",
-          "allowedValues": [
-            "CanNotDelete",
-            "None",
-            "ReadOnly"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the type of lock."
-          }
-        },
-        "notes": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the notes of the lock."
-          }
-        }
-      },
-      "metadata": {
-        "description": "An AVM-aligned type for a lock.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
-        }
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -241,81 +204,6 @@
         }
       }
     },
-    "_1.roleAssignmentType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-          }
-        },
-        "roleDefinitionIdOrName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-          }
-        },
-        "principalId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-          }
-        },
-        "principalType": {
-          "type": "string",
-          "allowedValues": [
-            "Device",
-            "ForeignGroup",
-            "Group",
-            "ServicePrincipal",
-            "User"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The principal type of the assigned principal ID."
-          }
-        },
-        "description": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The description of the role assignment."
-          }
-        },
-        "condition": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-          }
-        },
-        "conditionVersion": {
-          "type": "string",
-          "allowedValues": [
-            "2.0"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Version of the condition."
-          }
-        },
-        "delegatedManagedIdentityResourceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The Resource Id of the delegated managed identity resource."
-          }
-        }
-      },
-      "metadata": {
-        "description": "An AVM-aligned type for a role assignment.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
-        }
-      }
-    },
     "customerManagedKeyType": {
       "type": "object",
       "properties": {
@@ -349,7 +237,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type does not support auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -393,7 +281,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -490,7 +378,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if only logs are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -527,7 +415,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -634,7 +522,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/_1.lockType",
+          "$ref": "#/definitions/lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -643,7 +531,7 @@
         "roleAssignments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_1.roleAssignmentType"
+            "$ref": "#/definitions/roleAssignmentType"
           },
           "nullable": true,
           "metadata": {
@@ -746,7 +634,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -760,7 +648,7 @@
     },
     "managedResourceGroupResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The managed resource group ID. It is created by the module as per the to-be resource ID you provide."
       }
@@ -874,7 +762,7 @@
       "$ref": "#/definitions/customerManagedKeyWithAutoRotateType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The customer managed key definition to use for the managed disk."
+        "description": "Optional. The customer managed key definition to use for the managed disk.\nAction Required: A role assignment needs to be added to the key that is used by the Disk Encryption Set created during workspace deployment. After your workspace is created, please follow the steps outlined in the documentation. If this action is not taken, cluster creation will fail ([learn more](https://learn.microsoft.com/azure/databricks/security/keys/cmk-managed-disks-azure?WT.mc_id=Portal-Microsoft_Azure_Databricks))."
       }
     },
     "loadBalancerBackendPoolName": {
@@ -1067,36 +955,11 @@
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "isHSMManagedCMK": "[equals(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), 'managedHSMs')]",
+    "isHSMManagedCMKDisk": "[equals(tryGet(split(coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), ''), '/'), 7), 'managedHSMs')]"
   },
   "resources": {
-    "cMKKeyVault::cMKKey": {
-      "condition": "[and(not(empty(parameters('customerManagedKey'))), not(empty(parameters('customerManagedKey'))))]",
-      "existing": true,
-      "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2024-11-01",
-      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
-      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
-    },
-    "cMKKeyVault::cMKManagedDiskKey": {
-      "condition": "[and(not(empty(parameters('customerManagedKey'))), and(and(not(empty(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'))), equals(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(equals(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyName'), tryGet(parameters('customerManagedKey'), 'keyName')))))]",
-      "existing": true,
-      "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2024-11-01",
-      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
-      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyName'), 'dummyKey'))]"
-    },
-    "cMKManagedDiskKeyVault::cMKManagedDiskKey": {
-      "condition": "[and(and(not(empty(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'))), not(equals(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))), and(and(not(empty(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'))), not(equals(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))), not(empty(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyName')))))]",
-      "existing": true,
-      "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2024-11-01",
-      "subscriptionId": "[split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/')[2]]",
-      "resourceGroup": "[split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/')), coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyName'), 'dummyKey'))]"
-    },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
@@ -1117,24 +980,6 @@
         }
       }
     },
-    "cMKKeyVault": {
-      "condition": "[not(empty(parameters('customerManagedKey')))]",
-      "existing": true,
-      "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2024-11-01",
-      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
-      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
-      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
-    },
-    "cMKManagedDiskKeyVault": {
-      "condition": "[and(not(empty(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'))), not(equals(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))))]",
-      "existing": true,
-      "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2024-11-01",
-      "subscriptionId": "[split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/')[2]]",
-      "resourceGroup": "[split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/')[4]]",
-      "name": "[last(split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/'))]"
-    },
     "workspace": {
       "type": "Microsoft.Databricks/workspaces",
       "apiVersion": "2024-05-01",
@@ -1144,13 +989,10 @@
       "sku": {
         "name": "[parameters('skuName')]"
       },
-      "properties": "[shallowMerge(createArray(createObject('managedResourceGroupId', if(not(empty(parameters('managedResourceGroupResourceId'))), parameters('managedResourceGroupResourceId'), format('{0}/resourceGroups/rg-{1}-managed', subscription().id, parameters('name'))), 'parameters', shallowMerge(createArray(createObject('enableNoPublicIp', createObject('value', parameters('disablePublicIp')), 'prepareEncryption', createObject('value', parameters('prepareEncryption')), 'vnetAddressPrefix', createObject('value', parameters('vnetAddressPrefix')), 'requireInfrastructureEncryption', createObject('value', parameters('requireInfrastructureEncryption'))), if(not(empty(parameters('customVirtualNetworkResourceId'))), createObject('customVirtualNetworkId', createObject('value', parameters('customVirtualNetworkResourceId'))), createObject()), if(not(empty(parameters('amlWorkspaceResourceId'))), createObject('amlWorkspaceId', createObject('value', parameters('amlWorkspaceResourceId'))), createObject()), if(not(empty(parameters('customPrivateSubnetName'))), createObject('customPrivateSubnetName', createObject('value', parameters('customPrivateSubnetName'))), createObject()), if(not(empty(parameters('customPublicSubnetName'))), createObject('customPublicSubnetName', createObject('value', parameters('customPublicSubnetName'))), createObject()), if(not(empty(parameters('loadBalancerBackendPoolName'))), createObject('loadBalancerBackendPoolName', createObject('value', parameters('loadBalancerBackendPoolName'))), createObject()), if(not(empty(parameters('loadBalancerResourceId'))), createObject('loadBalancerId', createObject('value', parameters('loadBalancerResourceId'))), createObject()), if(not(empty(parameters('natGatewayName'))), createObject('natGatewayName', createObject('value', parameters('natGatewayName'))), createObject()), if(not(empty(parameters('publicIpName'))), createObject('publicIpName', createObject('value', parameters('publicIpName'))), createObject()), if(not(empty(parameters('storageAccountName'))), createObject('storageAccountName', createObject('value', parameters('storageAccountName'))), createObject()), if(not(empty(parameters('storageAccountSkuName'))), createObject('storageAccountSkuName', createObject('value', parameters('storageAccountSkuName'))), createObject()))), 'publicNetworkAccess', parameters('publicNetworkAccess'), 'requiredNsgRules', parameters('requiredNsgRules'), 'encryption', if(or(not(empty(parameters('customerManagedKey'))), not(empty(parameters('customerManagedKeyManagedDisk')))), createObject('entities', createObject('managedServices', if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.Keyvault', 'keyVaultProperties', createObject('keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), tryGet(parameters('customerManagedKey'), 'keyVersion'), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null()), 'managedDisk', if(not(empty(parameters('customerManagedKeyManagedDisk'))), createObject('keySource', 'Microsoft.Keyvault', 'keyVaultProperties', createObject('keyVaultUri', if(not(equals(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), reference('cMKManagedDiskKeyVault').vaultUri, reference('cMKKeyVault').vaultUri), 'keyName', parameters('customerManagedKeyManagedDisk').keyName, 'keyVersion', if(not(empty(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVersion'))), tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVersion'), last(split(if(not(equals(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), reference('cMKManagedDiskKeyVault::cMKManagedDiskKey').keyUriWithVersion, if(not(equals(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyName'), tryGet(parameters('customerManagedKey'), 'keyName'))), reference('cMKKeyVault::cMKManagedDiskKey').keyUriWithVersion, reference('cMKKeyVault::cMKKey').keyUriWithVersion)), '/')))), 'rotationToLatestKeyVersionEnabled', coalesce(coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'autoRotationEnabled'), true()), false())), null()))), null())), if(not(empty(parameters('privateStorageAccount'))), shallowMerge(createArray(createObject('defaultStorageFirewall', parameters('privateStorageAccount')), if(not(empty(parameters('accessConnectorResourceId'))), createObject('accessConnector', createObject('id', parameters('accessConnectorResourceId'), 'identityType', 'SystemAssigned')), createObject()))), createObject()), if(not(empty(parameters('defaultCatalog'))), createObject('defaultCatalog', createObject('initialName', '', 'initialType', tryGet(parameters('defaultCatalog'), 'initialType'))), createObject()), if(or(or(not(empty(parameters('automaticClusterUpdate'))), not(empty(parameters('complianceStandards')))), not(empty(parameters('enhancedSecurityMonitoring')))), createObject('enhancedSecurityCompliance', createObject('automaticClusterUpdate', createObject('value', parameters('automaticClusterUpdate')), 'complianceSecurityProfile', createObject('complianceStandards', parameters('complianceStandards'), 'value', parameters('complianceSecurityProfileValue')), 'enhancedSecurityMonitoring', createObject('value', parameters('enhancedSecurityMonitoring')))), createObject())))]",
+      "properties": "[shallowMerge(createArray(createObject('managedResourceGroupId', if(not(empty(parameters('managedResourceGroupResourceId'))), parameters('managedResourceGroupResourceId'), format('{0}/resourceGroups/rg-{1}-managed', subscription().id, parameters('name'))), 'parameters', shallowMerge(createArray(createObject('enableNoPublicIp', createObject('value', parameters('disablePublicIp')), 'prepareEncryption', createObject('value', parameters('prepareEncryption')), 'vnetAddressPrefix', createObject('value', parameters('vnetAddressPrefix')), 'requireInfrastructureEncryption', createObject('value', parameters('requireInfrastructureEncryption'))), if(not(empty(parameters('customVirtualNetworkResourceId'))), createObject('customVirtualNetworkId', createObject('value', parameters('customVirtualNetworkResourceId'))), createObject()), if(not(empty(parameters('amlWorkspaceResourceId'))), createObject('amlWorkspaceId', createObject('value', parameters('amlWorkspaceResourceId'))), createObject()), if(not(empty(parameters('customPrivateSubnetName'))), createObject('customPrivateSubnetName', createObject('value', parameters('customPrivateSubnetName'))), createObject()), if(not(empty(parameters('customPublicSubnetName'))), createObject('customPublicSubnetName', createObject('value', parameters('customPublicSubnetName'))), createObject()), if(not(empty(parameters('loadBalancerBackendPoolName'))), createObject('loadBalancerBackendPoolName', createObject('value', parameters('loadBalancerBackendPoolName'))), createObject()), if(not(empty(parameters('loadBalancerResourceId'))), createObject('loadBalancerId', createObject('value', parameters('loadBalancerResourceId'))), createObject()), if(not(empty(parameters('natGatewayName'))), createObject('natGatewayName', createObject('value', parameters('natGatewayName'))), createObject()), if(not(empty(parameters('publicIpName'))), createObject('publicIpName', createObject('value', parameters('publicIpName'))), createObject()), if(not(empty(parameters('storageAccountName'))), createObject('storageAccountName', createObject('value', parameters('storageAccountName'))), createObject()), if(not(empty(parameters('storageAccountSkuName'))), createObject('storageAccountSkuName', createObject('value', parameters('storageAccountSkuName'))), createObject()))), 'publicNetworkAccess', parameters('publicNetworkAccess'), 'requiredNsgRules', parameters('requiredNsgRules'), 'encryption', if(or(not(empty(parameters('customerManagedKey'))), not(empty(parameters('customerManagedKeyManagedDisk')))), createObject('entities', createObject('managedServices', if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.Keyvault', 'keyVaultProperties', createObject('keyVaultUri', if(not(variables('isHSMManagedCMK')), reference('cMKKeyVaultRef').outputs.vaultUri.value, format('https://{0}.managedhsm.azure.net/', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')))), 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), tryGet(parameters('customerManagedKey'), 'keyVersion'), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVaultRef').outputs.keyVersion.value, fail('Managed HSM CMK encryption requires specifying the ''keyVersion''.'))))), null()), 'managedDisk', if(not(empty(parameters('customerManagedKeyManagedDisk'))), createObject('keySource', 'Microsoft.Keyvault', 'keyVaultProperties', createObject('keyVaultUri', if(not(variables('isHSMManagedCMK')), reference('cMKManagedKeyVaultDiskRef').outputs.vaultUri.value, format('https://{0}.managedhsm.azure.net/', last(split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/')))), 'keyName', parameters('customerManagedKeyManagedDisk').keyName, 'keyVersion', if(not(empty(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVersion'))), tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVersion'), if(not(variables('isHSMManagedCMK')), reference('cMKManagedKeyVaultDiskRef').outputs.keyVersion.value, fail('Managed HSM CMK encryption requires specifying the ''keyVersion''.')))), 'rotationToLatestKeyVersionEnabled', coalesce(coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'autoRotationEnabled'), true()), false())), null()))), null())), if(not(empty(parameters('privateStorageAccount'))), shallowMerge(createArray(createObject('defaultStorageFirewall', parameters('privateStorageAccount')), if(not(empty(parameters('accessConnectorResourceId'))), createObject('accessConnector', createObject('id', parameters('accessConnectorResourceId'), 'identityType', 'SystemAssigned')), createObject()))), createObject()), if(not(empty(parameters('defaultCatalog'))), createObject('defaultCatalog', createObject('initialName', '', 'initialType', tryGet(parameters('defaultCatalog'), 'initialType'))), createObject()), if(or(or(not(empty(parameters('automaticClusterUpdate'))), not(empty(parameters('complianceStandards')))), not(empty(parameters('enhancedSecurityMonitoring')))), createObject('enhancedSecurityCompliance', createObject('automaticClusterUpdate', createObject('value', parameters('automaticClusterUpdate')), 'complianceSecurityProfile', createObject('complianceStandards', parameters('complianceStandards'), 'value', parameters('complianceSecurityProfileValue')), 'enhancedSecurityMonitoring', createObject('value', parameters('enhancedSecurityMonitoring')))), createObject())))]",
       "dependsOn": [
-        "cMKKeyVault",
-        "cMKKeyVault::cMKKey",
-        "cMKKeyVault::cMKManagedDiskKey",
-        "cMKManagedDiskKeyVault",
-        "cMKManagedDiskKeyVault::cMKManagedDiskKey"
+        "cMKKeyVaultRef",
+        "cMKManagedKeyVaultDiskRef"
       ]
     },
     "workspace_lock": {
@@ -1220,6 +1062,148 @@
       "dependsOn": [
         "workspace"
       ]
+    },
+    "cMKKeyVaultRef": {
+      "condition": "[and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-cmkKeyVault', uniqueString(deployment().name))]",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "keyVaultResourceId": {
+            "value": "[parameters('customerManagedKey').keyVaultResourceId]"
+          },
+          "keyName": {
+            "value": "[parameters('customerManagedKey').keyName]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.38.33.27573",
+              "templateHash": "63292916106775673"
+            }
+          },
+          "parameters": {
+            "keyVaultResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the key vault to fetch the key from."
+              }
+            },
+            "keyName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the key vault key."
+              }
+            }
+          },
+          "resources": [],
+          "outputs": {
+            "vaultUri": {
+              "type": "string",
+              "metadata": {
+                "description": "The URI of the Key Vault containing the Customer-Managed Key."
+              },
+              "value": "[reference(resourceId('Microsoft.KeyVault/vaults', last(split(parameters('keyVaultResourceId'), '/'))), '2025-05-01').vaultUri]"
+            },
+            "keyUriWithVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "The URI of the Customer-Managed Key with version."
+              },
+              "value": "[reference(resourceId('Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName')), '2025-05-01').keyUriWithVersion]"
+            },
+            "keyVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "The version of the Customer-Managed Key."
+              },
+              "value": "[last(split(reference(resourceId('Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName')), '2025-05-01').keyUriWithVersion, '/'))]"
+            }
+          }
+        }
+      }
+    },
+    "cMKManagedKeyVaultDiskRef": {
+      "condition": "[and(not(empty(parameters('customerManagedKeyManagedDisk'))), not(variables('isHSMManagedCMKDisk')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-cmkDiskKeyVault', uniqueString(deployment().name))]",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/')[4]]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "keyVaultResourceId": {
+            "value": "[parameters('customerManagedKeyManagedDisk').keyVaultResourceId]"
+          },
+          "keyName": {
+            "value": "[parameters('customerManagedKeyManagedDisk').keyName]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.38.33.27573",
+              "templateHash": "63292916106775673"
+            }
+          },
+          "parameters": {
+            "keyVaultResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the key vault to fetch the key from."
+              }
+            },
+            "keyName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the key vault key."
+              }
+            }
+          },
+          "resources": [],
+          "outputs": {
+            "vaultUri": {
+              "type": "string",
+              "metadata": {
+                "description": "The URI of the Key Vault containing the Customer-Managed Key."
+              },
+              "value": "[reference(resourceId('Microsoft.KeyVault/vaults', last(split(parameters('keyVaultResourceId'), '/'))), '2025-05-01').vaultUri]"
+            },
+            "keyUriWithVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "The URI of the Customer-Managed Key with version."
+              },
+              "value": "[reference(resourceId('Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName')), '2025-05-01').keyUriWithVersion]"
+            },
+            "keyVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "The version of the Customer-Managed Key."
+              },
+              "value": "[last(split(reference(resourceId('Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName')), '2025-05-01').keyUriWithVersion, '/'))]"
+            }
+          }
+        }
+      }
     },
     "workspace_privateEndpoints": {
       "copy": {
@@ -2617,6 +2601,14 @@
         "description": "The unique identifier of the databricks workspace in databricks control plane."
       },
       "value": "[reference('workspace').workspaceId]"
+    },
+    "managedDiskIdentityPrincipalId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The principal ID of the managed disk identity created by the workspace if CMK for managed disks is enabled."
+      },
+      "value": "[tryGet(tryGet(reference('workspace'), 'managedDiskIdentity'), 'principalId')]"
     },
     "privateEndpoints": {
       "type": "array",
