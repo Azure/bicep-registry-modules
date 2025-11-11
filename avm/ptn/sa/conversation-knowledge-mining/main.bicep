@@ -196,11 +196,11 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2024-07-01' = {
     tags: union(
       reference(resourceGroup().id, '2021-04-01', 'Full').tags ?? {},
       {
+        ...resourceGroup().tags
         TemplateName: 'KM-Generic'
         Type: enablePrivateNetworking ? 'WAF' : 'Non-WAF'
         CreatedBy: createdBy
         DeploymentName: deployment().name
-        ...resourceGroup().tags
       },
       tags
     )
