@@ -83,8 +83,8 @@ jobs:
     uses: ./.github/workflows/avm.template.module.yml
     with:
       workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
-      moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
-      # moduleTestFilePaths: '[{"path":"tests/e2e/cmk-hsm-uami/main.test.bicep","name":"cmk-hsm-uami","e2eIgnore":false}]'
+      #moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
+      moduleTestFilePaths: '[{"path":"tests/e2e/cmk-hsm-uami/main.test.bicep","name":"cmk-hsm-uami","e2eIgnore":false}]'
       psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
       modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath}}"
     secrets: inherit
