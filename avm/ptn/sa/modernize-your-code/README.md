@@ -1,6 +1,12 @@
 # Modernize Your Code Solution Accelerator `[Sa/ModernizeYourCode]`
 
-CSA CTO Gold Standard Solution Accelerator for Modernize Your Code.
+This module contains the resources required to deploy the [Modernize-your-code-solution-accelerator](https://github.com/microsoft/Modernize-your-code-solution-accelerator) for both Sandbox environments and WAF aligned environments.
+
+|**Post-Deployment Step** |
+|-------------|
+| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Modernize-your-code-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |
+
+> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
 
 
 ## Navigation
@@ -409,7 +415,7 @@ param vmAdminUsername = 'adminuser'
 | [`gptModelDeploymentType`](#parameter-gptmodeldeploymenttype) | string | GPT model deployment type. Defaults to GlobalStandard. |
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. Defaults to gpt-4o. |
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy. Defaults to 2024-08-06. |
-| [`imageVersion`](#parameter-imageversion) | string | Set the Image tag. Defaults to latest_2025-09-22_455. |
+| [`imageVersion`](#parameter-imageversion) | string | Set the Image tag. Defaults to latest_2025-11-10_599. |
 | [`location`](#parameter-location) | string | Azure region for all services. Defaults to the resource group location. |
 | [`secondaryLocation`](#parameter-secondarylocation) | string | The secondary location for the Cosmos DB account if redundancy is enabled. |
 | [`solutionUniqueToken`](#parameter-solutionuniquetoken) | string | A unique token for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
@@ -530,11 +536,11 @@ Version of the GPT model to deploy. Defaults to 2024-08-06.
 
 ### Parameter: `imageVersion`
 
-Set the Image tag. Defaults to latest_2025-09-22_455.
+Set the Image tag. Defaults to latest_2025-11-10_599.
 
 - Required: No
 - Type: string
-- Default: `'latest_2025-09-22_455'`
+- Default: `'latest_2025-11-10_599'`
 
 ### Parameter: `location`
 

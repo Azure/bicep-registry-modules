@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "6272822721709121130"
+      "templateHash": "4923477256601469284"
     },
     "name": "Modernize Your Code Solution Accelerator",
-    "description": "CSA CTO Gold Standard Solution Accelerator for Modernize Your Code.\n"
+    "description": "This module contains the resources required to deploy the [Modernize-your-code-solution-accelerator](https://github.com/microsoft/Modernize-your-code-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Modernize-your-code-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
   },
   "parameters": {
     "solutionName": {
@@ -160,10 +160,10 @@
     },
     "imageVersion": {
       "type": "string",
-      "defaultValue": "latest_2025-09-22_455",
+      "defaultValue": "latest_2025-11-10_599",
       "minLength": 1,
       "metadata": {
-        "description": "Optional. Set the Image tag. Defaults to latest_2025-09-22_455."
+        "description": "Optional. Set the Image tag. Defaults to latest_2025-11-10_599."
       }
     },
     "gptModelVersion": {

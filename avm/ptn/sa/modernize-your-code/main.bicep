@@ -1,5 +1,11 @@
 metadata name = 'Modernize Your Code Solution Accelerator'
-metadata description = '''CSA CTO Gold Standard Solution Accelerator for Modernize Your Code.
+metadata description = '''This module contains the resources required to deploy the [Modernize-your-code-solution-accelerator](https://github.com/microsoft/Modernize-your-code-solution-accelerator) for both Sandbox environments and WAF aligned environments.
+
+|**Post-Deployment Step** |
+|-------------|
+| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Modernize-your-code-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |
+
+> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
 '''
 targetScope = 'resourceGroup'
 
@@ -89,8 +95,8 @@ param gptModelDeploymentType string = 'GlobalStandard'
 param gptModelName string = 'gpt-4o'
 
 @minLength(1)
-@description('Optional. Set the Image tag. Defaults to latest_2025-09-22_455.')
-param imageVersion string = 'latest_2025-09-22_455'
+@description('Optional. Set the Image tag. Defaults to latest_2025-11-10_599.')
+param imageVersion string = 'latest_2025-11-10_599'
 
 @minLength(1)
 @description('Optional. Version of the GPT model to deploy. Defaults to 2024-08-06.')

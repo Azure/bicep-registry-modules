@@ -10,7 +10,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Update parameter descriptions to comply with AVM standards (Required./Optional. prefix and trailing dot)
 - Remove support for existing Log Analytics and AI Project resource IDs
 - Update API versions for Key Vault and Cognitive Services
-- Fix `CHANGELOG.md` to include this version
 
 ### Breaking Changes
 
