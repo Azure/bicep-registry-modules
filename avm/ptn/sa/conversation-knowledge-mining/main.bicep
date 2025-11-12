@@ -511,11 +511,11 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 
 // ========== SQL Operations User Assigned Identity ========== //
 // Dedicated identity for backend SQL operations with limited permissions (db_datareader, db_datawriter)
-var sqlUserAssignedIdentityResourceName = 'id-sql-${solutionSuffix}'
-module sqlUserAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.2' = {
-  name: take('avm.res.managed-identity.user-assigned-identity.${sqlUserAssignedIdentityResourceName}', 64)
+var backendUserAssignedIdentityResourceName = 'id-backend-${solutionSuffix}'
+module backendUserAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.2' = {
+  name: take('avm.res.managed-identity.user-assigned-identity.${backendUserAssignedIdentityResourceName}', 64)
   params: {
-    name: sqlUserAssignedIdentityResourceName
+    name: backendUserAssignedIdentityResourceName
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
@@ -735,6 +735,11 @@ module aiFoundryAiServices 'modules/ai-services.bicep' = {
         principalType: 'ServicePrincipal'
       }
       {
+        roleDefinitionIdOrName: '53ca6127-db72-4b80-b1b0-d745d6d5456d' // Azure AI User
+        principalId: backendUserAssignedIdentity.outputs.principalId
+        principalType: 'ServicePrincipal'
+      }
+      {
         roleDefinitionIdOrName: '64702f94-c441-49e6-a78b-ef80e0188fee' // Azure AI Developer
         principalId: userAssignedIdentity.outputs.principalId
         principalType: 'ServicePrincipal'
@@ -742,6 +747,16 @@ module aiFoundryAiServices 'modules/ai-services.bicep' = {
       {
         roleDefinitionIdOrName: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd' // Cognitive Services OpenAI User
         principalId: userAssignedIdentity.outputs.principalId
+        principalType: 'ServicePrincipal'
+      }
+      {
+        roleDefinitionIdOrName: '64702f94-c441-49e6-a78b-ef80e0188fee' // Azure AI Developer
+        principalId: backendUserAssignedIdentity.outputs.principalId
+        principalType: 'ServicePrincipal'
+      }
+      {
+        roleDefinitionIdOrName: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd' // Cognitive Services OpenAI User
+        principalId: backendUserAssignedIdentity.outputs.principalId
         principalType: 'ServicePrincipal'
       }
     ]
@@ -898,6 +913,11 @@ module searchSearchServices 'br/public:avm/res/search/search-service:0.11.1' = {
       {
         roleDefinitionIdOrName: '1407120a-92aa-4202-b7e9-c0e197c71c8f'
         principalId: userAssignedIdentity.outputs.principalId
+        principalType: 'ServicePrincipal'
+      }
+      {
+        roleDefinitionIdOrName: '1407120a-92aa-4202-b7e9-c0e197c71c8f'
+        principalId: backendUserAssignedIdentity.outputs.principalId
         principalType: 'ServicePrincipal'
       }
       {
@@ -1111,7 +1131,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.18.0' = {
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
         ]
-        assignments: [{ principalId: userAssignedIdentity.outputs.principalId }]
+        assignments: [{ principalId: backendUserAssignedIdentity.outputs.principalId }]
       }
     ]
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : null
@@ -1250,6 +1270,7 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
       systemAssigned: true
       userAssignedResourceIds: [
         userAssignedIdentity.outputs.resourceId
+        backendUserAssignedIdentity.outputs.resourceId
       ]
     }
     primaryUserAssignedIdentityResourceId: userAssignedIdentity.outputs.resourceId
@@ -1397,8 +1418,8 @@ module createSqlUserAndRole 'br/public:avm/res/resources/deployment-script:0.5.1
       [
         '-SqlServerName \'${sqlServerResourceName}\''
         '-SqlDatabaseName \'${sqlDbModuleName}\''
-        '-ClientId \'${sqlUserAssignedIdentity.outputs.clientId}\''
-        '-DisplayName \'${sqlUserAssignedIdentity.outputs.name}\''
+        '-ClientId \'${backendUserAssignedIdentity.outputs.clientId}\''
+        '-DisplayName \'${backendUserAssignedIdentity.outputs.name}\''
         '-DatabaseRoles \'${join(databaseRoles, ',')}\''
       ],
       ' '
@@ -1512,7 +1533,7 @@ module webSiteBackend 'modules/web-sites.bicep' = {
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
-        userAssignedIdentity.outputs.resourceId
+        backendUserAssignedIdentity.outputs.resourceId
       ]
     }
     siteConfig: {
@@ -1538,7 +1559,7 @@ module webSiteBackend 'modules/web-sites.bicep' = {
           AZURE_COSMOSDB_ENABLE_FEEDBACK: 'True'
           SQLDB_DATABASE: 'sqldb-${solutionSuffix}'
           SQLDB_SERVER: '${sqlDBModule.outputs.name }${environment().suffixes.sqlServerHostname}'
-          SQLDB_USER_MID: sqlUserAssignedIdentity.outputs.clientId
+          SQLDB_USER_MID: backendUserAssignedIdentity.outputs.clientId
           AZURE_AI_SEARCH_ENDPOINT: 'https://${aiSearchName}.search.windows.net'
           AZURE_AI_SEARCH_INDEX: 'call_transcripts_index'
           AZURE_AI_SEARCH_CONNECTION_NAME: aiSearchName
@@ -1548,7 +1569,7 @@ module webSiteBackend 'modules/web-sites.bicep' = {
           DUMMY_TEST: 'True'
           SOLUTION_NAME: solutionSuffix
           APP_ENV: 'Prod'
-          AZURE_CLIENT_ID: userAssignedIdentity.outputs.clientId
+          AZURE_CLIENT_ID: backendUserAssignedIdentity.outputs.clientId
         }
         applicationInsightResourceId: enableMonitoring ? applicationInsights!.outputs.resourceId : null
       }

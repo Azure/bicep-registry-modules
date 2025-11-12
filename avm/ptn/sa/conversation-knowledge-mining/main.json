@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "13298984377622891850"
+      "templateHash": "10760643013192415594"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/blob/main/documents/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -329,7 +329,7 @@
       "search": 10
     },
     "userAssignedIdentityResourceName": "[format('id-{0}', variables('solutionSuffix'))]",
-    "sqlUserAssignedIdentityResourceName": "[format('id-sql-{0}', variables('solutionSuffix'))]",
+    "backendUserAssignedIdentityResourceName": "[format('id-backend-{0}', variables('solutionSuffix'))]",
     "keyVaultName": "[format('kv-{0}', variables('solutionSuffix'))]",
     "aiFoundryAiServicesResourceName": "[format('aif-{0}', variables('solutionSuffix'))]",
     "aiFoundryAiProjectResourceName": "[format('proj-{0}', variables('solutionSuffix'))]",
@@ -22070,10 +22070,10 @@
         }
       }
     },
-    "sqlUserAssignedIdentity": {
+    "backendUserAssignedIdentity": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[take(format('avm.res.managed-identity.user-assigned-identity.{0}', variables('sqlUserAssignedIdentityResourceName')), 64)]",
+      "name": "[take(format('avm.res.managed-identity.user-assigned-identity.{0}', variables('backendUserAssignedIdentityResourceName')), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -22081,7 +22081,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('sqlUserAssignedIdentityResourceName')]"
+            "value": "[variables('backendUserAssignedIdentityResourceName')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -26201,6 +26201,11 @@
                 "principalType": "ServicePrincipal"
               },
               {
+                "roleDefinitionIdOrName": "53ca6127-db72-4b80-b1b0-d745d6d5456d",
+                "principalId": "[reference('backendUserAssignedIdentity').outputs.principalId.value]",
+                "principalType": "ServicePrincipal"
+              },
+              {
                 "roleDefinitionIdOrName": "64702f94-c441-49e6-a78b-ef80e0188fee",
                 "principalId": "[reference('userAssignedIdentity').outputs.principalId.value]",
                 "principalType": "ServicePrincipal"
@@ -26208,6 +26213,16 @@
               {
                 "roleDefinitionIdOrName": "5e0bd9bd-7b93-4f28-af87-19fc36ad61bd",
                 "principalId": "[reference('userAssignedIdentity').outputs.principalId.value]",
+                "principalType": "ServicePrincipal"
+              },
+              {
+                "roleDefinitionIdOrName": "64702f94-c441-49e6-a78b-ef80e0188fee",
+                "principalId": "[reference('backendUserAssignedIdentity').outputs.principalId.value]",
+                "principalType": "ServicePrincipal"
+              },
+              {
+                "roleDefinitionIdOrName": "5e0bd9bd-7b93-4f28-af87-19fc36ad61bd",
+                "principalId": "[reference('backendUserAssignedIdentity').outputs.principalId.value]",
                 "principalType": "ServicePrincipal"
               }
             ]
@@ -29546,9 +29561,10 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "backendUserAssignedIdentity",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -32223,6 +32239,11 @@
               },
               {
                 "roleDefinitionIdOrName": "1407120a-92aa-4202-b7e9-c0e197c71c8f",
+                "principalId": "[reference('backendUserAssignedIdentity').outputs.principalId.value]",
+                "principalType": "ServicePrincipal"
+              },
+              {
+                "roleDefinitionIdOrName": "1407120a-92aa-4202-b7e9-c0e197c71c8f",
                 "principalId": "[tryGet(reference('aiFoundryAiServices').outputs.aiProjectInfo.value, 'aiprojectSystemAssignedMIPrincipalId')]",
                 "principalType": "ServicePrincipal"
               },
@@ -34540,6 +34561,7 @@
       "dependsOn": [
         "aiFoundryAiServices",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').search)]",
+        "backendUserAssignedIdentity",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -42531,10 +42553,10 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageDfs)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageDfs)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "userAssignedIdentity",
         "virtualNetwork"
       ]
@@ -42587,7 +42609,7 @@
                 ],
                 "assignments": [
                   {
-                    "principalId": "[reference('userAssignedIdentity').outputs.principalId.value]"
+                    "principalId": "[reference('backendUserAssignedIdentity').outputs.principalId.value]"
                   }
                 ]
               }
@@ -48465,9 +48487,9 @@
       },
       "dependsOn": [
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cosmosDB)]",
+        "backendUserAssignedIdentity",
         "logAnalyticsWorkspace",
         "storageAccount",
-        "userAssignedIdentity",
         "virtualNetwork"
       ]
     },
@@ -48527,7 +48549,8 @@
             "value": {
               "systemAssigned": true,
               "userAssignedResourceIds": [
-                "[reference('userAssignedIdentity').outputs.resourceId.value]"
+                "[reference('userAssignedIdentity').outputs.resourceId.value]",
+                "[reference('backendUserAssignedIdentity').outputs.resourceId.value]"
               ]
             }
           },
@@ -55230,6 +55253,7 @@
       },
       "dependsOn": [
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').sqlServer)]",
+        "backendUserAssignedIdentity",
         "keyVault",
         "logAnalyticsWorkspace",
         "maintenanceWindow",
@@ -56476,7 +56500,7 @@
             "value": true
           },
           "arguments": {
-            "value": "[join(createArray(format('-SqlServerName ''{0}''', variables('sqlServerResourceName')), format('-SqlDatabaseName ''{0}''', variables('sqlDbModuleName')), format('-ClientId ''{0}''', reference('sqlUserAssignedIdentity').outputs.clientId.value), format('-DisplayName ''{0}''', reference('sqlUserAssignedIdentity').outputs.name.value), format('-DatabaseRoles ''{0}''', join(variables('databaseRoles'), ','))), ' ')]"
+            "value": "[join(createArray(format('-SqlServerName ''{0}''', variables('sqlServerResourceName')), format('-SqlDatabaseName ''{0}''', variables('sqlDbModuleName')), format('-ClientId ''{0}''', reference('backendUserAssignedIdentity').outputs.clientId.value), format('-DisplayName ''{0}''', reference('backendUserAssignedIdentity').outputs.name.value), format('-DatabaseRoles ''{0}''', join(variables('databaseRoles'), ','))), ' ')]"
           },
           "primaryScriptUri": {
             "value": "[format('{0}infra/scripts/add_user_scripts/create-sql-user-and-role.ps1', variables('baseUrl'))]"
@@ -57027,8 +57051,8 @@
         }
       },
       "dependsOn": [
+        "backendUserAssignedIdentity",
         "sqlDBModule",
-        "sqlUserAssignedIdentity",
         "storageAccount",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -57634,7 +57658,7 @@
             "value": {
               "systemAssigned": true,
               "userAssignedResourceIds": [
-                "[reference('userAssignedIdentity').outputs.resourceId.value]"
+                "[reference('backendUserAssignedIdentity').outputs.resourceId.value]"
               ]
             }
           },
@@ -57664,7 +57688,7 @@
                   "AZURE_COSMOSDB_ENABLE_FEEDBACK": "True",
                   "SQLDB_DATABASE": "[format('sqldb-{0}', variables('solutionSuffix'))]",
                   "SQLDB_SERVER": "[format('{0}{1}', reference('sqlDBModule').outputs.name.value, environment().suffixes.sqlServerHostname)]",
-                  "SQLDB_USER_MID": "[reference('sqlUserAssignedIdentity').outputs.clientId.value]",
+                  "SQLDB_USER_MID": "[reference('backendUserAssignedIdentity').outputs.clientId.value]",
                   "AZURE_AI_SEARCH_ENDPOINT": "[format('https://{0}.search.windows.net', variables('aiSearchName'))]",
                   "AZURE_AI_SEARCH_INDEX": "call_transcripts_index",
                   "AZURE_AI_SEARCH_CONNECTION_NAME": "[variables('aiSearchName')]",
@@ -57674,7 +57698,7 @@
                   "DUMMY_TEST": "True",
                   "SOLUTION_NAME": "[variables('solutionSuffix')]",
                   "APP_ENV": "Prod",
-                  "AZURE_CLIENT_ID": "[reference('userAssignedIdentity').outputs.clientId.value]"
+                  "AZURE_CLIENT_ID": "[reference('backendUserAssignedIdentity').outputs.clientId.value]"
                 },
                 "applicationInsightResourceId": "[if(parameters('enableMonitoring'), reference('applicationInsights').outputs.resourceId.value, null())]"
               }
@@ -59573,11 +59597,10 @@
       "dependsOn": [
         "aiFoundryAiServices",
         "applicationInsights",
+        "backendUserAssignedIdentity",
         "cosmosDb",
         "logAnalyticsWorkspace",
         "sqlDBModule",
-        "sqlUserAssignedIdentity",
-        "userAssignedIdentity",
         "virtualNetwork",
         "webServerFarm"
       ]
