@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "18319270487419803637"
+      "templateHash": "12257964840961088694"
     },
     "name": "Azure Maps Account",
     "description": "This module deploys an Azure Maps Account."
@@ -326,6 +326,20 @@
         "name": "formattedRoleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      },
+      {
+        "name": "locationProperty",
+        "count": "[length(coalesce(parameters('locations'), createArray()))]",
+        "input": {
+          "locationName": "[coalesce(parameters('locations'), createArray())[copyIndex('locationProperty')]]"
+        }
+      },
+      {
+        "name": "corsRulesProperty",
+        "count": "[length(coalesce(parameters('corsRules'), createArray()))]",
+        "input": {
+          "allowedOrigins": "[coalesce(parameters('corsRules'), createArray())[copyIndex('corsRulesProperty')].allowedOrigins]"
+        }
       }
     ],
     "builtInRoleNames": {
@@ -401,31 +415,7 @@
       "identity": "[variables('identity')]",
       "kind": "[parameters('kind')]",
       "tags": "[parameters('tags')]",
-      "properties": {
-        "copy": [
-          {
-            "name": "locations",
-            "count": "[length(coalesce(parameters('locations'), createArray()))]",
-            "input": {
-              "locationName": "[coalesce(parameters('locations'), createArray())[copyIndex('locations')]]"
-            }
-          }
-        ],
-        "linkedResources": "[map(coalesce(parameters('linkedResources'), createArray()), lambda('resource', createObject('id', lambdaVariables('resource').resourceId, 'uniqueName', lambdaVariables('resource').uniqueName)))]",
-        "cors": {
-          "copy": [
-            {
-              "name": "corsRules",
-              "count": "[length(coalesce(parameters('corsRules'), createArray()))]",
-              "input": {
-                "allowedOrigins": "[coalesce(parameters('corsRules'), createArray())[copyIndex('corsRules')].allowedOrigins]"
-              }
-            }
-          ]
-        },
-        "disableLocalAuth": "[parameters('disableLocalAuth')]",
-        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('customerManagedKeyEncryption', createObject('keyEncryptionKeyIdentity', createObject('userAssignedIdentityResourceId', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), null()), 'identityType', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), 'userAssignedIdentity', 'systemAssignedIdentity')), 'keyEncryptionKeyUrl', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(not(variables('isHSMManagedCMK')), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), format('https://{0}.managedhsm.azure.net/keys/{1}/{2}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName, parameters('customerManagedKey').keyVersion)), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUri, format('https://{0}.managedhsm.azure.net/keys/{1}}}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName)), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUriWithVersion, fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.'))))), 'infrastructureEncryption', parameters('requireInfrastructureEncryption')), null())]"
-      },
+      "properties": "[shallowMerge(createArray(createObject('linkedResources', map(coalesce(parameters('linkedResources'), createArray()), lambda('resource', createObject('id', lambdaVariables('resource').resourceId, 'uniqueName', lambdaVariables('resource').uniqueName))), 'cors', createObject('corsRules', variables('corsRulesProperty')), 'locations', variables('locationProperty'), 'disableLocalAuth', parameters('disableLocalAuth')), if(not(empty(parameters('customerManagedKey'))), createObject('encryption', createObject('customerManagedKeyEncryption', createObject('keyEncryptionKeyIdentity', createObject('userAssignedIdentityResourceId', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), null()), 'identityType', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), 'userAssignedIdentity', 'systemAssignedIdentity')), 'keyEncryptionKeyUrl', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(not(variables('isHSMManagedCMK')), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), format('https://{0}.managedhsm.azure.net/keys/{1}/{2}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName, parameters('customerManagedKey').keyVersion)), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUri, format('https://{0}.managedhsm.azure.net/keys/{1}}}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName)), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUriWithVersion, fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.'))))), 'infrastructureEncryption', parameters('requireInfrastructureEncryption'))), createObject())))]",
       "dependsOn": [
         "cMKKeyVault::cMKKey"
       ]

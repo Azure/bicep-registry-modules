@@ -143,6 +143,12 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
+var corsRulesProperty = [
+  for rule in corsRules ?? []: {
+    allowedOrigins: rule.allowedOrigins
+  }
+]
+
 var locationProperty = [
   for dataLocation in locations ?? []: {
     locationName: dataLocation
@@ -164,11 +170,7 @@ resource mapsAccount 'Microsoft.Maps/accounts@2024-07-01-preview' = {
       uniqueName: resource.uniqueName
     })
     cors: {
-      corsRules: [
-        for rule in corsRules ?? []: {
-          allowedOrigins: rule.allowedOrigins
-        }
-      ]
+      corsRules: corsRulesProperty
     }
     locations: locationProperty
     disableLocalAuth: disableLocalAuth
