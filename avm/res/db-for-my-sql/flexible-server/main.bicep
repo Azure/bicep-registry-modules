@@ -161,6 +161,8 @@ param storageSizeGB int = 64
 @allowed([
   '5.7'
   '8.0.21'
+  '8.4'
+  '9.3'
 ])
 @description('Optional. MySQL Server version.')
 param version string = '8.0.21'
