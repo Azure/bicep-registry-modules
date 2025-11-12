@@ -27,7 +27,7 @@ param deploymentMSIResourceId string = ''
 var managedHSMResourceId = '/subscriptions/${subscription().subscriptionId}/resourceGroups/rsg-permanent-managed-hsm/providers/Microsoft.KeyVault/managedHSMs/lac-test-cluster'
 
 // Note: Location 'uksouth' is not available for resource type 'Microsoft.Maps/accounts'.
-//        List of available regions for the resource type is 'westcentralus', 'global', 'westus2', 'eastus', 'westeurope' & 'northeurope'.
+//       List of available regions for the resource type is 'westcentralus', 'global', 'westus2', 'eastus', 'westeurope' & 'northeurope'.
 var enforcedLocation = 'northeurope'
 
 // ============ //
