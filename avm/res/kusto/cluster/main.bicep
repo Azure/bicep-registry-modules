@@ -195,15 +195,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+  resource cMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey)) {
     name: customerManagedKey.?keyName!
   }
 }
@@ -231,14 +230,10 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' = {
     keyVaultProperties: !empty(customerManagedKey)
       ? {
           keyName: customerManagedKey!.keyName
-          keyVaultUri: !isHSMManagedCMK
-            ? cMKKeyVault!.properties.vaultUri
-            : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/'
+          keyVaultUri: cMKKeyVault!.properties.vaultUri
           keyVersion: !empty(customerManagedKey.?keyVersion)
             ? customerManagedKey!.keyVersion!
-            : (!isHSMManagedCMK
-                ? last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
-                : fail('Managed HSM CMK encryption requires specifying the \'keyVersion\'.'))
+            : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
           userIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
             ? customerManagedKey!.?userAssignedIdentityResourceId
             : null

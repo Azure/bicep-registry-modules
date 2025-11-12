@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "3005067404803139342"
+      "templateHash": "13967322527731197778"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster."
@@ -1242,12 +1242,11 @@
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]"
-    },
-    "isHSMManagedCMK": "[equals(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), 'managedHSMs')]"
+    }
   },
   "resources": {
     "cMKKeyVault::cMKKey": {
-      "condition": "[and(and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK'))), and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK'))))]",
+      "condition": "[and(not(empty(parameters('customerManagedKey'))), not(empty(parameters('customerManagedKey'))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
       "apiVersion": "2025-05-01",
@@ -1276,7 +1275,7 @@
       }
     },
     "cMKKeyVault": {
-      "condition": "[and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK')))]",
+      "condition": "[not(empty(parameters('customerManagedKey')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2025-05-01",
@@ -1306,7 +1305,7 @@
         "enablePurge": "[parameters('enablePurge')]",
         "enableStreamingIngest": "[parameters('enableStreamingIngest')]",
         "engineType": "[parameters('engineType')]",
-        "keyVaultProperties": "[if(not(empty(parameters('customerManagedKey'))), createObject('keyName', parameters('customerManagedKey').keyName, 'keyVaultUri', if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault').vaultUri, format('https://{0}.managedhsm.azure.net/', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')))), 'keyVersion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), parameters('customerManagedKey').keyVersion, if(not(variables('isHSMManagedCMK')), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')), fail('Managed HSM CMK encryption requires specifying the ''keyVersion''.'))), 'userIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), null())), null())]",
+        "keyVaultProperties": "[if(not(empty(parameters('customerManagedKey'))), createObject('keyName', parameters('customerManagedKey').keyName, 'keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyVersion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), parameters('customerManagedKey').keyVersion, last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))), 'userIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), null())), null())]",
         "languageExtensions": {
           "value": "[parameters('languageExtensions')]"
         },
