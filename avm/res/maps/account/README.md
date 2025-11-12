@@ -26,12 +26,15 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/maps/account:<version>`.
 
-- [Cmk-Hsm-Uami](#example-1-cmk-hsm-uami)
-- [Defaults](#example-2-defaults)
-- [Max](#example-3-max)
-- [Waf-Aligned](#example-4-waf-aligned)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-1-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Cmk-Hsm-Uami_
+### Example 1: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
+
 > **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
 ```text
 The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
@@ -128,7 +131,10 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 2: _Defaults_
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -178,7 +184,10 @@ param name = 'mamin001'
 </details>
 <p>
 
-### Example 3: _Max_
+### Example 3: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -428,7 +437,10 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _Waf-Aligned_
+### Example 4: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
