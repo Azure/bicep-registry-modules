@@ -75,7 +75,7 @@ module allowHsmAccess 'br/public:avm/res/resources/deployment-script:0.5.2' = {
         echo "Role assignment already exists."
       else
         echo "Role assignment not yet existing. Creating."
-        az keyvault role assignment create --hsm-name $1 --role "Managed HSM Crypto Service Encryption User" --scope /keys/$2 --assignee $3
+        az keyvault role assignment create --hsm-name "$1" --role "Managed HSM Crypto Service Encryption User" --scope "/keys/$2" --assignee $3
       fi
     '''
     retentionInterval: 'P1D'
