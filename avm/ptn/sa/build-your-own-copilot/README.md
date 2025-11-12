@@ -131,8 +131,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/build-your-own-copilot:<version>`.
 
 - [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
-- [Sandbox configuration with default parameter values](#example-2-sandbox-configuration-with-default-parameter-values)
-- [Waf-aligned configuration with default parameter values](#example-3-waf-aligned-configuration-with-default-parameter-values)
+- [Waf-aligned configuration with default parameter values](#example-2-waf-aligned-configuration-with-default-parameter-values)
 
 ### Example 1: _Sandbox configuration with default parameter values_
 
@@ -223,96 +222,7 @@ param enableTelemetry = true
 </details>
 <p>
 
-### Example 2: _Sandbox configuration with default parameter values_
-
-This instance deploys the Build Your Own Copilot Solution Accelerator using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version>' = {
-  name: 'buildYourOwnCopilotDeployment'
-  params: {
-    // Required parameters
-    azureAiServiceLocation: '<azureAiServiceLocation>'
-    // Non-required parameters
-    enableMonitoring: false
-    enablePrivateNetworking: false
-    enablePurgeProtection: false
-    enableRedundancy: false
-    enableScalability: false
-    enableTelemetry: true
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "azureAiServiceLocation": {
-      "value": "<azureAiServiceLocation>"
-    },
-    // Non-required parameters
-    "enableMonitoring": {
-      "value": false
-    },
-    "enablePrivateNetworking": {
-      "value": false
-    },
-    "enablePurgeProtection": {
-      "value": false
-    },
-    "enableRedundancy": {
-      "value": false
-    },
-    "enableScalability": {
-      "value": false
-    },
-    "enableTelemetry": {
-      "value": true
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/sa/build-your-own-copilot:<version>'
-
-// Required parameters
-param azureAiServiceLocation = '<azureAiServiceLocation>'
-// Non-required parameters
-param enableMonitoring = false
-param enablePrivateNetworking = false
-param enablePurgeProtection = false
-param enableRedundancy = false
-param enableScalability = false
-param enableTelemetry = true
-```
-
-</details>
-<p>
-
-### Example 3: _Waf-aligned configuration with default parameter values_
+### Example 2: _Waf-aligned configuration with default parameter values_
 
 This instance deploys the Build Your Own Copilot Solution Accelerator
 
