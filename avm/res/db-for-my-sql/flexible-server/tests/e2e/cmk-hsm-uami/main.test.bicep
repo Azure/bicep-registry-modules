@@ -67,10 +67,10 @@ module allowHsmAccess 'br/public:avm/res/resources/deployment-script:0.5.2' = {
     name: 'dep-${namePrefix}-ds-hsm-iam-${serviceShort}'
     kind: 'AzureCLI'
     azCliVersion: '2.67.0'
-    arguments: '"${last(split(managedHSMResourceId, '/'))}" "${nestedHsmDependencies.outputs.keyName}" "${nestedDependencies.outputs.managedIdentityPrincipalId}"'
+    arguments: '"${last(split(managedHSMResourceId, '/'))}" "${nestedHsmDependencies.outputs.keyName}" "${nestedDependencies.outputs.managedIdentityPrincipalId}" "${guid('Managed HSM Crypto Service Encryption User', managedHSMResourceId, nestedHsmDependencies.outputs.keyName, nestedDependencies.outputs.managedIdentityPrincipalId)}"'
     scriptContent: '''
       # Allow key reference via identity
-      az keyvault role assignment create --hsm-name $1 --role "Managed HSM Crypto Service Encryption User" --scope /keys/$2 --assignee $3
+      az keyvault role assignment create --hsm-name $1 --role "Managed HSM Crypto Service Encryption User" --scope /keys/$2 --assignee $3 --name $4
     '''
     retentionInterval: 'P1D'
     managedIdentities: {
