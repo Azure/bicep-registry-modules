@@ -69,7 +69,7 @@ module allowHsmAccess 'br/public:avm/res/resources/deployment-script:0.5.2' = {
     arguments: '"${last(split(managedHSMResourceId, '/'))}" "${nestedHsmDependencies.outputs.keyName}" "${nestedDependencies.outputs.managedIdentityPrincipalId}"'
     scriptContent: '''
       # Allow key reference via identity
-      result=$(az keyvault role assignment list --hsm-name $1 --scope '/keys/$2' --query "[?principalId == \`$3\` && roleName == \`Managed HSM Crypto Service Encryption User\`]")
+      result=$(az keyvault role assignment list --hsm-name "$1" --scope "/keys/$2" --query "[?principalId == \`$3\` && roleName == \`Managed HSM Crypto Service Encryption User\`]")
 
       if [[ -n "$result" ]]; then
         echo "Role assignment already exists."
