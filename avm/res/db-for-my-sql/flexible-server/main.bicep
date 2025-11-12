@@ -330,10 +330,10 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2024-12-30' = {
           type: 'AzureKeyVault'
           geoBackupKeyURI: geoRedundantBackup == 'Enabled'
             ? (!empty(customerManagedKeyGeo.?keyVersion)
-                ? (!isHSMManagedCMK
+                ? (!isGeoHSMManagedCMK
                     ? '${cMKGeoKeyVault::cMKKey!.properties.keyUri}/${customerManagedKeyGeo!.keyVersion!}'
                     : 'https://${last(split((customerManagedKeyGeo!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKeyGeo!.keyName}/${customerManagedKeyGeo!.keyVersion!}')
-                : (!isHSMManagedCMK
+                : (!isGeoHSMManagedCMK
                     ? cMKGeoKeyVault::cMKKey!.properties.keyUriWithVersion
                     : fail('Managed HSM CMK encryption requires specifying the \'keyVersion\'.')))
             : null
