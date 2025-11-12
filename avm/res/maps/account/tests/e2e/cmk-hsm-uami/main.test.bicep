@@ -92,24 +92,24 @@ module allowHsmAccess 'br/public:avm/res/resources/deployment-script:0.5.2' = {
 // Test Execution //
 // ============== //
 
-// @batchSize(1)
-// module testDeployment '../../../main.bicep' = [
-//   for iteration in ['init', 'idem']: {
-//     scope: resourceGroup
-//     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
-//     params: {
-//       name: '${namePrefix}${serviceShort}001'
-//       customerManagedKey: {
-//         keyName: nestedHsmDependencies.outputs.keyName
-//         keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
-//         userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-//         keyVersion: nestedHsmDependencies.outputs.keyVersion
-//       }
-//       managedIdentities: {
-//         userAssignedResourceIds: [
-//           nestedDependencies.outputs.managedIdentityResourceId
-//         ]
-//       }
-//     }
-//   }
-// ]
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      customerManagedKey: {
+        keyName: nestedHsmDependencies.outputs.keyName
+        keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
+        userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+        keyVersion: nestedHsmDependencies.outputs.keyVersion
+      }
+      managedIdentities: {
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+    }
+  }
+]
