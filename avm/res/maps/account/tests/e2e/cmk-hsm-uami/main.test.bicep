@@ -72,10 +72,10 @@ module allowHsmAccess 'br/public:avm/res/resources/deployment-script:0.5.2' = {
       result=$(az keyvault role assignment list --hsm-name $1 --scope '/keys/$2' --query "[?principalId == \`$3\` && roleName == \`Managed HSM Crypto Service Encryption User\`]")
 
       if [[ -n "$result" ]]; then
-          echo "Role assignment already exists."
-          else
-          echo "Role assignment not yet existing. Creating."
-          az keyvault role assignment create --hsm-name $1 --role "Managed HSM Crypto Service Encryption User" --scope /keys/$2 --assignee $3
+        echo "Role assignment already exists."
+      else
+        echo "Role assignment not yet existing. Creating."
+        az keyvault role assignment create --hsm-name $1 --role "Managed HSM Crypto Service Encryption User" --scope /keys/$2 --assignee $3
       fi
     '''
     retentionInterval: 'P1D'
