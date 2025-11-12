@@ -27,7 +27,7 @@ param managedHSMResourceId string = ''
 
 // Note: Location 'uksouth' is not available for resource type 'Microsoft.Maps/accounts'.
 //       List of available regions for the resource type is 'westcentralus', 'global', 'westus2', 'eastus', 'westeurope' & 'northeurope'.
-var enforcedLocation = 'uksouth'
+var enforcedLocation = 'northeurope'
 
 // ============ //
 // Dependencies //
