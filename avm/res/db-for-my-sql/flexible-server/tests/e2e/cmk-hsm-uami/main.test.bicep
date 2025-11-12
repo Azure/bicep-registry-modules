@@ -106,7 +106,7 @@ module testDeployment '../../../main.bicep' = [
       tier: 'GeneralPurpose'
       storageAutoGrow: 'Enabled'
       availabilityZone: -1
-      geoRedundantBackup: 'Disabled' // If enabled, leads to error 'Data encryption parameters are invalid. Must provide user assigned identity and encryption key used to access data in the geographically redundant backup storage.'
+      geoRedundantBackup: 'Disabled' // Only validating CMK for primary instance
       customerManagedKey: {
         keyName: nestedHsmDependencies.outputs.keyName
         keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
