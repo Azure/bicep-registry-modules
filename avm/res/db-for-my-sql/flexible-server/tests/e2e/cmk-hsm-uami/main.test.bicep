@@ -25,6 +25,10 @@ param deploymentMSIResourceId string = ''
 @secure()
 param managedHSMResourceId string = ''
 
+@description('Optional. The password to leverage for the login.')
+@secure()
+param password string = newGuid()
+
 var enforcedLocation = 'uksouth'
 
 // ============ //
@@ -88,8 +92,13 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}003'
-      geoRedundantBackup: 'Disabled' // If enabled, leads to error 'Data encryption parameters are invalid. Must provide user assigned identity and encryption key used to access data in the geographically redundant backup storage.'
+      administratorLogin: 'adminUserName'
+      administratorLoginPassword: password
+      skuName: 'Standard_D2ds_v4'
+      tier: 'GeneralPurpose'
+      storageAutoGrow: 'Enabled'
       availabilityZone: -1
+      geoRedundantBackup: 'Disabled' // If enabled, leads to error 'Data encryption parameters are invalid. Must provide user assigned identity and encryption key used to access data in the geographically redundant backup storage.'
       customerManagedKey: {
         keyName: nestedHsmDependencies.outputs.keyName
         keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
@@ -101,15 +110,6 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
-      administrators: [
-        {
-          objectId: nestedDependencies.outputs.managedIdentityClientId
-          principalName: nestedDependencies.outputs.managedIdentityName
-          principalType: 'ServicePrincipal'
-        }
-      ]
-      skuName: 'Standard_D2s_v3'
-      tier: 'GeneralPurpose'
     }
   }
 ]

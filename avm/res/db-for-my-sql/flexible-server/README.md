@@ -67,16 +67,11 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     // Required parameters
     availabilityZone: -1
     name: 'dfmshsmu003'
-    skuName: 'Standard_D2s_v3'
+    skuName: 'Standard_D2ds_v4'
     tier: 'GeneralPurpose'
     // Non-required parameters
-    administrators: [
-      {
-        objectId: '<objectId>'
-        principalName: '<principalName>'
-        principalType: 'ServicePrincipal'
-      }
-    ]
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
@@ -89,6 +84,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
         '<managedIdentityResourceId>'
       ]
     }
+    storageAutoGrow: 'Enabled'
   }
 }
 ```
@@ -113,20 +109,17 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": "dfmshsmu003"
     },
     "skuName": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2ds_v4"
     },
     "tier": {
       "value": "GeneralPurpose"
     },
     // Non-required parameters
-    "administrators": {
-      "value": [
-        {
-          "objectId": "<objectId>",
-          "principalName": "<principalName>",
-          "principalType": "ServicePrincipal"
-        }
-      ]
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
     },
     "customerManagedKey": {
       "value": {
@@ -145,6 +138,9 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
           "<managedIdentityResourceId>"
         ]
       }
+    },
+    "storageAutoGrow": {
+      "value": "Enabled"
     }
   }
 }
@@ -163,16 +159,11 @@ using 'br/public:avm/res/db-for-my-sql/flexible-server:<version>'
 // Required parameters
 param availabilityZone = -1
 param name = 'dfmshsmu003'
-param skuName = 'Standard_D2s_v3'
+param skuName = 'Standard_D2ds_v4'
 param tier = 'GeneralPurpose'
 // Non-required parameters
-param administrators = [
-  {
-    objectId: '<objectId>'
-    principalName: '<principalName>'
-    principalType: 'ServicePrincipal'
-  }
-]
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
 param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
@@ -185,6 +176,7 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
+param storageAutoGrow = 'Enabled'
 ```
 
 </details>
