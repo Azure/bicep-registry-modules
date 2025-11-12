@@ -25,7 +25,8 @@ param deploymentMSIResourceId string = ''
 @secure()
 param managedHSMResourceId string = ''
 
-var enforcedLocation = 'uksouth'
+// Location 'uksouth' is not available for resource type 'Microsoft.Maps/accounts'. List of available regions for the resource type is 'westcentralus,global,westus2,eastus,westeurope,northeurope'.
+var enforcedLocation = 'northeurope'
 
 // ============ //
 // Dependencies //
