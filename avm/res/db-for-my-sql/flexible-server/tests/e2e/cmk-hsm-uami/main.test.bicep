@@ -99,7 +99,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}003'
+      name: '${namePrefix}${serviceShort}001'
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
       skuName: 'Standard_D2ds_v4'
