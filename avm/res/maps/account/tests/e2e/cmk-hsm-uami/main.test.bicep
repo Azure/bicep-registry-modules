@@ -110,5 +110,8 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
     }
+    dependsOn: [
+      allowHsmAccess
+    ]
   }
 ]
