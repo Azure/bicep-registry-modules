@@ -143,6 +143,12 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
+var locationProperty = [
+  for dataLocation in locations ?? []: {
+    locationName: dataLocation
+  }
+]
+
 resource mapsAccount 'Microsoft.Maps/accounts@2024-07-01-preview' = {
   name: name
   location: location
@@ -164,38 +170,37 @@ resource mapsAccount 'Microsoft.Maps/accounts@2024-07-01-preview' = {
         }
       ]
     }
-    locations: [
-      for dataLocation in locations ?? []: {
-        locationName: dataLocation
-      }
-    ]
+    locations: locationProperty
     disableLocalAuth: disableLocalAuth
-    encryption: !empty(customerManagedKey)
+    // Must have a value or not be provided at all as `customerManagedKeyEncryption` is a required property of `encryption`
+    ...(!empty(customerManagedKey)
       ? {
-          customerManagedKeyEncryption: {
-            keyEncryptionKeyIdentity: {
-              userAssignedIdentityResourceId: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-                ? cMKUserAssignedIdentity.id
-                : null
-              identityType: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-                ? 'userAssignedIdentity'
-                : 'systemAssignedIdentity'
+          encryption: {
+            customerManagedKeyEncryption: {
+              keyEncryptionKeyIdentity: {
+                userAssignedIdentityResourceId: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+                  ? cMKUserAssignedIdentity.id
+                  : null
+                identityType: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+                  ? 'userAssignedIdentity'
+                  : 'systemAssignedIdentity'
+              }
+              keyEncryptionKeyUrl: !empty(customerManagedKey.?keyVersion)
+                ? (!isHSMManagedCMK
+                    ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+                    : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.keyVersion!}')
+                : (customerManagedKey.?autoRotationEnabled ?? true)
+                    ? (!isHSMManagedCMK
+                        ? cMKKeyVault::cMKKey!.properties.keyUri
+                        : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}}')
+                    : (!isHSMManagedCMK
+                        ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
+                        : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
             }
-            keyEncryptionKeyUrl: !empty(customerManagedKey.?keyVersion)
-              ? (!isHSMManagedCMK
-                  ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
-                  : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.keyVersion!}')
-              : (customerManagedKey.?autoRotationEnabled ?? true)
-                  ? (!isHSMManagedCMK
-                      ? cMKKeyVault::cMKKey!.properties.keyUri
-                      : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}}')
-                  : (!isHSMManagedCMK
-                      ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
-                      : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
+            infrastructureEncryption: requireInfrastructureEncryption // Property renamed
           }
-          infrastructureEncryption: requireInfrastructureEncryption // Property renamed
         }
-      : null
+      : {})
   }
 }
 
