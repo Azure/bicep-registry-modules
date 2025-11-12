@@ -8,7 +8,7 @@ param dataFactoryName string
 param name string
 
 @description('Optional. An array of managed private endpoints objects created in the Data Factory managed virtual network.')
-param managedPrivateEndpoints array = []
+param managedPrivateEndpoints managedPrivateEndpointType[]?
 
 resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' existing = {
   name: dataFactoryName
@@ -21,7 +21,7 @@ resource managedVirtualNetwork 'Microsoft.DataFactory/factories/managedVirtualNe
 }
 
 module managedVirtualNetwork_managedPrivateEndpoint 'managed-private-endpoint/main.bicep' = [
-  for (managedPrivateEndpoint, index) in managedPrivateEndpoints: {
+  for (managedPrivateEndpoint, index) in (managedPrivateEndpoints ?? []): {
     name: '${deployment().name}-managedPrivateEndpoint-${index}'
     params: {
       dataFactoryName: dataFactoryName
@@ -42,3 +42,23 @@ output name string = managedVirtualNetwork.name
 
 @description('The resource ID of the Managed Virtual Network.')
 output resourceId string = managedVirtualNetwork.id
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@description('Type definition for a Managed Private Endpoint.')
+type managedPrivateEndpointType = {
+  @description('Required. The managed private endpoint resource name.')
+  name: string
+
+  @description('Required. The groupId to which the managed private endpoint is created.')
+  groupId: string
+
+  @description('Required. Fully qualified domain names.')
+  fqdns: string[]
+
+  @description('Required. The ARM resource ID of the resource to which the managed private endpoint is created.')
+  privateLinkResourceId: string
+}

@@ -391,7 +391,7 @@ param lock lockType?
 @description('Optional. Tags of the resource.')
 param tags resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-02-preview'>.tags?
 
-@description('Optional. The resource ID of the disc encryption set to apply to the cluster. For security reasons, this value should be provided.')
+@description('Optional. The Resource ID of the disk encryption set to use for enabling encryption at rest. For security reasons, this value should be provided.')
 param diskEncryptionSetResourceId string?
 
 @description('Optional. Settings and configurations for the flux extension.')

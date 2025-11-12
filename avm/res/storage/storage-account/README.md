@@ -46,17 +46,18 @@ The following section provides usage examples for the module, which were used to
 - [Deploying as a Blob Storage](#example-1-deploying-as-a-blob-storage)
 - [Deploying as a Block Blob Storage](#example-2-deploying-as-a-block-blob-storage)
 - [Using only changefeed configuration](#example-3-using-only-changefeed-configuration)
-- [Using only defaults](#example-4-using-only-defaults)
-- [Using extended zones](#example-5-using-extended-zones)
-- [With immutability policy](#example-6-with-immutability-policy)
-- [Deploying with a key vault reference to save secrets](#example-7-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-8-using-large-parameter-set)
-- [Deploying with a NFS File Share](#example-9-deploying-with-a-nfs-file-share)
-- [Using object replication](#example-10-using-object-replication)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-11-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-12-using-customer-managed-keys-with-user-assigned-identity)
-- [Deploying as Storage Account version 1](#example-13-deploying-as-storage-account-version-1)
-- [WAF-aligned](#example-14-waf-aligned)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-4-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-5-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-6-using-customer-managed-keys-with-user-assigned-identity)
+- [Using only defaults](#example-7-using-only-defaults)
+- [Using extended zones](#example-8-using-extended-zones)
+- [With immutability policy](#example-9-with-immutability-policy)
+- [Deploying with a key vault reference to save secrets](#example-10-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-11-using-large-parameter-set)
+- [Deploying with a NFS File Share](#example-12-deploying-with-a-nfs-file-share)
+- [Using object replication](#example-13-using-object-replication)
+- [Deploying as Storage Account version 1](#example-14-deploying-as-storage-account-version-1)
+- [WAF-aligned](#example-15-waf-aligned)
 
 ### Example 1: _Deploying as a Blob Storage_
 
@@ -271,7 +272,455 @@ param blobServices = {
 </details>
 <p>
 
-### Example 4: _Using only defaults_
+### Example 4: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  name: 'storageAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'ssauhsm001'
+    // Non-required parameters
+    blobServices: {
+      containers: [
+        {
+          name: 'container'
+          publicAccess: 'None'
+        }
+      ]
+    }
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssauhsm001"
+    },
+    // Non-required parameters
+    "blobServices": {
+      "value": {
+        "containers": [
+          {
+            "name": "container",
+            "publicAccess": "None"
+          }
+        ]
+      }
+    },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssauhsm001'
+// Non-required parameters
+param blobServices = {
+  containers: [
+    {
+      name: 'container'
+      publicAccess: 'None'
+    }
+  ]
+}
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using Customer-Managed-Keys with System-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  name: 'storageAccountDeployment'
+  params: {
+    // Required parameters
+    name: '<name>'
+    // Non-required parameters
+    blobServices: {
+      containers: [
+        {
+          name: 'container'
+          publicAccess: 'None'
+        }
+      ]
+    }
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    managedIdentities: {
+      systemAssigned: true
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'blob'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "<name>"
+    },
+    // Non-required parameters
+    "blobServices": {
+      "value": {
+        "containers": [
+          {
+            "name": "container",
+            "publicAccess": "None"
+          }
+        ]
+      }
+    },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "blob",
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param blobServices = {
+  containers: [
+    {
+      name: 'container'
+      publicAccess: 'None'
+    }
+  ]
+}
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'blob'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 6: _Using Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  name: 'storageAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'ssauacr001'
+    // Non-required parameters
+    blobServices: {
+      containers: [
+        {
+          name: 'container'
+          publicAccess: 'None'
+        }
+      ]
+    }
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'blob'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssauacr001"
+    },
+    // Non-required parameters
+    "blobServices": {
+      "value": {
+        "containers": [
+          {
+            "name": "container",
+            "publicAccess": "None"
+          }
+        ]
+      }
+    },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "networkAcls": {
+      "value": {
+        "bypass": "AzureServices",
+        "defaultAction": "Deny"
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "blob",
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssauacr001'
+// Non-required parameters
+param blobServices = {
+  containers: [
+    {
+      name: 'container'
+      publicAccess: 'None'
+    }
+  ]
+}
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param networkAcls = {
+  bypass: 'AzureServices'
+  defaultAction: 'Deny'
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'blob'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 7: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -349,7 +798,7 @@ param networkAcls = {
 </details>
 <p>
 
-### Example 5: _Using extended zones_
+### Example 8: _Using extended zones_
 
 This instance deploys the module within an Azure Extended Zone.
 
@@ -441,7 +890,7 @@ param skuName = 'Premium_LRS'
 </details>
 <p>
 
-### Example 6: _With immutability policy_
+### Example 9: _With immutability policy_
 
 This instance deploys the module with the immutability policy enabled.
 
@@ -595,7 +1044,7 @@ param networkAcls = {
 </details>
 <p>
 
-### Example 7: _Deploying with a key vault reference to save secrets_
+### Example 10: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving all its secrets in a key vault.
 
@@ -677,7 +1126,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 8: _Using large parameter set_
+### Example 11: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -2316,7 +2765,7 @@ param tags = {
 </details>
 <p>
 
-### Example 9: _Deploying with a NFS File Share_
+### Example 12: _Deploying with a NFS File Share_
 
 This instance deploys the module with a NFS File Share.
 
@@ -2411,7 +2860,7 @@ param skuName = 'Premium_LRS'
 </details>
 <p>
 
-### Example 10: _Using object replication_
+### Example 13: _Using object replication_
 
 This instance deploys the module with Object Replication features to async replicate blobs from one account to another.
 
@@ -2557,332 +3006,7 @@ param skuName = 'Standard_LRS'
 </details>
 <p>
 
-### Example 11: _Using Customer-Managed-Keys with System-Assigned identity_
-
-This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
-  params: {
-    // Required parameters
-    name: '<name>'
-    // Non-required parameters
-    blobServices: {
-      containers: [
-        {
-          name: 'container'
-          publicAccess: 'None'
-        }
-      ]
-    }
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-    }
-    managedIdentities: {
-      systemAssigned: true
-    }
-    privateEndpoints: [
-      {
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-            }
-          ]
-        }
-        service: 'blob'
-        subnetResourceId: '<subnetResourceId>'
-      }
-    ]
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "<name>"
-    },
-    // Non-required parameters
-    "blobServices": {
-      "value": {
-        "containers": [
-          {
-            "name": "container",
-            "publicAccess": "None"
-          }
-        ]
-      }
-    },
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
-    },
-    "privateEndpoints": {
-      "value": [
-        {
-          "privateDnsZoneGroup": {
-            "privateDnsZoneGroupConfigs": [
-              {
-                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
-              }
-            ]
-          },
-          "service": "blob",
-          "subnetResourceId": "<subnetResourceId>"
-        }
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/storage/storage-account:<version>'
-
-// Required parameters
-param name = '<name>'
-// Non-required parameters
-param blobServices = {
-  containers: [
-    {
-      name: 'container'
-      publicAccess: 'None'
-    }
-  ]
-}
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-}
-param managedIdentities = {
-  systemAssigned: true
-}
-param privateEndpoints = [
-  {
-    privateDnsZoneGroup: {
-      privateDnsZoneGroupConfigs: [
-        {
-          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-        }
-      ]
-    }
-    service: 'blob'
-    subnetResourceId: '<subnetResourceId>'
-  }
-]
-```
-
-</details>
-<p>
-
-### Example 12: _Using Customer-Managed-Keys with User-Assigned identity_
-
-This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
-  params: {
-    // Required parameters
-    name: 'ssauacr001'
-    // Non-required parameters
-    blobServices: {
-      containers: [
-        {
-          name: 'container'
-          publicAccess: 'None'
-        }
-      ]
-    }
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    networkAcls: {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-    }
-    privateEndpoints: [
-      {
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-            }
-          ]
-        }
-        service: 'blob'
-        subnetResourceId: '<subnetResourceId>'
-      }
-    ]
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "ssauacr001"
-    },
-    // Non-required parameters
-    "blobServices": {
-      "value": {
-        "containers": [
-          {
-            "name": "container",
-            "publicAccess": "None"
-          }
-        ]
-      }
-    },
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "networkAcls": {
-      "value": {
-        "bypass": "AzureServices",
-        "defaultAction": "Deny"
-      }
-    },
-    "privateEndpoints": {
-      "value": [
-        {
-          "privateDnsZoneGroup": {
-            "privateDnsZoneGroupConfigs": [
-              {
-                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
-              }
-            ]
-          },
-          "service": "blob",
-          "subnetResourceId": "<subnetResourceId>"
-        }
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/storage/storage-account:<version>'
-
-// Required parameters
-param name = 'ssauacr001'
-// Non-required parameters
-param blobServices = {
-  containers: [
-    {
-      name: 'container'
-      publicAccess: 'None'
-    }
-  ]
-}
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-}
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
-param networkAcls = {
-  bypass: 'AzureServices'
-  defaultAction: 'Deny'
-}
-param privateEndpoints = [
-  {
-    privateDnsZoneGroup: {
-      privateDnsZoneGroupConfigs: [
-        {
-          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-        }
-      ]
-    }
-    service: 'blob'
-    subnetResourceId: '<subnetResourceId>'
-  }
-]
-```
-
-</details>
-<p>
-
-### Example 13: _Deploying as Storage Account version 1_
+### Example 14: _Deploying as Storage Account version 1_
 
 This instance deploys the module as Storage Account version 1.
 
@@ -2946,7 +3070,7 @@ param kind = 'Storage'
 </details>
 <p>
 
-### Example 14: _WAF-aligned_
+### Example 15: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 

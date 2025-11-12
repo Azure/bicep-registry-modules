@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "13892076982555016602"
+      "version": "0.38.33.27573",
+      "templateHash": "90640100243809289"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -1660,7 +1660,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The resource ID of the disc encryption set to apply to the cluster. For security reasons, this value should be provided."
+        "description": "Optional. The Resource ID of the disk encryption set to use for enabling encryption at rest. For security reasons, this value should be provided."
       }
     },
     "fluxExtension": {
@@ -2140,7 +2140,7 @@
         "count": "[length(coalesce(parameters('maintenanceConfigurations'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-ManagedCluster-MaintenanceCfg-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2164,8 +2164,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "7706575185664059509"
+              "version": "0.38.33.27573",
+              "templateHash": "8502504771649679490"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations."
@@ -2236,7 +2236,7 @@
         "count": "[length(coalesce(parameters('agentPools'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-ManagedCluster-AgentPool-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2373,8 +2373,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "10674124128040534735"
+              "version": "0.38.33.27573",
+              "templateHash": "484721355279467692"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
@@ -2809,7 +2809,7 @@
     "managedCluster_extension": {
       "condition": "[not(empty(parameters('fluxExtension')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-ManagedCluster-FluxExtension', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
