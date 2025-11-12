@@ -2,8 +2,14 @@
 targetScope = 'resourceGroup'
 
 metadata name = 'Build Your Own Copilot Solution Accelerator'
-metadata description = 'This module deploys a comprehensive Build Your Own Copilot solution accelerator with Azure AI Services, CosmosDB, SQL Database, Key Vault, Storage Account, Azure AI Search, and a containerized web application. The solution includes AI Foundry services for GPT and embedding models, supporting both private and public networking configurations with optional WAF-aligned features for monitoring, scalability, and redundancy.'
-metadata owner = 'Azure/module-maintainers'
+metadata description = '''This module deploys a comprehensive Build Your Own Copilot solution accelerator with Azure AI Services, CosmosDB, SQL Database, Key Vault, Storage Account, Azure AI Search, and a containerized web application. The solution includes AI Foundry services for GPT and embedding models, supporting both private and public networking configurations with optional WAF-aligned features for monitoring, scalability, and redundancy.
+
+|**Post-Deployment Step** |
+|-------------|
+| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Build-your-own-copilot-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |
+
+> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
+'''
 
 @minLength(3)
 @maxLength(20)
@@ -247,6 +253,7 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
   name: 'default'
   properties: {
     tags: {
+      ...resourceGroup().tags
       ...tags
       TemplateName: 'Client Advisor'
       Type: enablePrivateNetworking ? 'WAF' : 'Non-WAF'
@@ -1103,6 +1110,14 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
       ]
     }
     primaryUserAssignedIdentityResourceId: userAssignedIdentity.outputs.resourceId
+    // WAF aligned configuration - Microsoft Defender for SQL (required for Vulnerability Assessment)
+    securityAlertPolicies: [
+      {
+        name: 'Default'
+        state: 'Enabled'
+        emailAccountAdmins: false
+      }
+    ]
     // WAF aligned configuration - SQL Vulnerability Assessment for security monitoring
     vulnerabilityAssessmentsObj: enableMonitoring
       ? {
@@ -1113,6 +1128,8 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
           recurringScansIsEnabled: true
           recurringScansEmailSubscriptionAdmins: false
           recurringScansEmails: []
+          useStorageAccountAccessKey: false
+          createStorageRoleAssignment: true
         }
       : null
     privateEndpoints: enablePrivateNetworking
