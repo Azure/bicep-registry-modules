@@ -51,13 +51,32 @@ module nestedDependencies 'dependencies.bicep' = {
 module nestedHsmDependencies 'dependencies.hsm.bicep' = {
   name: '${uniqueString(deployment().name)}-nestedHSMDependencies'
   params: {
-    managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
     hsmKeyName: '${serviceShort}-${namePrefix}-key'
-    hsmDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-    deploymentMSIResourceId: deploymentMSIResourceId
     managedHSMName: last(split(managedHSMResourceId, '/'))
   }
   scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
+}
+
+module allowHsmAccess 'br/public:avm/res/resources/deployment-script:0.5.2' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-hmsKeyPermissions'
+  scope: resourceGroup
+
+  params: {
+    name: 'dep-${namePrefix}-ds-hsm-iam-${serviceShort}'
+    kind: 'AzureCLI'
+    azCliVersion: '2.67.0'
+    arguments: '"${last(split(managedHSMResourceId, '/'))}" "${nestedHsmDependencies.outputs.keyName}" "${nestedDependencies.outputs.managedIdentityPrincipalId}"'
+    scriptContent: '''
+      # Allow key reference via identity
+      az keyvault role assignment create --hsm-name $1 --role "Managed HSM Crypto Service Encryption User" --scope /keys/$2 --assignee $3
+    '''
+    retentionInterval: 'P1D'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        deploymentMSIResourceId
+      ]
+    }
+  }
 }
 
 // ============== //
