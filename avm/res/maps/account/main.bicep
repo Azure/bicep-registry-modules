@@ -172,8 +172,8 @@ resource mapsAccount 'Microsoft.Maps/accounts@2024-07-01-preview' = {
     cors: {
       corsRules: corsRulesProperty
     }
-    locations: locationProperty
     disableLocalAuth: disableLocalAuth
+    locations: locationProperty
     // Must have a value or not be provided at all as `customerManagedKeyEncryption` is a required property of `encryption`
     ...(!empty(customerManagedKey)
       ? {
