@@ -68,6 +68,7 @@ module allowHsmAccess 'br/public:avm/res/resources/deployment-script:0.5.2' = {
     azCliVersion: '2.67.0'
     arguments: '"${last(split(managedHSMResourceId, '/'))}" "${nestedHsmDependencies.outputs.keyName}" "${nestedDependencies.outputs.managedIdentityPrincipalId}"'
     scriptContent: '''
+      echo "Checking role assignment for HSM: $hsm_name, Key: $key_name, Principal: $principal_id"
       # Allow key reference via identity
       result=$(az keyvault role assignment list --hsm-name "$1" --scope "/keys/$2" --query "[?principalId == \`$3\` && roleName == \`Managed HSM Crypto Service Encryption User\`]")
 
