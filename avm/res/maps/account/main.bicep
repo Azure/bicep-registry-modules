@@ -5,7 +5,7 @@ metadata description = 'This module deploys an Azure Maps Account.'
 param name string
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Maps/accounts@2024-07-01-preview'>.tags?
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
@@ -32,7 +32,7 @@ param linkedResources linkedResourceType[]?
 @description('Optional. Allows toggle functionality on Azure Policy to disable Azure Maps local authentication support. This will disable Shared Keys and Shared Access Signature Token authentication from any usage. Default is true.')
 param disableLocalAuth bool = true
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
@@ -40,11 +40,11 @@ param customerManagedKey customerManagedKeyWithAutoRotateType?
 @allowed(['enabled', 'disabled'])
 param requireInfrastructureEncryption string = 'disabled'
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -122,26 +122,26 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
+  scope: resourceGroup(
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+  )
+
+  resource cMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+    name: customerManagedKey.?keyName!
+  }
+}
+
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
-
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
-  scope: resourceGroup(
-    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
-    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
-  )
-
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName!
-  }
-}
-
 
 var corsRulesProperty = [
   for rule in corsRules ?? []: {
@@ -154,7 +154,6 @@ var locationProperty = [
     locationName: dataLocation
   }
 ]
-
 
 resource mapsAccount 'Microsoft.Maps/accounts@2024-07-01-preview' = {
   name: name
@@ -175,6 +174,7 @@ resource mapsAccount 'Microsoft.Maps/accounts@2024-07-01-preview' = {
     }
     disableLocalAuth: disableLocalAuth
     locations: locationProperty
+    // Must have a value or not be provided at all as `customerManagedKeyEncryption` is a required property of `encryption`
     ...(!empty(customerManagedKey)
       ? {
           encryption: {
@@ -187,11 +187,17 @@ resource mapsAccount 'Microsoft.Maps/accounts@2024-07-01-preview' = {
                   ? 'userAssignedIdentity'
                   : 'systemAssignedIdentity'
               }
-              keyEncryptionKeyUrl: !empty(customerManagedKey.?keyVersion ?? '')
-                ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+              keyEncryptionKeyUrl: !empty(customerManagedKey.?keyVersion)
+                ? (!isHSMManagedCMK
+                    ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+                    : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.keyVersion!}')
                 : (customerManagedKey.?autoRotationEnabled ?? true)
-                    ? cMKKeyVault::cMKKey.properties.keyUri
-                    : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+                    ? (!isHSMManagedCMK
+                        ? cMKKeyVault::cMKKey!.properties.keyUri
+                        : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}}')
+                    : (!isHSMManagedCMK
+                        ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
+                        : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
             }
             infrastructureEncryption: requireInfrastructureEncryption // Property renamed
           }
@@ -249,6 +255,7 @@ type corsRuleType = {
 type linkedResourceType = {
   @description('Required. ARM resource id in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/accounts/{storageName}\'.')
   resourceId: string
+
   @description('Required. A provided name which uniquely identifies the linked resource.')
   uniqueName: string
 }
