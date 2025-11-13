@@ -42,24 +42,26 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: enforcedLocation
 }
 
+module nestedHsmDependencies 'dependencies.hsm.bicep' = {
+  name: '${uniqueString(deployment().name)}-nestedHSMDependencies'
+  params: {
+    hsmKeyName: '${serviceShort}-${namePrefix}-key'
+    managedHSMName: last(split(managedHSMResourceId, '/'))
+  }
+  scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
+}
+
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-  }
-}
-
-module nestedHsmDependencies 'dependencies.hsm.bicep' = {
-  name: '${uniqueString(deployment().name)}-nestedHSMDependencies'
-  params: {
-    managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-    hsmKeyName: '${serviceShort}-${namePrefix}-key'
-    hsmDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
     deploymentMSIResourceId: deploymentMSIResourceId
-    managedHSMName: last(split(managedHSMResourceId, '/'))
+    managedHSMResourceId: managedHSMResourceId
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    deploymentScriptName: 'dep-${namePrefix}-ds-hsm-iam-${serviceShort}'
+    keyName: nestedHsmDependencies.outputs.keyName
   }
-  scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
 }
 
 // ============== //

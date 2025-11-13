@@ -5,7 +5,7 @@
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
-This module deploys a Log Analytics Dedicated Cluster.
+This module deploys Log Analytics Dedicated Clusters.
 
 > NOTE
 > - There is a limit of seven clusters per subscription and region, five active, plus two that were deleted in past two weeks.

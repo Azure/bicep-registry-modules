@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "12940446919342180532"
+      "templateHash": "9759141469341222368"
     },
     "name": "Log Analytics Dedicated Clusters",
-    "description": "This module deploys a Log Analytics Dedicated Cluster.\n\n> NOTE\n> - There is a limit of seven clusters per subscription and region, five active, plus two that were deleted in past two weeks.\n> - A cluster's name remains reserved two weeks after deletion, and can't be used for creating a new cluster."
+    "description": "This module deploys Log Analytics Dedicated Clusters.\n\n> NOTE\n> - There is a limit of seven clusters per subscription and region, five active, plus two that were deleted in past two weeks.\n> - A cluster's name remains reserved two weeks after deletion, and can't be used for creating a new cluster."
   },
   "definitions": {
     "skuType": {
