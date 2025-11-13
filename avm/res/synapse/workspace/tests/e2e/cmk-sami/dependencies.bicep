@@ -59,6 +59,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
 resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' = {
   name: workspaceName
   location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     defaultDataLakeStorage: {
       resourceId: storageAccount.id
