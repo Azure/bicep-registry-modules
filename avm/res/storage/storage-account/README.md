@@ -26,7 +26,7 @@ This module deploys a Storage Account.
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers_immutabilitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers/immutabilityPolicies)</li></ul> |
 | `Microsoft.Storage/storageAccounts/fileServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices)</li></ul> |
-| `Microsoft.Storage/storageAccounts/fileServices/shares` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices_shares.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices/shares)</li></ul> |
+| `Microsoft.Storage/storageAccounts/fileServices/shares` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices_shares.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/fileServices/shares)</li></ul> |
 | `Microsoft.Storage/storageAccounts/localUsers` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_localusers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/localUsers)</li></ul> |
 | `Microsoft.Storage/storageAccounts/managementPolicies` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_managementpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/managementPolicies)</li></ul> |
 | `Microsoft.Storage/storageAccounts/objectReplicationPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_objectreplicationpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/objectReplicationPolicies)</li></ul> |
@@ -51,13 +51,14 @@ The following section provides usage examples for the module, which were used to
 - [Using Customer-Managed-Keys with User-Assigned identity](#example-6-using-customer-managed-keys-with-user-assigned-identity)
 - [Using only defaults](#example-7-using-only-defaults)
 - [Using extended zones](#example-8-using-extended-zones)
-- [With immutability policy](#example-9-with-immutability-policy)
-- [Deploying with a key vault reference to save secrets](#example-10-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-11-using-large-parameter-set)
-- [Deploying with a NFS File Share](#example-12-deploying-with-a-nfs-file-share)
-- [Using object replication](#example-13-using-object-replication)
-- [Deploying as Storage Account version 1](#example-14-deploying-as-storage-account-version-1)
-- [WAF-aligned](#example-15-waf-aligned)
+- [Using premium file shares](#example-9-using-premium-file-shares)
+- [With immutability policy](#example-10-with-immutability-policy)
+- [Deploying with a key vault reference to save secrets](#example-11-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-12-using-large-parameter-set)
+- [Deploying with a NFS File Share](#example-13-deploying-with-a-nfs-file-share)
+- [Using object replication](#example-14-using-object-replication)
+- [Deploying as Storage Account version 1](#example-15-deploying-as-storage-account-version-1)
+- [WAF-aligned](#example-16-waf-aligned)
 
 ### Example 1: _Deploying as a Blob Storage_
 
@@ -890,7 +891,118 @@ param skuName = 'Premium_LRS'
 </details>
 <p>
 
-### Example 9: _With immutability policy_
+### Example 9: _Using premium file shares_
+
+This instance deploys the module with File Services with PremiumV2 SKU and a file share.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  name: 'storageAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'ssapfs001'
+    // Non-required parameters
+    allowBlobPublicAccess: false
+    fileServices: {
+      shares: [
+        {
+          name: 'fileshare01'
+        }
+      ]
+    }
+    kind: 'FileStorage'
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+    }
+    skuName: 'PremiumV2_LRS'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssapfs001"
+    },
+    // Non-required parameters
+    "allowBlobPublicAccess": {
+      "value": false
+    },
+    "fileServices": {
+      "value": {
+        "shares": [
+          {
+            "name": "fileshare01"
+          }
+        ]
+      }
+    },
+    "kind": {
+      "value": "FileStorage"
+    },
+    "networkAcls": {
+      "value": {
+        "bypass": "AzureServices",
+        "defaultAction": "Deny"
+      }
+    },
+    "skuName": {
+      "value": "PremiumV2_LRS"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssapfs001'
+// Non-required parameters
+param allowBlobPublicAccess = false
+param fileServices = {
+  shares: [
+    {
+      name: 'fileshare01'
+    }
+  ]
+}
+param kind = 'FileStorage'
+param networkAcls = {
+  bypass: 'AzureServices'
+  defaultAction: 'Deny'
+}
+param skuName = 'PremiumV2_LRS'
+```
+
+</details>
+<p>
+
+### Example 10: _With immutability policy_
 
 This instance deploys the module with the immutability policy enabled.
 
@@ -1044,7 +1156,7 @@ param networkAcls = {
 </details>
 <p>
 
-### Example 10: _Deploying with a key vault reference to save secrets_
+### Example 11: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving all its secrets in a key vault.
 
@@ -1126,7 +1238,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 11: _Using large parameter set_
+### Example 12: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -2765,7 +2877,7 @@ param tags = {
 </details>
 <p>
 
-### Example 12: _Deploying with a NFS File Share_
+### Example 13: _Deploying with a NFS File Share_
 
 This instance deploys the module with a NFS File Share.
 
@@ -2860,7 +2972,7 @@ param skuName = 'Premium_LRS'
 </details>
 <p>
 
-### Example 13: _Using object replication_
+### Example 14: _Using object replication_
 
 This instance deploys the module with Object Replication features to async replicate blobs from one account to another.
 
@@ -3006,7 +3118,7 @@ param skuName = 'Standard_LRS'
 </details>
 <p>
 
-### Example 14: _Deploying as Storage Account version 1_
+### Example 15: _Deploying as Storage Account version 1_
 
 This instance deploys the module as Storage Account version 1.
 
@@ -3070,7 +3182,7 @@ param kind = 'Storage'
 </details>
 <p>
 
-### Example 15: _WAF-aligned_
+### Example 16: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
