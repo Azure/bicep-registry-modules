@@ -53,7 +53,7 @@ module allowHsmAccess 'br/public:avm/res/resources/deployment-script:0.5.2' = {
     kind: 'AzureCLI'
     azCliVersion: '2.67.0'
     arguments: '"${last(split(managedHSMResourceId, '/'))}" "${keyName}" "${managedIdentity.properties.principalId}"'
-    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-mHMSKeyConfig.sh')
+    scriptContent: loadTextContent('Set-mHMSKeyConfig.sh')
     retentionInterval: 'P1D'
     managedIdentities: {
       userAssignedResourceIds: [
