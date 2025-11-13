@@ -12,13 +12,15 @@ param solutionName string = 'cwyd'
 @description('Optional. A unique text value for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name.')
 param solutionUniqueText string = take(uniqueString(subscription().id, resourceGroup().name, solutionName), 5)
 
-@description('Optional. Location for all resources, if you are using existing resource group provide the location of the resorce group.')
-@metadata({
-  azd: {
-    type: 'location'
-  }
-})
-param location string = resourceGroup().location
+@allowed([
+  'australiaeast'
+  'eastus2'
+  'japaneast'
+  'uksouth'
+])
+@metadata({ azd: { type: 'location' } })
+@description('Required. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for PostgreSQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/postgresql/flexible-server/overview#azure-regions). Note: In the "Deploy to Azure" interface, you will see both "Region" and "Location" fields - "Region" is only for deployment metadata while "Location" (this parameter) determines where your actual resources are deployed.')
+param location string
 
 @description('Optional. Existing Log Analytics Workspace Resource ID.')
 param existingLogAnalyticsWorkspaceId string = ''
@@ -38,18 +40,10 @@ var hostingPlanName string = 'asp-${solutionSuffix}'
 
 @description('Optional. The pricing tier for the App Service plan.')
 @allowed([
-  'F1'
-  'D1'
-  'B1'
   'B2'
   'B3'
-  'S1'
   'S2'
   'S3'
-  'P1'
-  'P2'
-  'P3'
-  'P4'
 ])
 param hostingPlanSku string = 'B3'
 
@@ -292,8 +286,12 @@ var logAnalyticsName string = 'log-${solutionSuffix}'
 @description('Optional. A new GUID string generated for this deployment. This can be used for unique naming if needed.')
 param newGuidString string = newGuid()
 
-@description('Optional. Id of the user or app to assign application roles.')
-param principalId string = ''
+@description('Optional. Principal object for user or service principal to assign application roles. Format: {"id":"<object-id>", "name":"<name-or-upn>", "type":"User|Group|ServicePrincipal"}')
+param principal object = {
+  id: '' // Principal ID
+  name: '' // Principal name
+  type: 'User' // Principal type ('User', 'Group', or 'ServicePrincipal')
+}
 
 @description('Optional. Application Environment.')
 param appEnvironment string = 'Prod'
@@ -452,24 +450,160 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-var networkResourceName = take('network-${solutionSuffix}', 25) // limit to 25 chars
-module network 'modules/network.bicep' = if (enablePrivateNetworking) {
-  name: take('network-${solutionSuffix}-deployment', 64)
+// Virtual Network with NSGs and Subnets
+module virtualNetwork 'modules/virtualNetwork.bicep' = if (enablePrivateNetworking) {
+  name: take('module.virtualNetwork.${solutionSuffix}', 64)
   params: {
-    resourcesName: networkResourceName
-    logAnalyticsWorkSpaceResourceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : ''
-    vmAdminUsername: empty(virtualMachineAdminUsername) ? 'JumpboxAdminUser' : virtualMachineAdminUsername
-    vmAdminPassword: empty(virtualMachineAdminPassword) ? 'JumpboxAdminP@ssw0rd1234!' : virtualMachineAdminPassword
+    name: 'vnet-${solutionSuffix}'
+    addressPrefixes: ['10.0.0.0/20'] // 4096 addresses (enough for 8 /23 subnets or 16 /24)
+    location: location
+    tags: tags
+    logAnalyticsWorkspaceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : ''
+    resourceSuffix: solutionSuffix
+    enableTelemetry: enableTelemetry
+  }
+}
+
+// Azure Bastion Host
+var bastionHostName = 'bas-${solutionSuffix}'
+module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePrivateNetworking) {
+  name: take('avm.res.network.bastion-host.${bastionHostName}', 64)
+  params: {
+    name: bastionHostName
+    skuName: 'Standard'
+    location: location
+    virtualNetworkResourceId: virtualNetwork!.outputs.resourceId
+    diagnosticSettings: enableMonitoring
+      ? [
+          {
+            name: 'bastionDiagnostics'
+            workspaceResourceId: monitoring!.outputs.logAnalyticsWorkspaceId
+            logCategoriesAndGroups: [
+              {
+                categoryGroup: 'allLogs'
+                enabled: true
+              }
+            ]
+          }
+        ]
+      : null
+    tags: tags
+    enableTelemetry: enableTelemetry
+    publicIPAddressObject: {
+      name: 'pip-${bastionHostName}'
+    }
+  }
+}
+
+// ========== VM Maintenance Configuration Mapping ========== //
+
+// Jumpbox Virtual Machine
+var jumpboxVmName = take('vm-jumpbox-${solutionSuffix}', 15)
+module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enablePrivateNetworking) {
+  name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
+  params: {
+    name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
     vmSize: empty(vmSize) ? 'Standard_DS2_v2' : vmSize
+    location: location
+    adminUsername: !empty(virtualMachineAdminUsername) ? virtualMachineAdminUsername : 'JumpboxAdminUser'
+    adminPassword: !empty(virtualMachineAdminPassword) ? virtualMachineAdminPassword : 'JumpboxAdminP@ssw0rd1234!'
+    tags: tags
+    // WAF aligned configuration for Redundancy - use availability zone when redundancy is enabled
+    availabilityZone: 1
+    imageReference: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2019-datacenter'
+      version: 'latest'
+    }
+    osType: 'Windows'
+    // WAF aligned configuration - Enable automatic patching with platform management
+    patchMode: 'AutomaticByPlatform'
+    bypassPlatformSafetyChecksOnUserSchedule: true
+    osDisk: {
+      name: 'osdisk-${jumpboxVmName}'
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+    }
+    encryptionAtHost: false // Some Azure subscriptions do not support encryption at host
+    // WAF aligned configuration - VM maintenance configuration for reduced unplanned disruptions
+    maintenanceConfigurationResourceId: maintenanceConfiguration!.outputs.resourceId
+
+    nicConfigurations: [
+      {
+        name: 'nic-${jumpboxVmName}'
+        ipConfigurations: [
+          {
+            name: 'ipconfig1'
+            subnetResourceId: virtualNetwork!.outputs.jumpboxSubnetResourceId
+          }
+        ]
+        diagnosticSettings: enableMonitoring
+          ? [
+              {
+                name: 'jumpboxNicDiagnostics'
+                workspaceResourceId: monitoring!.outputs.logAnalyticsWorkspaceId
+                logCategoriesAndGroups: [
+                  {
+                    categoryGroup: 'allLogs'
+                    enabled: true
+                  }
+                ]
+                metricCategories: [
+                  {
+                    category: 'AllMetrics'
+                    enabled: true
+                  }
+                ]
+              }
+            ]
+          : null
+      }
+    ]
+    enableTelemetry: enableTelemetry
+  }
+}
+
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.2' = if (enablePrivateNetworking) {
+  name: take('${jumpboxVmName}-jumpbox-maintenance-config', 64)
+  params: {
+    name: 'mc-${jumpboxVmName}'
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
+    extensionProperties: {
+      InGuestPatchMode: 'User'
+    }
+    maintenanceScope: 'InGuestPatch'
+    maintenanceWindow: {
+      startDateTime: '2024-06-16 00:00'
+      duration: '03:55'
+      timeZone: 'W. Europe Standard Time'
+      recurEvery: '1Day'
+    }
+    visibility: 'Custom'
+    installPatches: {
+      rebootSetting: 'IfRequired'
+      windowsParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+      linuxParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+    }
   }
 }
 
 // ========== Managed Identity ========== //
 var userAssignedIdentityResourceName = 'id-${solutionSuffix}'
-module managedIdentityModule 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
+module managedIdentityModule 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.2' = {
   name: take('avm.res.managed-identity.user-assigned-identity.${userAssignedIdentityResourceName}', 64)
   params: {
     name: userAssignedIdentityResourceName
@@ -518,12 +652,12 @@ module avmPrivateDnsZones './modules/private-dns-zone/private-dns-zone.bicep' = 
     name: 'avm.res.network.private-dns-zone.${contains(zone, 'azurecontainerapps.io') ? 'containerappenv' : split(zone, '.')[1]}'
     params: {
       name: zone
-      tags: tags
+      tags: allTags
       enableTelemetry: enableTelemetry
       virtualNetworkLinks: [
         {
-          name: take('vnetlink-${network!.outputs.vnetName}-${split(zone, '.')[1]}', 80)
-          virtualNetworkResourceId: network!.outputs.vnetResourceId
+          name: take('vnetlink-${virtualNetwork!.outputs.name}-${split(zone, '.')[1]}', 80)
+          virtualNetworkResourceId: virtualNetwork!.outputs.resourceId
         }
       ]
     }
@@ -584,7 +718,7 @@ module cosmosDBModule './modules/document-db/database-account/database-account.b
               ]
             }
             service: 'Sql'
-            subnetResourceId: network!.outputs.subnetPrivateEndpointsResourceId
+            subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
           }
         ]
       : []
@@ -618,7 +752,7 @@ var allowAllIPsFirewall = false
 var allowAzureIPsFirewall = true
 var postgresResourceName = '${azurePostgresDBAccountName}-postgres'
 var postgresDBName = 'postgres'
-module postgresDBModule 'br/public:avm/res/db-for-postgre-sql/flexible-server:0.13.1' = if (databaseType == 'PostgreSQL') {
+module postgresDBModule 'br/public:avm/res/db-for-postgre-sql/flexible-server:0.15.0' = if (databaseType == 'PostgreSQL') {
   name: take('avm.res.db-for-postgre-sql.flexible-server.${azurePostgresDBAccountName}', 64)
   params: {
     name: postgresResourceName
@@ -649,20 +783,31 @@ module postgresDBModule 'br/public:avm/res/db-for-postgre-sql/flexible-server:0.
               ]
             }
             service: 'postgresqlServer'
-            subnetResourceId: network!.outputs.subnetPrivateEndpointsResourceId
+            subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
           }
         ]
       : []
 
-    administrators: managedIdentityModule.outputs.principalId != ''
-      ? [
-          {
-            objectId: managedIdentityModule.outputs.principalId
-            principalName: managedIdentityModule.outputs.name
-            principalType: 'ServicePrincipal'
-          }
-        ]
-      : null
+    administrators: concat(
+      managedIdentityModule.outputs.principalId != ''
+        ? [
+            {
+              objectId: managedIdentityModule.outputs.principalId
+              principalName: managedIdentityModule.outputs.name
+              principalType: 'ServicePrincipal'
+            }
+          ]
+        : [],
+      !empty(principal.id)
+        ? [
+            {
+              objectId: principal.id
+              principalName: principal.name
+              principalType: principal.type
+            }
+          ]
+        : []
+    )
 
     firewallRules: enablePrivateNetworking
       ? []
@@ -749,7 +894,7 @@ module keyvault './modules/key-vault/vault/vault.bicep' = {
               ]
             }
             service: 'vault'
-            subnetResourceId: network!.outputs.subnetPrivateEndpointsResourceId
+            subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
           }
         ]
       : []
@@ -763,11 +908,10 @@ module keyvault './modules/key-vault/vault/vault.bicep' = {
             }
           ]
         : [],
-      principalId != ''
+      !empty(principal.id)
         ? [
             {
-              principalId: principalId
-              principalType: 'User'
+              principalId: principal.id
               roleDefinitionIdOrName: 'Key Vault Secrets User'
             }
           ]
@@ -836,20 +980,23 @@ module openai 'modules/core/ai/cognitiveservices.bicep' = {
   params: {
     name: azureOpenAIResourceName
     location: location
-    tags: tags
+    tags: allTags
     kind: 'OpenAI'
     sku: azureOpenAISkuName
     deployments: openAiDeployments
     userAssignedResourceId: managedIdentityModule.outputs.resourceId
     restrictOutboundNetworkAccess: true
-    allowedFqdnList: [
-      '${storageAccountName}.blob.${environment().suffixes.storage}'
-      '${storageAccountName}.queue.${environment().suffixes.storage}'
-    ]
+    allowedFqdnList: concat(
+      [
+        '${storageAccountName}.blob.${environment().suffixes.storage}'
+        '${storageAccountName}.queue.${environment().suffixes.storage}'
+      ],
+      databaseType == 'CosmosDB' ? ['${azureAISearchName}.search.windows.net'] : []
+    )
     enablePrivateNetworking: enablePrivateNetworking
     enableMonitoring: enableMonitoring
     enableTelemetry: enableTelemetry
-    subnetResourceId: enablePrivateNetworking ? network!.outputs.subnetPrivateEndpointsResourceId : null
+    subnetResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.pepsSubnetResourceId : null
 
     logAnalyticsWorkspaceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : null
 
@@ -868,17 +1015,15 @@ module openai 'modules/core/ai/cognitiveservices.bicep' = {
           principalType: 'ServicePrincipal'
         }
       ],
-      !empty(principalId)
+      !empty(principal.id)
         ? [
             {
               roleDefinitionIdOrName: 'a97b65f3-24c7-4388-baec-2e87135dc908' //Cognitive Services User
-              principalId: principalId
-              principalType: 'User'
+              principalId: principal.id
             }
             {
               roleDefinitionIdOrName: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd' // Cognitive Services Contributor
-              principalId: principalId
-              principalType: 'User'
+              principalId: principal.id
             }
           ]
         : []
@@ -894,13 +1039,13 @@ module computerVision 'modules/core/ai/cognitiveservices.bicep' = if (useAdvance
     name: computerVisionName
     kind: 'ComputerVision'
     location: computerVisionLocation != '' ? computerVisionLocation : 'eastus' // Default to eastus if no location provided
-    tags: tags
+    tags: allTags
     sku: computerVisionSkuName
 
     enablePrivateNetworking: enablePrivateNetworking
     enableMonitoring: enableMonitoring
     enableTelemetry: enableTelemetry
-    subnetResourceId: enablePrivateNetworking ? network!.outputs.subnetPrivateEndpointsResourceId : null
+    subnetResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.pepsSubnetResourceId : null
 
     logAnalyticsWorkspaceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : null
     userAssignedResourceId: managedIdentityModule.outputs.resourceId
@@ -915,12 +1060,11 @@ module computerVision 'modules/core/ai/cognitiveservices.bicep' = if (useAdvance
           principalType: 'ServicePrincipal'
         }
       ],
-      !empty(principalId)
+      !empty(principal.id)
         ? [
             {
               roleDefinitionIdOrName: 'a97b65f3-24c7-4388-baec-2e87135dc908' //Cognitive Services User
-              principalId: principalId
-              principalType: 'User'
+              principalId: principal.id
             }
           ]
         : []
@@ -944,7 +1088,7 @@ module speechService 'modules/core/ai/cognitiveservices.bicep' = {
     enablePrivateNetworking: enablePrivateNetworkingSpeech
     enableMonitoring: enableMonitoring
     enableTelemetry: enableTelemetry
-    subnetResourceId: enablePrivateNetworkingSpeech ? network!.outputs.subnetPrivateEndpointsResourceId : null
+    subnetResourceId: enablePrivateNetworkingSpeech ? virtualNetwork!.outputs.pepsSubnetResourceId : null
 
     logAnalyticsWorkspaceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : null
     disableLocalAuth: false
@@ -960,12 +1104,11 @@ module speechService 'modules/core/ai/cognitiveservices.bicep' = {
           principalType: 'ServicePrincipal'
         }
       ],
-      !empty(principalId)
+      !empty(principal.id)
         ? [
             {
               roleDefinitionIdOrName: 'a97b65f3-24c7-4388-baec-2e87135dc908' //Cognitive Services User
-              principalId: principalId
-              principalType: 'User'
+              principalId: principal.id
             }
           ]
         : []
@@ -980,7 +1123,7 @@ module search 'br/public:avm/res/search/search-service:0.11.1' = if (databaseTyp
     // Required parameters
     name: azureAISearchName
     location: location
-    tags: tags
+    tags: allTags
     enableTelemetry: enableTelemetry
     sku: azureSearchSku
     authOptions: {
@@ -1016,7 +1159,7 @@ module search 'br/public:avm/res/search/search-service:0.11.1' = if (databaseTyp
                 }
               ]
             }
-            subnetResourceId: network!.outputs.subnetPrivateEndpointsResourceId
+            subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
             service: 'searchService'
           }
         ]
@@ -1042,22 +1185,19 @@ module search 'br/public:avm/res/search/search-service:0.11.1' = if (databaseTyp
           principalType: 'ServicePrincipal'
         }
       ],
-      !empty(principalId)
+      !empty(principal.id)
         ? [
             {
               roleDefinitionIdOrName: '8ebe5a00-799e-43f5-93ac-243d3dce84a7' // Search Index Data Contributor
-              principalId: principalId
-              principalType: 'User'
+              principalId: principal.id
             }
             {
               roleDefinitionIdOrName: '7ca78c08-252a-4471-8644-bb5ff32d4ba0' // Search Service Contributor
-              principalId: principalId
-              principalType: 'User'
+              principalId: principal.id
             }
             {
               roleDefinitionIdOrName: '1407120a-92aa-4202-b7e9-c0e197c71c8f' // Search Index Data Reader
-              principalId: principalId
-              principalType: 'User'
+              principalId: principal.id
             }
           ]
         : []
@@ -1073,7 +1213,7 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.5.0' = {
   scope: resourceGroup()
   params: {
     name: webServerFarmResourceName
-    tags: tags
+    tags: allTags
     enableTelemetry: enableTelemetry
     location: location
     reserved: true
@@ -1111,7 +1251,7 @@ module web 'modules/app/web.bicep' = {
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: monitoring!.outputs.logAnalyticsWorkspaceId }] : []
     vnetRouteAllEnabled: enablePrivateNetworking ? true : false
     vnetImagePullEnabled: enablePrivateNetworking ? true : false
-    virtualNetworkSubnetId: enablePrivateNetworking ? network!.outputs.subnetWebResourceId : ''
+    virtualNetworkSubnetId: enablePrivateNetworking ? virtualNetwork!.outputs.webSubnetResourceId : ''
     publicNetworkAccess: 'Enabled' // Always enabling public network access
     applicationInsightsName: enableMonitoring ? monitoring!.outputs.applicationInsightsName : ''
     appSettings: union(
@@ -1289,7 +1429,7 @@ module adminweb 'modules/app/adminweb.bicep' = {
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: monitoring!.outputs.logAnalyticsWorkspaceId }] : []
     vnetImagePullEnabled: enablePrivateNetworking ? true : false
     vnetRouteAllEnabled: enablePrivateNetworking ? true : false
-    virtualNetworkSubnetId: enablePrivateNetworking ? network!.outputs.subnetWebResourceId : ''
+    virtualNetworkSubnetId: enablePrivateNetworking ? virtualNetwork!.outputs.webSubnetResourceId : ''
     publicNetworkAccess: 'Enabled' // Always enabling public network access
   }
 }
@@ -1312,7 +1452,7 @@ module function 'modules/app/function.bicep' = {
     userAssignedIdentityClientId: managedIdentityModule.outputs.clientId
     // WAF aligned configurations
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: monitoring!.outputs.logAnalyticsWorkspaceId }] : []
-    virtualNetworkSubnetId: enablePrivateNetworking ? network!.outputs.subnetWebResourceId : ''
+    virtualNetworkSubnetId: enablePrivateNetworking ? virtualNetwork!.outputs.webSubnetResourceId : ''
     vnetRouteAllEnabled: enablePrivateNetworking ? true : false
     vnetImagePullEnabled: enablePrivateNetworking ? true : false
     publicNetworkAccess: 'Enabled' // Always enabling public network access
@@ -1345,6 +1485,7 @@ module function 'modules/app/function.bicep' = {
         MANAGED_IDENTITY_RESOURCE_ID: managedIdentityModule.outputs.resourceId
         AZURE_CLIENT_ID: managedIdentityModule.outputs.clientId // Required so LangChain AzureSearch vector store authenticates with this user-assigned managed identity
         APP_ENV: appEnvironment
+        BACKEND_URL: backendUrl
       },
       databaseType == 'CosmosDB'
         ? {
@@ -1402,13 +1543,13 @@ module formrecognizer 'modules/core/ai/cognitiveservices.bicep' = {
   params: {
     name: formRecognizerName
     location: location
-    tags: tags
+    tags: allTags
     kind: 'FormRecognizer'
 
     enablePrivateNetworking: enablePrivateNetworking
     enableMonitoring: enableMonitoring
     enableTelemetry: enableTelemetry
-    subnetResourceId: enablePrivateNetworking ? network!.outputs.subnetPrivateEndpointsResourceId : null
+    subnetResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.pepsSubnetResourceId : null
 
     logAnalyticsWorkspaceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : null
     userAssignedResourceId: managedIdentityModule.outputs.resourceId
@@ -1434,12 +1575,11 @@ module formrecognizer 'modules/core/ai/cognitiveservices.bicep' = {
           principalType: 'ServicePrincipal'
         }
       ],
-      !empty(principalId)
+      !empty(principal.id)
         ? [
             {
               roleDefinitionIdOrName: 'a97b65f3-24c7-4388-baec-2e87135dc908' //Cognitive Services User
-              principalId: principalId
-              principalType: 'User'
+              principalId: principal.id
             }
           ]
         : []
@@ -1454,13 +1594,13 @@ module contentsafety 'modules/core/ai/cognitiveservices.bicep' = {
   params: {
     name: contentSafetyName
     location: location
-    tags: tags
+    tags: allTags
     kind: 'ContentSafety'
 
     enablePrivateNetworking: enablePrivateNetworking
     enableMonitoring: enableMonitoring
     enableTelemetry: enableTelemetry
-    subnetResourceId: enablePrivateNetworking ? network!.outputs.subnetPrivateEndpointsResourceId : null
+    subnetResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.pepsSubnetResourceId : null
 
     logAnalyticsWorkspaceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : null
     userAssignedResourceId: managedIdentityModule.outputs.resourceId
@@ -1475,12 +1615,11 @@ module contentsafety 'modules/core/ai/cognitiveservices.bicep' = {
           principalType: 'ServicePrincipal'
         }
       ],
-      !empty(principalId)
+      !empty(principal.id)
         ? [
             {
               roleDefinitionIdOrName: 'a97b65f3-24c7-4388-baec-2e87135dc908' //Cognitive Services User
-              principalId: principalId
-              principalType: 'User'
+              principalId: principal.id
             }
           ]
         : []
@@ -1504,10 +1643,6 @@ module storage './modules/storage/storage-account/storage-account.bicep' = {
     skuName: 'Standard_GRS'
     kind: 'StorageV2'
     blobServices: {
-      deleteRetentionPolicyEnabled: true
-      containerDeleteRetentionPolicyEnabled: true
-      containerDeleteRetentionPolicyDays: 7
-      deleteRetentionPolicyDays: 6
       containers: [
         {
           name: blobContainerName
@@ -1564,7 +1699,7 @@ module storage './modules/storage/storage-account/storage-account.bicep' = {
                 }
               ]
             }
-            subnetResourceId: network!.outputs.subnetPrivateEndpointsResourceId
+            subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
             service: 'blob'
           }
           {
@@ -1577,7 +1712,7 @@ module storage './modules/storage/storage-account/storage-account.bicep' = {
                 }
               ]
             }
-            subnetResourceId: network!.outputs.subnetPrivateEndpointsResourceId
+            subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
             service: 'queue'
           }
           {
@@ -1590,7 +1725,7 @@ module storage './modules/storage/storage-account/storage-account.bicep' = {
                 }
               ]
             }
-            subnetResourceId: network!.outputs.subnetPrivateEndpointsResourceId
+            subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
             service: 'file'
           }
         ]
@@ -1598,14 +1733,14 @@ module storage './modules/storage/storage-account/storage-account.bicep' = {
   }
 }
 
-module avmEventGridSystemTopic 'br/public:avm/res/event-grid/system-topic:0.6.3' = {
+module avmEventGridSystemTopic 'br/public:avm/res/event-grid/system-topic:0.6.4' = {
   name: take('avm.res.event-grid.system-topic.${eventGridSystemTopicName}', 64)
   params: {
     name: eventGridSystemTopicName
     source: storage.outputs.resourceId
     topicType: 'Microsoft.Storage.StorageAccounts'
     location: location
-    tags: tags
+    tags: allTags
     diagnosticSettings: enableMonitoring
       ? [
           {
@@ -1718,7 +1853,7 @@ module createIndex 'br/public:avm/res/resources/deployment-script:0.5.1' = if (d
     storageAccountResourceId: storage.outputs.resourceId
     subnetResourceIds: enablePrivateNetworking
       ? [
-          network!.outputs.subnetDeploymentScriptsResourceId
+          virtualNetwork!.outputs.deploymentScriptsSubnetResourceId
         ]
       : null
     tags: tags
@@ -1816,7 +1951,9 @@ var azureContentSafetyInfo = string({
   endpoint: contentsafety.outputs.endpoint
 })
 
-var backendUrl = 'https://${functionName}.azurewebsites.net'
+var backendUrl = hostingModel == 'container'
+  ? 'https://${functionName}-docker.azurewebsites.net'
+  : 'https://${functionName}.azurewebsites.net'
 
 @description('Connection string for the Application Insights instance.')
 output applicationInsightsConnectionString string = enableMonitoring
