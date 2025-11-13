@@ -71,6 +71,18 @@ resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' = {
     managedVirtualNetwork: 'default'
     azureADOnlyAuthentication: false
     sqlAdministratorLogin: 'sqlAdministratorLogin'
+    // Must be defined upon creation
+    encryption: {
+      cmk: {
+        kekIdentity: {
+          useSystemAssignedIdentity: true
+        }
+        key: {
+          keyVaultUrl: keyVault::key.properties.keyUri
+          name: keyVault::key.name
+        }
+      }
+    }
   }
 }
 
