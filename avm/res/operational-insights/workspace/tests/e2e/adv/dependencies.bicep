@@ -22,6 +22,9 @@ param logAnalyticsClusterName string
 @description('Required. The name of the Key Vault to create.')
 param keyVaultName string
 
+@description('Required. The name of the deployment script that waits for a role assignment to propagate.')
+param waitDeploymentScriptName string
+
 resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   name: storageAccountName
   location: location
@@ -111,6 +114,20 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
+// Waiting for the role assignment to propagate
+resource waitForDeployment 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  dependsOn: [keyPermissions]
+  name: waitDeploymentScriptName
+  location: location
+  kind: 'AzurePowerShell'
+  properties: {
+    retentionInterval: 'PT1H'
+    azPowerShellVersion: '11.0'
+    cleanupPreference: 'Always'
+    scriptContent: 'write-output "Sleeping for 30"; start-sleep -Seconds 30'
+  }
+}
+
 resource cluster 'Microsoft.OperationalInsights/clusters@2025-02-01' = {
   name: logAnalyticsClusterName
   location: location
@@ -133,7 +150,7 @@ resource cluster 'Microsoft.OperationalInsights/clusters@2025-02-01' = {
     }
   }
   dependsOn: [
-    keyPermissions
+    waitForDeployment
   ]
 }
 
