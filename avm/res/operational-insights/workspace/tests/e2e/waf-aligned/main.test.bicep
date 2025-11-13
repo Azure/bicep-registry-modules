@@ -189,7 +189,7 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           name: 'Cluster'
-          resourceId: nestedDependencies.outputs.logAnalyticsClusterResourceId
+          writeAccessResourceId: nestedDependencies.outputs.logAnalyticsClusterResourceId
         }
       ]
       linkedStorageAccounts: [
