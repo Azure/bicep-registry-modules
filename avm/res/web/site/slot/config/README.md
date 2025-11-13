@@ -1,4 +1,4 @@
-# Site App Settings `[Microsoft.Web/sites/slots/config]`
+# Site App Settings `[Microsoft.web/site/slot/config]`
 
 This module deploys a Site App Setting.
 
@@ -13,7 +13,7 @@ This module deploys a Site App Setting.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Web/sites/slots/config` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_config.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/config)</li></ul> |
+| `Microsoft.Web/sites/slots/config` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_config.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites)</li></ul> |
 
 ## Parameters
 

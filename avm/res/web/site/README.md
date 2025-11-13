@@ -1,4 +1,4 @@
-# Web/Function Apps `[Microsoft.Web/sites]`
+# Web/Function Apps `[Microsoft.web/site]`
 
 This module deploys a Web or Function App.
 
@@ -16,21 +16,21 @@ This module deploys a Web or Function App.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
-| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
-| `Microsoft.Web/sites` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-11-01/sites)</li></ul> |
-| `Microsoft.Web/sites/basicPublishingCredentialsPolicies` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_basicpublishingcredentialspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/basicPublishingCredentialsPolicies)</li></ul> |
-| `Microsoft.Web/sites/config` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_config.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/config)</li></ul> |
-| `Microsoft.Web/sites/extensions` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/extensions)</li></ul> |
-| `Microsoft.Web/sites/hybridConnectionNamespaces/relays` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_hybridconnectionnamespaces_relays.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/hybridConnectionNamespaces/relays)</li></ul> |
-| `Microsoft.Web/sites/slots` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-11-01/sites/slots)</li></ul> |
-| `Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_basicpublishingcredentialspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/basicPublishingCredentialsPolicies)</li></ul> |
-| `Microsoft.Web/sites/slots/config` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_config.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/config)</li></ul> |
-| `Microsoft.Web/sites/slots/extensions` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/extensions)</li></ul> |
-| `Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_hybridconnectionnamespaces_relays.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/hybridConnectionNamespaces/relays)</li></ul> |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/privateEndpoints)</li></ul> |
+| `Microsoft.Web/sites` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates)</li></ul> |
+| `Microsoft.Web/sites/basicPublishingCredentialsPolicies` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_basicpublishingcredentialspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites)</li></ul> |
+| `Microsoft.Web/sites/config` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_config.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites)</li></ul> |
+| `Microsoft.Web/sites/extensions` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites)</li></ul> |
+| `Microsoft.Web/sites/hybridConnectionNamespaces/relays` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_hybridconnectionnamespaces_relays.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites)</li></ul> |
+| `Microsoft.Web/sites/slots` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites)</li></ul> |
+| `Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_basicpublishingcredentialspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites)</li></ul> |
+| `Microsoft.Web/sites/slots/config` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_config.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites)</li></ul> |
+| `Microsoft.Web/sites/slots/extensions` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites)</li></ul> |
+| `Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_hybridconnectionnamespaces_relays.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites)</li></ul> |
 
 ## Usage examples
 
@@ -40,22 +40,19 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/web/site:<version>`.
 
-- [Function App, using only defaults](#example-1-function-app-using-only-defaults)
-- [Function App, using large parameter set](#example-2-function-app-using-large-parameter-set)
-- [Linux Container Web App, using only defaults](#example-3-linux-container-web-app-using-only-defaults)
-- [WAF-aligned](#example-4-waf-aligned)
-- [Access Restrictions](#example-5-access-restrictions)
-- [Web App with Azure Storage Accounts Configuration](#example-6-web-app-with-azure-storage-accounts-configuration)
-- [Web App, using only defaults](#example-7-web-app-using-only-defaults)
-- [Web App, using large parameter set](#example-8-web-app-using-large-parameter-set)
-- [Linux Web App, using only defaults](#example-9-linux-web-app-using-only-defaults)
-- [Linux Web App, using large parameter set](#example-10-linux-web-app-using-large-parameter-set)
-- [Windows Web App for Containers, using only defaults](#example-11-windows-web-app-for-containers-using-only-defaults)
+- [Functionapp.Defaults](#example-1-functionappdefaults)
+- [Functionapp.Max](#example-2-functionappmax)
+- [Linuxcontainerwebapp.Defaults](#example-3-linuxcontainerwebappdefaults)
+- [Waf-Aligned](#example-4-waf-aligned)
+- [Webapp.Accessrestrictions](#example-5-webappaccessrestrictions)
+- [Webapp.Azurestorageaccounts](#example-6-webappazurestorageaccounts)
+- [Webapp.Defaults](#example-7-webappdefaults)
+- [Webapp.Max](#example-8-webappmax)
+- [Webapplinux.Defaults](#example-9-webapplinuxdefaults)
+- [Webapplinux.Max](#example-10-webapplinuxmax)
+- [Wincontainerwebapp.Defaults](#example-11-wincontainerwebappdefaults)
 
-### Example 1: _Function App, using only defaults_
-
-This instance deploys the module as Function App with the minimum set of required parameters.
-
+### Example 1: _Functionapp.Defaults_
 
 <details>
 
@@ -118,10 +115,7 @@ param serverFarmResourceId = '<serverFarmResourceId>'
 </details>
 <p>
 
-### Example 2: _Function App, using large parameter set_
-
-This instance deploys the module as Function App with most of its features enabled.
-
+### Example 2: _Functionapp.Max_
 
 <details>
 
@@ -722,10 +716,7 @@ param siteConfig = {
 </details>
 <p>
 
-### Example 3: _Linux Container Web App, using only defaults_
-
-This instance deploys the module as Linux Container Web App with the minimum set of required parameters.
-
+### Example 3: _Linuxcontainerwebapp.Defaults_
 
 <details>
 
@@ -826,10 +817,7 @@ param siteConfig = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
+### Example 4: _Waf-Aligned_
 
 <details>
 
@@ -1023,10 +1011,7 @@ param siteConfig = {
 </details>
 <p>
 
-### Example 5: _Access Restrictions_
-
-This instance deploys the module demonstrating access restrictions for Front Door and Application Gateway scenarios.
-
+### Example 5: _Webapp.Accessrestrictions_
 
 <details>
 
@@ -1254,10 +1239,7 @@ param siteConfig = {
 </details>
 <p>
 
-### Example 6: _Web App with Azure Storage Accounts Configuration_
-
-This instance deploys the module as Web App with azurestorageaccounts configuration demonstrating the correct structure for mounting Azure Storage Accounts.
-
+### Example 6: _Webapp.Azurestorageaccounts_
 
 <details>
 
@@ -1447,10 +1429,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 7: _Web App, using only defaults_
-
-This instance deploys the module as Web App with the minimum set of required parameters.
-
+### Example 7: _Webapp.Defaults_
 
 <details>
 
@@ -1513,10 +1492,7 @@ param serverFarmResourceId = '<serverFarmResourceId>'
 </details>
 <p>
 
-### Example 8: _Web App, using large parameter set_
-
-This instance deploys the module as Web App with most of its features enabled.
-
+### Example 8: _Webapp.Max_
 
 <details>
 
@@ -2418,10 +2394,7 @@ param slots = [
 </details>
 <p>
 
-### Example 9: _Linux Web App, using only defaults_
-
-This instance deploys the module as a Linux Web App with the minimum set of required parameters.
-
+### Example 9: _Webapplinux.Defaults_
 
 <details>
 
@@ -2484,10 +2457,7 @@ param serverFarmResourceId = '<serverFarmResourceId>'
 </details>
 <p>
 
-### Example 10: _Linux Web App, using large parameter set_
-
-This instance deploys the module asa Linux Web App with most of its features enabled.
-
+### Example 10: _Webapplinux.Max_
 
 <details>
 
@@ -3207,10 +3177,7 @@ param slots = [
 </details>
 <p>
 
-### Example 11: _Windows Web App for Containers, using only defaults_
-
-This instance deploys the module as a Windows based Container Web App with the minimum set of required parameters.
-
+### Example 11: _Wincontainerwebapp.Defaults_
 
 <details>
 
