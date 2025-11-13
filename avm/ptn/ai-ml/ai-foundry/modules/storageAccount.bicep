@@ -14,7 +14,7 @@ param privateEndpointSubnetResourceId string?
 @description('Optional. The resource ID of the private DNS zone for the storage account blob service to establish private endpoints.')
 param blobPrivateDnsZoneResourceId string?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Specifies the role assignments for the storage account.')
 param roleAssignments roleAssignmentType[]?
 
@@ -38,7 +38,7 @@ resource existingStorageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' e
 
 var privateNetworkingEnabled = !empty(blobPrivateDnsZoneResourceId) && !empty(privateEndpointSubnetResourceId)
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.27.1' = if (empty(existingResourceId)) {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = if (empty(existingResourceId)) {
   name: take('avm.res.storage.storage-account.${name}', 64)
   params: {
     name: name
