@@ -42,14 +42,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: enforcedLocation
 }
 
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
-  params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-  }
-}
-
 module nestedHsmDependencies 'dependencies.hsm.bicep' = {
   name: '${uniqueString(deployment().name)}-nestedHSMDependencies'
   params: {
@@ -59,33 +51,15 @@ module nestedHsmDependencies 'dependencies.hsm.bicep' = {
   scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
 }
 
-module allowHsmAccess 'br/public:avm/res/resources/deployment-script:0.5.2' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-hmsKeyPermissions'
+module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    name: 'dep-${namePrefix}-ds-hsm-iam-${serviceShort}'
-    kind: 'AzureCLI'
-    azCliVersion: '2.67.0'
-    arguments: '"${last(split(managedHSMResourceId, '/'))}" "${nestedHsmDependencies.outputs.keyName}" "${nestedDependencies.outputs.managedIdentityPrincipalId}"'
-    scriptContent: '''
-      echo "Checking role assignment for HSM: $1, Key: $2, Principal: $3"
-      # Allow key reference via identity
-      result=$(az keyvault role assignment list --hsm-name "$1" --scope "/keys/$2" --query "[?principalId == \`$3\` && roleName == \`Managed HSM Crypto Service Encryption User\`]")
-
-      if [[ -n "$result" ]]; then
-        echo "Role assignment already exists."
-      else
-        echo "Role assignment not yet existing. Creating."
-        az keyvault role assignment create --hsm-name "$1" --role "Managed HSM Crypto Service Encryption User" --scope "/keys/$2" --assignee $3
-      fi
-    '''
-    retentionInterval: 'P1D'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        deploymentMSIResourceId
-      ]
-    }
+    deploymentMSIResourceId: deploymentMSIResourceId
+    managedHSMResourceId: managedHSMResourceId
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    deploymentScriptName: 'dep-${namePrefix}-ds-hsm-iam-${serviceShort}'
+    keyName: nestedHsmDependencies.outputs.keyName
   }
 }
 
@@ -119,8 +93,5 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
     }
-    dependsOn: [
-      allowHsmAccess
-    ]
   }
 ]
