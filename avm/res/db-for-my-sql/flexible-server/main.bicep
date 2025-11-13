@@ -307,294 +307,270 @@ resource cMKGeoUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdent
   )
 }
 
-// resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2024-12-30' = {
-//   name: name
-//   location: location
-//   tags: tags
-//   sku: {
-//     name: skuName
-//     tier: tier
-//   }
-//   identity: identity
-//   properties: {
-//     administratorLogin: administratorLogin
-//     administratorLoginPassword: administratorLoginPassword
-//     availabilityZone: availabilityZone != -1 ? string(availabilityZone) : null
-//     backup: {
-//       backupRetentionDays: backupRetentionDays
-//       geoRedundantBackup: geoRedundantBackup
-//     }
-//     createMode: createMode
-//     dataEncryption: !empty(customerManagedKey)
-//       ? {
-//           type: 'AzureKeyVault'
-//           geoBackupKeyURI: geoRedundantBackup == 'Enabled'
-//             ? (!empty(customerManagedKeyGeo.?keyVersion)
-//                 ? (!isGeoHSMManagedCMK
-//                     ? '${cMKGeoKeyVault::cMKKey!.properties.keyUri}/${customerManagedKeyGeo!.keyVersion!}'
-//                     : 'https://${last(split((customerManagedKeyGeo!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKeyGeo!.keyName}/${customerManagedKeyGeo!.keyVersion!}')
-//                 : (!isGeoHSMManagedCMK
-//                     ? cMKGeoKeyVault::cMKKey!.properties.keyUriWithVersion
-//                     : fail('Managed HSM CMK encryption requires specifying the \'keyVersion\'.')))
-//             : null
-//           geoBackupUserAssignedIdentityId: geoRedundantBackup == 'Enabled' ? cMKGeoUserAssignedIdentity.id : null
-//           primaryKeyURI: !empty(customerManagedKey.?keyVersion)
-//             ? (!isHSMManagedCMK
-//                 ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
-//                 : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.keyVersion!}')
-//             : (!isHSMManagedCMK
-//                 ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
-//                 : fail('Managed HSM CMK encryption requires specifying the \'keyVersion\'.'))
-//           primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
-//         }
-//       : null
-//     highAvailability: {
-//       mode: highAvailability
-//       standbyAvailabilityZone: standByAvailabilityZone != -1 ? string(standByAvailabilityZone) : null
-//     }
-//     maintenanceWindow: !empty(maintenanceWindow)
-//       ? {
-//           customWindow: maintenanceWindow.customWindow
-//           dayOfWeek: maintenanceWindow.customWindow == 'Enabled' ? maintenanceWindow.dayOfWeek : 0
-//           startHour: maintenanceWindow.customWindow == 'Enabled' ? maintenanceWindow.startHour : 0
-//           startMinute: maintenanceWindow.customWindow == 'Enabled' ? maintenanceWindow.startMinute : 0
-//         }
-//       : null
-//     network: {
-//       delegatedSubnetResourceId: delegatedSubnetResourceId
-//       privateDnsZoneResourceId: privateDnsZoneResourceId
-//       publicNetworkAccess: publicNetworkAccess
-//     }
-//     replicationRole: replicationRole
-//     restorePointInTime: restorePointInTime
-//     sourceServerResourceId: sourceServerResourceId
-//     storage: {
-//       autoGrow: storageAutoGrow
-//       autoIoScaling: storageAutoIoScaling
-//       iops: storageIOPS
-//       storageSizeGB: storageSizeGB
-//     }
-//     version: version
-//   }
-// }
-
-// resource flexibleServer_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-//   name: lock.?name ?? 'lock-${name}'
-//   properties: {
-//     level: lock.?kind ?? ''
-//     notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
-//       ? 'Cannot delete resource or child resources.'
-//       : 'Cannot delete or modify the resource or child resources.')
-//   }
-//   scope: flexibleServer
-// }
-
-// resource flexibleServer_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-//   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
-//     name: roleAssignment.?name ?? guid(flexibleServer.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
-//     properties: {
-//       roleDefinitionId: roleAssignment.roleDefinitionId
-//       principalId: roleAssignment.principalId
-//       description: roleAssignment.?description
-//       principalType: roleAssignment.?principalType
-//       condition: roleAssignment.?condition
-//       conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-//       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
-//     }
-//     scope: flexibleServer
-//   }
-// ]
-
-// module flexibleServer_databases 'database/main.bicep' = [
-//   for (database, index) in databases: {
-//     name: '${uniqueString(deployment().name, location)}-MySQL-DB-${index}'
-//     params: {
-//       name: database.name
-//       flexibleServerName: flexibleServer.name
-//       collation: database.?collation ?? ''
-//       charset: database.?charset ?? ''
-//     }
-//   }
-// ]
-
-// module flexibleServer_firewallRules 'firewall-rule/main.bicep' = [
-//   for (firewallRule, index) in firewallRules: {
-//     name: '${uniqueString(deployment().name, location)}-MySQL-FirewallRules-${index}'
-//     params: {
-//       name: firewallRule.name
-//       flexibleServerName: flexibleServer.name
-//       startIpAddress: firewallRule.startIpAddress
-//       endIpAddress: firewallRule.endIpAddress
-//     }
-//   }
-// ]
-
-// module flexibleServer_administrators 'administrator/main.bicep' = [
-//   for (administrator, index) in administrators: {
-//     name: '${uniqueString(deployment().name, location)}-MySQL-Administrators-${index}'
-//     params: {
-//       flexibleServerName: flexibleServer.name
-//       login: administrator.login
-//       sid: administrator.sid
-//       identityResourceId: administrator.identityResourceId
-//       tenantId: administrator.?tenantId ?? tenant().tenantId
-//     }
-//   }
-// ]
-
-// module flexibleServer_configurations 'configuration/main.bicep' = [
-//   for (configuration, index) in (configurations ?? []): {
-//     name: '${uniqueString(deployment().name, location)}-MySQL-Configuration-${index}'
-//     params: {
-//       name: configuration.name
-//       flexibleServerName: flexibleServer.name
-//       source: configuration.?source
-//       value: configuration.?value
-//     }
-//   }
-// ]
-
-// module flexibleServer_advancedThreatProtection 'advanced-threat-protection/main.bicep' = {
-//   name: '${uniqueString(deployment().name, location)}-MySQL-AdvancedThreatProtection'
-//   params: {
-//     flexibleServerName: flexibleServer.name
-//     advancedThreatProtection: advancedThreatProtection
-//   }
-// }
-
-// resource flexibleServer_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
-//   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-//     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-//     properties: {
-//       storageAccountId: diagnosticSetting.?storageAccountResourceId
-//       workspaceId: diagnosticSetting.?workspaceResourceId
-//       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-//       eventHubName: diagnosticSetting.?eventHubName
-//       metrics: [
-//         for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
-//           category: group.category
-//           enabled: group.?enabled ?? true
-//           timeGrain: null
-//         }
-//       ]
-//       logs: [
-//         for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
-//           categoryGroup: group.?categoryGroup
-//           category: group.?category
-//           enabled: group.?enabled ?? true
-//         }
-//       ]
-//       marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-//       logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
-//     }
-//     scope: flexibleServer
-//   }
-// ]
-
-// module flexibleServer_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
-//   for (privateEndpoint, index) in (privateEndpoints ?? []): if (empty(delegatedSubnetResourceId)) {
-//     name: '${uniqueString(deployment().name, location)}-MySQL-Flex-PrivateEndpoint-${index}'
-//     scope: resourceGroup(
-//       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
-//       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
-//     )
-//     params: {
-//       name: privateEndpoint.?name ?? 'pep-${last(split(flexibleServer.id, '/'))}-${privateEndpoint.?service ?? 'mysqlServer'}-${index}'
-//       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
-//         ? [
-//             {
-//               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(flexibleServer.id, '/'))}-${privateEndpoint.?service ?? 'mysqlServer'}-${index}'
-//               properties: {
-//                 privateLinkServiceId: flexibleServer.id
-//                 groupIds: [
-//                   privateEndpoint.?service ?? 'mysqlServer'
-//                 ]
-//               }
-//             }
-//           ]
-//         : null
-//       manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
-//         ? [
-//             {
-//               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(flexibleServer.id, '/'))}-${privateEndpoint.?service ?? 'mysqlServer'}-${index}'
-//               properties: {
-//                 privateLinkServiceId: flexibleServer.id
-//                 groupIds: [
-//                   privateEndpoint.?service ?? 'mysqlServer'
-//                 ]
-//                 requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
-//               }
-//             }
-//           ]
-//         : null
-//       subnetResourceId: privateEndpoint.subnetResourceId
-//       enableTelemetry: enableReferencedModulesTelemetry
-//       location: privateEndpoint.?location ?? reference(
-//         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
-//         '2020-06-01',
-//         'Full'
-//       ).location
-//       lock: privateEndpoint.?lock ?? lock
-//       privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
-//       roleAssignments: privateEndpoint.?roleAssignments
-//       tags: privateEndpoint.?tags ?? tags
-//       customDnsConfigs: privateEndpoint.?customDnsConfigs
-//       ipConfigurations: privateEndpoint.?ipConfigurations
-//       applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
-//       customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
-//     }
-//   }
-// ]
-
-// @description('The name of the deployed MySQL Flexible server.')
-// output name string = flexibleServer.name
-
-// @description('The resource ID of the deployed MySQL Flexible server.')
-// output resourceId string = flexibleServer.id
-
-// @description('The resource group of the deployed MySQL Flexible server.')
-// output resourceGroupName string = resourceGroup().name
-
-// @description('The location the resource was deployed into.')
-// output location string = flexibleServer.location
-
-// @description('The FQDN of the MySQL Flexible server.')
-// output fqdn string = flexibleServer.properties.fullyQualifiedDomainName
-
-// @description('The private endpoints of the MySQL Flexible server.')
-// output privateEndpoints privateEndpointOutputType[] = [
-//   for (item, index) in (privateEndpoints ?? []): {
-//     name: flexibleServer_privateEndpoints[index]!.outputs.name
-//     resourceId: flexibleServer_privateEndpoints[index]!.outputs.resourceId
-//     groupId: flexibleServer_privateEndpoints[index]!.outputs.?groupId!
-//     customDnsConfigs: flexibleServer_privateEndpoints[index]!.outputs.customDnsConfigs
-//     networkInterfaceResourceIds: flexibleServer_privateEndpoints[index]!.outputs.networkInterfaceResourceIds
-//   }
-// ]
-
-output dataEncryption object? = !empty(customerManagedKey)
-  ? {
-      type: 'AzureKeyVault'
-      geoBackupKeyURI: geoRedundantBackup == 'Enabled'
-        ? (!empty(customerManagedKeyGeo.?keyVersion)
-            ? (!isGeoHSMManagedCMK
-                ? '${cMKGeoKeyVault::cMKKey!.properties.keyUri}/${customerManagedKeyGeo!.keyVersion!}'
-                : 'https://${last(split((customerManagedKeyGeo!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKeyGeo!.keyName}/${customerManagedKeyGeo!.keyVersion!}')
-            : (!isGeoHSMManagedCMK
-                ? cMKGeoKeyVault::cMKKey!.properties.keyUriWithVersion
-                : fail('Managed HSM CMK encryption requires specifying the \'keyVersion\'.')))
-        : null
-      geoBackupUserAssignedIdentityId: geoRedundantBackup == 'Enabled' ? cMKGeoUserAssignedIdentity.id : null
-      primaryKeyURI: !empty(customerManagedKey.?keyVersion)
-        ? (!isHSMManagedCMK
-            ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
-            : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.keyVersion!}')
-        : (!isHSMManagedCMK
-            ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
-            : fail('Managed HSM CMK encryption requires specifying the \'keyVersion\'.'))
-      primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
+resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2024-12-30' = {
+  name: name
+  location: location
+  tags: tags
+  sku: {
+    name: skuName
+    tier: tier
+  }
+  identity: identity
+  properties: {
+    administratorLogin: administratorLogin
+    administratorLoginPassword: administratorLoginPassword
+    availabilityZone: availabilityZone != -1 ? string(availabilityZone) : null
+    backup: {
+      backupRetentionDays: backupRetentionDays
+      geoRedundantBackup: geoRedundantBackup
     }
-  : null
+    createMode: createMode
+    dataEncryption: !empty(customerManagedKey)
+      ? {
+          type: 'AzureKeyVault'
+          geoBackupKeyURI: geoRedundantBackup == 'Enabled'
+            ? (!empty(customerManagedKeyGeo.?keyVersion)
+                ? (!isGeoHSMManagedCMK
+                    ? '${cMKGeoKeyVault::cMKKey!.properties.keyUri}/${customerManagedKeyGeo!.keyVersion!}'
+                    : 'https://${last(split((customerManagedKeyGeo!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKeyGeo!.keyName}/${customerManagedKeyGeo!.keyVersion!}')
+                : (!isGeoHSMManagedCMK
+                    ? cMKGeoKeyVault::cMKKey!.properties.keyUriWithVersion
+                    : fail('Managed HSM CMK encryption requires specifying the \'keyVersion\'.')))
+            : null
+          geoBackupUserAssignedIdentityId: geoRedundantBackup == 'Enabled' ? cMKGeoUserAssignedIdentity.id : null
+          primaryKeyURI: !empty(customerManagedKey.?keyVersion)
+            ? (!isHSMManagedCMK
+                ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+                : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.keyVersion!}')
+            : (!isHSMManagedCMK
+                ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
+                : fail('Managed HSM CMK encryption requires specifying the \'keyVersion\'.'))
+          primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
+        }
+      : null
+    highAvailability: {
+      mode: highAvailability
+      standbyAvailabilityZone: standByAvailabilityZone != -1 ? string(standByAvailabilityZone) : null
+    }
+    maintenanceWindow: !empty(maintenanceWindow)
+      ? {
+          customWindow: maintenanceWindow.customWindow
+          dayOfWeek: maintenanceWindow.customWindow == 'Enabled' ? maintenanceWindow.dayOfWeek : 0
+          startHour: maintenanceWindow.customWindow == 'Enabled' ? maintenanceWindow.startHour : 0
+          startMinute: maintenanceWindow.customWindow == 'Enabled' ? maintenanceWindow.startMinute : 0
+        }
+      : null
+    network: {
+      delegatedSubnetResourceId: delegatedSubnetResourceId
+      privateDnsZoneResourceId: privateDnsZoneResourceId
+      publicNetworkAccess: publicNetworkAccess
+    }
+    replicationRole: replicationRole
+    restorePointInTime: restorePointInTime
+    sourceServerResourceId: sourceServerResourceId
+    storage: {
+      autoGrow: storageAutoGrow
+      autoIoScaling: storageAutoIoScaling
+      iops: storageIOPS
+      storageSizeGB: storageSizeGB
+    }
+    version: version
+  }
+}
+
+resource flexibleServer_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
+  }
+  scope: flexibleServer
+}
+
+resource flexibleServer_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(flexibleServer.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
+    properties: {
+      roleDefinitionId: roleAssignment.roleDefinitionId
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: flexibleServer
+  }
+]
+
+module flexibleServer_databases 'database/main.bicep' = [
+  for (database, index) in databases: {
+    name: '${uniqueString(deployment().name, location)}-MySQL-DB-${index}'
+    params: {
+      name: database.name
+      flexibleServerName: flexibleServer.name
+      collation: database.?collation ?? ''
+      charset: database.?charset ?? ''
+    }
+  }
+]
+
+module flexibleServer_firewallRules 'firewall-rule/main.bicep' = [
+  for (firewallRule, index) in firewallRules: {
+    name: '${uniqueString(deployment().name, location)}-MySQL-FirewallRules-${index}'
+    params: {
+      name: firewallRule.name
+      flexibleServerName: flexibleServer.name
+      startIpAddress: firewallRule.startIpAddress
+      endIpAddress: firewallRule.endIpAddress
+    }
+  }
+]
+
+module flexibleServer_administrators 'administrator/main.bicep' = [
+  for (administrator, index) in administrators: {
+    name: '${uniqueString(deployment().name, location)}-MySQL-Administrators-${index}'
+    params: {
+      flexibleServerName: flexibleServer.name
+      login: administrator.login
+      sid: administrator.sid
+      identityResourceId: administrator.identityResourceId
+      tenantId: administrator.?tenantId ?? tenant().tenantId
+    }
+  }
+]
+
+module flexibleServer_configurations 'configuration/main.bicep' = [
+  for (configuration, index) in (configurations ?? []): {
+    name: '${uniqueString(deployment().name, location)}-MySQL-Configuration-${index}'
+    params: {
+      name: configuration.name
+      flexibleServerName: flexibleServer.name
+      source: configuration.?source
+      value: configuration.?value
+    }
+  }
+]
+
+module flexibleServer_advancedThreatProtection 'advanced-threat-protection/main.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-MySQL-AdvancedThreatProtection'
+  params: {
+    flexibleServerName: flexibleServer.name
+    advancedThreatProtection: advancedThreatProtection
+  }
+}
+
+resource flexibleServer_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: flexibleServer
+  }
+]
+
+module flexibleServer_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): if (empty(delegatedSubnetResourceId)) {
+    name: '${uniqueString(deployment().name, location)}-MySQL-Flex-PrivateEndpoint-${index}'
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(flexibleServer.id, '/'))}-${privateEndpoint.?service ?? 'mysqlServer'}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(flexibleServer.id, '/'))}-${privateEndpoint.?service ?? 'mysqlServer'}-${index}'
+              properties: {
+                privateLinkServiceId: flexibleServer.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'mysqlServer'
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(flexibleServer.id, '/'))}-${privateEndpoint.?service ?? 'mysqlServer'}-${index}'
+              properties: {
+                privateLinkServiceId: flexibleServer.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'mysqlServer'
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: enableReferencedModulesTelemetry
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
+  }
+]
+
+@description('The name of the deployed MySQL Flexible server.')
+output name string = flexibleServer.name
+
+@description('The resource ID of the deployed MySQL Flexible server.')
+output resourceId string = flexibleServer.id
+
+@description('The resource group of the deployed MySQL Flexible server.')
+output resourceGroupName string = resourceGroup().name
+
+@description('The location the resource was deployed into.')
+output location string = flexibleServer.location
+
+@description('The FQDN of the MySQL Flexible server.')
+output fqdn string = flexibleServer.properties.fullyQualifiedDomainName
+
+@description('The private endpoints of the MySQL Flexible server.')
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: flexibleServer_privateEndpoints[index]!.outputs.name
+    resourceId: flexibleServer_privateEndpoints[index]!.outputs.resourceId
+    groupId: flexibleServer_privateEndpoints[index]!.outputs.?groupId!
+    customDnsConfigs: flexibleServer_privateEndpoints[index]!.outputs.customDnsConfigs
+    networkInterfaceResourceIds: flexibleServer_privateEndpoints[index]!.outputs.networkInterfaceResourceIds
+  }
+]
 
 // =============== //
 //   Definitions   //
