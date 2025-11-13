@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata name = 'Using Key Vault with the Role Based Access Control (RBAC) permission model'
+metadata description = 'This instance uses a Key Vault with the Role Based Access Control (RBAC) permission model. The option to add the permissions on the key via the module is enabled.'
 
 // ========== //
 // Parameters //
@@ -15,12 +15,12 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.diskencryptionsets-$
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cdeswaf'
+param serviceShort string = 'cdesrbac'
 
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
 
-@description('Optional. A token to inject into the name of each resource.')
+@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
@@ -59,7 +59,9 @@ module testDeployment '../../../main.bicep' = [
       customerManagedKey: {
         keyName: nestedDependencies.outputs.keyName
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+        autoRotationEnabled: false
       }
+      enableKeyPermissions: true
       managedIdentities: {
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
