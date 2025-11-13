@@ -16,6 +16,12 @@ param eventHubName string
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
+@description('Required. The name of the Log Analytics Cluster to create.')
+param logAnalyticsClusterName string
+
+@description('Required. The name of the Key Vault to create.')
+param keyVaultName string
+
 resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   name: storageAccountName
   location: location
@@ -66,6 +72,71 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
   location: location
 }
 
+resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
+  name: keyVaultName
+  location: location
+  properties: {
+    sku: {
+      family: 'A'
+      name: 'standard'
+    }
+    tenantId: tenant().tenantId
+    enablePurgeProtection: true // Required for encryption to work
+    softDeleteRetentionInDays: 7
+    enabledForTemplateDeployment: true
+    enabledForDiskEncryption: true
+    enabledForDeployment: true
+    enableRbacAuthorization: true
+    accessPolicies: []
+  }
+
+  resource key 'keys@2025-05-01' = {
+    name: 'keyEncryptionKey'
+    properties: {
+      kty: 'RSA'
+    }
+  }
+}
+
+resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Key-Vault-Crypto-User-RoleAssignment')
+  scope: keyVault::key
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'e147488a-f6f5-4113-8e2d-b22465e65bf6'
+    ) // Key Vault Crypto Service Encryption User
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource cluster 'Microsoft.OperationalInsights/clusters@2025-02-01' = {
+  name: logAnalyticsClusterName
+  location: location
+  sku: {
+    name: 'CapacityReservation'
+    capacity: 100
+  }
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
+  }
+  properties: {
+    billingType: 'Cluster'
+    keyVaultProperties: {
+      keyName: keyVault::key.name
+      keyVaultUri: keyVault.properties.vaultUri
+      keyVersion: '' // Using auto-rotation
+    }
+  }
+  dependsOn: [
+    keyPermissions
+  ]
+}
+
 @description('The resource ID of the created Storage Account.')
 output storageAccountResourceId string = storageAccount.id
 
@@ -83,3 +154,6 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 
 @description('The resource ID of the created Managed Identity.')
 output managedIdentityResourceId string = managedIdentity.id
+
+@description('The resource ID of the created Log Analytics Cluster.')
+output logAnalyticsClusterResourceId string = cluster.id

@@ -44,7 +44,7 @@ The following section provides usage examples for the module, which were used to
 
 ### Example 1: _Advanced features_
 
-This instance deploys the module with advanced features like custom tables and data exports.
+This instance deploys the module with advanced features like custom tables, data exports & encryption.
 
 
 <details>
@@ -213,6 +213,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       {
         name: 'Automation'
         resourceId: '<resourceId>'
+      }
+      {
+        name: 'Cluster'
+        writeAccessResourceId: '<writeAccessResourceId>'
       }
     ]
     linkedStorageAccounts: [
@@ -530,6 +534,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         {
           "name": "Automation",
           "resourceId": "<resourceId>"
+        },
+        {
+          "name": "Cluster",
+          "writeAccessResourceId": "<writeAccessResourceId>"
         }
       ]
     },
@@ -849,6 +857,10 @@ param linkedServices = [
   {
     name: 'Automation'
     resourceId: '<resourceId>'
+  }
+  {
+    name: 'Cluster'
+    writeAccessResourceId: '<writeAccessResourceId>'
   }
 ]
 param linkedStorageAccounts = [
