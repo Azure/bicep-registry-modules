@@ -51,12 +51,12 @@ The following section provides usage examples for the module, which were used to
 - [Using Customer-Managed-Keys with User-Assigned identity](#example-6-using-customer-managed-keys-with-user-assigned-identity)
 - [Using only defaults](#example-7-using-only-defaults)
 - [Using extended zones](#example-8-using-extended-zones)
-- [Using premium file shares](#example-9-using-premium-file-shares)
-- [With immutability policy](#example-10-with-immutability-policy)
-- [Deploying with a key vault reference to save secrets](#example-11-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-12-using-large-parameter-set)
-- [Deploying with a NFS File Share](#example-13-deploying-with-a-nfs-file-share)
-- [Using object replication](#example-14-using-object-replication)
+- [With immutability policy](#example-9-with-immutability-policy)
+- [Deploying with a key vault reference to save secrets](#example-10-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-11-using-large-parameter-set)
+- [Deploying with a NFS File Share](#example-12-deploying-with-a-nfs-file-share)
+- [Using object replication](#example-13-using-object-replication)
+- [Using premium file shares](#example-14-using-premium-file-shares)
 - [Deploying as Storage Account version 1](#example-15-deploying-as-storage-account-version-1)
 - [WAF-aligned](#example-16-waf-aligned)
 
@@ -891,118 +891,7 @@ param skuName = 'Premium_LRS'
 </details>
 <p>
 
-### Example 9: _Using premium file shares_
-
-This instance deploys the module with File Services with PremiumV2 SKU and a file share.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
-  params: {
-    // Required parameters
-    name: 'ssapfs001'
-    // Non-required parameters
-    allowBlobPublicAccess: false
-    fileServices: {
-      shares: [
-        {
-          name: 'fileshare01'
-        }
-      ]
-    }
-    kind: 'FileStorage'
-    networkAcls: {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-    }
-    skuName: 'PremiumV2_LRS'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "ssapfs001"
-    },
-    // Non-required parameters
-    "allowBlobPublicAccess": {
-      "value": false
-    },
-    "fileServices": {
-      "value": {
-        "shares": [
-          {
-            "name": "fileshare01"
-          }
-        ]
-      }
-    },
-    "kind": {
-      "value": "FileStorage"
-    },
-    "networkAcls": {
-      "value": {
-        "bypass": "AzureServices",
-        "defaultAction": "Deny"
-      }
-    },
-    "skuName": {
-      "value": "PremiumV2_LRS"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/storage/storage-account:<version>'
-
-// Required parameters
-param name = 'ssapfs001'
-// Non-required parameters
-param allowBlobPublicAccess = false
-param fileServices = {
-  shares: [
-    {
-      name: 'fileshare01'
-    }
-  ]
-}
-param kind = 'FileStorage'
-param networkAcls = {
-  bypass: 'AzureServices'
-  defaultAction: 'Deny'
-}
-param skuName = 'PremiumV2_LRS'
-```
-
-</details>
-<p>
-
-### Example 10: _With immutability policy_
+### Example 9: _With immutability policy_
 
 This instance deploys the module with the immutability policy enabled.
 
@@ -1156,7 +1045,7 @@ param networkAcls = {
 </details>
 <p>
 
-### Example 11: _Deploying with a key vault reference to save secrets_
+### Example 10: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving all its secrets in a key vault.
 
@@ -1238,7 +1127,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 12: _Using large parameter set_
+### Example 11: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -2877,7 +2766,7 @@ param tags = {
 </details>
 <p>
 
-### Example 13: _Deploying with a NFS File Share_
+### Example 12: _Deploying with a NFS File Share_
 
 This instance deploys the module with a NFS File Share.
 
@@ -2972,7 +2861,7 @@ param skuName = 'Premium_LRS'
 </details>
 <p>
 
-### Example 14: _Using object replication_
+### Example 13: _Using object replication_
 
 This instance deploys the module with Object Replication features to async replicate blobs from one account to another.
 
@@ -3113,6 +3002,117 @@ param objectReplicationPolicies = [
   }
 ]
 param skuName = 'Standard_LRS'
+```
+
+</details>
+<p>
+
+### Example 14: _Using premium file shares_
+
+This instance deploys the module with File Services with PremiumV2 SKU and a file share.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  name: 'storageAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'ssapfs001'
+    // Non-required parameters
+    allowBlobPublicAccess: false
+    fileServices: {
+      shares: [
+        {
+          name: 'fileshare01'
+        }
+      ]
+    }
+    kind: 'FileStorage'
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+    }
+    skuName: 'PremiumV2_LRS'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssapfs001"
+    },
+    // Non-required parameters
+    "allowBlobPublicAccess": {
+      "value": false
+    },
+    "fileServices": {
+      "value": {
+        "shares": [
+          {
+            "name": "fileshare01"
+          }
+        ]
+      }
+    },
+    "kind": {
+      "value": "FileStorage"
+    },
+    "networkAcls": {
+      "value": {
+        "bypass": "AzureServices",
+        "defaultAction": "Deny"
+      }
+    },
+    "skuName": {
+      "value": "PremiumV2_LRS"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssapfs001'
+// Non-required parameters
+param allowBlobPublicAccess = false
+param fileServices = {
+  shares: [
+    {
+      name: 'fileshare01'
+    }
+  ]
+}
+param kind = 'FileStorage'
+param networkAcls = {
+  bypass: 'AzureServices'
+  defaultAction: 'Deny'
+}
+param skuName = 'PremiumV2_LRS'
 ```
 
 </details>
