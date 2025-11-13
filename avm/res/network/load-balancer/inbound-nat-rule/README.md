@@ -29,6 +29,7 @@ This module deploys a Load Balancer Inbound NAT Rules.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`frontendPort`](#parameter-frontendport) | int | The port for the external endpoint. Port numbers for each rule must be unique within the Load Balancer. Required if FrontendPortRangeStart and FrontendPortRangeEnd are not specified. |
+| [`frontendPortRangeEnd`](#parameter-frontendportrangeend) | int | The port range end for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeStart. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. Required if FrontendPort is not specified. |
 | [`frontendPortRangeStart`](#parameter-frontendportrangestart) | int | The port range start for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeEnd. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. Required if FrontendPort is not specified. |
 | [`loadBalancerName`](#parameter-loadbalancername) | string | The name of the parent load balancer. Required if the template is used in a standalone deployment. |
 
@@ -41,12 +42,6 @@ This module deploys a Load Balancer Inbound NAT Rules.
 | [`enableTcpReset`](#parameter-enabletcpreset) | bool | Receive bidirectional TCP Reset on TCP flow idle timeout or unexpected connection termination. This element is only used when the protocol is set to TCP. |
 | [`idleTimeoutInMinutes`](#parameter-idletimeoutinminutes) | int | The timeout for the TCP idle connection. The value can be set between 4 and 30 minutes. The default value is 4 minutes. This element is only used when the protocol is set to TCP. |
 | [`protocol`](#parameter-protocol) | string | The transport protocol for the endpoint. |
-
-**Conditonal parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`frontendPortRangeEnd`](#parameter-frontendportrangeend) | int | The port range end for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeStart. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. Required if FrontendPort is not specified. |
 
 ### Parameter: `backendPort`
 
@@ -74,6 +69,15 @@ The name of the inbound NAT rule.
 ### Parameter: `frontendPort`
 
 The port for the external endpoint. Port numbers for each rule must be unique within the Load Balancer. Required if FrontendPortRangeStart and FrontendPortRangeEnd are not specified.
+
+- Required: No
+- Type: int
+- MinValue: 0
+- MaxValue: 65534
+
+### Parameter: `frontendPortRangeEnd`
+
+The port range end for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeStart. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. Required if FrontendPort is not specified.
 
 - Required: No
 - Type: int
@@ -143,15 +147,6 @@ The transport protocol for the endpoint.
     'Udp'
   ]
   ```
-
-### Parameter: `frontendPortRangeEnd`
-
-The port range end for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeStart. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. Required if FrontendPort is not specified.
-
-- Required: No
-- Type: int
-- MinValue: 0
-- MaxValue: 65534
 
 ## Outputs
 

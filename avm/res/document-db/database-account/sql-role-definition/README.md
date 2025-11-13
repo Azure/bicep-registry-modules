@@ -23,6 +23,7 @@ This module deploys a SQL Role Definision in a CosmosDB Account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`dataActions`](#parameter-dataactions) | array | An array of data actions that are allowed. |
 | [`roleName`](#parameter-rolename) | string | A user-friendly name for the Role Definition. Must be unique for the database account. |
 
 **Conditional parameters**
@@ -36,10 +37,16 @@ This module deploys a SQL Role Definision in a CosmosDB Account.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`assignableScopes`](#parameter-assignablescopes) | array | A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Collection. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account. |
-| [`dataActions`](#parameter-dataactions) | array | An array of data actions that are allowed. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`name`](#parameter-name) | string | The unique identifier of the Role Definition. |
 | [`sqlRoleAssignments`](#parameter-sqlroleassignments) | array | An array of SQL Role Assignments to be created for the SQL Role Definition. |
+
+### Parameter: `dataActions`
+
+An array of data actions that are allowed.
+
+- Required: Yes
+- Type: array
 
 ### Parameter: `roleName`
 
@@ -61,14 +68,6 @@ A set of fully qualified Scopes at or below which Role Assignments may be create
 
 - Required: No
 - Type: array
-
-### Parameter: `dataActions`
-
-An array of data actions that are allowed.
-
-- Required: No
-- Type: array
-- Default: `[]`
 
 ### Parameter: `enableTelemetry`
 
@@ -103,6 +102,7 @@ An array of SQL Role Assignments to be created for the SQL Role Definition.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-sqlroleassignmentsname) | string | Name unique identifier of the SQL Role Assignment. |
+| [`scope`](#parameter-sqlroleassignmentsscope) | string | The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level. |
 
 ### Parameter: `sqlRoleAssignments.principalId`
 
@@ -114,6 +114,13 @@ The unique identifier for the associated AAD principal in the AAD graph to which
 ### Parameter: `sqlRoleAssignments.name`
 
 Name unique identifier of the SQL Role Assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlRoleAssignments.scope`
+
+The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level.
 
 - Required: No
 - Type: string

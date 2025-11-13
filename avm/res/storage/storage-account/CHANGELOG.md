@@ -2,12 +2,35 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/storage/storage-account/CHANGELOG.md).
 
+## 0.29.0
+
+### Changes
+
+- Added support for managed HSM key encryption
+
+### Breaking Changes
+
+- None
+
+## 0.28.0
+
+### Changes
+
+- Added strict types for `fileServices`, `queueServices`, and `tableServices` inputs
+- Updated input `managementPolicyRules` to match underlying strict type `storageAccounts/managementPolicies.properties.policy.rules`
+- Added optional input `blobServices.versionDeletePolicyDays` to provide a friendly means of including an auto-created lifecycle policy for deleting blob versions after x days.
+- Added optional input `extendedLocationZone` to support Azure Extended Zone region deployment
+- Added optional input `objectReplicationPolicies` to support Object Replication policies across storage accounts
+
+### Breaking Changes
+
+- None
+
 ## 0.27.1
 
 ### Changes
 
 - Added check for immutability when hierarchical namespace is enabled
-
 
 ### Breaking Changes
 

@@ -73,9 +73,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
             name: 'dep-test-cdnpafdp-afd-route'
             originGroupName: 'dep-test-cdnpafdp-origin-group'
             ruleSets: [
-              {
-                name: 'deptestcdnpafdpruleset'
-              }
+              'deptestcdnpafdpruleset'
             ]
           }
         ]
@@ -183,9 +181,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               "name": "dep-test-cdnpafdp-afd-route",
               "originGroupName": "dep-test-cdnpafdp-origin-group",
               "ruleSets": [
-                {
-                  "name": "deptestcdnpafdpruleset"
-                }
+                "deptestcdnpafdpruleset"
               ]
             }
           ]
@@ -299,9 +295,7 @@ param afdEndpoints = [
         name: 'dep-test-cdnpafdp-afd-route'
         originGroupName: 'dep-test-cdnpafdp-origin-group'
         ruleSets: [
-          {
-            name: 'deptestcdnpafdpruleset'
-          }
+          'deptestcdnpafdpruleset'
         ]
       }
     ]
@@ -406,9 +400,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
             name: 'dep-test-cdnpafd-afd-route'
             originGroupName: 'dep-test-cdnpafd-origin-group'
             ruleSets: [
-              {
-                name: 'deptestcdnpafdruleset'
-              }
+              'deptestcdnpafdruleset'
             ]
           }
         ]
@@ -523,9 +515,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               "name": "dep-test-cdnpafd-afd-route",
               "originGroupName": "dep-test-cdnpafd-origin-group",
               "ruleSets": [
-                {
-                  "name": "deptestcdnpafdruleset"
-                }
+                "deptestcdnpafdruleset"
               ]
             }
           ]
@@ -646,9 +636,7 @@ param afdEndpoints = [
         name: 'dep-test-cdnpafd-afd-route'
         originGroupName: 'dep-test-cdnpafd-origin-group'
         ruleSets: [
-          {
-            name: 'deptestcdnpafdruleset'
-          }
+          'deptestcdnpafdruleset'
         ]
       }
     ]
@@ -851,9 +839,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               '/health'
             ]
             ruleSets: [
-              {
-                name: 'deptestcdnpmaxruleset1'
-              }
+              'deptestcdnpmaxruleset1'
             ]
             supportedProtocols: [
               'Http'
@@ -1073,9 +1059,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
                 "/health"
               ],
               "ruleSets": [
-                {
-                  "name": "deptestcdnpmaxruleset1"
-                }
+                "deptestcdnpmaxruleset1"
               ],
               "supportedProtocols": [
                 "Http",
@@ -1309,9 +1293,7 @@ param afdEndpoints = [
           '/health'
         ]
         ruleSets: [
-          {
-            name: 'deptestcdnpmaxruleset1'
-          }
+          'deptestcdnpmaxruleset1'
         ]
         supportedProtocols: [
           'Http'
@@ -1529,9 +1511,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               '/v2/*'
             ]
             ruleSets: [
-              {
-                name: 'depwafsecurityrulescdnpwaf'
-              }
+              'depwafsecurityrulescdnpwaf'
             ]
             supportedProtocols: [
               'Https'
@@ -1617,8 +1597,30 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
             httpPort: 80
             httpsPort: 443
             name: 'dep-waf-api-origin'
+            originHostHeader: 'www.bing.com'
             priority: 1
-            weight: 1000
+            weight: 100
+          }
+          {
+            enabledState: 'Enabled'
+            enforceCertificateNameCheck: true
+            hostName: '<hostName>'
+            httpPort: 80
+            httpsPort: 443
+            name: 'dep-waf-api-origin-no-2'
+            originHostHeader: ''
+            priority: 2
+            weight: 200
+          }
+          {
+            enabledState: 'Enabled'
+            enforceCertificateNameCheck: true
+            hostName: '<hostName>'
+            httpPort: 80
+            httpsPort: 443
+            name: 'dep-waf-api-origin-no-3'
+            priority: 3
+            weight: 300
           }
         ]
         sessionAffinityState: 'Disabled'
@@ -1836,9 +1838,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
                 "/v2/*"
               ],
               "ruleSets": [
-                {
-                  "name": "depwafsecurityrulescdnpwaf"
-                }
+                "depwafsecurityrulescdnpwaf"
               ],
               "supportedProtocols": [
                 "Https"
@@ -1936,8 +1936,30 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               "httpPort": 80,
               "httpsPort": 443,
               "name": "dep-waf-api-origin",
+              "originHostHeader": "www.bing.com",
               "priority": 1,
-              "weight": 1000
+              "weight": 100
+            },
+            {
+              "enabledState": "Enabled",
+              "enforceCertificateNameCheck": true,
+              "hostName": "<hostName>",
+              "httpPort": 80,
+              "httpsPort": 443,
+              "name": "dep-waf-api-origin-no-2",
+              "originHostHeader": "",
+              "priority": 2,
+              "weight": 200
+            },
+            {
+              "enabledState": "Enabled",
+              "enforceCertificateNameCheck": true,
+              "hostName": "<hostName>",
+              "httpPort": 80,
+              "httpsPort": 443,
+              "name": "dep-waf-api-origin-no-3",
+              "priority": 3,
+              "weight": 300
             }
           ],
           "sessionAffinityState": "Disabled",
@@ -2157,9 +2179,7 @@ param afdEndpoints = [
           '/v2/*'
         ]
         ruleSets: [
-          {
-            name: 'depwafsecurityrulescdnpwaf'
-          }
+          'depwafsecurityrulescdnpwaf'
         ]
         supportedProtocols: [
           'Https'
@@ -2245,8 +2265,30 @@ param originGroups = [
         httpPort: 80
         httpsPort: 443
         name: 'dep-waf-api-origin'
+        originHostHeader: 'www.bing.com'
         priority: 1
-        weight: 1000
+        weight: 100
+      }
+      {
+        enabledState: 'Enabled'
+        enforceCertificateNameCheck: true
+        hostName: '<hostName>'
+        httpPort: 80
+        httpsPort: 443
+        name: 'dep-waf-api-origin-no-2'
+        originHostHeader: ''
+        priority: 2
+        weight: 200
+      }
+      {
+        enabledState: 'Enabled'
+        enforceCertificateNameCheck: true
+        hostName: '<hostName>'
+        httpPort: 80
+        httpsPort: 443
+        name: 'dep-waf-api-origin-no-3'
+        priority: 3
+        weight: 300
       }
     ]
     sessionAffinityState: 'Disabled'
@@ -2433,8 +2475,7 @@ param tags = {
 | [`customDomains`](#parameter-customdomains) | array | Array of custom domain objects. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`endpointName`](#parameter-endpointname) | string | Name of the endpoint under the profile which is unique globally. |
-| [`endpointProperties`](#parameter-endpointproperties) | object | Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details). |
+| [`endpoint`](#parameter-endpoint) | object | Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details). |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -2479,7 +2520,6 @@ Array of origin group objects. Required if the afdEndpoints is specified.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -2503,35 +2543,6 @@ Load balancing settings for a backend pool.
 
 - Required: Yes
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`additionalLatencyInMilliseconds`](#parameter-origingroupsloadbalancingsettingsadditionallatencyinmilliseconds) | int | Additional latency in milliseconds for probes to the backend. Must be between 0 and 1000. |
-| [`sampleSize`](#parameter-origingroupsloadbalancingsettingssamplesize) | int | Number of samples to consider for load balancing decisions. |
-| [`successfulSamplesRequired`](#parameter-origingroupsloadbalancingsettingssuccessfulsamplesrequired) | int | Number of samples within the sample window that must be successful to mark the backend as healthy. |
-
-### Parameter: `originGroups.loadBalancingSettings.additionalLatencyInMilliseconds`
-
-Additional latency in milliseconds for probes to the backend. Must be between 0 and 1000.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `originGroups.loadBalancingSettings.sampleSize`
-
-Number of samples to consider for load balancing decisions.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `originGroups.loadBalancingSettings.successfulSamplesRequired`
-
-Number of samples within the sample window that must be successful to mark the backend as healthy.
-
-- Required: Yes
-- Type: int
 
 ### Parameter: `originGroups.name`
 
@@ -2651,59 +2662,6 @@ Health probe settings to the origin that is used to determine the health of the 
 - Required: No
 - Type: object
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`probeIntervalInSeconds`](#parameter-origingroupshealthprobesettingsprobeintervalinseconds) | int | The number of seconds between health probes.Default is 240sec. |
-| [`probePath`](#parameter-origingroupshealthprobesettingsprobepath) | string | The path relative to the origin that is used to determine the health of the origin. |
-| [`probeProtocol`](#parameter-origingroupshealthprobesettingsprobeprotocol) | string | Protocol to use for health probe. |
-| [`probeRequestType`](#parameter-origingroupshealthprobesettingsproberequesttype) | string | The request type to probe. |
-
-### Parameter: `originGroups.healthProbeSettings.probeIntervalInSeconds`
-
-The number of seconds between health probes.Default is 240sec.
-
-- Required: No
-- Type: int
-
-### Parameter: `originGroups.healthProbeSettings.probePath`
-
-The path relative to the origin that is used to determine the health of the origin.
-
-- Required: No
-- Type: string
-
-### Parameter: `originGroups.healthProbeSettings.probeProtocol`
-
-Protocol to use for health probe.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Http'
-    'Https'
-    'NotSet'
-  ]
-  ```
-
-### Parameter: `originGroups.healthProbeSettings.probeRequestType`
-
-The request type to probe.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'GET'
-    'HEAD'
-    'NotSet'
-  ]
-  ```
-
 ### Parameter: `originGroups.sessionAffinityState`
 
 Whether to allow session affinity on this host.
@@ -2731,7 +2689,6 @@ Array of AFD endpoint objects.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -2811,7 +2768,7 @@ The list of routes for this AFD Endpoint.
 | [`linkToDefaultDomain`](#parameter-afdendpointsrouteslinktodefaultdomain) | string | Whether this route will be linked to the default endpoint domain. |
 | [`originPath`](#parameter-afdendpointsroutesoriginpath) | string | A directory path on the origin that AzureFrontDoor can use to retrieve content from, e.g. contoso.cloudapp.net/originpath. |
 | [`patternsToMatch`](#parameter-afdendpointsroutespatternstomatch) | array | The route patterns of the rule. |
-| [`ruleSets`](#parameter-afdendpointsroutesrulesets) | array | The rule sets of the rule. |
+| [`ruleSets`](#parameter-afdendpointsroutesrulesets) | array | The names of the rule sets of the rule. |
 | [`supportedProtocols`](#parameter-afdendpointsroutessupportedprotocols) | array | The supported protocols of the rule. |
 
 ### Parameter: `afdEndpoints.routes.name`
@@ -2834,70 +2791,6 @@ The caching configuration for this route. To disable caching, do not provide a c
 
 - Required: No
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`compressionSettings`](#parameter-afdendpointsroutescacheconfigurationcompressionsettings) | object | Compression settings. |
-| [`queryParameters`](#parameter-afdendpointsroutescacheconfigurationqueryparameters) | string | Query parameters to include or exclude (comma separated). |
-| [`queryStringCachingBehavior`](#parameter-afdendpointsroutescacheconfigurationquerystringcachingbehavior) | string | Defines how Frontdoor caches requests that include query strings. |
-
-### Parameter: `afdEndpoints.routes.cacheConfiguration.compressionSettings`
-
-Compression settings.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`contentTypesToCompress`](#parameter-afdendpointsroutescacheconfigurationcompressionsettingscontenttypestocompress) | array | List of content types on which compression applies. The value should be a valid MIME type. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`isCompressionEnabled`](#parameter-afdendpointsroutescacheconfigurationcompressionsettingsiscompressionenabled) | bool | Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won't be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB. |
-
-### Parameter: `afdEndpoints.routes.cacheConfiguration.compressionSettings.contentTypesToCompress`
-
-List of content types on which compression applies. The value should be a valid MIME type.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `afdEndpoints.routes.cacheConfiguration.compressionSettings.isCompressionEnabled`
-
-Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won't be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB.
-
-- Required: No
-- Type: bool
-
-### Parameter: `afdEndpoints.routes.cacheConfiguration.queryParameters`
-
-Query parameters to include or exclude (comma separated).
-
-- Required: Yes
-- Type: string
-
-### Parameter: `afdEndpoints.routes.cacheConfiguration.queryStringCachingBehavior`
-
-Defines how Frontdoor caches requests that include query strings.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'IgnoreQueryString'
-    'IgnoreSpecifiedQueryStrings'
-    'IncludeSpecifiedQueryStrings'
-    'UseQueryString'
-  ]
-  ```
 
 ### Parameter: `afdEndpoints.routes.customDomainNames`
 
@@ -2979,7 +2872,7 @@ The route patterns of the rule.
 
 ### Parameter: `afdEndpoints.routes.ruleSets`
 
-The rule sets of the rule.
+The names of the rule sets of the rule.
 
 - Required: No
 - Type: array
@@ -3004,7 +2897,6 @@ Array of custom domain objects.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -3266,16 +3158,43 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `endpointName`
+### Parameter: `endpoint`
+
+Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details).
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-endpointname) | string | Name of the endpoint under the profile which is unique globally. |
+| [`properties`](#parameter-endpointproperties) | object | Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details). |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`tags`](#parameter-endpointtags) | object | Endpoint tags. |
+
+### Parameter: `endpoint.name`
 
 Name of the endpoint under the profile which is unique globally.
 
-- Required: No
+- Required: Yes
 - Type: string
 
-### Parameter: `endpointProperties`
+### Parameter: `endpoint.properties`
 
 Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details).
+
+- Required: Yes
+- Type: object
+
+### Parameter: `endpoint.tags`
+
+Endpoint tags.
 
 - Required: No
 - Type: object
@@ -3481,7 +3400,6 @@ Array of rule set objects.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -3520,7 +3438,7 @@ Array of rules.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`actions`](#parameter-rulesetsrulesactions) | array | A list of actions that are executed when all the conditions of a rule are satisfied.. |
+| [`actions`](#parameter-rulesetsrulesactions) | array | A list of actions that are executed when all the conditions of a rule are satisfied. |
 | [`conditions`](#parameter-rulesetsrulesconditions) | array | A list of conditions that must be matched for the actions to be executed. |
 | [`matchProcessingBehavior`](#parameter-rulesetsrulesmatchprocessingbehavior) | string | If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue. |
 
@@ -3540,7 +3458,7 @@ The order in which the rules are applied for the endpoint.
 
 ### Parameter: `ruleSets.rules.actions`
 
-A list of actions that are executed when all the conditions of a rule are satisfied..
+A list of actions that are executed when all the conditions of a rule are satisfied.
 
 - Required: No
 - Type: array
@@ -3572,7 +3490,78 @@ Array of secret objects.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-secretsname) | string | The name of the secret. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`secretSourceResourceId`](#parameter-secretssecretsourceresourceid) | string | The resource ID of the secret source. Required if the `type` is "CustomerCertificate". |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`secretVersion`](#parameter-secretssecretversion) | string | The version of the secret. |
+| [`subjectAlternativeNames`](#parameter-secretssubjectalternativenames) | array | The subject alternative names of the secret. |
+| [`type`](#parameter-secretstype) | string | The type of the secret. |
+| [`useLatestVersion`](#parameter-secretsuselatestversion) | bool | Indicates whether to use the latest version of the secret. |
+
+### Parameter: `secrets.name`
+
+The name of the secret.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `secrets.secretSourceResourceId`
+
+The resource ID of the secret source. Required if the `type` is "CustomerCertificate".
+
+- Required: No
+- Type: string
+
+### Parameter: `secrets.secretVersion`
+
+The version of the secret.
+
+- Required: No
+- Type: string
+
+### Parameter: `secrets.subjectAlternativeNames`
+
+The subject alternative names of the secret.
+
+- Required: No
+- Type: array
+
+### Parameter: `secrets.type`
+
+The type of the secret.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureFirstPartyManagedCertificate'
+    'CustomerCertificate'
+    'ManagedCertificate'
+    'UrlSigningKey'
+  ]
+  ```
+
+### Parameter: `secrets.useLatestVersion`
+
+Indicates whether to use the latest version of the secret.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `securityPolicies`
 
@@ -3580,7 +3569,6 @@ Array of Security Policy objects (see https://learn.microsoft.com/en-us/azure/te
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -3674,8 +3662,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
