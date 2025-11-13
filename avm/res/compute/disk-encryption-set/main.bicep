@@ -155,28 +155,39 @@ module keyVaultPermissionsUami 'modules/nested_keyVaultPermissions.bicep' = [
   }
 ]
 
-resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' = {
+// resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' = {
+//   name: name
+//   location: location
+//   tags: tags
+//   identity: identity
+//   properties: {
+//     activeKey: {
+//       sourceVault: {
+//         id: customerManagedKey!.keyVaultResourceId
+//       }
+//       keyUrl: !empty(customerManagedKey!.?keyVersion)
+//         ? (!isHSMManagedCMK
+//             ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+//             : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.keyVersion!}')
+//         : (!isHSMManagedCMK
+//             ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
+//             : fail('Managed HSM CMK encryption requires specifying the \'keyVersion\'.'))
+//     }
+//     encryptionType: encryptionType
+//     federatedClientId: federatedClientId
+//     rotationToLatestKeyVersionEnabled: customerManagedKey.?autoRotationEnabled
+//   }
+//   dependsOn: [
+//     keyVaultPermissionsUami
+//   ]
+// }
+
+resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' existing = {
   name: name
-  location: location
-  tags: tags
-  identity: identity
-  properties: {
-    activeKey: {
-      sourceVault: {
-        id: customerManagedKey!.keyVaultResourceId
-      }
-      keyUrl: !empty(customerManagedKey!.?keyVersion)
-        ? (!isHSMManagedCMK
-            ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
-            : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.keyVersion!}')
-        : (!isHSMManagedCMK
-            ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
-            : fail('Managed HSM CMK encryption requires specifying the \'keyVersion\'.'))
-    }
-    encryptionType: encryptionType
-    federatedClientId: federatedClientId
-    rotationToLatestKeyVersionEnabled: customerManagedKey.?autoRotationEnabled
-  }
+  scope: resourceGroup(
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+  )
   dependsOn: [
     keyVaultPermissionsUami
   ]
