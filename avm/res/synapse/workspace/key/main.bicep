@@ -13,11 +13,12 @@ param isActiveCMK bool
 @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
 param keyVaultResourceId string
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {
-  name: last(split(keyVaultResourceId, '/'))
+var isHSMManagedCMK = split(keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!isHSMManagedCMK) {
+  name: last(split((keyVaultResourceId), '/'))
   scope: resourceGroup(split(keyVaultResourceId, '/')[2], split(keyVaultResourceId, '/')[4])
 
-  resource cMKKey 'keys@2024-11-01' existing = {
+  resource cMKKey 'keys@2025-05-01' existing = if (!isHSMManagedCMK) {
     name: name
   }
 }
@@ -31,7 +32,9 @@ resource key 'Microsoft.Synapse/workspaces/keys@2021-06-01' = {
   parent: workspace
   properties: {
     isActiveCMK: isActiveCMK
-    keyVaultUrl: cMKKeyVault::cMKKey.properties.keyUri
+    keyVaultUrl: !isHSMManagedCMK
+      ? cMKKeyVault!.properties.vaultUri
+      : 'https://${last(split((keyVaultResourceId), '/'))}.managedhsm.azure.net/'
   }
 }
 
