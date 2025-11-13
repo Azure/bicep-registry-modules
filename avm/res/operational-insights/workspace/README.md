@@ -227,7 +227,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         ]
       }
     ]
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -551,9 +550,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -871,7 +867,6 @@ param linkedStorageAccounts = [
     ]
   }
 ]
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -1007,10 +1002,7 @@ This instance deploys the module with the minimum set of required parameters.
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
   name: 'workspaceDeployment'
   params: {
-    // Required parameters
     name: 'oiwmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -1027,13 +1019,8 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "oiwmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -1049,10 +1036,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 ```bicep-params
 using 'br/public:avm/res/operational-insights/workspace:<version>'
 
-// Required parameters
 param name = 'oiwmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -2201,7 +2185,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         ]
       }
     ]
-    location: '<location>'
     managedIdentities: {
       systemAssigned: true
     }
@@ -2386,9 +2369,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true
@@ -2567,7 +2547,6 @@ param linkedStorageAccounts = [
     ]
   }
 ]
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
 }
