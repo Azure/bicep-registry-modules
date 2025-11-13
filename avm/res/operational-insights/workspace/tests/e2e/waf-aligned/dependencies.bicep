@@ -10,6 +10,12 @@ param automationAccountName string
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
+@description('Required. The name of the Log Analytics Cluster to create.')
+param logAnalyticsClusterName string
+
+@description('Required. The name of the Key Vault to create.')
+param keyVaultName string
+
 @description('Required. The name of the Deployment Script to create to get the paired region name.')
 param pairedRegionScriptName string
 
@@ -60,7 +66,7 @@ resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2023-08-01
     }
   }
   properties: {
-    azPowerShellVersion: '8.0'
+    azPowerShellVersion: '11.0'
     retentionInterval: 'P1D'
     arguments: '-Location \\"${location}\\"'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Get-PairedRegion.ps1')
@@ -69,6 +75,74 @@ resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2023-08-01
     roleAssignment
   ]
 }
+
+resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
+  name: keyVaultName
+  location: location
+  properties: {
+    sku: {
+      family: 'A'
+      name: 'standard'
+    }
+    tenantId: tenant().tenantId
+    enablePurgeProtection: true // Required for encryption to work
+    softDeleteRetentionInDays: 7
+    enabledForTemplateDeployment: true
+    enabledForDiskEncryption: true
+    enabledForDeployment: true
+    enableRbacAuthorization: true
+    accessPolicies: []
+  }
+
+  resource key 'keys@2025-05-01' = {
+    name: 'keyEncryptionKey'
+    properties: {
+      kty: 'RSA'
+    }
+  }
+}
+
+resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Key-Vault-Crypto-User-RoleAssignment')
+  scope: keyVault::key
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '12338af0-0e69-4776-bea7-57ae8d297424'
+    ) // Key Vault Crypto User
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource cluster 'Microsoft.OperationalInsights/clusters@2025-02-01' = {
+  name: logAnalyticsClusterName
+  location: location
+  sku: {
+    name: 'CapacityReservation'
+    capacity: 100
+  }
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
+  }
+  properties: {
+    billingType: 'Cluster'
+    keyVaultProperties: {
+      keyName: keyVault::key.name
+      keyVaultUri: keyVault.properties.vaultUri
+      keyVersion: '' // Using auto-rotation
+    }
+  }
+  dependsOn: [
+    keyPermissions
+  ]
+}
+
+@description('The resource ID of the created Log Analytics Cluster.')
+output logAnalyticsClusterResourceId string = cluster.id
 
 @description('The resource ID of the created Storage Account.')
 output storageAccountResourceId string = storageAccount.id
