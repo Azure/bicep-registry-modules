@@ -99,14 +99,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/chat-with-your-data:<version>`.
 
-- [Sandbox With Azure Cosmos DB](#example-1-sandbox-with-azure-cosmos-db)
-- [Sandbox With Azure Database for PostgreSQL flexible servers](#example-2-sandbox-with-azure-database-for-postgresql-flexible-servers)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Sandbox-Cosmos](#example-1-sandbox-cosmos)
+- [Sandbox](#example-2-sandbox)
+- [Waf-Aligned](#example-3-waf-aligned)
 
-### Example 1: _Sandbox With Azure Cosmos DB_
-
-This deploys the sandbox configuration for Chat with your data Solution Accelerator with database as Azure Cosmos DB.
-
+### Example 1: _Sandbox-Cosmos_
 
 <details>
 
@@ -172,10 +169,7 @@ param solutionName = '<solutionName>'
 </details>
 <p>
 
-### Example 2: _Sandbox With Azure Database for PostgreSQL flexible servers_
-
-This deploys the sandbox configuration for Chat with your data Solution Accelerator with database as Azure Database for PostgreSQL flexible servers.
-
+### Example 2: _Sandbox_
 
 <details>
 
@@ -236,10 +230,7 @@ param solutionName = '<solutionName>'
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework
-
+### Example 3: _Waf-Aligned_
 
 <details>
 
