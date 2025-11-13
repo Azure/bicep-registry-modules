@@ -7,10 +7,12 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added support for managed HSM customer-managed key encryption
+- Added `ConfidentialVmEncryptedWithCustomerKey` as `encryptionType` option
 
 ### Breaking Changes
 
-- TODO: Update
+- Key Vault permissions are now optional and controlled by the new parameter `enableKeyPermissions`, which defaults to `false`. To maintain the previous behavior after this breaking change, set `enableKeyPermissions = true` in your configuration.
+- The four input parameters (`keyVaultResourceId`, `keyName`, `keyVersion`, and `rotationToLatestKeyVersionEnabled`) have been replaced with a single `customerManagedKey` object, aligning with the AVM Customer-Managed-Key (CMK) interface.
 
 ## 0.5.0
 

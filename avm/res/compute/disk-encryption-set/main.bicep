@@ -16,7 +16,7 @@ import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/av
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Optional. Assign permissions to the Key Vault Key.')
-param enableSetKeyPermissions bool = false
+param enableKeyPermissions bool = false
 
 @description('Optional. The type of key used to encrypt the data of the disk. For security reasons, it is recommended to set encryptionType to EncryptionAtRestWithPlatformAndCustomerKeys.')
 @allowed([
@@ -139,7 +139,7 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!isHS
 
 // Note: This is only enabled for user-assigned identities as the service's system-assigned identity isn't available during its initial deployment
 module keyVaultPermissionsUami 'modules/nested_keyVaultPermissions.bicep' = [
-  for (userAssignedIdentityResourceId, index) in (managedIdentities.?userAssignedResourceIds ?? []): if (enableSetKeyPermissions && !isHSMManagedCMK) {
+  for (userAssignedIdentityResourceId, index) in (managedIdentities.?userAssignedResourceIds ?? []): if (enableKeyPermissions && !isHSMManagedCMK) {
     name: '${uniqueString(deployment().name, location)}-DiskEncrSet-KVPermissions-${index}'
     params: {
       keyName: customerManagedKey!.keyName

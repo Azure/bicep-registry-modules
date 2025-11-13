@@ -59,7 +59,7 @@ module testDeployment '../../../main.bicep' = [
         keyName: nestedDependencies.outputs.keyName
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       }
-      enableSetKeyPermissions: true
+      enableKeyPermissions: true
     }
   }
 ]
