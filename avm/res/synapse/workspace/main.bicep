@@ -274,24 +274,6 @@ module synapse_integrationRuntimes 'integration-runtime/main.bicep' = [
   }
 ]
 
-// Workspace encryption with customer managed keys
-// - Assign Synapse Workspace system-assigned-identity access to encryption key
-module workspace_cmk_rbac 'modules/nested_cmkRbac.bicep' = if (!empty(customerManagedKey)) {
-  name: '${workspace.name}-cmk-rbac'
-  params: {
-    workspaceIndentityPrincipalId: workspace.identity.principalId
-    keyVaultName: last(split(customerManagedKey!.keyVaultResourceId, '/'))
-    keyName: customerManagedKey!.keyName
-    usesRbacAuthorization: !empty(customerManagedKey!.keyVaultResourceId)
-      ? cMKKeyVault!.properties.enableRbacAuthorization
-      : true
-  }
-  scope: resourceGroup(
-    split(customerManagedKey!.keyVaultResourceId, '/')[2],
-    split(customerManagedKey!.keyVaultResourceId, '/')[4]
-  )
-}
-
 // - Workspace encryption - Activate Workspace
 module workspace_key 'key/main.bicep' = if (encryptionActivateWorkspace) {
   name: take('${workspace.name}-cmk-activation', 64)
@@ -301,9 +283,6 @@ module workspace_key 'key/main.bicep' = if (encryptionActivateWorkspace) {
     keyVaultResourceId: cMKKeyVault.id
     workspaceName: workspace.name
   }
-  dependsOn: [
-    workspace_cmk_rbac
-  ]
 }
 
 // - Workspace Entra ID Administrator

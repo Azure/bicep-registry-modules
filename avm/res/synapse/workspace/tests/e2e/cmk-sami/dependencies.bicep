@@ -4,10 +4,13 @@ param location string = resourceGroup().location
 @description('Required. The name of the Key Vault to create.')
 param keyVaultName string
 
+@description('Required. The name of the Synapse Workspace to create.')
+param workspaceName string
+
 @description('Required. The name of the Storage Account to create.')
 param storageAccountName string
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -25,7 +28,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2022-07-01' = {
+  resource key 'keys@2025-05-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'
@@ -33,7 +36,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
   name: storageAccountName
   location: location
   sku: {
@@ -44,12 +47,39 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     isHnsEnabled: true
   }
 
-  resource blobService 'blobServices@2022-09-01' = {
+  resource blobService 'blobServices@2025-01-01' = {
     name: 'default'
 
-    resource container 'containers@2022-09-01' = {
+    resource container 'containers@2025-01-01' = {
       name: 'synapsews'
     }
+  }
+}
+
+resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' = {
+  name: workspaceName
+  location: location
+  properties: {
+    defaultDataLakeStorage: {
+      resourceId: storageAccount.id
+      filesystem: storageAccount::blobService::container.name
+    }
+    managedVirtualNetwork: 'default'
+    azureADOnlyAuthentication: false
+    sqlAdministratorLogin: 'sqlAdministratorLogin'
+  }
+}
+
+resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${keyVault::key.id}-${location}-${workspaceName}-Key-Reader-RoleAssignment')
+  scope: keyVault::key
+  properties: {
+    principalId: workspace.identity.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '12338af0-0e69-4776-bea7-57ae8d297424'
+    ) // Key Vault Crypto User
+    principalType: 'ServicePrincipal'
   }
 }
 

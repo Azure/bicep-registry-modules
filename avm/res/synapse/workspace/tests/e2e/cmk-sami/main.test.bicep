@@ -29,7 +29,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -42,23 +42,25 @@ module nestedDependencies 'dependencies.bicep' = {
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
     location: resourceLocation
+    workspaceName: workspaceName
   }
 }
 
 // ============== //
 // Test Execution //
 // ============== //
-
+var workspaceName = '${namePrefix}${serviceShort}001'
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: workspaceName
       defaultDataLakeStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
       defaultDataLakeStorageFilesystem: nestedDependencies.outputs.storageContainerName
       sqlAdministratorLogin: 'synwsadmin'
+      // Note must have permissions configured in advance
       customerManagedKey: {
         keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId

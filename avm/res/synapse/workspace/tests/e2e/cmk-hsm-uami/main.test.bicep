@@ -88,6 +88,7 @@ module testDeployment '../../../main.bicep' = [
         userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
         keyVersion: nestedHsmDependencies.outputs.keyVersion
       }
+      encryptionActivateWorkspace: true
     }
   }
 ]

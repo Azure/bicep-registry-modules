@@ -1,43 +1,43 @@
-name: "avm.res.synapse.workspace"
+name: \"avm.res.synapse.workspace\"
 
 on:
   workflow_dispatch:
     inputs:
       staticValidation:
         type: boolean
-        description: "Execute static validation"
+        description: \"Execute static validation\"
         required: false
         default: true
       deploymentValidation:
         type: boolean
-        description: "Execute deployment validation"
+        description: \"Execute deployment validation\"
         required: false
         default: true
       removeDeployment:
         type: boolean
-        description: "Remove deployed module"
+        description: \"Remove deployed module\"
         required: false
         default: true
       customLocation:
         type: string
-        description: "Default location overwrite (e.g., eastus)"
+        description: \"Default location overwrite (e.g., eastus)\"
         required: false
   push:
     branches:
       - main
     paths:
-      - ".github/actions/templates/avm-**"
-      - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.synapse.workspace.yml"
-      - "avm/res/synapse/workspace/**"
-      - "utilities/pipelines/**"
-      - "!utilities/pipelines/platform/**"
-      - "!*/**/child-module-publish-allowed-list.json"
-      - "!*/**/README.md"
+      - \".github/actions/templates/avm-**\"
+      - \".github/workflows/avm.template.module.yml\"
+      - \".github/workflows/avm.res.synapse.workspace.yml\"
+      - \"avm/res/synapse/workspace/**\"
+      - \"utilities/pipelines/**\"
+      - \"!utilities/pipelines/platform/**\"
+      - \"!*/**/child-module-publish-allowed-list.json\"
+      - \"!*/**/README.md\"
 
 env:
-  modulePath: "avm/res/synapse/workspace"
-  workflowPath: ".github/workflows/avm.res.synapse.workspace.yml"
+  modulePath: \"avm/res/synapse/workspace\"
+  workflowPath: \".github/workflows/avm.res.synapse.workspace.yml\"
 
 concurrency:
   group: ${{ github.workflow }}
@@ -48,33 +48,33 @@ jobs:
   ###########################
   job_initialize_pipeline:
     runs-on: ubuntu-latest
-    name: "Initialize pipeline"
+    name: \"Initialize pipeline\"
     steps:
-      - name: "Checkout"
+      - name: \"Checkout\"
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - name: "Set input parameters to output variables"
+      - name: \"Set input parameters to output variables\"
         id: get-workflow-param
         uses: ./.github/actions/templates/avm-getWorkflowInput
         with:
-          workflowPath: "${{ env.workflowPath}}"
-      - name: "Get module test file paths"
+          workflowPath: \"${{ env.workflowPath}}\"
+      - name: \"Get module test file paths\"
         id: get-module-test-file-paths
         uses: ./.github/actions/templates/avm-getModuleTestFiles
         with:
-          modulePath: "${{ env.modulePath }}"
+          modulePath: \"${{ env.modulePath }}\"
     outputs:
       workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
       moduleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.moduleTestFilePaths }}
       psRuleModuleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.psRuleModuleTestFilePaths }}
-      modulePath: "${{ env.modulePath }}"
+      modulePath: \"${{ env.modulePath }}\"
 
   ##############################
   #   Call reusable workflow   #
   ##############################
   call-workflow-passing-data:
-    name: "Run"
+    name: \"Run\"
     permissions:
       id-token: write # For OIDC
       contents: write # For release tags
@@ -82,8 +82,9 @@ jobs:
       - job_initialize_pipeline
     uses: ./.github/workflows/avm.template.module.yml
     with:
-      workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
-      moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
-      psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
-      modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath}}"
+      workflowInput: \"${{ needs.job_initialize_pipeline.outputs.workflowInput }}\"
+      # moduleTestFilePaths: \"${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}\"
+      moduleTestFilePaths: \"[{\"e2eIgnore\":false,\"name\":\"cmk-hsm-uami\",\"path\":\"tests/e2e/cmk-hsm-uami/main.test.bicep\"}, {\"e2eIgnore\":false,\"name\":\"cmk-sami\",\"path\":\"tests/e2e/cmk-sami/main.test.bicep\"}]\"
+      psRuleModuleTestFilePaths: \"${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}\"
+      modulePath: \"${{ needs.job_initialize_pipeline.outputs.modulePath}}\"
     secrets: inherit
