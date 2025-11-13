@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "468441706408385756"
+      "templateHash": "5278210177325630355"
     },
     "name": "Disk Encryption Sets",
     "description": "This module deploys a Disk Encryption Set. The module will attempt to set permissions on the provided Key Vault for any used user-assigned identity."
@@ -225,7 +225,7 @@
         "description": "Optional. The customer managed key definition."
       }
     },
-    "enableSetKeyPermissions": {
+    "enableKeyPermissions": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
@@ -363,15 +363,15 @@
           "sourceVault": {
             "id": "[parameters('customerManagedKey').keyVaultResourceId]"
           },
-          "keyUrl": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(not(variables('isHSMManagedCMK')), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), format('https://{0}.managedhsm.azure.net/keys/{1}/{2}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), parameters('customerManagedKey').keyName, parameters('customerManagedKey').keyVersion)), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUriWithVersion, fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.')))]"
+          "keyUrl": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(not(variables('isHSMManagedCMK')), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), format('https://{0}.managedhsm.azure.net/keys/{1}/{2}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName, parameters('customerManagedKey').keyVersion)), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUriWithVersion, fail('Managed HSM CMK encryption requires specifying the ''keyVersion''.')))]"
         },
         "encryptionType": "[parameters('encryptionType')]",
         "federatedClientId": "[parameters('federatedClientId')]",
-        "rotationToLatestKeyVersionEnabled": "[coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true())]"
+        "rotationToLatestKeyVersionEnabled": "[tryGet(parameters('customerManagedKey'), 'autoRotationEnabled')]"
       },
       "dependsOn": [
         "cMKKeyVault::cMKKey",
-        "keyVaultPermissions"
+        "keyVaultPermissionsUami"
       ]
     },
     "diskEncryptionSet_roleAssignments": {
@@ -410,12 +410,12 @@
         "diskEncryptionSet"
       ]
     },
-    "keyVaultPermissions": {
+    "keyVaultPermissionsUami": {
       "copy": {
-        "name": "keyVaultPermissions",
+        "name": "keyVaultPermissionsUami",
         "count": "[length(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()))]"
       },
-      "condition": "[and(parameters('enableSetKeyPermissions'), not(variables('isHSMManagedCMK')))]",
+      "condition": "[and(parameters('enableKeyPermissions'), not(variables('isHSMManagedCMK')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[format('{0}-DiskEncrSet-KVPermissions-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
