@@ -155,58 +155,31 @@ module keyVaultPermissionsUami 'modules/nested_keyVaultPermissions.bicep' = [
   }
 ]
 
-// resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' = {
-//   name: name
-//   location: location
-//   tags: tags
-//   identity: identity
-//   properties: {
-//     activeKey: {
-//       sourceVault: {
-//         id: customerManagedKey!.keyVaultResourceId
-//       }
-//       keyUrl: !empty(customerManagedKey!.?keyVersion)
-//         ? (!isHSMManagedCMK
-//             ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
-//             : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.keyVersion!}')
-//         : (!isHSMManagedCMK
-//             ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
-//             : fail('Managed HSM CMK encryption requires specifying the \'keyVersion\'.'))
-//     }
-//     encryptionType: encryptionType
-//     federatedClientId: federatedClientId
-//     rotationToLatestKeyVersionEnabled: customerManagedKey.?autoRotationEnabled
-//   }
-//   dependsOn: [
-//     keyVaultPermissionsUami
-//   ]
-// }
-
-resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' existing = {
+resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' = {
   name: name
-  scope: resourceGroup(
-    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
-    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
-  )
+  location: location
+  tags: tags
+  identity: identity
+  properties: {
+    activeKey: {
+      sourceVault: {
+        id: customerManagedKey!.keyVaultResourceId
+      }
+      keyUrl: !empty(customerManagedKey!.?keyVersion)
+        ? (!isHSMManagedCMK
+            ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+            : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.keyVersion!}')
+        : (!isHSMManagedCMK
+            ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
+            : fail('Managed HSM CMK encryption requires specifying the \'keyVersion\'.'))
+    }
+    encryptionType: encryptionType
+    federatedClientId: federatedClientId
+    rotationToLatestKeyVersionEnabled: customerManagedKey.?autoRotationEnabled
+  }
   dependsOn: [
     keyVaultPermissionsUami
   ]
-}
-
-// Note: This is only enabled for system-assigned identity and depends on diskEncryptionSet resource as the service's system-assigned identity isn't available during its initial deployment
-module keyVaultPermissionsSami 'modules/nested_keyVaultPermissions.bicep' = if (enableSetKeyPermissions && (managedIdentities.?systemAssigned ?? false) && !isHSMManagedCMK) {
-  name: '${uniqueString(deployment().name, location)}-DiskEncrSet-KVPermissions-Sami'
-  params: {
-    keyName: customerManagedKey!.keyName
-    keyVaultResourceId: customerManagedKey!.keyVaultResourceId
-    userAssignedIdentityResourceId: diskEncryptionSet.?identity.?principalId
-    rbacAuthorizationEnabled: cMKKeyVault!.properties.enableRbacAuthorization
-    location: location
-  }
-  scope: resourceGroup(
-    split(customerManagedKey!.keyVaultResourceId, '/')[2],
-    split(customerManagedKey!.keyVaultResourceId, '/')[4]
-  )
 }
 
 resource diskEncryptionSet_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
@@ -222,7 +195,7 @@ resource diskEncryptionSet_roleAssignments 'Microsoft.Authorization/roleAssignme
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
       condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condition is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
     scope: diskEncryptionSet
