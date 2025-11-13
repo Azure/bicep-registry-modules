@@ -53,7 +53,7 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
   name: 'diskEncryptionSetDeployment'
   params: {
     // Required parameters
-    name: 'cdeshsm001'
+    name: 'cdeshsmu001'
     // Non-required parameters
     customerManagedKey: {
       autoRotationEnabled: true
@@ -84,7 +84,7 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
   "parameters": {
     // Required parameters
     "name": {
-      "value": "cdeshsm001"
+      "value": "cdeshsmu001"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -117,7 +117,7 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
 using 'br/public:avm/res/compute/disk-encryption-set:<version>'
 
 // Required parameters
-param name = 'cdeshsm001'
+param name = 'cdeshsmu001'
 // Non-required parameters
 param customerManagedKey = {
   autoRotationEnabled: true
