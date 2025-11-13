@@ -49,7 +49,6 @@ module nestedHsmDependencies 'dependencies.hsm.bicep' = {
   scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
 }
 
-// ============== //
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
@@ -62,6 +61,7 @@ module nestedDependencies 'dependencies.bicep' = {
   }
 }
 
+// ============== //
 // Test Execution //
 // ============== //
 @batchSize(1)
