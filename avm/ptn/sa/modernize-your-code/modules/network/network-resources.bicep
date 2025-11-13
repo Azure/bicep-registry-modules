@@ -1,14 +1,11 @@
-metadata name = 'Secure Virtual Network Module'
-metadata description = 'This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring.'
-
 @minLength(6)
 @maxLength(25)
 @description('Required. Name used for naming all network resources.')
 param resourcesName string
 
 @minLength(3)
-@description('Optional. Azure region for all services.')
-param location string = resourceGroup().location
+@description('Required. Azure region for all services.')
+param location string
 
 @description('Required. Resource ID of the Log Analytics Workspace for monitoring and diagnostics.')
 param logAnalyticsWorkSpaceResourceId string
@@ -17,7 +14,7 @@ param logAnalyticsWorkSpaceResourceId string
 param addressPrefixes array
 
 import { subnetType } from 'virtualNetwork.bicep'
-@description('Required. Array of subnets to be created within the VNET.')
+@description('Array of subnets to be created within the VNET.')
 param subnets subnetType[]
 
 import { jumpBoxConfigurationType } from 'jumpbox.bicep'
@@ -89,39 +86,36 @@ module jumpbox 'jumpbox.bicep' = if (!empty(jumpboxConfiguration)) {
   }
 }
 
-@description('The name of the virtual network.')
+@description('The resource group the resources were deployed into.')
 output vnetName string = virtualNetwork.outputs.name
 
-@description('The resource ID of the virtual network.')
+@description('The resource ID of the Virtual Network.')
 output vnetResourceId string = virtualNetwork.outputs.resourceId
 
-@description('The name of the resource group where the virtual network is deployed.')
-output resourceGroupName string = resourceGroup().name
-
 import { subnetOutputType } from 'virtualNetwork.bicep'
-@description('The subnet information including NSG details.')
+@description('Combined output array that holds subnet details along with NSG information.')
 output subnets subnetOutputType[] = virtualNetwork.outputs.subnets // This one holds critical info for subnets, including NSGs
 
-@description('The resource ID of the bastion subnet.')
-output bastionSubnetId string = bastionHost!.outputs.subnetId
+@description('Contains Resource IDs for the Bastion Host and its subnet.')
+output bastionSubnetId string = bastionHost.outputs.subnetId
 
-@description('The name of the bastion subnet.')
-output bastionSubnetName string = bastionHost!.outputs.subnetName
+@description('Contains the subnet name for the Bastion Host.')
+output bastionSubnetName string = bastionHost.outputs.subnetName
 
-@description('The resource ID of the bastion host.')
-output bastionHostId string = bastionHost!.outputs.resourceId
+@description('Contains Resource IDs for the Bastion Host and its subnet.')
+output bastionHostId string = bastionHost.outputs.resourceId
 
-@description('The name of the bastion host.')
-output bastionHostName string = bastionHost!.outputs.name
+@description('Contains the name of the Bastion Host.')
+output bastionHostName string = bastionHost.outputs.name
 
-@description('The name of the jumpbox subnet.')
-output jumpboxSubnetName string = jumpbox!.outputs.subnetName
+@description('Contains Resource ID for the Jumpbox Virtual Machine.')
+output jumpboxSubnetName string = jumpbox.outputs.subnetName
 
-@description('The resource ID of the jumpbox subnet.')
-output jumpboxSubnetId string = jumpbox!.outputs.subnetId
+@description('Contains the subnet Resource ID for the Jumpbox Virtual Machine.')
+output jumpboxSubnetId string = jumpbox.outputs.subnetId
 
-@description('The name of the jumpbox.')
-output jumpboxName string = jumpbox!.outputs.name
+@description('Contains the name of the Jumpbox Virtual Machine.')
+output jumpboxName string = jumpbox.outputs.name
 
-@description('The resource ID of the jumpbox.')
-output jumpboxResourceId string = jumpbox!.outputs.resourceId
+@description('Contains Resource ID for the Jumpbox Virtual Machine.')
+output jumpboxResourceId string = jumpbox.outputs.resourceId
