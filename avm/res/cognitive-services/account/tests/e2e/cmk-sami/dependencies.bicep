@@ -7,7 +7,7 @@ param cognitiveServiceName string
 @description('Required. The name of the Key Vault to create.')
 param keyVaultName string
 
-resource cognitiveService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
+resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-06-01' = {
   name: cognitiveServiceName
   location: location
   sku: {
@@ -22,7 +22,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -40,7 +40,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2022-07-01' = {
+  resource key 'keys@2025-05-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'

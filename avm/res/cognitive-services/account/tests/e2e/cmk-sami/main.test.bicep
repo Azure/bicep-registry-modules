@@ -29,7 +29,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -41,7 +41,6 @@ module nestedDependencies 'dependencies.bicep' = {
     cognitiveServiceName: '${namePrefix}${serviceShort}001'
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
-    location: resourceLocation
   }
 }
 
@@ -57,7 +56,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: nestedDependencies.outputs.cognitiveServiceName
       kind: 'SpeechServices'
-      location: resourceLocation
       customerManagedKey: {
         keyName: nestedDependencies.outputs.keyVaultKeyName
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
@@ -69,8 +67,5 @@ module testDeployment '../../../main.bicep' = [
       }
       restrictOutboundNetworkAccess: false
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

@@ -302,14 +302,16 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
   name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
     name: customerManagedKey.?keyName!
   }
 }
@@ -364,11 +366,15 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-06-01' = {
             identityClientId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '')
               ? cMKUserAssignedIdentity!.properties.clientId
               : null
-            keyVaultUri: cMKKeyVault!.properties.vaultUri
+            keyVaultUri: !isHSMManagedCMK
+              ? cMKKeyVault!.properties.vaultUri
+              : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/'
             keyName: customerManagedKey!.keyName
-            keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-              ? customerManagedKey!.?keyVersion
-              : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
+            keyVersion: !empty(customerManagedKey.?keyVersion)
+              ? customerManagedKey!.keyVersion!
+              : (!isHSMManagedCMK
+                  ? last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
+                  : fail('Managed HSM CMK encryption requires specifying the \'keyVersion\'.'))
           }
         }
       : null
@@ -449,7 +455,7 @@ resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
   }
 ]
 
-module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-cognitiveService-PrivateEndpoint-${index}'
     scope: resourceGroup(
