@@ -63,6 +63,7 @@ resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' = {
     defaultDataLakeStorage: {
       resourceId: storageAccount.id
       filesystem: storageAccount::blobService::container.name
+      accountUrl: storageAccount.properties.primaryEndpoints.dfs
     }
     managedVirtualNetwork: 'default'
     azureADOnlyAuthentication: false
