@@ -13,7 +13,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Required. The sku properties.')
-param sku resourceInput<'Microsoft.OperationalInsights/clusters@2025-02-01'>.sku
+param sku skuType
 
 @description('Optional. Tags of the resource.')
 param tags resourceInput<'Microsoft.OperationalInsights/clusters@2025-02-01'>.tags?
@@ -126,7 +126,10 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empt
 resource cluster 'Microsoft.OperationalInsights/clusters@2025-02-01' = {
   name: name
   location: location
-  sku: sku
+  sku: {
+    name: sku.?name ?? 'CapacityReservation'
+    capacity: sku.capacity
+  }
   tags: tags
   identity: identity
   properties: {
@@ -194,3 +197,16 @@ output systemAssignedMIPrincipalId string? = cluster.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = cluster.location
+
+// ================ //
+// Definitions      //
+// ================ //
+@export()
+@description('The type of a SKU.')
+type skuType = {
+  @description('Required. The capacity reservation level in Gigabytes for this cluster (GB/day).')
+  capacity: (100 | 200 | 300 | 400 | 500 | 1000 | 2000 | 5000 | 10000 | 25000 | 50000)
+
+  @description('Optional. The SKU (tier) of a cluster. Defaults to \'CapacityReservation\'.')
+  name: 'CapacityReservation'?
+}

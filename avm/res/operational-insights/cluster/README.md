@@ -61,7 +61,6 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
     name: '<name>'
     sku: {
       capacity: 100
-      name: 'CapacityReservation'
     }
     // Non-required parameters
     customerManagedKey: {
@@ -97,8 +96,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
     },
     "sku": {
       "value": {
-        "capacity": 100,
-        "name": "CapacityReservation"
+        "capacity": 100
       }
     },
     // Non-required parameters
@@ -137,7 +135,6 @@ using 'br/public:avm/res/operational-insights/cluster:<version>'
 param name = '<name>'
 param sku = {
   capacity: 100
-  name: 'CapacityReservation'
 }
 // Non-required parameters
 param customerManagedKey = {
@@ -173,7 +170,6 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
     name: '<name>'
     sku: {
       capacity: 100
-      name: 'CapacityReservation'
     }
   }
 }
@@ -197,8 +193,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
     },
     "sku": {
       "value": {
-        "capacity": 100,
-        "name": "CapacityReservation"
+        "capacity": 100
       }
     }
   }
@@ -219,7 +214,6 @@ using 'br/public:avm/res/operational-insights/cluster:<version>'
 param name = '<name>'
 param sku = {
   capacity: 100
-  name: 'CapacityReservation'
 }
 ```
 
@@ -243,7 +237,6 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
     name: '<name>'
     sku: {
       capacity: 100
-      name: 'CapacityReservation'
     }
     // Non-required parameters
     customerManagedKey: {
@@ -283,8 +276,7 @@ module cluster 'br/public:avm/res/operational-insights/cluster:<version>' = {
     },
     "sku": {
       "value": {
-        "capacity": 100,
-        "name": "CapacityReservation"
+        "capacity": 100
       }
     },
     // Non-required parameters
@@ -327,7 +319,6 @@ using 'br/public:avm/res/operational-insights/cluster:<version>'
 param name = '<name>'
 param sku = {
   capacity: 100
-  name: 'CapacityReservation'
 }
 // Non-required parameters
 param customerManagedKey = {
@@ -389,6 +380,54 @@ The sku properties.
 
 - Required: Yes
 - Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`capacity`](#parameter-skucapacity) | int | The capacity reservation level in Gigabytes for this cluster (GB/day). |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-skuname) | string | The SKU (tier) of a cluster. Defaults to 'CapacityReservation'. |
+
+### Parameter: `sku.capacity`
+
+The capacity reservation level in Gigabytes for this cluster (GB/day).
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    100
+    200
+    300
+    400
+    500
+    1000
+    2000
+    5000
+    10000
+    25000
+    50000
+  ]
+  ```
+
+### Parameter: `sku.name`
+
+The SKU (tier) of a cluster. Defaults to 'CapacityReservation'.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CapacityReservation'
+  ]
+  ```
 
 ### Parameter: `billingType`
 

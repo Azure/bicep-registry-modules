@@ -77,7 +77,6 @@ module testDeployment '../../../main.bicep' = [
       location: enforcedLocation
       sku: {
         capacity: 100
-        name: 'CapacityReservation'
       }
       managedIdentities: {
         userAssignedResourceIds: [

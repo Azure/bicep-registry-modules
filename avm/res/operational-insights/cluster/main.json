@@ -6,12 +6,50 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "2473858203570597994"
+      "templateHash": "12940446919342180532"
     },
     "name": "Log Analytics Dedicated Clusters",
     "description": "This module deploys a Log Analytics Dedicated Cluster.\n\n> NOTE\n> - There is a limit of seven clusters per subscription and region, five active, plus two that were deleted in past two weeks.\n> - A cluster's name remains reserved two weeks after deletion, and can't be used for creating a new cluster."
   },
   "definitions": {
+    "skuType": {
+      "type": "object",
+      "properties": {
+        "capacity": {
+          "type": "int",
+          "allowedValues": [
+            100,
+            1000,
+            10000,
+            200,
+            2000,
+            25000,
+            300,
+            400,
+            500,
+            5000,
+            50000
+          ],
+          "metadata": {
+            "description": "Required. The capacity reservation level in Gigabytes for this cluster (GB/day)."
+          }
+        },
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "CapacityReservation"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The SKU (tier) of a cluster. Defaults to 'CapacityReservation'."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a SKU."
+      }
+    },
     "customerManagedKeyWithAutoRotateType": {
       "type": "object",
       "properties": {
@@ -213,11 +251,8 @@
       }
     },
     "sku": {
-      "type": "object",
+      "$ref": "#/definitions/skuType",
       "metadata": {
-        "__bicep_resource_derived_type!": {
-          "source": "Microsoft.OperationalInsights/clusters@2025-02-01#properties/sku"
-        },
         "description": "Required. The sku properties."
       }
     },
@@ -381,7 +416,10 @@
       "apiVersion": "2025-02-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
-      "sku": "[parameters('sku')]",
+      "sku": {
+        "name": "[coalesce(tryGet(parameters('sku'), 'name'), 'CapacityReservation')]",
+        "capacity": "[parameters('sku').capacity]"
+      },
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {

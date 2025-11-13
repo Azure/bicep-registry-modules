@@ -62,7 +62,6 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}-${serviceShort}-${uniqueString(baseTime)}'
       sku: {
         capacity: 100
-        name: 'CapacityReservation'
       }
       tags: {
         'hidden-title': 'This is visible in the resource name'
