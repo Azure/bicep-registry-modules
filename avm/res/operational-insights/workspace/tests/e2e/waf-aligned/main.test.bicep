@@ -188,7 +188,7 @@ module testDeployment '../../../main.bicep' = [
           resourceId: nestedDependencies.outputs.automationAccountResourceId
         }
         {
-          name: 'CMK'
+          name: 'Cluster'
           resourceId: nestedDependencies.outputs.logAnalyticsClusterResourceId
         }
       ]
