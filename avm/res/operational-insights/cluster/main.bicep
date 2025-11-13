@@ -1,5 +1,5 @@
 metadata name = 'Log Analytics Dedicated Clusters'
-metadata description = '''This module deploys a Log Analytics Dedicated Cluster.
+metadata description = '''This module deploys Log Analytics Dedicated Clusters.
 
 > NOTE
 > - There is a limit of seven clusters per subscription and region, five active, plus two that were deleted in past two weeks.
