@@ -1,6 +1,11 @@
-# Build-your-own-copilot-Solution-Accelerator `[Sa/BuildYourOwnCopilot]`
+# Build Your Own Copilot Solution Accelerator `[Sa/BuildYourOwnCopilot]`
 
-This module contains the resources required to deploy the [Build-your-own-copilot-Solution-Accelerator](https://github.com/microsoft/Build-your-own-copilot-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.
+This module deploys a comprehensive Build Your Own Copilot solution accelerator with Azure AI Services, CosmosDB, SQL Database, Key Vault, Storage Account, Azure AI Search, and a containerized web application. The solution includes AI Foundry services for GPT and embedding models, supporting both private and public networking configurations with optional WAF-aligned features for monitoring, scalability, and redundancy.
+
+|**Post-Deployment Step** |
+|-------------|
+| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Build-your-own-copilot-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |
+
 > **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
 
 
@@ -23,21 +28,21 @@ This module contains the resources required to deploy the [Build-your-own-copilo
 | `Microsoft.CognitiveServices/accounts` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts)</li></ul> |
 | `Microsoft.CognitiveServices/accounts/deployments` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_deployments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2024-10-01/accounts/deployments)</li></ul> |
 | `Microsoft.CognitiveServices/accounts/projects` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/projects)</li></ul> |
-| `Microsoft.CognitiveServices/accounts/projects/connections` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects_connections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/projects/connections)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/projects/connections` | 2025-07-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects_connections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-07-01-preview/accounts/projects/connections)</li></ul> |
 | `Microsoft.Compute/disks` | 2024-03-02 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_disks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-02/disks)</li></ul> |
 | `Microsoft.Compute/virtualMachines` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachines)</li></ul> |
 | `Microsoft.Compute/virtualMachines/extensions` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-11-01/virtualMachines/extensions)</li></ul> |
 | `Microsoft.DevTestLab/schedules` | 2018-09-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_schedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/gremlinDatabases)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases_graphs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/gremlinDatabases/graphs)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_mongodbdatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/mongodbDatabases)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_mongodbdatabases_collections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/mongodbDatabases/collections)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlDatabases)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlDatabases/containers)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/gremlinDatabases)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases_graphs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/gremlinDatabases/graphs)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_mongodbdatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/mongodbDatabases)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_mongodbdatabases_collections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/mongodbDatabases/collections)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/sqlDatabases)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/sqlDatabases/containers)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqlroleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleAssignments)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqlroledefinitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleDefinitions)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/tables` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/tables)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/tables` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/tables)</li></ul> |
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | 2024-04-05 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.guestconfiguration_guestconfigurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2024-04-05/guestConfigurationAssignments)</li></ul> |
 | `Microsoft.Insights/components` | 2020-02-02 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_components.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2020-02-02/components)</li></ul> |
 | `microsoft.insights/components/linkedStorageAccounts` | 2020-03-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_components_linkedstorageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2020-03-01-preview/components/linkedStorageAccounts)</li></ul> |
@@ -46,8 +51,8 @@ This module contains the resources required to deploy the [Build-your-own-copilo
 | `Microsoft.KeyVault/vaults` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults)</li></ul> |
 | `Microsoft.KeyVault/vaults/accessPolicies` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/accessPolicies)</li></ul> |
 | `Microsoft.KeyVault/vaults/keys` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/keys)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2025-05-01/vaults/secrets)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
-| `Microsoft.KeyVault/vaults/secrets` | 2024-12-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-12-01-preview/vaults/secrets)</li></ul> |
 | `Microsoft.Maintenance/configurationAssignments` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_configurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments)</li></ul> |
 | `Microsoft.Maintenance/maintenanceConfigurations` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_maintenanceconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/maintenanceConfigurations)</li></ul> |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
@@ -65,7 +70,9 @@ This module contains the resources required to deploy the [Build-your-own-copilo
 | `Microsoft.Network/privateDnsZones/SRV` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_srv.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV)</li></ul> |
 | `Microsoft.Network/privateDnsZones/TXT` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_txt.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT)</li></ul> |
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | 2024-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_virtualnetworklinks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
 | `Microsoft.Network/virtualNetworks` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks)</li></ul> |
@@ -100,9 +107,9 @@ This module contains the resources required to deploy the [Build-your-own-copilo
 | `Microsoft.Sql/servers/virtualNetworkRules` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_virtualnetworkrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/virtualNetworkRules)</li></ul> |
 | `Microsoft.Sql/servers/vulnerabilityAssessments` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_vulnerabilityassessments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/vulnerabilityAssessments)</li></ul> |
 | `Microsoft.Storage/storageAccounts` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts)</li></ul> |
-| `Microsoft.Storage/storageAccounts/blobServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices)</li></ul> |
-| `Microsoft.Storage/storageAccounts/blobServices/containers` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices/containers)</li></ul> |
-| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers_immutabilitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices/containers/immutabilityPolicies)</li></ul> |
+| `Microsoft.Storage/storageAccounts/blobServices` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/blobServices/containers` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers)</li></ul> |
+| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers_immutabilitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers/immutabilityPolicies)</li></ul> |
 | `Microsoft.Storage/storageAccounts/fileServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices)</li></ul> |
 | `Microsoft.Storage/storageAccounts/fileServices/shares` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices_shares.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices/shares)</li></ul> |
 | `Microsoft.Storage/storageAccounts/localUsers` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_localusers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/localUsers)</li></ul> |
@@ -124,7 +131,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/build-your-own-copilot:<version>`.
 
 - [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
-- [Waf-aligned configuration with default parameter values](#example-2-waf-aligned-configuration-with-default-parameter-values)
+- [Sandbox configuration with default parameter values](#example-2-sandbox-configuration-with-default-parameter-values)
+- [Waf-aligned configuration with default parameter values](#example-3-waf-aligned-configuration-with-default-parameter-values)
 
 ### Example 1: _Sandbox configuration with default parameter values_
 
@@ -141,12 +149,12 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
+    // Non-required parameters
     enableMonitoring: false
     enablePrivateNetworking: false
     enablePurgeProtection: false
     enableRedundancy: false
     enableScalability: false
-    // Non-required parameters
     enableTelemetry: true
   }
 }
@@ -168,6 +176,7 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
     },
+    // Non-required parameters
     "enableMonitoring": {
       "value": false
     },
@@ -183,7 +192,6 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
     "enableScalability": {
       "value": false
     },
-    // Non-required parameters
     "enableTelemetry": {
       "value": true
     }
@@ -203,19 +211,108 @@ using 'br/public:avm/ptn/sa/build-your-own-copilot:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
+// Non-required parameters
 param enableMonitoring = false
 param enablePrivateNetworking = false
 param enablePurgeProtection = false
 param enableRedundancy = false
 param enableScalability = false
-// Non-required parameters
 param enableTelemetry = true
 ```
 
 </details>
 <p>
 
-### Example 2: _Waf-aligned configuration with default parameter values_
+### Example 2: _Sandbox configuration with default parameter values_
+
+This instance deploys the Build Your Own Copilot Solution Accelerator using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version>' = {
+  name: 'buildYourOwnCopilotDeployment'
+  params: {
+    // Required parameters
+    azureAiServiceLocation: '<azureAiServiceLocation>'
+    // Non-required parameters
+    enableMonitoring: false
+    enablePrivateNetworking: false
+    enablePurgeProtection: false
+    enableRedundancy: false
+    enableScalability: false
+    enableTelemetry: true
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "azureAiServiceLocation": {
+      "value": "<azureAiServiceLocation>"
+    },
+    // Non-required parameters
+    "enableMonitoring": {
+      "value": false
+    },
+    "enablePrivateNetworking": {
+      "value": false
+    },
+    "enablePurgeProtection": {
+      "value": false
+    },
+    "enableRedundancy": {
+      "value": false
+    },
+    "enableScalability": {
+      "value": false
+    },
+    "enableTelemetry": {
+      "value": true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/build-your-own-copilot:<version>'
+
+// Required parameters
+param azureAiServiceLocation = '<azureAiServiceLocation>'
+// Non-required parameters
+param enableMonitoring = false
+param enablePrivateNetworking = false
+param enablePurgeProtection = false
+param enableRedundancy = false
+param enableScalability = false
+param enableTelemetry = true
+```
+
+</details>
+<p>
+
+### Example 3: _Waf-aligned configuration with default parameter values_
 
 This instance deploys the Build Your Own Copilot Solution Accelerator
 
@@ -230,12 +327,12 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
+    // Non-required parameters
     enableMonitoring: true
     enablePrivateNetworking: true
     enablePurgeProtection: true
     enableRedundancy: true
     enableScalability: true
-    // Non-required parameters
     enableTelemetry: true
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'adminuser'
@@ -259,6 +356,7 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
     },
+    // Non-required parameters
     "enableMonitoring": {
       "value": true
     },
@@ -274,7 +372,6 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
     "enableScalability": {
       "value": true
     },
-    // Non-required parameters
     "enableTelemetry": {
       "value": true
     },
@@ -300,12 +397,12 @@ using 'br/public:avm/ptn/sa/build-your-own-copilot:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
+// Non-required parameters
 param enableMonitoring = true
 param enablePrivateNetworking = true
 param enablePurgeProtection = true
 param enableRedundancy = true
 param enableScalability = true
-// Non-required parameters
 param enableTelemetry = true
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'adminuser'
@@ -321,34 +418,33 @@ param vmAdminUsername = 'adminuser'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`azureAiServiceLocation`](#parameter-azureaiservicelocation) | string | Location for AI Foundry deployment. This is the location where the AI Foundry resources will be deployed. |
-| [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
-| [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
-| [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Enable purge protection for the Key Vault. |
-| [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
-| [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`azureLocation`](#parameter-azurelocation) | string | Set this if you want to deploy to a different region than the resource group. Otherwise, it will use the resource group location by default. |
 | [`azureOpenaiAPIVersion`](#parameter-azureopenaiapiversion) | string | API version for the Azure OpenAI service. |
 | [`containerImageName`](#parameter-containerimagename) | string | The Container Image Name to deploy on the webapp. |
-| [`containerImageTag`](#parameter-containerimagetag) | string | The Container Image Tag to deploy on the webapp. |
 | [`containerRegistryHostname`](#parameter-containerregistryhostname) | string | The Container Registry hostname where the docker images for the frontend are located. |
 | [`cosmosLocation`](#parameter-cosmoslocation) | string | CosmosDB Location. |
-| [`createdBy`](#parameter-createdby) | string | Created by user name. |
+| [`createdBy`](#parameter-createdby) | string | Tag, Created by user name. |
 | [`embeddingDeploymentCapacity`](#parameter-embeddingdeploymentcapacity) | int | Capacity of the Embedding Model deployment. |
 | [`embeddingModel`](#parameter-embeddingmodel) | string | Name of the Text Embedding model to deploy. |
 | [`embeddingModelVersion`](#parameter-embeddingmodelversion) | string | Version of the GPT model to deploy. |
-| [`enableSqlVulnerabilityAssessment`](#parameter-enablesqlvulnerabilityassessment) | bool | Enable SQL vulnerability assessment scanning to identify potential security vulnerabilities. Helps satisfy Azure.SQL.VAScan PSRule requirement. Defaults to true. |
+| [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
+| [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
+| [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Enable purge protection for the Key Vault. |
+| [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
+| [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`gptModelCapacity`](#parameter-gptmodelcapacity) | int | Capacity of the GPT deployment. |
 | [`gptModelDeploymentType`](#parameter-gptmodeldeploymenttype) | string | GPT model deployment type. |
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. |
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy. |
+| [`imageTag`](#parameter-imagetag) | string | The Container Image Tag to deploy on the webapp. |
+| [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). |
 | [`solutionName`](#parameter-solutionname) | string | A unique prefix for all resources in this deployment. This should be 3-20 characters long. |
-| [`solutionUniqueToken`](#parameter-solutionuniquetoken) | string | A unique token for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
+| [`solutionUniqueToken`](#parameter-solutionuniquetoken) | securestring | A unique token for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
 | [`tags`](#parameter-tags) | object | The tags to apply to all deployed Azure resources. |
 | [`vmAdminPassword`](#parameter-vmadminpassword) | securestring | Admin password for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true. |
 | [`vmAdminUsername`](#parameter-vmadminusername) | securestring | Admin username for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true. |
@@ -375,49 +471,6 @@ Location for AI Foundry deployment. This is the location where the AI Foundry re
   ]
   ```
 
-### Parameter: `enableMonitoring`
-
-Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `enablePrivateNetworking`
-
-Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `enablePurgeProtection`
-
-Enable purge protection for the Key Vault.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `enableRedundancy`
-
-Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `enableScalability`
-
-Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `azureLocation`
-
-Set this if you want to deploy to a different region than the resource group. Otherwise, it will use the resource group location by default.
-
-- Required: No
-- Type: string
-- Default: `''`
-
 ### Parameter: `azureOpenaiAPIVersion`
 
 API version for the Azure OpenAI service.
@@ -433,14 +486,6 @@ The Container Image Name to deploy on the webapp.
 - Required: No
 - Type: string
 - Default: `'byc-wa-app'`
-
-### Parameter: `containerImageTag`
-
-The Container Image Tag to deploy on the webapp.
-
-- Required: No
-- Type: string
-- Default: `'latest_waf_2025-09-18_794'`
 
 ### Parameter: `containerRegistryHostname`
 
@@ -460,7 +505,7 @@ CosmosDB Location.
 
 ### Parameter: `createdBy`
 
-Created by user name.
+Tag, Created by user name.
 
 - Required: No
 - Type: string
@@ -497,13 +542,45 @@ Version of the GPT model to deploy.
 - Type: string
 - Default: `'2'`
 
-### Parameter: `enableSqlVulnerabilityAssessment`
+### Parameter: `enableMonitoring`
 
-Enable SQL vulnerability assessment scanning to identify potential security vulnerabilities. Helps satisfy Azure.SQL.VAScan PSRule requirement. Defaults to true.
+Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false.
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
+
+### Parameter: `enablePrivateNetworking`
+
+Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enablePurgeProtection`
+
+Enable purge protection for the Key Vault.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enableRedundancy`
+
+Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enableScalability`
+
+Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `enableTelemetry`
 
@@ -559,6 +636,22 @@ Version of the GPT model to deploy.
 - Type: string
 - Default: `'2024-07-18'`
 
+### Parameter: `imageTag`
+
+The Container Image Tag to deploy on the webapp.
+
+- Required: No
+- Type: string
+- Default: `'latest_waf_2025-11-03_914'`
+
+### Parameter: `location`
+
+Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
+
 ### Parameter: `solutionName`
 
 A unique prefix for all resources in this deployment. This should be 3-20 characters long.
@@ -572,7 +665,7 @@ A unique prefix for all resources in this deployment. This should be 3-20 charac
 A unique token for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name.
 
 - Required: No
-- Type: string
+- Type: securestring
 - Default: `[substring(uniqueString(subscription().id, resourceGroup().name, parameters('solutionName')), 0, 5)]`
 
 ### Parameter: `tags`
@@ -608,64 +701,67 @@ Size of the Jumpbox Virtual Machine when created. Set to custom value if enableP
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `aiFoundryResourceId` | string | The resource ID of the AI Foundry instance. |
-| `aiSearchServiceName` | string | Name of the AI Search service. |
-| `appEnv` | string | Specifies the current application environment. |
+| `aiFoundryResourceId` | string | The resource ID of the AI Foundry service. |
+| `aiSearchServiceName` | string | The name of the Azure AI Search service. |
+| `appEnv` | string | The application environment. |
 | `appInsightsInstrumentationKey` | string | The Application Insights instrumentation key. |
 | `applicationInsightsConnectionString` | string | The Application Insights connection string. |
-| `azureAiAgentApiVersion` | string | The API version used for the Azure AI Agent service. |
-| `azureAiAgentEndpoint` | string | The endpoint URL of the Azure AI Agent project. |
-| `azureAiAgentModelDeploymentName` | string | The deployment name of the GPT model for the Azure AI Agent. |
-| `azureAiSearchEndpoint` | string | The endpoint URL of the Azure AI Search service. |
-| `azureCallTranscriptSystemPrompt` | string | The system prompt used for call transcript processing in Azure Functions. |
-| `azureCosmosDbAccount` | string | The name of the Azure Cosmos DB account. |
-| `azureCosmosDbConversationsContainer` | string | The name of the Azure Cosmos DB container for storing conversations. |
-| `azureCosmosDbDatabase` | string | The name of the Azure Cosmos DB database. |
-| `azureCosmosDbEnableFeedback` | string | Indicates whether feedback is enabled in Azure Cosmos DB. |
-| `azureOpenaiEmbeddingEndpoint` | string | The endpoint URL for the Azure OpenAI Embedding model. |
-| `azureOpenaiEmbeddingName` | string | The name of the Azure OpenAI Embedding model. |
-| `azureOpenaiEndpoint` | string | The endpoint URL for the Azure OpenAI service. |
-| `azureOpenaiMaxTokens` | string | The maximum number of tokens for Azure OpenAI responses. |
-| `azureOpenaiModel` | string | The name of the Azure OpenAI GPT model. |
-| `azureOpenaiPreviewApiVersion` | string | The preview API version for Azure OpenAI. |
-| `azureOpenaiResource` | string | The Azure OpenAI resource name. |
-| `azureOpenaiStopSequence` | string | The stop sequence(s) for Azure OpenAI responses. |
-| `azureOpenaiStream` | string | Indicates whether streaming is enabled for Azure OpenAI responses. |
-| `azureOpenaiStreamTextSystemPrompt` | string | The system prompt for streaming text responses in Azure Functions. |
-| `azureOpenaiSystemMessage` | string | The system message for Azure OpenAI requests. |
-| `azureOpenaiTemperature` | string | The temperature setting for Azure OpenAI responses. |
-| `azureOpenaiTopP` | string | The Top-P setting for Azure OpenAI responses. |
-| `azureSearchConnectionName` | string | The name of the Azure AI Search connection. |
-| `azureSearchContentColumns` | string | The columns in Azure AI Search that contain content. |
-| `azureSearchEnableInDomain` | string | Indicates whether in-domain filtering is enabled for Azure AI Search. |
+| `azureAiAgentApiVersion` | string | The API version for the Azure AI Agent. |
+| `azureAiAgentEndpoint` | string | The endpoint for the Azure AI Agent. |
+| `azureAiAgentModelDeploymentName` | string | The model deployment name for the Azure AI Agent. |
+| `azureAiSearchEndpoint` | string | The endpoint for the Azure AI Search service. |
+| `azureCallTranscriptSystemPrompt` | string | The system prompt for call transcript processing in Azure Functions. |
+| `azureCosmosDbAccount` | string | The Azure CosmosDB account name. |
+| `azureCosmosDbConversationsContainer` | string | The Azure CosmosDB conversations container name. |
+| `azureCosmosDbDatabase` | string | The Azure CosmosDB database name. |
+| `azureCosmosDbEnableFeedback` | string | Indicates whether feedback is enabled for Azure CosmosDB. |
+| `azureOpenAiEmbeddingEndpoint` | string | The endpoint for Azure OpenAI embedding service. |
+| `azureOpenAiEmbeddingName` | string | The name of the Azure OpenAI embedding model. |
+| `azureOpenAiEndpoint` | string | The endpoint for the Azure OpenAI service. |
+| `azureOpenAiMaxTokens` | string | The maximum number of tokens for Azure OpenAI. |
+| `azureOpenAiModel` | string | The Azure OpenAI model name. |
+| `azureOpenAiPreviewApiVersion` | string | The preview API version for Azure OpenAI. |
+| `azureOpenAiResource` | string | The Azure OpenAI resource name. |
+| `azureOpenAiStopSequence` | string | The stop sequence for Azure OpenAI. |
+| `azureOpenAiStream` | string | Indicates whether streaming is enabled for Azure OpenAI. |
+| `azureOpenAiStreamTextSystemPrompt` | string | The system prompt for stream text processing in Azure Functions. |
+| `azureOpenAiSystemMessage` | string | The system message for Azure OpenAI. |
+| `azureOpenAiTemperature` | string | The temperature setting for Azure OpenAI. |
+| `azureOpenAiTopP` | string | The top P setting for Azure OpenAI. |
+| `azureSearchConnectionName` | string | The connection name for Azure AI Search. |
+| `azureSearchContentColumns` | string | The content columns used in Azure AI Search. |
+| `azureSearchEnableInDomain` | string | Indicates whether in-domain search is enabled for Azure AI Search. |
 | `azureSearchFilenameColumn` | string | The filename column used in Azure AI Search. |
-| `azureSearchIndex` | string | The name of the Azure AI Search index. |
-| `azureSearchPermittedGroupsColumn` | string | The permitted groups field used in Azure AI Search. |
-| `azureSearchQueryType` | string | The query type for Azure AI Search. |
-| `azureSearchSemanticSearchConfig` | string | The semantic search configuration name in Azure AI Search. |
-| `azureSearchService` | string | The name of the Azure AI Search service. |
-| `azureSearchStrictness` | string | The strictness setting for Azure AI Search semantic ranking. |
+| `azureSearchIndex` | string | The index name used in Azure AI Search. |
+| `azureSearchPermittedGroupsColumn` | string | The permitted groups column used in Azure AI Search. |
+| `azureSearchQueryType` | string | The query type used in Azure AI Search. |
+| `azureSearchSemanticSearchConfig` | string | The semantic search configuration used in Azure AI Search. |
+| `azureSearchService` | string | The Azure AI Search service name. |
+| `azureSearchStrictness` | string | The strictness level used in Azure AI Search. |
 | `azureSearchTitleColumn` | string | The title column used in Azure AI Search. |
 | `azureSearchTopK` | string | The number of top results (K) to return from Azure AI Search. |
 | `azureSearchUrlColumn` | string | The URL column used in Azure AI Search. |
 | `azureSearchUseSemanticSearch` | string | Indicates whether semantic search is used in Azure AI Search. |
 | `azureSearchVectorColumns` | string | The vector fields used in Azure AI Search. |
 | `azureSqlSystemPrompt` | string | The system prompt for SQL queries in Azure Functions. |
-| `cosmosDbAccountName` | string | Name of the Cosmos DB account. |
-| `keyVaultName` | string | Name of the Key Vault. |
-| `managedIdentityWebAppClientId` | string | Client ID of the managed identity used by the web app. |
-| `managedIdentityWebAppName` | string | Name of the managed identity used by the web app. |
-| `resourceGroupName` | string | Name of the resource group. |
-| `sqlDbDatabaseName` | string | Name of the SQL Database. |
+| `azureSubscriptionId` | string | The Azure Subscription ID where the resources are deployed. |
+| `cosmosDbAccountName` | string | The name of the deployed CosmosDB Account. |
+| `keyVaultName` | string | The name of the deployed Key Vault. |
+| `managedIdentitySqlClientId` | string | The client ID of the managed identity for SQL Server. |
+| `managedIdentitySqlName` | string | The name of the managed identity for SQL Server. |
+| `managedIdentityWebAppClientId` | string | The client ID of the managed identity for the web application. |
+| `managedIdentityWebAppName` | string | The name of the managed identity for the web application. |
+| `resourceGroupName` | string | The name of the Resource Group. |
+| `sqlDbDatabase` | string | The name of the SQL Database. |
 | `sqlDbServer` | string | The fully qualified domain name (FQDN) of the Azure SQL Server. |
-| `sqlDbServerName` | string | Name of the SQL Database server. |
-| `sqlDbUserManagedIdentityClientId` | string | The client ID of the managed identity for the web application. |
-| `storageAccountName` | string | Name of the storage account. |
-| `storageContainerName` | string | Name of the storage container. |
+| `sqlDbServerName` | string | The name of the SQL Database server. |
+| `sqlDbUserMid` | string | The client ID of the managed identity for the web application. |
+| `storageAccountName` | string | The name of the deployed Storage Account. |
+| `storageContainerName` | string | The name of the Storage Container. |
 | `useAiProjectClient` | string | Indicates whether the AI Project Client should be used. |
 | `useInternalStream` | string | Indicates whether the internal stream should be used. |
-| `webAppName` | string | Name of the deployed web application. |
-| `webAppUrl` | string | URL of the deployed web application. |
+| `webAppName` | string | The name of the deployed web application. |
+| `webAppUrl` | string | The URL of the deployed web application. |
 
 ## Cross-referenced modules
 
@@ -674,21 +770,20 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/compute/virtual-machine:0.20.0` | Remote reference |
-| `br/public:avm/res/document-db/database-account:0.16.0` | Remote reference |
+| `br/public:avm/res/document-db/database-account:0.17.0` | Remote reference |
 | `br/public:avm/res/insights/component:0.6.0` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.13.3` | Remote reference |
-| `br/public:avm/res/maintenance/maintenance-configuration:0.3.1` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.1` | Remote reference |
+| `br/public:avm/res/maintenance/maintenance-configuration:0.3.2` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.2` | Remote reference |
 | `br/public:avm/res/network/bastion-host:0.8.0` | Remote reference |
-| `br/public:avm/res/network/network-security-group:0.5.1` | Remote reference |
+| `br/public:avm/res/network/network-security-group:0.5.2` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.8.0` | Remote reference |
-| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
-| `br/public:avm/res/network/virtual-network/subnet:0.1.2` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.7.1` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.12.0` | Remote reference |
 | `br/public:avm/res/search/search-service:0.11.1` | Remote reference |
-| `br/public:avm/res/sql/server:0.20.2` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.26.2` | Remote reference |
+| `br/public:avm/res/sql/server:0.20.3` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.27.1` | Remote reference |
 | `br/public:avm/res/web/serverfarm:0.5.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
