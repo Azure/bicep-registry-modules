@@ -40,11 +40,12 @@ The following section provides usage examples for the module, which were used to
 - [Advanced features](#example-1-advanced-features)
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Advanced features](#example-4-advanced-features)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Advanced features_
 
-This instance deploys the module with advanced features like custom tables and data exports.
+This instance deploys the module with advanced features like custom tables, data exports & encryption.
 
 
 <details>
@@ -223,7 +224,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         ]
       }
     ]
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -543,9 +543,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -859,7 +856,6 @@ param linkedStorageAccounts = [
     ]
   }
 ]
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -995,10 +991,7 @@ This instance deploys the module with the minimum set of required parameters.
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
   name: 'workspaceDeployment'
   params: {
-    // Required parameters
     name: 'oiwmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -1015,13 +1008,8 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "oiwmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -1037,10 +1025,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 ```bicep-params
 using 'br/public:avm/res/operational-insights/workspace:<version>'
 
-// Required parameters
 param name = 'oiwmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -2049,7 +2034,117 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 4: _Advanced features_
+
+This instance deploys the module with advanced features like custom tables, data exports & encryption.
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
+  name: 'workspaceDeployment'
+  params: {
+    // Required parameters
+    name: 'oiwmhsm001'
+    // Non-required parameters
+    dailyQuotaGb: 10
+    linkedServices: [
+      {
+        name: 'Cluster'
+        writeAccessResourceId: '<writeAccessResourceId>'
+      }
+    ]
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    skuName: 'LACluster'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "oiwmhsm001"
+    },
+    // Non-required parameters
+    "dailyQuotaGb": {
+      "value": 10
+    },
+    "linkedServices": {
+      "value": [
+        {
+          "name": "Cluster",
+          "writeAccessResourceId": "<writeAccessResourceId>"
+        }
+      ]
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "skuName": {
+      "value": "LACluster"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operational-insights/workspace:<version>'
+
+// Required parameters
+param name = 'oiwmhsm001'
+// Non-required parameters
+param dailyQuotaGb = 10
+param linkedServices = [
+  {
+    name: 'Cluster'
+    writeAccessResourceId: '<writeAccessResourceId>'
+  }
+]
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param skuName = 'LACluster'
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -2189,7 +2284,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         ]
       }
     ]
-    location: '<location>'
     managedIdentities: {
       systemAssigned: true
     }
@@ -2374,9 +2468,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true
@@ -2555,7 +2646,6 @@ param linkedStorageAccounts = [
     ]
   }
 ]
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
 }
@@ -2624,7 +2714,7 @@ param tags = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`savedSearches`](#parameter-savedsearches) | array | Kusto Query Language searches to save. |
 | [`skuCapacityReservationLevel`](#parameter-skucapacityreservationlevel) | int | The capacity reservation level in GB for this workspace, when CapacityReservation sku is selected. Must be in increments of 100 between 100 and 5000. |
-| [`skuName`](#parameter-skuname) | string | The name of the SKU. |
+| [`skuName`](#parameter-skuname) | string | The name of the SKU. Must be 'LACluster' to be linked to a Log Analytics cluster. |
 | [`storageInsightsConfigs`](#parameter-storageinsightsconfigs) | array | List of storage accounts to be read by the workspace. |
 | [`tables`](#parameter-tables) | array | LAW custom tables to be deployed. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -3187,32 +3277,32 @@ List of services to be linked.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-linkedservicesname) | string | Name of the linked service. |
+| [`name`](#parameter-linkedservicesname) | string | Name of the linked service. E.g., 'Automation' for an automation account, or 'Cluster' for a Log Analytics Cluster. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`resourceId`](#parameter-linkedservicesresourceid) | string | The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access. |
-| [`writeAccessResourceId`](#parameter-linkedserviceswriteaccessresourceid) | string | The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access. |
+| [`resourceId`](#parameter-linkedservicesresourceid) | string | The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access (e.g., Automation Accounts). |
+| [`writeAccessResourceId`](#parameter-linkedserviceswriteaccessresourceid) | string | The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access (e.g., Log Analytics Clusters). |
 
 ### Parameter: `linkedServices.name`
 
-Name of the linked service.
+Name of the linked service. E.g., 'Automation' for an automation account, or 'Cluster' for a Log Analytics Cluster.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `linkedServices.resourceId`
 
-The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access.
+The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access (e.g., Automation Accounts).
 
 - Required: No
 - Type: string
 
 ### Parameter: `linkedServices.writeAccessResourceId`
 
-The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access.
+The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access (e.g., Log Analytics Clusters).
 
 - Required: No
 - Type: string
@@ -3578,7 +3668,7 @@ The capacity reservation level in GB for this workspace, when CapacityReservatio
 
 ### Parameter: `skuName`
 
-The name of the SKU.
+The name of the SKU. Must be 'LACluster' to be linked to a Log Analytics cluster.
 
 - Required: No
 - Type: string
@@ -3657,11 +3747,11 @@ LAW custom tables to be deployed.
 | :-- | :-- | :-- |
 | [`plan`](#parameter-tablesplan) | string | The plan for the table. |
 | [`restoredLogs`](#parameter-tablesrestoredlogs) | object | The restored logs for the table. |
-| [`retentionInDays`](#parameter-tablesretentionindays) | int | The retention in days for the table. |
+| [`retentionInDays`](#parameter-tablesretentionindays) | int | The retention in days for the table. Don't provide to use the default workspace retention. |
 | [`roleAssignments`](#parameter-tablesroleassignments) | array | The role assignments for the table. |
 | [`schema`](#parameter-tablesschema) | object | The schema for the table. |
 | [`searchResults`](#parameter-tablessearchresults) | object | The search results for the table. |
-| [`totalRetentionInDays`](#parameter-tablestotalretentionindays) | int | The total retention in days for the table. |
+| [`totalRetentionInDays`](#parameter-tablestotalretentionindays) | int | The total retention in days for the table. Don't provide use the default table retention. |
 
 ### Parameter: `tables.name`
 
@@ -3715,10 +3805,12 @@ The timestamp to start the restore from (UTC).
 
 ### Parameter: `tables.retentionInDays`
 
-The retention in days for the table.
+The retention in days for the table. Don't provide to use the default workspace retention.
 
 - Required: No
 - Type: int
+- MinValue: 4
+- MaxValue: 730
 
 ### Parameter: `tables.roleAssignments`
 
@@ -4007,10 +4099,12 @@ The timestamp to start the search from (UTC).
 
 ### Parameter: `tables.totalRetentionInDays`
 
-The total retention in days for the table.
+The total retention in days for the table. Don't provide use the default table retention.
 
 - Required: No
 - Type: int
+- MinValue: 4
+- MaxValue: 2555
 
 ### Parameter: `tags`
 

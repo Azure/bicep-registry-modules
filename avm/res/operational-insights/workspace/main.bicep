@@ -7,7 +7,7 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. The name of the SKU.')
+@description('Optional. The name of the SKU. Must be \'LACluster\' to be linked to a Log Analytics cluster.')
 @allowed([
   'CapacityReservation'
   'Free'
@@ -520,13 +520,13 @@ type storageInsightsConfigType = {
 @export()
 @description('Properties of the linked service.')
 type linkedServiceType = {
-  @description('Required. Name of the linked service.')
+  @description('Required. Name of the linked service. E.g., \'Automation\' for an automation account, or \'Cluster\' for a Log Analytics Cluster.')
   name: string
 
-  @description('Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access.')
+  @description('Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access (e.g., Automation Accounts).')
   resourceId: string?
 
-  @description('Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access.')
+  @description('Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access (e.g., Log Analytics Clusters).')
   writeAccessResourceId: string?
 }
 
@@ -656,10 +656,14 @@ type tableType = {
   @description('Optional. The search results for the table.')
   searchResults: searchResultsType?
 
-  @description('Optional. The retention in days for the table.')
+  @description('Optional. The retention in days for the table. Don\'t provide to use the default workspace retention.')
+  @minValue(4)
+  @maxValue(730)
   retentionInDays: int?
 
-  @description('Optional. The total retention in days for the table.')
+  @description('Optional. The total retention in days for the table. Don\'t provide use the default table retention.')
+  @minValue(4)
+  @maxValue(2555)
   totalRetentionInDays: int?
 
   @description('Optional. The role assignments for the table.')
