@@ -99,11 +99,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/chat-with-your-data:<version>`.
 
-- [Sandbox-Cosmos](#example-1-sandbox-cosmos)
-- [Sandbox](#example-2-sandbox)
-- [Waf-Aligned](#example-3-waf-aligned)
+- [Sandbox With Azure Cosmos DB](#example-1-sandbox-with-azure-cosmos-db)
+- [Sandbox With Azure Database for PostgreSQL flexible servers](#example-2-sandbox-with-azure-database-for-postgresql-flexible-servers)
+- [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _Sandbox-Cosmos_
+### Example 1: _Sandbox With Azure Cosmos DB_
+
+This deploys the sandbox configuration for Chat with your data Solution Accelerator with database as Azure Cosmos DB.
+
 
 <details>
 
@@ -113,10 +116,8 @@ The following section provides usage examples for the module, which were used to
 module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   name: 'chatWithYourDataDeployment'
   params: {
-    // Required parameters
-    location: '<location>'
-    // Non-required parameters
     databaseType: 'CosmosDB'
+    location: '<location>'
     solutionName: '<solutionName>'
   }
 }
@@ -134,14 +135,12 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
-    "location": {
-      "value": "<location>"
-    },
-    // Non-required parameters
     "databaseType": {
       "value": "CosmosDB"
     },
+    "location": {
+      "value": "<location>"
+    },
     "solutionName": {
       "value": "<solutionName>"
     }
@@ -159,17 +158,18 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
 
-// Required parameters
-param location = '<location>'
-// Non-required parameters
 param databaseType = 'CosmosDB'
+param location = '<location>'
 param solutionName = '<solutionName>'
 ```
 
 </details>
 <p>
 
-### Example 2: _Sandbox_
+### Example 2: _Sandbox With Azure Database for PostgreSQL flexible servers_
+
+This deploys the sandbox configuration for Chat with your data Solution Accelerator with database as Azure Database for PostgreSQL flexible servers.
+
 
 <details>
 
@@ -179,9 +179,7 @@ param solutionName = '<solutionName>'
 module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   name: 'chatWithYourDataDeployment'
   params: {
-    // Required parameters
     location: '<location>'
-    // Non-required parameters
     solutionName: '<solutionName>'
   }
 }
@@ -199,11 +197,9 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "location": {
       "value": "<location>"
     },
-    // Non-required parameters
     "solutionName": {
       "value": "<solutionName>"
     }
@@ -221,16 +217,17 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
 
-// Required parameters
 param location = '<location>'
-// Non-required parameters
 param solutionName = '<solutionName>'
 ```
 
 </details>
 <p>
 
-### Example 3: _Waf-Aligned_
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework
+
 
 <details>
 
@@ -240,14 +237,12 @@ param solutionName = '<solutionName>'
 module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   name: 'chatWithYourDataDeployment'
   params: {
-    // Required parameters
-    location: '<location>'
-    // Non-required parameters
     enableMonitoring: true
     enablePrivateNetworking: true
     enableRedundancy: true
     enableScalability: true
     enableTelemetry: true
+    location: '<location>'
     solutionName: '<solutionName>'
     virtualMachineAdminPassword: '<virtualMachineAdminPassword>'
     virtualMachineAdminUsername: 'adminuser'
@@ -267,11 +262,6 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
-    "location": {
-      "value": "<location>"
-    },
-    // Non-required parameters
     "enableMonitoring": {
       "value": true
     },
@@ -286,6 +276,9 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
     },
     "enableTelemetry": {
       "value": true
+    },
+    "location": {
+      "value": "<location>"
     },
     "solutionName": {
       "value": "<solutionName>"
@@ -310,14 +303,12 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
 
-// Required parameters
-param location = '<location>'
-// Non-required parameters
 param enableMonitoring = true
 param enablePrivateNetworking = true
 param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
+param location = '<location>'
 param solutionName = '<solutionName>'
 param virtualMachineAdminPassword = '<virtualMachineAdminPassword>'
 param virtualMachineAdminUsername = 'adminuser'
@@ -327,12 +318,6 @@ param virtualMachineAdminUsername = 'adminuser'
 <p>
 
 ## Parameters
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for PostgreSQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/postgresql/flexible-server/overview#azure-regions). Note: In the "Deploy to Azure" interface, you will see both "Region" and "Location" fields - "Region" is only for deployment metadata while "Location" (this parameter) determines where your actual resources are deployed. |
 
 **Optional parameters**
 
@@ -398,10 +383,11 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`existingLogAnalyticsWorkspaceId`](#parameter-existingloganalyticsworkspaceid) | string | Existing Log Analytics Workspace Resource ID. |
 | [`hostingModel`](#parameter-hostingmodel) | string | Hosting model for the web apps. This value is fixed as "container", which uses prebuilt containers for faster deployment. |
 | [`hostingPlanSku`](#parameter-hostingplansku) | string | The pricing tier for the App Service plan. |
+| [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for PostgreSQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/postgresql/flexible-server/overview#azure-regions). Note: In the "Deploy to Azure" interface, you will see both "Region" and "Location" fields - "Region" is only for deployment metadata while "Location" (this parameter) determines where your actual resources are deployed. |
 | [`logLevel`](#parameter-loglevel) | string | The log level for application logging. This setting controls the verbosity of logs emitted by the application. Allowed values are CRITICAL, ERROR, WARN, INFO, and DEBUG. The default value is INFO. |
 | [`newGuidString`](#parameter-newguidstring) | string | A new GUID string generated for this deployment. This can be used for unique naming if needed. |
 | [`orchestrationStrategy`](#parameter-orchestrationstrategy) | string | Orchestration strategy: openai_function or semantic_kernel or langchain str. If you use a old version of turbo (0301), please select langchain. If the database type is PostgreSQL, set this to sementic_kernel. |
-| [`principal`](#parameter-principal) | object | Principal object for user or service principal to assign application roles. Format: {"id":"<object-id>", "name":"<name-or-upn>", "type":"User|Group|ServicePrincipal"} |
+| [`principal`](#parameter-principal) | object | Principal object to assign application roles. Format: {"id":"<object-id>", "name":"<name-or-upn>", "type":"User|Group|ServicePrincipal"}. |
 | [`recognizedLanguages`](#parameter-recognizedlanguages) | string | List of comma-separated languages to recognize from the speech input. Supported languages are listed here: https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=stt#supported-languages. |
 | [`solutionName`](#parameter-solutionname) | string | A unique application/solution name for all resources in this deployment. This should be 3-16 characters long. |
 | [`solutionUniqueText`](#parameter-solutionuniquetext) | string | A unique text value for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
@@ -410,22 +396,6 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`virtualMachineAdminPassword`](#parameter-virtualmachineadminpassword) | securestring | The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true. |
 | [`virtualMachineAdminUsername`](#parameter-virtualmachineadminusername) | securestring | The user name for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true. |
 | [`vmSize`](#parameter-vmsize) | string | Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true. |
-
-### Parameter: `location`
-
-Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for PostgreSQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/postgresql/flexible-server/overview#azure-regions). Note: In the "Deploy to Azure" interface, you will see both "Region" and "Location" fields - "Region" is only for deployment metadata while "Location" (this parameter) determines where your actual resources are deployed.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'australiaeast'
-    'eastus2'
-    'japaneast'
-    'uksouth'
-  ]
-  ```
 
 ### Parameter: `advancedImageProcessingMaxImages`
 
@@ -960,6 +930,14 @@ The pricing tier for the App Service plan.
   ]
   ```
 
+### Parameter: `location`
+
+Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for PostgreSQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/postgresql/flexible-server/overview#azure-regions). Note: In the "Deploy to Azure" interface, you will see both "Region" and "Location" fields - "Region" is only for deployment metadata while "Location" (this parameter) determines where your actual resources are deployed.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
+
 ### Parameter: `logLevel`
 
 The log level for application logging. This setting controls the verbosity of logs emitted by the application. Allowed values are CRITICAL, ERROR, WARN, INFO, and DEBUG. The default value is INFO.
@@ -1004,7 +982,7 @@ Orchestration strategy: openai_function or semantic_kernel or langchain str. If 
 
 ### Parameter: `principal`
 
-Principal object for user or service principal to assign application roles. Format: {"id":"<object-id>", "name":"<name-or-upn>", "type":"User|Group|ServicePrincipal"}
+Principal object to assign application roles. Format: {"id":"<object-id>", "name":"<name-or-upn>", "type":"User|Group|ServicePrincipal"}.
 
 - Required: No
 - Type: object

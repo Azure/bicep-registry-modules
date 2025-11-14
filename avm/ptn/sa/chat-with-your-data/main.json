@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "4936010335622161461"
+      "templateHash": "3855615936845021300"
     },
     "name": "Chat-with-your-data-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -31,17 +31,12 @@
     },
     "location": {
       "type": "string",
-      "allowedValues": [
-        "australiaeast",
-        "eastus2",
-        "japaneast",
-        "uksouth"
-      ],
+      "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "azd": {
           "type": "location"
         },
-        "description": "Required. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for PostgreSQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/postgresql/flexible-server/overview#azure-regions). Note: In the \"Deploy to Azure\" interface, you will see both \"Region\" and \"Location\" fields - \"Region\" is only for deployment metadata while \"Location\" (this parameter) determines where your actual resources are deployed."
+        "description": "Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for PostgreSQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/postgresql/flexible-server/overview#azure-regions). Note: In the \"Deploy to Azure\" interface, you will see both \"Region\" and \"Location\" fields - \"Region\" is only for deployment metadata while \"Location\" (this parameter) determines where your actual resources are deployed."
       }
     },
     "existingLogAnalyticsWorkspaceId": {
@@ -463,7 +458,7 @@
         "type": "User"
       },
       "metadata": {
-        "description": "Optional. Principal object for user or service principal to assign application roles. Format: {\"id\":\"<object-id>\", \"name\":\"<name-or-upn>\", \"type\":\"User|Group|ServicePrincipal\"}"
+        "description": "Optional. Principal object to assign application roles. Format: {\"id\":\"<object-id>\", \"name\":\"<name-or-upn>\", \"type\":\"User|Group|ServicePrincipal\"}."
       }
     },
     "appEnvironment": {
@@ -51736,6 +51731,10 @@
           },
           "blobServices": {
             "value": {
+              "containerDeleteRetentionPolicyEnabled": true,
+              "containerDeleteRetentionPolicyDays": 7,
+              "deleteRetentionPolicyEnabled": true,
+              "deleteRetentionPolicyDays": 6,
               "containers": [
                 {
                   "name": "[variables('blobContainerName')]",
@@ -54983,9 +54982,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "managedIdentityModule",
         "virtualNetwork"
       ]
