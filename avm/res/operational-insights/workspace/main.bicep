@@ -656,10 +656,14 @@ type tableType = {
   @description('Optional. The search results for the table.')
   searchResults: searchResultsType?
 
-  @description('Optional. The retention in days for the table.')
+  @description('Optional. The retention in days for the table. Don\'t provide to use the default workspace retention.')
+  @minValue(4)
+  @maxValue(730)
   retentionInDays: int?
 
-  @description('Optional. The total retention in days for the table.')
+  @description('Optional. The total retention in days for the table. Don\'t provide use the default table retention.')
+  @minValue(4)
+  @maxValue(2555)
   totalRetentionInDays: int?
 
   @description('Optional. The role assignments for the table.')

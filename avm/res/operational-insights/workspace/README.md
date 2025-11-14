@@ -242,6 +242,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         query: 'Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer'
       }
     ]
+    skuName: 'LACluster'
     storageInsightsConfigs: [
       {
         storageAccountResourceId: '<storageAccountResourceId>'
@@ -573,6 +574,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         }
       ]
     },
+    "skuName": {
+      "value": "LACluster"
+    },
     "storageInsightsConfigs": {
       "value": [
         {
@@ -882,6 +886,7 @@ param savedSearches = [
     query: 'Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer'
   }
 ]
+param skuName = 'LACluster'
 param storageInsightsConfigs = [
   {
     storageAccountResourceId: '<storageAccountResourceId>'
@@ -2615,7 +2620,7 @@ param tags = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`savedSearches`](#parameter-savedsearches) | array | Kusto Query Language searches to save. |
 | [`skuCapacityReservationLevel`](#parameter-skucapacityreservationlevel) | int | The capacity reservation level in GB for this workspace, when CapacityReservation sku is selected. Must be in increments of 100 between 100 and 5000. |
-| [`skuName`](#parameter-skuname) | string | The name of the SKU. |
+| [`skuName`](#parameter-skuname) | string | The name of the SKU. Must be 'LACluster' to be linked to a Log Analytics cluster. |
 | [`storageInsightsConfigs`](#parameter-storageinsightsconfigs) | array | List of storage accounts to be read by the workspace. |
 | [`tables`](#parameter-tables) | array | LAW custom tables to be deployed. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -3178,32 +3183,32 @@ List of services to be linked.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-linkedservicesname) | string | Name of the linked service. |
+| [`name`](#parameter-linkedservicesname) | string | Name of the linked service. E.g., 'Automation' for an automation account, or 'Cluster' for a Log Analytics Cluster. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`resourceId`](#parameter-linkedservicesresourceid) | string | The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access. |
-| [`writeAccessResourceId`](#parameter-linkedserviceswriteaccessresourceid) | string | The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access. |
+| [`resourceId`](#parameter-linkedservicesresourceid) | string | The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access (e.g., Automation Accounts). |
+| [`writeAccessResourceId`](#parameter-linkedserviceswriteaccessresourceid) | string | The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access (e.g., Log Analytics Clusters). |
 
 ### Parameter: `linkedServices.name`
 
-Name of the linked service.
+Name of the linked service. E.g., 'Automation' for an automation account, or 'Cluster' for a Log Analytics Cluster.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `linkedServices.resourceId`
 
-The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access.
+The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access (e.g., Automation Accounts).
 
 - Required: No
 - Type: string
 
 ### Parameter: `linkedServices.writeAccessResourceId`
 
-The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access.
+The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access (e.g., Log Analytics Clusters).
 
 - Required: No
 - Type: string
@@ -3569,7 +3574,7 @@ The capacity reservation level in GB for this workspace, when CapacityReservatio
 
 ### Parameter: `skuName`
 
-The name of the SKU.
+The name of the SKU. Must be 'LACluster' to be linked to a Log Analytics cluster.
 
 - Required: No
 - Type: string
@@ -3648,11 +3653,11 @@ LAW custom tables to be deployed.
 | :-- | :-- | :-- |
 | [`plan`](#parameter-tablesplan) | string | The plan for the table. |
 | [`restoredLogs`](#parameter-tablesrestoredlogs) | object | The restored logs for the table. |
-| [`retentionInDays`](#parameter-tablesretentionindays) | int | The retention in days for the table. |
+| [`retentionInDays`](#parameter-tablesretentionindays) | int | The retention in days for the table. Don't provide to use the default workspace retention. |
 | [`roleAssignments`](#parameter-tablesroleassignments) | array | The role assignments for the table. |
 | [`schema`](#parameter-tablesschema) | object | The schema for the table. |
 | [`searchResults`](#parameter-tablessearchresults) | object | The search results for the table. |
-| [`totalRetentionInDays`](#parameter-tablestotalretentionindays) | int | The total retention in days for the table. |
+| [`totalRetentionInDays`](#parameter-tablestotalretentionindays) | int | The total retention in days for the table. Don't provide use the default table retention. |
 
 ### Parameter: `tables.name`
 
@@ -3706,10 +3711,12 @@ The timestamp to start the restore from (UTC).
 
 ### Parameter: `tables.retentionInDays`
 
-The retention in days for the table.
+The retention in days for the table. Don't provide to use the default workspace retention.
 
 - Required: No
 - Type: int
+- MinValue: 4
+- MaxValue: 730
 
 ### Parameter: `tables.roleAssignments`
 
@@ -3998,10 +4005,12 @@ The timestamp to start the search from (UTC).
 
 ### Parameter: `tables.totalRetentionInDays`
 
-The total retention in days for the table.
+The total retention in days for the table. Don't provide use the default table retention.
 
 - Required: No
 - Type: int
+- MinValue: 4
+- MaxValue: 2555
 
 ### Parameter: `tags`
 
