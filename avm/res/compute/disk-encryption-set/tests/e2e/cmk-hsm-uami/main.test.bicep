@@ -44,7 +44,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
 module nestedHsmDependencies 'dependencies.hsm.bicep' = {
   name: '${uniqueString(deployment().name)}-nestedHSMDependencies'
   params: {
-    hsmKeyName: '${serviceShort}-${namePrefix}-key-${substring(uniqueString(baseTime), 0, 3)}'
+    hsmKeyName: '${namePrefix}-${serviceShort}-key-${substring(uniqueString(baseTime), 0, 3)}'
     managedHSMName: last(split(managedHSMResourceId, '/'))
   }
   scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
