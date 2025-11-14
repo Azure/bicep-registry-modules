@@ -1,5 +1,10 @@
 metadata name = 'Chat-with-your-data-Solution-Accelerator'
 metadata description = '''This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.
+
+|**Post-Deployment Step** |
+|-------------|
+| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |
+
 > **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
 '''
 
@@ -386,6 +391,8 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
       ...allTags
       TemplateName: 'CWYD'
       CreatedBy: createdBy
+      SecurityControl: 'Ignore'
+      DeploymentName: deployment().name
     }
   }
 }
