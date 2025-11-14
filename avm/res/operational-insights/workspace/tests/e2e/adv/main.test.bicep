@@ -196,6 +196,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      skuName: 'LACluster'
       linkedServices: [
         {
           name: 'Automation'

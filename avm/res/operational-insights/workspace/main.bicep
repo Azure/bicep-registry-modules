@@ -7,7 +7,7 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. The name of the SKU.')
+@description('Optional. The name of the SKU. Must be \'LACluster\' to be linked to a Log Analytics cluster.')
 @allowed([
   'CapacityReservation'
   'Free'
@@ -520,13 +520,13 @@ type storageInsightsConfigType = {
 @export()
 @description('Properties of the linked service.')
 type linkedServiceType = {
-  @description('Required. Name of the linked service.')
+  @description('Required. Name of the linked service. E.g., \'Automation\' for an automation account, or \'Cluster\' for a Log Analytics Cluster.')
   name: string
 
-  @description('Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access.')
+  @description('Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access (e.g., Automation Accounts).')
   resourceId: string?
 
-  @description('Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access.')
+  @description('Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access (e.g., Log Analytics Clusters).')
   writeAccessResourceId: string?
 }
 
