@@ -17,6 +17,9 @@ param serviceShort string = 'cdeshsmu'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Generated. Used as a basis for unique resource names.')
+param baseTime string = utcNow('u')
+
 @description('Required. The resource ID of the Managed Identity used by the deployment script. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-deploymentMSIName\'.')
 @secure()
 param deploymentMSIResourceId string = ''
@@ -50,7 +53,7 @@ module nestedHsmDependencies 'dependencies.hsm.bicep' = {
   name: '${uniqueString(deployment().name)}-nestedHSMDependencies'
   params: {
     managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-    hsmKeyName: '${serviceShort}-${namePrefix}-key'
+    hsmKeyName: '${serviceShort}-${namePrefix}-key-${substring(uniqueString(baseTime), 0, 3)}'
     hsmDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     deploymentMSIResourceId: deploymentMSIResourceId
     managedHSMName: last(split(managedHSMResourceId, '/'))

@@ -62,36 +62,22 @@ function Invoke-ResourceRemoval {
             break
         }
         'Microsoft.KeyVault/managedHSMs/keys' {
-            $subscriptionId = $ResourceId.Split('/')[2]
-            $resourceGroupName = $ResourceId.Split('/')[4]
             $parentName = $ResourceId.Split('/')[8]
             $resourceName = Split-Path $ResourceId -Leaf
-            Write-Verbose ('[-] Managing ad hoc removal for resource [{0}] of type [{1}].' -f $resourceName, $Type) -Verbose
+            $hSMKeyUri = 'https://{0}.managedhsm.azure.net/keys/{1}' -f $parentName, $resourceName
 
             # Remove resource
-            if ($PSCmdlet.ShouldProcess("Managed HSM key [$resourceName]", 'Remove')) {
-                try {
-                    az keyvault key delete --hsm-name $parentName --name $resourceName --subscription $subscriptionId
-                    if ($? -eq $false) {
-                        throw 'Key removal failed.'
-                    }
-                } catch {
-                    Write-Error 'Error removing the managed HSM key.'
+            if ($PSCmdlet.ShouldProcess("Managed HSM key [$hSMKeyUri]", 'Remove')) {
+                $hSMKeyApiUri = '{0}?api-version=2025-05-01' -f $hSMKeyUri
+                $removeRequestInputObject = @{
+                    Method = 'DELETE'
+                    Uri    = $hSMKeyApiUri
                 }
-                # az keyvault key delete --hsm-name $parentName --name $resourceName --subscription $subscriptionId
-                # # $hSMKeyApiPath = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.KeyVault/managedHSMs/{2}/keys/{3}?api-version=2025-05-01' -f $subscriptionId, $resourceGroupName, $parentName, $resourceName
-                # # $hSMKeyApiPath = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.KeyVault/managedHSMs/{2}/keys/{3}?api-version=2024-11-01' -f $subscriptionId, $resourceGroupName, $parentName, $resourceName
-                # $hSMKeyApiPath = 'https://{0}.managedhsm.azure.net/keys/{1}?api-version=7.4' -f $parentName, $resourceName
-                # Write-Verbose ($hSMKeyApiPath) -Verbose
-                # $removeRequestInputObject = @{
-                #     Method = 'DELETE'
-                #     Path   = $hSMKeyApiPath
-                # }
-                # $hSMKeyState = Invoke-AzRestMethod @removeRequestInputObject
-                # $hSMKeyStateContent = $hSMKeyState.Content | ConvertFrom-Json
-                # if ($hSMKeyState.StatusCode -notlike '2*') {
-                #     throw ('{0} : {1}' -f $hSMKeyStateContent.error.code, $hSMKeyStateContent.error.message)
-                # }
+                $hSMKeyState = Invoke-AzRestMethod @removeRequestInputObject
+                $hSMKeyStateContent = $hSMKeyState.Content | ConvertFrom-Json
+                if ($hSMKeyState.StatusCode -notlike '2*') {
+                    throw ('{0} : {1}' -f $hSMKeyStateContent.error.code, $hSMKeyStateContent.error.message)
+                }
             }
             break
         }
