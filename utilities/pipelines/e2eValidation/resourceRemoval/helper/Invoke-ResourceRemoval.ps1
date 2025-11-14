@@ -61,6 +61,29 @@ function Invoke-ResourceRemoval {
             Write-Verbose ('[/] Skipping resource [{0}] of type [{1}]. Reason: It is handled by different logic.' -f $resourceName, $Type) -Verbose
             break
         }
+        'Microsoft.KeyVault/managedHSMs/keys' {
+            $subscriptionId = $ResourceId.Split('/')[2]
+            $resourceGroupName = $ResourceId.Split('/')[4]
+            $parentName = $ResourceId.Split('/')[8]
+            $resourceName = Split-Path $ResourceId -Leaf
+            Write-Verbose ('[/] Managing ad hoc removal for resource [{0}] of type [{1}].' -f $resourceName, $Type) -Verbose
+
+            # Remove resource
+            if ($PSCmdlet.ShouldProcess("Managed HSM key [$resourceName]", 'Remove')) {
+                az keyvault key delete --hsm-name $parentName --name $resourceName --subscription $subscriptionId
+                # $hSMKeyApiPath = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.KeyVault/managedHSMs/{2}/keys/{3}?api-version=2025-05-01' -f $subscriptionId, $resourceGroupName, $parentName, $resourceName
+                # $removeRequestInputObject = @{
+                #     Method = 'DELETE'
+                #     Path   = $hSMKeyApiPath
+                # }
+                # $hSMKeyState = Invoke-AzRestMethod @removeRequestInputObject
+                # $hSMKeyStateContent = $hSMKeyState.Content | ConvertFrom-Json
+                # if ($hSMKeyState.StatusCode -notlike '2*') {
+                #     throw ('{0} : {1}' -f $hSMKeyStateContent.error.code, $hSMKeyStateContent.error.message)
+                # }
+            }
+            break
+        }
         'Microsoft.ServiceBus/namespaces/authorizationRules' {
             if ((Split-Path $ResourceId '/')[-1] -eq 'RootManageSharedAccessKey') {
                 Write-Verbose ('[/] Skipping resource [RootManageSharedAccessKey] of type [{0}]. Reason: The Service Bus''s default authorization key cannot be removed' -f $Type) -Verbose
@@ -491,7 +514,7 @@ function Invoke-ResourceRemoval {
             break
         }
         ### CODE LOCATION: Add custom removal action here
-        Default {
+        default {
             if ($PSCmdlet.ShouldProcess("Resource with ID [$ResourceId]", 'Remove')) {
                 $null = Remove-AzResource -ResourceId $ResourceId -Force -ErrorAction 'Stop'
             }
