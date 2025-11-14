@@ -22,7 +22,6 @@ param solutionUniqueToken string = substring(uniqueString(subscription().id, res
 @metadata({ azd: { type: 'location' } })
 @description('Optional. Azure region for all services. Defaults to the resource group location.')
 param location string = resourceGroup().location
-var solutionLocation = empty(location) ? resourceGroup().location : location
 
 @allowed([
   'australiaeast'
@@ -41,8 +40,7 @@ var solutionLocation = empty(location) ? resourceGroup().location : location
   azd: {
     type: 'location'
     usageName: [
-      'OpenAI.GlobalStandard.gpt-4o-mini,200'
-      'OpenAI.GlobalStandard.text-embedding-ada-002,80'
+      'OpenAI.GlobalStandard.gpt-4o, 150'
     ]
   }
 })
@@ -200,7 +198,7 @@ module appIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.
   name: take('avm.res.managed-identity.user-assigned-identity.${solutionSuffix}', 64)
   params: {
     name: 'id-${solutionSuffix}'
-    location: solutionLocation
+    location: location
     tags: allTags
     enableTelemetry: enableTelemetry
   }
@@ -225,7 +223,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
   name: take('avm.res.operational-insights.workspace.${solutionSuffix}', 64)
   params: {
     name: 'log-${solutionSuffix}'
-    location: solutionLocation
+    location: location
     skuName: 'PerGB2018'
     dataRetention: 365
     features: { enableLogAccessUsingOnlyResourcePermissions: true }
@@ -294,7 +292,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.1' = if (en
   params: {
     name: applicationInsightsResourceName
     tags: allTags
-    location: solutionLocation
+    location: location
     enableTelemetry: enableTelemetry
     retentionInDays: 365
     kind: 'web'
@@ -404,7 +402,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
   params: {
     name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
     vmSize: vmSize ?? 'Standard_DS2_v2'
-    location: solutionLocation
+    location: location
     adminUsername: vmAdminUsername ?? 'JumpboxAdminUser'
     // WAF aligned configuration - Use provided password or generate a secure unique password
     adminPassword: vmAdminPassword
@@ -470,7 +468,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
   name: take('${jumpboxVmName}-jumpbox-maintenance-config', 64)
   params: {
     name: 'mc-${jumpboxVmName}'
-    location: solutionLocation
+    location: location
     tags: allTags
     enableTelemetry: enableTelemetry
     extensionProperties: {
