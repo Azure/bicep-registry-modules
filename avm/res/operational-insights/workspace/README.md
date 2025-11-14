@@ -40,7 +40,8 @@ The following section provides usage examples for the module, which were used to
 - [Advanced features](#example-1-advanced-features)
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Advanced features](#example-4-advanced-features)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Advanced features_
 
@@ -214,10 +215,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         name: 'Automation'
         resourceId: '<resourceId>'
       }
-      {
-        name: 'Cluster'
-        writeAccessResourceId: '<writeAccessResourceId>'
-      }
     ]
     linkedStorageAccounts: [
       {
@@ -242,7 +239,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         query: 'Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer'
       }
     ]
-    skuName: 'LACluster'
     storageInsightsConfigs: [
       {
         storageAccountResourceId: '<storageAccountResourceId>'
@@ -534,10 +530,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         {
           "name": "Automation",
           "resourceId": "<resourceId>"
-        },
-        {
-          "name": "Cluster",
-          "writeAccessResourceId": "<writeAccessResourceId>"
         }
       ]
     },
@@ -573,9 +565,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
           "query": "Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer"
         }
       ]
-    },
-    "skuName": {
-      "value": "LACluster"
     },
     "storageInsightsConfigs": {
       "value": [
@@ -858,10 +847,6 @@ param linkedServices = [
     name: 'Automation'
     resourceId: '<resourceId>'
   }
-  {
-    name: 'Cluster'
-    writeAccessResourceId: '<writeAccessResourceId>'
-  }
 ]
 param linkedStorageAccounts = [
   {
@@ -886,7 +871,6 @@ param savedSearches = [
     query: 'Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer'
   }
 ]
-param skuName = 'LACluster'
 param storageInsightsConfigs = [
   {
     storageAccountResourceId: '<storageAccountResourceId>'
@@ -2050,7 +2034,117 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 4: _Advanced features_
+
+This instance deploys the module with advanced features like custom tables, data exports & encryption.
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
+  name: 'workspaceDeployment'
+  params: {
+    // Required parameters
+    name: 'oiwmhsm001'
+    // Non-required parameters
+    dailyQuotaGb: 10
+    linkedServices: [
+      {
+        name: 'Cluster'
+        writeAccessResourceId: '<writeAccessResourceId>'
+      }
+    ]
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    skuName: 'LACluster'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "oiwmhsm001"
+    },
+    // Non-required parameters
+    "dailyQuotaGb": {
+      "value": 10
+    },
+    "linkedServices": {
+      "value": [
+        {
+          "name": "Cluster",
+          "writeAccessResourceId": "<writeAccessResourceId>"
+        }
+      ]
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "skuName": {
+      "value": "LACluster"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operational-insights/workspace:<version>'
+
+// Required parameters
+param name = 'oiwmhsm001'
+// Non-required parameters
+param dailyQuotaGb = 10
+param linkedServices = [
+  {
+    name: 'Cluster'
+    writeAccessResourceId: '<writeAccessResourceId>'
+  }
+]
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param skuName = 'LACluster'
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
