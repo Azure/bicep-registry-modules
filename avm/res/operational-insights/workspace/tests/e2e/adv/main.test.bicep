@@ -43,8 +43,9 @@ module nestedDependencies 'dependencies.bicep' = {
     eventHubNamespaceName: 'dep-${namePrefix}-ehn-${serviceShort}'
     eventHubName: 'dep-${namePrefix}-eh-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    logAnalyticsClusterName: 'dep-${namePrefix}-lac-${serviceShort}'
     waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForPropagation'
+    // Adding base time to make the name unique as soft-deletion is enabled by default
+    logAnalyticsClusterName: 'dep-${namePrefix}-lac-${serviceShort}-${uniqueString(baseTime)}'
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
   }
