@@ -37,6 +37,9 @@ import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType?
 
+@description('Optional. Assign permissions for the customer managed key to the workspace\'s system-assigned identity. Only supports key stored in Azure Key Vaults.')
+param customerManagedKeyGrantSysAssignedAccess bool = true
+
 @description('Optional. Activate workspace by adding the system managed identity in the KeyVault containing the customer managed key and activating the workspace.')
 param encryptionActivateWorkspace bool = false
 
@@ -115,24 +118,26 @@ param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
 var enableReferencedModulesTelemetry = false
 
-var cmkUserAssignedIdentityAsArray = !empty(customerManagedKey.?userAssignedIdentityResourceId ?? [])
-  ? [customerManagedKey.?userAssignedIdentityResourceId]
-  : []
-
-var userAssignedIdentitiesUnion = !empty(managedIdentities)
-  ? union(managedIdentities.?userAssignedResourceIds ?? [], cmkUserAssignedIdentityAsArray)
-  : cmkUserAssignedIdentityAsArray
-
 var formattedUserAssignedIdentities = reduce(
-  map((userAssignedIdentitiesUnion ?? []), (id) => { '${id}': {} }),
+  map(
+    union(
+      (managedIdentities.?userAssignedResourceIds ?? []),
+      (!empty(customerManagedKey.?userAssignedIdentityResourceId)
+        ? [customerManagedKey.?userAssignedIdentityResourceId]
+        : [])
+    ),
+    (id) => { '${id}': {} }
+  ),
   {},
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = {
-  type: !empty(userAssignedIdentitiesUnion) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned'
-  userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
-}
+var identity = !empty(managedIdentities) || !empty(formattedUserAssignedIdentities)
+  ? {
+      type: !empty(formattedUserAssignedIdentities) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned'
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -274,6 +279,18 @@ module synapse_integrationRuntimes 'integration-runtime/main.bicep' = [
   }
 ]
 
+// Workspace encryption with customer managed keys
+// - Assign Synapse Workspace's (mandatory) system-assigned identity access to encryption key
+module workspace_cmk_rbac 'modules/nested_cmkRbac.bicep' = if (customerManagedKeyGrantSysAssignedAccess && !empty(customerManagedKey) && !isHSMManagedCMK) {
+  name: '${workspace.name}-cmk-rbac'
+  params: {
+    workspaceIndentityPrincipalId: workspace.identity.principalId
+    usesRbacAuthorization: !empty(customerManagedKey!.keyVaultResourceId)
+    keyName: customerManagedKey!.keyName
+    keyVaultName: !empty(customerManagedKey!.keyVaultResourceId) ? cMKKeyVault.name : ''
+  }
+}
+
 // - Workspace encryption - Activate Workspace
 module workspace_key 'key/main.bicep' = if (encryptionActivateWorkspace) {
   name: take('${workspace.name}-cmk-activation', 64)
@@ -283,6 +300,9 @@ module workspace_key 'key/main.bicep' = if (encryptionActivateWorkspace) {
     keyVaultResourceId: cMKKeyVault.id
     workspaceName: workspace.name
   }
+  dependsOn: [
+    workspace_cmk_rbac
+  ]
 }
 
 // - Workspace Entra ID Administrator

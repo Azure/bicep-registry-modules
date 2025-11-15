@@ -4,9 +4,6 @@ param location string = resourceGroup().location
 @description('Required. The name of the Key Vault to create.')
 param keyVaultName string
 
-@description('Required. The name of the Synapse Workspace to create.')
-param workspaceName string
-
 @description('Required. The name of the Storage Account to create.')
 param storageAccountName string
 
@@ -53,49 +50,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
     resource container 'containers@2025-01-01' = {
       name: 'synapsews'
     }
-  }
-}
-
-resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' = {
-  name: workspaceName
-  location: location
-  identity: {
-    type: 'SystemAssigned'
-  }
-  properties: {
-    defaultDataLakeStorage: {
-      resourceId: storageAccount.id
-      filesystem: storageAccount::blobService::container.name
-      accountUrl: storageAccount.properties.primaryEndpoints.dfs
-    }
-    managedVirtualNetwork: 'default'
-    azureADOnlyAuthentication: false
-    sqlAdministratorLogin: 'sqlAdministratorLogin'
-    // Must be defined upon creation
-    encryption: {
-      cmk: {
-        kekIdentity: {
-          useSystemAssignedIdentity: true
-        }
-        key: {
-          keyVaultUrl: keyVault::key.properties.keyUri
-          name: keyVault::key.name
-        }
-      }
-    }
-  }
-}
-
-resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault::key.id}-${location}-${workspaceName}-Key-Reader-RoleAssignment')
-  scope: keyVault::key
-  properties: {
-    principalId: workspace.identity.principalId
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      '12338af0-0e69-4776-bea7-57ae8d297424'
-    ) // Key Vault Crypto User
-    principalType: 'ServicePrincipal'
   }
 }
 
