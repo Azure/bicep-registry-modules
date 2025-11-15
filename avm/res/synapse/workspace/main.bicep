@@ -291,12 +291,12 @@ module workspace_cmk_rbac 'modules/nested_cmkRbac.bicep' = if (customerManagedKe
 }
 
 // - Workspace encryption - Activate Workspace
-module workspace_key 'key/main.bicep' = if (encryptionActivateWorkspace) {
+module workspace_key 'key/main.bicep' = if (encryptionActivateWorkspace && !empty(customerManagedKey)) {
   name: take('${workspace.name}-cmk-activation', 64)
   params: {
+    keyVaultResourceId: customerManagedKey!.keyVaultResourceId
     name: customerManagedKey!.keyName
     isActiveCMK: true
-    keyVaultResourceId: cMKKeyVault.id
     workspaceName: workspace.name
   }
   dependsOn: [
