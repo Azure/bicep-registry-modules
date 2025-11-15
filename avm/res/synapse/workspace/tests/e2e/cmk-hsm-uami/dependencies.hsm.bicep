@@ -14,7 +14,7 @@ resource managedHsm 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = {
   // resource key 'keys@2025-05-01' = {
   //   name: hsmKeyName
   //   properties: {
-  //     keySize: 4096
+  //     keySize: 3072 // Not supporting 4096
   //     kty: 'RSA-HSM'
   //   }
   // }
