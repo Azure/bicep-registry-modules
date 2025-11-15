@@ -2040,7 +2040,8 @@ This instance deploys the module with advanced features like custom tables, data
 
 > **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
 ```text
-The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
+The test is skipped because the Log Analytics Cluster resource is very restrictive when it comes to how many instance one can have and how to lifecycle them.
+For further information, please refer to: [ref](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/logs-dedicated-clusters?tabs=azure-portal#delete-cluster)
 ```
 
 <details>
