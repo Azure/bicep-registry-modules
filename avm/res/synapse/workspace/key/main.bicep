@@ -33,8 +33,8 @@ resource key 'Microsoft.Synapse/workspaces/keys@2021-06-01' = {
   properties: {
     isActiveCMK: isActiveCMK
     keyVaultUrl: !isHSMManagedCMK
-      ? cMKKeyVault!.properties.vaultUri
-      : 'https://${last(split((keyVaultResourceId), '/'))}.managedhsm.azure.net/'
+      ? cMKKeyVault::cMKKey!.properties.keyUri
+      : 'https://${last(split((keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${name}'
   }
 }
 
