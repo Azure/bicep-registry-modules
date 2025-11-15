@@ -286,7 +286,7 @@ module workspace_cmk_rbac 'modules/nested_cmkRbac.bicep' = if (customerManagedKe
     workspaceIndentityPrincipalId: workspace.identity.principalId
     usesRbacAuthorization: cMKKeyVault!.properties.enableRbacAuthorization
     keyName: customerManagedKey!.keyName
-    keyVaultName: !empty(customerManagedKey!.keyVaultResourceId) ? cMKKeyVault.name : ''
+    keyVaultName: last(split(customerManagedKey!.keyVaultResourceId, '/'))
   }
 }
 
