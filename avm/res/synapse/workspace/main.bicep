@@ -188,14 +188,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 
 var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
-  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
+  name: last(split((customerManagedKey!.keyVaultResourceId), '/'))
   scope: resourceGroup(
-    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
-    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+    split(customerManagedKey!.keyVaultResourceId, '/')[2],
+    split(customerManagedKey!.keyVaultResourceId, '/')[4]
   )
 
   resource cMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
-    name: customerManagedKey.?keyName!
+    name: customerManagedKey!.keyName
   }
 }
 
