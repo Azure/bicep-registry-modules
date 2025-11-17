@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "6353021730674176651"
+      "templateHash": "6592287316905026816"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server."
@@ -933,7 +933,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.DBforMySQL/flexibleServers@2024-10-01-preview#properties/properties/properties/maintenanceWindow"
         },
-        "description": "Optional. Properties for the maintenence window. If provided, \"customWindow\" property must exist and set to \"Enabled\"."
+        "description": "Optional. Properties for the maintenance window. If provided, \"customWindow\" property must exist and set to \"Enabled\"."
       },
       "defaultValue": {}
     },

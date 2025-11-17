@@ -1208,7 +1208,7 @@ param tags = {
 | [`highAvailabilityZone`](#parameter-highavailabilityzone) | int | Standby availability zone information of the server. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Default will have no preference set. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`maintenanceWindow`](#parameter-maintenancewindow) | object | Properties for the maintenence window. If provided, "customWindow" property must exist and set to "Enabled". |
+| [`maintenanceWindow`](#parameter-maintenancewindow) | object | Properties for the maintenance window. If provided, "customWindow" property must exist and set to "Enabled". |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. Used when the desired connectivity mode is 'Public Access' and 'delegatedSubnetResourceId' is NOT used. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Specifies whether public network access is allowed for this server. Set to "Enabled" to allow public access, or "Disabled" (default) when the server has VNet integration. |
 | [`replicationRole`](#parameter-replicationrole) | string | The replication role. |
@@ -1810,7 +1810,7 @@ Specify the notes of the lock.
 
 ### Parameter: `maintenanceWindow`
 
-Properties for the maintenence window. If provided, "customWindow" property must exist and set to "Enabled".
+Properties for the maintenance window. If provided, "customWindow" property must exist and set to "Enabled".
 
 - Required: No
 - Type: object
