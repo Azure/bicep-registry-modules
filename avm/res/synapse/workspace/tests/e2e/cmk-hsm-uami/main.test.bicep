@@ -82,12 +82,12 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
-      customerManagedKey: {
-        keyName: nestedHsmDependencies.outputs.keyName
-        keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
-        userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-        keyVersion: nestedHsmDependencies.outputs.keyVersion
-      }
+      // customerManagedKey: {
+      //   keyName: nestedHsmDependencies.outputs.keyName
+      //   keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
+      //   userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+      //   keyVersion: nestedHsmDependencies.outputs.keyVersion
+      // }
       encryptionActivateWorkspace: true
     }
   }

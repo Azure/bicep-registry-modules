@@ -238,7 +238,7 @@ resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' = {
             key: {
               keyVaultUrl: !isHSMManagedCMK
                 ? cMKKeyVault::cMKKey!.properties.keyUri
-                : 'https://${last(split((customerManagedKey!.?keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.?keyVersion}'
+                : 'https://${last(split((customerManagedKey!.?keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}'
               name: customerManagedKey!.keyName
             }
           }
