@@ -1545,8 +1545,19 @@ function Set-UsageExamplesSection {
         return $ReadMeFileContent
     }
 
-    $brLink = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
-    $targetVersion = '<version>'
+    $brLink = Get-BRMRepositoryName -TemplateFilePath (Join-Path $ModuleRoot 'main.bicep')
+    $moduleType = ($brLink -split '\/')[1]
+    $moduleTargetVersion = Get-ModuleTargetVersion -ModuleFolderPath $ModuleRoot
+    if ((Get-ModulesToPublish -ModuleFolderPath $ModuleRoot).Count -ge 1 -or $moduleTargetVersion -eq '0.1.0') {
+        # The module will be published
+        Write-Verbose 'As the module is modified, a new module version is assumed and used in the readme' -Verbose
+        $targetVersion = $moduleTargetVersion
+    } else {
+        # Since the module is not being published, the version remains the same. Let's get the latest published
+        Write-Verbose 'As the module was not modified, the latest published module version remains valid and is used in the readme' -Verbose
+        $publishedTags = Get-PublishedModuleVersionsList -ModuleType $moduleType -ModuleName $FullModuleIdentifier
+        $targetVersion = ($publishedTags | ForEach-Object { [version]$_ } | Sort-Object)[-1]
+    }
 
     # Process content
     $SectionContent = [System.Collections.ArrayList]@(
@@ -2142,6 +2153,9 @@ function Set-ModuleReadMe {
     . (Join-Path $PSScriptRoot 'helper' 'ConvertTo-OrderedHashtable.ps1')
     . (Join-Path $PSScriptRoot 'Get-BRMRepositoryName.ps1')
     . (Join-Path $PSScriptRoot 'helper' 'Get-CrossReferencedModuleList.ps1')
+    . (Join-Path $PSScriptRoot '..' 'publish' 'helper' 'Get-ModuleTargetVersion.ps1')
+    . (Join-Path $PSScriptRoot '..' 'publish' 'helper' 'Get-ModulesToPublish.ps1')
+    . (Join-Path $PSScriptRoot 'Get-PublishedModuleVersionsList.ps1')
 
     # Check template & make full path
     $TemplateFilePath = Resolve-Path -Path $TemplateFilePath -ErrorAction Stop
@@ -2186,23 +2200,25 @@ function Set-ModuleReadMe {
     # ===================== #
     # Read original readme, if any. Then delete it to build from scratch
     if ((Test-Path $ReadMeFilePath) -and -not ([String]::IsNullOrEmpty((Get-Content $ReadMeFilePath -Raw)))) {
-        $readMeFileContent = Get-Content -Path $ReadMeFilePath -Encoding 'utf8'
+        $originalReadMeFileContent = Get-Content -Path $ReadMeFilePath -Encoding 'utf8'
+    } else {
+        $originalReadMeFileContent = @()
     }
     # Make sure we preserve any manual notes a user might have added in the corresponding section
-    if ($match = $readMeFileContent | Select-String -Pattern '## Notes') {
+    if ($match = $originalReadMeFileContent | Select-String -Pattern '## Notes') {
         $startIndex = $match.LineNumber
 
-        if ($readMeFileContent[($startIndex + 1)] -notlike '## *') {
+        if ($originalReadMeFileContent[($startIndex + 1)] -notlike '## *') {
             $endIndex = $startIndex + 1
         } else {
             $endIndex = $startIndex
         }
 
-        while (-not (($endIndex + 1) -gt $readMeFileContent.count) -and $readMeFileContent[($endIndex + 1)] -notlike '## *') {
+        while (-not (($endIndex + 1) -gt $originalReadMeFileContent.count) -and $originalReadMeFileContent[($endIndex + 1)] -notlike '## *') {
             $endIndex++
         }
 
-        $notes = $readMeFileContent[($startIndex - 1)..$endIndex]
+        $notes = $originalReadMeFileContent[($startIndex - 1)..$endIndex]
     } else {
         $notes = @()
     }
