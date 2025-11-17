@@ -140,7 +140,7 @@ module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = 
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
-    solutionName: 'samyceg001'
+    solutionName: '<solutionName>'
     // Non-required parameters
     enableMonitoring: true
     enablePrivateNetworking: true
@@ -170,7 +170,7 @@ module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = 
       "value": "<azureAiServiceLocation>"
     },
     "solutionName": {
-      "value": "samyceg001"
+      "value": "<solutionName>"
     },
     // Non-required parameters
     "enableMonitoring": {
@@ -210,7 +210,7 @@ using 'br/public:avm/ptn/sa/modernize-your-code:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
-param solutionName = 'samyceg001'
+param solutionName = '<solutionName>'
 // Non-required parameters
 param enableMonitoring = true
 param enablePrivateNetworking = true
@@ -239,7 +239,7 @@ module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = 
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
-    solutionName: 'samycmin001'
+    solutionName: '<solutionName>'
     // Non-required parameters
     location: '<location>'
   }
@@ -263,7 +263,7 @@ module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = 
       "value": "<azureAiServiceLocation>"
     },
     "solutionName": {
-      "value": "samycmin001"
+      "value": "<solutionName>"
     },
     // Non-required parameters
     "location": {
@@ -285,7 +285,7 @@ using 'br/public:avm/ptn/sa/modernize-your-code:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
-param solutionName = 'samycmin001'
+param solutionName = '<solutionName>'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -308,7 +308,7 @@ module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = 
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
-    solutionName: 'samyceg-waf001'
+    solutionName: '<solutionName>'
     // Non-required parameters
     enableMonitoring: true
     enablePrivateNetworking: true
@@ -338,7 +338,7 @@ module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = 
       "value": "<azureAiServiceLocation>"
     },
     "solutionName": {
-      "value": "samyceg-waf001"
+      "value": "<solutionName>"
     },
     // Non-required parameters
     "enableMonitoring": {
@@ -378,7 +378,7 @@ using 'br/public:avm/ptn/sa/modernize-your-code:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
-param solutionName = 'samyceg-waf001'
+param solutionName = '<solutionName>'
 // Non-required parameters
 param enableMonitoring = true
 param enablePrivateNetworking = true
