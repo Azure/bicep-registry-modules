@@ -341,7 +341,7 @@ param virtualMachineAdminPassword string = ''
 param enableTelemetry bool = true
 
 @description('Optional. Image version tag to use.')
-param appversion string = 'latest_waf_2025-09-24_3564'
+param appversion string = 'latest_waf_2025-11-17_3662'
 
 var blobContainerName = 'documents'
 var queueName = 'doc-processing'
