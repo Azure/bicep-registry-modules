@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "13649109752671988139"
+      "templateHash": "11548927992506458447"
     },
     "name": "Chat-with-your-data-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -37,13 +37,6 @@
           "type": "location"
         },
         "description": "Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for PostgreSQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/postgresql/flexible-server/overview#azure-regions). Note: In the \"Deploy to Azure\" interface, you will see both \"Region\" and \"Location\" fields - \"Region\" is only for deployment metadata while \"Location\" (this parameter) determines where your actual resources are deployed."
-      }
-    },
-    "existingLogAnalyticsWorkspaceId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Existing Log Analytics Workspace Resource ID."
       }
     },
     "hostingPlanSku": {
@@ -41076,9 +41069,6 @@
           "applicationInsightsDashboardName": {
             "value": "[format('dash-{0}', variables('applicationInsightsName'))]"
           },
-          "existingLogAnalyticsWorkspaceId": {
-            "value": "[parameters('existingLogAnalyticsWorkspaceId')]"
-          },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
@@ -41100,7 +41090,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "10734361934206424489"
+              "templateHash": "3131567521295648656"
             },
             "name": "monitoring-solution",
             "description": "AVM WAF-compliant monitoring solution that integrates Application Insights with Log Analytics for centralized telemetry, diagnostics, and observability."
@@ -41207,13 +41197,6 @@
                 "description": "Optional. Retention for Application Insights (in days). AVM/WAF recommends 365."
               }
             },
-            "existingLogAnalyticsWorkspaceId": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. Use an existing Log Analytics workspace by providing its resource ID. If provided, the module will not create a new workspace."
-              }
-            },
             "applicationInsightsDashboardName": {
               "type": "string",
               "defaultValue": "",
@@ -41235,7 +41218,6 @@
           },
           "resources": {
             "avmWorkspace": {
-              "condition": "[empty(parameters('existingLogAnalyticsWorkspaceId'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
               "name": "[take(format('avm.res.operational-insights.workspace.{0}', parameters('logAnalyticsName')), 64)]",
@@ -44377,8 +44359,16 @@
                   "flowType": {
                     "value": "Bluefield"
                   },
-                  "workspaceResourceId": "[if(empty(if(empty(parameters('existingLogAnalyticsWorkspaceId')), reference('avmWorkspace').outputs.resourceId.value, parameters('existingLogAnalyticsWorkspaceId'))), createObject('value', ''), if(empty(parameters('existingLogAnalyticsWorkspaceId')), createObject('value', reference('avmWorkspace').outputs.resourceId.value), createObject('value', parameters('existingLogAnalyticsWorkspaceId'))))]",
-                  "diagnosticSettings": "[if(empty(if(empty(parameters('existingLogAnalyticsWorkspaceId')), reference('avmWorkspace').outputs.resourceId.value, parameters('existingLogAnalyticsWorkspaceId'))), createObject('value', null()), createObject('value', createArray(createObject('workspaceResourceId', if(empty(parameters('existingLogAnalyticsWorkspaceId')), reference('avmWorkspace').outputs.resourceId.value, parameters('existingLogAnalyticsWorkspaceId'))))))]"
+                  "workspaceResourceId": {
+                    "value": "[reference('avmWorkspace').outputs.resourceId.value]"
+                  },
+                  "diagnosticSettings": {
+                    "value": [
+                      {
+                        "workspaceResourceId": "[reference('avmWorkspace').outputs.resourceId.value]"
+                      }
+                    ]
+                  }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -46605,7 +46595,7 @@
               "metadata": {
                 "description": "Resource ID of the Log Analytics workspace."
               },
-              "value": "[if(empty(parameters('existingLogAnalyticsWorkspaceId')), reference('avmWorkspace').outputs.resourceId.value, parameters('existingLogAnalyticsWorkspaceId'))]"
+              "value": "[reference('avmWorkspace').outputs.resourceId.value]"
             },
             "appInsightsId": {
               "type": "string",
@@ -54982,9 +54972,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "managedIdentityModule",
         "virtualNetwork"
       ]

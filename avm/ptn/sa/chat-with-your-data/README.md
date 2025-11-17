@@ -121,6 +121,8 @@ This deploys the sandbox configuration for Chat with your data Solution Accelera
 module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   name: 'chatWithYourDataDeployment'
   params: {
+    azureOpenAIEmbeddingModelCapacity: 10
+    azureOpenAIModelCapacity: 10
     databaseType: 'CosmosDB'
     location: '<location>'
     solutionName: '<solutionName>'
@@ -140,6 +142,12 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "azureOpenAIEmbeddingModelCapacity": {
+      "value": 10
+    },
+    "azureOpenAIModelCapacity": {
+      "value": 10
+    },
     "databaseType": {
       "value": "CosmosDB"
     },
@@ -163,6 +171,8 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
 
+param azureOpenAIEmbeddingModelCapacity = 10
+param azureOpenAIModelCapacity = 10
 param databaseType = 'CosmosDB'
 param location = '<location>'
 param solutionName = '<solutionName>'
@@ -184,6 +194,8 @@ This deploys the sandbox configuration for Chat with your data Solution Accelera
 module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   name: 'chatWithYourDataDeployment'
   params: {
+    azureOpenAIEmbeddingModelCapacity: 10
+    azureOpenAIModelCapacity: 10
     location: '<location>'
     solutionName: '<solutionName>'
   }
@@ -202,6 +214,12 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "azureOpenAIEmbeddingModelCapacity": {
+      "value": 10
+    },
+    "azureOpenAIModelCapacity": {
+      "value": 10
+    },
     "location": {
       "value": "<location>"
     },
@@ -222,6 +240,8 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
 
+param azureOpenAIEmbeddingModelCapacity = 10
+param azureOpenAIModelCapacity = 10
 param location = '<location>'
 param solutionName = '<solutionName>'
 ```
@@ -242,6 +262,8 @@ This instance deploys the module in alignment with the best-practices of the Azu
 module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   name: 'chatWithYourDataDeployment'
   params: {
+    azureOpenAIEmbeddingModelCapacity: 10
+    azureOpenAIModelCapacity: 10
     enableMonitoring: true
     enablePrivateNetworking: true
     enableRedundancy: true
@@ -267,6 +289,12 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "azureOpenAIEmbeddingModelCapacity": {
+      "value": 10
+    },
+    "azureOpenAIModelCapacity": {
+      "value": 10
+    },
     "enableMonitoring": {
       "value": true
     },
@@ -308,6 +336,8 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
 
+param azureOpenAIEmbeddingModelCapacity = 10
+param azureOpenAIModelCapacity = 10
 param enableMonitoring = true
 param enablePrivateNetworking = true
 param enableRedundancy = true
@@ -385,7 +415,6 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`existingLogAnalyticsWorkspaceId`](#parameter-existingloganalyticsworkspaceid) | string | Existing Log Analytics Workspace Resource ID. |
 | [`hostingModel`](#parameter-hostingmodel) | string | Hosting model for the web apps. This value is fixed as "container", which uses prebuilt containers for faster deployment. |
 | [`hostingPlanSku`](#parameter-hostingplansku) | string | The pricing tier for the App Service plan. |
 | [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for PostgreSQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/postgresql/flexible-server/overview#azure-regions). Note: In the "Deploy to Azure" interface, you will see both "Region" and "Location" fields - "Region" is only for deployment metadata while "Location" (this parameter) determines where your actual resources are deployed. |
@@ -901,14 +930,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `existingLogAnalyticsWorkspaceId`
-
-Existing Log Analytics Workspace Resource ID.
-
-- Required: No
-- Type: string
-- Default: `''`
 
 ### Parameter: `hostingModel`
 

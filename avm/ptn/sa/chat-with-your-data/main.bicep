@@ -21,9 +21,6 @@ param solutionUniqueText string = take(uniqueString(subscription().id, resourceG
 @description('Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for PostgreSQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/postgresql/flexible-server/overview#azure-regions). Note: In the "Deploy to Azure" interface, you will see both "Region" and "Location" fields - "Region" is only for deployment metadata while "Location" (this parameter) determines where your actual resources are deployed.')
 param location string = resourceGroup().location
 
-@description('Optional. Existing Log Analytics Workspace Resource ID.')
-param existingLogAnalyticsWorkspaceId string = ''
-
 var solutionSuffix = toLower(trim(replace(
   replace(
     replace(replace(replace(replace('${solutionName}${solutionUniqueText}', '-', ''), '_', ''), '.', ''), '/', ''),
@@ -642,11 +639,6 @@ var dnsZoneIndex = {
   machinelearning: 9
 }
 
-// ===================================================
-// DEPLOY PRIVATE DNS ZONES
-// - Deploys all zones if no existing Foundry project is used
-// - Excludes AI-related zones when using with an existing Foundry project
-// ===================================================
 @batchSize(5)
 module avmPrivateDnsZones './modules/private-dns-zone/private-dns-zone.bicep' = [
   for (zone, i) in privateDnsZones: if (enablePrivateNetworking) {
@@ -1529,7 +1521,6 @@ module monitoring 'modules/core/monitor/monitoring.bicep' = if (enableMonitoring
     }
     logAnalyticsName: logAnalyticsName
     applicationInsightsDashboardName: 'dash-${applicationInsightsName}'
-    existingLogAnalyticsWorkspaceId: existingLogAnalyticsWorkspaceId
     enableTelemetry: enableTelemetry
     enablePrivateNetworking: enablePrivateNetworking
     enableRedundancy: enableRedundancy
