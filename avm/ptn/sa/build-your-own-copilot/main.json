@@ -22602,6 +22602,10 @@
               {
                 "name": "AZURE-SEARCH-ENDPOINT",
                 "value": "[format('https://{0}.search.windows.net', variables('aiSearchName'))]"
+              },
+              {
+                "name": "AZURE-AI-AGENT-ENDPOINT",
+                "value": "[reference('aiFoundryAiServices').outputs.aiProjectInfo.apiEndpoint.value]"
               }
             ]
           },
