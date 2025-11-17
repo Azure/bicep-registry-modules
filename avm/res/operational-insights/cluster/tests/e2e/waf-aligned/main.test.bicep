@@ -1,7 +1,11 @@
 targetScope = 'subscription'
 
-metadata name = 'Using Customer-Managed-Keys with System-Assigned identity'
-metadata description = 'This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.'
+metadata name = 'WAF-aligned'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+
+// NOTE
+// - There is a limit of seven clusters per subscription and region, five active, plus two that were deleted in past two weeks.
+// - A cluster's name remains reserved two weeks after deletion, and can't be used for creating a new cluster.
 
 // ========== //
 // Parameters //
@@ -9,15 +13,15 @@ metadata description = 'This instance deploys the module using Customer-Managed-
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-kusto.clusters-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-operational-insights-cluster-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'kcsencr'
+param serviceShort string = 'oicwaf'
 
-@description('Optional. A token to inject into the name of each resource.')
+@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
 @description('Generated. Used as a basis for unique resource names.')
@@ -29,7 +33,7 @@ param baseTime string = utcNow('u')
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -38,10 +42,9 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
-    kustoClusterName: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
   }
 }
 
@@ -55,14 +58,25 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: nestedDependencies.outputs.kustoClusterName
-      sku: 'Standard_E2ads_v5'
+      // Adding base time to make the name unique as soft-deletion is enabled by default
+      name: '${namePrefix}-${serviceShort}-${uniqueString(baseTime)}'
+      sku: {
+        capacity: 100
+      }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
       customerManagedKey: {
-        keyName: nestedDependencies.outputs.keyName
+        keyName: nestedDependencies.outputs.keyVaultKeyName
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+        userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       }
       managedIdentities: {
-        systemAssigned: true
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
       }
     }
   }
