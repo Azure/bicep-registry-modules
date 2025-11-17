@@ -17,9 +17,6 @@ param serviceShort string = 'oiwadv'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Generated. Used as a basis for unique resource names.')
-param baseTime string = utcNow('u')
-
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 

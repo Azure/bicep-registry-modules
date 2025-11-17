@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Advanced features'
-metadata description = 'This instance deploys the module with advanced features like custom tables, data exports & encryption.'
+metadata name = 'Using managed HSM Customer-Managed-Keys with User-Assigned identity'
+metadata description = 'This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.'
 
 // ========== //
 // Parameters //

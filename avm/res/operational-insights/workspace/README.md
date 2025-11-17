@@ -38,9 +38,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/operational-insights/workspace:<version>`.
 
 - [Advanced features](#example-1-advanced-features)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [Advanced features](#example-4-advanced-features)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-2-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using only defaults](#example-3-using-only-defaults)
+- [Using large parameter set](#example-4-using-large-parameter-set)
 - [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Advanced features_
@@ -978,7 +978,118 @@ param tags = {
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 2: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because the Log Analytics Cluster resource is very restrictive when it comes to how many instance one can have and how to lifecycle them.
+For further information, please refer to: [ref](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/logs-dedicated-clusters?tabs=azure-portal#delete-cluster)
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
+  name: 'workspaceDeployment'
+  params: {
+    // Required parameters
+    name: 'oiwmhsm001'
+    // Non-required parameters
+    dailyQuotaGb: 10
+    linkedServices: [
+      {
+        name: 'Cluster'
+        writeAccessResourceId: '<writeAccessResourceId>'
+      }
+    ]
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    skuName: 'LACluster'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "oiwmhsm001"
+    },
+    // Non-required parameters
+    "dailyQuotaGb": {
+      "value": 10
+    },
+    "linkedServices": {
+      "value": [
+        {
+          "name": "Cluster",
+          "writeAccessResourceId": "<writeAccessResourceId>"
+        }
+      ]
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "skuName": {
+      "value": "LACluster"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operational-insights/workspace:<version>'
+
+// Required parameters
+param name = 'oiwmhsm001'
+// Non-required parameters
+param dailyQuotaGb = 10
+param linkedServices = [
+  {
+    name: 'Cluster'
+    writeAccessResourceId: '<writeAccessResourceId>'
+  }
+]
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param skuName = 'LACluster'
+```
+
+</details>
+<p>
+
+### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -1031,7 +1142,7 @@ param name = 'oiwmin001'
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -2029,116 +2140,6 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-```
-
-</details>
-<p>
-
-### Example 4: _Advanced features_
-
-This instance deploys the module with advanced features like custom tables, data exports & encryption.
-
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
-```
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: 'workspaceDeployment'
-  params: {
-    // Required parameters
-    name: 'oiwmhsm001'
-    // Non-required parameters
-    dailyQuotaGb: 10
-    linkedServices: [
-      {
-        name: 'Cluster'
-        writeAccessResourceId: '<writeAccessResourceId>'
-      }
-    ]
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    skuName: 'LACluster'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "oiwmhsm001"
-    },
-    // Non-required parameters
-    "dailyQuotaGb": {
-      "value": 10
-    },
-    "linkedServices": {
-      "value": [
-        {
-          "name": "Cluster",
-          "writeAccessResourceId": "<writeAccessResourceId>"
-        }
-      ]
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "skuName": {
-      "value": "LACluster"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/operational-insights/workspace:<version>'
-
-// Required parameters
-param name = 'oiwmhsm001'
-// Non-required parameters
-param dailyQuotaGb = 10
-param linkedServices = [
-  {
-    name: 'Cluster'
-    writeAccessResourceId: '<writeAccessResourceId>'
-  }
-]
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
-param skuName = 'LACluster'
 ```
 
 </details>
