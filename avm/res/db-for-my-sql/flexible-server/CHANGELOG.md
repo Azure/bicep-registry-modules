@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated `version` parameter to support MySQL versions 8.4 and 9.3 (preview)
+- Fixed minor typos.
 
 ### Breaking Changes
 
