@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/site/CHANGELOG.md).
 
+## 0.19.5
+
+### Changes
+
+- Added support for `sshEnabled` parameter to enable or disable SSH access for the app
+
+### Breaking Changes
+
+- None
+
 ## 0.19.4
 
 ### Changes
