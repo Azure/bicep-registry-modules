@@ -38,7 +38,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/operational-insights/workspace:<version>`.
 
 - [Advanced features](#example-1-advanced-features)
-- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-2-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using Log Analytics Cluster with Customer-Managed-Keys](#example-2-using-log-analytics-cluster-with-customer-managed-keys)
 - [Using only defaults](#example-3-using-only-defaults)
 - [Using large parameter set](#example-4-using-large-parameter-set)
 - [WAF-aligned](#example-5-waf-aligned)
@@ -978,9 +978,9 @@ param tags = {
 </details>
 <p>
 
-### Example 2: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
+### Example 2: _Using Log Analytics Cluster with Customer-Managed-Keys_
 
-This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
+This instance deploys a Log Analytics Cluster with Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity and links the Log Analytics Workspace to it.
 
 > **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
 ```text
