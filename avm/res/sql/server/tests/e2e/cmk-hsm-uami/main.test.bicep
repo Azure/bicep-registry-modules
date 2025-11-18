@@ -17,6 +17,9 @@ param serviceShort string = 'sshsm'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Generated. Used as a basis for unique resource names.')
+param baseTime string = utcNow('u')
+
 @description('Required. The resource ID of the Managed Identity used by the deployment script. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-deploymentMSIName\'.')
 @secure()
 param deploymentMSIResourceId string = ''
@@ -38,36 +41,35 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: enforcedLocation
 }
 
+module nestedHsmDependencies 'dependencies.hsm.bicep' = {
+  name: '${uniqueString(deployment().name)}-nestedHSMDependencies'
+  params: {
+    // hsmKeyName: '${namePrefix}-${serviceShort}-key-${substring(uniqueString(baseTime), 0, 3)}'
+    hsmKeys: {
+      srv: {
+        name: '${namePrefix}-${serviceShort}-srv-key-${substring(uniqueString(baseTime), 0, 3)}'
+        size: 3072
+      }
+      db: {
+        name: '${namePrefix}-${serviceShort}-db-key-${substring(uniqueString(baseTime), 0, 3)}'
+        size: 3072
+      }
+    }
+    managedHSMName: last(split(managedHSMResourceId, '/'))
+  }
+  scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
+}
+
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-  }
-}
-
-module nestedHsmDependencies 'dependencies.hsm.bicep' = {
-  name: '${uniqueString(deployment().name)}-nestedHSMDependencies'
-  params: {
-    managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-    hsmKeyName: '${serviceShort}-srv-${namePrefix}-key'
-    hsmDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-srv'
+    hSMKeyName: nestedHsmDependencies.outputs.keyDetails.srv.name
+    deploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     deploymentMSIResourceId: deploymentMSIResourceId
-    managedHSMName: last(split(managedHSMResourceId, '/'))
+    managedHSMResourceId: managedHSMResourceId
   }
-  scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
-}
-
-module nestedHsmDatabaseDependencies 'dependencies.hsm.bicep' = {
-  name: '${uniqueString(deployment().name)}-nestedHSMDatabaseDependencies'
-  params: {
-    managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-    hsmKeyName: '${serviceShort}-db-${namePrefix}-key'
-    hsmDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-db'
-    deploymentMSIResourceId: deploymentMSIResourceId
-    managedHSMName: last(split(managedHSMResourceId, '/'))
-  }
-  scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
 }
 
 // ============== //
@@ -96,32 +98,32 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       customerManagedKey: {
-        keyName: nestedHsmDependencies.outputs.keyName
+        keyName: nestedHsmDependencies.outputs.keyDetails.srv.name
         keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
-        keyVersion: nestedHsmDependencies.outputs.keyVersion
+        keyVersion: nestedHsmDependencies.outputs.keyDetails.srv.version
       }
-      databases: [
-        {
-          name: '${namePrefix}-${serviceShort}-db-001'
-          managedIdentities: {
-            userAssignedResourceIds: [
-              nestedDependencies.outputs.managedIdentityResourceId
-            ]
-          }
-          customerManagedKey: {
-            keyVaultResourceId: nestedHsmDatabaseDependencies.outputs.keyVaultResourceId
-            keyName: nestedHsmDatabaseDependencies.outputs.keyName
-            keyVersion: nestedHsmDatabaseDependencies.outputs.keyVersion
-          }
-          sku: {
-            name: 'Basic'
-            tier: 'Basic'
-          }
-          maxSizeBytes: 2147483648
-          zoneRedundant: false
-          availabilityZone: -1
-        }
-      ]
+      // databases: [
+      //   {
+      //     name: '${namePrefix}-${serviceShort}-db-001'
+      //     managedIdentities: {
+      //       userAssignedResourceIds: [
+      //         nestedDependencies.outputs.managedIdentityResourceId
+      //       ]
+      //     }
+      //     customerManagedKey: {
+      //       keyVaultResourceId: nestedHsmDatabaseDependencies.outputs.keyVaultResourceId
+      //       keyName: nestedHsmDatabaseDependencies.outputs.keyName
+      //       keyVersion: nestedHsmDatabaseDependencies.outputs.keyVersion
+      //     }
+      //     sku: {
+      //       name: 'Basic'
+      //       tier: 'Basic'
+      //     }
+      //     maxSizeBytes: 2147483648
+      //     zoneRedundant: false
+      //     availabilityZone: -1
+      //   }
+      // ]
     }
   }
 ]
