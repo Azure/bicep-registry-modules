@@ -7,6 +7,9 @@ param keyVaultName string
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
+@description('Required. The name of the deployment script that waits for a role assignment to propagate.')
+param waitDeploymentScriptName string
+
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
@@ -61,6 +64,20 @@ resource keyVaultPermissionsUami 'Microsoft.Authorization/roleAssignments@2022-0
       '12338af0-0e69-4776-bea7-57ae8d297424'
     ) // Key Vault Crypto User
     principalType: 'ServicePrincipal'
+  }
+}
+
+// Waiting for the role assignment to propagate
+resource waitForDeployment 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  dependsOn: [keyVaultPermissionsDeploymentId, keyVaultPermissionsUami]
+  name: waitDeploymentScriptName
+  location: location
+  kind: 'AzurePowerShell'
+  properties: {
+    retentionInterval: 'PT1H'
+    azPowerShellVersion: '11.0'
+    cleanupPreference: 'Always'
+    scriptContent: 'write-output "Sleeping for 15"; start-sleep -Seconds 15'
   }
 }
 
