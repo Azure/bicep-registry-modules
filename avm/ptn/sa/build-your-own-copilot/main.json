@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "5850588454639406224"
+      "version": "0.39.26.7824",
+      "templateHash": "6091325005577591638"
     },
     "name": "Build Your Own Copilot Solution Accelerator",
     "description": "This module deploys a comprehensive Build Your Own Copilot solution accelerator with Azure AI Services, CosmosDB, SQL Database, Key Vault, Storage Account, Azure AI Search, and a containerized web application. The solution includes AI Foundry services for GPT and embedding models, supporting both private and public networking configurations with optional WAF-aligned features for monitoring, scalability, and redundancy.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Build-your-own-copilot-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -5336,8 +5336,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "5021006202730190534"
+              "version": "0.39.26.7824",
+              "templateHash": "6440090910921955633"
             }
           },
           "definitions": {
@@ -22602,6 +22602,10 @@
               {
                 "name": "AZURE-SEARCH-ENDPOINT",
                 "value": "[format('https://{0}.search.windows.net', variables('aiSearchName'))]"
+              },
+              {
+                "name": "AZURE-AI-AGENT-ENDPOINT",
+                "value": "[reference('aiFoundryAiServices').outputs.aiProjectInfo.value.apiEndpoint]"
               }
             ]
           },
@@ -26124,8 +26128,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "6131777880326023985"
+              "version": "0.39.26.7824",
+              "templateHash": "10957385821477706463"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service."
@@ -27337,8 +27341,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "13188485453059698893"
+                      "version": "0.39.26.7824",
+                      "templateHash": "13306990109031671669"
                     }
                   },
                   "definitions": {
@@ -29048,8 +29052,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "14205022069293553223"
+                              "version": "0.39.26.7824",
+                              "templateHash": "12797226417049698978"
                             }
                           },
                           "definitions": {
@@ -29199,8 +29203,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "4532158079154966923"
+                              "version": "0.39.26.7824",
+                              "templateHash": "9592218306526173461"
                             }
                           },
                           "definitions": {
@@ -29442,8 +29446,8 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
@@ -51545,8 +51549,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "16679679927327932059"
+              "version": "0.39.26.7824",
+              "templateHash": "10645777901440611855"
             }
           },
           "definitions": {
@@ -52558,8 +52562,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "16983009113856606195"
+                      "version": "0.39.26.7824",
+                      "templateHash": "11666262061409473778"
                     },
                     "name": "Site App Settings",
                     "description": "This module deploys a Site App Setting."
