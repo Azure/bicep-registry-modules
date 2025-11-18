@@ -62,26 +62,27 @@ resource keyVaultPermissionsUami 'Microsoft.Authorization/roleAssignments@2022-0
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       // 'e147488a-f6f5-4113-8e2d-b22465e65bf6'
-      // '12338af0-0e69-4776-bea7-57ae8d297424'
-      '14b46e9e-c2b7-41b4-b07b-48a6ebf60603'
+      '12338af0-0e69-4776-bea7-57ae8d297424'
+      // '14b46e9e-c2b7-41b4-b07b-48a6ebf60603'
     ) // Key Vault Crypto User
     principalType: 'ServicePrincipal'
   }
 }
 
-// // Waiting for the role assignment to propagate
-// resource waitForDeployment 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
-//   dependsOn: [keyVaultPermissionsDeploymentId, keyVaultPermissionsUami]
-//   name: waitDeploymentScriptName
-//   location: location
-//   kind: 'AzurePowerShell'
-//   properties: {
-//     retentionInterval: 'PT1H'
-//     azPowerShellVersion: '11.0'
-//     cleanupPreference: 'Always'
-//     scriptContent: 'write-output "Sleeping for 15"; start-sleep -Seconds 15'
-//   }
-// }
+// Waiting for the role assignment to propagate
+resource waitForDeployment 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  // dependsOn: [keyVaultPermissionsDeploymentId, keyVaultPermissionsUami]
+  dependsOn: [keyVaultPermissionsUami]
+  name: waitDeploymentScriptName
+  location: location
+  kind: 'AzurePowerShell'
+  properties: {
+    retentionInterval: 'PT1H'
+    azPowerShellVersion: '11.0'
+    cleanupPreference: 'Always'
+    scriptContent: 'write-output "Sleeping for 15"; start-sleep -Seconds 15'
+  }
+}
 
 @description('The resource ID of the created Key Vault.')
 output keyVaultResourceId string = keyVault.id
