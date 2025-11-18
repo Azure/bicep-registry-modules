@@ -51,12 +51,26 @@ resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
 //   }
 // }
 
-resource keyVaultPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-KeyVault-Crypto-User-RoleAssignment.')
+resource keyVaultPermissionsDeploymentId 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${keyVault::key.id}-${location}-${az.deployer().objectId}-KeyVault-Crypto-User-RoleAssignment.')
   scope: keyVault
   properties: {
     principalId: az.deployer().objectId
     // managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      // '12338af0-0e69-4776-bea7-57ae8d297424'
+      '14b46e9e-c2b7-41b4-b07b-48a6ebf60603' // Officer
+    ) // Key Vault Crypto User
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource keyVaultPermissionsUami 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-KeyVault-Crypto-User-RoleAssignment.')
+  scope: keyVault
+  properties: {
+    principalId: managedIdentity.properties.principalId
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       // '12338af0-0e69-4776-bea7-57ae8d297424'
