@@ -29,7 +29,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -41,7 +41,6 @@ module nestedDependencies 'dependencies.bicep' = {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -56,7 +55,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       azureMonitorAlertSettingsAlertsForAllJobFailures: 'Disabled'
       managedIdentities: {
         systemAssigned: true
@@ -70,73 +68,6 @@ module testDeployment '../../../main.bicep' = [
         userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       }
       infrastructureEncryption: 'Enabled'
-      immutabilitySettingState: 'Locked'
-      softDeleteSettings: {
-        retentionDurationInDays: 14
-        state: 'On'
-      }
-      backupPolicies: [
-        {
-          name: 'DefaultPolicy'
-          properties: {
-            datasourceTypes: [
-              'Microsoft.Compute/disks'
-            ]
-            objectType: 'BackupPolicy'
-            policyRules: [
-              {
-                backupParameters: {
-                  backupType: 'Incremental'
-                  objectType: 'AzureBackupParams'
-                }
-                dataStore: {
-                  dataStoreType: 'OperationalStore'
-                  objectType: 'DataStoreInfoBase'
-                }
-                name: 'BackupDaily'
-                objectType: 'AzureBackupRule'
-                trigger: {
-                  objectType: 'ScheduleBasedTriggerContext'
-                  schedule: {
-                    repeatingTimeIntervals: [
-                      'R/2022-05-31T23:30:00+01:00/P1D'
-                    ]
-                    timeZone: 'W. Europe Standard Time'
-                  }
-                  taggingCriteria: [
-                    {
-                      isDefault: true
-                      taggingPriority: 99
-                      tagInfo: {
-                        id: 'Default_'
-                        tagName: 'Default'
-                      }
-                    }
-                  ]
-                }
-              }
-              {
-                isDefault: true
-                lifecycles: [
-                  {
-                    deleteAfter: {
-                      duration: 'P7D'
-                      objectType: 'AbsoluteDeleteOption'
-                    }
-                    sourceDataStore: {
-                      dataStoreType: 'OperationalStore'
-                      objectType: 'DataStoreInfoBase'
-                    }
-                    targetDataStoreCopySettings: []
-                  }
-                ]
-                name: 'Default'
-                objectType: 'AzureRetentionRule'
-              }
-            ]
-          }
-        }
-      ]
     }
   }
 ]
