@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using encryption parameter set'
-metadata description = 'This instance deploys the module with features enabled for CMK encryption.'
+metadata name = 'Using Customer-Managed-Keys with System-Assigned identity'
+metadata description = 'This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.'
 
 // ========== //
 // Parameters //
@@ -9,18 +9,18 @@ metadata description = 'This instance deploys the module with features enabled f
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-servicebus.namespaces-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-cognitiveservices.accounts-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'sbnencr'
+param serviceShort string = 'csaecrs'
 
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
 
-@description('Optional. A token to inject into the name of each resource.')
+@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
@@ -38,11 +38,9 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    cognitiveServiceName: '${namePrefix}${serviceShort}001'
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -56,22 +54,18 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
-      skuObject: {
-        name: 'Premium'
-        capacity: 1
-      }
-      managedIdentities: {
-        systemAssigned: false
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
-      }
+      name: nestedDependencies.outputs.cognitiveServiceName
+      kind: 'SpeechServices'
       customerManagedKey: {
-        keyName: nestedDependencies.outputs.keyName
+        keyName: nestedDependencies.outputs.keyVaultKeyName
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-        userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       }
+      publicNetworkAccess: 'Enabled'
+      sku: 'S0'
+      managedIdentities: {
+        systemAssigned: true
+      }
+      restrictOutboundNetworkAccess: false
     }
   }
 ]
