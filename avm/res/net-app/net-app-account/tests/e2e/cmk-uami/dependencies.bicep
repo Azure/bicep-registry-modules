@@ -55,7 +55,8 @@ resource keyVaultPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01
   name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-KeyVault-Crypto-User-RoleAssignment.')
   scope: keyVault
   properties: {
-    principalId: managedIdentity.properties.principalId
+    principalId: az.deployer().objectId
+    // managedIdentity.properties.principalId
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       // '12338af0-0e69-4776-bea7-57ae8d297424'
