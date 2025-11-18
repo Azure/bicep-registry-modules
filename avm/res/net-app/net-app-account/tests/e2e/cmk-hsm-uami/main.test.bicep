@@ -11,7 +11,6 @@ metadata description = 'This instance deploys the module with Managed HSM-based 
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-netapp.netappaccounts-${serviceShort}-rg'
 
-// enforcing location due to quote restrictions
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'uksouth'
 
