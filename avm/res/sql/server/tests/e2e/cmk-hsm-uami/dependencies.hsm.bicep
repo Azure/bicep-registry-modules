@@ -33,8 +33,8 @@ output keyDetails object = toObject(managedHsm::keys, item => item.name, item =>
   version: last(split(item.properties.keyUriWithVersion, '/'))
 })
 
-// @description('The name of the HSMKey Vault Encryption Key.')
-// output keyName string = managedHsm::key.name
+@description('The name of the HSMKey Vault Encryption Key.')
+output keyName string = hsmKeys.srv.name
 
 // @description('The version of the HSMKey Vault Encryption Key.')
 // output keyVersion string = last(split(managedHsm::key.properties.keyUriWithVersion, '/'))

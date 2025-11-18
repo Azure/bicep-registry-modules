@@ -98,9 +98,9 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       customerManagedKey: {
-        keyName: nestedHsmDependencies.outputs.keyDetails.srv.name
+        keyName: nestedHsmDependencies.outputs.keyName
         keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
-        keyVersion: nestedHsmDependencies.outputs.keyDetails.srv.version
+        // keyVersion: nestedHsmDependencies.outputs.keyDetails.srv.version
       }
       // databases: [
       //   {
