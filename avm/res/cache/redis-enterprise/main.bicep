@@ -453,27 +453,27 @@ output privateEndpoints privateEndpointOutputType[] = [
 
 @secure()
 @description('The primary access key.')
-output primaryAccessKey string = redisCluster_database.outputs.primaryAccessKey
+output primaryAccessKey string? = redisCluster_database.outputs.?primaryAccessKey
 
 @secure()
 @description('The primary connection string.')
-output primaryConnectionString string = redisCluster_database.outputs.primaryConnectionString
+output primaryConnectionString string? = redisCluster_database.outputs.?primaryConnectionString
 
 @secure()
 @description('The primary StackExchange.Redis connection string.')
-output primaryStackExchangeRedisConnectionString string = redisCluster_database.outputs.primaryStackExchangeRedisConnectionString
+output primaryStackExchangeRedisConnectionString string? = redisCluster_database.outputs.?primaryStackExchangeRedisConnectionString
 
 @secure()
 @description('The secondary access key.')
-output secondaryAccessKey string = redisCluster_database.outputs.secondaryAccessKey
+output secondaryAccessKey string? = redisCluster_database.outputs.?secondaryAccessKey
 
 @secure()
 @description('The secondary connection string.')
-output secondaryConnectionString string = redisCluster_database.outputs.secondaryConnectionString
+output secondaryConnectionString string? = redisCluster_database.outputs.?secondaryConnectionString
 
 @secure()
 @description('The secondary StackExchange.Redis connection string.')
-output secondaryStackExchangeRedisConnectionString string = redisCluster_database.outputs.secondaryStackExchangeRedisConnectionString
+output secondaryStackExchangeRedisConnectionString string? = redisCluster_database.outputs.?secondaryStackExchangeRedisConnectionString
 
 // =============== //
 //   Definitions   //

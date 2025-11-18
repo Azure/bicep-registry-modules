@@ -171,27 +171,39 @@ output endpoint string = '${redisCluster.properties.hostName}:${redisDatabase.pr
 
 @secure()
 @description('The primary access key.')
-output primaryAccessKey string = redisDatabase.listKeys().primaryKey
+output primaryAccessKey string? = accessKeysAuthentication == 'Enabled'
+  ? redisDatabase.listKeys().primaryKey
+  : null
 
 @secure()
 @description('The primary connection string.')
-output primaryConnectionString string = '${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'redis://' : 'rediss://' }:${redisDatabase.listKeys().primaryKey}@${redisCluster.properties.hostName}:${redisDatabase.properties.port}'
+output primaryConnectionString string? = accessKeysAuthentication == 'Enabled'
+  ? '${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'redis://' : 'rediss://'}:${redisDatabase.listKeys().primaryKey}@${redisCluster.properties.hostName}:${redisDatabase.properties.port}'
+  : null
 
 @secure()
 @description('The primary StackExchange.Redis connection string.')
-output primaryStackExchangeRedisConnectionString string = '${redisCluster.properties.hostName}:${redisDatabase.properties.port},password=${redisDatabase.listKeys().primaryKey},ssl=${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'False' : 'True'},abortConnect=False'
+output primaryStackExchangeRedisConnectionString string? = accessKeysAuthentication == 'Enabled'
+  ? '${redisCluster.properties.hostName}:${redisDatabase.properties.port},password=${redisDatabase.listKeys().primaryKey},ssl=${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'False' : 'True'},abortConnect=False'
+  : null
 
 @secure()
 @description('The secondary access key.')
-output secondaryAccessKey string = redisDatabase.listKeys().secondaryKey
+output secondaryAccessKey string? = accessKeysAuthentication == 'Enabled'
+  ? redisDatabase.listKeys().secondaryKey
+  : null
 
 @secure()
 @description('The secondary connection string.')
-output secondaryConnectionString string = '${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'redis://' : 'rediss://' }:${redisDatabase.listKeys().secondaryKey}@${redisCluster.properties.hostName}:${redisDatabase.properties.port}'
+output secondaryConnectionString string? = accessKeysAuthentication == 'Enabled'
+  ? '${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'redis://' : 'rediss://'}:${redisDatabase.listKeys().secondaryKey}@${redisCluster.properties.hostName}:${redisDatabase.properties.port}'
+  : null
 
 @secure()
 @description('The secondary StackExchange.Redis connection string.')
-output secondaryStackExchangeRedisConnectionString string = '${redisCluster.properties.hostName}:${redisDatabase.properties.port},password=${redisDatabase.listKeys().secondaryKey},ssl=${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'False' : 'True'},abortConnect=False'
+output secondaryStackExchangeRedisConnectionString string? = accessKeysAuthentication == 'Enabled'
+  ? '${redisCluster.properties.hostName}:${redisDatabase.properties.port},password=${redisDatabase.listKeys().secondaryKey},ssl=${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'False' : 'True'},abortConnect=False'
+  : null
 
 // =============== //
 //   Definitions   //

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "11793788235440167"
+      "templateHash": "5874700834788423172"
     },
     "name": "Redis Enterprise and Azure Managed Redis",
     "description": "This module deploys a Redis Enterprise or Azure Managed Redis cache.",
@@ -1459,7 +1459,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "14048557600139843379"
+              "templateHash": "13084841827475815644"
             },
             "name": "Redis database",
             "description": "This module deploys a Redis database in a Redis Enterprise or Azure Managed Redis cluster."
@@ -2129,45 +2129,51 @@
             },
             "primaryAccessKey": {
               "type": "securestring",
+              "nullable": true,
               "metadata": {
                 "description": "The primary access key."
               },
-              "value": "[listKeys('redisDatabase', '2025-07-01').primaryKey]"
+              "value": "[if(equals(parameters('accessKeysAuthentication'), 'Enabled'), listKeys('redisDatabase', '2025-07-01').primaryKey, null())]"
             },
             "primaryConnectionString": {
               "type": "securestring",
+              "nullable": true,
               "metadata": {
                 "description": "The primary connection string."
               },
-              "value": "[format('{0}:{1}@{2}:{3}', if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'redis://', 'rediss://'), listKeys('redisDatabase', '2025-07-01').primaryKey, reference('redisCluster').hostName, reference('redisDatabase').port)]"
+              "value": "[if(equals(parameters('accessKeysAuthentication'), 'Enabled'), format('{0}:{1}@{2}:{3}', if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'redis://', 'rediss://'), listKeys('redisDatabase', '2025-07-01').primaryKey, reference('redisCluster').hostName, reference('redisDatabase').port), null())]"
             },
             "primaryStackExchangeRedisConnectionString": {
               "type": "securestring",
+              "nullable": true,
               "metadata": {
                 "description": "The primary StackExchange.Redis connection string."
               },
-              "value": "[format('{0}:{1},password={2},ssl={3},abortConnect=False', reference('redisCluster').hostName, reference('redisDatabase').port, listKeys('redisDatabase', '2025-07-01').primaryKey, if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'False', 'True'))]"
+              "value": "[if(equals(parameters('accessKeysAuthentication'), 'Enabled'), format('{0}:{1},password={2},ssl={3},abortConnect=False', reference('redisCluster').hostName, reference('redisDatabase').port, listKeys('redisDatabase', '2025-07-01').primaryKey, if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'False', 'True')), null())]"
             },
             "secondaryAccessKey": {
               "type": "securestring",
+              "nullable": true,
               "metadata": {
                 "description": "The secondary access key."
               },
-              "value": "[listKeys('redisDatabase', '2025-07-01').secondaryKey]"
+              "value": "[if(equals(parameters('accessKeysAuthentication'), 'Enabled'), listKeys('redisDatabase', '2025-07-01').secondaryKey, null())]"
             },
             "secondaryConnectionString": {
               "type": "securestring",
+              "nullable": true,
               "metadata": {
                 "description": "The secondary connection string."
               },
-              "value": "[format('{0}:{1}@{2}:{3}', if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'redis://', 'rediss://'), listKeys('redisDatabase', '2025-07-01').secondaryKey, reference('redisCluster').hostName, reference('redisDatabase').port)]"
+              "value": "[if(equals(parameters('accessKeysAuthentication'), 'Enabled'), format('{0}:{1}@{2}:{3}', if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'redis://', 'rediss://'), listKeys('redisDatabase', '2025-07-01').secondaryKey, reference('redisCluster').hostName, reference('redisDatabase').port), null())]"
             },
             "secondaryStackExchangeRedisConnectionString": {
               "type": "securestring",
+              "nullable": true,
               "metadata": {
                 "description": "The secondary StackExchange.Redis connection string."
               },
-              "value": "[format('{0}:{1},password={2},ssl={3},abortConnect=False', reference('redisCluster').hostName, reference('redisDatabase').port, listKeys('redisDatabase', '2025-07-01').secondaryKey, if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'False', 'True'))]"
+              "value": "[if(equals(parameters('accessKeysAuthentication'), 'Enabled'), format('{0}:{1},password={2},ssl={3},abortConnect=False', reference('redisCluster').hostName, reference('redisDatabase').port, listKeys('redisDatabase', '2025-07-01').secondaryKey, if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'False', 'True')), null())]"
             }
           }
         }
@@ -2922,45 +2928,51 @@
     },
     "primaryAccessKey": {
       "type": "securestring",
+      "nullable": true,
       "metadata": {
         "description": "The primary access key."
       },
-      "value": "[listOutputsWithSecureValues('redisCluster_database', '2025-04-01').primaryAccessKey]"
+      "value": "[tryGet(listOutputsWithSecureValues('redisCluster_database', '2025-04-01'), 'primaryAccessKey')]"
     },
     "primaryConnectionString": {
       "type": "securestring",
+      "nullable": true,
       "metadata": {
         "description": "The primary connection string."
       },
-      "value": "[listOutputsWithSecureValues('redisCluster_database', '2025-04-01').primaryConnectionString]"
+      "value": "[tryGet(listOutputsWithSecureValues('redisCluster_database', '2025-04-01'), 'primaryConnectionString')]"
     },
     "primaryStackExchangeRedisConnectionString": {
       "type": "securestring",
+      "nullable": true,
       "metadata": {
         "description": "The primary StackExchange.Redis connection string."
       },
-      "value": "[listOutputsWithSecureValues('redisCluster_database', '2025-04-01').primaryStackExchangeRedisConnectionString]"
+      "value": "[tryGet(listOutputsWithSecureValues('redisCluster_database', '2025-04-01'), 'primaryStackExchangeRedisConnectionString')]"
     },
     "secondaryAccessKey": {
       "type": "securestring",
+      "nullable": true,
       "metadata": {
         "description": "The secondary access key."
       },
-      "value": "[listOutputsWithSecureValues('redisCluster_database', '2025-04-01').secondaryAccessKey]"
+      "value": "[tryGet(listOutputsWithSecureValues('redisCluster_database', '2025-04-01'), 'secondaryAccessKey')]"
     },
     "secondaryConnectionString": {
       "type": "securestring",
+      "nullable": true,
       "metadata": {
         "description": "The secondary connection string."
       },
-      "value": "[listOutputsWithSecureValues('redisCluster_database', '2025-04-01').secondaryConnectionString]"
+      "value": "[tryGet(listOutputsWithSecureValues('redisCluster_database', '2025-04-01'), 'secondaryConnectionString')]"
     },
     "secondaryStackExchangeRedisConnectionString": {
       "type": "securestring",
+      "nullable": true,
       "metadata": {
         "description": "The secondary StackExchange.Redis connection string."
       },
-      "value": "[listOutputsWithSecureValues('redisCluster_database', '2025-04-01').secondaryStackExchangeRedisConnectionString]"
+      "value": "[tryGet(listOutputsWithSecureValues('redisCluster_database', '2025-04-01'), 'secondaryStackExchangeRedisConnectionString')]"
     }
   }
 }

@@ -126,7 +126,7 @@ module testDeployment '../../../main.bicep' = [
 ]
 
 @secure()
-output primaryAccessKey string = testDeployment[0].outputs.primaryAccessKey
+output primaryAccessKey string = testDeployment[0].outputs.primaryAccessKey!
 
 @secure()
-output secondaryAccessKey string = testDeployment[0].outputs.secondaryAccessKey
+output secondaryAccessKey string = testDeployment[0].outputs.secondaryAccessKey!
