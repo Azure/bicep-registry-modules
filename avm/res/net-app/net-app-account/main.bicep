@@ -10,9 +10,9 @@ param adName string = ''
 @description('Optional. Enable AES encryption on the SMB Server.')
 param aesEncryption bool = false
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyWithAutoRotateType?
+param customerManagedKey customerManagedKeyType?
 
 @description('Optional. Fully Qualified Active Directory DNS Domain Name (e.g. \'contoso.com\').')
 param domainName string = ''
