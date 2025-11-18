@@ -1,7 +1,7 @@
 @description('Required. The name of the key to create in the HSM.')
 param hsmKeyName string
 
-@description('Required. The name of the key to create in the HSM.')
+@description('Optional. The size of the key to create in the HSM.')
 param hsmKeySize int = 4096
 
 @description('Required. The name of the managed HSM used for encryption.')
