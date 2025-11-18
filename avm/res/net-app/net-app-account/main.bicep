@@ -193,8 +193,7 @@ resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2025-01-01' = {
       ? {
           identity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
             ? {
-                userAssignedIdentity: '/subscriptions/cfa4dc0b-3d25-4e58-a70a-7085359080c5/resourceGroups/dep-avmx-netapp.netappaccounts-nanaamax-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dep-avmx-msi-nanaacmk'
-                // cMKUserAssignedIdentity.id
+                userAssignedIdentity: cMKUserAssignedIdentity.id
               }
             : null
           keySource: 'Microsoft.KeyVault'

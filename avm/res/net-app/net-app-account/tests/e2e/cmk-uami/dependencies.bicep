@@ -58,7 +58,8 @@ resource keyVaultPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01
     principalId: managedIdentity.properties.principalId
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
-      '12338af0-0e69-4776-bea7-57ae8d297424'
+      // '12338af0-0e69-4776-bea7-57ae8d297424'
+      '14b46e9e-c2b7-41b4-b07b-48a6ebf60603' // Officer
     ) // Key Vault Crypto User
     principalType: 'ServicePrincipal'
   }
