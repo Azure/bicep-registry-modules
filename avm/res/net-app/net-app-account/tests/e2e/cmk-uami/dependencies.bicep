@@ -62,7 +62,8 @@ resource keyVaultPermissionsUami 'Microsoft.Authorization/roleAssignments@2022-0
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       // 'e147488a-f6f5-4113-8e2d-b22465e65bf6'
-      '12338af0-0e69-4776-bea7-57ae8d297424'
+      // '12338af0-0e69-4776-bea7-57ae8d297424'
+      '14b46e9e-c2b7-41b4-b07b-48a6ebf60603'
     ) // Key Vault Crypto User
     principalType: 'ServicePrincipal'
   }
