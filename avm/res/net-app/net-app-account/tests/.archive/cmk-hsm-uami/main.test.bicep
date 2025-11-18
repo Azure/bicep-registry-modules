@@ -73,11 +73,9 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: enforcedLocation
     customerManagedKey: {
       keyName: nestedHsmDependencies.outputs.keyName
       keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
-      keyVersion: nestedHsmDependencies.outputs.keyVersion
     }
     managedIdentities: {
       userAssignedResourceIds: [
