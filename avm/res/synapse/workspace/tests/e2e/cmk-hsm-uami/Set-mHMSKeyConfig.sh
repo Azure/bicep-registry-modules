@@ -6,7 +6,8 @@ if [[ "$result" != "[]" ]]; then
   echo "Role assignment already exists."
 else
   echo "Role assignment not yet existing. Creating."
-  az keyvault role assignment create --hsm-name "$1" --role "Managed HSM Crypto Service Encryption User" --scope "/keys/$2" --assignee $3
+  # az keyvault role assignment create --hsm-name "$1" --role "Managed HSM Crypto Service Encryption User" --scope "/keys/$2" --assignee $3
+  az keyvault role assignment create --hsm-name "$1" --role "Managed HSM Crypto User" --scope "/keys/$2" --assignee $3
 fi
 
 # Allow usage via ARM
