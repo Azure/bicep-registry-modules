@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "14540327965456813518"
+      "templateHash": "13460155148106147747"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp Files Account and the associated resource types such as backups, capacity pools and volumes."
@@ -4282,6 +4282,14 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('netAppAccount', '2025-01-01', 'full').location]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[tryGet(tryGet(reference('netAppAccount', '2025-01-01', 'full'), 'identity'), 'principalId')]"
     },
     "capacityPoolResourceIds": {
       "type": "array",

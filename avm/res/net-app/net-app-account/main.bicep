@@ -326,6 +326,9 @@ output resourceGroupName string = resourceGroup().name
 @description('The location the resource was deployed into.')
 output location string = netAppAccount.location
 
+@description('The principal ID of the system assigned identity.')
+output systemAssignedMIPrincipalId string? = netAppAccount.?identity.?principalId
+
 @description('The resource IDs of the created capacity pools & their volumes.')
 output capacityPoolResourceIds {
   resourceId: string
