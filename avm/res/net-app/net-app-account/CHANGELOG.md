@@ -8,6 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Added support for managed HSM key encryption
 - Updated all 'avm-common-types' references to version `0.6.1`
+- Updated `managedIdentities` type to `managedIdentityAllType`, hence supporting both System and UserAssigned identities
 
 ### Breaking Changes
 
@@ -19,7 +20,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Added type to `tags` parameter
 - Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
-- Updated `managedIdentities` type to `managedIdentityAllType`, hence supporting both System and UserAssigned identities
 
 ### Breaking Changes
 
