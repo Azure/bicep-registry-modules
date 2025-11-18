@@ -75,7 +75,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '22_04-lts-gen2'
       version: 'latest'
     }
-    name: 'cvmlinatmg'
+    name: 'vmlinatmg'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -102,7 +102,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Linux'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     // Non-required parameters
     configurationProfile: '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
     disablePasswordAuthentication: true
@@ -145,7 +145,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmlinatmg"
+      "value": "vmlinatmg"
     },
     "nicConfigurations": {
       "value": [
@@ -180,7 +180,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Linux"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2s_v6"
     },
     // Non-required parameters
     "configurationProfile": {
@@ -223,7 +223,7 @@ param imageReference = {
   sku: '22_04-lts-gen2'
   version: 'latest'
 }
-param name = 'cvmlinatmg'
+param name = 'vmlinatmg'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -250,7 +250,7 @@ param osDisk = {
   }
 }
 param osType = 'Linux'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param configurationProfile = '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
 param disablePasswordAuthentication = true
@@ -288,7 +288,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '22_04-lts-gen2'
       version: 'latest'
     }
-    name: 'cvmlinmin'
+    name: 'vmlinmin'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -308,7 +308,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Linux'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     // Non-required parameters
     disablePasswordAuthentication: true
     location: '<location>'
@@ -350,7 +350,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmlinmin"
+      "value": "vmlinmin"
     },
     "nicConfigurations": {
       "value": [
@@ -378,7 +378,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Linux"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2s_v6"
     },
     // Non-required parameters
     "disablePasswordAuthentication": {
@@ -418,7 +418,7 @@ param imageReference = {
   sku: '22_04-lts-gen2'
   version: 'latest'
 }
-param name = 'cvmlinmin'
+param name = 'vmlinmin'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -438,7 +438,7 @@ param osDisk = {
   }
 }
 param osType = 'Linux'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param disablePasswordAuthentication = true
 param location = '<location>'
@@ -475,7 +475,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '<sku>'
       version: 'latest'
     }
-    name: 'cvmlimax'
+    name: 'vmlimax'
     nicConfigurations: [
       {
         deleteOption: 'Delete'
@@ -586,7 +586,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       name: 'osdisk01'
     }
     osType: 'Linux'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     // Non-required parameters
     backupPolicyName: '<backupPolicyName>'
     backupVaultName: '<backupVaultName>'
@@ -779,7 +779,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmlimax"
+      "value": "vmlimax"
     },
     "nicConfigurations": {
       "value": [
@@ -898,7 +898,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Linux"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2s_v6"
     },
     // Non-required parameters
     "backupPolicyName": {
@@ -1129,7 +1129,7 @@ param imageReference = {
   sku: '<sku>'
   version: 'latest'
 }
-param name = 'cvmlimax'
+param name = 'vmlimax'
 param nicConfigurations = [
   {
     deleteOption: 'Delete'
@@ -1240,7 +1240,7 @@ param osDisk = {
   name: 'osdisk01'
 }
 param osType = 'Linux'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param backupPolicyName = '<backupPolicyName>'
 param backupVaultName = '<backupVaultName>'
@@ -1428,7 +1428,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2019-datacenter'
       version: 'latest'
     }
-    name: 'cvmwinwaf'
+    name: 'vmwinwaf'
     nicConfigurations: [
       {
         deleteOption: 'Delete'
@@ -1511,7 +1511,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D4s_v6'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     backupPolicyName: '<backupPolicyName>'
@@ -1543,9 +1543,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     encryptionAtHost: false
     extensionAadJoinConfig: {
       enabled: true
-      settings: {
-        mdmId: ''
-      }
+      settings: {}
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -1713,7 +1711,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwinwaf"
+      "value": "vmwinwaf"
     },
     "nicConfigurations": {
       "value": [
@@ -1804,7 +1802,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D4s_v6"
     },
     // Non-required parameters
     "adminPassword": {
@@ -1856,9 +1854,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionAadJoinConfig": {
       "value": {
         "enabled": true,
-        "settings": {
-          "mdmId": ""
-        },
+        "settings": {},
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -2046,7 +2042,7 @@ param imageReference = {
   sku: '2019-datacenter'
   version: 'latest'
 }
-param name = 'cvmwinwaf'
+param name = 'vmwinwaf'
 param nicConfigurations = [
   {
     deleteOption: 'Delete'
@@ -2129,7 +2125,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D4s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param backupPolicyName = '<backupPolicyName>'
@@ -2161,9 +2157,7 @@ param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
   enabled: true
-  settings: {
-    mdmId: ''
-  }
+  settings: {}
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -2326,7 +2320,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
-    name: 'cvmwinmin'
+    name: 'vmwinmin'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -2346,7 +2340,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     location: '<location>'
@@ -2382,7 +2376,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwinmin"
+      "value": "vmwinmin"
     },
     "nicConfigurations": {
       "value": [
@@ -2410,7 +2404,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2s_v6"
     },
     // Non-required parameters
     "adminPassword": {
@@ -2442,7 +2436,7 @@ param imageReference = {
   sku: '2022-datacenter-azure-edition'
   version: 'latest'
 }
-param name = 'cvmwinmin'
+param name = 'vmwinmin'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -2462,7 +2456,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param location = '<location>'
@@ -2493,7 +2487,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
-    name: 'cvmwindisk'
+    name: 'vmwindisk'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -2513,7 +2507,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     dataDisks: [
@@ -2570,7 +2564,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwindisk"
+      "value": "vmwindisk"
     },
     "nicConfigurations": {
       "value": [
@@ -2598,7 +2592,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2s_v6"
     },
     // Non-required parameters
     "adminPassword": {
@@ -2655,7 +2649,7 @@ param imageReference = {
   sku: '2022-datacenter-azure-edition'
   version: 'latest'
 }
-param name = 'cvmwindisk'
+param name = 'vmwindisk'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -2675,7 +2669,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param dataDisks = [
@@ -2751,7 +2745,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     extensionGuestConfigurationExtension: {
@@ -2848,7 +2842,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2s_v6"
     },
     // Non-required parameters
     "adminPassword": {
@@ -2939,7 +2933,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param extensionGuestConfigurationExtension = {
@@ -3019,7 +3013,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D4s_v3'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     extensionAadJoinConfig: {
@@ -3109,7 +3103,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D4s_v3"
     },
     // Non-required parameters
     "adminPassword": {
@@ -3193,7 +3187,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D4s_v3'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param extensionAadJoinConfig = {
@@ -3250,7 +3244,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2019-datacenter'
       version: 'latest'
     }
-    name: 'cvmwinmax'
+    name: 'vmwinmax'
     nicConfigurations: [
       {
         deleteOption: 'Delete'
@@ -3357,7 +3351,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       name: 'osdisk01'
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D4s_v3'
     // Non-required parameters
     additionalUnattendContent: [
       {
@@ -3597,7 +3591,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwinmax"
+      "value": "vmwinmax"
     },
     "nicConfigurations": {
       "value": [
@@ -3712,7 +3706,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D4s_v3"
     },
     // Non-required parameters
     "additionalUnattendContent": {
@@ -3996,7 +3990,7 @@ param imageReference = {
   sku: '2019-datacenter'
   version: 'latest'
 }
-param name = 'cvmwinmax'
+param name = 'vmwinmax'
 param nicConfigurations = [
   {
     deleteOption: 'Delete'
@@ -4103,7 +4097,7 @@ param osDisk = {
   name: 'osdisk01'
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D4s_v3'
 // Non-required parameters
 param additionalUnattendContent = [
   {
@@ -4338,7 +4332,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
-    name: 'cvmwinnv'
+    name: 'vmwinnv'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -4398,7 +4392,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwinnv"
+      "value": "vmwinnv"
     },
     "nicConfigurations": {
       "value": [
@@ -4466,7 +4460,7 @@ param imageReference = {
   sku: '2022-datacenter-azure-edition'
   version: 'latest'
 }
-param name = 'cvmwinnv'
+param name = 'vmwinnv'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -4521,7 +4515,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2019-datacenter'
       version: 'latest'
     }
-    name: 'cvmwincmk'
+    name: 'vmwincmk'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -4586,7 +4580,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwincmk"
+      "value": "vmwincmk"
     },
     "nicConfigurations": {
       "value": [
@@ -4657,7 +4651,7 @@ param imageReference = {
   sku: '2019-datacenter'
   version: 'latest'
 }
-param name = 'cvmwincmk'
+param name = 'vmwincmk'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -4717,7 +4711,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
-    name: 'cvmwinvmss'
+    name: 'vmwinvmss'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -4737,7 +4731,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     location: '<location>'
@@ -4774,7 +4768,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwinvmss"
+      "value": "vmwinvmss"
     },
     "nicConfigurations": {
       "value": [
@@ -4802,7 +4796,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2s_v6"
     },
     // Non-required parameters
     "adminPassword": {
@@ -4837,7 +4831,7 @@ param imageReference = {
   sku: '2022-datacenter-azure-edition'
   version: 'latest'
 }
-param name = 'cvmwinvmss'
+param name = 'vmwinvmss'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -4857,7 +4851,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param location = '<location>'
@@ -4889,7 +4883,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
-    name: 'cvmwinzrs'
+    name: 'vmwinzrs'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -4909,7 +4903,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D4s_v6'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     dataDisks: [
@@ -4954,7 +4948,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwinzrs"
+      "value": "vmwinzrs"
     },
     "nicConfigurations": {
       "value": [
@@ -4982,7 +4976,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D4s_v6"
     },
     // Non-required parameters
     "adminPassword": {
@@ -5025,7 +5019,7 @@ param imageReference = {
   sku: '2022-datacenter-azure-edition'
   version: 'latest'
 }
-param name = 'cvmwinzrs'
+param name = 'vmwinzrs'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -5045,7 +5039,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D4s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param dataDisks = [
@@ -8423,9 +8417,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/network-interface:0.5.1` | Remote reference |
-| `br/public:avm/res/network/network-interface:0.5.2` | Remote reference |
+| `br/public:avm/res/network/network-interface:0.5.3` | Remote reference |
 | `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
-| `br/public:avm/res/network/public-ip-address:0.9.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.9.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
