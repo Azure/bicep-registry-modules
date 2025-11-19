@@ -29,7 +29,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -56,13 +56,16 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
+      customerManagedKey: {
+        keyName: nestedDependencies.outputs.keyName
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+        autoRotationEnabled: false
+      }
+      enableKeyPermissions: true
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
-      keyName: nestedDependencies.outputs.keyName
-      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       roleAssignments: [
         {
           name: 'c331c327-6458-473a-9398-95b382c6f04f'
@@ -86,6 +89,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       managedIdentities: {
+        systemAssigned: true
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
@@ -96,8 +100,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

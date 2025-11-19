@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/net-app/net-app-account/CHANGELOG.md).
 
+## 0.12.0
+
+### Changes
+
+- Added support for managed HSM key encryption
+- Updated all 'avm-common-types' references to version `0.6.1`
+- Updated `managedIdentities` type to `managedIdentityAllType`, hence supporting both System and UserAssigned identities
+
+### Breaking Changes
+
+- None
+
 ## 0.11.1
 
 ### Changes
