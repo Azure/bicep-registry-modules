@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "10390013005713732753"
+      "version": "0.38.33.27573",
+      "templateHash": "7403647095217572580"
     },
     "name": "Data Protection Backup Vault Backup Instances",
     "description": "This module deploys a Data Protection Backup Vault Backup Instance."
@@ -159,7 +159,7 @@
     },
     "backupInstance_dataSourceResource_rbac": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-RBAC', deployment().name)]",
       "resourceGroup": "[split(parameters('dataSourceInfo').resourceID, '/')[4]]",
       "properties": {
@@ -181,8 +181,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "12922926946246637028"
+              "version": "0.38.33.27573",
+              "templateHash": "11578394357057342362"
             }
           },
           "parameters": {

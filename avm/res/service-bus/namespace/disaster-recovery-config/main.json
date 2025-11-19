@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "1678241309605832019"
+      "version": "0.38.33.27573",
+      "templateHash": "12684500962727878582"
     },
     "name": "Service Bus Namespace Disaster Recovery Configs",
     "description": "This module deploys a Service Bus Namespace Disaster Recovery Config"
@@ -44,7 +44,7 @@
   "resources": [
     {
       "type": "Microsoft.ServiceBus/namespaces/disasterRecoveryConfigs",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
       "properties": {
         "alternateName": "[parameters('alternateName')]",
