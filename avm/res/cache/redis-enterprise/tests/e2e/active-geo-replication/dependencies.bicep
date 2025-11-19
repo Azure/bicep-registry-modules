@@ -13,7 +13,9 @@ resource redisCluster 'Microsoft.Cache/redisEnterprise@2025-07-01' = {
   sku: {
     name: 'Balanced_B10'
   }
-
+  properties: {
+    publicNetworkAccess: 'Enabled'
+  }
   resource redisDatabase 'databases@2025-07-01' = {
     name: 'default'
     properties: {
