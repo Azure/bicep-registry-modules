@@ -22,8 +22,8 @@ This module deploys a Kusto Cluster.
 | `Microsoft.Kusto/clusters/databases` | 2024-04-13 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kusto_clusters_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2024-04-13/clusters/databases)</li></ul> |
 | `Microsoft.Kusto/clusters/databases/principalAssignments` | 2024-04-13 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kusto_clusters_databases_principalassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2024-04-13/clusters/databases/principalAssignments)</li></ul> |
 | `Microsoft.Kusto/clusters/principalAssignments` | 2024-04-13 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kusto_clusters_principalassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2024-04-13/clusters/principalAssignments)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -33,619 +33,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/kusto/cluster:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Private endpoint-enabled deployment](#example-3-private-endpoint-enabled-deployment)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-4-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-5-using-customer-managed-keys-with-user-assigned-identity)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-1-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-2-using-customer-managed-keys-with-user-assigned-identity)
+- [Using only defaults](#example-3-using-only-defaults)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Private endpoint-enabled deployment](#example-5-private-endpoint-enabled-deployment)
 - [WAF-aligned](#example-6-waf-aligned)
 
-### Example 1: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
-  name: 'clusterDeployment'
-  params: {
-    // Required parameters
-    name: 'kcmin0001'
-    sku: 'Standard_E2ads_v5'
-    // Non-required parameters
-    enableDiskEncryption: true
-    location: '<location>'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "kcmin0001"
-    },
-    "sku": {
-      "value": "Standard_E2ads_v5"
-    },
-    // Non-required parameters
-    "enableDiskEncryption": {
-      "value": true
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/kusto/cluster:<version>'
-
-// Required parameters
-param name = 'kcmin0001'
-param sku = 'Standard_E2ads_v5'
-// Non-required parameters
-param enableDiskEncryption = true
-param location = '<location>'
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
-```
-
-</details>
-<p>
-
-### Example 2: _Using large parameter set_
-
-This instance deploys the module with most of its features enabled.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
-  name: 'clusterDeployment'
-  params: {
-    // Required parameters
-    name: 'kcmax0001'
-    sku: 'Standard_E2ads_v5'
-    // Non-required parameters
-    acceptedAudiences: [
-      {
-        value: 'https://contoso.com'
-      }
-    ]
-    allowedFqdnList: [
-      'contoso.com'
-    ]
-    allowedIpRangeList: [
-      '192.168.1.1'
-    ]
-    autoScaleMax: 6
-    autoScaleMin: 3
-    capacity: 3
-    clusterPrincipalAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'App'
-        role: 'AllDatabasesViewer'
-      }
-    ]
-    databases: [
-      {
-        databasePrincipalAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'App'
-            role: 'Viewer'
-          }
-        ]
-        kind: 'ReadWrite'
-        name: 'myReadWriteDatabase'
-        readWriteProperties: {
-          hotCachePeriod: 'P1D'
-          softDeletePeriod: 'P7D'
-        }
-      }
-    ]
-    enableAutoScale: true
-    enableAutoStop: true
-    enableDiskEncryption: true
-    enableDoubleEncryption: true
-    enablePublicNetworkAccess: true
-    enablePurge: true
-    enableRestrictOutboundNetworkAccess: true
-    enableStreamingIngest: true
-    enableZoneRedundant: true
-    engineType: 'V3'
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    publicIPType: 'DualStack'
-    roleAssignments: [
-      {
-        name: 'c2a4b728-c3d0-47f5-afbb-ea45c45859de'
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        name: '<name>'
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "kcmax0001"
-    },
-    "sku": {
-      "value": "Standard_E2ads_v5"
-    },
-    // Non-required parameters
-    "acceptedAudiences": {
-      "value": [
-        {
-          "value": "https://contoso.com"
-        }
-      ]
-    },
-    "allowedFqdnList": {
-      "value": [
-        "contoso.com"
-      ]
-    },
-    "allowedIpRangeList": {
-      "value": [
-        "192.168.1.1"
-      ]
-    },
-    "autoScaleMax": {
-      "value": 6
-    },
-    "autoScaleMin": {
-      "value": 3
-    },
-    "capacity": {
-      "value": 3
-    },
-    "clusterPrincipalAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "App",
-          "role": "AllDatabasesViewer"
-        }
-      ]
-    },
-    "databases": {
-      "value": [
-        {
-          "databasePrincipalAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "App",
-              "role": "Viewer"
-            }
-          ],
-          "kind": "ReadWrite",
-          "name": "myReadWriteDatabase",
-          "readWriteProperties": {
-            "hotCachePeriod": "P1D",
-            "softDeletePeriod": "P7D"
-          }
-        }
-      ]
-    },
-    "enableAutoScale": {
-      "value": true
-    },
-    "enableAutoStop": {
-      "value": true
-    },
-    "enableDiskEncryption": {
-      "value": true
-    },
-    "enableDoubleEncryption": {
-      "value": true
-    },
-    "enablePublicNetworkAccess": {
-      "value": true
-    },
-    "enablePurge": {
-      "value": true
-    },
-    "enableRestrictOutboundNetworkAccess": {
-      "value": true
-    },
-    "enableStreamingIngest": {
-      "value": true
-    },
-    "enableZoneRedundant": {
-      "value": true
-    },
-    "engineType": {
-      "value": "V3"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "publicIPType": {
-      "value": "DualStack"
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "name": "c2a4b728-c3d0-47f5-afbb-ea45c45859de",
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "name": "<name>",
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/kusto/cluster:<version>'
-
-// Required parameters
-param name = 'kcmax0001'
-param sku = 'Standard_E2ads_v5'
-// Non-required parameters
-param acceptedAudiences = [
-  {
-    value: 'https://contoso.com'
-  }
-]
-param allowedFqdnList = [
-  'contoso.com'
-]
-param allowedIpRangeList = [
-  '192.168.1.1'
-]
-param autoScaleMax = 6
-param autoScaleMin = 3
-param capacity = 3
-param clusterPrincipalAssignments = [
-  {
-    principalId: '<principalId>'
-    principalType: 'App'
-    role: 'AllDatabasesViewer'
-  }
-]
-param databases = [
-  {
-    databasePrincipalAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'App'
-        role: 'Viewer'
-      }
-    ]
-    kind: 'ReadWrite'
-    name: 'myReadWriteDatabase'
-    readWriteProperties: {
-      hotCachePeriod: 'P1D'
-      softDeletePeriod: 'P7D'
-    }
-  }
-]
-param enableAutoScale = true
-param enableAutoStop = true
-param enableDiskEncryption = true
-param enableDoubleEncryption = true
-param enablePublicNetworkAccess = true
-param enablePurge = true
-param enableRestrictOutboundNetworkAccess = true
-param enableStreamingIngest = true
-param enableZoneRedundant = true
-param engineType = 'V3'
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
-param publicIPType = 'DualStack'
-param roleAssignments = [
-  {
-    name: 'c2a4b728-c3d0-47f5-afbb-ea45c45859de'
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
-  }
-  {
-    name: '<name>'
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-  }
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-  }
-]
-```
-
-</details>
-<p>
-
-### Example 3: _Private endpoint-enabled deployment_
-
-This instance deploys the module with private endpoints.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
-  name: 'clusterDeployment'
-  params: {
-    // Required parameters
-    name: 'kcpe0001'
-    sku: 'Standard_E2ads_v5'
-    // Non-required parameters
-    enablePublicNetworkAccess: false
-    location: '<location>'
-    privateEndpoints: [
-      {
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-            }
-          ]
-        }
-        service: 'cluster'
-        subnetResourceId: '<subnetResourceId>'
-      }
-      {
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-            }
-          ]
-        }
-        service: 'cluster'
-        subnetResourceId: '<subnetResourceId>'
-      }
-    ]
-    publicIPType: 'IPv4'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "kcpe0001"
-    },
-    "sku": {
-      "value": "Standard_E2ads_v5"
-    },
-    // Non-required parameters
-    "enablePublicNetworkAccess": {
-      "value": false
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "privateEndpoints": {
-      "value": [
-        {
-          "privateDnsZoneGroup": {
-            "privateDnsZoneGroupConfigs": [
-              {
-                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
-              }
-            ]
-          },
-          "service": "cluster",
-          "subnetResourceId": "<subnetResourceId>"
-        },
-        {
-          "privateDnsZoneGroup": {
-            "privateDnsZoneGroupConfigs": [
-              {
-                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
-              }
-            ]
-          },
-          "service": "cluster",
-          "subnetResourceId": "<subnetResourceId>"
-        }
-      ]
-    },
-    "publicIPType": {
-      "value": "IPv4"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/kusto/cluster:<version>'
-
-// Required parameters
-param name = 'kcpe0001'
-param sku = 'Standard_E2ads_v5'
-// Non-required parameters
-param enablePublicNetworkAccess = false
-param location = '<location>'
-param privateEndpoints = [
-  {
-    privateDnsZoneGroup: {
-      privateDnsZoneGroupConfigs: [
-        {
-          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-        }
-      ]
-    }
-    service: 'cluster'
-    subnetResourceId: '<subnetResourceId>'
-  }
-  {
-    privateDnsZoneGroup: {
-      privateDnsZoneGroupConfigs: [
-        {
-          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-        }
-      ]
-    }
-    service: 'cluster'
-    subnetResourceId: '<subnetResourceId>'
-  }
-]
-param publicIPType = 'IPv4'
-param tags = {
-  Environment: 'Non-Prod'
-  'hidden-title': 'This is visible in the resource name'
-  Role: 'DeploymentValidation'
-}
-```
-
-</details>
-<p>
-
-### Example 4: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 1: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
@@ -734,7 +129,7 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 5: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 2: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -832,6 +227,613 @@ param managedIdentities = {
 </details>
 <p>
 
+### Example 3: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
+  name: 'clusterDeployment'
+  params: {
+    // Required parameters
+    name: 'kcmin0001'
+    sku: 'Standard_E2ads_v5'
+    // Non-required parameters
+    enableDiskEncryption: true
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "kcmin0001"
+    },
+    "sku": {
+      "value": "Standard_E2ads_v5"
+    },
+    // Non-required parameters
+    "enableDiskEncryption": {
+      "value": true
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = 'kcmin0001'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param enableDiskEncryption = true
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
+  name: 'clusterDeployment'
+  params: {
+    // Required parameters
+    name: 'kcmax0001'
+    sku: 'Standard_E2ads_v5'
+    // Non-required parameters
+    acceptedAudiences: [
+      {
+        value: 'https://contoso.com'
+      }
+    ]
+    allowedFqdnList: [
+      'contoso.com'
+    ]
+    allowedIpRangeList: [
+      '192.168.1.1'
+    ]
+    autoScaleMax: 6
+    autoScaleMin: 3
+    availabilityZones: [
+      1
+      2
+      3
+    ]
+    capacity: 3
+    clusterPrincipalAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'App'
+        role: 'AllDatabasesViewer'
+      }
+    ]
+    databases: [
+      {
+        databasePrincipalAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'App'
+            role: 'Viewer'
+          }
+        ]
+        kind: 'ReadWrite'
+        name: 'myReadWriteDatabase'
+        readWriteProperties: {
+          hotCachePeriod: 'P1D'
+          softDeletePeriod: 'P7D'
+        }
+      }
+    ]
+    enableAutoScale: true
+    enableAutoStop: true
+    enableDiskEncryption: true
+    enableDoubleEncryption: true
+    enablePublicNetworkAccess: true
+    enablePurge: true
+    enableRestrictOutboundNetworkAccess: true
+    enableStreamingIngest: true
+    engineType: 'V3'
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    publicIPType: 'DualStack'
+    roleAssignments: [
+      {
+        name: 'c2a4b728-c3d0-47f5-afbb-ea45c45859de'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "kcmax0001"
+    },
+    "sku": {
+      "value": "Standard_E2ads_v5"
+    },
+    // Non-required parameters
+    "acceptedAudiences": {
+      "value": [
+        {
+          "value": "https://contoso.com"
+        }
+      ]
+    },
+    "allowedFqdnList": {
+      "value": [
+        "contoso.com"
+      ]
+    },
+    "allowedIpRangeList": {
+      "value": [
+        "192.168.1.1"
+      ]
+    },
+    "autoScaleMax": {
+      "value": 6
+    },
+    "autoScaleMin": {
+      "value": 3
+    },
+    "availabilityZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
+    "capacity": {
+      "value": 3
+    },
+    "clusterPrincipalAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "App",
+          "role": "AllDatabasesViewer"
+        }
+      ]
+    },
+    "databases": {
+      "value": [
+        {
+          "databasePrincipalAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "App",
+              "role": "Viewer"
+            }
+          ],
+          "kind": "ReadWrite",
+          "name": "myReadWriteDatabase",
+          "readWriteProperties": {
+            "hotCachePeriod": "P1D",
+            "softDeletePeriod": "P7D"
+          }
+        }
+      ]
+    },
+    "enableAutoScale": {
+      "value": true
+    },
+    "enableAutoStop": {
+      "value": true
+    },
+    "enableDiskEncryption": {
+      "value": true
+    },
+    "enableDoubleEncryption": {
+      "value": true
+    },
+    "enablePublicNetworkAccess": {
+      "value": true
+    },
+    "enablePurge": {
+      "value": true
+    },
+    "enableRestrictOutboundNetworkAccess": {
+      "value": true
+    },
+    "enableStreamingIngest": {
+      "value": true
+    },
+    "engineType": {
+      "value": "V3"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "publicIPType": {
+      "value": "DualStack"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "c2a4b728-c3d0-47f5-afbb-ea45c45859de",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = 'kcmax0001'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param acceptedAudiences = [
+  {
+    value: 'https://contoso.com'
+  }
+]
+param allowedFqdnList = [
+  'contoso.com'
+]
+param allowedIpRangeList = [
+  '192.168.1.1'
+]
+param autoScaleMax = 6
+param autoScaleMin = 3
+param availabilityZones = [
+  1
+  2
+  3
+]
+param capacity = 3
+param clusterPrincipalAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'App'
+    role: 'AllDatabasesViewer'
+  }
+]
+param databases = [
+  {
+    databasePrincipalAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'App'
+        role: 'Viewer'
+      }
+    ]
+    kind: 'ReadWrite'
+    name: 'myReadWriteDatabase'
+    readWriteProperties: {
+      hotCachePeriod: 'P1D'
+      softDeletePeriod: 'P7D'
+    }
+  }
+]
+param enableAutoScale = true
+param enableAutoStop = true
+param enableDiskEncryption = true
+param enableDoubleEncryption = true
+param enablePublicNetworkAccess = true
+param enablePurge = true
+param enableRestrictOutboundNetworkAccess = true
+param enableStreamingIngest = true
+param engineType = 'V3'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param publicIPType = 'DualStack'
+param roleAssignments = [
+  {
+    name: 'c2a4b728-c3d0-47f5-afbb-ea45c45859de'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 5: _Private endpoint-enabled deployment_
+
+This instance deploys the module with private endpoints.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
+  name: 'clusterDeployment'
+  params: {
+    // Required parameters
+    name: 'kcpe0001'
+    sku: 'Standard_E2ads_v5'
+    // Non-required parameters
+    enablePublicNetworkAccess: false
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'cluster'
+        subnetResourceId: '<subnetResourceId>'
+      }
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'cluster'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    publicIPType: 'IPv4'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "kcpe0001"
+    },
+    "sku": {
+      "value": "Standard_E2ads_v5"
+    },
+    // Non-required parameters
+    "enablePublicNetworkAccess": {
+      "value": false
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "cluster",
+          "subnetResourceId": "<subnetResourceId>"
+        },
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "cluster",
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "publicIPType": {
+      "value": "IPv4"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = 'kcpe0001'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param enablePublicNetworkAccess = false
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'cluster'
+    subnetResourceId: '<subnetResourceId>'
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'cluster'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicIPType = 'IPv4'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -857,8 +859,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     enableDiskEncryption: true
     enableDoubleEncryption: true
     enablePublicNetworkAccess: false
-    enableZoneRedundant: true
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -917,12 +917,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     "enablePublicNetworkAccess": {
       "value": false
     },
-    "enableZoneRedundant": {
-      "value": true
-    },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -965,8 +959,6 @@ param enableAutoStop = true
 param enableDiskEncryption = true
 param enableDoubleEncryption = true
 param enablePublicNetworkAccess = false
-param enableZoneRedundant = true
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -1000,6 +992,7 @@ param tier = 'Standard'
 | [`allowedIpRangeList`](#parameter-allowediprangelist) | array | List of IP addresses in CIDR format allowed to connect to the Kusto Cluster. |
 | [`autoScaleMax`](#parameter-autoscalemax) | int | When auto-scale is enabled, the maximum number of instances in the Kusto Cluster. |
 | [`autoScaleMin`](#parameter-autoscalemin) | int | When auto-scale is enabled, the minimum number of instances in the Kusto Cluster. |
+| [`availabilityZones`](#parameter-availabilityzones) | array | The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set. |
 | [`capacity`](#parameter-capacity) | int | The number of instances of the Kusto Cluster. |
 | [`clusterPrincipalAssignments`](#parameter-clusterprincipalassignments) | array | The Principal Assignments for the Kusto Cluster. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
@@ -1014,7 +1007,6 @@ param tier = 'Standard'
 | [`enableRestrictOutboundNetworkAccess`](#parameter-enablerestrictoutboundnetworkaccess) | bool | Enable/disable restricting outbound network access. |
 | [`enableStreamingIngest`](#parameter-enablestreamingingest) | bool | Enable/disable streaming ingest. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/disable usage telemetry for module. |
-| [`enableZoneRedundant`](#parameter-enablezoneredundant) | bool | Enable/disable zone redundancy. |
 | [`engineType`](#parameter-enginetype) | string | The engine type of the Kusto Cluster. |
 | [`languageExtensions`](#parameter-languageextensions) | array | List of the language extensions of the Kusto Cluster. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -1096,6 +1088,29 @@ When auto-scale is enabled, the minimum number of instances in the Kusto Cluster
 - Default: `2`
 - MinValue: 2
 - MaxValue: 999
+
+### Parameter: `availabilityZones`
+
+The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `capacity`
 
@@ -1622,14 +1637,6 @@ Enable/disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `enableZoneRedundant`
-
-Enable/disable zone redundancy.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `engineType`
 
@@ -2424,9 +2431,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection

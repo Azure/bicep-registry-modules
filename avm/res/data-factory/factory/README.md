@@ -29,8 +29,8 @@ This module deploys a Data Factory.
 | `Microsoft.DataFactory/factories/managedVirtualNetworks` | 2018-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.datafactory_factories_managedvirtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/managedVirtualNetworks)</li></ul> |
 | `Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints` | 2018-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.datafactory_factories_managedvirtualnetworks_managedprivateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/managedVirtualNetworks/managedPrivateEndpoints)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -40,14 +40,19 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/data-factory/factory:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-1-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
+```
 
 <details>
 
@@ -58,9 +63,19 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   name: 'factoryDeployment'
   params: {
     // Required parameters
-    name: 'dffmin001'
+    name: 'dffencr001'
     // Non-required parameters
-    location: '<location>'
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
   }
 }
 ```
@@ -79,11 +94,23 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dffmin001"
+      "value": "dffencr001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
     }
   }
 }
@@ -100,15 +127,78 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 using 'br/public:avm/res/data-factory/factory:<version>'
 
 // Required parameters
-param name = 'dffmin001'
+param name = 'dffencr001'
 // Non-required parameters
-param location = '<location>'
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
 ```
 
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module factory 'br/public:avm/res/data-factory/factory:<version>' = {
+  name: 'factoryDeployment'
+  params: {
+    name: 'dffmin001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "dffmin001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/data-factory/factory:<version>'
+
+param name = 'dffmin001'
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -201,17 +291,19 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
-    managedPrivateEndpoints: [
-      {
-        fqdns: [
-          '<storageAccountBlobEndpoint>'
-        ]
-        groupId: 'blob'
-        name: '<name>'
-        privateLinkResourceId: '<privateLinkResourceId>'
-      }
-    ]
-    managedVirtualNetworkName: 'default'
+    managedVirtualNetwork: {
+      managedPrivateEndpoints: [
+        {
+          fqdns: [
+            '<storageAccountBlobEndpoint>'
+          ]
+          groupId: 'blob'
+          name: '<name>'
+          privateLinkResourceId: '<privateLinkResourceId>'
+        }
+      ]
+      name: 'default'
+    }
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -380,20 +472,20 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         ]
       }
     },
-    "managedPrivateEndpoints": {
-      "value": [
-        {
-          "fqdns": [
-            "<storageAccountBlobEndpoint>"
-          ],
-          "groupId": "blob",
-          "name": "<name>",
-          "privateLinkResourceId": "<privateLinkResourceId>"
-        }
-      ]
-    },
-    "managedVirtualNetworkName": {
-      "value": "default"
+    "managedVirtualNetwork": {
+      "value": {
+        "managedPrivateEndpoints": [
+          {
+            "fqdns": [
+              "<storageAccountBlobEndpoint>"
+            ],
+            "groupId": "blob",
+            "name": "<name>",
+            "privateLinkResourceId": "<privateLinkResourceId>"
+          }
+        ],
+        "name": "default"
+      }
     },
     "privateEndpoints": {
       "value": [
@@ -547,17 +639,19 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
-param managedPrivateEndpoints = [
-  {
-    fqdns: [
-      '<storageAccountBlobEndpoint>'
-    ]
-    groupId: 'blob'
-    name: '<name>'
-    privateLinkResourceId: '<privateLinkResourceId>'
-  }
-]
-param managedVirtualNetworkName = 'default'
+param managedVirtualNetwork = {
+  managedPrivateEndpoints: [
+    {
+      fqdns: [
+        '<storageAccountBlobEndpoint>'
+      ]
+      groupId: 'blob'
+      name: '<name>'
+      privateLinkResourceId: '<privateLinkResourceId>'
+    }
+  ]
+  name: 'default'
+}
 param privateEndpoints = [
   {
     privateDnsZoneGroup: {
@@ -615,7 +709,7 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -663,7 +757,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         type: 'SelfHosted'
       }
     ]
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -758,9 +851,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -851,7 +941,6 @@ param integrationRuntimes = [
     type: 'SelfHosted'
   }
 ]
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -922,8 +1011,7 @@ param tags = {
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings for all Resources in the solution. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`managedPrivateEndpoints`](#parameter-managedprivateendpoints) | array | An array of managed private endpoints objects created in the Data Factory managed virtual network. |
-| [`managedVirtualNetworkName`](#parameter-managedvirtualnetworkname) | string | The name of the Managed Virtual Network. |
+| [`managedVirtualNetwork`](#parameter-managedvirtualnetwork) | object | The Managed Virtual Network configuration. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
 | [`purviewResourceId`](#parameter-purviewresourceid) | string | Purview Account resource identifier. |
@@ -1249,7 +1337,6 @@ An array of objects for the configuration of an Integration Runtime.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -1314,7 +1401,6 @@ An array of objects for the configuration of Linked Services.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -1454,63 +1540,75 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 - Required: No
 - Type: array
 
-### Parameter: `managedPrivateEndpoints`
+### Parameter: `managedVirtualNetwork`
 
-An array of managed private endpoints objects created in the Data Factory managed virtual network.
+The Managed Virtual Network configuration.
 
 - Required: No
-- Type: array
-- Default: `[]`
+- Type: object
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`groupId`](#parameter-managedprivateendpointsgroupid) | string | Specify the sub-resource of the managed private endpoint. |
-| [`name`](#parameter-managedprivateendpointsname) | string | Specify the name of managed private endpoint. |
-| [`privateLinkResourceId`](#parameter-managedprivateendpointsprivatelinkresourceid) | string | Specify the resource ID to create the managed private endpoint for. |
+| [`name`](#parameter-managedvirtualnetworkname) | string | The name of the Managed Virtual Network. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdns`](#parameter-managedprivateendpointsfqdns) | array | Specify the FQDNS of the linked resources to create private endpoints for, depending on the type of linked resource this is required. |
+| [`managedPrivateEndpoints`](#parameter-managedvirtualnetworkmanagedprivateendpoints) | array | An array of managed private endpoints objects created in the Data Factory managed virtual network. |
 
-### Parameter: `managedPrivateEndpoints.groupId`
+### Parameter: `managedVirtualNetwork.name`
 
-Specify the sub-resource of the managed private endpoint.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `managedPrivateEndpoints.name`
-
-Specify the name of managed private endpoint.
+The name of the Managed Virtual Network.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `managedPrivateEndpoints.privateLinkResourceId`
+### Parameter: `managedVirtualNetwork.managedPrivateEndpoints`
 
-Specify the resource ID to create the managed private endpoint for.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `managedPrivateEndpoints.fqdns`
-
-Specify the FQDNS of the linked resources to create private endpoints for, depending on the type of linked resource this is required.
+An array of managed private endpoints objects created in the Data Factory managed virtual network.
 
 - Required: No
 - Type: array
 
-### Parameter: `managedVirtualNetworkName`
+**Required parameters**
 
-The name of the Managed Virtual Network.
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdns`](#parameter-managedvirtualnetworkmanagedprivateendpointsfqdns) | array | Fully qualified domain names. |
+| [`groupId`](#parameter-managedvirtualnetworkmanagedprivateendpointsgroupid) | string | The groupId to which the managed private endpoint is created. |
+| [`name`](#parameter-managedvirtualnetworkmanagedprivateendpointsname) | string | The managed private endpoint resource name. |
+| [`privateLinkResourceId`](#parameter-managedvirtualnetworkmanagedprivateendpointsprivatelinkresourceid) | string | The ARM resource ID of the resource to which the managed private endpoint is created. |
 
-- Required: No
+### Parameter: `managedVirtualNetwork.managedPrivateEndpoints.fqdns`
+
+Fully qualified domain names.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `managedVirtualNetwork.managedPrivateEndpoints.groupId`
+
+The groupId to which the managed private endpoint is created.
+
+- Required: Yes
 - Type: string
-- Default: `''`
+
+### Parameter: `managedVirtualNetwork.managedPrivateEndpoints.name`
+
+The managed private endpoint resource name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `managedVirtualNetwork.managedPrivateEndpoints.privateLinkResourceId`
+
+The ARM resource ID of the resource to which the managed private endpoint is created.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `privateEndpoints`
 
@@ -2082,9 +2180,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Notes
