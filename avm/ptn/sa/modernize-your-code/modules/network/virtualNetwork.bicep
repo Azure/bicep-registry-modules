@@ -4,7 +4,7 @@
 @description('Required. Name of the virtual network.')
 param name string
 
-@description('Optional. Azure region to deploy resources.')
+@description('Required. Azure region to deploy resources.')
 param location string = resourceGroup().location
 
 @description('Required. An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`.')
@@ -14,9 +14,8 @@ param addressPrefixes array
 param subnets subnetType[]
 
 @description('Optional. Tags to be applied to the resources.')
-param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
+param tags object = {}
 
-@secure() // marked secure to meet AVM validation requirements
 @description('Optional. The resource ID of the Log Analytics Workspace to send diagnostic logs to.')
 param logAnalyticsWorkspaceId string
 
@@ -28,11 +27,11 @@ param enableTelemetry bool = true
 // https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/network/network-security-group
 
 @batchSize(1)
-module nsgs 'br/public:avm/res/network/network-security-group:0.5.1' = [
+module nsgs 'br/public:avm/res/network/network-security-group:0.5.2' = [
   for (subnet, i) in subnets: if (!empty(subnet.?networkSecurityGroup)) {
     name: take('${name}-${subnet.?networkSecurityGroup.name}-networksecuritygroup', 64)
     params: {
-      name: '${name}-${subnet.?networkSecurityGroup.name}'
+      name: '${subnet.?networkSecurityGroup.name}-${name}'
       location: location
       securityRules: subnet.?networkSecurityGroup.securityRules
       tags: tags
@@ -45,7 +44,7 @@ module nsgs 'br/public:avm/res/network/network-security-group:0.5.1' = [
 // using AVM Virtual Network module
 // https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/network/virtual-network
 
-module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = {
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.1' = {
   name: take('${name}-virtualNetwork', 64)
   params: {
     name: name
@@ -84,10 +83,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = {
   }
 }
 
-@description('Name of the Virtual Network resource.')
 output name string = virtualNetwork.outputs.name
-
-@description('Resource ID of the Virtual Network.')
 output resourceId string = virtualNetwork.outputs.resourceId
 
 // combined output array that holds subnet details along with NSG information
@@ -150,8 +146,6 @@ type subnetType = {
   defaultOutboundAccess: bool?
 }
 
-import { securityRuleType } from 'br/public:avm/res/network/network-security-group:0.5.1'
-
 @export()
 @description('Custom type definition for network security group configuration')
 type networkSecurityGroupType = {
@@ -159,5 +153,5 @@ type networkSecurityGroupType = {
   name: string
 
   @description('Required. The security rules for the network security group.')
-  securityRules: securityRuleType[]
+  securityRules: object[]
 }
