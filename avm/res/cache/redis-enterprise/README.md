@@ -70,6 +70,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         ]
       }
     }
+    location: '<location>'
     skuName: 'Balanced_B10'
   }
 }
@@ -107,6 +108,9 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         }
       }
     },
+    "location": {
+      "value": "<location>"
+    },
     "skuName": {
       "value": "Balanced_B10"
     }
@@ -140,6 +144,7 @@ param database = {
     ]
   }
 }
+param location = '<location>'
 param skuName = 'Balanced_B10'
 ```
 
