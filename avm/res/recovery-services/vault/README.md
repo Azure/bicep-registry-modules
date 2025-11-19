@@ -63,7 +63,7 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
   name: 'vaultDeployment'
   params: {
     // Required parameters
-    name: 'rsvhsm001'
+    name: 'rsvhsmu001'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -93,7 +93,7 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "rsvhsm001"
+      "value": "rsvhsmu001"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -125,7 +125,7 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
 using 'br/public:avm/res/recovery-services/vault:<version>'
 
 // Required parameters
-param name = 'rsvhsm001'
+param name = 'rsvhsmu001'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'

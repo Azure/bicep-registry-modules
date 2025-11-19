@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/recovery-services/vault/CHANGELOG.md).
 
+## 0.11.1
+
+### Changes
+
+- Fixed typo in the CMK interface when retrieving the latest keyUri version with auto-rotation enabled
+
+### Breaking Changes
+
+- None
+
 ## 0.11.0
 
 ### Changes
