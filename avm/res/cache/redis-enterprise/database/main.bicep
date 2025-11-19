@@ -63,7 +63,7 @@ param modules moduleType[] = []
 @maxValue(10000)
 param port int = 10000
 
-@description('Optional. The persistence settings of the service. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/redis/how-to-persistence) FOR CLARIFICATION.')
+@description('Optional. The persistence settings of the service.')
 param persistence persistenceType = {
   type: 'disabled'
 }
@@ -71,10 +71,7 @@ param persistence persistenceType = {
 @description('Optional. Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized.')
 param accessPolicyAssignments accessPolicyAssignmentType[]?
 
-@description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
-param secretsExportConfiguration secretsExportConfigurationType?
-
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The database-level diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
@@ -82,7 +79,7 @@ param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 // Resources      //
 // ============== //
 
-resource redisCluster 'Microsoft.Cache/redisEnterprise@2025-05-01-preview' existing = {
+resource redisCluster 'Microsoft.Cache/redisEnterprise@2025-07-01' existing = {
   name: redisClusterName
 }
 
@@ -92,7 +89,7 @@ var isAmr = startsWith(clusterSku, 'Balanced') || startsWith(clusterSku, 'Comput
   'FlashOptimized'
 ) || startsWith(clusterSku, 'MemoryOptimized')
 
-resource redisDatabase 'Microsoft.Cache/redisEnterprise/databases@2025-05-01-preview' = {
+resource redisDatabase 'Microsoft.Cache/redisEnterprise/databases@2025-07-01' = {
   parent: redisCluster
   name: name
   properties: {
@@ -150,68 +147,6 @@ resource database_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021
   }
 ]
 
-module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
-  name: '${uniqueString(deployment().name)}-secrets-kv'
-  scope: resourceGroup(
-    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
-    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
-  )
-  params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
-    secretsToSet: union(
-      [],
-      contains(secretsExportConfiguration!, 'primaryAccessKeyName')
-        ? [
-            {
-              name: secretsExportConfiguration!.?primaryAccessKeyName
-              value: redisDatabase.listKeys().primaryKey
-            }
-          ]
-        : [],
-      contains(secretsExportConfiguration!, 'primaryConnectionStringName')
-        ? [
-            {
-              name: secretsExportConfiguration!.?primaryConnectionStringName
-              value: '${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'redis://' : 'rediss://' }:${redisDatabase.listKeys().primaryKey}@${redisCluster.properties.hostName}:${redisDatabase.properties.port}'
-            }
-          ]
-        : [],
-      contains(secretsExportConfiguration!, 'primaryStackExchangeRedisConnectionStringName')
-        ? [
-            {
-              name: secretsExportConfiguration!.?primaryStackExchangeRedisConnectionStringName
-              value: '${redisCluster.properties.hostName}:${redisDatabase.properties.port},password=${redisDatabase.listKeys().primaryKey},ssl=${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'False' : 'True'},abortConnect=False'
-            }
-          ]
-        : [],
-      contains(secretsExportConfiguration!, 'secondaryAccessKeyName')
-        ? [
-            {
-              name: secretsExportConfiguration!.?secondaryAccessKeyName
-              value: redisDatabase.listKeys().secondaryKey
-            }
-          ]
-        : [],
-      contains(secretsExportConfiguration!, 'secondaryConnectionStringName')
-        ? [
-            {
-              name: secretsExportConfiguration!.?secondaryConnectionStringName
-              value: '${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'redis://' : 'rediss://' }:${redisDatabase.listKeys().secondaryKey}@${redisCluster.properties.hostName}:${redisDatabase.properties.port}'
-            }
-          ]
-        : [],
-      contains(secretsExportConfiguration!, 'secondaryStackExchangeRedisConnectionStringName')
-        ? [
-            {
-              name: secretsExportConfiguration!.?secondaryStackExchangeRedisConnectionStringName
-              value: '${redisCluster.properties.hostName}:${redisDatabase.properties.port},password=${redisDatabase.listKeys().secondaryKey},ssl=${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'False' : 'True'},abortConnect=False'
-            }
-          ]
-        : []
-    )
-  }
-}
-
 // ============ //
 // Outputs      //
 // ============ //
@@ -234,39 +169,45 @@ output hostname string = redisCluster.properties.hostName
 @description('The Redis endpoint.')
 output endpoint string = '${redisCluster.properties.hostName}:${redisDatabase.properties.port}'
 
-import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
-output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
-  ? toObject(secretsExport!.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
-  : {}
+@secure()
+@description('The primary access key.')
+output primaryAccessKey string? = accessKeysAuthentication == 'Enabled'
+  ? redisDatabase.listKeys().primaryKey
+  : null
+
+@secure()
+@description('The primary connection string.')
+output primaryConnectionString string? = accessKeysAuthentication == 'Enabled'
+  ? '${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'redis://' : 'rediss://'}:${redisDatabase.listKeys().primaryKey}@${redisCluster.properties.hostName}:${redisDatabase.properties.port}'
+  : null
+
+@secure()
+@description('The primary StackExchange.Redis connection string.')
+output primaryStackExchangeRedisConnectionString string? = accessKeysAuthentication == 'Enabled'
+  ? '${redisCluster.properties.hostName}:${redisDatabase.properties.port},password=${redisDatabase.listKeys().primaryKey},ssl=${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'False' : 'True'},abortConnect=False'
+  : null
+
+@secure()
+@description('The secondary access key.')
+output secondaryAccessKey string? = accessKeysAuthentication == 'Enabled'
+  ? redisDatabase.listKeys().secondaryKey
+  : null
+
+@secure()
+@description('The secondary connection string.')
+output secondaryConnectionString string? = accessKeysAuthentication == 'Enabled'
+  ? '${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'redis://' : 'rediss://'}:${redisDatabase.listKeys().secondaryKey}@${redisCluster.properties.hostName}:${redisDatabase.properties.port}'
+  : null
+
+@secure()
+@description('The secondary StackExchange.Redis connection string.')
+output secondaryStackExchangeRedisConnectionString string? = accessKeysAuthentication == 'Enabled'
+  ? '${redisCluster.properties.hostName}:${redisDatabase.properties.port},password=${redisDatabase.listKeys().secondaryKey},ssl=${redisDatabase.properties.clientProtocol == 'Plaintext' ? 'False' : 'True'},abortConnect=False'
+  : null
 
 // =============== //
 //   Definitions   //
 // =============== //
-
-@export()
-type secretsExportConfigurationType = {
-  @description('Required. The resource ID of the key vault where to store the secrets of this module.')
-  keyVaultResourceId: string
-
-  @description('Optional. The primaryAccessKey secret name to create.')
-  primaryAccessKeyName: string?
-
-  @description('Optional. The primaryConnectionString secret name to create.')
-  primaryConnectionStringName: string?
-
-  @description('Optional. The primaryStackExchangeRedisConnectionString secret name to create.')
-  primaryStackExchangeRedisConnectionStringName: string?
-
-  @description('Optional. The secondaryAccessKey secret name to create.')
-  secondaryAccessKeyName: string?
-
-  @description('Optional. The secondaryConnectionString secret name to create.')
-  secondaryConnectionStringName: string?
-
-  @description('Optional. The secondaryStackExchangeRedisConnectionString secret name to create.')
-  secondaryStackExchangeRedisConnectionStringName: string?
-}
 
 @export()
 type disabledPersistenceType = {
