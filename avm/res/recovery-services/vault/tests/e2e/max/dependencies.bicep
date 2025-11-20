@@ -71,7 +71,7 @@ resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' 
     }
   }
   properties: {
-    azPowerShellVersion: '9.0'
+    azPowerShellVersion: '11.0'
     retentionInterval: 'P1D'
     arguments: '-SSHKeyName "${sshKeyName}" -ResourceGroupName "${resourceGroup().name}"'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/New-SSHKey.ps1')
@@ -91,7 +91,7 @@ resource sshKey 'Microsoft.Compute/sshPublicKeys@2024-11-01' = {
 }
 
 #disable-next-line use-recent-api-versions
-module vm 'br/public:avm/res/compute/virtual-machine:0.16.0' = {
+module vm 'br/public:avm/res/compute/virtual-machine:0.20.0' = {
   name: '${uniqueString(deployment().name, location)}-virtualMachine'
   params: {
     location: location

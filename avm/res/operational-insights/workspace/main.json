@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.5.1644",
-      "templateHash": "5716328325792965707"
+      "version": "0.38.33.27573",
+      "templateHash": "5566648347611561947"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace."
@@ -197,21 +197,21 @@
         "name": {
           "type": "string",
           "metadata": {
-            "description": "Required. Name of the linked service."
+            "description": "Required. Name of the linked service. E.g., 'Automation' for an automation account, or 'Cluster' for a Log Analytics Cluster."
           }
         },
         "resourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access."
+            "description": "Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access (e.g., Automation Accounts)."
           }
         },
         "writeAccessResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access."
+            "description": "Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access (e.g., Log Analytics Clusters)."
           }
         }
       },
@@ -499,15 +499,19 @@
         "retentionInDays": {
           "type": "int",
           "nullable": true,
+          "minValue": 4,
+          "maxValue": 730,
           "metadata": {
-            "description": "Optional. The retention in days for the table."
+            "description": "Optional. The retention in days for the table. Don't provide to use the default workspace retention."
           }
         },
         "totalRetentionInDays": {
           "type": "int",
           "nullable": true,
+          "minValue": 4,
+          "maxValue": 2555,
           "metadata": {
-            "description": "Optional. The total retention in days for the table."
+            "description": "Optional. The total retention in days for the table. Don't provide use the default table retention."
           }
         },
         "roleAssignments": {
@@ -995,7 +999,7 @@
         "Standard"
       ],
       "metadata": {
-        "description": "Optional. The name of the SKU."
+        "description": "Optional. The name of the SKU. Must be 'LACluster' to be linked to a Log Analytics cluster."
       }
     },
     "skuCapacityReservationLevel": {
@@ -1403,8 +1407,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "15360411499879079598"
+              "version": "0.38.33.27573",
+              "templateHash": "6147509220476249581"
             },
             "name": "Log Analytics Workspace Storage Insight Configs",
             "description": "This module deploys a Log Analytics Workspace Storage Insight Config."
@@ -1551,8 +1555,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "14762949361592061965"
+              "version": "0.38.33.27573",
+              "templateHash": "8281869519931556804"
             },
             "name": "Log Analytics Workspace Linked Services",
             "description": "This module deploys a Log Analytics Workspace Linked Service."
@@ -1673,8 +1677,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "7788564857255175934"
+              "version": "0.38.33.27573",
+              "templateHash": "7277367231044280838"
             },
             "name": "Log Analytics Workspace Linked Storage Accounts",
             "description": "This module deploys a Log Analytics Workspace Linked Storage Account."
@@ -1806,8 +1810,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "7740400714005395319"
+              "version": "0.38.33.27573",
+              "templateHash": "602297590400262634"
             },
             "name": "Log Analytics Workspace Saved Searches",
             "description": "This module deploys a Log Analytics Workspace Saved Search."
@@ -1972,8 +1976,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "16504386228172609571"
+              "version": "0.38.33.27573",
+              "templateHash": "10726125216102895767"
             },
             "name": "Log Analytics Workspace Data Exports",
             "description": "This module deploys a Log Analytics Workspace Data Export."
@@ -2165,8 +2169,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "14019572280105944791"
+              "version": "0.38.33.27573",
+              "templateHash": "106020359961703744"
             },
             "name": "Log Analytics Workspace Datasources",
             "description": "This module deploys a Log Analytics Workspace Data Source."
@@ -2395,8 +2399,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "4642459251807249576"
+              "version": "0.38.33.27573",
+              "templateHash": "9294449653184674508"
             },
             "name": "Log Analytics Workspace Tables",
             "description": "This module deploys a Log Analytics Workspace Table."
@@ -2680,11 +2684,11 @@
             },
             "retentionInDays": {
               "type": "int",
-              "defaultValue": -1,
-              "minValue": -1,
+              "nullable": true,
+              "minValue": 4,
               "maxValue": 730,
               "metadata": {
-                "description": "Optional. The table retention in days, between 4 and 730. Setting this property to -1 will default to the workspace retention."
+                "description": "Optional. The table retention in days, between 4 and 730. Don't provide to use the default workspace retention."
               }
             },
             "schema": {
@@ -2703,11 +2707,11 @@
             },
             "totalRetentionInDays": {
               "type": "int",
-              "defaultValue": -1,
-              "minValue": -1,
+              "nullable": true,
+              "minValue": 4,
               "maxValue": 2555,
               "metadata": {
-                "description": "Optional. The table total retention in days, between 4 and 2555. Setting this property to -1 will default to table retention."
+                "description": "Optional. The table total retention in days, between 4 and 2555. Don't provide use the default table retention."
               }
             },
             "roleAssignments": {
@@ -2755,10 +2759,10 @@
               "properties": {
                 "plan": "[parameters('plan')]",
                 "restoredLogs": "[parameters('restoredLogs')]",
-                "retentionInDays": "[parameters('retentionInDays')]",
+                "retentionInDays": "[coalesce(parameters('retentionInDays'), -1)]",
                 "schema": "[parameters('schema')]",
                 "searchResults": "[parameters('searchResults')]",
-                "totalRetentionInDays": "[parameters('totalRetentionInDays')]"
+                "totalRetentionInDays": "[coalesce(parameters('totalRetentionInDays'), -1)]"
               }
             },
             "table_roleAssignments": {
