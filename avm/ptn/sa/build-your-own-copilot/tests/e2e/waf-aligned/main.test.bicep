@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the Build Your Own Copilot Solutio
 param resourceGroupName string = 'dep-waf-${namePrefix}-sa.byoc-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints. Remove.')
-param serviceShort string = 'byoca-waf'
+param serviceShort string = 'byocca-waf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -53,6 +53,8 @@ module testDeployment '../../../main.bicep' = [
         enableTelemetry: true
         vmAdminUsername: 'adminuser'
         vmAdminPassword: virtualMachineAdminPassword
+        gptModelCapacity: 10
+        embeddingDeploymentCapacity: 10
       }
     }
 ]

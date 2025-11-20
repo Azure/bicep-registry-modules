@@ -149,12 +149,14 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
     // Non-required parameters
+    embeddingDeploymentCapacity: 10
     enableMonitoring: false
     enablePrivateNetworking: false
     enablePurgeProtection: false
     enableRedundancy: false
     enableScalability: false
     enableTelemetry: true
+    gptModelCapacity: 10
   }
 }
 ```
@@ -176,6 +178,9 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
       "value": "<azureAiServiceLocation>"
     },
     // Non-required parameters
+    "embeddingDeploymentCapacity": {
+      "value": 10
+    },
     "enableMonitoring": {
       "value": false
     },
@@ -193,6 +198,9 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
     },
     "enableTelemetry": {
       "value": true
+    },
+    "gptModelCapacity": {
+      "value": 10
     }
   }
 }
@@ -211,12 +219,14 @@ using 'br/public:avm/ptn/sa/build-your-own-copilot:<version>'
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
 // Non-required parameters
+param embeddingDeploymentCapacity = 10
 param enableMonitoring = false
 param enablePrivateNetworking = false
 param enablePurgeProtection = false
 param enableRedundancy = false
 param enableScalability = false
 param enableTelemetry = true
+param gptModelCapacity = 10
 ```
 
 </details>
@@ -238,12 +248,14 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
     // Non-required parameters
+    embeddingDeploymentCapacity: 10
     enableMonitoring: true
     enablePrivateNetworking: true
     enablePurgeProtection: true
     enableRedundancy: true
     enableScalability: true
     enableTelemetry: true
+    gptModelCapacity: 10
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'adminuser'
   }
@@ -267,6 +279,9 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
       "value": "<azureAiServiceLocation>"
     },
     // Non-required parameters
+    "embeddingDeploymentCapacity": {
+      "value": 10
+    },
     "enableMonitoring": {
       "value": true
     },
@@ -284,6 +299,9 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
     },
     "enableTelemetry": {
       "value": true
+    },
+    "gptModelCapacity": {
+      "value": 10
     },
     "vmAdminPassword": {
       "value": "<vmAdminPassword>"
@@ -308,12 +326,14 @@ using 'br/public:avm/ptn/sa/build-your-own-copilot:<version>'
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
 // Non-required parameters
+param embeddingDeploymentCapacity = 10
 param enableMonitoring = true
 param enablePrivateNetworking = true
 param enablePurgeProtection = true
 param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
+param gptModelCapacity = 10
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'adminuser'
 ```

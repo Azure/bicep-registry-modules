@@ -8,7 +8,7 @@ metadata description = 'This instance deploys the Build Your Own Copilot Solutio
 // ========== //
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'byoca-min'
+param serviceShort string = 'byocca-min'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
@@ -47,6 +47,8 @@ module testDeployment '../../../main.bicep' = [
       enableRedundancy: false
       enableScalability: false
       enableTelemetry: true
+      gptModelCapacity: 10
+      embeddingDeploymentCapacity: 10
     }
   }
 ]
