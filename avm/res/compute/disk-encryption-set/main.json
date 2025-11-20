@@ -6,12 +6,56 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "17266408658363939762"
+      "templateHash": "5278210177325630355"
     },
     "name": "Disk Encryption Sets",
     "description": "This module deploys a Disk Encryption Set. The module will attempt to set permissions on the provided Key Vault for any used user-assigned identity."
   },
   "definitions": {
+    "customerManagedKeyWithAutoRotateType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+          }
+        },
+        "keyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the customer managed key to use for encryption."
+          }
+        },
+        "keyVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting."
+          }
+        },
+        "autoRotationEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used."
+          }
+        },
+        "userAssignedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -174,29 +218,25 @@
         "description": "Optional. The lock settings of the service."
       }
     },
-    "keyVaultResourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. Resource ID of the KeyVault containing the key or secret."
-      }
-    },
-    "keyName": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. The name of the key used for encryption."
-      }
-    },
-    "keyVersion": {
-      "type": "string",
+    "customerManagedKey": {
+      "$ref": "#/definitions/customerManagedKeyWithAutoRotateType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, the latest key version is used."
+        "description": "Optional. The customer managed key definition."
+      }
+    },
+    "enableKeyPermissions": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Assign permissions to the Key Vault Key."
       }
     },
     "encryptionType": {
       "type": "string",
       "defaultValue": "EncryptionAtRestWithPlatformAndCustomerKeys",
       "allowedValues": [
+        "ConfidentialVmEncryptedWithCustomerKey",
         "EncryptionAtRestWithCustomerKey",
         "EncryptionAtRestWithPlatformAndCustomerKeys"
       ],
@@ -209,13 +249,6 @@
       "defaultValue": "None",
       "metadata": {
         "description": "Optional. Multi-tenant application client ID to access key vault in a different tenant. Setting the value to \"None\" will clear the property."
-      }
-    },
-    "rotationToLatestKeyVersionEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Set this flag to true to enable auto-updating of this disk encryption set to the latest key version."
       }
     },
     "managedIdentities": {
@@ -276,16 +309,18 @@
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "isHSMManagedCMK": "[equals(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), 'managedHSMs')]"
   },
   "resources": {
-    "keyVault::key": {
+    "cMKKeyVault::cMKKey": {
+      "condition": "[not(variables('isHSMManagedCMK'))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
       "apiVersion": "2024-11-01",
-      "subscriptionId": "[split(parameters('keyVaultResourceId'), '/')[2]]",
-      "resourceGroup": "[split(parameters('keyVaultResourceId'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -307,13 +342,14 @@
         }
       }
     },
-    "keyVault": {
+    "cMKKeyVault": {
+      "condition": "[not(variables('isHSMManagedCMK'))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2024-11-01",
-      "subscriptionId": "[split(parameters('keyVaultResourceId'), '/')[2]]",
-      "resourceGroup": "[split(parameters('keyVaultResourceId'), '/')[4]]",
-      "name": "[last(split(parameters('keyVaultResourceId'), '/'))]"
+      "apiVersion": "2025-05-01",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
     },
     "diskEncryptionSet": {
       "type": "Microsoft.Compute/diskEncryptionSets",
@@ -325,17 +361,17 @@
       "properties": {
         "activeKey": {
           "sourceVault": {
-            "id": "[parameters('keyVaultResourceId')]"
+            "id": "[parameters('customerManagedKey').keyVaultResourceId]"
           },
-          "keyUrl": "[if(not(empty(parameters('keyVersion'))), format('{0}/{1}', reference('keyVault::key').keyUri, parameters('keyVersion')), reference('keyVault::key').keyUriWithVersion)]"
+          "keyUrl": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(not(variables('isHSMManagedCMK')), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), format('https://{0}.managedhsm.azure.net/keys/{1}/{2}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName, parameters('customerManagedKey').keyVersion)), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUriWithVersion, fail('Managed HSM CMK encryption requires specifying the ''keyVersion''.')))]"
         },
         "encryptionType": "[parameters('encryptionType')]",
         "federatedClientId": "[parameters('federatedClientId')]",
-        "rotationToLatestKeyVersionEnabled": "[parameters('rotationToLatestKeyVersionEnabled')]"
+        "rotationToLatestKeyVersionEnabled": "[tryGet(parameters('customerManagedKey'), 'autoRotationEnabled')]"
       },
       "dependsOn": [
-        "keyVault::key",
-        "keyVaultPermissions"
+        "cMKKeyVault::cMKKey",
+        "keyVaultPermissionsUami"
       ]
     },
     "diskEncryptionSet_roleAssignments": {
@@ -374,16 +410,17 @@
         "diskEncryptionSet"
       ]
     },
-    "keyVaultPermissions": {
+    "keyVaultPermissionsUami": {
       "copy": {
-        "name": "keyVaultPermissions",
+        "name": "keyVaultPermissionsUami",
         "count": "[length(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()))]"
       },
+      "condition": "[and(parameters('enableKeyPermissions'), not(variables('isHSMManagedCMK')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[format('{0}-DiskEncrSet-KVPermissions-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "subscriptionId": "[split(parameters('keyVaultResourceId'), '/')[2]]",
-      "resourceGroup": "[split(parameters('keyVaultResourceId'), '/')[4]]",
+      "subscriptionId": "[split(parameters('customerManagedKey').keyVaultResourceId, '/')[2]]",
+      "resourceGroup": "[split(parameters('customerManagedKey').keyVaultResourceId, '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -391,16 +428,16 @@
         "mode": "Incremental",
         "parameters": {
           "keyName": {
-            "value": "[parameters('keyName')]"
+            "value": "[parameters('customerManagedKey').keyName]"
           },
           "keyVaultResourceId": {
-            "value": "[parameters('keyVaultResourceId')]"
+            "value": "[parameters('customerManagedKey').keyVaultResourceId]"
           },
           "userAssignedIdentityResourceId": {
             "value": "[coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())[copyIndex()]]"
           },
           "rbacAuthorizationEnabled": {
-            "value": "[reference('keyVault').enableRbacAuthorization]"
+            "value": "[reference('cMKKeyVault').enableRbacAuthorization]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -413,7 +450,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "16638198610761428685"
+              "templateHash": "14495588861633815705"
             }
           },
           "parameters": {
@@ -459,7 +496,7 @@
               "name": "[guid(format('msi-{0}-{1}-{2}-Key-Reader-RoleAssignment', resourceId('Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName')), parameters('location'), parameters('userAssignedIdentityResourceId')))]",
               "properties": {
                 "principalId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('userAssignedIdentityResourceId'), '/')[2], split(parameters('userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(parameters('userAssignedIdentityResourceId'), '/'))), '2024-11-30').principalId]",
-                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424')]",
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e147488a-f6f5-4113-8e2d-b22465e65bf6')]",
                 "principalType": "ServicePrincipal"
               }
             },
@@ -717,7 +754,7 @@
         }
       },
       "dependsOn": [
-        "keyVault"
+        "cMKKeyVault"
       ]
     }
   },
@@ -763,7 +800,7 @@
       "metadata": {
         "description": "The name of the key vault with the disk encryption key."
       },
-      "value": "[last(split(parameters('keyVaultResourceId'), '/'))]"
+      "value": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
     },
     "location": {
       "type": "string",

@@ -16,12 +16,12 @@ param storageAccountName string
 @description('Optional. List of the containers to be protected')
 param storageAccountContainerList string[] = ['container1', 'container2']
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource computeDisks 'Microsoft.Compute/disks@2020-12-01' = [
+resource computeDisks 'Microsoft.Compute/disks@2025-01-02' = [
   for instance in range(1, diskOccurrences): {
     name: '${diskNamePrefix}-0${instance}'
     location: location
