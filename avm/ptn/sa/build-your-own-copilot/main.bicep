@@ -670,7 +670,7 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.3' = {
       }
       {
         name: 'AZURE-AI-AGENT-ENDPOINT'
-        value: aiFoundryAiServices.outputs.aiProjectInfo.apiEndpoint
+        value: aiFoundryAiServices.outputs.aiProjectInfo.?apiEndpoint ?? 'https://${aiFoundryAiServicesResourceName}.cognitiveservices.azure.com/'
       }
     ]
     enableTelemetry: enableTelemetry
