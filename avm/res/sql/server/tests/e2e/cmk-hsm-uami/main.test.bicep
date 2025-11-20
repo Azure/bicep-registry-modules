@@ -41,20 +41,19 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: enforcedLocation
 }
 
-module nestedHsmDependencies 'dependencies.hsm.bicep' = {
-  name: '${uniqueString(deployment().name)}-nestedHSMDependencies'
+module nestedHsmServerDependencies 'dependencies.hsm.bicep' = {
+  name: '${uniqueString(deployment().name)}-nestedHsmServerDependencies'
   params: {
-    // hsmKeyName: '${namePrefix}-${serviceShort}-key-${substring(uniqueString(baseTime), 0, 3)}'
-    hsmKeys: {
-      srv: {
-        name: '${namePrefix}-${serviceShort}-srv-key-${substring(uniqueString(baseTime), 0, 3)}'
-        size: 3072
-      }
-      db: {
-        name: '${namePrefix}-${serviceShort}-db-key-${substring(uniqueString(baseTime), 0, 3)}'
-        size: 3072
-      }
-    }
+    hsmKeyName: '${namePrefix}-${serviceShort}-srv-key-${substring(uniqueString(baseTime), 0, 3)}'
+    managedHSMName: last(split(managedHSMResourceId, '/'))
+  }
+  scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
+}
+
+module nestedHsmDatabaseDependencies 'dependencies.hsm.bicep' = {
+  name: '${uniqueString(deployment().name)}-nestedHsmDatabaseDependencies'
+  params: {
+    hsmKeyName: '${namePrefix}-${serviceShort}-db-key-${substring(uniqueString(baseTime), 0, 3)}'
     managedHSMName: last(split(managedHSMResourceId, '/'))
   }
   scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
@@ -65,7 +64,8 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    hSMKeyName: nestedHsmDependencies.outputs.keyDetails.srv.name
+    hSMKeyName: nestedHsmServerDependencies.outputs.keyName
+    hSMKeyName: nestedHsmServerDependencies.outputs.keyName
     deploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     deploymentMSIResourceId: deploymentMSIResourceId
     managedHSMResourceId: managedHSMResourceId
@@ -98,32 +98,32 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       customerManagedKey: {
-        keyName: nestedHsmDependencies.outputs.keyName
-        keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
-        // keyVersion: nestedHsmDependencies.outputs.keyDetails.srv.version
+        keyName: nestedHsmServerDependencies.outputs.keyName
+        keyVaultResourceId: nestedHsmServerDependencies.outputs.keyVaultResourceId
+        // keyVersion: nestedHsmServerDependencies.outputs.keyVersion
       }
-      // databases: [
-      //   {
-      //     name: '${namePrefix}-${serviceShort}-db-001'
-      //     managedIdentities: {
-      //       userAssignedResourceIds: [
-      //         nestedDependencies.outputs.managedIdentityResourceId
-      //       ]
-      //     }
-      //     customerManagedKey: {
-      //       keyVaultResourceId: nestedHsmDatabaseDependencies.outputs.keyVaultResourceId
-      //       keyName: nestedHsmDatabaseDependencies.outputs.keyName
-      //       keyVersion: nestedHsmDatabaseDependencies.outputs.keyVersion
-      //     }
-      //     sku: {
-      //       name: 'Basic'
-      //       tier: 'Basic'
-      //     }
-      //     maxSizeBytes: 2147483648
-      //     zoneRedundant: false
-      //     availabilityZone: -1
-      //   }
-      // ]
+      databases: [
+        {
+          name: '${namePrefix}-${serviceShort}-db-001'
+          managedIdentities: {
+            userAssignedResourceIds: [
+              nestedDependencies.outputs.managedIdentityResourceId
+            ]
+          }
+          customerManagedKey: {
+            keyVaultResourceId: nestedHsmDatabaseDependencies.outputs.keyVaultResourceId
+            keyName: nestedHsmDatabaseDependencies.outputs.keyName
+            // keyVersion: nestedHsmDatabaseDependencies.outputs.keyVersion
+          }
+          sku: {
+            name: 'Basic'
+            tier: 'Basic'
+          }
+          maxSizeBytes: 2147483648
+          zoneRedundant: false
+          availabilityZone: -1
+        }
+      ]
     }
   }
 ]
