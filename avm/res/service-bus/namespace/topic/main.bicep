@@ -106,11 +106,11 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource namespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' existing = {
+resource namespace 'Microsoft.ServiceBus/namespaces@2024-01-01' existing = {
   name: namespaceName
 }
 
-resource topic 'Microsoft.ServiceBus/namespaces/topics@2022-10-01-preview' = {
+resource topic 'Microsoft.ServiceBus/namespaces/topics@2024-01-01' = {
   name: name
   parent: namespace
   properties: union(
