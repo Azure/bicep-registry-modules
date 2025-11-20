@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "5626158199534722675"
+      "templateHash": "13239692483716196396"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -219,6 +219,16 @@
               "metadata": {
                 "description": "Optional. Specifies the customer managed disk encryption set resource id for the managed disk."
               }
+            },
+            "diskEncryptionType": {
+              "type": "string",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/disks@2024-03-02#properties/properties/properties/encryption/properties/type"
+                },
+                "description": "Optional. The type of key used to encrypt the data of the disk."
+              },
+              "nullable": true
             },
             "id": {
               "type": "string",
@@ -2617,7 +2627,11 @@
         "diskIOPSReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskIOPSReadWrite')]",
         "diskMBpsReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskMBpsReadWrite')]",
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
-        "networkAccessPolicy": "[parameters('networkAccessPolicy')]"
+        "networkAccessPolicy": "[parameters('networkAccessPolicy')]",
+        "encryption": {
+          "diskEncryptionSetId": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'diskEncryptionSetResourceId')]",
+          "type": "EncryptionAtRestWithCustomerKey"
+        }
       },
       "zones": "[if(and(not(equals(parameters('availabilityZone'), -1)), not(contains(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'storageAccountType'), 'ZRS'))), array(string(parameters('availabilityZone'))), null())]",
       "tags": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
