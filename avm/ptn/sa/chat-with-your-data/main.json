@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "16640795821503558595"
+      "templateHash": "15684780458136221209"
     },
     "name": "Chat-with-your-data-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -243,34 +243,6 @@
       "defaultValue": 1,
       "metadata": {
         "description": "Optional. The maximum number of images to pass to the vision model in a single request."
-      }
-    },
-    "azureOpenAIVisionModel": {
-      "type": "string",
-      "defaultValue": "gpt-4",
-      "metadata": {
-        "description": "Optional. Azure OpenAI Vision Model Deployment Name."
-      }
-    },
-    "azureOpenAIVisionModelName": {
-      "type": "string",
-      "defaultValue": "gpt-4",
-      "metadata": {
-        "description": "Optional. Azure OpenAI Vision Model Name."
-      }
-    },
-    "azureOpenAIVisionModelVersion": {
-      "type": "string",
-      "defaultValue": "turbo-2024-04-09",
-      "metadata": {
-        "description": "Optional. Azure OpenAI Vision Model Version."
-      }
-    },
-    "azureOpenAIVisionModelCapacity": {
-      "type": "int",
-      "defaultValue": 10,
-      "metadata": {
-        "description": "Optional. Azure OpenAI Vision Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota."
       }
     },
     "orchestrationStrategy": {
@@ -692,7 +664,6 @@
         }
       }
     ],
-    "openAiDeployments": "[concat(variables('defaultOpenAiDeployments'), if(parameters('useAdvancedImageProcessing'), createArray(createObject('name', parameters('azureOpenAIVisionModel'), 'model', createObject('format', 'OpenAI', 'name', parameters('azureOpenAIVisionModelName'), 'version', parameters('azureOpenAIVisionModelVersion')), 'sku', createObject('name', 'GlobalStandard', 'capacity', parameters('azureOpenAIVisionModelCapacity')))), createArray()))]",
     "enablePrivateNetworkingSpeech": false,
     "webServerFarmResourceName": "[variables('hostingPlanName')]",
     "postgresDBFqdn": "[format('{0}.postgres.database.azure.com', variables('postgresResourceName'))]",
@@ -23544,7 +23515,7 @@
             "value": "[parameters('azureOpenAISkuName')]"
           },
           "deployments": {
-            "value": "[variables('openAiDeployments')]"
+            "value": "[variables('defaultOpenAiDeployments')]"
           },
           "userAssignedResourceId": {
             "value": "[reference('managedIdentityModule').outputs.resourceId.value]"

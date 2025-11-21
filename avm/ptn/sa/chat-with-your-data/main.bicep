@@ -146,18 +146,6 @@ param useAdvancedImageProcessing bool = false
 @description('Optional. The maximum number of images to pass to the vision model in a single request.')
 param advancedImageProcessingMaxImages int = 1
 
-@description('Optional. Azure OpenAI Vision Model Deployment Name.')
-param azureOpenAIVisionModel string = 'gpt-4'
-
-@description('Optional. Azure OpenAI Vision Model Name.')
-param azureOpenAIVisionModelName string = 'gpt-4'
-
-@description('Optional. Azure OpenAI Vision Model Version.')
-param azureOpenAIVisionModelVersion string = 'turbo-2024-04-09'
-
-@description('Optional. Azure OpenAI Vision Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota.')
-param azureOpenAIVisionModelCapacity int = 10
-
 @description('Optional. Orchestration strategy: openai_function or semantic_kernel or langchain str. If you use a old version of turbo (0301), please select langchain. If the database type is PostgreSQL, set this to sementic_kernel.')
 @allowed([
   'openai_function'
@@ -947,26 +935,6 @@ var defaultOpenAiDeployments = [
   }
 ]
 
-var openAiDeployments = concat(
-  defaultOpenAiDeployments,
-  useAdvancedImageProcessing
-    ? [
-        {
-          name: azureOpenAIVisionModel
-          model: {
-            format: 'OpenAI'
-            name: azureOpenAIVisionModelName
-            version: azureOpenAIVisionModelVersion
-          }
-          sku: {
-            name: 'GlobalStandard'
-            capacity: azureOpenAIVisionModelCapacity
-          }
-        }
-      ]
-    : []
-)
-
 module openai 'modules/core/ai/cognitiveservices.bicep' = {
   name: azureOpenAIResourceName
   scope: resourceGroup()
@@ -976,7 +944,7 @@ module openai 'modules/core/ai/cognitiveservices.bicep' = {
     tags: allTags
     kind: 'OpenAI'
     sku: azureOpenAISkuName
-    deployments: openAiDeployments
+    deployments: defaultOpenAiDeployments
     userAssignedResourceId: managedIdentityModule.outputs.resourceId
     restrictOutboundNetworkAccess: true
     allowedFqdnList: concat(
