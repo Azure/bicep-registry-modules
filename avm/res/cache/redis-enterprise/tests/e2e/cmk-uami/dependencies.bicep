@@ -7,7 +7,7 @@ param managedIdentityName string
 @description('Required. The name of the Key Vault to create.')
 param keyVaultName string
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' = {
   name: managedIdentityName
   location: location
 }

@@ -64,6 +64,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      publicNetworkAccess: 'Disabled'
       location: resourceLocation
       skuName: 'Balanced_B10'
       database: {
@@ -167,3 +168,21 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+@secure()
+output primaryAccessKey string = testDeployment[0].outputs.primaryAccessKey!
+
+@secure()
+output primaryConnectionString string = testDeployment[0].outputs.primaryConnectionString!
+
+@secure()
+output primaryStackExchangeRedisConnectionString string = testDeployment[0].outputs.primaryStackExchangeRedisConnectionString!
+
+@secure()
+output secondaryAccessKey string = testDeployment[0].outputs.secondaryAccessKey!
+
+@secure()
+output secondaryConnectionString string = testDeployment[0].outputs.secondaryConnectionString!
+
+@secure()
+output secondaryStackExchangeRedisConnectionString string = testDeployment[0].outputs.secondaryStackExchangeRedisConnectionString!
