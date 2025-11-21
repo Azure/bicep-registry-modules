@@ -93,7 +93,7 @@ module testDeployment '../../../main.bicep' = [
       customerManagedKey: {
         keyName: nestedHsmDependencies.outputs.primaryKeyName
         keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
-        // keyVersion: nestedHsmDependencies.outputs.primaryKeyVersion
+        keyVersion: nestedHsmDependencies.outputs.primaryKeyVersion
       }
       databases: [
         {
@@ -106,7 +106,7 @@ module testDeployment '../../../main.bicep' = [
           customerManagedKey: {
             keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
             keyName: nestedHsmDependencies.?outputs.?secondaryKeyName!
-            // keyVersion: nestedHsmDependencies.outputs.secondaryKeyVersion
+            keyVersion: nestedHsmDependencies.?outputs.?secondaryKeyVersion!
           }
           sku: {
             name: 'Basic'
