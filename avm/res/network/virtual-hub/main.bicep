@@ -9,7 +9,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Network/virtualHubs@2022-04-01'>.tags?
+param tags resourceInput<'Microsoft.Network/virtualHubs@2025-01-01'>.tags?
 
 @description('Required. Address-prefix for this VirtualHub.')
 param addressPrefix string
@@ -27,20 +27,10 @@ param expressRouteGatewayResourceId string?
 param p2SVpnGatewayResourceId string?
 
 @description('Optional. The preferred routing preference for this virtual hub.')
-@allowed([
-  'ASPath'
-  'ExpressRoute'
-  'VpnGateway'
-])
-param hubRoutingPreference string?
+param hubRoutingPreference resourceInput<'Microsoft.Network/virtualHubs@2025-01-01'>.properties.hubRoutingPreference?
 
 @description('Optional. The preferred routing gateway types.')
-@allowed([
-  'ExpressRoute'
-  'None'
-  'VpnGateway'
-])
-param preferredRoutingGateway string?
+param preferredRoutingGateway resourceInput<'Microsoft.Network/virtualHubs@2025-01-01'>.properties.preferredRoutingGateway?
 
 @description('Optional. VirtualHub route tables.')
 param routeTableRoutes array?
@@ -62,7 +52,7 @@ param sku string = 'Standard'
 param virtualHubRouteTableV2s array = []
 
 @description('Optional. VirtualRouter ASN.')
-param virtualRouterAsn int?
+param virtualRouterAsn resourceInput<'Microsoft.Network/virtualHubs@2025-01-01'>.properties.virtualRouterAsn?
 
 @description('Optional. VirtualRouter IPs.')
 param virtualRouterIps array?
@@ -117,7 +107,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2024-10-01' = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2025-01-01' = {
   name: name
   location: location
   tags: tags

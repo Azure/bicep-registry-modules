@@ -102,6 +102,12 @@ module testDeployment '../../../main.bicep' = [
       virtualRouterAutoScaleConfiguration: {
         minCount: 2
       }
+      preferredRoutingGateway: 'None'
+      hubRoutingPreference: 'ASPath'
+      virtualRouterAsn: 100
+      routingIntent: {
+
+      }
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
