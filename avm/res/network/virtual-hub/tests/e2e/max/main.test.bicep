@@ -103,6 +103,7 @@ module testDeployment '../../../main.bicep' = [
         minCount: 2
       }
       preferredRoutingGateway: 'None'
+      hubRoutingPreference: 'ASPath'
       virtualRouterAsn: 100
       routingIntent: {
 

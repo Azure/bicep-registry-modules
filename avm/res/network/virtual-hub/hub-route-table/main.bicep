@@ -13,7 +13,7 @@ param labels array?
 @description('Optional. List of all routes.')
 param routes array?
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2024-10-01' existing = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2025-01-01' existing = {
   name: virtualHubName
 }
 
