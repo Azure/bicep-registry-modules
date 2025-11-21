@@ -17,11 +17,10 @@ This module deploys a Redis Enterprise or Azure Managed Redis cache.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.Cache/redisEnterprise` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redisenterprise.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-05-01-preview/redisEnterprise)</li></ul> |
-| `Microsoft.Cache/redisEnterprise/databases` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redisenterprise_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-05-01-preview/redisEnterprise/databases)</li></ul> |
-| `Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redisenterprise_databases_accesspolicyassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-05-01-preview/redisEnterprise/databases/accessPolicyAssignments)</li></ul> |
+| `Microsoft.Cache/redisEnterprise` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redisenterprise.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-07-01/redisEnterprise)</li></ul> |
+| `Microsoft.Cache/redisEnterprise/databases` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redisenterprise_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-07-01/redisEnterprise/databases)</li></ul> |
+| `Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redisenterprise_databases_accesspolicyassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-07-01/redisEnterprise/databases/accessPolicyAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.KeyVault/vaults/secrets` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2025-05-01/vaults/secrets)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
@@ -35,13 +34,12 @@ The following section provides usage examples for the module, which were used to
 
 - [Active geo-replication](#example-1-active-geo-replication)
 - [Azure Managed Redis with Entra ID authentication](#example-2-azure-managed-redis-with-entra-id-authentication)
-- [Azure Managed Redis with non-clustered policy (Preview)](#example-3-azure-managed-redis-with-non-clustered-policy-preview)
+- [Azure Managed Redis with non-clustered policy](#example-3-azure-managed-redis-with-non-clustered-policy)
 - [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-4-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
 - [Using Customer-Managed-Keys with User-Assigned identity](#example-5-using-customer-managed-keys-with-user-assigned-identity)
 - [Using only defaults](#example-6-using-only-defaults)
-- [Deploying with a key vault reference to save secrets](#example-7-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-8-using-large-parameter-set)
-- [WAF-aligned](#example-9-waf-aligned)
+- [Using large parameter set](#example-7-using-large-parameter-set)
+- [WAF-aligned](#example-8-waf-aligned)
 
 ### Example 1: _Active geo-replication_
 
@@ -72,6 +70,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         ]
       }
     }
+    location: '<location>'
     skuName: 'Balanced_B10'
   }
 }
@@ -109,6 +108,9 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         }
       }
     },
+    "location": {
+      "value": "<location>"
+    },
     "skuName": {
       "value": "Balanced_B10"
     }
@@ -142,6 +144,7 @@ param database = {
     ]
   }
 }
+param location = '<location>'
 param skuName = 'Balanced_B10'
 ```
 
@@ -236,9 +239,9 @@ param database = {
 </details>
 <p>
 
-### Example 3: _Azure Managed Redis with non-clustered policy (Preview)_
+### Example 3: _Azure Managed Redis with non-clustered policy_
 
-This instance deploys an Azure Managed Redis cache in non-clustered mode (Preview).
+This instance deploys an Azure Managed Redis cache in non-clustered mode.
 
 
 <details>
@@ -592,101 +595,7 @@ param name = 'cremin001'
 </details>
 <p>
 
-### Example 7: _Deploying with a key vault reference to save secrets_
-
-This instance deploys the module saving all its secrets in a key vault.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
-  name: 'redisEnterpriseDeployment'
-  params: {
-    // Required parameters
-    name: 'kvref'
-    // Non-required parameters
-    database: {
-      secretsExportConfiguration: {
-        keyVaultResourceId: '<keyVaultResourceId>'
-        primaryAccessKeyName: 'custom-primaryAccessKey-name'
-        primaryConnectionStringName: 'custom-primaryConnectionString-name'
-        primaryStackExchangeRedisConnectionStringName: 'custom-primaryStackExchangeRedisConnectionString-name'
-        secondaryAccessKeyName: 'custom-secondaryAccessKey-name'
-        secondaryConnectionStringName: 'custom-secondaryConnectionString-name'
-        secondaryStackExchangeRedisConnectionStringName: 'custom-secondaryStackExchangeRedisConnectionString-name'
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "kvref"
-    },
-    // Non-required parameters
-    "database": {
-      "value": {
-        "secretsExportConfiguration": {
-          "keyVaultResourceId": "<keyVaultResourceId>",
-          "primaryAccessKeyName": "custom-primaryAccessKey-name",
-          "primaryConnectionStringName": "custom-primaryConnectionString-name",
-          "primaryStackExchangeRedisConnectionStringName": "custom-primaryStackExchangeRedisConnectionString-name",
-          "secondaryAccessKeyName": "custom-secondaryAccessKey-name",
-          "secondaryConnectionStringName": "custom-secondaryConnectionString-name",
-          "secondaryStackExchangeRedisConnectionStringName": "custom-secondaryStackExchangeRedisConnectionString-name"
-        }
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/cache/redis-enterprise:<version>'
-
-// Required parameters
-param name = 'kvref'
-// Non-required parameters
-param database = {
-  secretsExportConfiguration: {
-    keyVaultResourceId: '<keyVaultResourceId>'
-    primaryAccessKeyName: 'custom-primaryAccessKey-name'
-    primaryConnectionStringName: 'custom-primaryConnectionString-name'
-    primaryStackExchangeRedisConnectionStringName: 'custom-primaryStackExchangeRedisConnectionString-name'
-    secondaryAccessKeyName: 'custom-secondaryAccessKey-name'
-    secondaryConnectionStringName: 'custom-secondaryConnectionString-name'
-    secondaryStackExchangeRedisConnectionStringName: 'custom-secondaryStackExchangeRedisConnectionString-name'
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 8: _Using large parameter set_
+### Example 7: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -774,6 +683,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         }
       }
     ]
+    publicNetworkAccess: 'Disabled'
     roleAssignments: [
       {
         name: '759769d2-fc52-4a92-a943-724e48927e0b'
@@ -910,6 +820,9 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         }
       ]
     },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    },
     "roleAssignments": {
       "value": [
         {
@@ -1030,6 +943,7 @@ param privateEndpoints = [
     }
   }
 ]
+param publicNetworkAccess = 'Disabled'
 param roleAssignments = [
   {
     name: '759769d2-fc52-4a92-a943-724e48927e0b'
@@ -1060,7 +974,7 @@ param tags = {
 </details>
 <p>
 
-### Example 9: _WAF-aligned_
+### Example 8: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1127,6 +1041,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         }
       }
     ]
+    publicNetworkAccess: 'Disabled'
     skuName: 'Balanced_B10'
     tags: {
       Environment: 'Non-Prod'
@@ -1211,6 +1126,9 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         }
       ]
     },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    },
     "skuName": {
       "value": "Balanced_B10"
     },
@@ -1289,6 +1207,7 @@ param privateEndpoints = [
     }
   }
 ]
+param publicNetworkAccess = 'Disabled'
 param skuName = 'Balanced_B10'
 param tags = {
   Environment: 'Non-Prod'
@@ -1324,6 +1243,7 @@ param tags = {
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | The minimum TLS version for the Redis cluster to support. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network traffic can access the Redis cluster. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`skuName`](#parameter-skuname) | string | The type of cluster to deploy. Some Azure Managed Redis SKUs ARE IN PREVIEW, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/redis/overview#choosing-the-right-tier) FOR CLARIFICATION. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -1450,7 +1370,6 @@ Database configuration.
 | [`name`](#parameter-databasename) | string | Name of the database. |
 | [`persistence`](#parameter-databasepersistence) | object | The persistence settings of the service. |
 | [`port`](#parameter-databaseport) | int | TCP port of the database endpoint. |
-| [`secretsExportConfiguration`](#parameter-databasesecretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 
 ### Parameter: `database.accessKeysAuthentication`
 
@@ -1910,79 +1829,6 @@ TCP port of the database endpoint.
 - Type: int
 - MinValue: 10000
 - MaxValue: 10000
-
-### Parameter: `database.secretsExportConfiguration`
-
-Key vault reference and secret settings for the module's secrets export.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyVaultResourceId`](#parameter-databasesecretsexportconfigurationkeyvaultresourceid) | string | The resource ID of the key vault where to store the secrets of this module. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`primaryAccessKeyName`](#parameter-databasesecretsexportconfigurationprimaryaccesskeyname) | string | The primaryAccessKey secret name to create. |
-| [`primaryConnectionStringName`](#parameter-databasesecretsexportconfigurationprimaryconnectionstringname) | string | The primaryConnectionString secret name to create. |
-| [`primaryStackExchangeRedisConnectionStringName`](#parameter-databasesecretsexportconfigurationprimarystackexchangeredisconnectionstringname) | string | The primaryStackExchangeRedisConnectionString secret name to create. |
-| [`secondaryAccessKeyName`](#parameter-databasesecretsexportconfigurationsecondaryaccesskeyname) | string | The secondaryAccessKey secret name to create. |
-| [`secondaryConnectionStringName`](#parameter-databasesecretsexportconfigurationsecondaryconnectionstringname) | string | The secondaryConnectionString secret name to create. |
-| [`secondaryStackExchangeRedisConnectionStringName`](#parameter-databasesecretsexportconfigurationsecondarystackexchangeredisconnectionstringname) | string | The secondaryStackExchangeRedisConnectionString secret name to create. |
-
-### Parameter: `database.secretsExportConfiguration.keyVaultResourceId`
-
-The resource ID of the key vault where to store the secrets of this module.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `database.secretsExportConfiguration.primaryAccessKeyName`
-
-The primaryAccessKey secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `database.secretsExportConfiguration.primaryConnectionStringName`
-
-The primaryConnectionString secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `database.secretsExportConfiguration.primaryStackExchangeRedisConnectionStringName`
-
-The primaryStackExchangeRedisConnectionString secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `database.secretsExportConfiguration.secondaryAccessKeyName`
-
-The secondaryAccessKey secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `database.secretsExportConfiguration.secondaryConnectionStringName`
-
-The secondaryConnectionString secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `database.secretsExportConfiguration.secondaryStackExchangeRedisConnectionStringName`
-
-The secondaryStackExchangeRedisConnectionString secret name to create.
-
-- Required: No
-- Type: string
 
 ### Parameter: `diagnosticSettings`
 
@@ -2621,6 +2467,20 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 - Required: No
 - Type: object
 
+### Parameter: `publicNetworkAccess`
+
+Whether or not public network traffic can access the Redis cluster. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
@@ -2807,14 +2667,19 @@ Tags of the resource.
 | `databaseName` | string | The name of the Redis database. |
 | `databaseResourceId` | string | The resource ID of the database. |
 | `endpoint` | string | The Redis endpoint. |
-| `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `hostName` | string | The Redis host name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the Redis cluster. |
 | `port` | int | The Redis port. |
+| `primaryAccessKey` | securestring | The primary access key. |
+| `primaryConnectionString` | securestring | The primary connection string. |
+| `primaryStackExchangeRedisConnectionString` | securestring | The primary StackExchange.Redis connection string. |
 | `privateEndpoints` | array | The private endpoints of the Redis resource. |
 | `resourceGroupName` | string | The name of the resource group the Redis resource was created in. |
 | `resourceId` | string | The resource ID of the Redis cluster. |
+| `secondaryAccessKey` | securestring | The secondary access key. |
+| `secondaryConnectionString` | securestring | The secondary connection string. |
+| `secondaryStackExchangeRedisConnectionString` | securestring | The secondary StackExchange.Redis connection string. |
 
 ## Cross-referenced modules
 
@@ -2823,10 +2688,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

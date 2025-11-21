@@ -250,7 +250,7 @@ resource rsv 'Microsoft.RecoveryServices/vaults@2024-04-01' = {
               : (customerManagedKey.?autoRotationEnabled ?? true)
                   ? (!isHSMManagedCMK
                       ? cMKKeyVault::cMKKey!.properties.keyUri
-                      : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}}')
+                      : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}')
                   : (!isHSMManagedCMK
                       ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
                       : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
