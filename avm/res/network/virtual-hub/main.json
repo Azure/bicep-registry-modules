@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "5322794370602883132"
+      "templateHash": "18351393960318796413"
     },
     "name": "Virtual Hubs",
     "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module."
@@ -598,7 +598,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "3244320667697479257"
+              "templateHash": "338306605619657841"
             },
             "name": "Virtual Hub Route Tables",
             "description": "This module deploys a Virtual Hub Route Table."
@@ -635,7 +635,7 @@
             "virtualHub": {
               "existing": true,
               "type": "Microsoft.Network/virtualHubs",
-              "apiVersion": "2024-10-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('virtualHubName')]"
             },
             "hubRouteTable": {
@@ -715,7 +715,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "2827509555140967380"
+              "templateHash": "9605658016080894394"
             },
             "name": "Virtual Hub Virtual Network Connections",
             "description": "This module deploys a Virtual Hub Virtual Network Connection."
@@ -758,7 +758,7 @@
             "virtualHub": {
               "existing": true,
               "type": "Microsoft.Network/virtualHubs",
-              "apiVersion": "2024-10-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('virtualHubName')]"
             },
             "hubVirtualNetworkConnection": {
