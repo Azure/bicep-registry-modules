@@ -41,7 +41,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: enforcedLocation
 }
 
-module nestedHsmDependencies 'dependencies.hsm.bicep' = {
+module nestedHsmDependencies '../../../../../../../utilities/e2e-template-assets/templates/hsm.dependencies.bicep' = {
   name: '${uniqueString(deployment().name)}-nestedHsmDependencies'
   params: {
     primaryHSMKeyName: '${namePrefix}-${serviceShort}-srv-key-${substring(uniqueString(baseTime), 0, 3)}'
