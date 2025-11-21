@@ -41,19 +41,11 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: enforcedLocation
 }
 
-module nestedHsmServerDependencies 'dependencies.hsm.bicep' = {
-  name: '${uniqueString(deployment().name)}-nestedHsmServerDependencies'
+module nestedHsmDependencies 'dependencies.hsm.bicep' = {
+  name: '${uniqueString(deployment().name)}-nestedHsmDependencies'
   params: {
-    hsmKeyName: '${namePrefix}-${serviceShort}-srv-key-${substring(uniqueString(baseTime), 0, 3)}'
-    managedHSMName: last(split(managedHSMResourceId, '/'))
-  }
-  scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
-}
-
-module nestedHsmDatabaseDependencies 'dependencies.hsm.bicep' = {
-  name: '${uniqueString(deployment().name)}-nestedHsmDatabaseDependencies'
-  params: {
-    hsmKeyName: '${namePrefix}-${serviceShort}-db-key-${substring(uniqueString(baseTime), 0, 3)}'
+    primaryHSMKeyName: '${namePrefix}-${serviceShort}-srv-key-${substring(uniqueString(baseTime), 0, 3)}'
+    secondaryHSMKeyName: '${namePrefix}-${serviceShort}-db-key-${substring(uniqueString(baseTime), 0, 3)}'
     managedHSMName: last(split(managedHSMResourceId, '/'))
   }
   scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
@@ -64,9 +56,9 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    hSMKeyName: nestedHsmServerDependencies.outputs.keyName
-    hSMKeyName: nestedHsmServerDependencies.outputs.keyName
-    deploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+    primaryHSMKeyName: nestedHsmDependencies.outputs.primaryKeyName
+    secondaryHSMKeyName: nestedHsmDependencies.?outputs.?secondaryKeyName
+    deploymentScriptNamePrefix: 'dep-${namePrefix}-ds-${serviceShort}'
     deploymentMSIResourceId: deploymentMSIResourceId
     managedHSMResourceId: managedHSMResourceId
   }
@@ -98,9 +90,9 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       customerManagedKey: {
-        keyName: nestedHsmServerDependencies.outputs.keyName
-        keyVaultResourceId: nestedHsmServerDependencies.outputs.keyVaultResourceId
-        // keyVersion: nestedHsmServerDependencies.outputs.keyVersion
+        keyName: nestedHsmDependencies.outputs.primaryKeyName
+        keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
+        // keyVersion: nestedHsmDependencies.outputs.primaryKeyVersion
       }
       databases: [
         {
@@ -111,9 +103,9 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
           customerManagedKey: {
-            keyVaultResourceId: nestedHsmDatabaseDependencies.outputs.keyVaultResourceId
-            keyName: nestedHsmDatabaseDependencies.outputs.keyName
-            // keyVersion: nestedHsmDatabaseDependencies.outputs.keyVersion
+            keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
+            keyName: nestedHsmDependencies.?outputs.?secondaryKeyName!
+            // keyVersion: nestedHsmDependencies.outputs.secondaryKeyVersion
           }
           sku: {
             name: 'Basic'
