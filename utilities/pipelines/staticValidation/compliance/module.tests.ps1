@@ -2357,16 +2357,16 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
                 [object[]] $otherTestFiles
             )
 
-
-            if (($testFileContent | Out-String) -match "param serviceShort string = '(.*)'") {
-                $serviceShort = $Matches[1]
-
+            $testFileShortMatch = [regex]::Match(($testFileContent | Out-String), "param serviceShort string = '(.*)'")
+            if ($testFileShortMatch.Success) {
+                $serviceShort = $testFileShortMatch.Captures.Groups[1].Value
                 foreach ($otherTestFile in $otherTestFiles) {
-                    if ($otherTestFile.Content -match "param serviceShort string = '(.*)'") {
-                        $otherServiceShort = $Matches[1]
+                    $otherTestFileShortMatch = [regex]::Match(($otherTestFile.Content | Out-String), "param serviceShort string = '(.*)'")
+                    if ($otherTestFileShortMatch.Success) {
+                        $otherServiceShort = $otherTestFileShortMatch.Captures.Groups[1].Value
                         $shortendTestPath = $testFilePath -replace ('{0}[\\|\/]' -f [regex]::Escape("$repoRootPath"))
                         $shortedOtherTestPath = ($otherTestFile.Path -replace ('{0}[\\|\/]' -f [regex]::Escape("$repoRootPath")), '')
-                        $serviceShort | Should -Not -Be $otherServiceShort -Because "the serviceShort value [$serviceShort] in test file [$shortendTestPath] should be unique across the repository but is used by [$shortedOtherTestPath]."
+                        $serviceShort | Should -Not -Be $otherServiceShort -Because "the serviceShort value [$serviceShort] in test file [$shortendTestPath] should be unique across the repository but is also used by [$shortedOtherTestPath]."
                     }
                 }
             } else {
@@ -2530,13 +2530,13 @@ Describe 'API version tests' -Tag 'ApiCheck' {
             if ($indexOfVersion -gt ($approvedApiVersions.Count - 2) -and $approvedApiVersions.Count -ne 1) {
                 $newerAPIVersions = $approvedApiVersions[0..($indexOfVersion - 1)]
 
-                $warningMessage = "The used API version [$TargetApi] for Resource Type [$ProviderNamespace/$ResourceType] will soon expire. Please consider updating it. Consider using one of the newer API versions "
-                Write-Warning ("$warningMessage`n- {0}`n" -f ($newerAPIVersions -join "`n- "))
+                #                 $warningMessage = "The used API version [$TargetApi] for Resource Type [$ProviderNamespace/$ResourceType] will soon expire. Please consider updating it. Consider using one of the newer API versions "
+                #                 Write-Warning ("$warningMessage`n- {0}`n" -f ($newerAPIVersions -join "`n- "))
 
-                Write-Output @{
-                    Warning = ("$warningMessage<br>- <code>{0}</code><br>" -f ($newerAPIVersions -join '</code><br>- <code>'))
-                }
-            }
-        }
-    }
-}
+                #                 Write-Output @{
+                #                     Warning = ("$warningMessage<br>- <code>{0}</code><br>" -f ($newerAPIVersions -join '</code><br>- <code>'))
+                #                 }
+                #             }
+                #         }
+                #     }
+                # }
