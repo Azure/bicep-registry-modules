@@ -2,6 +2,21 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cache/redis-enterprise/CHANGELOG.md).
 
+## 0.5.0
+
+### Changes
+
+- Removed deprecated metadata
+- Added `publicNetworkAccess` property (defaults to 'Disabled' if `privateEndpoints` is provided, otherwise defaults to 'Enabled')
+- Added `@secure()` outputs for primary and secondary access keys and connection strings
+- Updated Microsoft.Cache/redisEnterprise API version to 2025-07-01
+- Removed preview status from `persistence` database param (now generally available)
+
+### Breaking Changes
+
+- Removed `secretsExportConfiguration` param and `exportedSecrets` output
+    - Use the new `@secure()` outputs instead: `primaryAccessKey`, `secondaryAccessKey`, `primaryConnectionString`, `secondaryConnectionString`, etc.
+
 ## 0.4.0
 
 ### Changes

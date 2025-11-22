@@ -1,6 +1,5 @@
 metadata name = 'Security Insights Settings'
 metadata description = 'This module deploys a Security Insights Setting.'
-metadata owner = 'Azure/module-maintainers'
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
