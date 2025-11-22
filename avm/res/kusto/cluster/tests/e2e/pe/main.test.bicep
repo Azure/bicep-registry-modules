@@ -1,7 +1,8 @@
 targetScope = 'subscription'
 
 metadata name = 'Private endpoint-enabled deployment'
-metadata description = 'This instance deploys the module with private endpoints.'
+metadata description = '''This instance deploys the module with private endpoints.
+Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).'''
 
 // ========== //
 // Parameters //
@@ -81,6 +82,8 @@ module testDeployment '../../../main.bicep' = [
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
+        // Only for testing purposes. Ref: https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete
+        'opt-out-of-soft-delete': 'true'
       }
     }
   }
