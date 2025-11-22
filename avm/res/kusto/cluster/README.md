@@ -43,6 +43,7 @@ The following section provides usage examples for the module, which were used to
 ### Example 1: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
+Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).
 
 
 <details>
@@ -63,6 +64,9 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     }
     managedIdentities: {
       systemAssigned: true
+    }
+    tags: {
+      'opt-out-of-soft-delete': 'true'
     }
   }
 }
@@ -98,6 +102,11 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       "value": {
         "systemAssigned": true
       }
+    },
+    "tags": {
+      "value": {
+        "opt-out-of-soft-delete": "true"
+      }
     }
   }
 }
@@ -124,6 +133,9 @@ param customerManagedKey = {
 param managedIdentities = {
   systemAssigned: true
 }
+param tags = {
+  'opt-out-of-soft-delete': 'true'
+}
 ```
 
 </details>
@@ -132,6 +144,7 @@ param managedIdentities = {
 ### Example 2: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).
 
 
 <details>
@@ -155,6 +168,9 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
+    }
+    tags: {
+      'opt-out-of-soft-delete': 'true'
     }
   }
 }
@@ -193,6 +209,11 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
           "<managedIdentityResourceId>"
         ]
       }
+    },
+    "tags": {
+      "value": {
+        "opt-out-of-soft-delete": "true"
+      }
     }
   }
 }
@@ -222,6 +243,9 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
+param tags = {
+  'opt-out-of-soft-delete': 'true'
+}
 ```
 
 </details>
@@ -230,6 +254,7 @@ param managedIdentities = {
 ### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
+Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).
 
 
 <details>
@@ -249,6 +274,9 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
+    }
+    tags: {
+      'opt-out-of-soft-delete': 'true'
     }
   }
 }
@@ -283,6 +311,11 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
           "<managedIdentityResourceId>"
         ]
       }
+    },
+    "tags": {
+      "value": {
+        "opt-out-of-soft-delete": "true"
+      }
     }
   }
 }
@@ -308,6 +341,9 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
+param tags = {
+  'opt-out-of-soft-delete': 'true'
+}
 ```
 
 </details>
@@ -316,6 +352,7 @@ param managedIdentities = {
 ### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
+Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).
 
 
 <details>
@@ -412,6 +449,9 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    tags: {
+      'opt-out-of-soft-delete': 'true'
+    }
   }
 }
 ```
@@ -563,6 +603,11 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
+    },
+    "tags": {
+      "value": {
+        "opt-out-of-soft-delete": "true"
+      }
     }
   }
 }
@@ -664,6 +709,9 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param tags = {
+  'opt-out-of-soft-delete': 'true'
+}
 ```
 
 </details>
@@ -672,6 +720,7 @@ param roleAssignments = [
 ### Example 5: _Private endpoint-enabled deployment_
 
 This instance deploys the module with private endpoints.
+Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).
 
 
 <details>
@@ -715,6 +764,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
+      'opt-out-of-soft-delete': 'true'
       Role: 'DeploymentValidation'
     }
   }
@@ -777,6 +827,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       "value": {
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
+        "opt-out-of-soft-delete": "true",
         "Role": "DeploymentValidation"
       }
     }
@@ -827,6 +878,7 @@ param publicIPType = 'IPv4'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
+  'opt-out-of-soft-delete': 'true'
   Role: 'DeploymentValidation'
 }
 ```
@@ -837,6 +889,7 @@ param tags = {
 ### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).
 
 
 <details>
@@ -867,6 +920,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     tags: {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
+      'opt-out-of-soft-delete': 'true'
     }
     tier: 'Standard'
   }
@@ -927,7 +981,8 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     "tags": {
       "value": {
         "Env": "test",
-        "hidden-title": "This is visible in the resource name"
+        "hidden-title": "This is visible in the resource name",
+        "opt-out-of-soft-delete": "true"
       }
     },
     "tier": {
@@ -967,6 +1022,7 @@ param managedIdentities = {
 param tags = {
   Env: 'test'
   'hidden-title': 'This is visible in the resource name'
+  'opt-out-of-soft-delete': 'true'
 }
 param tier = 'Standard'
 ```

@@ -1,7 +1,8 @@
 targetScope = 'subscription'
 
 metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata description = '''This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).'''
 
 // ========== //
 // Parameters //
@@ -68,6 +69,8 @@ module testDeployment '../../../main.bicep' = [
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Env: 'test'
+        // Only for testing purposes. Ref: https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete
+        'opt-out-of-soft-delete': 'true'
       }
     }
   }
