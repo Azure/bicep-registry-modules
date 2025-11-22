@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/chat-with-your-data/CHANGELOG.md).
 
+## 0.2.0
+
+### Changes
+
+- Refactored virtual network implementation with consolidated module approach
+- Updated jumpbox VM deployment with AVM module including maintenance configuration and availability zones
+- Added container soft delete (7-day retention) and blob soft delete (6-day retention) for data protection
+
+### Breaking Changes
+
+- None
+
 ## 0.1.0
 
 ### Changes
