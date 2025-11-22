@@ -190,7 +190,7 @@ var functionAppSqlPrompt = '''Generate a valid T-SQL query to find {query} for t
    Only return the generated SQL query. Do not return anything else.'''
 
 var functionAppCallTranscriptSystemPrompt = '''You are an assistant who supports wealth advisors in preparing for client meetings.
-  You have access to the client’s past meeting call transcripts.
+  You have access to the client's past meeting call transcripts.
   When answering questions, especially summary requests, provide a detailed and structured response that includes key topics, concerns, decisions, and trends.
   If no data is available, state 'No relevant data found for previous meetings.'''
 

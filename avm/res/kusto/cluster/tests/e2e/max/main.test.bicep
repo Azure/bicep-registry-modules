@@ -35,9 +35,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-paramNested'
   params: {
-    location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    // entraIdGroupName: 'dep-${namePrefix}-group-${serviceShort}'
   }
 }
 
@@ -86,7 +84,7 @@ module testDeployment '../../../main.bicep' = [
           value: 'https://contoso.com'
         }
       ]
-      enableZoneRedundant: true
+      availabilityZones: [1, 2, 3]
       engineType: 'V3'
       publicIPType: 'DualStack'
       enableRestrictOutboundNetworkAccess: true

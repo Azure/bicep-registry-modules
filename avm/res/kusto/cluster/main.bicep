@@ -22,7 +22,7 @@ param sku string
 ])
 param tier string = 'Standard'
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -101,19 +101,16 @@ param virtualClusterGraduationProperties string?
 @description('Optional. The virtual network configuration of the Kusto Cluster.')
 param virtualNetworkConfiguration virtualNetworkConfigurationType?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
 param tags object?
-
-@description('Optional. Enable/disable zone redundancy.')
-param enableZoneRedundant bool = false
 
 import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
@@ -122,7 +119,7 @@ param privateEndpoints privateEndpointMultiServiceType[]?
 @description('Optional. Enable/disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -131,6 +128,14 @@ param clusterPrincipalAssignments clusterPrincipalAssignmentType[]?
 
 @description('Optional. The Kusto Cluster databases.')
 param databases databaseType[]?
+
+@description('Optional. The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set.')
+@allowed([
+  1
+  2
+  3
+])
+param availabilityZones int[] = [1, 2, 3]
 
 var enableReferencedModulesTelemetry = false
 
@@ -190,14 +195,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey)) {
     name: customerManagedKey.?keyName!
   }
 }
@@ -225,10 +230,10 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' = {
     keyVaultProperties: !empty(customerManagedKey)
       ? {
           keyName: customerManagedKey!.keyName
-          keyVaultUri: cMKKeyVault.?properties.vaultUri
-          keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-            ? customerManagedKey!.?keyVersion
-            : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+          keyVaultUri: cMKKeyVault!.properties.vaultUri
+          keyVersion: !empty(customerManagedKey.?keyVersion)
+            ? customerManagedKey!.keyVersion!
+            : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
           userIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
             ? customerManagedKey!.?userAssignedIdentityResourceId
             : null
@@ -259,13 +264,7 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' = {
         }
       : null
   }
-  zones: enableZoneRedundant
-    ? [
-        '1'
-        '2'
-        '3'
-      ]
-    : null
+  zones: map(availabilityZones, zone => '${zone}')
 }
 
 resource kustoCluster_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
@@ -338,7 +337,7 @@ module kustoCluster_principalAssignments 'principal-assignment/main.bicep' = [
 ]
 
 @batchSize(1)
-module kustoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module kustoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-kustoCluster-PrivateEndpoint-${index}'
     scope: resourceGroup(

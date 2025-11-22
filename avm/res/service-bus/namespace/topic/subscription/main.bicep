@@ -68,15 +68,15 @@ param rules ruleType[]?
 ])
 param status string = 'Active'
 
-resource namespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' existing = {
+resource namespace 'Microsoft.ServiceBus/namespaces@2024-01-01' existing = {
   name: namespaceName
 
-  resource topic 'topics@2022-10-01-preview' existing = {
+  resource topic 'topics@2024-01-01' existing = {
     name: topicName
   }
 }
 
-resource subscription 'Microsoft.ServiceBus/namespaces/topics/subscriptions@2021-11-01' = {
+resource subscription 'Microsoft.ServiceBus/namespaces/topics/subscriptions@2024-01-01' = {
   name: name
   parent: namespace::topic
   properties: {
