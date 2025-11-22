@@ -1,8 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
-metadata description = '''This instance deploys the module with the minimum set of required parameters.
-Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).'''
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -57,10 +56,6 @@ module testDeployment '../../../main.bicep' = [
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
-      }
-      tags: {
-        // Only for testing purposes. Ref: https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete
-        'opt-out-of-soft-delete': 'true'
       }
     }
   }

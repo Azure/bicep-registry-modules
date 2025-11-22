@@ -254,7 +254,6 @@ param tags = {
 ### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
-Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).
 
 
 <details>
@@ -274,9 +273,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
-    }
-    tags: {
-      'opt-out-of-soft-delete': 'true'
     }
   }
 }
@@ -311,11 +307,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
           "<managedIdentityResourceId>"
         ]
       }
-    },
-    "tags": {
-      "value": {
-        "opt-out-of-soft-delete": "true"
-      }
     }
   }
 }
@@ -340,9 +331,6 @@ param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
-}
-param tags = {
-  'opt-out-of-soft-delete': 'true'
 }
 ```
 
@@ -889,7 +877,6 @@ param tags = {
 ### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).
 
 
 <details>
@@ -920,7 +907,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     tags: {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
-      'opt-out-of-soft-delete': 'true'
     }
     tier: 'Standard'
   }
@@ -981,8 +967,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     "tags": {
       "value": {
         "Env": "test",
-        "hidden-title": "This is visible in the resource name",
-        "opt-out-of-soft-delete": "true"
+        "hidden-title": "This is visible in the resource name"
       }
     },
     "tier": {
@@ -1022,7 +1007,6 @@ param managedIdentities = {
 param tags = {
   Env: 'test'
   'hidden-title': 'This is visible in the resource name'
-  'opt-out-of-soft-delete': 'true'
 }
 param tier = 'Standard'
 ```
