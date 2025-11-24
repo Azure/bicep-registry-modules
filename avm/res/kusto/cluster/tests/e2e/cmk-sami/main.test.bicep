@@ -1,7 +1,8 @@
 targetScope = 'subscription'
 
 metadata name = 'Using Customer-Managed-Keys with System-Assigned identity'
-metadata description = 'This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.'
+metadata description = '''This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
+Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).'''
 
 // ========== //
 // Parameters //
@@ -63,6 +64,10 @@ module testDeployment '../../../main.bicep' = [
       }
       managedIdentities: {
         systemAssigned: true
+      }
+      tags: {
+        // Only for testing purposes. Ref: https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete
+        'opt-out-of-soft-delete': 'true'
       }
     }
   }
