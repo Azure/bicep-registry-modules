@@ -25,19 +25,19 @@ param name string
 @sys.description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-resource elasticSan 'Microsoft.ElasticSan/elasticSans@2023-01-01' existing = {
+resource elasticSan 'Microsoft.ElasticSan/elasticSans@2024-05-01' existing = {
   name: elasticSanName
 
-  resource volumeGroup 'volumegroups@2023-01-01' existing = {
+  resource volumeGroup 'volumegroups@2024-05-01' existing = {
     name: volumeGroupName
 
-    resource volume 'volumes@2023-01-01' existing = {
+    resource volume 'volumes@2024-05-01' existing = {
       name: volumeName
     }
   }
 }
 
-resource volumeSnapshot 'Microsoft.ElasticSan/elasticSans/volumegroups/snapshots@2023-01-01' = {
+resource volumeSnapshot 'Microsoft.ElasticSan/elasticSans/volumegroups/snapshots@2024-05-01' = {
   name: name
   parent: elasticSan::volumeGroup
   properties: {

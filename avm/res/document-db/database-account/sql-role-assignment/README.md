@@ -22,7 +22,7 @@ This module deploys a SQL Role Assignment in a CosmosDB Account.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`principalId`](#parameter-principalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
-| [`roleDefinitionId`](#parameter-roledefinitionid) | string | The unique identifier of the associated SQL Role Definition. |
+| [`roleDefinitionIdOrName`](#parameter-roledefinitionidorname) | string | The unique identifier of the associated SQL Role Definition. |
 
 **Conditional parameters**
 
@@ -36,6 +36,7 @@ This module deploys a SQL Role Assignment in a CosmosDB Account.
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`name`](#parameter-name) | string | Name unique identifier of the SQL Role Assignment. |
+| [`scope`](#parameter-scope) | string | The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level. |
 
 ### Parameter: `principalId`
 
@@ -44,7 +45,7 @@ The unique identifier for the associated AAD principal in the AAD graph to which
 - Required: Yes
 - Type: string
 
-### Parameter: `roleDefinitionId`
+### Parameter: `roleDefinitionIdOrName`
 
 The unique identifier of the associated SQL Role Definition.
 
@@ -73,6 +74,13 @@ Name unique identifier of the SQL Role Assignment.
 - Required: No
 - Type: string
 
+### Parameter: `scope`
+
+The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level.
+
+- Required: No
+- Type: string
+
 ## Outputs
 
 | Output | Type | Description |
@@ -83,4 +91,4 @@ Name unique identifier of the SQL Role Assignment.
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

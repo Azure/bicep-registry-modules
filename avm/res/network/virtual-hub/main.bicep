@@ -117,7 +117,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2024-05-01' = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2024-10-01' = {
   name: name
   location: location
   tags: tags

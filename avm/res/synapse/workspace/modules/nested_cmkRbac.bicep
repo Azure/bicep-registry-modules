@@ -22,7 +22,7 @@ resource workspace_cmk_rbac 'Microsoft.Authorization/roleAssignments@2022-04-01'
 }
 
 // Assign Access Policy for Keys
-resource workspace_cmk_accessPolicy 'Microsoft.KeyVault/vaults/accessPolicies@2023-07-01' = if (!usesRbacAuthorization) {
+resource workspace_cmk_accessPolicy 'Microsoft.KeyVault/vaults/accessPolicies@2024-11-01' = if (!usesRbacAuthorization) {
   name: 'add'
   parent: keyVault
   properties: {

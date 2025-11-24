@@ -35,7 +35,10 @@ body:
     id: module-name-dropdown
     attributes:
       label: Module Name
-      description: Which existing AVM module is this issue related to?
+      description: |
+        Which existing AVM module is this issue related to?
+
+        > **NOTE**: Issues related to child modules and multi-scope modules must be submitted under the corresponding parent module.
       options:
         - ""
         - "avm/ptn/aca-lza/hosting-environment"
@@ -221,6 +224,7 @@ body:
         - "avm/res/network/vpn-gateway"
         - "avm/res/network/vpn-server-configuration"
         - "avm/res/network/vpn-site"
+        - "avm/res/operational-insights/cluster"
         - "avm/res/operational-insights/workspace"
         - "avm/res/operations-management/solution"
         - "avm/res/portal/dashboard"

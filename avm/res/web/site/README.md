@@ -45,11 +45,12 @@ The following section provides usage examples for the module, which were used to
 - [Linux Container Web App, using only defaults](#example-3-linux-container-web-app-using-only-defaults)
 - [WAF-aligned](#example-4-waf-aligned)
 - [Access Restrictions](#example-5-access-restrictions)
-- [Web App, using only defaults](#example-6-web-app-using-only-defaults)
-- [Web App, using large parameter set](#example-7-web-app-using-large-parameter-set)
-- [Linux Web App, using only defaults](#example-8-linux-web-app-using-only-defaults)
-- [Linux Web App, using large parameter set](#example-9-linux-web-app-using-large-parameter-set)
-- [Windows Web App for Containers, using only defaults](#example-10-windows-web-app-for-containers-using-only-defaults)
+- [Web App with Azure Storage Accounts Configuration](#example-6-web-app-with-azure-storage-accounts-configuration)
+- [Web App, using only defaults](#example-7-web-app-using-only-defaults)
+- [Web App, using large parameter set](#example-8-web-app-using-large-parameter-set)
+- [Linux Web App, using only defaults](#example-9-linux-web-app-using-only-defaults)
+- [Linux Web App, using large parameter set](#example-10-linux-web-app-using-large-parameter-set)
+- [Windows Web App for Containers, using only defaults](#example-11-windows-web-app-for-containers-using-only-defaults)
 
 ### Example 1: _Function App, using only defaults_
 
@@ -1253,7 +1254,200 @@ param siteConfig = {
 </details>
 <p>
 
-### Example 6: _Web App, using only defaults_
+### Example 6: _Web App with Azure Storage Accounts Configuration_
+
+This instance deploys the module as Web App with azurestorageaccounts configuration demonstrating the correct structure for mounting Azure Storage Accounts.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module site 'br/public:avm/res/web/site:<version>' = {
+  name: 'siteDeployment'
+  params: {
+    // Required parameters
+    kind: 'app'
+    name: 'wsazstor001'
+    serverFarmResourceId: '<serverFarmResourceId>'
+    // Non-required parameters
+    configs: [
+      {
+        name: 'azurestorageaccounts'
+        properties: {
+          'config-storage': {
+            accessKey: '<accessKey>'
+            accountName: '<accountName>'
+            mountPath: '\\mounts\\config'
+            protocol: 'Smb'
+            shareName: 'config-share'
+            type: 'AzureFiles'
+          }
+          'data-storage': {
+            accessKey: '<accessKey>'
+            accountName: '<accountName>'
+            mountPath: '\\mounts\\data'
+            protocol: 'Smb'
+            shareName: 'data-share'
+            type: 'AzureFiles'
+          }
+          'logs-storage': {
+            accessKey: '<accessKey>'
+            accountName: '<accountName>'
+            mountPath: '\\mounts\\logs'
+            protocol: 'Smb'
+            shareName: 'logs-share'
+            type: 'AzureFiles'
+          }
+        }
+      }
+      {
+        name: 'appsettings'
+        properties: {
+          STORAGE_CONFIG_MOUNT: '\\mounts\\config'
+          STORAGE_DATA_MOUNT: '\\mounts\\data'
+          STORAGE_LOGS_MOUNT: '\\mounts\\logs'
+        }
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "app"
+    },
+    "name": {
+      "value": "wsazstor001"
+    },
+    "serverFarmResourceId": {
+      "value": "<serverFarmResourceId>"
+    },
+    // Non-required parameters
+    "configs": {
+      "value": [
+        {
+          "name": "azurestorageaccounts",
+          "properties": {
+            "config-storage": {
+              "accessKey": "<accessKey>",
+              "accountName": "<accountName>",
+              "mountPath": "\\mounts\\config",
+              "protocol": "Smb",
+              "shareName": "config-share",
+              "type": "AzureFiles"
+            },
+            "data-storage": {
+              "accessKey": "<accessKey>",
+              "accountName": "<accountName>",
+              "mountPath": "\\mounts\\data",
+              "protocol": "Smb",
+              "shareName": "data-share",
+              "type": "AzureFiles"
+            },
+            "logs-storage": {
+              "accessKey": "<accessKey>",
+              "accountName": "<accountName>",
+              "mountPath": "\\mounts\\logs",
+              "protocol": "Smb",
+              "shareName": "logs-share",
+              "type": "AzureFiles"
+            }
+          }
+        },
+        {
+          "name": "appsettings",
+          "properties": {
+            "STORAGE_CONFIG_MOUNT": "\\mounts\\config",
+            "STORAGE_DATA_MOUNT": "\\mounts\\data",
+            "STORAGE_LOGS_MOUNT": "\\mounts\\logs"
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/site:<version>'
+
+// Required parameters
+param kind = 'app'
+param name = 'wsazstor001'
+param serverFarmResourceId = '<serverFarmResourceId>'
+// Non-required parameters
+param configs = [
+  {
+    name: 'azurestorageaccounts'
+    properties: {
+      'config-storage': {
+        accessKey: '<accessKey>'
+        accountName: '<accountName>'
+        mountPath: '\\mounts\\config'
+        protocol: 'Smb'
+        shareName: 'config-share'
+        type: 'AzureFiles'
+      }
+      'data-storage': {
+        accessKey: '<accessKey>'
+        accountName: '<accountName>'
+        mountPath: '\\mounts\\data'
+        protocol: 'Smb'
+        shareName: 'data-share'
+        type: 'AzureFiles'
+      }
+      'logs-storage': {
+        accessKey: '<accessKey>'
+        accountName: '<accountName>'
+        mountPath: '\\mounts\\logs'
+        protocol: 'Smb'
+        shareName: 'logs-share'
+        type: 'AzureFiles'
+      }
+    }
+  }
+  {
+    name: 'appsettings'
+    properties: {
+      STORAGE_CONFIG_MOUNT: '\\mounts\\config'
+      STORAGE_DATA_MOUNT: '\\mounts\\data'
+      STORAGE_LOGS_MOUNT: '\\mounts\\logs'
+    }
+  }
+]
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 7: _Web App, using only defaults_
 
 This instance deploys the module as Web App with the minimum set of required parameters.
 
@@ -1319,7 +1513,7 @@ param serverFarmResourceId = '<serverFarmResourceId>'
 </details>
 <p>
 
-### Example 7: _Web App, using large parameter set_
+### Example 8: _Web App, using large parameter set_
 
 This instance deploys the module as Web App with most of its features enabled.
 
@@ -2224,7 +2418,7 @@ param slots = [
 </details>
 <p>
 
-### Example 8: _Linux Web App, using only defaults_
+### Example 9: _Linux Web App, using only defaults_
 
 This instance deploys the module as a Linux Web App with the minimum set of required parameters.
 
@@ -2290,7 +2484,7 @@ param serverFarmResourceId = '<serverFarmResourceId>'
 </details>
 <p>
 
-### Example 9: _Linux Web App, using large parameter set_
+### Example 10: _Linux Web App, using large parameter set_
 
 This instance deploys the module asa Linux Web App with most of its features enabled.
 
@@ -3013,7 +3207,7 @@ param slots = [
 </details>
 <p>
 
-### Example 10: _Windows Web App for Containers, using only defaults_
+### Example 11: _Windows Web App for Containers, using only defaults_
 
 This instance deploys the module as a Windows based Container Web App with the minimum set of required parameters.
 
@@ -14255,4 +14449,4 @@ appSettingsKeyValuePairs: {
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

@@ -1,0 +1,2 @@
+The test is skipped because the Log Analytics Cluster resource is very restrictive when it comes to how many instance one can have and how to lifecycle them.
+For further information, please refer to: [ref](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/logs-dedicated-clusters?tabs=azure-portal#delete-cluster)
