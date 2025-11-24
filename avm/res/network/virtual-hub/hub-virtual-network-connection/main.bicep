@@ -16,7 +16,7 @@ param remoteVirtualNetworkResourceId string
 @description('Optional. Routing Configuration indicating the associated and propagated route tables for this connection.')
 param routingConfiguration object?
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2024-10-01' existing = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2025-01-01' existing = {
   name: virtualHubName
 }
 
