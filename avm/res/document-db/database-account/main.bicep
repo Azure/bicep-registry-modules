@@ -315,14 +315,16 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
     enableBurstCapacity: !contains((capabilitiesToAdd ?? []), 'EnableServerless') ? enableBurstCapacity : false
     databaseAccountOfferType: databaseAccountOfferType
     analyticalStorageConfiguration: analyticalStorageConfiguration
-    defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
-      ? defaultIdentity!.name
-      : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
-    keyVaultKeyUri: !empty(customerManagedKey)
-      ? !isHSMManagedCMK
-          ? '${cMKKeyVault::cMKKey!.properties.keyUri}'
-          : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}'
-      : null
+    defaultIdentity: 'UserAssignedIdentity=/subscriptions/cfa4dc0b-3d25-4e58-a70a-7085359080c5/resourceGroups/dep-avmx-documentdb.databaseaccounts-dddaenc-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dep-avmx-msi-dddaenc'
+    // defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
+    //   ? defaultIdentity!.name
+    //   : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
+    keyVaultKeyUri: 'https://dep-avmx-kv-dddaenc-jip.vault.azure.net/keys/keyEncryptionKey'
+    // keyVaultKeyUri: !empty(customerManagedKey)
+    //   ? !isHSMManagedCMK
+    //       ? '${cMKKeyVault::cMKKey!.properties.keyUri}'
+    //       : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}'
+    //   : null
     cors: cors
     enablePartitionMerge: enablePartitionMerge
     enablePerRegionPerPartitionAutoscale: enablePerRegionPerPartitionAutoscale
