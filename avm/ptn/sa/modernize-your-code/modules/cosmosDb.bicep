@@ -5,12 +5,11 @@ param name string
 param location string
 
 @description('Optional. Tags to be applied to the resources.')
-param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
+param tags object = {}
 
 @description('Required. Managed Identity princpial to assign data plane roles for the Cosmos DB Account.')
 param dataAccessIdentityPrincipalId string
 
-@secure() // marked secure to meet AVM validation requirements
 @description('Optional. The resource ID of an existing Log Analytics workspace to associate with AI Foundry for monitoring.')
 param logAnalyticsWorkspaceResourceId string?
 
@@ -31,20 +30,7 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-module privateDnsZone 'privateDnsZone.bicep' = if (privateNetworking != null && empty(privateNetworking.?privateDnsZoneResourceId)) {
-  name: take('${name}-documents-pdns-deployment', 64)
-  params: {
-    name: 'privatelink.documents.azure.com'
-    virtualNetworkResourceId: privateNetworking.?virtualNetworkResourceId ?? ''
-    tags: tags
-  }
-}
-
-var privateDnsZoneResourceId = privateNetworking != null
-  ? (empty(privateNetworking.?privateDnsZoneResourceId)
-      ? privateDnsZone.outputs.resourceId ?? ''
-      : privateNetworking.?privateDnsZoneResourceId ?? '')
-  : ''
+var privateDnsZoneResourceId = privateNetworking != null ? privateNetworking.?privateDnsZoneResourceId ?? '' : ''
 
 resource sqlContributorRoleDefinition 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions@2024-11-15' existing = {
   name: '${name}/00000000-0000-0000-0000-000000000002'
@@ -55,10 +41,8 @@ var batchContainerName = 'cmsabatch'
 var fileContainerName = 'cmsafile'
 var logContainerName = 'cmsalog'
 
-module cosmosAccount 'br/public:avm/res/document-db/database-account:0.15.0' = {
-  name: take('${name}-account-deployment', 64)
-  #disable-next-line no-unnecessary-dependson
-  dependsOn: [privateDnsZone] // required due to optional flags that could change dependency
+module cosmosAccount 'br/public:avm/res/document-db/database-account:0.18.0' = {
+  name: take('avm.res.document-db.database-account.${name}', 64)
   params: {
     name: name
     enableAnalyticalStorage: true
@@ -72,7 +56,6 @@ module cosmosAccount 'br/public:avm/res/document-db/database-account:0.15.0' = {
       virtualNetworkRules: []
     }
     zoneRedundant: zoneRedundant
-    automaticFailover: !empty(secondaryLocation)
     failoverLocations: !empty(secondaryLocation)
       ? [
           {
@@ -81,7 +64,7 @@ module cosmosAccount 'br/public:avm/res/document-db/database-account:0.15.0' = {
             locationName: location
           }
           {
-            failoverPriority: 0
+            failoverPriority: 1
             isZoneRedundant: zoneRedundant
             locationName: secondaryLocation!
           }
@@ -90,14 +73,16 @@ module cosmosAccount 'br/public:avm/res/document-db/database-account:0.15.0' = {
     enableMultipleWriteLocations: !empty(secondaryLocation)
     backupPolicyType: !empty(secondaryLocation) ? 'Periodic' : 'Continuous'
     backupStorageRedundancy: zoneRedundant ? 'Zone' : 'Local'
-    disableKeyBasedMetadataWriteAccess: true
-    disableLocalAuthentication: privateNetworking != null
+    disableKeyBasedMetadataWriteAccess: false
+    disableLocalAuthentication: true
     diagnosticSettings: !empty(logAnalyticsWorkspaceResourceId)
       ? [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }]
       : []
     privateEndpoints: privateNetworking != null
       ? [
           {
+            name: 'pep-${name}'
+            customNetworkInterfaceName: 'nic-${name}'
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
@@ -144,7 +129,7 @@ module cosmosAccount 'br/public:avm/res/document-db/database-account:0.15.0' = {
         name: databaseName
       }
     ]
-    dataPlaneRoleAssignments: [
+    sqlRoleAssignments: [
       {
         principalId: dataAccessIdentityPrincipalId
         roleDefinitionId: sqlContributorRoleDefinition.id
@@ -159,11 +144,9 @@ module cosmosAccount 'br/public:avm/res/document-db/database-account:0.15.0' = {
 @description('Name of the Cosmos DB Account resource.')
 output name string = cosmosAccount.outputs.name
 
-@secure() // marked secure to meet AVM validation requirements
 @description('Resource ID of the Cosmos DB Account.')
 output resourceId string = cosmosAccount.outputs.resourceId
 
-@secure() // marked secure to meet AVM validation requirements
 @description('Endpoint of the Cosmos DB Account.')
 output endpoint string = cosmosAccount.outputs.endpoint
 
