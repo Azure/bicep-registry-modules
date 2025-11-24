@@ -19,7 +19,7 @@ param privateToFirewall bool = true
 @description('Optional. Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0).')
 param internetToFirewall bool = true
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2024-10-01' existing = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2025-01-01' existing = {
   name: virtualHubName
 }
 

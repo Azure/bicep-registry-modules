@@ -125,6 +125,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         routes: []
       }
     ]
+    hubRoutingPreference: 'ASPath'
     hubVirtualNetworkConnections: [
       {
         name: 'connection1'
@@ -209,6 +210,9 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
           "routes": []
         }
       ]
+    },
+    "hubRoutingPreference": {
+      "value": "ASPath"
     },
     "hubVirtualNetworkConnections": {
       "value": [
@@ -303,6 +307,7 @@ param hubRouteTables = [
     routes: []
   }
 ]
+param hubRoutingPreference = 'ASPath'
 param hubVirtualNetworkConnections = [
   {
     name: 'connection1'
