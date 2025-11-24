@@ -17,10 +17,10 @@ If you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integ
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
-| `Microsoft.Network/virtualHubs` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/virtualHubs)</li></ul> |
-| `Microsoft.Network/virtualHubs/hubRouteTables` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubroutetables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/virtualHubs/hubRouteTables)</li></ul> |
-| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubvirtualnetworkconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/virtualHubs/hubVirtualNetworkConnections)</li></ul> |
-| `Microsoft.Network/virtualHubs/routingIntent` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_routingintent.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/virtualHubs/routingIntent)</li></ul> |
+| `Microsoft.Network/virtualHubs` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs)</li></ul> |
+| `Microsoft.Network/virtualHubs/hubRouteTables` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubroutetables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs/hubRouteTables)</li></ul> |
+| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubvirtualnetworkconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs/hubVirtualNetworkConnections)</li></ul> |
+| `Microsoft.Network/virtualHubs/routingIntent` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_routingintent.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs/routingIntent)</li></ul> |
 
 ## Usage examples
 
@@ -125,6 +125,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         routes: []
       }
     ]
+    hubRoutingPreference: 'ASPath'
     hubVirtualNetworkConnections: [
       {
         name: 'connection1'
@@ -163,12 +164,15 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    preferredRoutingGateway: 'None'
+    routingIntent: {}
     sku: 'Standard'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    virtualRouterAsn: 100
     virtualRouterAutoScaleConfiguration: {
       minCount: 2
     }
@@ -206,6 +210,9 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
           "routes": []
         }
       ]
+    },
+    "hubRoutingPreference": {
+      "value": "ASPath"
     },
     "hubVirtualNetworkConnections": {
       "value": [
@@ -251,6 +258,12 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         "name": "myCustomLockName"
       }
     },
+    "preferredRoutingGateway": {
+      "value": "None"
+    },
+    "routingIntent": {
+      "value": {}
+    },
     "sku": {
       "value": "Standard"
     },
@@ -260,6 +273,9 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "virtualRouterAsn": {
+      "value": 100
     },
     "virtualRouterAutoScaleConfiguration": {
       "value": {
@@ -291,6 +307,7 @@ param hubRouteTables = [
     routes: []
   }
 ]
+param hubRoutingPreference = 'ASPath'
 param hubVirtualNetworkConnections = [
   {
     name: 'connection1'
@@ -329,12 +346,15 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param preferredRoutingGateway = 'None'
+param routingIntent = {}
 param sku = 'Standard'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
+param virtualRouterAsn = 100
 param virtualRouterAutoScaleConfiguration = {
   minCount: 2
 }
@@ -816,14 +836,6 @@ The preferred routing preference for this virtual hub.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'ASPath'
-    'ExpressRoute'
-    'VpnGateway'
-  ]
-  ```
 
 ### Parameter: `hubVirtualNetworkConnections`
 
@@ -939,14 +951,6 @@ The preferred routing gateway types.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'ExpressRoute'
-    'None'
-    'VpnGateway'
-  ]
-  ```
 
 ### Parameter: `routeTableRoutes`
 
