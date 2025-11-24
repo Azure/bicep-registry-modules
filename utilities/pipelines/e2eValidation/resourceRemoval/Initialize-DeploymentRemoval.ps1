@@ -107,7 +107,7 @@ function Initialize-DeploymentRemoval {
             'Microsoft.DataProtection/backupVaults', # This resource has a custom removal logic and hence needs to be deleted before its resource group
             'Microsoft.CognitiveServices/accounts/projects',
             'Microsoft.CognitiveServices/accounts',
-            'Microsoft.Sql/servers/keys',
+            'Microsoft.KeyVault/managedHSMs/keys'
             'Microsoft.Sql/servers/databases',
             'Microsoft.Sql/servers',
             'Microsoft.Resources/resourceGroups'
