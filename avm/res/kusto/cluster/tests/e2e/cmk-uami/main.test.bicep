@@ -1,7 +1,8 @@
 targetScope = 'subscription'
 
 metadata name = 'Using Customer-Managed-Keys with User-Assigned identity'
-metadata description = 'This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.'
+metadata description = '''This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).'''
 
 // ========== //
 // Parameters //
@@ -65,6 +66,10 @@ module testDeployment '../../../main.bicep' = [
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
+      }
+      tags: {
+        // Only for testing purposes. Ref: https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete
+        'opt-out-of-soft-delete': 'true'
       }
     }
   }
