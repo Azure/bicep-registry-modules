@@ -1,7 +1,8 @@
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
-metadata description = 'This instance deploys the module with most of its features enabled.'
+metadata description = '''This instance deploys the module with most of its features enabled.
+Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).'''
 
 // ========== //
 // Parameters //
@@ -132,6 +133,10 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       ]
+      tags: {
+        // Only for testing purposes. Ref: https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete
+        'opt-out-of-soft-delete': 'true'
+      }
     }
   }
 ]

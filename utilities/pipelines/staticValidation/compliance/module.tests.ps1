@@ -2173,11 +2173,21 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
 
         BeforeDiscovery {
             $deploymentTestFileTestCases = @()
+            # Collecting content of test files that are loaded only once
+            $allTestFiles = (Get-ChildItem -Path $repoRootPath -Recurse -Include 'main.test.bicep').FullName | Sort-Object -Culture 'en-US' | ForEach-Object {
+                return @{
+                    Path    = $_
+                    Content = Get-Content -Path $_
+                }
+            }
 
             foreach ($moduleFolderPath in $moduleFolderPaths) {
                 if (Test-Path (Join-Path $moduleFolderPath 'tests')) {
                     $testFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US'
+
                     foreach ($testFilePath in $testFilePaths) {
+                        $otherTestFiles = $allTestFiles | Where-Object { $_.Path -ne $testFilePath }
+
                         $testFileContent = Get-Content $testFilePath
                         $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
                         $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
@@ -2189,6 +2199,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
                             compiledTestFileContent  = $builtTestFileMap[$testFilePath]
                             moduleFolderName         = $resourceTypeIdentifier
                             moduleType               = $moduleType
+                            otherTestFiles           = $otherTestFiles
                             isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
                         }
                     }
@@ -2336,6 +2347,31 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
             $expectedNameFormat = ($testFileContent | Out-String) -match '\s*name:.+-test-.+\s*'
 
             $expectedNameFormat | Should -Be $true -Because 'the handle ''-test-'' should be part of the module test invocation''s resource name to allow identification.'
+        }
+
+        It '[<moduleFolderName>] `sericeShort` should be unique across repository' -TestCases $deploymentTestFileTestCases {
+
+            param(
+                [object[]] $testFileContent,
+                [string] $testFilePath,
+                [object[]] $otherTestFiles
+            )
+
+            $testFileShortMatch = [regex]::Match(($testFileContent | Out-String), "param serviceShort string = '(.*)'")
+            if ($testFileShortMatch.Success) {
+                $serviceShort = $testFileShortMatch.Captures.Groups[1].Value
+                foreach ($otherTestFile in $otherTestFiles) {
+                    $otherTestFileShortMatch = [regex]::Match(($otherTestFile.Content | Out-String), "param serviceShort string = '(.*)'")
+                    if ($otherTestFileShortMatch.Success) {
+                        $otherServiceShort = $otherTestFileShortMatch.Captures.Groups[1].Value
+                        $shortendTestPath = $testFilePath -replace ('{0}[\\|\/]' -f [regex]::Escape("$repoRootPath"))
+                        $shortedOtherTestPath = ($otherTestFile.Path -replace ('{0}[\\|\/]' -f [regex]::Escape("$repoRootPath")), '')
+                        $serviceShort | Should -Not -Be $otherServiceShort -Because "the serviceShort value [$serviceShort] in test file [$shortendTestPath] should be unique across the repository but is also used by [$shortedOtherTestPath]."
+                    }
+                }
+            } else {
+                Set-ItResult -Skipped -Because 'the module test deployment file should contain a parameter [serviceShort] but it doesn''t.'
+            }
         }
     }
 }

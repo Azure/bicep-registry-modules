@@ -6,6 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
+- Removed deprecated metadata
 - Added `publicNetworkAccess` property (defaults to 'Disabled' if `privateEndpoints` is provided, otherwise defaults to 'Enabled')
 - Added `@secure()` outputs for primary and secondary access keys and connection strings
 - Updated Microsoft.Cache/redisEnterprise API version to 2025-07-01
