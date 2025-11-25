@@ -64,6 +64,9 @@ function Initialize-DeploymentRemoval {
 
     process {
 
+        $TotalOffsetMinutes = (Get-AzAccessToken -AsSecureString | Select-Object ExpiresOn).Expireson.TotalOffsetMinutes
+        Write-Verbose ('Access token expiration offset in minutes [{0}]' -f $TotalOffsetMinutes) -Verbose
+
         if (-not [String]::IsNullOrEmpty($subscriptionId)) {
             Write-Verbose ('Setting context to subscription [{0}]' -f $subscriptionId)
             $null = Set-AzContext -Subscription $subscriptionId
@@ -107,8 +110,8 @@ function Initialize-DeploymentRemoval {
             'Microsoft.DataProtection/backupVaults', # This resource has a custom removal logic and hence needs to be deleted before its resource group
             'Microsoft.CognitiveServices/accounts/projects',
             'Microsoft.CognitiveServices/accounts',
-            'Microsoft.KeyVault/managedHSMs/keys'
-            'Microsoft.Sql/servers/databases',
+            'Microsoft.KeyVault/managedHSMs/keys', # Should be deleted before e.g. a SQL server that is associated with it to avoid issues with access token expiration
+            'Microsoft.Sql/servers/databases', # Should be deleted before its parent SQL server to save time during removal
             'Microsoft.Sql/servers',
             'Microsoft.Resources/resourceGroups'
         )
