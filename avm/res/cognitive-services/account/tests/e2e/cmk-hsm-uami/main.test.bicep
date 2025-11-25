@@ -44,8 +44,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
 module nestedHsmDependencies '../../../../../../../utilities/e2e-template-assets/templates/hsm.dependencies.bicep' = {
   name: '${uniqueString(deployment().name)}-nestedHsmDependencies'
   params: {
-    primaryHSMKeyName: '${namePrefix}-${serviceShort}-srv-key-${substring(uniqueString(baseTime), 0, 3)}'
-    secondaryHSMKeyName: '${namePrefix}-${serviceShort}-db-key-${substring(uniqueString(baseTime), 0, 3)}'
+    primaryHSMKeyName: '${namePrefix}-${serviceShort}-key-${substring(uniqueString(baseTime), 0, 3)}'
     managedHSMName: last(split(managedHSMResourceId, '/'))
   }
   scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
