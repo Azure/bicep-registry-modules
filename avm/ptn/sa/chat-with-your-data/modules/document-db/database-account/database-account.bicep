@@ -332,7 +332,7 @@ module databaseAccount_sqlRoleDefinitions 'sql-role-definition/sql-role-definiti
   }
 ]
 
-module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-dbAccount-PrivateEndpoint-${index}'
     scope: resourceGroup(
