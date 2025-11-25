@@ -164,7 +164,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    preferredRoutingGateway: 'None'
+    preferredRoutingGateway: 'ExpressRoute'
     routingIntent: {}
     sku: 'Standard'
     tags: {
@@ -172,7 +172,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    virtualRouterAsn: 100
+    virtualRouterAsn: 65515
     virtualRouterAutoScaleConfiguration: {
       minCount: 2
     }
@@ -259,7 +259,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       }
     },
     "preferredRoutingGateway": {
-      "value": "None"
+      "value": "ExpressRoute"
     },
     "routingIntent": {
       "value": {}
@@ -275,7 +275,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       }
     },
     "virtualRouterAsn": {
-      "value": 100
+      "value": 65515
     },
     "virtualRouterAutoScaleConfiguration": {
       "value": {
@@ -346,7 +346,7 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
-param preferredRoutingGateway = 'None'
+param preferredRoutingGateway = 'ExpressRoute'
 param routingIntent = {}
 param sku = 'Standard'
 param tags = {
@@ -354,7 +354,7 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param virtualRouterAsn = 100
+param virtualRouterAsn = 65515
 param virtualRouterAutoScaleConfiguration = {
   minCount: 2
 }
