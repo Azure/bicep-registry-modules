@@ -17,6 +17,9 @@ param serviceShort string = 'dwhsm'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Generated. Used as a basis for unique resource names.')
+param baseTime string = utcNow('u')
+
 @description('Required. The object id of the AzureDatabricks Enterprise Application. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-AzureDatabricksEnterpriseApplicationObjectId\'.')
 @secure()
 param azureDatabricksEnterpriseApplicationObjectId string = ''
@@ -43,16 +46,27 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: enforcedLocation
 }
 
-module nestedDependencies 'dependencies.bicep' = {
-  name: '${uniqueString(deployment().name)}-nestedDependencies'
+module nestedHsmDependencies '../../../../../../../utilities/e2e-template-assets/templates/hsm.dependencies.bicep' = {
+  name: '${uniqueString(deployment().name)}-nestedHsmDependencies'
   params: {
-    databricksApplicationObjectId: azureDatabricksEnterpriseApplicationObjectId
-    hsmKeyNamePrefix: '${serviceShort}-${namePrefix}-key'
-    hsmDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-    deploymentMSIResourceId: deploymentMSIResourceId
+    primaryHSMKeyName: '${namePrefix}-${serviceShort}-key-${substring(uniqueString(baseTime), 0, 3)}'
+    secondaryHSMKeyName: '${namePrefix}-${serviceShort}-disk-key-${substring(uniqueString(baseTime), 0, 3)}'
     managedHSMName: last(split(managedHSMResourceId, '/'))
   }
   scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
+}
+
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  params: {
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    primaryHSMKeyName: nestedHsmDependencies.outputs.primaryKeyName
+    secondaryHSMKeyName: nestedHsmDependencies.?outputs.?secondaryKeyName
+    deploymentScriptNamePrefix: 'dep-${namePrefix}-ds-${serviceShort}'
+    deploymentMSIResourceId: deploymentMSIResourceId
+    managedHSMResourceId: managedHSMResourceId
+  }
 }
 
 // ============== //
@@ -67,14 +81,14 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       customerManagedKey: {
-        keyName: nestedDependencies.outputs.cmkName
-        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-        keyVersion: nestedDependencies.outputs.cmkVersion
+        keyName: nestedHsmDependencies.outputs.primaryKeyName
+        keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
+        keyVersion: nestedHsmDependencies.outputs.primaryKeyVersion
       }
       customerManagedKeyManagedDisk: {
-        keyName: nestedDependencies.outputs.cmkDiskName
-        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-        keyVersion: nestedDependencies.outputs.cmkDiskVersion
+        keyName: nestedHsmDependencies.?outputs.?secondaryKeyName!
+        keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
+        keyVersion: nestedHsmDependencies.?outputs.?secondaryKeyVersion!
       }
     }
   }
@@ -92,7 +106,7 @@ module configureHSM 'br/public:avm/res/resources/deployment-script:0.5.2' = {
     name: 'dep-${namePrefix}-ds-configureHSMDisk-${serviceShort}'
     kind: 'AzureCLI'
     azCliVersion: '2.67.0'
-    arguments: '"${last(split(managedHSMResourceId, '/'))}" "${nestedDependencies.outputs.cmkDiskName}" "${testDeployment[1].outputs.managedDiskIdentityPrincipalId!}"'
+    arguments: '"${last(split(managedHSMResourceId, '/'))}" "${nestedHsmDependencies.?outputs.?secondaryKeyName!}" "${testDeployment[1].outputs.managedDiskIdentityPrincipalId!}"'
     scriptContent: '''
       # Allow key reference via identity
       az keyvault role assignment create --hsm-name $1 --role "Managed HSM Crypto Service Encryption User" --scope /keys/$2 --assignee $3
