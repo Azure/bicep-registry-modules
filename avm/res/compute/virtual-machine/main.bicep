@@ -528,7 +528,7 @@ resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
       name: dataDisk.managedDisk.?storageAccountType
     }
     properties: {
-      diskSizeGB: dataDisk.diskSizeGB
+      diskSizeGB: dataDisk.?diskSizeGB
       creationData: {
         createOption: dataDisk.?createoption ?? 'Empty'
       }
