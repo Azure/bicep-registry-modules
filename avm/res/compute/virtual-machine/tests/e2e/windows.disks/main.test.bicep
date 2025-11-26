@@ -87,6 +87,7 @@ module testDeployment '../../../main.bicep' = [
       osDisk: {
         diskSizeGB: 128
         caching: 'ReadWrite'
+        createOption: 'Attach'
         managedDisk: {
           storageAccountType: 'Premium_LRS'
           // resourceId: nestedDependencies.outputs.osDiskResourceId
