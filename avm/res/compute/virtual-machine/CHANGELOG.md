@@ -13,8 +13,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Renamed `dataDisks.managedDisk.id` parameter to `dataDisks.managedDisk.resourceId` in alignment with the AVM specs
 
-## 0.19.0
-
 ## 0.20.0
 
 ### Changes
