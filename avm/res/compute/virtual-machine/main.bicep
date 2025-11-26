@@ -616,7 +616,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       ultraSSDEnabled: ultraSSDEnabled
       hibernationEnabled: hibernationEnabled
     }
-    osProfile: osDisk.?createOption != 'Attach' // Not allowed
+    osProfile: empty(osDisk.managedDisk.?resourceId) // Not allowed
       ? {
           computerName: computerName
           adminUsername: adminUsername
