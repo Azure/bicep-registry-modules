@@ -45,7 +45,8 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     sharedDiskName: 'dep-${namePrefix}-shared-disk-${serviceShort}'
-    osDiskName: 'dep-${namePrefix}-os-disk-${serviceShort}'
+    osDiskVMName: 'dep-${namePrefix}-os-disk-vm-${serviceShort}'
+    osDiskDeploymentScript: 'dep-${namePrefix}-os-disk-ds-${serviceShort}'
     diskEncryptionSetName: 'dep-${namePrefix}-des-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForPropagation'
@@ -68,13 +69,6 @@ module testDeployment '../../../main.bicep' = [
       securityType: 'TrustedLaunch'
       osType: 'Linux'
       vmSize: 'Standard_D2s_v3'
-      // adminUsername: 'localAdminUser'
-      // imageReference: {
-      //   publisher: 'MicrosoftWindowsServer'
-      //   offer: 'WindowsServer'
-      //   sku: '2022-datacenter-azure-edition'
-      //   version: 'latest'
-      // }
       availabilityZone: 1
       nicConfigurations: [
         {
@@ -88,13 +82,8 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       osDisk: {
-        // diskSizeGB: 128
-        // caching: 'ReadWrite'
         managedDisk: {
-          // storageAccountType: 'Premium_LRS'
-          // resourceId: nestedDependencies.outputs.osDiskResourceId
           resourceId: '/subscriptions/cfa4dc0b-3d25-4e58-a70a-7085359080c5/resourceGroups/dep-avmx-compute.virtualMachines-cvmwindisk-rg/providers/Microsoft.Compute/disks/custom-vm-managed-disk'
-          // diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
         }
       }
       dataDisks: [

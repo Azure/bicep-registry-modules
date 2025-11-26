@@ -10,6 +10,12 @@ param sharedDiskName string
 @description('Required. The name of the os disk to create.')
 param osDiskName string
 
+@description('Required. The name of the VM to take the OS disk from. It\'s not possible to create an OS disk without a VM.')
+param osDiskVMName string
+
+@description('Required. The name of the VM to create a snapshot of the VMs os disk.')
+param osDiskDeploymentScript string
+
 @description('Required. The name of the Disk Encryption Set to create.')
 param diskEncryptionSetName string
 
@@ -18,6 +24,10 @@ param keyVaultName string
 
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
+
+@description('Optional. The password to leverage for the login.')
+@secure()
+param password string = newGuid()
 
 @description('Required. The name of the deployment script that waits for a role assignment to propagate.')
 param waitDeploymentScriptName string
@@ -125,29 +135,29 @@ resource waitForRolePropagation 'Microsoft.Resources/deploymentScripts@2023-08-0
   }
 }
 
-resource osDisk 'Microsoft.Compute/disks@2024-03-02' = {
-  location: location
-  name: osDiskName
-  sku: {
-    name: 'Premium_LRS'
-  }
-  properties: {
-    diskSizeGB: 1024
-    creationData: {
-      createOption: 'FromImage'
-      imageReference: {
-        lun: 0
-        id: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Compute/locations/${location}/publishers/MicrosoftWindowsServer/ArtifactTypes/VMImage/Offers/WindowsServerUpgrade/Skus/server2022Upgrade/Versions/20348.4405.251105'
-      }
-    }
-    maxShares: 2
-    encryption: {
-      type: 'EncryptionAtRestWithPlatformAndCustomerKeys'
-      diskEncryptionSetId: diskEncryptionSet.id
-    }
-  }
-  zones: ['1'] // Should be set to the same zone as the VM
-}
+// resource osDisk 'Microsoft.Compute/disks@2024-03-02' = {
+//   location: location
+//   name: osDiskName
+//   sku: {
+//     name: 'Premium_LRS'
+//   }
+//   properties: {
+//     diskSizeGB: 1024
+//     creationData: {
+//       createOption: 'FromImage'
+//       imageReference: {
+//         lun: 0
+//         id: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Compute/locations/${location}/publishers/MicrosoftWindowsServer/ArtifactTypes/VMImage/Offers/WindowsServerUpgrade/Skus/server2022Upgrade/Versions/20348.4405.251105'
+//       }
+//     }
+//     maxShares: 2
+//     encryption: {
+//       type: 'EncryptionAtRestWithPlatformAndCustomerKeys'
+//       diskEncryptionSetId: diskEncryptionSet.id
+//     }
+//   }
+//   zones: ['1'] // Should be set to the same zone as the VM
+// }
 
 resource sharedDataDisk 'Microsoft.Compute/disks@2024-03-02' = {
   location: location
@@ -161,6 +171,125 @@ resource sharedDataDisk 'Microsoft.Compute/disks@2024-03-02' = {
       createOption: 'Empty'
     }
     maxShares: 2
+    encryption: {
+      type: 'EncryptionAtRestWithPlatformAndCustomerKeys'
+      diskEncryptionSetId: diskEncryptionSet.id
+    }
+  }
+  zones: ['1'] // Should be set to the same zone as the VM
+}
+
+resource tempVirtualMachine 'Microsoft.Compute/virtualMachines@2025-04-01' = {
+  name: osDiskVMName
+  location: location
+  properties: {
+    hardwareProfile: {
+      vmSize: 'Standard_D2s_v3'
+    }
+    osProfile: {
+      adminUsername: 'localAdminUser'
+      adminPassword: password
+    }
+    storageProfile: {
+      imageReference: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2022-datacenter-azure-edition'
+        version: 'latest'
+      }
+      osDisk: {
+        createOption: 'FromImage'
+        osType: 'Windows'
+        managedDisk: {
+          diskEncryptionSet: {
+            id: diskEncryptionSet.id
+          }
+        }
+      }
+    }
+    networkProfile: {
+      networkInterfaceConfigurations: [
+        {
+          name: 'primary'
+          properties: {
+            ipConfigurations: [
+              {
+                name: 'ipconfig01'
+                properties: {
+                  subnet: {
+                    id: virtualNetwork.properties.subnets[0].id
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
+
+// resource createSnapshot 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+//   dependsOn: [msiKVReadRoleAssignment]
+//   name: waitDeploymentScriptName
+//   location: location
+//   kind: 'AzurePowerShell'
+//   properties: {
+//     retentionInterval: 'PT1H'
+//     azPowerShellVersion: '11.0'
+//     cleanupPreference: 'Always'
+//     arguments: ' -sourceUri "${tempVirtualMachine.properties.storageProfile.osDisk.managedDisk.id}" -resourceGroupName "${resourceGroup().name}" -snapshotName "${osDiskName}-snapshot" -location "${location}"'
+//     scriptContent: '''
+//     param(
+//         [Parameter(Mandatory = $true)]
+//         [string] $SourceUri,
+
+//         [Parameter(Mandatory = $true)]
+//         [string] $Location,
+
+//         [Parameter(Mandatory = $true)]
+//         [string] $SnapshotName,
+
+//         [Parameter(Mandatory = $true)]
+//         [string] $ResourceGroupName
+//     )
+
+//     $snapshot =  New-AzSnapshotConfig -SourceUri $SourceUri -Location $Location -CreateOption 'copy'
+//     New-AzSnapshot -Snapshot $snapshot -SnapshotName $SnapshotName -ResourceGroupName $ResourceGroupName
+//     Get-AzSnapshot -ResourceGroupName $ResourceGroupName
+
+//     # Write into Deployment Script output stream
+//     $DeploymentScriptOutputs = @{
+//         # Requires conversion as the script otherwise returns an object instead of the plain public key string
+//         publicKey = $publicKey | Out-String
+//     }
+//     '''
+//   }
+// }
+
+resource snapshot 'Microsoft.Compute/snapshots@2024-03-02' = {
+  name: '${osDiskName}-snapshot'
+  location: location
+  properties: {
+    creationData: {
+      sourceResourceId: tempVirtualMachine.properties.storageProfile.osDisk.managedDisk.id
+      createOption: 'Copy'
+    }
+  }
+}
+
+resource osDisk 'Microsoft.Compute/disks@2024-03-02' = {
+  location: location
+  name: osDiskName
+  sku: {
+    name: 'Premium_LRS'
+  }
+  properties: {
+    diskSizeGB: 1024
+    creationData: {
+      createOption: 'CopyFromSanSnapshot'
+      sourceResourceId: snapshot.id
+    }
     encryption: {
       type: 'EncryptionAtRestWithPlatformAndCustomerKeys'
       diskEncryptionSetId: diskEncryptionSet.id
