@@ -630,10 +630,6 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.3' = {
         value: aiFoundryAiProjectResourceName
       }
       {
-        name: 'AZURE-OPENAI-INFERENCE-ENDPOINT'
-        value: ''
-      }
-      {
         name: 'AZURE-OPENAI-DEPLOYMENT-MODEL'
         value: gptModelName
       }
@@ -656,10 +652,6 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.3' = {
       {
         name: 'COG-SERVICES-NAME'
         value: aiFoundryAiServicesResourceName
-      }
-      {
-        name: 'AZURE-OPENAI-INFERENCE-ENDPOINT'
-        value: ''
       }
       {
         name: 'AZURE-OPENAI-INFERENCE-ENDPOINT'
