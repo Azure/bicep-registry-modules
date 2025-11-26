@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "8579564077042723807"
+      "templateHash": "16673980549805321433"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -2893,7 +2893,7 @@
                 "caching": "[if(not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id'))), 'None', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'caching'), 'ReadOnly'))]",
                 "managedDisk": {
                   "id": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'resourceId'), if(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id')), resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))), null()))]",
-                  "diskEncryptionSet": "[if(contains(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'diskEncryptionSetResourceId'), createObject('id', coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk.diskEncryptionSetResourceId), null())]"
+                  "diskEncryptionSet": "[if(not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'diskEncryptionSetResourceId'))), createObject('id', coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk.diskEncryptionSetResourceId), null())]"
                 }
               }
             }
