@@ -201,6 +201,7 @@ resource tempVirtualMachine 'Microsoft.Compute/virtualMachines@2025-04-01' = {
       osDisk: {
         createOption: 'FromImage'
         osType: 'Windows'
+        deleteOption: 'Delete'
         managedDisk: {
           diskEncryptionSet: {
             id: diskEncryptionSet.id
