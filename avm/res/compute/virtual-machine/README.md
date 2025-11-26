@@ -2532,6 +2532,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       }
     ]
+    diskControllerType: 'SCSI'
     location: '<location>'
     tags: {
       Environment: 'Non-Prod'
@@ -2622,6 +2623,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       ]
     },
+    "diskControllerType": {
+      "value": "SCSI"
+    },
     "location": {
       "value": "<location>"
     },
@@ -2694,6 +2698,7 @@ param dataDisks = [
     }
   }
 ]
+param diskControllerType = 'SCSI'
 param location = '<location>'
 param tags = {
   Environment: 'Non-Prod'
@@ -5102,6 +5107,7 @@ param location = '<location>'
 | [`dataDisks`](#parameter-datadisks) | array | Specifies the data disks. For security reasons, it is recommended to specify DiskEncryptionSet into the dataDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs. |
 | [`dedicatedHostResourceId`](#parameter-dedicatedhostresourceid) | string | Specifies resource ID about the dedicated host that the virtual machine resides in. |
 | [`disablePasswordAuthentication`](#parameter-disablepasswordauthentication) | bool | Specifies whether password authentication should be disabled. |
+| [`diskControllerType`](#parameter-diskcontrollertype) | string | Specifies the disk controller type. |
 | [`enableAutomaticUpdates`](#parameter-enableautomaticupdates) | bool | Indicates whether Automatic Updates is enabled for the Windows virtual machine. Default value is true. When patchMode is set to Manual, this parameter must be set to false. For virtual machine scale sets, this property can be updated and updates will take effect on OS reprovisioning. |
 | [`enableHotpatching`](#parameter-enablehotpatching) | bool | Enables customers to patch their Azure VMs without requiring a reboot. For enableHotpatching, the 'provisionVMAgent' must be set to true and 'patchMode' must be set to 'AutomaticByPlatform'. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -7482,6 +7488,20 @@ Specifies whether password authentication should be disabled.
 - Type: bool
 - Default: `False`
 
+### Parameter: `diskControllerType`
+
+Specifies the disk controller type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NVMe'
+    'SCSI'
+  ]
+  ```
+
 ### Parameter: `enableAutomaticUpdates`
 
 Indicates whether Automatic Updates is enabled for the Windows virtual machine. Default value is true. When patchMode is set to Manual, this parameter must be set to false. For virtual machine scale sets, this property can be updated and updates will take effect on OS reprovisioning.
@@ -8422,12 +8442,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/network-interface:0.5.1` | Remote reference |
-| `br/public:avm/res/network/network-interface:0.5.2` | Remote reference |
-| `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
-| `br/public:avm/res/network/public-ip-address:0.9.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/res/network/network-interface:0.5.3` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.9.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Notes
 
