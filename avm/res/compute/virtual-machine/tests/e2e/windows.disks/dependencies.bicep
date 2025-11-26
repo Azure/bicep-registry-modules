@@ -208,6 +208,7 @@ resource tempVirtualMachine 'Microsoft.Compute/virtualMachines@2025-04-01' = {
       }
     }
     networkProfile: {
+      networkApiVersion: '2022-11-01'
       networkInterfaceConfigurations: [
         {
           name: 'primary'
