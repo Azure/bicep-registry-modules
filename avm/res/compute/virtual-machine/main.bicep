@@ -584,9 +584,11 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         caching: !empty(osDisk.managedDisk.?resourceId) ? 'None' : osDisk.?caching ?? 'ReadOnly'
         managedDisk: {
           storageAccountType: osDisk.managedDisk.?storageAccountType
-          diskEncryptionSet: {
-            id: osDisk.managedDisk.?diskEncryptionSetResourceId
-          }
+          diskEncryptionSet: !empty(osDisk.managedDisk.?diskEncryptionSetResourceId)
+            ? {
+                id: osDisk.managedDisk.?diskEncryptionSetResourceId
+              }
+            : null
           id: osDisk.managedDisk.?resourceId
         }
       }

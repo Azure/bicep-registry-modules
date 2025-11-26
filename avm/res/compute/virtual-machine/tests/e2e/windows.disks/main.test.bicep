@@ -85,7 +85,7 @@ module testDeployment '../../../main.bicep' = [
       osDisk: {
         managedDisk: {
           resourceId: nestedDependencies.outputs.osDiskResourceId
-          diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
+          // diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
         }
       }
       dataDisks: [
