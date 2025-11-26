@@ -65,6 +65,9 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}'
+      securityType: 'TrustedLaunch'
+      osType: 'Linux'
+      vmSize: 'Standard_D2s_v3'
       // adminUsername: 'localAdminUser'
       // imageReference: {
       //   publisher: 'MicrosoftWindowsServer'
@@ -112,8 +115,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      osType: 'Linux'
-      vmSize: 'Standard_D2s_v3'
     }
   }
 ]
