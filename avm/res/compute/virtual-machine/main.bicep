@@ -614,16 +614,18 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       ultraSSDEnabled: ultraSSDEnabled
       hibernationEnabled: hibernationEnabled
     }
-    osProfile: {
-      computerName: computerName
-      adminUsername: adminUsername
-      adminPassword: adminPassword
-      customData: !empty(customData) ? base64(customData) : null
-      windowsConfiguration: osType == 'Windows' ? windowsConfiguration : null
-      linuxConfiguration: osType == 'Linux' ? linuxConfiguration : null
-      secrets: certificatesToBeInstalled
-      allowExtensionOperations: allowExtensionOperations
-    }
+    osProfile: osDisk.?createOption != 'Attach' // Not allowed
+      ? {
+          computerName: computerName
+          adminUsername: adminUsername
+          adminPassword: adminPassword
+          customData: !empty(customData) ? base64(customData) : null
+          windowsConfiguration: osType == 'Windows' ? windowsConfiguration : null
+          linuxConfiguration: osType == 'Linux' ? linuxConfiguration : null
+          secrets: certificatesToBeInstalled
+          allowExtensionOperations: allowExtensionOperations
+        }
+      : null
     networkProfile: {
       networkInterfaces: [
         for (nicConfiguration, index) in nicConfigurations: {
