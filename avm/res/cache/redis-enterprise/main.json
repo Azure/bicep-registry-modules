@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "5874700834788423172"
+      "templateHash": "3131549630716150176"
     },
     "name": "Redis Enterprise and Azure Managed Redis",
-    "description": "This module deploys a Redis Enterprise or Azure Managed Redis cache.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Redis Enterprise or Azure Managed Redis cache."
   },
   "definitions": {
     "databaseType": {
