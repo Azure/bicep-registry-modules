@@ -19,6 +19,9 @@ param keyVaultName string
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
+@description('Required. The name of the deployment script that waits for a role assignment to propagate.')
+param waitDeploymentScriptName string
+
 var addressPrefix = '10.0.0.0/16'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-01-01' = {
@@ -91,7 +94,7 @@ resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' = {
     encryptionType: 'EncryptionAtRestWithPlatformAndCustomerKeys'
   }
   dependsOn: [
-    msiKVReadRoleAssignment
+    waitForRolePropagation
   ]
 }
 
@@ -105,6 +108,20 @@ resource msiKVReadRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-0
       'e147488a-f6f5-4113-8e2d-b22465e65bf6'
     ) // Key Vault Crypto Service Encryption User
     principalType: 'ServicePrincipal'
+  }
+}
+
+// Waiting for the role assignment to propagate
+resource waitForRolePropagation 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  dependsOn: [msiKVReadRoleAssignment]
+  name: waitDeploymentScriptName
+  location: location
+  kind: 'AzurePowerShell'
+  properties: {
+    retentionInterval: 'PT1H'
+    azPowerShellVersion: '11.0'
+    cleanupPreference: 'Always'
+    scriptContent: 'write-output "Sleeping for 15"; start-sleep -Seconds 15'
   }
 }
 
