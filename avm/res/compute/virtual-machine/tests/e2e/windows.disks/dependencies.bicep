@@ -4,8 +4,17 @@ param virtualNetworkName string
 @description('Optional. The location to deploy to.')
 param location string = resourceGroup().location
 
-@description('Required. The name of the disk to create.')
+@description('Required. The name of the data disk to create.')
 param sharedDiskName string
+
+@description('Required. The name of the os disk to create.')
+param osDiskName string
+
+@description('Required. The name of the Disk Encryption Set to create.')
+param diskEncryptionSetName string
+
+@description('Required. The name of the Key Vault to create.')
+param keyVaultName string
 
 var addressPrefix = '10.0.0.0/16'
 
@@ -29,6 +38,82 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-01-01' = {
   }
 }
 
+resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
+  name: keyVaultName
+  location: location
+  properties: {
+    sku: {
+      family: 'A'
+      name: 'standard'
+    }
+    tenantId: tenant().tenantId
+    enablePurgeProtection: true // Required for encryption to work
+    softDeleteRetentionInDays: 7
+    enabledForTemplateDeployment: true
+    enabledForDiskEncryption: true
+    enabledForDeployment: true
+    enableRbacAuthorization: true
+    accessPolicies: []
+  }
+
+  resource key 'keys@2025-05-01' = {
+    name: 'keyEncryptionKey'
+    properties: {
+      kty: 'RSA'
+    }
+  }
+}
+
+resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' = {
+  name: diskEncryptionSetName
+  location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    activeKey: {
+      sourceVault: {
+        id: keyVault.id
+      }
+      keyUrl: keyVault::key.properties.keyUriWithVersion
+    }
+    encryptionType: 'EncryptionAtRestWithPlatformAndCustomerKeys'
+  }
+}
+
+resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(keyVault::key.id, 'Key Vault Crypto User', diskEncryptionSet.id)
+  scope: keyVault
+  properties: {
+    principalId: diskEncryptionSet.identity.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'e147488a-f6f5-4113-8e2d-b22465e65bf6'
+    ) // Key Vault Crypto Service Encryption User
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource osDisk 'Microsoft.Compute/disks@2024-03-02' = {
+  location: location
+  name: osDiskName
+  sku: {
+    name: 'Premium_LRS'
+  }
+  properties: {
+    diskSizeGB: 1024
+    creationData: {
+      createOption: 'Empty'
+    }
+    maxShares: 2
+    encryption: {
+      type: 'EncryptionAtRestWithCustomerKey'
+      diskEncryptionSetId: diskEncryptionSet.id
+    }
+  }
+  zones: ['1'] // Should be set to the same zone as the VM
+}
+
 resource sharedDataDisk 'Microsoft.Compute/disks@2024-03-02' = {
   location: location
   name: sharedDiskName
@@ -42,7 +127,8 @@ resource sharedDataDisk 'Microsoft.Compute/disks@2024-03-02' = {
     }
     maxShares: 2
     encryption: {
-      type: 'EncryptionAtRestWithPlatformKey'
+      type: 'EncryptionAtRestWithCustomerKey'
+      diskEncryptionSetId: diskEncryptionSet.id
     }
   }
   zones: ['1'] // Should be set to the same zone as the VM
@@ -54,5 +140,8 @@ output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 @description('The resource ID of the created data disk.')
 output sharedDataDiskResourceId string = sharedDataDisk.id
 
-@description('The name of the created data disk.')
-output sharedDataDiskName string = sharedDataDisk.name
+@description('The resource ID of the created os disk.')
+output osDiskResourceId string = osDisk.id
+
+@description('The resource ID of the created Disk Encryption Set.')
+output diskEncryptionSetResourceId string = diskEncryptionSet.id
