@@ -16,6 +16,9 @@ param diskEncryptionSetName string
 @description('Required. The name of the Key Vault to create.')
 param keyVaultName string
 
+@description('Required. The name of the Managed Identity to create.')
+param managedIdentityName string
+
 var addressPrefix = '10.0.0.0/16'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-01-01' = {
@@ -36,6 +39,11 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-01-01' = {
       }
     ]
   }
+}
+
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
+  name: managedIdentityName
+  location: location
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
@@ -68,7 +76,10 @@ resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' = {
   name: diskEncryptionSetName
   location: location
   identity: {
-    type: 'SystemAssigned'
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
   }
   properties: {
     activeKey: {
@@ -79,13 +90,16 @@ resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' = {
     }
     encryptionType: 'EncryptionAtRestWithPlatformAndCustomerKeys'
   }
+  dependsOn: [
+    msiKVReadRoleAssignment
+  ]
 }
 
-resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(keyVault::key.id, 'Key Vault Crypto User', diskEncryptionSet.id)
-  scope: keyVault
+resource msiKVReadRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-KeyVault-Key-Key-Vault-Crypto-Service-Encryption-User-RoleAssignment')
+  scope: keyVault::key
   properties: {
-    principalId: diskEncryptionSet.identity.principalId
+    principalId: managedIdentity.properties.principalId
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       'e147488a-f6f5-4113-8e2d-b22465e65bf6'

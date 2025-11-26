@@ -46,9 +46,10 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     sharedDiskName: 'dep-${namePrefix}-shared-disk-${serviceShort}'
     osDiskName: 'dep-${namePrefix}-os-disk-${serviceShort}'
+    diskEncryptionSetName: 'dep-${namePrefix}-des-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep${namePrefix}kv${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
-    diskEncryptionSetName: 'dep-${namePrefix}-des-${serviceShort}'
   }
 }
 
