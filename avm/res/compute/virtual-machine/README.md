@@ -24,7 +24,7 @@ This module deploys a Virtual Machine with one or multiple NICs and optionally o
 | `Microsoft.Compute/virtualMachines/extensions` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-11-01/virtualMachines/extensions)</li></ul> |
 | `Microsoft.DevTestLab/schedules` | 2018-09-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_schedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules)</li></ul> |
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | 2024-04-05 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.guestconfiguration_guestconfigurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2024-04-05/guestConfigurationAssignments)</li></ul> |
-| `Microsoft.Insights/dataCollectionRuleAssociations` | 2023-03-11 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_datacollectionruleassociations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionRuleAssociations)</li></ul> |
+| `Microsoft.Insights/dataCollectionRuleAssociations` | 2024-03-11 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_datacollectionruleassociations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2024-03-11/dataCollectionRuleAssociations)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.Maintenance/configurationAssignments` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_configurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments)</li></ul> |
 | `Microsoft.Network/networkInterfaces` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkinterfaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkInterfaces)</li></ul> |
@@ -82,12 +82,12 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           {
             name: 'ipconfig01'
             pipConfiguration: {
-              publicIpNameSuffix: '-pip-01'
-              zones: [
+              availabilityZones: [
                 1
                 2
                 3
               ]
+              publicIpNameSuffix: '-pip-01'
             }
             subnetResourceId: '<subnetResourceId>'
           }
@@ -154,12 +154,12 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             {
               "name": "ipconfig01",
               "pipConfiguration": {
-                "publicIpNameSuffix": "-pip-01",
-                "zones": [
+                "availabilityZones": [
                   1,
                   2,
                   3
-                ]
+                ],
+                "publicIpNameSuffix": "-pip-01"
               },
               "subnetResourceId": "<subnetResourceId>"
             }
@@ -230,12 +230,12 @@ param nicConfigurations = [
       {
         name: 'ipconfig01'
         pipConfiguration: {
-          publicIpNameSuffix: '-pip-01'
-          zones: [
+          availabilityZones: [
             1
             2
             3
           ]
+          publicIpNameSuffix: '-pip-01'
         }
         subnetResourceId: '<subnetResourceId>'
       }
@@ -311,7 +311,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     vmSize: 'Standard_D2s_v3'
     // Non-required parameters
     disablePasswordAuthentication: true
-    location: '<location>'
     publicKeys: [
       {
         keyData: '<keyData>'
@@ -384,9 +383,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "disablePasswordAuthentication": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
     "publicKeys": {
       "value": [
         {
@@ -441,7 +437,6 @@ param osType = 'Linux'
 param vmSize = 'Standard_D2s_v3'
 // Non-required parameters
 param disablePasswordAuthentication = true
-param location = '<location>'
 param publicKeys = [
   {
     keyData: '<keyData>'
@@ -1649,7 +1644,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         Role: 'DeploymentValidation'
       }
     }
-    location: '<location>'
     maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
     managedIdentities: {
       systemAssigned: true
@@ -1977,9 +1971,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "maintenanceConfigurationResourceId": {
       "value": "<maintenanceConfigurationResourceId>"
     },
@@ -2267,7 +2258,6 @@ param extensionNetworkWatcherAgentConfig = {
     Role: 'DeploymentValidation'
   }
 }
-param location = '<location>'
 param maintenanceConfigurationResourceId = '<maintenanceConfigurationResourceId>'
 param managedIdentities = {
   systemAssigned: true
@@ -2349,7 +2339,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     vmSize: 'Standard_D2s_v3'
     // Non-required parameters
     adminPassword: '<adminPassword>'
-    location: '<location>'
   }
 }
 ```
@@ -2415,9 +2404,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -2465,7 +2451,6 @@ param osType = 'Windows'
 param vmSize = 'Standard_D2s_v3'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
-param location = '<location>'
 ```
 
 </details>
@@ -2528,11 +2513,10 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
       {
         managedDisk: {
-          id: '<id>'
+          resourceId: '<resourceId>'
         }
       }
     ]
-    location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -2617,13 +2601,10 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         },
         {
           "managedDisk": {
-            "id": "<id>"
+            "resourceId": "<resourceId>"
           }
         }
       ]
-    },
-    "location": {
-      "value": "<location>"
     },
     "tags": {
       "value": {
@@ -2690,11 +2671,10 @@ param dataDisks = [
   }
   {
     managedDisk: {
-      id: '<id>'
+      resourceId: '<resourceId>'
     }
   }
 ]
-param location = '<location>'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -2734,8 +2714,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           {
             name: 'ipconfig01'
             pipConfiguration: {
+              availabilityZones: []
               publicIpNameSuffix: '-pip-01'
-              zones: []
             }
             subnetResourceId: '<subnetResourceId>'
           }
@@ -2780,7 +2760,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       name: 'myAzureWindowsBaseline'
       version: '1.*'
     }
-    location: '<location>'
     managedIdentities: {
       systemAssigned: true
     }
@@ -2825,8 +2804,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             {
               "name": "ipconfig01",
               "pipConfiguration": {
-                "publicIpNameSuffix": "-pip-01",
-                "zones": []
+                "availabilityZones": [],
+                "publicIpNameSuffix": "-pip-01"
               },
               "subnetResourceId": "<subnetResourceId>"
             }
@@ -2884,9 +2863,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         "version": "1.*"
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true
@@ -2922,8 +2898,8 @@ param nicConfigurations = [
       {
         name: 'ipconfig01'
         pipConfiguration: {
+          availabilityZones: []
           publicIpNameSuffix: '-pip-01'
-          zones: []
         }
         subnetResourceId: '<subnetResourceId>'
       }
@@ -2968,7 +2944,6 @@ param guestConfiguration = {
   name: 'myAzureWindowsBaseline'
   version: '1.*'
 }
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
 }
@@ -3045,7 +3020,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         Role: 'DeploymentValidation'
       }
     }
-    location: '<location>'
     managedIdentities: {
       systemAssigned: true
     }
@@ -3142,9 +3116,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true
@@ -3219,7 +3190,6 @@ param extensionHostPoolRegistration = {
     Role: 'DeploymentValidation'
   }
 }
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
 }
@@ -3407,7 +3377,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       {
         lun: 2
         managedDisk: {
-          id: '<id>'
+          resourceId: '<resourceId>'
         }
       }
     ]
@@ -3778,7 +3748,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         {
           "lun": 2,
           "managedDisk": {
-            "id": "<id>"
+            "resourceId": "<resourceId>"
           }
         }
       ]
@@ -4153,7 +4123,7 @@ param dataDisks = [
   {
     lun: 2
     managedDisk: {
-      id: '<id>'
+      resourceId: '<resourceId>'
     }
   }
 ]
@@ -4553,7 +4523,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       }
     ]
-    location: '<location>'
   }
 }
 ```
@@ -4630,9 +4599,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           }
         }
       ]
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -4689,7 +4655,6 @@ param dataDisks = [
     }
   }
 ]
-param location = '<location>'
 ```
 
 </details>
@@ -4740,7 +4705,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     vmSize: 'Standard_D2s_v3'
     // Non-required parameters
     adminPassword: '<adminPassword>'
-    location: '<location>'
     virtualMachineScaleSetResourceId: '<virtualMachineScaleSetResourceId>'
   }
 }
@@ -4808,9 +4772,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminPassword": {
       "value": "<adminPassword>"
     },
-    "location": {
-      "value": "<location>"
-    },
     "virtualMachineScaleSetResourceId": {
       "value": "<virtualMachineScaleSetResourceId>"
     }
@@ -4860,7 +4821,6 @@ param osType = 'Windows'
 param vmSize = 'Standard_D2s_v3'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
-param location = '<location>'
 param virtualMachineScaleSetResourceId = '<virtualMachineScaleSetResourceId>'
 ```
 
@@ -4921,7 +4881,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       }
     ]
-    location: '<location>'
   }
 }
 ```
@@ -4998,9 +4957,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           }
         }
       ]
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -5057,7 +5013,6 @@ param dataDisks = [
     }
   }
 ]
-param location = '<location>'
 ```
 
 </details>
@@ -6857,11 +6812,19 @@ The managed disk parameters.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diskEncryptionSetResourceId`](#parameter-osdiskmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
+| [`resourceId`](#parameter-osdiskmanageddiskresourceid) | string | Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty. |
 | [`storageAccountType`](#parameter-osdiskmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. |
 
 ### Parameter: `osDisk.managedDisk.diskEncryptionSetResourceId`
 
 Specifies the customer managed disk encryption set resource id for the managed disk.
+
+- Required: No
+- Type: string
+
+### Parameter: `osDisk.managedDisk.resourceId`
+
+Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty.
 
 - Required: No
 - Type: string
@@ -7344,7 +7307,7 @@ The managed disk parameters.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diskEncryptionSetResourceId`](#parameter-datadisksmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
-| [`id`](#parameter-datadisksmanageddiskid) | string | Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty. |
+| [`resourceId`](#parameter-datadisksmanageddiskresourceid) | string | Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty. |
 | [`storageAccountType`](#parameter-datadisksmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. Ignored when attaching a pre-existing disk. |
 
 ### Parameter: `dataDisks.managedDisk.diskEncryptionSetResourceId`
@@ -7354,7 +7317,7 @@ Specifies the customer managed disk encryption set resource id for the managed d
 - Required: No
 - Type: string
 
-### Parameter: `dataDisks.managedDisk.id`
+### Parameter: `dataDisks.managedDisk.resourceId`
 
 Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty.
 
@@ -8423,11 +8386,12 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/network-interface:0.5.1` | Remote reference |
-| `br/public:avm/res/network/network-interface:0.5.2` | Remote reference |
+| `br/public:avm/res/network/network-interface:0.5.3` | Remote reference |
 | `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
-| `br/public:avm/res/network/public-ip-address:0.9.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.9.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Notes
 

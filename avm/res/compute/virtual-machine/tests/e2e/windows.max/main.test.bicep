@@ -240,7 +240,7 @@ module testDeployment '../../../main.bicep' = [
         {
           lun: 2
           managedDisk: {
-            id: nestedDependencies.outputs.preCreatedDataDiskResourceId
+            resourceId: nestedDependencies.outputs.preCreatedDataDiskResourceId
           }
         }
       ]

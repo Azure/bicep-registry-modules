@@ -584,6 +584,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
           diskEncryptionSet: {
             id: osDisk.managedDisk.?diskEncryptionSetResourceId
           }
+          id: osDisk.managedDisk.?resourceId
         }
       }
       dataDisks: [
@@ -598,10 +599,10 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
           deleteOption: !empty(dataDisk.managedDisk.?id) ? 'Detach' : dataDisk.?deleteOption ?? 'Delete'
           caching: !empty(dataDisk.managedDisk.?id) ? 'None' : dataDisk.?caching ?? 'ReadOnly'
           managedDisk: {
-            id: dataDisk.managedDisk.?id ?? managedDataDisks[index].?id
-            diskEncryptionSet: contains(dataDisk.managedDisk, 'diskEncryptionSet')
+            id: dataDisk.managedDisk.?resourceId ?? managedDataDisks[index].?id
+            diskEncryptionSet: contains(dataDisk.managedDisk, 'diskEncryptionSetResourceId')
               ? {
-                  id: dataDisk.managedDisk.diskEncryptionSet.id
+                  id: dataDisk.managedDisk.diskEncryptionSetResourceId
                 }
               : null
           }
@@ -823,7 +824,7 @@ module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonit
   ]
 }
 
-resource vm_dataCollectionRuleAssociations 'Microsoft.Insights/dataCollectionRuleAssociations@2023-03-11' = [
+resource vm_dataCollectionRuleAssociations 'Microsoft.Insights/dataCollectionRuleAssociations@2024-03-11' = [
   for (dataCollectionRuleAssociation, index) in extensionMonitoringAgentConfig.dataCollectionRuleAssociations: if (extensionMonitoringAgentConfig.enabled) {
     name: dataCollectionRuleAssociation.name
     scope: vm
@@ -1178,6 +1179,9 @@ type osDiskType = {
 
     @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
     diskEncryptionSetResourceId: string?
+
+    @description('Optional. Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty.')
+    resourceId: string?
   }
 }
 
@@ -1224,11 +1228,11 @@ type dataDiskType = {
     diskEncryptionSetResourceId: string?
 
     @description('Optional. Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty.')
-    id: string?
+    resourceId: string?
   }
 
   @description('Optional. The tags of the public IP address. Valid only when creating a new managed disk.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Compute/disks@2025-01-02'>.tags?
 }
 
 type publicKeyType = {
