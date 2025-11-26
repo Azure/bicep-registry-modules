@@ -112,7 +112,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      osType: 'Windows'
+      osType: 'Linux'
       vmSize: 'Standard_D2s_v3'
     }
   }
