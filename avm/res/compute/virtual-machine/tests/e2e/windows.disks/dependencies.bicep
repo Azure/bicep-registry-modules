@@ -290,7 +290,7 @@ resource osDisk 'Microsoft.Compute/disks@2024-03-02' = {
   properties: {
     diskSizeGB: 1024
     creationData: {
-      createOption: 'CopyFromSanSnapshot'
+      createOption: 'copy'
       sourceResourceId: snapshot.id
     }
     encryption: {
