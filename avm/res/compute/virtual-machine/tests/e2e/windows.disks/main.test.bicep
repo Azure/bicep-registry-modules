@@ -66,9 +66,9 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}01'
+      name: '${namePrefix}${serviceShort}02'
       securityType: 'TrustedLaunch'
-      osType: 'Linux'
+      osType: 'Windows'
       vmSize: 'Standard_D2s_v3'
       availabilityZone: 1
       nicConfigurations: [
@@ -84,7 +84,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       osDisk: {
         managedDisk: {
-          resourceId: '/subscriptions/cfa4dc0b-3d25-4e58-a70a-7085359080c5/resourceGroups/dep-avmx-compute.virtualMachines-cvmwindisk-rg/providers/Microsoft.Compute/disks/custom-vm-managed-disk'
+          resourceId: nestedDependencies.outputs.osDiskResourceId
         }
       }
       dataDisks: [
