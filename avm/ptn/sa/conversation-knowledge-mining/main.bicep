@@ -228,7 +228,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 
 // ========== Log Analytics Workspace ========== //
 var logAnalyticsWorkspaceResourceName = 'log-${solutionSuffix}'
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.12.0' = if (enableMonitoring) {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.13.0' = if (enableMonitoring) {
   name: take('avm.res.operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
   params: {
     name: logAnalyticsWorkspaceResourceName
@@ -618,6 +618,10 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.3' = {
         value: 'https://${aiFoundryAiServicesResourceName}.openai.azure.com/'
       }
       {
+        name: 'AZURE-AI-AGENT-ENDPOINT'
+        value: aiFoundryAiServices.outputs.aiProjectInfo.apiEndpoint
+      }
+      {
         name: 'COG-SERVICES-ENDPOINT'
         value: aiFoundryAiServices.outputs.endpoint
       }
@@ -809,7 +813,7 @@ module aiFoundryAiServices 'modules/ai-services.bicep' = {
 // AI Foundry: AI Services Content Understanding
 var aiFoundryAiServicesCUResourceName = 'aif-${solutionSuffix}-cu'
 var aiServicesNameCu = 'aisa-${solutionSuffix}-cu'
-module cognitiveServicesCu 'br/public:avm/res/cognitive-services/account:0.13.2' = {
+module cognitiveServicesCu 'br/public:avm/res/cognitive-services/account:0.14.0' = {
   name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesCUResourceName}', 64)
   params: {
     name: aiServicesNameCu
@@ -986,7 +990,7 @@ resource projectAISearchConnection 'Microsoft.CognitiveServices/accounts/project
 
 // ========== Storage account module ========== //
 var storageAccountName = 'st${solutionSuffix}'
-module storageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.29.0' = {
   name: take('avm.res.storage.storage-account.${storageAccountName}', 64)
   params: {
     name: storageAccountName
@@ -1231,7 +1235,7 @@ resource maintenanceWindow 'Microsoft.Maintenance/publicMaintenanceConfiguration
 //========== SQL Database module ========== //
 var sqlServerResourceName = 'sql-${solutionSuffix}'
 var sqlDbModuleName = 'sqldb-${solutionSuffix}'
-module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
+module sqlDBModule 'br/public:avm/res/sql/server:0.21.0' = {
   name: take('avm.res.sql.server.${sqlServerResourceName}', 64)
   params: {
     name: sqlServerResourceName
