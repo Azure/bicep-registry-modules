@@ -568,10 +568,12 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
     storageProfile: {
       imageReference: imageReference
       osDisk: {
-        name: osDisk.?name ?? (osDisk.?createOption != 'Attach' ? '${name}-disk-os-01' : null)
-        createOption: osDisk.?createOption ?? 'FromImage'
+        name: !empty(osDisk.managedDisk.?resourceId)
+          ? last(split(osDisk.managedDisk.resourceId!, '/'))
+          : osDisk.?name ?? '${name}-disk-os-01'
+        createOption: !empty(osDisk.managedDisk.?resourceId) ? 'Attach' : osDisk.?createOption ?? 'FromImage'
         osType: osType
-        deleteOption: osDisk.?deleteOption ?? 'Delete'
+        deleteOption: !empty(osDisk.managedDisk.?resourceId) ? 'Detach' : osDisk.?deleteOption ?? 'Delete'
         diffDiskSettings: empty(osDisk.?diffDiskSettings ?? {})
           ? null
           : {
@@ -579,7 +581,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
               placement: osDisk.diffDiskSettings!.placement
             }
         diskSizeGB: osDisk.?diskSizeGB
-        caching: osDisk.?caching ?? 'ReadOnly'
+        caching: !empty(osDisk.managedDisk.?resourceId) ? 'None' : osDisk.?caching ?? 'ReadOnly'
         managedDisk: {
           storageAccountType: osDisk.managedDisk.?storageAccountType
           diskEncryptionSet: {
@@ -591,14 +593,14 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       dataDisks: [
         for (dataDisk, index) in dataDisks ?? []: {
           lun: dataDisk.?lun ?? index
-          name: !empty(dataDisk.managedDisk.?id)
-            ? last(split(dataDisk.managedDisk.id ?? '', '/'))
+          name: !empty(dataDisk.managedDisk.?resourceId)
+            ? last(split(dataDisk.managedDisk.resourceId!, '/'))
             : dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
-          createOption: (managedDataDisks[index].?id != null || !empty(dataDisk.managedDisk.?id))
+          createOption: (managedDataDisks[index].?id != null || !empty(dataDisk.managedDisk.?resourceId))
             ? 'Attach'
             : dataDisk.?createoption ?? 'Empty'
-          deleteOption: !empty(dataDisk.managedDisk.?id) ? 'Detach' : dataDisk.?deleteOption ?? 'Delete'
-          caching: !empty(dataDisk.managedDisk.?id) ? 'None' : dataDisk.?caching ?? 'ReadOnly'
+          deleteOption: !empty(dataDisk.managedDisk.?resourceId) ? 'Detach' : dataDisk.?deleteOption ?? 'Delete'
+          caching: !empty(dataDisk.managedDisk.?resourceId) ? 'None' : dataDisk.?caching ?? 'ReadOnly'
           managedDisk: {
             id: dataDisk.managedDisk.?resourceId ?? managedDataDisks[index].?id
             diskEncryptionSet: !empty(dataDisk.managedDisk.?diskEncryptionSetResourceId)
