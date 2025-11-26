@@ -600,7 +600,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
           caching: !empty(dataDisk.managedDisk.?id) ? 'None' : dataDisk.?caching ?? 'ReadOnly'
           managedDisk: {
             id: dataDisk.managedDisk.?resourceId ?? managedDataDisks[index].?id
-            diskEncryptionSet: contains(dataDisk.managedDisk, 'diskEncryptionSetResourceId')
+            diskEncryptionSet: contains(dataDisk.managedDisk ?? {}, 'diskEncryptionSetResourceId')
               ? {
                   id: dataDisk.managedDisk.diskEncryptionSetResourceId
                 }
