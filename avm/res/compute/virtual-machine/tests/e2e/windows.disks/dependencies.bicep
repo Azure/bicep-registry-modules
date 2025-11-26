@@ -189,7 +189,7 @@ resource tempVirtualMachine 'Microsoft.Compute/virtualMachines@2025-04-01' = {
     osProfile: {
       adminUsername: 'localAdminUser'
       adminPassword: password
-      computerName: osDiskVMName
+      computerName: take(osDiskVMName, 15)
     }
     storageProfile: {
       imageReference: {
