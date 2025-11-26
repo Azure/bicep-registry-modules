@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "6036875058945996178"
+      "version": "0.39.26.7824",
+      "templateHash": "17284323635484812835"
     },
     "name": "Azure Container Registry (ACR) Replications",
     "description": "This module deploys an Azure Container Registry (ACR) Replication."
