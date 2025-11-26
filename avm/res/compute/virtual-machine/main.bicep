@@ -521,7 +521,7 @@ module vm_nic 'modules/nic-configuration.bicep' = [
 ]
 
 resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
-  for (dataDisk, index) in dataDisks ?? []: if (empty(dataDisk.managedDisk.?id)) {
+  for (dataDisk, index) in dataDisks ?? []: if (empty(dataDisk.managedDisk.?resourceId)) {
     location: location
     name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
     sku: {
@@ -537,7 +537,7 @@ resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
       publicNetworkAccess: publicNetworkAccess
       networkAccessPolicy: networkAccessPolicy
     }
-    zones: availabilityZone != -1 && !contains(dataDisk.managedDisk.?storageAccountType ?? '', 'ZRS')
+    zones: availabilityZone != -1 && !contains(dataDisk.managedDisk.?storageAccountType, 'ZRS')
       ? array(string(availabilityZone))
       : null
     tags: dataDisk.?tags ?? tags
