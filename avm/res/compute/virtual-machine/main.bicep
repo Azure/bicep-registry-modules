@@ -570,6 +570,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       osDisk: {
         name: osDisk.?name ?? '${name}-disk-os-01'
         createOption: osDisk.?createOption ?? 'FromImage'
+        osType: osType
         deleteOption: osDisk.?deleteOption ?? 'Delete'
         diffDiskSettings: empty(osDisk.?diffDiskSettings ?? {})
           ? null
