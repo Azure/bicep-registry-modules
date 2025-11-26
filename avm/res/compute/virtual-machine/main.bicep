@@ -45,9 +45,9 @@ param ultraSSDEnabled bool = false
 @description('Optional. The flag that enables or disables hibernation capability on the VM.')
 param hibernationEnabled bool = false
 
-@description('Required. Administrator username.')
+@description('Conditional. Administrator username. Required if no pre-existing OS-Disk is provided (osDisk.managedDisk.resourceId is not empty).')
 @secure()
-param adminUsername string
+param adminUsername string?
 
 @description('Optional. When specifying a Windows Virtual Machine, this value should be passed.')
 @secure()
