@@ -134,7 +134,11 @@ resource osDisk 'Microsoft.Compute/disks@2024-03-02' = {
   properties: {
     diskSizeGB: 1024
     creationData: {
-      createOption: 'Empty'
+      createOption: 'FromImage'
+      imageReference: {
+        lun: 0
+        id: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Compute/locations/${location}/publishers/MicrosoftWindowsServer/ArtifactTypes/VMImage/Offers/WindowsServerUpgrade/Skus/server2022Upgrade/Versions/20348.4405.251105'
+      }
     }
     maxShares: 2
     encryption: {
