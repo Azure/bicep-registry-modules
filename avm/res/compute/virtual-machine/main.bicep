@@ -28,7 +28,7 @@ param secureBootEnabled bool = false
 param vTpmEnabled bool = false
 
 @description('Required. OS image reference. In case of marketplace images, it\'s the combination of the publisher, offer, sku, version attributes. In case of custom images it\'s the resource ID of the custom image.')
-param imageReference imageReferenceType
+param imageReference imageReferenceType?
 
 @description('Optional. Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use.')
 param plan planType?
