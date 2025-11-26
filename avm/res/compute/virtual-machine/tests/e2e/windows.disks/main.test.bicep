@@ -46,6 +46,7 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     sharedDiskName: 'dep-${namePrefix}-shared-disk-${serviceShort}'
     osDiskVMName: 'dep-${namePrefix}-os-disk-vm-${serviceShort}'
+    osDiskName: 'dep-${namePrefix}-os-disk-${serviceShort}'
     osDiskDeploymentScript: 'dep-${namePrefix}-os-disk-ds-${serviceShort}'
     diskEncryptionSetName: 'dep-${namePrefix}-des-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
@@ -65,7 +66,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}'
+      name: '${namePrefix}${serviceShort}01'
       securityType: 'TrustedLaunch'
       osType: 'Linux'
       vmSize: 'Standard_D2s_v3'
