@@ -107,7 +107,7 @@ resource osDisk 'Microsoft.Compute/disks@2024-03-02' = {
     }
     maxShares: 2
     encryption: {
-      type: 'EncryptionAtRestWithCustomerKey'
+      type: 'EncryptionAtRestWithPlatformAndCustomerKeys'
       diskEncryptionSetId: diskEncryptionSet.id
     }
   }
@@ -127,7 +127,7 @@ resource sharedDataDisk 'Microsoft.Compute/disks@2024-03-02' = {
     }
     maxShares: 2
     encryption: {
-      type: 'EncryptionAtRestWithCustomerKey'
+      type: 'EncryptionAtRestWithPlatformAndCustomerKeys'
       diskEncryptionSetId: diskEncryptionSet.id
     }
   }
