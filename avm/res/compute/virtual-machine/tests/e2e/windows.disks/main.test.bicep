@@ -98,6 +98,7 @@ module testDeployment '../../../main.bicep' = [
       dataDisks: [
         {
           diskSizeGB: 1024
+          createOption: 'Empty'
           caching: 'None'
           managedDisk: {
             storageAccountType: 'PremiumV2_LRS'
@@ -106,6 +107,7 @@ module testDeployment '../../../main.bicep' = [
           diskMBpsReadWrite: 125
         }
         {
+          createOption: 'Attach'
           managedDisk: {
             resourceId: nestedDependencies.outputs.sharedDataDiskResourceId
             diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
