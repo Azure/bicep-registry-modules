@@ -49,7 +49,7 @@ param hibernationEnabled bool = false
 @secure()
 param adminUsername string?
 
-@description('Optional. When specifying a Windows Virtual Machine, this value should be passed.')
+@description('Optional. When specifying a Windows Virtual Machine, and no pre-existing OS-Disk is provided (osDisk.managedDisk.resourceId is not empty), this value should be passed.')
 @secure()
 param adminPassword string = ''
 
