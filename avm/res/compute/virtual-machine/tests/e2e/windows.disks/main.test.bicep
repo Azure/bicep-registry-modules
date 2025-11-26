@@ -67,7 +67,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}02'
-      securityType: 'TrustedLaunch'
+      // securityType: 'TrustedLaunch'
       osType: 'Windows'
       vmSize: 'Standard_D2s_v3'
       availabilityZone: 1
