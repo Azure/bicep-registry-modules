@@ -114,12 +114,6 @@ module testDeployment '../../../main.bicep' = [
       ]
       osType: 'Windows'
       vmSize: 'Standard_D2s_v3'
-      adminPassword: password
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
-      }
     }
   }
 ]
