@@ -85,14 +85,14 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       osDisk: {
-        diskSizeGB: 128
-        caching: 'ReadWrite'
+        // diskSizeGB: 128
+        // caching: 'ReadWrite'
         createOption: 'Attach'
         managedDisk: {
-          storageAccountType: 'Premium_LRS'
+          // storageAccountType: 'Premium_LRS'
           // resourceId: nestedDependencies.outputs.osDiskResourceId
           resourceId: '/subscriptions/cfa4dc0b-3d25-4e58-a70a-7085359080c5/resourceGroups/dep-avmx-compute.virtualMachines-cvmwindisk-rg/providers/Microsoft.Compute/disks/custom-vm-managed-disk'
-          diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
+          // diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
         }
       }
       dataDisks: [
