@@ -1,3 +1,4 @@
+${4:=Managed HSM Crypto Service Encryption User}
 echo "Checking role assignment for HSM: $1, Key: $2, Principal: $3, Role: $4"
 # Allow key reference via identity
 result=$(az keyvault role assignment list --hsm-name "$1" --scope "/keys/$2" --query "[?principalId == \`$3\` && roleName == \`$4\`]")
