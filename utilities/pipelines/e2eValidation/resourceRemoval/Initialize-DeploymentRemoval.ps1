@@ -64,9 +64,6 @@ function Initialize-DeploymentRemoval {
 
     process {
 
-        $TotalOffsetMinutes = (Get-AzAccessToken -AsSecureString | Select-Object ExpiresOn).Expireson.TotalOffsetMinutes
-        Write-Verbose ('Access token expiration offset in minutes [{0}]' -f $TotalOffsetMinutes) -Verbose
-
         if (-not [String]::IsNullOrEmpty($subscriptionId)) {
             Write-Verbose ('Setting context to subscription [{0}]' -f $subscriptionId)
             $null = Set-AzContext -Subscription $subscriptionId
