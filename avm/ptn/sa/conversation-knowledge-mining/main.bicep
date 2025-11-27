@@ -619,7 +619,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.3' = {
       }
       {
         name: 'AZURE-AI-AGENT-ENDPOINT'
-        value: aiFoundryAiServices.outputs.aiProjectInfo.apiEndpoint
+        value: 'https://${aiFoundryAiServicesResourceName}.services.ai.azure.com/api/projects/${aiFoundryAiProjectResourceName}'
       }
       {
         name: 'COG-SERVICES-ENDPOINT'
