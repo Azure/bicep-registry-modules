@@ -8,6 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Added `defaultDataCollectionRuleResourceId` parameter.
 - Added `SecuredByPerimeter` to allowed values for `publicNetworkAccessForIngestion` and `publicNetworkAccessForQuery`.
+- Updated API version to `2025-07-01`.
 
 ### Breaking Changes
 
