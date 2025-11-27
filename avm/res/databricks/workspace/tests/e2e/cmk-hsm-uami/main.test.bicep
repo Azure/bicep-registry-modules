@@ -60,7 +60,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    // managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     databricksApplicationObjectId: azureDatabricksEnterpriseApplicationObjectId
     primaryHSMKeyName: nestedHsmDependencies.outputs.primaryKeyName
     secondaryHSMKeyName: nestedHsmDependencies.?outputs.?secondaryKeyName
@@ -99,29 +98,7 @@ module testDeployment '../../../main.bicep' = [
 // =============== //
 // Post-Deployment //
 // =============== //
-// The managed-disk's disk-encryption-set requires its identity to have at least 'Key Vault Crypto Service Encryption User' permissions on the used key.
-// module configureHSM 'br/public:avm/res/resources/deployment-script:0.5.2' = {
-//   name: '${uniqueString(deployment().name, enforcedLocation)}-managedDiskEncryptionSetPermissions'
-//   scope: resourceGroup
-
-//   params: {
-//     name: 'dep-${namePrefix}-ds-configureHSMDisk-${serviceShort}'
-//     kind: 'AzureCLI'
-//     azCliVersion: '2.67.0'
-//     arguments: '"${last(split(managedHSMResourceId, '/'))}" "${nestedHsmDependencies.?outputs.?secondaryKeyName!}" "${testDeployment[1].outputs.managedDiskIdentityPrincipalId!}"'
-//     scriptContent: '''
-//       # Allow key reference via identity
-//       az keyvault role assignment create --hsm-name $1 --role "Managed HSM Crypto Service Encryption User" --scope /keys/$2 --assignee $3
-//     '''
-//     retentionInterval: 'P1D'
-//     managedIdentities: {
-//       userAssignedResourceIds: [
-//         deploymentMSIResourceId
-//       ]
-//     }
-//   }
-// }
-
+// The managed-disk's disk-encryption-set requires its identity to have at least 'Managed HSM Crypto Service Encryption User' permissions on the used key.
 module configureHSM 'br/public:avm/res/resources/deployment-script:0.5.2' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-managedDiskEncryptionSetPermissions'
   scope: resourceGroup

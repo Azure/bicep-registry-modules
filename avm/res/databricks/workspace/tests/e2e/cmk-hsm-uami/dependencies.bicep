@@ -39,37 +39,3 @@ module allowHsmAccess 'br/public:avm/res/resources/deployment-script:0.5.2' = [
     }
   }
 ]
-
-// module allowHsmAccessPrimary 'br/public:avm/res/resources/deployment-script:0.5.2' = {
-//   name: '${uniqueString(deployment().name, location)}-primaryHSMKeyPermissions'
-//   params: {
-//     name: '${deploymentScriptNamePrefix}01'
-//     kind: 'AzureCLI'
-//     azCliVersion: '2.67.0'
-//     arguments: '"${last(split(managedHSMResourceId, '/'))}" "${primaryHSMKeyName}" "${databricksApplicationObjectId}" "Managed HSM Crypto Service Encryption User"'
-//     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-mHSMKeyConfig.sh')
-//     retentionInterval: 'P1D'
-//     managedIdentities: {
-//       userAssignedResourceIds: [
-//         deploymentMSIResourceId
-//       ]
-//     }
-//   }
-// }
-
-// module allowHsmAccessSecondary 'br/public:avm/res/resources/deployment-script:0.5.2' = if (!empty(secondaryHSMKeyName)) {
-//   name: '${uniqueString(deployment().name, location)}-secondaryHSMKeyPermissions'
-//   params: {
-//     name: '${deploymentScriptNamePrefix}02'
-//     kind: 'AzureCLI'
-//     azCliVersion: '2.67.0'
-//     arguments: '"${last(split(managedHSMResourceId, '/'))}" "${secondaryHSMKeyName}" "${databricksApplicationObjectId}" "Managed HSM Crypto Service Encryption User"'
-//     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-mHSMKeyConfig.sh')
-//     retentionInterval: 'P1D'
-//     managedIdentities: {
-//       userAssignedResourceIds: [
-//         deploymentMSIResourceId
-//       ]
-//     }
-//   }
-// }
