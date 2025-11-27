@@ -209,7 +209,7 @@ output immutableId string? = dataCollectionRuleProperties.kind == 'All'
 
 @export()
 @discriminator('kind')
-@description('The type for data collection rule properties. Depending on the kind, the properties will be different.')
+@description('Required. The type for data collection rule properties. Depending on the kind, the properties will be different.')
 type dataCollectionRulePropertiesType =
   | linuxDcrPropertiesType
   | windowsDcrPropertiesType
@@ -340,6 +340,7 @@ type directDcrPropertiesType = {
 
 @description('The type for the properties of the \'AgentDirectToStore\' data collection rule.')
 type agentDirectToStoreType = {
+  @description('Required. The platform type specifies the type of resources this rule can apply to.')
   kind: 'AgentDirectToStore'
 
   @description('Required. The specification of data flows.')
@@ -350,45 +351,4 @@ type agentDirectToStoreType = {
 
   @description('Optional. The resource ID of the data collection endpoint that this rule can be used with.')
   description: string?
-}
-
-@description('The type for the destinations of the \'AgentDirectToStore\' data collection rule.')
-type agentDirectToStoreDestinationType = {
-  @description('Optional. Event Hubs direct destinations.')
-  eventHubsDirect: [
-    {
-      @description('The resource ID of the Event Hub namespace.')
-      eventHubResourceId: string
-
-      @description('The name of the Event Hub in the data collection rule destination.')
-      name: string
-    }?
-  ]
-  @description('Optional. Storage Blobs direct destinations.')
-  storageBlobsDirect: [
-    {
-      @description('The resource ID of the storage account.')
-      storageAccountResourceId: string
-
-      @description('The name of the blob in the data collection rule destination.')
-      name: string
-
-      @description('The name of the container in the storage account.')
-      containerName: string
-    }?
-  ]
-
-  @description('Optional. Storage Tables direct destinations.')
-  storageTablesDirect: [
-    {
-      @description('The resource ID of the storage account.')
-      storageAccountResourceId: string
-
-      @description('The name of the table in the data collection rule destination.')
-      name: string
-
-      @description('The name of the table in the storage account.')
-      tableName: string
-    }?
-  ]
 }
