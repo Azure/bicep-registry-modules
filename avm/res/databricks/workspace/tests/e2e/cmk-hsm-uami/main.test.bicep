@@ -60,7 +60,8 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    // managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    databricksApplicationObjectId: azureDatabricksEnterpriseApplicationObjectId
     primaryHSMKeyName: nestedHsmDependencies.outputs.primaryKeyName
     secondaryHSMKeyName: nestedHsmDependencies.?outputs.?secondaryKeyName
     deploymentScriptNamePrefix: 'dep-${namePrefix}-ds-${serviceShort}'
@@ -91,6 +92,7 @@ module testDeployment '../../../main.bicep' = [
         keyVersion: nestedHsmDependencies.?outputs.?secondaryKeyVersion!
       }
     }
+    dependsOn: [nestedDependencies]
   }
 ]
 
