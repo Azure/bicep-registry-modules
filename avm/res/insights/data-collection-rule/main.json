@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "5865022614163212422"
+      "version": "0.39.26.7824",
+      "templateHash": "2357797411270727600"
     },
     "name": "Data Collection Rules",
     "description": "This module deploys a Data Collection Rule."
@@ -55,7 +55,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Insights/dataCollectionRules@2023-03-11#properties/properties/properties/dataSources"
+              "source": "Microsoft.Insights/dataCollectionRules@2024-03-11#properties/properties/properties/dataSources"
             },
             "description": "Required. Specification of data sources that will be collected."
           }
@@ -64,7 +64,7 @@
           "type": "array",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Insights/dataCollectionRules@2023-03-11#properties/properties/properties/dataFlows"
+              "source": "Microsoft.Insights/dataCollectionRules@2024-03-11#properties/properties/properties/dataFlows"
             },
             "description": "Required. The specification of data flows."
           }
@@ -73,7 +73,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Insights/dataCollectionRules@2023-03-11#properties/properties/properties/destinations"
+              "source": "Microsoft.Insights/dataCollectionRules@2024-03-11#properties/properties/properties/destinations"
             },
             "description": "Required. Specification of destinations that can be used in data flows."
           }
@@ -89,7 +89,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Insights/dataCollectionRules@2023-03-11#properties/properties/properties/streamDeclarations"
+              "source": "Microsoft.Insights/dataCollectionRules@2024-03-11#properties/properties/properties/streamDeclarations"
             },
             "description": "Optional. Declaration of custom streams used in this rule."
           },
@@ -123,7 +123,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Insights/dataCollectionRules@2023-03-11#properties/properties/properties/dataSources"
+              "source": "Microsoft.Insights/dataCollectionRules@2024-03-11#properties/properties/properties/dataSources"
             },
             "description": "Required. Specification of data sources that will be collected."
           }
@@ -132,7 +132,7 @@
           "type": "array",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Insights/dataCollectionRules@2023-03-11#properties/properties/properties/dataFlows"
+              "source": "Microsoft.Insights/dataCollectionRules@2024-03-11#properties/properties/properties/dataFlows"
             },
             "description": "Required. The specification of data flows."
           }
@@ -141,7 +141,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Insights/dataCollectionRules@2023-03-11#properties/properties/properties/destinations"
+              "source": "Microsoft.Insights/dataCollectionRules@2024-03-11#properties/properties/properties/destinations"
             },
             "description": "Required. Specification of destinations that can be used in data flows."
           }
@@ -157,7 +157,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Insights/dataCollectionRules@2023-03-11#properties/properties/properties/streamDeclarations"
+              "source": "Microsoft.Insights/dataCollectionRules@2024-03-11#properties/properties/properties/streamDeclarations"
             },
             "description": "Optional. Declaration of custom streams used in this rule."
           },
@@ -191,7 +191,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Insights/dataCollectionRules@2023-03-11#properties/properties/properties/dataSources"
+              "source": "Microsoft.Insights/dataCollectionRules@2024-03-11#properties/properties/properties/dataSources"
             },
             "description": "Required. Specification of data sources that will be collected."
           }
@@ -200,7 +200,7 @@
           "type": "array",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Insights/dataCollectionRules@2023-03-11#properties/properties/properties/dataFlows"
+              "source": "Microsoft.Insights/dataCollectionRules@2024-03-11#properties/properties/properties/dataFlows"
             },
             "description": "Required. The specification of data flows."
           }
@@ -209,7 +209,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Insights/dataCollectionRules@2023-03-11#properties/properties/properties/destinations"
+              "source": "Microsoft.Insights/dataCollectionRules@2024-03-11#properties/properties/properties/destinations"
             },
             "description": "Required. Specification of destinations that can be used in data flows."
           }
@@ -225,7 +225,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Insights/dataCollectionRules@2023-03-11#properties/properties/properties/streamDeclarations"
+              "source": "Microsoft.Insights/dataCollectionRules@2024-03-11#properties/properties/properties/streamDeclarations"
             },
             "description": "Optional. Declaration of custom streams used in this rule."
           },
@@ -330,7 +330,7 @@
           "type": "array",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Insights/dataCollectionRules@2023-03-11#properties/properties/properties/dataFlows"
+              "source": "Microsoft.Insights/dataCollectionRules@2024-03-11#properties/properties/properties/dataFlows"
             },
             "description": "Required. The specification of data flows."
           }
@@ -339,7 +339,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Insights/dataCollectionRules@2023-03-11#properties/properties/properties/destinations"
+              "source": "Microsoft.Insights/dataCollectionRules@2024-03-11#properties/properties/properties/destinations"
             },
             "description": "Required. Specification of destinations that can be used in data flows."
           }
@@ -355,7 +355,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Insights/dataCollectionRules@2023-03-11#properties/properties/properties/streamDeclarations"
+              "source": "Microsoft.Insights/dataCollectionRules@2024-03-11#properties/properties/properties/streamDeclarations"
             },
             "description": "Required. Declaration of custom streams used in this rule."
           }
@@ -568,7 +568,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Insights/dataCollectionRules@2023-03-11#properties/tags"
+          "source": "Microsoft.Insights/dataCollectionRules@2024-03-11#properties/tags"
         },
         "description": "Optional. Resource tags."
       },
@@ -619,7 +619,7 @@
     "dataCollectionRule": {
       "condition": "[not(equals(parameters('dataCollectionRuleProperties').kind, 'All'))]",
       "type": "Microsoft.Insights/dataCollectionRules",
-      "apiVersion": "2023-03-11",
+      "apiVersion": "2024-03-11",
       "name": "[parameters('name')]",
       "kind": "[parameters('dataCollectionRuleProperties').kind]",
       "location": "[parameters('location')]",
@@ -630,7 +630,7 @@
     "dataCollectionRuleAll": {
       "condition": "[equals(parameters('dataCollectionRuleProperties').kind, 'All')]",
       "type": "Microsoft.Insights/dataCollectionRules",
-      "apiVersion": "2023-03-11",
+      "apiVersion": "2024-03-11",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -660,8 +660,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "11414235132312545759"
+              "version": "0.39.26.7824",
+              "templateHash": "15024496952650481329"
             }
           },
           "definitions": {
@@ -722,7 +722,7 @@
             "dataCollectionRule": {
               "existing": true,
               "type": "Microsoft.Insights/dataCollectionRules",
-              "apiVersion": "2023-03-11",
+              "apiVersion": "2024-03-11",
               "name": "[parameters('dataCollectionRuleName')]"
             },
             "dataCollectionRule_lock": {
@@ -1030,7 +1030,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), reference('dataCollectionRuleAll', '2023-03-11', 'full').location, reference('dataCollectionRule', '2023-03-11', 'full').location)]"
+      "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), reference('dataCollectionRuleAll', '2024-03-11', 'full').location, reference('dataCollectionRule', '2024-03-11', 'full').location)]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
@@ -1038,13 +1038,13 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), tryGet(tryGet(if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), reference('dataCollectionRuleAll', '2023-03-11', 'full'), null()), 'identity'), 'principalId'), tryGet(tryGet(if(not(equals(parameters('dataCollectionRuleProperties').kind, 'All')), reference('dataCollectionRule', '2023-03-11', 'full'), null()), 'identity'), 'principalId'))]"
+      "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), tryGet(tryGet(if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), reference('dataCollectionRuleAll', '2024-03-11', 'full'), null()), 'identity'), 'principalId'), tryGet(tryGet(if(not(equals(parameters('dataCollectionRuleProperties').kind, 'All')), reference('dataCollectionRule', '2024-03-11', 'full'), null()), 'identity'), 'principalId'))]"
     },
     "endpoints": {
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Insights/dataCollectionRules@2023-03-11#properties/properties/properties/endpoints",
+          "source": "Microsoft.Insights/dataCollectionRules@2024-03-11#properties/properties/properties/endpoints",
           "output": true
         },
         "description": "The endpoints of the dataCollectionRule, if created."
