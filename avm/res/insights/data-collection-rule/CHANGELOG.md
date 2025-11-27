@@ -2,6 +2,12 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/insights/data-collection-rule/CHANGELOG.md).
 
+## 0.9.0
+
+### Changes
+
+- Added support for preview feature `AgentDirectToStore` kind type.
+
 ## 0.8.0
 
 ### Changes
