@@ -61,10 +61,14 @@ param dataRetention int = 365
 @minValue(-1)
 param dailyQuotaGb int = -1
 
+@description('Optional. The resource ID of the default Data Collection Rule to use for this workspace. Note: the default DCR is not applicable on workspace creation and the workspace must be listed as a destination in the DCR.')
+param defaultDataCollectionRuleResourceId string?
+
 @description('Optional. The network access type for accessing Log Analytics ingestion.')
 @allowed([
   'Enabled'
   'Disabled'
+  'SecuredByPerimeter'
 ])
 param publicNetworkAccessForIngestion string = 'Enabled'
 
@@ -72,6 +76,7 @@ param publicNetworkAccessForIngestion string = 'Enabled'
 @allowed([
   'Enabled'
   'Disabled'
+  'SecuredByPerimeter'
 ])
 param publicNetworkAccessForQuery string = 'Enabled'
 
@@ -190,7 +195,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-07-01' = {
   location: location
   name: name
   tags: tags
@@ -214,6 +219,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02
     publicNetworkAccessForQuery: publicNetworkAccessForQuery
     forceCmkForQuery: forceCmkForQuery
     replication: replication
+    defaultDataCollectionRuleResourceId: defaultDataCollectionRuleResourceId
   }
   identity: identity
 }
