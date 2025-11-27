@@ -29,6 +29,9 @@ param password string = newGuid()
 @description('Required. The name of the deployment script that waits for a role assignment to propagate.')
 param waitDeploymentScriptName string
 
+@description('Specifies the name of the administrator account. <br><br> This property cannot be updated after the VM is created. <br><br> **Windows-only restriction:** Cannot end in "." <br><br> **Disallowed values:** "administrator", "admin", "user", "user1", "test", "user2", "test1", "user3", "admin1", "1", "123", "a", "actuser", "adm", "admin2", "aspnet", "backup", "console", "david", "guest", "john", "owner", "root", "server", "sql", "support", "support_388945a0", "sys", "test2", "test3", "user4", "user5". <br><br> **Minimum-length (Linux):** 1  character <br><br> **Max-length (Linux):** 64 characters <br><br> **Max-length (Windows):** 20 characters.')
+param adminUsername string = 'localAdminUser'
+
 var addressPrefix = '10.0.0.0/16'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-01-01' = {
@@ -132,30 +135,6 @@ resource waitForRolePropagation 'Microsoft.Resources/deploymentScripts@2023-08-0
   }
 }
 
-// resource osDisk 'Microsoft.Compute/disks@2024-03-02' = {
-//   location: location
-//   name: osDiskName
-//   sku: {
-//     name: 'Premium_LRS'
-//   }
-//   properties: {
-//     diskSizeGB: 1024
-//     creationData: {
-//       createOption: 'FromImage'
-//       imageReference: {
-//         lun: 0
-//         id: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Compute/locations/${location}/publishers/MicrosoftWindowsServer/ArtifactTypes/VMImage/Offers/WindowsServerUpgrade/Skus/server2022Upgrade/Versions/20348.4405.251105'
-//       }
-//     }
-//     maxShares: 2
-//     encryption: {
-//       type: 'EncryptionAtRestWithPlatformAndCustomerKeys'
-//       diskEncryptionSetId: diskEncryptionSet.id
-//     }
-//   }
-//   zones: ['1'] // Should be set to the same zone as the VM
-// }
-
 resource sharedDataDisk 'Microsoft.Compute/disks@2024-03-02' = {
   location: location
   name: sharedDiskName
@@ -184,7 +163,7 @@ resource tempVirtualMachine 'Microsoft.Compute/virtualMachines@2025-04-01' = {
       vmSize: 'Standard_D2s_v3'
     }
     osProfile: {
-      adminUsername: 'localAdminUser'
+      adminUsername: adminUsername
       adminPassword: password
       computerName: take(osDiskVMName, 15)
     }
@@ -229,44 +208,6 @@ resource tempVirtualMachine 'Microsoft.Compute/virtualMachines@2025-04-01' = {
     }
   }
 }
-
-// resource createSnapshot 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
-//   dependsOn: [msiKVReadRoleAssignment]
-//   name: waitDeploymentScriptName
-//   location: location
-//   kind: 'AzurePowerShell'
-//   properties: {
-//     retentionInterval: 'PT1H'
-//     azPowerShellVersion: '11.0'
-//     cleanupPreference: 'Always'
-//     arguments: ' -sourceUri "${tempVirtualMachine.properties.storageProfile.osDisk.managedDisk.id}" -resourceGroupName "${resourceGroup().name}" -snapshotName "${osDiskName}-snapshot" -location "${location}"'
-//     scriptContent: '''
-//     param(
-//         [Parameter(Mandatory = $true)]
-//         [string] $SourceUri,
-
-//         [Parameter(Mandatory = $true)]
-//         [string] $Location,
-
-//         [Parameter(Mandatory = $true)]
-//         [string] $SnapshotName,
-
-//         [Parameter(Mandatory = $true)]
-//         [string] $ResourceGroupName
-//     )
-
-//     $snapshot =  New-AzSnapshotConfig -SourceUri $SourceUri -Location $Location -CreateOption 'copy'
-//     New-AzSnapshot -Snapshot $snapshot -SnapshotName $SnapshotName -ResourceGroupName $ResourceGroupName
-//     Get-AzSnapshot -ResourceGroupName $ResourceGroupName
-
-//     # Write into Deployment Script output stream
-//     $DeploymentScriptOutputs = @{
-//         # Requires conversion as the script otherwise returns an object instead of the plain public key string
-//         publicKey = $publicKey | Out-String
-//     }
-//     '''
-//   }
-// }
 
 resource snapshot 'Microsoft.Compute/snapshots@2024-03-02' = {
   name: '${osDiskName}-snapshot'

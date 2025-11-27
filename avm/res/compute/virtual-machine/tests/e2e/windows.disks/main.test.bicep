@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Deploying Windows VM with premium SSDv2 data disk and shared disk'
-metadata description = 'This instance deploys the module with premium SSDv2 data disk and attachment of an existing shared disk.'
+metadata name = 'Deploying Windows VM from an existing OS-Disk, with premium SSDv2 data disk and shared disk'
+metadata description = 'This instance deploys the module with using a pre-existing OS Disk, premium SSDv2 data disk and attachment of an existing shared disk.'
 
 // ========== //
 // Parameters //
@@ -16,11 +16,7 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${se
 var enforcedLocation = 'uksouth'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmwdisk'
-
-// @description('Optional. The password to leverage for the login.')
-// @secure()
-// param password string = newGuid()
+param serviceShort string = 'cvmwindisk'
 
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
@@ -47,13 +43,11 @@ module nestedDependencies 'dependencies.bicep' = {
     sharedDiskName: 'dep-${namePrefix}-shared-disk-${serviceShort}'
     osDiskVMName: 'dep-${namePrefix}-os-disk-vm-${serviceShort}'
     osDiskName: 'dep-${namePrefix}-os-disk-${serviceShort}'
-    // osDiskDeploymentScript: 'dep-${namePrefix}-os-disk-ds-${serviceShort}'
     diskEncryptionSetName: 'dep-${namePrefix}-des-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForPropagation'
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep${namePrefix}kv${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
-    // keyVaultName: 'depavmxkvcvmwindisk-huf'
   }
 }
 
@@ -85,7 +79,6 @@ module testDeployment '../../../main.bicep' = [
       osDisk: {
         managedDisk: {
           resourceId: nestedDependencies.outputs.osDiskResourceId
-          // diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
         }
       }
       dataDisks: [
