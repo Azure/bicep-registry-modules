@@ -67,7 +67,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
   name: 'namespaceDeployment'
   params: {
     // Required parameters
-    name: 'ehnhsm001'
+    name: 'ehnhsmu001'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -99,7 +99,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ehnhsm001"
+      "value": "ehnhsmu001"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -137,7 +137,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
 using 'br/public:avm/res/event-hub/namespace:<version>'
 
 // Required parameters
-param name = 'ehnhsm001'
+param name = 'ehnhsmu001'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'

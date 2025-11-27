@@ -997,7 +997,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
   name: 'workspaceDeployment'
   params: {
     // Required parameters
-    name: 'oiwmhsm001'
+    name: 'oiwmhsmu001'
     // Non-required parameters
     dailyQuotaGb: 10
     linkedServices: [
@@ -1030,7 +1030,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
   "parameters": {
     // Required parameters
     "name": {
-      "value": "oiwmhsm001"
+      "value": "oiwmhsmu001"
     },
     // Non-required parameters
     "dailyQuotaGb": {
@@ -1069,7 +1069,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 using 'br/public:avm/res/operational-insights/workspace:<version>'
 
 // Required parameters
-param name = 'oiwmhsm001'
+param name = 'oiwmhsmu001'
 // Non-required parameters
 param dailyQuotaGb = 10
 param linkedServices = [

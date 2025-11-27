@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module with Managed HSM-based 
 param resourceGroupName string = 'dep-${namePrefix}-storage.storageaccounts-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ssauhsm'
+param serviceShort string = 'ssauhsmu'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
