@@ -39,9 +39,10 @@ The following section provides usage examples for the module, which were used to
 
 - [Advanced features](#example-1-advanced-features)
 - [Using Log Analytics Cluster with Customer-Managed-Keys](#example-2-using-log-analytics-cluster-with-customer-managed-keys)
-- [Using only defaults](#example-3-using-only-defaults)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using default Data Collection Rule](#example-3-using-default-data-collection-rule)
+- [Using only defaults](#example-4-using-only-defaults)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Advanced features_
 
@@ -1089,7 +1090,76 @@ param skuName = 'LACluster'
 </details>
 <p>
 
-### Example 3: _Using only defaults_
+### Example 3: _Using default Data Collection Rule_
+
+This instance deploys the module with a default Data Collection Rule.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
+  name: 'workspaceDeployment'
+  params: {
+    // Required parameters
+    name: 'oiwdcr001'
+    // Non-required parameters
+    defaultDataCollectionRuleResourceId: '<defaultDataCollectionRuleResourceId>'
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "oiwdcr001"
+    },
+    // Non-required parameters
+    "defaultDataCollectionRuleResourceId": {
+      "value": "<defaultDataCollectionRuleResourceId>"
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operational-insights/workspace:<version>'
+
+// Required parameters
+param name = 'oiwdcr001'
+// Non-required parameters
+param defaultDataCollectionRuleResourceId = '<defaultDataCollectionRuleResourceId>'
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 4: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -1142,7 +1212,7 @@ param name = 'oiwmin001'
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -2145,7 +2215,7 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
