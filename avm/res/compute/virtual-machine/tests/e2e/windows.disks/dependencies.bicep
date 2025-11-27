@@ -13,9 +13,6 @@ param osDiskName string
 @description('Required. The name of the VM to take the OS disk from. It\'s not possible to create an OS disk without a VM.')
 param osDiskVMName string
 
-@description('Required. The name of the VM to create a snapshot of the VMs os disk.')
-param osDiskDeploymentScript string
-
 @description('Required. The name of the Disk Encryption Set to create.')
 param diskEncryptionSetName string
 
@@ -310,6 +307,12 @@ output sharedDataDiskResourceId string = sharedDataDisk.id
 
 @description('The resource ID of the created os disk.')
 output osDiskResourceId string = osDisk.id
+
+@description('The type of OS used for the os disk.')
+output osType resourceOutput<'Microsoft.Compute/virtualMachines@2025-04-01'>.properties.storageProfile.osDisk.osType = tempVirtualMachine.properties.storageProfile.osDisk.osType
+
+@description('The security type of the VM used for to create the os disk.')
+output securityType resourceOutput<'Microsoft.Compute/virtualMachines@2025-04-01'>.properties.securityProfile.securityType = tempVirtualMachine.properties.securityProfile.securityType
 
 @description('The resource ID of the created Disk Encryption Set.')
 output diskEncryptionSetResourceId string = diskEncryptionSet.id

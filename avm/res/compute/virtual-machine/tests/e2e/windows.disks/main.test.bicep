@@ -47,7 +47,7 @@ module nestedDependencies 'dependencies.bicep' = {
     sharedDiskName: 'dep-${namePrefix}-shared-disk-${serviceShort}'
     osDiskVMName: 'dep-${namePrefix}-os-disk-vm-${serviceShort}'
     osDiskName: 'dep-${namePrefix}-os-disk-${serviceShort}'
-    osDiskDeploymentScript: 'dep-${namePrefix}-os-disk-ds-${serviceShort}'
+    // osDiskDeploymentScript: 'dep-${namePrefix}-os-disk-ds-${serviceShort}'
     diskEncryptionSetName: 'dep-${namePrefix}-des-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForPropagation'
@@ -67,8 +67,8 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}02'
-      // securityType: 'TrustedLaunch'
-      osType: 'Windows'
+      securityType: nestedDependencies.outputs.securityType
+      osType: nestedDependencies.outputs.osType
       vmSize: 'Standard_D2s_v3'
       availabilityZone: 1
       nicConfigurations: [
@@ -106,6 +106,9 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      extensionAntiMalwareConfig: {
+        enabled: false
+      }
     }
   }
 ]

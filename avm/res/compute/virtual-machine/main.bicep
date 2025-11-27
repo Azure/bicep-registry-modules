@@ -14,12 +14,7 @@ param vmSize string
 param encryptionAtHost bool = false
 
 @description('Optional. Specifies the SecurityType of the virtual machine. It has to be set to any specified value to enable UefiSettings. The default behavior is: UefiSettings will not be enabled unless this property is set.')
-@allowed([
-  ''
-  'ConfidentialVM'
-  'TrustedLaunch'
-])
-param securityType string = ''
+param securityType resourceInput<'Microsoft.Compute/virtualMachines@2025-04-01'>.properties.securityProfile.securityType?
 
 @description('Optional. Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings.')
 param secureBootEnabled bool = false
