@@ -202,6 +202,7 @@ resource tempVirtualMachine 'Microsoft.Compute/virtualMachines@2025-04-01' = {
         createOption: 'FromImage'
         osType: 'Windows'
         deleteOption: 'Delete'
+        name: osDiskVMName
         managedDisk: {
           diskEncryptionSet: {
             id: diskEncryptionSet.id
@@ -283,7 +284,7 @@ resource snapshot 'Microsoft.Compute/snapshots@2024-03-02' = {
 
 resource osDisk 'Microsoft.Compute/disks@2024-03-02' = {
   location: location
-  name: osDiskName
+  name: '${osDiskName}-copy'
   sku: {
     name: 'Premium_LRS'
   }
