@@ -79,15 +79,22 @@ var dataCollectionRulePropertiesUnion = union(
   {
     description: dataCollectionRuleProperties.?description
   },
-  contains(['Linux', 'Windows', 'All', 'Direct'], dataCollectionRuleProperties.kind)
+  contains(['Linux', 'Windows', 'All', 'PlatformTelemetry'], dataCollectionRuleProperties.kind)
     ? {
         dataSources: dataCollectionRuleProperties.dataSources
       }
     : {},
-  contains(['Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms'], dataCollectionRuleProperties.kind)
+  contains(
+      ['Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms', 'PlatformTelemetry'],
+      dataCollectionRuleProperties.kind
+    )
     ? {
         dataFlows: dataCollectionRuleProperties.dataFlows
         destinations: dataCollectionRuleProperties.destinations
+      }
+    : {},
+  contains(['Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms'], dataCollectionRuleProperties.kind)
+    ? {
         dataCollectionEndpointId: dataCollectionRuleProperties.?dataCollectionEndpointResourceId
         streamDeclarations: dataCollectionRuleProperties.?streamDeclarations
       }
@@ -211,6 +218,7 @@ type dataCollectionRulePropertiesType =
   | agentSettingsDcrPropertiesType
   | directDcrPropertiesType
   | workspaceTransformsDcrPropertiesType
+  | platformTelemetryDcrPropertiesType
 
 @description('The type for the properties of the \'Linux\' data collection rule.')
 type linuxDcrPropertiesType = {
@@ -345,4 +353,34 @@ type workspaceTransformsDcrPropertiesType = {
 
   @description('Optional. Description of the data collection rule.')
   description: string?
+}
+
+@description('The type for the properties of the \'PlatformTelemetry\' data collection rule.')
+type platformTelemetryDcrPropertiesType = {
+  @description('Required. The kind of the resource.')
+  kind: 'PlatformTelemetry'
+
+  @description('Optional. Description of the data collection rule.')
+  description: string?
+
+  @description('Required. Specification of data sources that will be collected.')
+  dataSources: {
+    @description('Required. The list of platform telemetry configurations.')
+    platformTelemetry: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataSources.platformTelemetry
+  }
+
+  @description('Required. Specification of destinations. Choose a single destination type of either logAnalytics, storageAccounts, or eventHubs')
+  destinations: {
+    @description('Optional. The list of Log Analytics destinations.')
+    logAnalytics: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.destinations.logAnalytics?
+
+    @description('Optional. The list of Storage Account destinations.')
+    storageAccounts: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.destinations.storageAccounts?
+
+    @description('Optional. The list of Event Hub destinations.')
+    eventHubs: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.destinations.eventHubs?
+  }
+
+  @description('Required. The specification of data flows.')
+  dataFlows: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataFlows
 }
