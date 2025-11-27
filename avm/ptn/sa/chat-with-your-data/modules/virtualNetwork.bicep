@@ -28,20 +28,7 @@ param subnets subnetType[] = [
             sourcePortRange: '*'
             destinationPortRange: '443'
             sourceAddressPrefixes: ['0.0.0.0/0']
-            destinationAddressPrefix: '*'
-          }
-        }
-        {
-          name: 'AllowHttpInbound'
-          properties: {
-            access: 'Allow'
-            direction: 'Inbound'
-            priority: 110
-            protocol: 'Tcp'
-            sourcePortRange: '*'
-            destinationPortRange: '80'
-            sourceAddressPrefixes: ['0.0.0.0/0']
-            destinationAddressPrefix: '*'
+            destinationAddressPrefixes: ['10.0.0.0/23']
           }
         }
         {
@@ -72,6 +59,7 @@ param subnets subnetType[] = [
         }
       ]
     }
+    delegation: 'Microsoft.Web/serverFarms'
   }
   {
     name: 'peps'
@@ -92,28 +80,6 @@ param subnets subnetType[] = [
     }
     delegation: 'Microsoft.ContainerInstance/containerGroups'
     serviceEndpoints: ['Microsoft.Storage']
-  }
-  {
-    name: 'jumpbox'
-    addressPrefixes: ['10.0.12.0/23'] // /23 (10.0.12.0 - 10.0.13.255), 512 addresses
-    networkSecurityGroup: {
-      name: 'nsg-jumpbox'
-      securityRules: [
-        {
-          name: 'AllowRdpFromBastion'
-          properties: {
-            access: 'Allow'
-            direction: 'Inbound'
-            priority: 100
-            protocol: 'Tcp'
-            sourcePortRange: '*'
-            destinationPortRange: '3389'
-            sourceAddressPrefixes: ['10.0.10.0/26'] // Azure Bastion subnet
-            destinationAddressPrefixes: ['10.0.12.0/23']
-          }
-        }
-      ]
-    }
   }
   {
     name: 'AzureBastionSubnet' // Required name for Azure Bastion
@@ -171,6 +137,28 @@ param subnets subnetType[] = [
             destinationPortRange: '443'
             sourceAddressPrefix: '*'
             destinationAddressPrefix: 'AzureCloud'
+          }
+        }
+      ]
+    }
+  }
+  {
+    name: 'jumpbox'
+    addressPrefixes: ['10.0.12.0/23'] // /23 (10.0.12.0 - 10.0.13.255), 512 addresses
+    networkSecurityGroup: {
+      name: 'nsg-jumpbox'
+      securityRules: [
+        {
+          name: 'AllowRdpFromBastion'
+          properties: {
+            access: 'Allow'
+            direction: 'Inbound'
+            priority: 100
+            protocol: 'Tcp'
+            sourcePortRange: '*'
+            destinationPortRange: '3389'
+            sourceAddressPrefixes: ['10.0.10.0/26'] // Azure Bastion subnet
+            destinationAddressPrefixes: ['10.0.12.0/23']
           }
         }
       ]
@@ -310,11 +298,11 @@ output pepsSubnetResourceId string = contains(map(subnets, subnet => subnet.name
 output bastionSubnetResourceId string = contains(map(subnets, subnet => subnet.name), 'AzureBastionSubnet')
   ? virtualNetwork.outputs.subnetResourceIds[indexOf(map(subnets, subnet => subnet.name), 'AzureBastionSubnet')]
   : ''
-output deploymentScriptsSubnetResourceId string = contains(map(subnets, subnet => subnet.name), 'deployment-scripts')
-  ? virtualNetwork.outputs.subnetResourceIds[indexOf(map(subnets, subnet => subnet.name), 'deployment-scripts')]
-  : ''
 output jumpboxSubnetResourceId string = contains(map(subnets, subnet => subnet.name), 'jumpbox')
   ? virtualNetwork.outputs.subnetResourceIds[indexOf(map(subnets, subnet => subnet.name), 'jumpbox')]
+  : ''
+output deploymentScriptsSubnetResourceId string = contains(map(subnets, subnet => subnet.name), 'deployment-scripts')
+  ? virtualNetwork.outputs.subnetResourceIds[indexOf(map(subnets, subnet => subnet.name), 'deployment-scripts')]
   : ''
 
 @export()
