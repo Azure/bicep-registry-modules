@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "16673980549805321433"
+      "templateHash": "2387571806520347992"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -2154,15 +2154,13 @@
     },
     "securityType": {
       "type": "string",
-      "defaultValue": "",
-      "allowedValues": [
-        "",
-        "ConfidentialVM",
-        "TrustedLaunch"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/virtualMachines@2025-04-01#properties/properties/properties/securityProfile/properties/securityType"
+        },
         "description": "Optional. Specifies the SecurityType of the virtual machine. It has to be set to any specified value to enable UefiSettings. The default behavior is: UefiSettings will not be enabled unless this property is set."
-      }
+      },
+      "nullable": true
     },
     "secureBootEnabled": {
       "type": "bool",
@@ -2180,6 +2178,7 @@
     },
     "imageReference": {
       "$ref": "#/definitions/imageReferenceType",
+      "nullable": true,
       "metadata": {
         "description": "Required. OS image reference. In case of marketplace images, it's the combination of the publisher, offer, sku, version attributes. In case of custom images it's the resource ID of the custom image."
       }
@@ -2223,15 +2222,16 @@
     },
     "adminUsername": {
       "type": "securestring",
+      "nullable": true,
       "metadata": {
-        "description": "Required. Administrator username."
+        "description": "Conditional. Administrator username. Required if no pre-existing OS-Disk is provided (osDisk.managedDisk.resourceId is not empty)."
       }
     },
     "adminPassword": {
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. When specifying a Windows Virtual Machine, this value should be passed."
+        "description": "Optional. When specifying a Windows Virtual Machine, and no pre-existing OS-Disk is provided (osDisk.managedDisk.resourceId is not empty), this value should be passed."
       }
     },
     "userData": {
@@ -2845,7 +2845,7 @@
         "name": "managedDataDisks",
         "count": "[length(coalesce(parameters('dataDisks'), createArray()))]"
       },
-      "condition": "[empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'id'))]",
+      "condition": "[empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'resourceId'))]",
       "type": "Microsoft.Compute/disks",
       "apiVersion": "2024-03-02",
       "name": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex(), 1), 2, '0')))]",
@@ -2854,7 +2854,7 @@
         "name": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'storageAccountType')]"
       },
       "properties": {
-        "diskSizeGB": "[coalesce(parameters('dataDisks'), createArray())[copyIndex()].diskSizeGB]",
+        "diskSizeGB": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskSizeGB')]",
         "creationData": {
           "createOption": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'createoption'), 'Empty')]"
         },
@@ -2887,12 +2887,12 @@
               "count": "[length(coalesce(parameters('dataDisks'), createArray()))]",
               "input": {
                 "lun": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'lun'), copyIndex('dataDisks'))]",
-                "name": "[if(not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id'))), last(split(coalesce(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk.id, ''), '/')), coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0'))))]",
-                "createOption": "[if(or(not(equals(if(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id')), resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))), null()), null())), not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id')))), 'Attach', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'createoption'), 'Empty'))]",
-                "deleteOption": "[if(not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id'))), 'Detach', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'deleteOption'), 'Delete'))]",
-                "caching": "[if(not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id'))), 'None', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'caching'), 'ReadOnly'))]",
+                "name": "[if(not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'resourceId'))), last(split(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk.resourceId, '/')), coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0'))))]",
+                "createOption": "[if(or(not(equals(if(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'resourceId')), resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))), null()), null())), not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'resourceId')))), 'Attach', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'createoption'), 'Empty'))]",
+                "deleteOption": "[if(not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'resourceId'))), 'Detach', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'deleteOption'), 'Delete'))]",
+                "caching": "[if(not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'resourceId'))), 'None', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'caching'), 'ReadOnly'))]",
                 "managedDisk": {
-                  "id": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'resourceId'), if(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id')), resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))), null()))]",
+                  "id": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'resourceId'), if(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'resourceId')), resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))), null()))]",
                   "diskEncryptionSet": "[if(not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'diskEncryptionSetResourceId'))), createObject('id', coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk.diskEncryptionSetResourceId), null())]"
                 }
               }
@@ -2900,17 +2900,16 @@
           ],
           "imageReference": "[parameters('imageReference')]",
           "osDisk": {
-            "name": "[coalesce(tryGet(parameters('osDisk'), 'name'), format('{0}-disk-os-01', parameters('name')))]",
-            "createOption": "[coalesce(tryGet(parameters('osDisk'), 'createOption'), 'FromImage')]",
-            "deleteOption": "[coalesce(tryGet(parameters('osDisk'), 'deleteOption'), 'Delete')]",
+            "name": "[if(not(empty(tryGet(parameters('osDisk').managedDisk, 'resourceId'))), last(split(parameters('osDisk').managedDisk.resourceId, '/')), coalesce(tryGet(parameters('osDisk'), 'name'), format('{0}-disk-os-01', parameters('name'))))]",
+            "createOption": "[if(not(empty(tryGet(parameters('osDisk').managedDisk, 'resourceId'))), 'Attach', coalesce(tryGet(parameters('osDisk'), 'createOption'), 'FromImage'))]",
+            "osType": "[parameters('osType')]",
+            "deleteOption": "[if(not(empty(tryGet(parameters('osDisk').managedDisk, 'resourceId'))), 'Detach', coalesce(tryGet(parameters('osDisk'), 'deleteOption'), 'Delete'))]",
             "diffDiskSettings": "[if(empty(coalesce(tryGet(parameters('osDisk'), 'diffDiskSettings'), createObject())), null(), createObject('option', 'Local', 'placement', parameters('osDisk').diffDiskSettings.placement))]",
             "diskSizeGB": "[tryGet(parameters('osDisk'), 'diskSizeGB')]",
-            "caching": "[coalesce(tryGet(parameters('osDisk'), 'caching'), 'ReadOnly')]",
+            "caching": "[if(not(empty(tryGet(parameters('osDisk').managedDisk, 'resourceId'))), 'None', coalesce(tryGet(parameters('osDisk'), 'caching'), 'ReadOnly'))]",
             "managedDisk": {
               "storageAccountType": "[tryGet(parameters('osDisk').managedDisk, 'storageAccountType')]",
-              "diskEncryptionSet": {
-                "id": "[tryGet(parameters('osDisk').managedDisk, 'diskEncryptionSetResourceId')]"
-              },
+              "diskEncryptionSet": "[if(not(empty(tryGet(parameters('osDisk').managedDisk, 'diskEncryptionSetResourceId'))), createObject('id', tryGet(parameters('osDisk').managedDisk, 'diskEncryptionSetResourceId')), null())]",
               "id": "[tryGet(parameters('osDisk').managedDisk, 'resourceId')]"
             }
           }
@@ -2919,16 +2918,7 @@
           "ultraSSDEnabled": "[parameters('ultraSSDEnabled')]",
           "hibernationEnabled": "[parameters('hibernationEnabled')]"
         },
-        "osProfile": {
-          "computerName": "[parameters('computerName')]",
-          "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPassword')]",
-          "customData": "[if(not(empty(parameters('customData'))), base64(parameters('customData')), null())]",
-          "windowsConfiguration": "[if(equals(parameters('osType'), 'Windows'), variables('windowsConfiguration'), null())]",
-          "linuxConfiguration": "[if(equals(parameters('osType'), 'Linux'), variables('linuxConfiguration'), null())]",
-          "secrets": "[parameters('certificatesToBeInstalled')]",
-          "allowExtensionOperations": "[parameters('allowExtensionOperations')]"
-        },
+        "osProfile": "[if(empty(tryGet(parameters('osDisk').managedDisk, 'resourceId')), createObject('computerName', parameters('computerName'), 'adminUsername', parameters('adminUsername'), 'adminPassword', parameters('adminPassword'), 'customData', if(not(empty(parameters('customData'))), base64(parameters('customData')), null()), 'windowsConfiguration', if(equals(parameters('osType'), 'Windows'), variables('windowsConfiguration'), null()), 'linuxConfiguration', if(equals(parameters('osType'), 'Linux'), variables('linuxConfiguration'), null()), 'secrets', parameters('certificatesToBeInstalled'), 'allowExtensionOperations', parameters('allowExtensionOperations')), null())]",
         "networkProfile": {
           "copy": [
             {
