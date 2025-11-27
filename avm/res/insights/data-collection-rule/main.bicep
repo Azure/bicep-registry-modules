@@ -79,12 +79,12 @@ var dataCollectionRulePropertiesUnion = union(
   {
     description: dataCollectionRuleProperties.?description
   },
-  dataCollectionRuleProperties.kind == 'Linux' || dataCollectionRuleProperties.kind == 'Windows' || dataCollectionRuleProperties.kind == 'All'
+  contains(['Linux', 'Windows', 'All', 'Direct'], dataCollectionRuleProperties.kind)
     ? {
         dataSources: dataCollectionRuleProperties.dataSources
       }
     : {},
-  dataCollectionRuleProperties.kind == 'Linux' || dataCollectionRuleProperties.kind == 'Windows' || dataCollectionRuleProperties.kind == 'All' || dataCollectionRuleProperties.kind == 'Direct'
+  contains(['Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms'], dataCollectionRuleProperties.kind)
     ? {
         dataFlows: dataCollectionRuleProperties.dataFlows
         destinations: dataCollectionRuleProperties.destinations
@@ -210,6 +210,7 @@ type dataCollectionRulePropertiesType =
   | allPlatformsDcrPropertiesType
   | agentSettingsDcrPropertiesType
   | directDcrPropertiesType
+  | workspaceTransformsDcrPropertiesType
 
 @description('The type for the properties of the \'Linux\' data collection rule.')
 type linuxDcrPropertiesType = {
@@ -337,10 +338,10 @@ type workspaceTransformsDcrPropertiesType = {
   kind: 'WorkspaceTransforms'
 
   @description('Required. The specification of data flows. Should include a separate dataflow for each table that will have a transformation. Use a where clause in the query if only certain records should be transformed.')
-  dataFlows: array
+  dataFlows: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataFlows
 
   @description('Required. Specification of destinations that can be used in data flows. For WorkspaceTransforms, only one Log Analytics workspace destination is supported.')
-  destinations: object
+  destinations: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.destinations
 
   @description('Optional. Description of the data collection rule.')
   description: string?
