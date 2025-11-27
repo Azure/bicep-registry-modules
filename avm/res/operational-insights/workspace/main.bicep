@@ -378,7 +378,7 @@ module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/
 ]
 
 // Onboard the Log Analytics Workspace to Sentinel if SecurityInsights is in gallerySolutions and onboardWorkspaceToSentinel is set to true
-resource logAnalyticsWorkspace_sentinelOnboarding 'Microsoft.SecurityInsights/onboardingStates@2024-03-01' = if (!empty(filter(
+resource logAnalyticsWorkspace_sentinelOnboarding 'Microsoft.SecurityInsights/onboardingStates@2025-09-01' = if (!empty(filter(
   gallerySolutions ?? [],
   item => startsWith(item.name, 'SecurityInsights')
 )) && onboardWorkspaceToSentinel) {

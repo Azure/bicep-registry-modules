@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "11454286216633202551"
+      "templateHash": "5920312438620856847"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace."
@@ -1339,7 +1339,7 @@
     "logAnalyticsWorkspace_sentinelOnboarding": {
       "condition": "[and(not(empty(filter(coalesce(parameters('gallerySolutions'), createArray()), lambda('item', startsWith(lambdaVariables('item').name, 'SecurityInsights'))))), parameters('onboardWorkspaceToSentinel'))]",
       "type": "Microsoft.SecurityInsights/onboardingStates",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-09-01",
       "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('name'))]",
       "name": "default",
       "properties": {},
