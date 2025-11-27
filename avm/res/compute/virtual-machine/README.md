@@ -4802,7 +4802,6 @@ param imageReference = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
-| [`imageReference`](#parameter-imagereference) | object | OS image reference. In case of marketplace images, it's the combination of the publisher, offer, sku, version attributes. In case of custom images it's the resource ID of the custom image. |
 | [`name`](#parameter-name) | string | The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory. |
 | [`nicConfigurations`](#parameter-nicconfigurations) | array | Configures NICs and PIPs. |
 | [`osDisk`](#parameter-osdisk) | object | Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object.  Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs. |
@@ -4814,6 +4813,7 @@ param imageReference = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`adminUsername`](#parameter-adminusername) | securestring | Administrator username. Required if no pre-existing OS-Disk is provided (osDisk.managedDisk.resourceId is not empty). |
+| [`imageReference`](#parameter-imagereference) | object | OS image reference. In case of marketplace images, it's the combination of the publisher, offer, sku, version attributes. In case of custom images it's the resource ID of the custom image. Required if not creating the VM from an existing os-disk via the `osDisk.managedDisk.resourceId` parameter. |
 
 **Optional parameters**
 
@@ -4903,74 +4903,6 @@ If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to
     3
   ]
   ```
-
-### Parameter: `imageReference`
-
-OS image reference. In case of marketplace images, it's the combination of the publisher, offer, sku, version attributes. In case of custom images it's the resource ID of the custom image.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`communityGalleryImageId`](#parameter-imagereferencecommunitygalleryimageid) | string | Specified the community gallery image unique id for vm deployment. This can be fetched from community gallery image GET call. |
-| [`id`](#parameter-imagereferenceid) | string | The resource Id of the image reference. |
-| [`offer`](#parameter-imagereferenceoffer) | string | Specifies the offer of the platform image or marketplace image used to create the virtual machine. |
-| [`publisher`](#parameter-imagereferencepublisher) | string | The image publisher. |
-| [`sharedGalleryImageId`](#parameter-imagereferencesharedgalleryimageid) | string | Specified the shared gallery image unique id for vm deployment. This can be fetched from shared gallery image GET call. |
-| [`sku`](#parameter-imagereferencesku) | string | The SKU of the image. |
-| [`version`](#parameter-imagereferenceversion) | string | Specifies the version of the platform image or marketplace image used to create the virtual machine. The allowed formats are Major.Minor.Build or 'latest'. Even if you use 'latest', the VM image will not automatically update after deploy time even if a new version becomes available. |
-
-### Parameter: `imageReference.communityGalleryImageId`
-
-Specified the community gallery image unique id for vm deployment. This can be fetched from community gallery image GET call.
-
-- Required: No
-- Type: string
-
-### Parameter: `imageReference.id`
-
-The resource Id of the image reference.
-
-- Required: No
-- Type: string
-
-### Parameter: `imageReference.offer`
-
-Specifies the offer of the platform image or marketplace image used to create the virtual machine.
-
-- Required: No
-- Type: string
-
-### Parameter: `imageReference.publisher`
-
-The image publisher.
-
-- Required: No
-- Type: string
-
-### Parameter: `imageReference.sharedGalleryImageId`
-
-Specified the shared gallery image unique id for vm deployment. This can be fetched from shared gallery image GET call.
-
-- Required: No
-- Type: string
-
-### Parameter: `imageReference.sku`
-
-The SKU of the image.
-
-- Required: No
-- Type: string
-
-### Parameter: `imageReference.version`
-
-Specifies the version of the platform image or marketplace image used to create the virtual machine. The allowed formats are Major.Minor.Build or 'latest'. Even if you use 'latest', the VM image will not automatically update after deploy time even if a new version becomes available.
-
-- Required: No
-- Type: string
 
 ### Parameter: `name`
 
@@ -6736,6 +6668,74 @@ Administrator username. Required if no pre-existing OS-Disk is provided (osDisk.
 
 - Required: No
 - Type: securestring
+
+### Parameter: `imageReference`
+
+OS image reference. In case of marketplace images, it's the combination of the publisher, offer, sku, version attributes. In case of custom images it's the resource ID of the custom image. Required if not creating the VM from an existing os-disk via the `osDisk.managedDisk.resourceId` parameter.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`communityGalleryImageId`](#parameter-imagereferencecommunitygalleryimageid) | string | Specified the community gallery image unique id for vm deployment. This can be fetched from community gallery image GET call. |
+| [`id`](#parameter-imagereferenceid) | string | The resource Id of the image reference. |
+| [`offer`](#parameter-imagereferenceoffer) | string | Specifies the offer of the platform image or marketplace image used to create the virtual machine. |
+| [`publisher`](#parameter-imagereferencepublisher) | string | The image publisher. |
+| [`sharedGalleryImageId`](#parameter-imagereferencesharedgalleryimageid) | string | Specified the shared gallery image unique id for vm deployment. This can be fetched from shared gallery image GET call. |
+| [`sku`](#parameter-imagereferencesku) | string | The SKU of the image. |
+| [`version`](#parameter-imagereferenceversion) | string | Specifies the version of the platform image or marketplace image used to create the virtual machine. The allowed formats are Major.Minor.Build or 'latest'. Even if you use 'latest', the VM image will not automatically update after deploy time even if a new version becomes available. |
+
+### Parameter: `imageReference.communityGalleryImageId`
+
+Specified the community gallery image unique id for vm deployment. This can be fetched from community gallery image GET call.
+
+- Required: No
+- Type: string
+
+### Parameter: `imageReference.id`
+
+The resource Id of the image reference.
+
+- Required: No
+- Type: string
+
+### Parameter: `imageReference.offer`
+
+Specifies the offer of the platform image or marketplace image used to create the virtual machine.
+
+- Required: No
+- Type: string
+
+### Parameter: `imageReference.publisher`
+
+The image publisher.
+
+- Required: No
+- Type: string
+
+### Parameter: `imageReference.sharedGalleryImageId`
+
+Specified the shared gallery image unique id for vm deployment. This can be fetched from shared gallery image GET call.
+
+- Required: No
+- Type: string
+
+### Parameter: `imageReference.sku`
+
+The SKU of the image.
+
+- Required: No
+- Type: string
+
+### Parameter: `imageReference.version`
+
+Specifies the version of the platform image or marketplace image used to create the virtual machine. The allowed formats are Major.Minor.Build or 'latest'. Even if you use 'latest', the VM image will not automatically update after deploy time even if a new version becomes available.
+
+- Required: No
+- Type: string
 
 ### Parameter: `additionalUnattendContent`
 
