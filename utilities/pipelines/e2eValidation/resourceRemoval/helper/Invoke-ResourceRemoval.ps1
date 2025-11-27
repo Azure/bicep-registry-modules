@@ -62,6 +62,9 @@ function Invoke-ResourceRemoval {
             break
         }
         'Microsoft.KeyVault/managedHSMs/keys' {
+            $TotalOffsetMinutes = (Get-AzAccessToken -AsSecureString | Select-Object ExpiresOn).Expireson.TotalOffsetMinutes
+            Write-Verbose ('Access token expiration offset in minutes [{0}]' -f $TotalOffsetMinutes) -Verbose
+
             $parentName = $ResourceId.Split('/')[8]
             $resourceName = Split-Path $ResourceId -Leaf
             $hSMKeyUri = 'https://{0}.managedhsm.azure.net/keys/{1}' -f $parentName, $resourceName
