@@ -61,7 +61,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}02'
-      securityType: nestedDependencies.outputs.securityType
+      securityType: nestedDependencies.outputs.?securityType
       osType: nestedDependencies.outputs.osType
       vmSize: 'Standard_D2s_v3'
       availabilityZone: 1

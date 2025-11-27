@@ -253,7 +253,7 @@ output osDiskResourceId string = osDisk.id
 output osType resourceOutput<'Microsoft.Compute/virtualMachines@2025-04-01'>.properties.storageProfile.osDisk.osType = tempVirtualMachine.properties.storageProfile.osDisk.osType
 
 @description('The security type of the VM used for to create the os disk.')
-output securityType resourceOutput<'Microsoft.Compute/virtualMachines@2025-04-01'>.properties.securityProfile.securityType = tempVirtualMachine.properties.securityProfile.securityType
+output securityType resourceOutput<'Microsoft.Compute/virtualMachines@2025-04-01'>.properties.securityProfile.securityType? = tempVirtualMachine.properties.?securityProfile.?securityType
 
 @description('The resource ID of the created Disk Encryption Set.')
 output diskEncryptionSetResourceId string = diskEncryptionSet.id
