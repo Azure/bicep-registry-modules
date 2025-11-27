@@ -26,39 +26,58 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
   location: location
 }
 
-module allowHsmAccessPrimary 'br/public:avm/res/resources/deployment-script:0.5.2' = {
-  name: '${uniqueString(deployment().name, location)}-primaryHSMKeyPermissions'
-  params: {
-    name: '${deploymentScriptNamePrefix}01'
-    kind: 'AzureCLI'
-    azCliVersion: '2.67.0'
-    arguments: '"${last(split(managedHSMResourceId, '/'))}" "${primaryHSMKeyName}" "${managedIdentity.properties.principalId}" "Managed HSM Crypto Service Encryption User"'
-    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-mHSMKeyConfig.sh')
-    retentionInterval: 'P1D'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        deploymentMSIResourceId
-      ]
+module allowHsmAccess 'br/public:avm/res/resources/deployment-script:0.5.2' = [
+  for (key, index) in [primaryHSMKeyName, secondaryHSMKeyName]: {
+    name: '${uniqueString(deployment().name, location)}-HSMKeyPermissions-${index}'
+    params: {
+      name: '${deploymentScriptNamePrefix}${index}'
+      kind: 'AzureCLI'
+      azCliVersion: '2.67.0'
+      arguments: '"${last(split(managedHSMResourceId, '/'))}" "${key}" "${managedIdentity.properties.principalId}" "Managed HSM Crypto Service Encryption User"'
+      scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-mHSMKeyConfig.sh')
+      retentionInterval: 'P1D'
+      managedIdentities: {
+        userAssignedResourceIds: [
+          deploymentMSIResourceId
+        ]
+      }
     }
   }
-}
+]
 
-module allowHsmAccessSecondary 'br/public:avm/res/resources/deployment-script:0.5.2' = if (!empty(secondaryHSMKeyName)) {
-  name: '${uniqueString(deployment().name, location)}-secondaryHSMKeyPermissions'
-  params: {
-    name: '${deploymentScriptNamePrefix}02'
-    kind: 'AzureCLI'
-    azCliVersion: '2.67.0'
-    arguments: '"${last(split(managedHSMResourceId, '/'))}" "${secondaryHSMKeyName}" "${managedIdentity.properties.principalId}" "Managed HSM Crypto Service Encryption User"'
-    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-mHSMKeyConfig.sh')
-    retentionInterval: 'P1D'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        deploymentMSIResourceId
-      ]
-    }
-  }
-}
+// module allowHsmAccessPrimary 'br/public:avm/res/resources/deployment-script:0.5.2' = {
+//   name: '${uniqueString(deployment().name, location)}-primaryHSMKeyPermissions'
+//   params: {
+//     name: '${deploymentScriptNamePrefix}01'
+//     kind: 'AzureCLI'
+//     azCliVersion: '2.67.0'
+//     arguments: '"${last(split(managedHSMResourceId, '/'))}" "${primaryHSMKeyName}" "${managedIdentity.properties.principalId}" "Managed HSM Crypto Service Encryption User"'
+//     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-mHSMKeyConfig.sh')
+//     retentionInterval: 'P1D'
+//     managedIdentities: {
+//       userAssignedResourceIds: [
+//         deploymentMSIResourceId
+//       ]
+//     }
+//   }
+// }
+
+// module allowHsmAccessSecondary 'br/public:avm/res/resources/deployment-script:0.5.2' = if (!empty(secondaryHSMKeyName)) {
+//   name: '${uniqueString(deployment().name, location)}-secondaryHSMKeyPermissions'
+//   params: {
+//     name: '${deploymentScriptNamePrefix}02'
+//     kind: 'AzureCLI'
+//     azCliVersion: '2.67.0'
+//     arguments: '"${last(split(managedHSMResourceId, '/'))}" "${secondaryHSMKeyName}" "${managedIdentity.properties.principalId}" "Managed HSM Crypto Service Encryption User"'
+//     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-mHSMKeyConfig.sh')
+//     retentionInterval: 'P1D'
+//     managedIdentities: {
+//       userAssignedResourceIds: [
+//         deploymentMSIResourceId
+//       ]
+//     }
+//   }
+// }
 
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
