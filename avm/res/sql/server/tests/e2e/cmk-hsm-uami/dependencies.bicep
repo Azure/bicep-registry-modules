@@ -32,7 +32,7 @@ module allowHsmAccessPrimary 'br/public:avm/res/resources/deployment-script:0.5.
     name: '${deploymentScriptNamePrefix}01'
     kind: 'AzureCLI'
     azCliVersion: '2.67.0'
-    arguments: '"${last(split(managedHSMResourceId, '/'))}" "${primaryHSMKeyName}" "${managedIdentity.properties.principalId}"'
+    arguments: '"${last(split(managedHSMResourceId, '/'))}" "${primaryHSMKeyName}" "${managedIdentity.properties.principalId}" "Managed HSM Crypto Service Encryption User"'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-mHSMKeyConfig.sh')
     retentionInterval: 'P1D'
     managedIdentities: {
@@ -49,7 +49,7 @@ module allowHsmAccessSecondary 'br/public:avm/res/resources/deployment-script:0.
     name: '${deploymentScriptNamePrefix}02'
     kind: 'AzureCLI'
     azCliVersion: '2.67.0'
-    arguments: '"${last(split(managedHSMResourceId, '/'))}" "${secondaryHSMKeyName}" "${managedIdentity.properties.principalId}"'
+    arguments: '"${last(split(managedHSMResourceId, '/'))}" "${secondaryHSMKeyName}" "${managedIdentity.properties.principalId}" "Managed HSM Crypto Service Encryption User"'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-mHSMKeyConfig.sh')
     retentionInterval: 'P1D'
     managedIdentities: {
