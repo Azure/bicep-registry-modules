@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Fix typo in HSM CMK schema implementation
+- Fixed typo in HSM CMK schema implementation
 
 ### Breaking Changes
 
