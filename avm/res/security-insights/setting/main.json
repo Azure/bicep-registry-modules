@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "10656979400520564521"
+      "version": "0.39.26.7824",
+      "templateHash": "3587891524982588643"
     },
     "name": "Security Insights Settings",
-    "description": "This module deploys a Security Insights Setting.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Security Insights Setting."
   },
   "definitions": {
     "roleAssignmentType": {

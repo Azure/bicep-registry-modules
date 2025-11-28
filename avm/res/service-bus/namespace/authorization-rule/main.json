@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "11323070987259402251"
+      "version": "0.38.33.27573",
+      "templateHash": "9802623335395286897"
     },
     "name": "Service Bus Namespace Authorization Rules",
     "description": "This module deploys a Service Bus Namespace Authorization Rule."
@@ -41,7 +41,7 @@
   "resources": [
     {
       "type": "Microsoft.ServiceBus/namespaces/AuthorizationRules",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
       "properties": {
         "rights": "[parameters('rights')]"
