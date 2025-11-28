@@ -22,8 +22,8 @@ This module deploys a Kusto Cluster.
 | `Microsoft.Kusto/clusters/databases` | 2024-04-13 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kusto_clusters_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2024-04-13/clusters/databases)</li></ul> |
 | `Microsoft.Kusto/clusters/databases/principalAssignments` | 2024-04-13 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kusto_clusters_databases_principalassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2024-04-13/clusters/databases/principalAssignments)</li></ul> |
 | `Microsoft.Kusto/clusters/principalAssignments` | 2024-04-13 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kusto_clusters_principalassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2024-04-13/clusters/principalAssignments)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -33,14 +33,225 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/kusto/cluster:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Private endpoint-enabled deployment](#example-3-private-endpoint-enabled-deployment)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-4-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-5-using-customer-managed-keys-with-user-assigned-identity)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-1-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-2-using-customer-managed-keys-with-user-assigned-identity)
+- [Using only defaults](#example-3-using-only-defaults)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Private endpoint-enabled deployment](#example-5-private-endpoint-enabled-deployment)
 - [WAF-aligned](#example-6-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using Customer-Managed-Keys with System-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
+Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
+  name: 'clusterDeployment'
+  params: {
+    // Required parameters
+    name: '<name>'
+    sku: 'Standard_E2ads_v5'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    managedIdentities: {
+      systemAssigned: true
+    }
+    tags: {
+      'opt-out-of-soft-delete': 'true'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "<name>"
+    },
+    "sku": {
+      "value": "Standard_E2ads_v5"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "tags": {
+      "value": {
+        "opt-out-of-soft-delete": "true"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = '<name>'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+param tags = {
+  'opt-out-of-soft-delete': 'true'
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
+  name: 'clusterDeployment'
+  params: {
+    // Required parameters
+    name: 'kcuencr0001'
+    sku: 'Standard_E2ads_v5'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    tags: {
+      'opt-out-of-soft-delete': 'true'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "kcuencr0001"
+    },
+    "sku": {
+      "value": "Standard_E2ads_v5"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "tags": {
+      "value": {
+        "opt-out-of-soft-delete": "true"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = 'kcuencr0001'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param tags = {
+  'opt-out-of-soft-delete': 'true'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -58,7 +269,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     sku: 'Standard_E2ads_v5'
     // Non-required parameters
     enableDiskEncryption: true
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -91,9 +301,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     "enableDiskEncryption": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -120,7 +327,6 @@ param name = 'kcmin0001'
 param sku = 'Standard_E2ads_v5'
 // Non-required parameters
 param enableDiskEncryption = true
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -131,9 +337,10 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
+Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).
 
 
 <details>
@@ -161,6 +368,11 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     ]
     autoScaleMax: 6
     autoScaleMin: 3
+    availabilityZones: [
+      1
+      2
+      3
+    ]
     capacity: 3
     clusterPrincipalAssignments: [
       {
@@ -194,7 +406,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     enablePurge: true
     enableRestrictOutboundNetworkAccess: true
     enableStreamingIngest: true
-    enableZoneRedundant: true
     engineType: 'V3'
     location: '<location>'
     lock: {
@@ -226,6 +437,9 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    tags: {
+      'opt-out-of-soft-delete': 'true'
+    }
   }
 }
 ```
@@ -272,6 +486,13 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     },
     "autoScaleMin": {
       "value": 3
+    },
+    "availabilityZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
     },
     "capacity": {
       "value": 3
@@ -328,9 +549,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     "enableStreamingIngest": {
       "value": true
     },
-    "enableZoneRedundant": {
-      "value": true
-    },
     "engineType": {
       "value": "V3"
     },
@@ -373,6 +591,11 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
+    },
+    "tags": {
+      "value": {
+        "opt-out-of-soft-delete": "true"
+      }
     }
   }
 }
@@ -405,6 +628,11 @@ param allowedIpRangeList = [
 ]
 param autoScaleMax = 6
 param autoScaleMin = 3
+param availabilityZones = [
+  1
+  2
+  3
+]
 param capacity = 3
 param clusterPrincipalAssignments = [
   {
@@ -438,7 +666,6 @@ param enablePublicNetworkAccess = true
 param enablePurge = true
 param enableRestrictOutboundNetworkAccess = true
 param enableStreamingIngest = true
-param enableZoneRedundant = true
 param engineType = 'V3'
 param location = '<location>'
 param lock = {
@@ -470,14 +697,18 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param tags = {
+  'opt-out-of-soft-delete': 'true'
+}
 ```
 
 </details>
 <p>
 
-### Example 3: _Private endpoint-enabled deployment_
+### Example 5: _Private endpoint-enabled deployment_
 
 This instance deploys the module with private endpoints.
+Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).
 
 
 <details>
@@ -493,7 +724,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     sku: 'Standard_E2ads_v5'
     // Non-required parameters
     enablePublicNetworkAccess: false
-    location: '<location>'
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -522,6 +752,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
+      'opt-out-of-soft-delete': 'true'
       Role: 'DeploymentValidation'
     }
   }
@@ -550,9 +781,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     // Non-required parameters
     "enablePublicNetworkAccess": {
       "value": false
-    },
-    "location": {
-      "value": "<location>"
     },
     "privateEndpoints": {
       "value": [
@@ -587,6 +815,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       "value": {
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
+        "opt-out-of-soft-delete": "true",
         "Role": "DeploymentValidation"
       }
     }
@@ -609,7 +838,6 @@ param name = 'kcpe0001'
 param sku = 'Standard_E2ads_v5'
 // Non-required parameters
 param enablePublicNetworkAccess = false
-param location = '<location>'
 param privateEndpoints = [
   {
     privateDnsZoneGroup: {
@@ -638,194 +866,8 @@ param publicIPType = 'IPv4'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
+  'opt-out-of-soft-delete': 'true'
   Role: 'DeploymentValidation'
-}
-```
-
-</details>
-<p>
-
-### Example 4: _Using Customer-Managed-Keys with System-Assigned identity_
-
-This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
-  name: 'clusterDeployment'
-  params: {
-    // Required parameters
-    name: '<name>'
-    sku: 'Standard_E2ads_v5'
-    // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-    }
-    managedIdentities: {
-      systemAssigned: true
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "<name>"
-    },
-    "sku": {
-      "value": "Standard_E2ads_v5"
-    },
-    // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/kusto/cluster:<version>'
-
-// Required parameters
-param name = '<name>'
-param sku = 'Standard_E2ads_v5'
-// Non-required parameters
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-}
-param managedIdentities = {
-  systemAssigned: true
-}
-```
-
-</details>
-<p>
-
-### Example 5: _Using Customer-Managed-Keys with User-Assigned identity_
-
-This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
-  name: 'clusterDeployment'
-  params: {
-    // Required parameters
-    name: 'kcuencr0001'
-    sku: 'Standard_E2ads_v5'
-    // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "kcuencr0001"
-    },
-    "sku": {
-      "value": "Standard_E2ads_v5"
-    },
-    // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/kusto/cluster:<version>'
-
-// Required parameters
-param name = 'kcuencr0001'
-param sku = 'Standard_E2ads_v5'
-// Non-required parameters
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-}
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
 }
 ```
 
@@ -857,8 +899,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     enableDiskEncryption: true
     enableDoubleEncryption: true
     enablePublicNetworkAccess: false
-    enableZoneRedundant: true
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -917,12 +957,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     "enablePublicNetworkAccess": {
       "value": false
     },
-    "enableZoneRedundant": {
-      "value": true
-    },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -965,8 +999,6 @@ param enableAutoStop = true
 param enableDiskEncryption = true
 param enableDoubleEncryption = true
 param enablePublicNetworkAccess = false
-param enableZoneRedundant = true
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -1000,6 +1032,7 @@ param tier = 'Standard'
 | [`allowedIpRangeList`](#parameter-allowediprangelist) | array | List of IP addresses in CIDR format allowed to connect to the Kusto Cluster. |
 | [`autoScaleMax`](#parameter-autoscalemax) | int | When auto-scale is enabled, the maximum number of instances in the Kusto Cluster. |
 | [`autoScaleMin`](#parameter-autoscalemin) | int | When auto-scale is enabled, the minimum number of instances in the Kusto Cluster. |
+| [`availabilityZones`](#parameter-availabilityzones) | array | The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set. |
 | [`capacity`](#parameter-capacity) | int | The number of instances of the Kusto Cluster. |
 | [`clusterPrincipalAssignments`](#parameter-clusterprincipalassignments) | array | The Principal Assignments for the Kusto Cluster. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
@@ -1014,7 +1047,6 @@ param tier = 'Standard'
 | [`enableRestrictOutboundNetworkAccess`](#parameter-enablerestrictoutboundnetworkaccess) | bool | Enable/disable restricting outbound network access. |
 | [`enableStreamingIngest`](#parameter-enablestreamingingest) | bool | Enable/disable streaming ingest. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/disable usage telemetry for module. |
-| [`enableZoneRedundant`](#parameter-enablezoneredundant) | bool | Enable/disable zone redundancy. |
 | [`engineType`](#parameter-enginetype) | string | The engine type of the Kusto Cluster. |
 | [`languageExtensions`](#parameter-languageextensions) | array | List of the language extensions of the Kusto Cluster. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -1096,6 +1128,29 @@ When auto-scale is enabled, the minimum number of instances in the Kusto Cluster
 - Default: `2`
 - MinValue: 2
 - MaxValue: 999
+
+### Parameter: `availabilityZones`
+
+The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `capacity`
 
@@ -1622,14 +1677,6 @@ Enable/disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `enableZoneRedundant`
-
-Enable/disable zone redundancy.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `engineType`
 
@@ -2424,11 +2471,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

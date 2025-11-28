@@ -14,18 +14,18 @@ param location string = resourceGroup().location
 @description('Required. The name of the server.')
 param name string
 
-import { managedIdentityAllType, managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType, managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
 @description('Conditional. The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty.')
 param primaryUserAssignedIdentityResourceId string?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -53,7 +53,7 @@ param securityAlertPolicies securityAlertPolicyType[]?
 @description('Optional. The keys to configure.')
 param keys keyType[]?
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The customer managed key definition for server TDE.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
@@ -201,14 +201,16 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
+var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
     name: customerManagedKey.?keyName!
   }
 }
@@ -245,8 +247,16 @@ resource server 'Microsoft.Sql/servers@2023-08-01' = {
     isIPv6Enabled: isIPv6Enabled
     keyId: customerManagedKey != null
       ? !empty(customerManagedKey.?keyVersion)
-          ? '${cMKKeyVault::cMKKey.?properties.keyUri}/${customerManagedKey!.?keyVersion}'
-          : cMKKeyVault::cMKKey.?properties.keyUriWithVersion
+          ? (!isHSMManagedCMK
+              ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+              : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.keyVersion!}')
+          : (customerManagedKey.?autoRotationEnabled ?? true)
+              ? (!isHSMManagedCMK
+                  ? cMKKeyVault::cMKKey!.properties.keyUri
+                  : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}}')
+              : (!isHSMManagedCMK
+                  ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
+                  : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
       : null
     version: '12.0'
     minimalTlsVersion: minimalTlsVersion
@@ -374,7 +384,7 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
   }
 ]
 
-module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-server-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -501,11 +511,19 @@ module cmk_key 'key/main.bicep' = if (customerManagedKey != null) {
   name: '${uniqueString(deployment().name, location)}-Sql-Key'
   params: {
     serverName: server.name
-    name: '${cMKKeyVault.name}_${customerManagedKey.?keyName}_${!empty(customerManagedKey.?keyVersion) ? customerManagedKey.?keyVersion : last(split(cMKKeyVault::cMKKey.?properties.keyUriWithVersion ?? '', '/'))}'
+    name: '${cMKKeyVault.name}_${customerManagedKey.?keyName}_${!empty(customerManagedKey.?keyVersion) ? customerManagedKey.?keyVersion : (!isHSMManagedCMK ? last(split(cMKKeyVault::cMKKey.?properties.keyUriWithVersion ?? '', '/')) : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.')) }'
     serverKeyType: 'AzureKeyVault'
     uri: !empty(customerManagedKey.?keyVersion)
-      ? '${cMKKeyVault::cMKKey.?properties.keyUri}/${customerManagedKey!.?keyVersion}'
-      : cMKKeyVault::cMKKey.?properties.keyUriWithVersion
+      ? (!isHSMManagedCMK
+          ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+          : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.keyVersion!}')
+      : (customerManagedKey.?autoRotationEnabled ?? true)
+          ? (!isHSMManagedCMK
+              ? cMKKeyVault::cMKKey!.properties.keyUri
+              : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}}')
+          : (!isHSMManagedCMK
+              ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
+              : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
   }
 }
 
@@ -611,7 +629,7 @@ output systemAssignedMIPrincipalId string? = server.?identity.?principalId
 @description('The location the resource was deployed into.')
 output location string = server.location
 
-import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
   ? toObject(
@@ -636,7 +654,7 @@ output privateEndpoints privateEndpointOutputType[] = [
 //   Definitions   //
 // =============== //
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 import { perDatabaseSettingsType, skuType } from 'elastic-pool/main.bicep'
 import { databaseSkuType, shortTermBackupRetentionPolicyType, longTermBackupRetentionPolicyType } from 'database/main.bicep'
 import { recurringScansType } from 'vulnerability-assessment/main.bicep'
