@@ -561,7 +561,11 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         : null
     }
     storageProfile: {
-      imageReference: imageReference
+      imageReference: contains(imageReference, 'id')
+        ? {
+            id: imageReference.?id
+          }
+        : imageReference
       osDisk: {
         name: !empty(osDisk.managedDisk.?resourceId)
           ? last(split(osDisk.managedDisk.resourceId!, '/'))
@@ -640,6 +644,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         }
       ]
     }
+
     capacityReservation: !empty(capacityReservationGroupResourceId)
       ? {
           capacityReservationGroup: {
@@ -757,6 +762,15 @@ module vm_domainJoinExtension 'extension/main.bicep' = if (contains(extensionDom
   }
 }
 
+var aadJoinSettings = extensionAadJoinConfig.?settings ?? {}
+var filteredAadJoinSettings = contains(aadJoinSettings, 'mdmId') && empty(aadJoinSettings.mdmId)
+  ? reduce(
+      items(aadJoinSettings),
+      {},
+      (cur, item) => item.key == 'mdmId' ? cur : union(cur, { '${item.key}': item.value })
+    )
+  : aadJoinSettings
+
 module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-AADLogin'
   params: {
@@ -768,7 +782,7 @@ module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.e
     typeHandlerVersion: extensionAadJoinConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '2.0' : '1.0')
     autoUpgradeMinorVersion: extensionAadJoinConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionAadJoinConfig.?enableAutomaticUpgrade ?? false
-    settings: extensionAadJoinConfig.?settings ?? {}
+    settings: filteredAadJoinSettings
     supressFailures: extensionAadJoinConfig.?supressFailures ?? false
     tags: extensionAadJoinConfig.?tags ?? tags
   }
@@ -957,9 +971,6 @@ module vm_customScriptExtension 'extension/main.bicep' = if (!empty(extensionCus
         : {})
     }
   }
-  dependsOn: [
-    vm_desiredStateConfigurationExtension
-  ]
 }
 
 module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzureDiskEncryptionConfig.enabled) {
@@ -1016,6 +1027,8 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHo
     settings: {
       modulesUrl: extensionHostPoolRegistration.modulesUrl
       configurationFunction: extensionHostPoolRegistration.configurationFunction
+    }
+    protectedSettings: {
       properties: {
         hostPoolName: extensionHostPoolRegistration.hostPoolName
         registrationInfoToken: extensionHostPoolRegistration.registrationInfoToken
