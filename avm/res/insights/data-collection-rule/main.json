@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "15218580915093794678"
+      "templateHash": "6235303872569409245"
     },
     "name": "Data Collection Rules",
     "description": "This module deploys a Data Collection Rule."
@@ -491,7 +491,7 @@
             }
           },
           "metadata": {
-            "description": "Required. Specification of destinations. Choose a single destination type of either logAnalytics, storageAccounts, or eventHubs"
+            "description": "Required. Specification of destinations. Choose a single destination type of either logAnalytics, storageAccounts, or eventHubs."
           }
         },
         "dataFlows": {

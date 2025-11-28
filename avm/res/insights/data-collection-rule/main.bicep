@@ -369,7 +369,7 @@ type platformTelemetryDcrPropertiesType = {
     platformTelemetry: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataSources.platformTelemetry
   }
 
-  @description('Required. Specification of destinations. Choose a single destination type of either logAnalytics, storageAccounts, or eventHubs')
+  @description('Required. Specification of destinations. Choose a single destination type of either logAnalytics, storageAccounts, or eventHubs.')
   destinations: {
     @description('Optional. The list of Log Analytics destinations.')
     logAnalytics: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.destinations.logAnalytics?

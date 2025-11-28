@@ -3823,7 +3823,7 @@ To use this variant, set the property `kind` to `PlatformTelemetry`.
 | :-- | :-- | :-- |
 | [`dataFlows`](#parameter-datacollectionrulepropertieskind-platformtelemetrydataflows) | array | The specification of data flows. |
 | [`dataSources`](#parameter-datacollectionrulepropertieskind-platformtelemetrydatasources) | object | Specification of data sources that will be collected. |
-| [`destinations`](#parameter-datacollectionrulepropertieskind-platformtelemetrydestinations) | object | Specification of destinations. Choose a single destination type of either logAnalytics, storageAccounts, or eventHubs |
+| [`destinations`](#parameter-datacollectionrulepropertieskind-platformtelemetrydestinations) | object | Specification of destinations. Choose a single destination type of either logAnalytics, storageAccounts, or eventHubs. |
 | [`kind`](#parameter-datacollectionrulepropertieskind-platformtelemetrykind) | string | The kind of the resource. |
 
 **Optional parameters**
@@ -3861,7 +3861,7 @@ The list of platform telemetry configurations.
 
 ### Parameter: `dataCollectionRuleProperties.kind-PlatformTelemetry.destinations`
 
-Specification of destinations. Choose a single destination type of either logAnalytics, storageAccounts, or eventHubs
+Specification of destinations. Choose a single destination type of either logAnalytics, storageAccounts, or eventHubs.
 
 - Required: Yes
 - Type: object
