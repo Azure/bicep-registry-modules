@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/document-knowledge-mining/CHANGELOG.md).
 
+## 0.2.0
+
+### Changes
+
+- Consolidated network modules into single `modules/virtualNetwork.bicep`
+- Simplified subnet configurations with inline defaults
+- Added CIDR sizing reference and VM accelerated networking documentation
+
+### Breaking Changes
+
+- Removed separate bastion and jumpbox modules
+
 ## 0.1.0
 
 ### Changes
