@@ -16,7 +16,7 @@ This module deploys a Data Collection Rule.
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
-| `Microsoft.Insights/dataCollectionRules` | 2023-03-11 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_datacollectionrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionRules)</li></ul> |
+| `Microsoft.Insights/dataCollectionRules` | 2024-03-11 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_datacollectionrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2024-03-11/dataCollectionRules)</li></ul> |
 
 ## Usage examples
 
@@ -3038,6 +3038,7 @@ The kind of data collection rule.
 | [`All`](#variant-datacollectionrulepropertieskind-all) | The type for the properties of the data collection rule of the kind 'All'. |
 | [`AgentSettings`](#variant-datacollectionrulepropertieskind-agentsettings) | The type for the properties of the 'AgentSettings' data collection rule. |
 | [`Direct`](#variant-datacollectionrulepropertieskind-direct) | The type for the properties of the 'Direct' data collection rule. |
+| [`AgentDirectToStore`](#variant-datacollectionrulepropertieskind-agentdirecttostore) | The type for the properties of the 'AgentDirectToStore' data collection rule. |
 
 ### Variant: `dataCollectionRuleProperties.kind-Linux`
 The type for the properties of the 'Linux' data collection rule.
@@ -3421,6 +3422,59 @@ The resource ID of the data collection endpoint that this rule can be used with.
 ### Parameter: `dataCollectionRuleProperties.kind-Direct.description`
 
 Description of the data collection rule.
+
+- Required: No
+- Type: string
+
+### Variant: `dataCollectionRuleProperties.kind-AgentDirectToStore`
+The type for the properties of the 'AgentDirectToStore' data collection rule.
+
+To use this variant, set the property `kind` to `AgentDirectToStore`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataFlows`](#parameter-datacollectionrulepropertieskind-agentdirecttostoredataflows) | array | The specification of data flows. |
+| [`destinations`](#parameter-datacollectionrulepropertieskind-agentdirecttostoredestinations) | object | Specification of destinations that can be used in data flows. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-agentdirecttostorekind) | string | The platform type specifies the type of resources this rule can apply to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-datacollectionrulepropertieskind-agentdirecttostoredescription) | string | The resource ID of the data collection endpoint that this rule can be used with. |
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.dataFlows`
+
+The specification of data flows.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.destinations`
+
+Specification of destinations that can be used in data flows.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.kind`
+
+The platform type specifies the type of resources this rule can apply to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AgentDirectToStore'
+  ]
+  ```
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.description`
+
+The resource ID of the data collection endpoint that this rule can be used with.
 
 - Required: No
 - Type: string
