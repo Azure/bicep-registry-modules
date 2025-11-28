@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/virtual-machine/CHANGELOG.md).
 
+## 0.22.0
+
+### Changes
+
+- Fixed AAD Join extension failure when `mdmId` setting is provided as an empty string. The module now filters out empty `mdmId` values to prevent extension deployment failures.
+- Updated test cases to remove empty `mdmId` settings and use commented examples instead.
+- capacityReservationGroupResourceId, extensionGuestConfigurationExtension parameters were added.
+
+### Breaking Changes
+
 ## 0.21.0
 
 ### Changes

@@ -67,7 +67,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'cvmlinatmg'
+    name: 'vmlinatmg'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -215,7 +215,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'cvmlinatmg'
+param name = 'vmlinatmg'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -280,7 +280,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'cvmlinmin'
+    name: 'vmlinmin'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -406,7 +406,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'cvmlinmin'
+param name = 'vmlinmin'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -462,7 +462,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 1
-    name: 'cvmlimax'
+    name: 'vmlimax'
     nicConfigurations: [
       {
         deleteOption: 'Delete'
@@ -1116,7 +1116,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 1
-param name = 'cvmlimax'
+param name = 'vmlimax'
 param nicConfigurations = [
   {
     deleteOption: 'Delete'
@@ -1415,7 +1415,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 2
-    name: 'cvmwinwaf'
+    name: 'vmwinwaf'
     nicConfigurations: [
       {
         deleteOption: 'Delete'
@@ -2025,7 +2025,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 2
-param name = 'cvmwinwaf'
+param name = 'vmwinwaf'
 param nicConfigurations = [
   {
     deleteOption: 'Delete'
@@ -2302,7 +2302,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'cvmwinmin'
+    name: 'vmwinmin'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -2414,7 +2414,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'cvmwinmin'
+param name = 'vmwinmin'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -2464,7 +2464,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 1
-    name: 'cvmwindisk02'
+    name: 'vmwindisk02'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -2527,7 +2527,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": 1
     },
     "name": {
-      "value": "cvmwindisk02"
+      "value": "vmwindisk02"
     },
     "nicConfigurations": {
       "value": [
@@ -2553,7 +2553,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "<osType>"
     },
     "vmSize": {
-      "value": "Standard_D2s_v6"
+      "value": "Standard_D2s_v3"
     },
     // Non-required parameters
     "dataDisks": {
@@ -2600,7 +2600,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 1
-param name = 'cvmwindisk02'
+param name = 'vmwindisk02'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -3175,7 +3175,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 2
-    name: 'cvmwinmax'
+    name: 'vmwinmax'
     nicConfigurations: [
       {
         deleteOption: 'Delete'
@@ -3921,7 +3921,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 2
-param name = 'cvmwinmax'
+param name = 'vmwinmax'
 param nicConfigurations = [
   {
     deleteOption: 'Delete'
@@ -4263,7 +4263,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'cvmwinnv'
+    name: 'vmwinnv'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -4391,7 +4391,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'cvmwinnv'
+param name = 'vmwinnv'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -4446,7 +4446,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'cvmwinvmss'
+    name: 'vmwinvmss'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -4562,7 +4562,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'cvmwinvmss'
+param name = 'vmwinvmss'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -4613,7 +4613,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 2
-    name: 'cvmwinzrs'
+    name: 'vmwinzrs'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -4745,7 +4745,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 2
-param name = 'cvmwinzrs'
+param name = 'vmwinzrs'
 param nicConfigurations = [
   {
     ipConfigurations: [
