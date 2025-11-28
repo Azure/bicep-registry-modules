@@ -29,7 +29,7 @@ param password string = newGuid()
 @description('Required. The name of the deployment script that waits for a role assignment to propagate.')
 param waitDeploymentScriptName string
 
-@description('Specifies the name of the administrator account. <br><br> This property cannot be updated after the VM is created. <br><br> **Windows-only restriction:** Cannot end in "." <br><br> **Disallowed values:** "administrator", "admin", "user", "user1", "test", "user2", "test1", "user3", "admin1", "1", "123", "a", "actuser", "adm", "admin2", "aspnet", "backup", "console", "david", "guest", "john", "owner", "root", "server", "sql", "support", "support_388945a0", "sys", "test2", "test3", "user4", "user5". <br><br> **Minimum-length (Linux):** 1  character <br><br> **Max-length (Linux):** 64 characters <br><br> **Max-length (Windows):** 20 characters.')
+@description('Specifies the name of the administrator account.')
 param adminUsername string = 'localAdminUser'
 
 var addressPrefix = '10.0.0.0/16'
