@@ -1659,7 +1659,7 @@ function Set-UsageExamplesSection {
 
         $relativeTestFilePath = '/tests/e2e/{0}' -f (Split-Path (Split-Path $testFilePath -Parent) -Leaf)
         $testFilesContent += @(
-            "You can find the full example and the setup of its dependency in the end-2-end test sub-folder [$relativeTestFilePath]"
+            "You can find the full example and the setup of its dependencies in the end-to-end test sub-folder [$relativeTestFilePath]"
             ''
         )
 
