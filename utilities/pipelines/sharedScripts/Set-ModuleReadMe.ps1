@@ -2257,6 +2257,7 @@ function Set-ModuleReadMe {
         ReadMeFilePath       = $ReadMeFilePath
         FullModuleIdentifier = $FullModuleIdentifier
         TemplateFileContent  = $templateFileContent
+        TemplateFilePath     = $TemplateFilePath
     }
     $readMeFileContent = Initialize-ReadMe @inputObject
 
