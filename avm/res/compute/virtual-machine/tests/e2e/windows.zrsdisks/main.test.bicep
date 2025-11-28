@@ -13,7 +13,7 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${se
 
 // Capacity constraints for VM type
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'eastus2'
+var enforcedLocation = 'germanywestcentral'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'vmwinzrs'
@@ -90,7 +90,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       osType: 'Windows'
-      vmSize: 'Standard_D4s_v6'
+      vmSize: 'Standard_D2s_v3'
       adminPassword: password
     }
   }
