@@ -1774,7 +1774,6 @@ function Set-UsageExamplesSection {
 
                 $formattedBicepExample = @(
                     "module $moduleNameCamelCase 'br/public:$($brLink):$($targetVersion)' = {",
-                    "  name: '$($moduleNameCamelCase)Deployment'"
                     '  params: {'
                 ) + $bicepExample +
                 @( '  }',
@@ -2046,14 +2045,14 @@ function Initialize-ReadMe {
         'public-ip-addresses' = 'publicIPAddresses'
         'public-ip-prefixes'  = 'publicIPPrefixes'
     }
-    # Get moduleName as $fullModuleIdentifier leaf
-    $moduleName = $fullModuleIdentifier.Split('/')[1]
+    # Get technicalModuleName (e.g., vault) as $fullModuleIdentifier leaf
+    $technicalModuleName = $fullModuleIdentifier.Split('/')[1]
     if ($specialConversionHash.ContainsKey($moduleName)) {
-        # Convert moduleName using specialConversionHash
+        # Convert technicalModuleName using specialConversionHash
         $moduleNameCamelCase = $specialConversionHash[$moduleName]
     } else {
-        # Convert moduleName from kebab-case to camelCase
-        $First, $Rest = $moduleName -split '-', 2
+        # Convert technicalModuleName from kebab-case to camelCase
+        $First, $Rest = $technicalModuleName -split '-', 2
         $moduleNameCamelCase = $First.Tolower() + (Get-Culture).TextInfo.ToTitleCase($Rest) -replace '-'
     }
     $brLink = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
@@ -2062,7 +2061,6 @@ function Initialize-ReadMe {
         'You can reference the module as follows:',
         '```',
         "module $moduleNameCamelCase 'br/public:$($brLink):$($targetVersion)' = {",
-        "  name: '$($moduleNameCamelCase)Deployment'",
         '  params: { (...) }',
         '}',
         '```',
