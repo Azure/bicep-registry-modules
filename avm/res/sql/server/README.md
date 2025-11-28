@@ -262,7 +262,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   name: 'serverDeployment'
   params: {
     // Required parameters
-    name: 'sshsm001'
+    name: 'sshsmu001'
     // Non-required parameters
     administrators: {
       azureADOnlyAuthentication: true
@@ -290,7 +290,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           ]
         }
         maxSizeBytes: 2147483648
-        name: 'sshsm-db-001'
+        name: 'sshsmu-db-001'
         sku: {
           name: 'Basic'
           tier: 'Basic'
@@ -323,7 +323,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sshsm001"
+      "value": "sshsmu001"
     },
     // Non-required parameters
     "administrators": {
@@ -357,7 +357,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             ]
           },
           "maxSizeBytes": 2147483648,
-          "name": "sshsm-db-001",
+          "name": "sshsmu-db-001",
           "sku": {
             "name": "Basic",
             "tier": "Basic"
@@ -392,7 +392,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'sshsm001'
+param name = 'sshsmu001'
 // Non-required parameters
 param administrators = {
   azureADOnlyAuthentication: true
@@ -420,7 +420,7 @@ param databases = [
       ]
     }
     maxSizeBytes: 2147483648
-    name: 'sshsm-db-001'
+    name: 'sshsmu-db-001'
     sku: {
       name: 'Basic'
       tier: 'Basic'

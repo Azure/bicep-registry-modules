@@ -105,8 +105,8 @@ module testDeployment '../../../main.bicep' = [
           }
           customerManagedKey: {
             keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
-            keyName: nestedHsmDependencies.?outputs.?secondaryKeyName!
-            keyVersion: nestedHsmDependencies.?outputs.?secondaryKeyVersion!
+            keyName: nestedHsmDependencies.outputs.secondaryKeyName!
+            keyVersion: nestedHsmDependencies.outputs.secondaryKeyVersion!
           }
           sku: {
             name: 'Basic'

@@ -86,9 +86,9 @@ module testDeployment '../../../main.bicep' = [
         keyVersion: nestedHsmDependencies.outputs.primaryKeyVersion
       }
       customerManagedKeyManagedDisk: {
-        keyName: nestedHsmDependencies.?outputs.?secondaryKeyName!
+        keyName: nestedHsmDependencies.outputs.secondaryKeyName!
         keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
-        keyVersion: nestedHsmDependencies.?outputs.?secondaryKeyVersion!
+        keyVersion: nestedHsmDependencies.outputs.secondaryKeyVersion!
       }
     }
     dependsOn: [nestedDependencies]
