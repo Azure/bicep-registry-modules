@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added support for `resourceId` parameter in `osDisk` parameter to allow creating a VM from an osDisk
+- Added support for `resourceId` parameter in `osDisk` parameter to allow creating a VM from an osDisk.
 - Fixed incorrect implementation of the `dataDisks.managedDisk.diskEncryptionSetResourceId` parameter, now correctly passing the value thru
 
 ### Breaking Changes
