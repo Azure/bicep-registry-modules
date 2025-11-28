@@ -327,7 +327,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   name: 'redisEnterpriseDeployment'
   params: {
     // Required parameters
-    name: 'creshsm001'
+    name: 'creshsmu001'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -364,7 +364,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "creshsm001"
+      "value": "creshsmu001"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -405,7 +405,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
 using 'br/public:avm/res/cache/redis-enterprise:<version>'
 
 // Required parameters
-param name = 'creshsm001'
+param name = 'creshsmu001'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'

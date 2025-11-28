@@ -290,7 +290,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   name: 'storageAccountDeployment'
   params: {
     // Required parameters
-    name: 'ssauhsm001'
+    name: 'ssauhsmu001'
     // Non-required parameters
     blobServices: {
       containers: [
@@ -328,7 +328,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssauhsm001"
+      "value": "ssauhsmu001"
     },
     // Non-required parameters
     "blobServices": {
@@ -370,7 +370,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'ssauhsm001'
+param name = 'ssauhsmu001'
 // Non-required parameters
 param blobServices = {
   containers: [

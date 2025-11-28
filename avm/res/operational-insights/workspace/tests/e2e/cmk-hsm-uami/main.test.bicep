@@ -12,7 +12,7 @@ metadata description = 'This instance deploys a Log Analytics Cluster with Custo
 param resourceGroupName string = 'dep-${namePrefix}-operationalinsights.workspaces-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'oiwmhsm'
+param serviceShort string = 'oiwmhsmu'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'

@@ -63,7 +63,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'dfpshsm003'
+    name: 'dfpshsmu003'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -106,7 +106,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       "value": -1
     },
     "name": {
-      "value": "dfpshsm003"
+      "value": "dfpshsmu003"
     },
     "skuName": {
       "value": "Standard_D2s_v3"
@@ -157,7 +157,7 @@ using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'dfpshsm003'
+param name = 'dfpshsmu003'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
 // Non-required parameters
