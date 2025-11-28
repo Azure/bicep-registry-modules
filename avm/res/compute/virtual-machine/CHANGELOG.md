@@ -2,18 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/virtual-machine/CHANGELOG.md).
 
-
 ## 0.21.0
 
 ### Changes
 
-- Fixed AAD Join extension failure when `mdmId` setting is provided as an empty string. The module now filters out empty `mdmId` values to prevent extension deployment failures.
-- Updated test cases to remove empty `mdmId` settings and use commented examples instead.
-- capacityReservationGroupResourceId, extensionGuestConfigurationExtension parameters were added.
+- Added support for `resourceId` parameter in `osDisk` parameter to allow creating a VM from an osDisk
+- Fixed incorrect implementation of the `dataDisks.managedDisk.diskEncryptionSetResourceId` parameter, now correctly passing the value thru
 
 ### Breaking Changes
 
-- none
+- Renamed `dataDisks.managedDisk.id` parameter to `dataDisks.managedDisk.resourceId` in alignment with the AVM specs
 
 ## 0.20.0
 

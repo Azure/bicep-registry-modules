@@ -28,7 +28,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -37,7 +37,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    location: enforcedLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
@@ -48,11 +47,6 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 // Test Execution //
 // ============== //
-
-// resource sshKey 'Microsoft.Compute/sshPublicKeys@2022-03-01' existing = {
-//   name: sshKeyName
-//   scope: resourceGroup
-// }
 
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
@@ -77,7 +71,7 @@ module testDeployment '../../../main.bicep' = [
               name: 'ipconfig01'
               pipConfiguration: {
                 publicIpNameSuffix: '-pip-01'
-                zones: [
+                availabilityZones: [
                   1
                   2
                   3
