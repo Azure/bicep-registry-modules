@@ -1,43 +1,5 @@
-metadata name = 'Cognitive Services'
-metadata description = 'This module deploys a Cognitive Service.'
-
 @description('Required. The name of Cognitive Services account.')
 param name string
-
-@description('Required. Kind of the Cognitive Services account. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
-@allowed([
-  'AIServices'
-  'AnomalyDetector'
-  'CognitiveServices'
-  'ComputerVision'
-  'ContentModerator'
-  'ContentSafety'
-  'ConversationalLanguageUnderstanding'
-  'CustomVision.Prediction'
-  'CustomVision.Training'
-  'Face'
-  'FormRecognizer'
-  'HealthInsights'
-  'ImmersiveReader'
-  'Internal.AllInOne'
-  'LUIS'
-  'LUIS.Authoring'
-  'LanguageAuthoring'
-  'MetricsAdvisor'
-  'OpenAI'
-  'Personalizer'
-  'QnAMaker.v2'
-  'SpeechServices'
-  'TextAnalytics'
-  'TextTranslation'
-])
-param kind string
-
-@description('Required. The name of the AI Foundry project to create.')
-param projectName string
-
-@description('Required. The description of the AI Foundry project to create.')
-param projectDescription string
 
 @description('Optional. SKU of the Cognitive Services account. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
 @allowed([
@@ -64,31 +26,20 @@ param sku string = 'S0'
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingFullType[]?
+@description('Optional. Tags of the resource.')
+param tags object?
 
-@description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param publicNetworkAccess string?
+@description('Optional. Array of deployments about cognitive service accounts to create.')
+param deployments deploymentType[]?
 
-@description('Conditional. Subdomain name used for token-based authentication. Required if \'networkAcls\' or \'privateEndpoints\' are set.')
-param customSubDomainName string?
+@description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
+param secretsExportConfiguration secretsExportConfigurationType?
 
-@description('Optional. A collection of rules governing the accessibility from specific network locations.')
-param networkAcls object?
-
-@description('Optional. The network injection subnet resource Id for the Cognitive Services account. This allows to use the AI Services account with a virtual network.')
-param networkInjectionSubnetResourceId string?
-
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -96,60 +47,15 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-@description('Optional. Tags of the resource.')
-param tags object?
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The diagnostic settings of the service.')
+param diagnosticSettings diagnosticSettingFullType[]?
 
-@description('Optional. List of allowed FQDN.')
-param allowedFqdnList array?
+@description('Optional. Name for the project which needs to be created.')
+param projectName string
 
-@description('Optional. The API properties for special APIs.')
-param apiProperties object?
-
-@description('Optional. Allow only Azure AD authentication. Should be enabled for security reasons.')
-param disableLocalAuth bool = true
-
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType?
-
-@description('Optional. The flag to enable dynamic throttling.')
-param dynamicThrottlingEnabled bool = false
-
-@secure()
-@description('Optional. Resource migration token.')
-param migrationToken string?
-
-@description('Optional. Restore a soft-deleted cognitive service at deployment time. Will fail if no such soft-deleted resource exists.')
-param restore bool = false
-
-@description('Optional. Restrict outbound network access.')
-param restrictOutboundNetworkAccess bool = true
-
-@description('Optional. The storage accounts for this resource.')
-param userOwnedStorage array?
-
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentityAllType?
-
-@description('Optional. Array of deployments about cognitive service accounts to create.')
-param deployments deploymentType[]?
-
-var enableReferencedModulesTelemetry = false
-
-var formattedUserAssignedIdentities = reduce(
-  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
-  {},
-  (cur, next) => union(cur, next)
-) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
-var identity = !empty(managedIdentities)
-  ? {
-      type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
-      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
-    }
-  : null
+@description('Optional. Description  for the project which needs to be created.')
+param projectDescription string
 
 var builtInRoleNames = {
   'Cognitive Services Contributor': subscriptionResourceId(
@@ -248,6 +154,10 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     'a97b65f3-24c7-4388-baec-2e87135dc908'
   )
+  'Azure AI Developer': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '64702f94-c441-49e6-a78b-ef80e0188fee'
+  )
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
@@ -272,83 +182,10 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
-  scope: resourceGroup(
-    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
-    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
-  )
+var enableReferencedModulesTelemetry = false
 
-  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName!
-  }
-}
-
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
-  scope: resourceGroup(
-    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
-    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
-  )
-}
-
-resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' = {
+resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = {
   name: name
-  kind: kind
-  identity: identity
-  location: location
-  tags: tags
-  sku: {
-    name: sku
-  }
-  properties: {
-    customSubDomainName: customSubDomainName
-    allowProjectManagement: true
-    networkAcls: !empty(networkAcls ?? {})
-      ? {
-          defaultAction: networkAcls.?defaultAction
-          virtualNetworkRules: networkAcls.?virtualNetworkRules ?? []
-          ipRules: networkAcls.?ipRules ?? []
-        }
-      : null
-    publicNetworkAccess: publicNetworkAccess != null
-      ? publicNetworkAccess
-      : (!empty(networkAcls) ? 'Enabled' : 'Disabled')
-    allowedFqdnList: allowedFqdnList
-    apiProperties: apiProperties
-    disableLocalAuth: disableLocalAuth
-    #disable-next-line BCP036
-    networkInjections: networkInjectionSubnetResourceId != null
-      ? [
-          {
-            scenario: 'agent'
-            subnetArmId: networkInjectionSubnetResourceId
-            useMicrosoftManagedNetwork: false
-          }
-        ]
-      : null
-    // true is not supported today
-    encryption: !empty(customerManagedKey)
-      ? {
-          keySource: 'Microsoft.KeyVault'
-          keyVaultProperties: {
-            identityClientId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '')
-              ? cMKUserAssignedIdentity.properties.clientId
-              : null
-            keyVaultUri: cMKKeyVault.properties.vaultUri
-            keyName: customerManagedKey!.keyName
-            keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-              ? customerManagedKey!.?keyVersion
-              : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
-          }
-        }
-      : null
-    migrationToken: migrationToken
-    restore: restore
-    restrictOutboundNetworkAccess: restrictOutboundNetworkAccess
-    userOwnedStorage: userOwnedStorage
-    dynamicThrottlingEnabled: dynamicThrottlingEnabled
-  }
 }
 
 @batchSize(1)
@@ -371,32 +208,17 @@ resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/depl
   }
 ]
 
-resource aiFoundryProject 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-preview' = {
-  parent: cognitiveService
-  name: projectName
-  tags: tags
-  location: location
-  identity: {
-    type: 'SystemAssigned'
-  }
-  properties: {
-    description: projectDescription
-    displayName: projectName
-  }
-}
-
 resource cognitiveService_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
+    notes: lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.')
+      : 'Cannot delete or modify the resource or child resources.'
   }
   scope: cognitiveService
 }
 
-#disable-next-line use-recent-api-versions
 resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
@@ -426,9 +248,9 @@ resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
   }
 ]
 
-module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: take('${uniqueString(deployment().name, location)}-cognitiveService-PrivateEndpoint-${index}', 64)
+    name: '${uniqueString(deployment().name, location)}-cognitiveService-PrivateEndpoint-${index}'
     scope: resourceGroup(
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
@@ -478,6 +300,9 @@ module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endp
       applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
       customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
     }
+    dependsOn: [
+      cognitiveService_deployments
+    ]
   }
 ]
 
@@ -497,32 +322,52 @@ resource cognitiveService_roleAssignments 'Microsoft.Authorization/roleAssignmen
   }
 ]
 
-@description('The name of the cognitive services account.')
-output name string = cognitiveService.name
+module secretsExport './keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
+  name: '${uniqueString(deployment().name, location)}-secrets-kv'
+  scope: resourceGroup(
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
+  )
+  params: {
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
+    secretsToSet: union(
+      [],
+      contains(secretsExportConfiguration!, 'accessKey1Name')
+        ? [
+            {
+              name: secretsExportConfiguration!.?accessKey1Name
+              value: cognitiveService.listKeys().key1
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'accessKey2Name')
+        ? [
+            {
+              name: secretsExportConfiguration!.?accessKey2Name
+              value: cognitiveService.listKeys().key2
+            }
+          ]
+        : []
+    )
+  }
+}
 
-@description('The resource ID of the cognitive services account.')
-output resourceId string = cognitiveService.id
+module aiProject 'project.bicep' = if (!empty(projectName)) {
+  name: take('${name}-ai-project-${projectName}-deployment', 64)
+  params: {
+    name: projectName
+    desc: projectDescription
+    aiServicesName: cognitiveService.name
+    location: location
+    tags: tags
+  }
+}
 
-@description('The resource ID of AI project.')
-output aiProjectResourceId string = aiFoundryProject.id
-
-@description('The endpoint to connect to the AI Project API')
-output aiProjectApiEndpoint string = aiFoundryProject.properties.endpoints['AI Foundry API']
-
-@description('The resource group the cognitive services account was deployed into.')
-output resourceGroupName string = resourceGroup().name
-
-@description('The service endpoint of the cognitive services account.')
-output endpoint string = cognitiveService.properties.endpoint
-
-@description('All endpoints available for the cognitive services account, types depends on the cognitive service kind.')
-output endpoints endpointType = cognitiveService.properties.endpoints
-
-@description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string? = cognitiveService.?identity.?principalId
-
-@description('The location the resource was deployed into.')
-output location string = cognitiveService.location
+import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
+output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
+  ? toObject(secretsExport!.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  : {}
 
 @description('The private endpoints of the congitive services account.')
 output privateEndpoints privateEndpointOutputType[] = [
@@ -534,6 +379,9 @@ output privateEndpoints privateEndpointOutputType[] = [
     networkInterfaceResourceIds: cognitiveService_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
+
+import { aiProjectOutputType } from 'project.bicep'
+output aiProjectInfo aiProjectOutputType = aiProject!.outputs.aiProjectInfo
 
 // ================ //
 // Definitions      //
