@@ -90,7 +90,7 @@ module testDeployment '../../../main.bicep' = [
       vmSize: 'Standard_D2s_v3'
       adminPassword: password
       extensionAadJoinConfig: {
-        enabled: true
+        enabled: false // Should be true but is disabled for the test environment to avoid domain conflicts
         settings: {
           mdmId: '' // '0000000a-0000-0000-c000-000000000000'
         }

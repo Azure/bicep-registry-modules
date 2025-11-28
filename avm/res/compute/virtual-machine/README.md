@@ -2960,7 +2960,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
     extensionAadJoinConfig: {
-      enabled: true
+      enabled: false
       settings: {
         mdmId: ''
       }
@@ -3051,7 +3051,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "extensionAadJoinConfig": {
       "value": {
-        "enabled": true,
+        "enabled": false,
         "settings": {
           "mdmId": ""
         },
@@ -3130,7 +3130,7 @@ param vmSize = 'Standard_D2s_v3'
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
 param extensionAadJoinConfig = {
-  enabled: true
+  enabled: false
   settings: {
     mdmId: ''
   }
