@@ -1655,6 +1655,14 @@ function Set-UsageExamplesSection {
             )
         }
 
+        # Adding folder reference
+
+        $relativeTestFilePath = '/tests/e2e/{0}' -f (Split-Path (Split-Path $testFilePath -Parent) -Leaf)
+        $testFilesContent += @(
+            "You can find the full example and the setup of its dependency in the end-2-end test sub-folder [$relativeTestFilePath]"
+            ''
+        )
+
         # If the deployment of the test is skipped, add a note
         $e2eIgnoreFilePath = Join-Path (Split-Path -Path $testFilePath -Parent) '.e2eignore'
         if (Test-Path $e2eIgnoreFilePath) {
@@ -1962,6 +1970,9 @@ Required. The path to the readme file to initialize.
 .PARAMETER FullModuleIdentifier
 Required. The full identifier of the module. For example: 'sql/managed-instance/administrator'
 
+.PARAMETER TemplateFilePath
+Required. The path to the module's file
+
 .PARAMETER TemplateFileContent
 Mandatory. The template file content object to crawl data from
 
@@ -1979,6 +1990,9 @@ function Initialize-ReadMe {
 
         [Parameter(Mandatory = $true)]
         [string] $FullModuleIdentifier,
+
+        [Parameter(Mandatory = $true)]
+        [string] $TemplateFilePath,
 
         [Parameter(Mandatory = $true)]
         [hashtable] $TemplateFileContent
@@ -2027,6 +2041,35 @@ function Initialize-ReadMe {
         $movedReadMeContent = Get-Content -Path $movedReadMeFilePath | ForEach-Object { "> $_" }
     }
 
+    # Code reference block
+    $specialConversionHash = @{
+        'public-ip-addresses' = 'publicIPAddresses'
+        'public-ip-prefixes'  = 'publicIPPrefixes'
+    }
+    # Get moduleName as $fullModuleIdentifier leaf
+    $moduleName = $fullModuleIdentifier.Split('/')[1]
+    if ($specialConversionHash.ContainsKey($moduleName)) {
+        # Convert moduleName using specialConversionHash
+        $moduleNameCamelCase = $specialConversionHash[$moduleName]
+    } else {
+        # Convert moduleName from kebab-case to camelCase
+        $First, $Rest = $moduleName -split '-', 2
+        $moduleNameCamelCase = $First.Tolower() + (Get-Culture).TextInfo.ToTitleCase($Rest) -replace '-'
+    }
+    $brLink = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
+    $targetVersion = '<version>'
+    $referenceBlock = @(
+        'You can reference the module as follows:',
+        '```',
+        "module $moduleNameCamelCase 'br/public:$($brLink):$($targetVersion)' = {",
+        "  name: '$($moduleNameCamelCase)Deployment'",
+        '  params: { (...) }',
+        '}',
+        '```',
+        'For examples, please refer to the [Usage Examples](#usage-examples) section.'
+    )
+
+    # Build result
     $initialContent = @(
         "# $moduleName ``[$headerType]``",
         '',
@@ -2037,6 +2080,8 @@ function Initialize-ReadMe {
         ((Test-Path $movedReadMeFilePath) ? $movedReadMeContent : $null),
         ((Test-Path $movedReadMeFilePath) ? '' : $null),
         $moduleDescription,
+        '',
+        $referenceBlock
         ''
     ) | Where-Object { $null -ne $_ } # Filter null values
     $readMeFileContent = $initialContent
