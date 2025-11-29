@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "9134813672091683810"
+      "templateHash": "17724025092193098982"
     },
     "name": "Virtual Network Subnets",
     "description": "This module deploys a Virtual Network Subnet."
@@ -261,7 +261,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.network-virtualnetworksubnet.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -281,12 +281,12 @@
     "virtualNetwork": {
       "existing": true,
       "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('virtualNetworkName')]"
     },
     "subnet": {
       "type": "Microsoft.Network/virtualNetworks/subnets",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-01-01",
       "name": "[format('{0}/{1}', parameters('virtualNetworkName'), parameters('name'))]",
       "properties": {
         "copy": [

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "1758571557970719326"
+      "templateHash": "15644458401446756601"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet)."
@@ -909,7 +909,7 @@
     },
     "virtualNetwork": {
       "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1074,7 +1074,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "9134813672091683810"
+              "templateHash": "17724025092193098982"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet."
@@ -1329,7 +1329,7 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('46d3xbcp.res.network-virtualnetworksubnet.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
@@ -1349,12 +1349,12 @@
             "virtualNetwork": {
               "existing": true,
               "type": "Microsoft.Network/virtualNetworks",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('virtualNetworkName')]"
             },
             "subnet": {
               "type": "Microsoft.Network/virtualNetworks/subnets",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}', parameters('virtualNetworkName'), parameters('name'))]",
               "properties": {
                 "copy": [
@@ -1500,7 +1500,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "7483097927107538880"
+              "templateHash": "14693992582511188820"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering."
@@ -1564,7 +1564,7 @@
           "resources": [
             {
               "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}', parameters('localVnetName'), parameters('name'))]",
               "properties": {
                 "allowForwardedTraffic": "[parameters('allowForwardedTraffic')]",
@@ -1657,7 +1657,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "7483097927107538880"
+              "templateHash": "14693992582511188820"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering."
@@ -1721,7 +1721,7 @@
           "resources": [
             {
               "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}', parameters('localVnetName'), parameters('name'))]",
               "properties": {
                 "allowForwardedTraffic": "[parameters('allowForwardedTraffic')]",
@@ -1813,7 +1813,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('virtualNetwork', '2024-05-01', 'full').location]"
+      "value": "[reference('virtualNetwork', '2025-01-01', 'full').location]"
     }
   }
 }
