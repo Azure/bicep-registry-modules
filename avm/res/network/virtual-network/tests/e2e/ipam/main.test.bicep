@@ -55,43 +55,51 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      addressPrefixes: [
-        nestedDependencies.outputs.networkManagerIpamPoolId
-      ]
-      ipamPoolNumberOfIpAddresses: '254'
+      addressPrefixes: {
+        by: 'ipam'
+        ipamPoolPrefixAllocations: [
+          {
+            cidr: '/24'
+            ipamPoolResourceId: nestedDependencies.outputs.networkManagerIpamPoolId
+          }
+        ]
+      }
       subnets: [
         {
           name: 'subnet-1'
-          ipamPoolPrefixAllocations: [
-            {
-              pool: {
-                id: nestedDependencies.outputs.networkManagerIpamPoolId
+          addressSpace: {
+            by: 'ipam'
+            ipamPoolPrefixAllocations: [
+              {
+                cidr: '/26'
+                ipamPoolResourceId: nestedDependencies.outputs.networkManagerIpamPoolId
               }
-              numberOfIpAddresses: '64'
-            }
-          ]
+            ]
+          }
         }
         {
           name: 'subnet-2'
-          ipamPoolPrefixAllocations: [
-            {
-              pool: {
-                id: nestedDependencies.outputs.networkManagerIpamPoolId
+          addressSpace: {
+            by: 'ipam'
+            ipamPoolPrefixAllocations: [
+              {
+                cidr: '/28'
+                ipamPoolResourceId: nestedDependencies.outputs.networkManagerIpamPoolId
               }
-              numberOfIpAddresses: '16'
-            }
-          ]
+            ]
+          }
         }
         {
           name: 'subnet-3'
-          ipamPoolPrefixAllocations: [
-            {
-              pool: {
-                id: nestedDependencies.outputs.networkManagerIpamPoolId
+          addressSpace: {
+            by: 'ipam'
+            ipamPoolPrefixAllocations: [
+              {
+                cidr: '/29'
+                ipamPoolResourceId: nestedDependencies.outputs.networkManagerIpamPoolId
               }
-              numberOfIpAddresses: '8'
-            }
-          ]
+            ]
+          }
         }
       ]
     }

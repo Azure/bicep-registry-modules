@@ -70,9 +70,12 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      addressPrefixes: [
-        addressPrefix
-      ]
+      addressPrefixes: {
+        addressPrefixes: [
+          addressPrefix
+        ]
+        by: 'addressPrefixes'
+      }
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -120,12 +123,18 @@ module testDeployment '../../../main.bicep' = [
       flowTimeoutInMinutes: 20
       subnets: [
         {
-          addressPrefix: cidrSubnet(addressPrefix, 24, 0)
           name: 'GatewaySubnet'
+          addressSpace: {
+            addressPrefix: cidrSubnet(addressPrefix, 24, 0)
+            by: 'addressPrefix'
+          }
         }
         {
-          addressPrefix: cidrSubnet(addressPrefix, 24, 1)
           name: '${namePrefix}-az-subnet-x-001'
+          addressSpace: {
+            addressPrefix: cidrSubnet(addressPrefix, 24, 1)
+            by: 'addressPrefix'
+          }
           networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
           roleAssignments: [
             {
@@ -154,33 +163,49 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
         {
-          addressPrefix: cidrSubnet(addressPrefix, 24, 2)
-          delegation: 'Microsoft.Netapp/volumes'
           name: '${namePrefix}-az-subnet-x-002'
+          delegation: 'Microsoft.Netapp/volumes'
           networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
+          addressSpace: {
+            addressPrefix: cidrSubnet(addressPrefix, 24, 2)
+            by: 'addressPrefix'
+          }
         }
         {
-          addressPrefix: cidrSubnet(addressPrefix, 24, 3)
           name: '${namePrefix}-az-subnet-x-003'
+          delegation: 'Microsoft.Netapp/volumes'
           networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
           privateEndpointNetworkPolicies: 'Disabled'
           privateLinkServiceNetworkPolicies: 'Enabled'
+          addressSpace: {
+            addressPrefix: cidrSubnet(addressPrefix, 24, 3)
+            by: 'addressPrefix'
+          }
         }
         {
-          addressPrefix: cidrSubnet(addressPrefix, 24, 4)
           name: '${namePrefix}-az-subnet-x-004'
           networkSecurityGroupResourceId: ''
           natGatewayResourceId: ''
           routeTableResourceId: ''
+          addressSpace: {
+            addressPrefix: cidrSubnet(addressPrefix, 24, 4)
+            by: 'addressPrefix'
+          }
         }
         {
-          addressPrefix: cidrSubnet(addressPrefix, 24, 5)
           name: 'AzureBastionSubnet'
           networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupBastionResourceId
+          addressSpace: {
+            addressPrefix: cidrSubnet(addressPrefix, 24, 5)
+            by: 'addressPrefix'
+          }
         }
         {
-          addressPrefix: cidrSubnet(addressPrefix, 24, 6)
           name: 'AzureFirewallSubnet'
+          addressSpace: {
+            addressPrefix: cidrSubnet(addressPrefix, 24, 6)
+            by: 'addressPrefix'
+          }
         }
       ]
       tags: {

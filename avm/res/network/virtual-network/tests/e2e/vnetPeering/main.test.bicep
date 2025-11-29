@@ -53,22 +53,33 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      addressPrefixes: [
-        '10.1.0.0/24'
-      ]
+      addressPrefixes: {
+        addressPrefixes: [
+          '10.1.0.0/24'
+        ]
+        by: 'addressPrefixes'
+      }
       subnets: [
         {
-          addressPrefix: '10.1.0.0/26'
           name: 'GatewaySubnet'
+          addressSpace: {
+            addressPrefix: '10.1.0.0/26'
+            by: 'addressPrefix'
+          }
         }
         {
-          addressPrefix: '10.1.0.64/26'
           name: 'AzureBastionSubnet'
-          networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupBastionResourceId
+          addressSpace: {
+            addressPrefix: '10.1.0.64/26'
+            by: 'addressPrefix'
+          }
         }
         {
-          addressPrefix: '10.1.0.128/26'
           name: 'AzureFirewallSubnet'
+          addressSpace: {
+            addressPrefix: '10.1.0.128/26'
+            by: 'addressPrefix'
+          }
         }
       ]
       peerings: [

@@ -7,11 +7,8 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Required. An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`.')
-param addressPrefixes array
-
-@description('Optional. Number of IP addresses allocated from the pool. To be used only when the addressPrefix param is defined with a resource ID of an IPAM pool.')
-param ipamPoolNumberOfIpAddresses string?
+@description('Required. The address space configuration for the Virtual Network. Use `by: \'addressPrefixes\'` with an array of CIDR ranges for manual allocation, or `by: \'ipam\'` with IPAM pool resource IDs and CIDR prefix sizes for dynamic IPAM-based allocation.')
+param addressPrefixes ipAddressesType
 
 @description('Optional. The BGP community associated with the virtual network.')
 param virtualNetworkBgpCommunity string?
@@ -94,6 +91,19 @@ var formattedRoleAssignments = [
   })
 ]
 
+var formattedVirtualNetworkAddressSpace = addressPrefixes.by == 'ipam'
+  ? {
+      ipamPoolPrefixAllocations: map(addressPrefixes.ipamPoolPrefixAllocations, ipamPoolPrefixAllocation => {
+        pool: {
+          id: ipamPoolPrefixAllocation.ipamPoolResourceId
+        }
+        numberOfIpAddresses: getCidrHostCount(ipamPoolPrefixAllocation.cidr)
+      })
+    }
+  : {
+      addressPrefixes: addressPrefixes.addressPrefixes
+    }
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -122,20 +132,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   location: location
   tags: tags
   properties: {
-    addressSpace: contains(addressPrefixes[0], '/Microsoft.Network/networkManagers/')
-      ? {
-          ipamPoolPrefixAllocations: [
-            {
-              pool: {
-                id: addressPrefixes[0]
-              }
-              numberOfIpAddresses: ipamPoolNumberOfIpAddresses
-            }
-          ]
-        }
-      : {
-          addressPrefixes: addressPrefixes
-        }
+    addressSpace: formattedVirtualNetworkAddressSpace
     bgpCommunities: !empty(virtualNetworkBgpCommunity)
       ? {
           virtualNetworkCommunity: virtualNetworkBgpCommunity!
@@ -170,9 +167,16 @@ module virtualNetwork_subnets 'subnet/main.bicep' = [
     params: {
       virtualNetworkName: virtualNetwork.name
       name: subnet.name
-      addressPrefix: subnet.?addressPrefix
-      addressPrefixes: subnet.?addressPrefixes
-      ipamPoolPrefixAllocations: subnet.?ipamPoolPrefixAllocations
+      addressPrefix: subnet.addressSpace.by == 'addressPrefix' ? subnet.addressSpace.addressPrefix : null
+      addressPrefixes: subnet.addressSpace.by == 'addressPrefixes' ? subnet.addressSpace.addressPrefixes : null
+      ipamPoolPrefixAllocations: subnet.addressSpace.by == 'ipam'
+        ? map(subnet.addressSpace.ipamPoolPrefixAllocations, allocation => {
+            pool: {
+              id: allocation.ipamPoolResourceId
+            }
+            numberOfIpAddresses: getCidrHostCount(allocation.cidr)
+          })
+        : null
       applicationGatewayIPConfigurations: subnet.?applicationGatewayIPConfigurations
       delegation: subnet.?delegation
       natGatewayResourceId: subnet.?natGatewayResourceId
@@ -368,24 +372,8 @@ type subnetType = {
   @description('Required. The Name of the subnet resource.')
   name: string
 
-  @description('Conditional. The address prefix for the subnet. Required if `addressPrefixes` is empty.')
-  addressPrefix: string?
-
-  @description('Conditional. List of address prefixes for the subnet. Required if `addressPrefix` is empty.')
-  addressPrefixes: string[]?
-
-  @description('Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty and the VNet address space configured to use IPAM Pool.')
-  ipamPoolPrefixAllocations: [
-    {
-      @description('Required. The Resource ID of the IPAM pool.')
-      pool: {
-        @description('Required. The Resource ID of the IPAM pool.')
-        id: string
-      }
-      @description('Required. Number of IP addresses allocated from the pool.')
-      numberOfIpAddresses: string
-    }
-  ]?
+  @description('Required. The address space configuration for the subnet. Supports IPAM-based allocation, multiple address prefixes, or a single address prefix.')
+  addressSpace: subnetIpAddressesType
 
   @description('Optional. Application gateway IP configurations of virtual network resource.')
   applicationGatewayIPConfigurations: object[]?
@@ -423,3 +411,129 @@ type subnetType = {
   @description('Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty.')
   sharingScope: ('DelegatedServices' | 'Tenant')?
 }
+
+@export()
+type cidrPrefixType =
+  | '/1' // 2,147,483,648 addresses
+  | '/2' // 1,073,741,824 addresses
+  | '/3' // 536,870,912 addresses
+  | '/4' // 268,435,456 addresses
+  | '/5' // 134,217,728 addresses
+  | '/6' // 67,108,864 addresses
+  | '/7' // 33,554,432 addresses
+  | '/8' // 16,777,216 addresses
+  | '/9' // 8,388,608 addresses
+  | '/10' // 4,194,304 addresses
+  | '/11' // 2,097,152 addresses
+  | '/12' // 1,048,576 addresses
+  | '/13' // 524,288 addresses
+  | '/14' // 262,144 addresses
+  | '/15' // 131,072 addresses
+  | '/16' // 65,536 addresses
+  | '/17' // 32,768 addresses
+  | '/18' // 16,384 addresses
+  | '/19' // 8,192 addresses
+  | '/20' // 4,096 addresses
+  | '/21' // 2,048 addresses
+  | '/22' // 1,024 addresses
+  | '/23' // 512 addresses
+  | '/24' // 256 addresses
+  | '/25' // 128 addresses
+  | '/26' // 64 addresses
+  | '/27' // 32 addresses
+  | '/28' // 16 addresses
+  | '/29' // 8 addresses
+  | '/30' // 4 addresses
+  | '/31' // 2 addresses
+
+@sealed()
+@export()
+type ipamAddressPrefixesType = {
+  @description('Required. The allocation method for the address prefix. Must be set to `ipam` for IPAM-based allocation.')
+  by: 'ipam'
+
+  @description('Required. Array of IPAM pool prefix allocations specifying which pools to allocate address space from.')
+  ipamPoolPrefixAllocations: {
+    @description('Required. The resource ID of the IPAM pool to allocate the address prefix from.')
+    ipamPoolResourceId: string
+
+    @description('Required. The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses).')
+    cidr: cidrPrefixType
+  }[]
+}
+
+@sealed()
+@export()
+type addressPrefixesType = {
+  @description('Required. The allocation method for the address prefix. Must be set to `addressPrefixes` for manually specified address prefixes.')
+  by: 'addressPrefixes'
+
+  @description('Required. Array of manually specified address prefixes in CIDR notation (e.g., `["10.0.0.0/16", "10.1.0.0/16"]`).')
+  addressPrefixes: string[]
+}
+
+@sealed()
+@export()
+type addressPrefixType = {
+  @description('Required. The allocation method for the address prefix. Must be set to `addressPrefix` for a single manually specified address prefix.')
+  by: 'addressPrefix'
+
+  @description('Required. The manually specified address prefix in CIDR notation (e.g., `10.0.0.0/24`).')
+  addressPrefix: string
+}
+
+@export()
+@discriminator('by')
+@description('Discriminated union type for Virtual Network address space configuration. Supports either IPAM-based allocation or manually specified address prefixes.')
+type ipAddressesType = ipamAddressPrefixesType | addressPrefixesType
+
+@export()
+@discriminator('by')
+@description('Discriminated union type for Subnet address configuration. Supports IPAM-based allocation, multiple address prefixes, or a single address prefix.')
+type subnetIpAddressesType = ipamAddressPrefixesType | addressPrefixesType | addressPrefixType
+
+@export()
+type keyValuePairType = {
+  *: string
+}
+
+// Functions to get number of hosts in a CIDR prefix
+@description('Returns the number of hosts available for a given CIDR prefix.')
+@export()
+func getCidrHostCounts() keyValuePairType => {
+  '/1': '2147483648' // 2,147,483,648 addresses
+  '/2': '1073741824' // 1,073,741,824 addresses
+  '/3': '536870912' // 536,870,912 addresses
+  '/4': '268435456' // 268,435,456 addresses
+  '/5': '134217728' // 134,217,728 addresses
+  '/6': '67108864' // 67,108,864 addresses
+  '/7': '33554432' // 33,554,432 addresses
+  '/8': '16777216' // 16,777,216 addresses
+  '/9': '8388608' // 8,388,608 addresses
+  '/10': '4194304' // 4,194,304 addresses
+  '/11': '2097152' // 2,097,152 addresses
+  '/12': '1048576' // 1,048,576 addresses
+  '/13': '524288' // 524,288 addresses
+  '/14': '262144' // 262,144 addresses
+  '/15': '131072' // 131,072 addresses
+  '/16': '65536' // 65,536 addresses
+  '/17': '32768' // 32,768 addresses
+  '/18': '16384' // 16,384 addresses
+  '/19': '8192' // 8,192 addresses
+  '/20': '4096' // 4,096 addresses
+  '/21': '2048' // 2,048 addresses
+  '/22': '1024' // 1,024 addresses
+  '/23': '512' // 512 addresses
+  '/24': '256' // 256 addresses
+  '/25': '128' // 128 addresses
+  '/26': '64' // 64 addresses
+  '/27': '32' // 32 addresses
+  '/28': '16' // 16 addresses
+  '/29': '8' // 8 addresses
+  '/30': '4' // 4 addresses
+  '/31': '2' // 2 addresses
+}
+
+@export()
+@description('Returns the number of hosts available for a given CIDR prefix.')
+func getCidrHostCount(cidrPrefix cidrPrefixType) string => getCidrHostCounts()[cidrPrefix]
