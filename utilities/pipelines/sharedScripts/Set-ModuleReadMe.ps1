@@ -2023,19 +2023,22 @@ function Initialize-ReadMe {
     }
 
     # Deprecation file existing?
-    $isDeprecated = Test-Path (Join-Path (Split-Path $ReadMeFilePath -Parent) 'DEPRECATED.md')
+    $deprecatedModuleFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'DEPRECATED.md'
+    $isDeprecated = Test-Path $deprecatedModuleFilePath
     if ($isDeprecated) {
         $deprecatedModuleFileContent = Get-Content -Path $deprecatedModuleFilePath | ForEach-Object { "> $_" }
     }
 
     # Orphaned readme existing?
-    $isOrphaned = Test-Path (Join-Path (Split-Path $ReadMeFilePath -Parent) 'ORPHANED.md')
+    $orphanedReadMeFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'ORPHANED.md'
+    $isOrphaned = Test-Path $orphanedReadMeFilePath
     if ($isOrphaned) {
         $orphanedReadMeContent = Get-Content -Path $orphanedReadMeFilePath | ForEach-Object { "> $_" }
     }
 
     # Moved readme existing?
-    $isMovedToAVM = Test-Path (Join-Path (Split-Path $ReadMeFilePath -Parent) 'MOVED-TO-AVM.md')
+    $movedReadMeFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'MOVED-TO-AVM.md'
+    $isMovedToAVM = Test-Path $movedReadMeFilePath
     if ($isMovedToAVM) {
         $movedReadMeContent = Get-Content -Path $movedReadMeFilePath | ForEach-Object { "> $_" }
     }

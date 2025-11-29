@@ -7,6 +7,14 @@
 
 This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.
 
+You can reference the module as follows:
+```
+module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -51,6 +59,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -58,7 +68,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
-  name: 'hubNetworkingDeployment'
   params: {
 
   }
@@ -100,6 +109,8 @@ using 'br/public:avm/ptn/network/hub-networking:<version>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -107,7 +118,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
-  name: 'hubNetworkingDeployment'
   params: {
     hubVirtualNetworks: {
       hub1: {
@@ -707,6 +717,8 @@ param location = '<location>'
 
 This instance deploys the module with no add-ons (Firewall / Bastion) enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/no-addons]
+
 
 <details>
 
@@ -714,7 +726,6 @@ This instance deploys the module with no add-ons (Firewall / Bastion) enabled.
 
 ```bicep
 module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
-  name: 'hubNetworkingDeployment'
   params: {
     hubVirtualNetworks: {
       hub1: {
@@ -921,6 +932,8 @@ param location = '<location>'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -928,7 +941,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
-  name: 'hubNetworkingDeployment'
   params: {
     hubVirtualNetworks: {
       hub1: {
