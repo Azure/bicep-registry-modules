@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "14342900544155358994"
+      "version": "0.38.33.27573",
+      "templateHash": "1758571557970719326"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet)."
@@ -126,56 +126,10 @@
             "description": "Required. The Name of the subnet resource."
           }
         },
-        "addressPrefix": {
-          "type": "string",
-          "nullable": true,
+        "addressSpace": {
+          "$ref": "#/definitions/subnetIpAddressesType",
           "metadata": {
-            "description": "Conditional. The address prefix for the subnet. Required if `addressPrefixes` is empty."
-          }
-        },
-        "addressPrefixes": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Conditional. List of address prefixes for the subnet. Required if `addressPrefix` is empty."
-          }
-        },
-        "ipamPoolPrefixAllocations": {
-          "type": "array",
-          "prefixItems": [
-            {
-              "type": "object",
-              "properties": {
-                "pool": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The Resource ID of the IPAM pool."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. The Resource ID of the IPAM pool."
-                  }
-                },
-                "numberOfIpAddresses": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Number of IP addresses allocated from the pool."
-                  }
-                }
-              }
-            }
-          ],
-          "items": false,
-          "nullable": true,
-          "metadata": {
-            "description": "Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty and the VNet address space configured to use IPAM Pool."
+            "description": "Required. The address space configuration for the subnet. Supports IPAM-based allocation, multiple address prefixes, or a single address prefix."
           }
         },
         "applicationGatewayIPConfigurations": {
@@ -288,6 +242,186 @@
             "description": "Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "cidrPrefixType": {
+      "type": "string",
+      "allowedValues": [
+        "/1",
+        "/10",
+        "/11",
+        "/12",
+        "/13",
+        "/14",
+        "/15",
+        "/16",
+        "/17",
+        "/18",
+        "/19",
+        "/2",
+        "/20",
+        "/21",
+        "/22",
+        "/23",
+        "/24",
+        "/25",
+        "/26",
+        "/27",
+        "/28",
+        "/29",
+        "/3",
+        "/30",
+        "/31",
+        "/4",
+        "/5",
+        "/6",
+        "/7",
+        "/8",
+        "/9"
+      ],
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "ipamAddressPrefixesType": {
+      "type": "object",
+      "properties": {
+        "by": {
+          "type": "string",
+          "allowedValues": [
+            "ipam"
+          ],
+          "metadata": {
+            "description": "Required. The allocation method for the address prefix. Must be set to `ipam` for IPAM-based allocation."
+          }
+        },
+        "ipamPoolPrefixAllocations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ipamPoolResourceId": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The resource ID of the IPAM pool to allocate the address prefix from."
+                }
+              },
+              "cidr": {
+                "$ref": "#/definitions/cidrPrefixType",
+                "metadata": {
+                  "description": "Required. The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses)."
+                }
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. Array of IPAM pool prefix allocations specifying which pools to allocate address space from."
+          }
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "addressPrefixesType": {
+      "type": "object",
+      "properties": {
+        "by": {
+          "type": "string",
+          "allowedValues": [
+            "addressPrefixes"
+          ],
+          "metadata": {
+            "description": "Required. The allocation method for the address prefix. Must be set to `addressPrefixes` for manually specified address prefixes."
+          }
+        },
+        "addressPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. Array of manually specified address prefixes in CIDR notation (e.g., `[\"10.0.0.0/16\", \"10.1.0.0/16\"]`)."
+          }
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "addressPrefixType": {
+      "type": "object",
+      "properties": {
+        "by": {
+          "type": "string",
+          "allowedValues": [
+            "addressPrefix"
+          ],
+          "metadata": {
+            "description": "Required. The allocation method for the address prefix. Must be set to `addressPrefix` for a single manually specified address prefix."
+          }
+        },
+        "addressPrefix": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The manually specified address prefix in CIDR notation (e.g., `10.0.0.0/24`)."
+          }
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "ipAddressesType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "by",
+        "mapping": {
+          "ipam": {
+            "$ref": "#/definitions/ipamAddressPrefixesType"
+          },
+          "addressPrefixes": {
+            "$ref": "#/definitions/addressPrefixesType"
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Discriminated union type for Virtual Network address space configuration. Supports either IPAM-based allocation or manually specified address prefixes."
+      }
+    },
+    "subnetIpAddressesType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "by",
+        "mapping": {
+          "ipam": {
+            "$ref": "#/definitions/ipamAddressPrefixesType"
+          },
+          "addressPrefixes": {
+            "$ref": "#/definitions/addressPrefixesType"
+          },
+          "addressPrefix": {
+            "$ref": "#/definitions/addressPrefixType"
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Discriminated union type for Subnet address configuration. Supports IPAM-based allocation, multiple address prefixes, or a single address prefix."
+      }
+    },
+    "keyValuePairType": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string"
       },
       "metadata": {
         "__bicep_export!": true
@@ -528,6 +662,72 @@
       }
     }
   },
+  "functions": [
+    {
+      "namespace": "__bicep",
+      "members": {
+        "getCidrHostCounts": {
+          "parameters": [],
+          "output": {
+            "$ref": "#/definitions/keyValuePairType",
+            "value": {
+              "/1": "2147483648",
+              "/2": "1073741824",
+              "/3": "536870912",
+              "/4": "268435456",
+              "/5": "134217728",
+              "/6": "67108864",
+              "/7": "33554432",
+              "/8": "16777216",
+              "/9": "8388608",
+              "/10": "4194304",
+              "/11": "2097152",
+              "/12": "1048576",
+              "/13": "524288",
+              "/14": "262144",
+              "/15": "131072",
+              "/16": "65536",
+              "/17": "32768",
+              "/18": "16384",
+              "/19": "8192",
+              "/20": "4096",
+              "/21": "2048",
+              "/22": "1024",
+              "/23": "512",
+              "/24": "256",
+              "/25": "128",
+              "/26": "64",
+              "/27": "32",
+              "/28": "16",
+              "/29": "8",
+              "/30": "4",
+              "/31": "2"
+            }
+          },
+          "metadata": {
+            "description": "Returns the number of hosts available for a given CIDR prefix.",
+            "__bicep_export!": true
+          }
+        },
+        "getCidrHostCount": {
+          "parameters": [
+            {
+              "$ref": "#/definitions/cidrPrefixType",
+              "name": "cidrPrefix"
+            }
+          ],
+          "output": {
+            "type": "string",
+            "value": "[__bicep.getCidrHostCounts()[parameters('cidrPrefix')]]"
+          },
+          "metadata": {
+            "description": "Returns the number of hosts available for a given CIDR prefix.",
+            "__bicep_export!": true
+          }
+        }
+      }
+    }
+  ],
   "parameters": {
     "name": {
       "type": "string",
@@ -543,16 +743,9 @@
       }
     },
     "addressPrefixes": {
-      "type": "array",
+      "$ref": "#/definitions/ipAddressesType",
       "metadata": {
-        "description": "Required. An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`."
-      }
-    },
-    "ipamPoolNumberOfIpAddresses": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Number of IP addresses allocated from the pool. To be used only when the addressPrefix param is defined with a resource ID of an IPAM pool."
+        "description": "Required. The address space configuration for the Virtual Network. Use `by: 'addressPrefixes'` with an array of CIDR ranges for manual allocation, or `by: 'ipam'` with IPAM pool resource IDs and CIDR prefix sizes for dynamic IPAM-based allocation."
       }
     },
     "virtualNetworkBgpCommunity": {
@@ -690,7 +883,8 @@
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "formattedVirtualNetworkAddressSpace": "[if(equals(parameters('addressPrefixes').by, 'ipam'), createObject('ipamPoolPrefixAllocations', map(parameters('addressPrefixes').ipamPoolPrefixAllocations, lambda('ipamPoolPrefixAllocation', createObject('pool', createObject('id', lambdaVariables('ipamPoolPrefixAllocation').ipamPoolResourceId), 'numberOfIpAddresses', __bicep.getCidrHostCount(lambdaVariables('ipamPoolPrefixAllocation').cidr))))), createObject('addressPrefixes', parameters('addressPrefixes').addressPrefixes))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -720,7 +914,7 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "addressSpace": "[if(contains(parameters('addressPrefixes')[0], '/Microsoft.Network/networkManagers/'), createObject('ipamPoolPrefixAllocations', createArray(createObject('pool', createObject('id', parameters('addressPrefixes')[0]), 'numberOfIpAddresses', parameters('ipamPoolNumberOfIpAddresses')))), createObject('addressPrefixes', parameters('addressPrefixes')))]",
+        "addressSpace": "[variables('formattedVirtualNetworkAddressSpace')]",
         "bgpCommunities": "[if(not(empty(parameters('virtualNetworkBgpCommunity'))), createObject('virtualNetworkCommunity', parameters('virtualNetworkBgpCommunity')), null())]",
         "ddosProtectionPlan": "[if(not(empty(parameters('ddosProtectionPlanResourceId'))), createObject('id', parameters('ddosProtectionPlanResourceId')), null())]",
         "dhcpOptions": "[if(not(empty(parameters('dnsServers'))), createObject('dnsServers', array(parameters('dnsServers'))), null())]",
@@ -815,7 +1009,7 @@
         "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-subnet-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -829,15 +1023,9 @@
           "name": {
             "value": "[coalesce(parameters('subnets'), createArray())[copyIndex()].name]"
           },
-          "addressPrefix": {
-            "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'addressPrefix')]"
-          },
-          "addressPrefixes": {
-            "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'addressPrefixes')]"
-          },
-          "ipamPoolPrefixAllocations": {
-            "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'ipamPoolPrefixAllocations')]"
-          },
+          "addressPrefix": "[if(equals(coalesce(parameters('subnets'), createArray())[copyIndex()].addressSpace.by, 'addressPrefix'), createObject('value', coalesce(parameters('subnets'), createArray())[copyIndex()].addressSpace.addressPrefix), createObject('value', null()))]",
+          "addressPrefixes": "[if(equals(coalesce(parameters('subnets'), createArray())[copyIndex()].addressSpace.by, 'addressPrefixes'), createObject('value', coalesce(parameters('subnets'), createArray())[copyIndex()].addressSpace.addressPrefixes), createObject('value', null()))]",
+          "ipamPoolPrefixAllocations": "[if(equals(coalesce(parameters('subnets'), createArray())[copyIndex()].addressSpace.by, 'ipam'), createObject('value', map(coalesce(parameters('subnets'), createArray())[copyIndex()].addressSpace.ipamPoolPrefixAllocations, lambda('allocation', createObject('pool', createObject('id', lambdaVariables('allocation').ipamPoolResourceId), 'numberOfIpAddresses', __bicep.getCidrHostCount(lambdaVariables('allocation').cidr))))), createObject('value', null()))]",
           "applicationGatewayIPConfigurations": {
             "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'applicationGatewayIPConfigurations')]"
           },
@@ -885,8 +1073,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "646554382773802541"
+              "version": "0.38.33.27573",
+              "templateHash": "9134813672091683810"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet."
@@ -1272,7 +1460,7 @@
         "count": "[length(coalesce(parameters('peerings'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-virtualNetworkPeering-local-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1311,8 +1499,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13145570087766698031"
+              "version": "0.38.33.27573",
+              "templateHash": "7483097927107538880"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering."
@@ -1427,7 +1615,7 @@
       },
       "condition": "[coalesce(tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'remotePeeringEnabled'), false())]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-virtualNetworkPeering-remote-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "subscriptionId": "[split(coalesce(parameters('peerings'), createArray())[copyIndex()].remoteVirtualNetworkResourceId, '/')[2]]",
       "resourceGroup": "[split(coalesce(parameters('peerings'), createArray())[copyIndex()].remoteVirtualNetworkResourceId, '/')[4]]",
@@ -1468,8 +1656,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13145570087766698031"
+              "version": "0.38.33.27573",
+              "templateHash": "7483097927107538880"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering."
