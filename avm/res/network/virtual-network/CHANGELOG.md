@@ -4,7 +4,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ## 0.8.0
 
-### Changes
+### Breaking Changes
 
 - Updated `Microsoft.Network/virtualNetworks` API version from `2024-05-01` to `2025-01-01`
 - Introduced discriminated union types for address space configuration:
@@ -17,9 +17,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added `getCidrHostCount()` and `getCidrHostCounts()` exported functions for CIDR to number-of-addresses conversion
 - Added `keyValuePairType` exported type for generic key-value pairs
 - Improved type safety and IntelliSense support for IPAM pool allocations
-
-### Breaking Changes
-
 - **Parameter `addressPrefixes`**: Changed from `array` to `ipAddressesType` discriminated union. Now requires `by: 'addressPrefixes'` discriminator with `addressPrefixes` array, or `by: 'ipam'` with `ipamPoolPrefixAllocations`
 - **Parameter `ipamPoolNumberOfIpAddresses`**: Removed. IPAM allocations now use `cidr` property (e.g., `/24`) which automatically converts to number of addresses
 - **Subnet type `addressPrefix`, `addressPrefixes`, `ipamPoolPrefixAllocations`**: Replaced by single `addressSpace` property using `subnetIpAddressesType` discriminated union
