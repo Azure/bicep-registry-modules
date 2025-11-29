@@ -1659,7 +1659,7 @@ function Set-UsageExamplesSection {
 
         $relativeTestFilePath = '/tests/e2e/{0}' -f (Split-Path (Split-Path $testFilePath -Parent) -Leaf)
         $testFilesContent += @(
-            "You can find the full example and the setup of its dependencies in the end-to-end test sub-folder [$relativeTestFilePath]"
+            "You can find the full example and the setup of its dependencies in the deployment test folder path [$relativeTestFilePath]"
             ''
         )
 
@@ -2023,64 +2023,67 @@ function Initialize-ReadMe {
     }
 
     # Deprecation file existing?
-    $deprecatedModuleFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'DEPRECATED.md'
-    if (Test-Path $deprecatedModuleFilePath) {
+    $isDeprecated = Test-Path (Join-Path (Split-Path $ReadMeFilePath -Parent) 'DEPRECATED.md')
+    if ($isDeprecated) {
         $deprecatedModuleFileContent = Get-Content -Path $deprecatedModuleFilePath | ForEach-Object { "> $_" }
     }
 
     # Orphaned readme existing?
-    $orphanedReadMeFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'ORPHANED.md'
-    if (Test-Path $orphanedReadMeFilePath) {
+    $isOrphaned = Test-Path (Join-Path (Split-Path $ReadMeFilePath -Parent) 'ORPHANED.md')
+    if ($isOrphaned) {
         $orphanedReadMeContent = Get-Content -Path $orphanedReadMeFilePath | ForEach-Object { "> $_" }
     }
 
     # Moved readme existing?
-    $movedReadMeFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'MOVED-TO-AVM.md'
-    if (Test-Path $movedReadMeFilePath) {
+    $isMovedToAVM = Test-Path (Join-Path (Split-Path $ReadMeFilePath -Parent) 'MOVED-TO-AVM.md')
+    if ($isMovedToAVM) {
         $movedReadMeContent = Get-Content -Path $movedReadMeFilePath | ForEach-Object { "> $_" }
     }
 
     # Code reference block
-    $specialConversionHash = @{
-        'public-ip-addresses' = 'publicIPAddresses'
-        'public-ip-prefixes'  = 'publicIPPrefixes'
+    $isVersioned = Test-Path (Join-Path (Split-Path $ReadMeFilePath -Parent) 'version.json')
+    if ($isVersioned) {
+        $specialConversionHash = @{
+            'public-ip-addresses' = 'publicIPAddresses'
+            'public-ip-prefixes'  = 'publicIPPrefixes'
+        }
+        # Get technicalModuleName (e.g., vault) as $fullModuleIdentifier leaf
+        $technicalModuleName = $fullModuleIdentifier.Split('/')[1]
+        if ($specialConversionHash.ContainsKey($moduleName)) {
+            # Convert technicalModuleName using specialConversionHash
+            $moduleNameCamelCase = $specialConversionHash[$moduleName]
+        } else {
+            # Convert technicalModuleName from kebab-case to camelCase
+            $First, $Rest = $technicalModuleName -split '-', 2
+            $moduleNameCamelCase = $First.Tolower() + (Get-Culture).TextInfo.ToTitleCase($Rest) -replace '-'
+        }
+        $brLink = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
+        $targetVersion = '<version>'
+        $referenceBlock = @(
+            'You can reference the module as follows:',
+            '```',
+            "module $moduleNameCamelCase 'br/public:$($brLink):$($targetVersion)' = {",
+            '  params: { (...) }',
+            '}',
+            '```',
+            'For examples, please refer to the [Usage Examples](#usage-examples) section.'
+        )
     }
-    # Get technicalModuleName (e.g., vault) as $fullModuleIdentifier leaf
-    $technicalModuleName = $fullModuleIdentifier.Split('/')[1]
-    if ($specialConversionHash.ContainsKey($moduleName)) {
-        # Convert technicalModuleName using specialConversionHash
-        $moduleNameCamelCase = $specialConversionHash[$moduleName]
-    } else {
-        # Convert technicalModuleName from kebab-case to camelCase
-        $First, $Rest = $technicalModuleName -split '-', 2
-        $moduleNameCamelCase = $First.Tolower() + (Get-Culture).TextInfo.ToTitleCase($Rest) -replace '-'
-    }
-    $brLink = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
-    $targetVersion = '<version>'
-    $referenceBlock = @(
-        'You can reference the module as follows:',
-        '```',
-        "module $moduleNameCamelCase 'br/public:$($brLink):$($targetVersion)' = {",
-        '  params: { (...) }',
-        '}',
-        '```',
-        'For examples, please refer to the [Usage Examples](#usage-examples) section.'
-    )
 
     # Build result
     $initialContent = @(
         "# $moduleName ``[$headerType]``",
         '',
-        ((Test-Path $deprecatedModuleFilePath) ? $deprecatedModuleFileContent : $null),
-        ((Test-Path $deprecatedModuleFilePath) ? '' : $null),
-        ((Test-Path $orphanedReadMeFilePath) ? $orphanedReadMeContent : $null),
-        ((Test-Path $orphanedReadMeFilePath) ? '' : $null),
-        ((Test-Path $movedReadMeFilePath) ? $movedReadMeContent : $null),
-        ((Test-Path $movedReadMeFilePath) ? '' : $null),
+        ($isDeprecated ? $deprecatedModuleFileContent : $null),
+        ($isDeprecated ? '' : $null),
+        ($isOrphaned ? $orphanedReadMeContent : $null),
+        ($isOrphaned ? '' : $null),
+        ($isMovedToAVM ? $movedReadMeContent : $null),
+        ($isMovedToAVM ? '' : $null),
         $moduleDescription,
         '',
-        $referenceBlock
-        ''
+        ($isVersioned ? $referenceBlock : $null),
+        ($isVersioned ? '' : $null)
     ) | Where-Object { $null -ne $_ } # Filter null values
     $readMeFileContent = $initialContent
 
