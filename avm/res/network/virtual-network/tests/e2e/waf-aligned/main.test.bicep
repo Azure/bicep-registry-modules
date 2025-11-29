@@ -145,7 +145,7 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           name: 'AzureBastionSubnet'
-          networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
+          networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupBastionResourceId
           addressSpace: {
             addressPrefix: cidrSubnet(addressPrefix, 24, 4)
             by: 'addressPrefix'
