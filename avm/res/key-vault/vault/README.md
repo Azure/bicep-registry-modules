@@ -51,7 +51,7 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
-You can find the full example and the setup of its dependencies in the end-to-end test sub-folder [/tests/e2e/defaults]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
 
 <details>
@@ -116,7 +116,7 @@ param enablePurgeProtection = false
 
 This instance deploys the module with the parameters needed for an EC key.
 
-You can find the full example and the setup of its dependencies in the end-to-end test sub-folder [/tests/e2e/eckey]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/eckey]
 
 
 <details>
@@ -285,7 +285,7 @@ param keys = [
 
 This instance deploys the module with most of its features enabled.
 
-You can find the full example and the setup of its dependencies in the end-to-end test sub-folder [/tests/e2e/max]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
 
 <details>
@@ -1068,7 +1068,7 @@ param tags = {
 
 This instance deploys the module with the parameters needed for an RSA key.
 
-You can find the full example and the setup of its dependencies in the end-to-end test sub-folder [/tests/e2e/rsakey]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rsakey]
 
 
 <details>
@@ -1237,7 +1237,7 @@ param keys = [
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
-You can find the full example and the setup of its dependencies in the end-to-end test sub-folder [/tests/e2e/waf-aligned]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
 
 <details>

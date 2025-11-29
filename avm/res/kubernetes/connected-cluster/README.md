@@ -7,6 +7,14 @@
 
 This module deploys an Azure Arc connected cluster.
 
+You can reference the module as follows:
+```
+module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -39,6 +47,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -46,7 +56,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version>' = {
-  name: 'connectedClusterDeployment'
   params: {
     name: 'kccmin001'
   }
@@ -92,6 +101,8 @@ param name = 'kccmin001'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -99,7 +110,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version>' = {
-  name: 'connectedClusterDeployment'
   params: {
     // Required parameters
     name: 'kccmax001'
@@ -282,6 +292,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -289,7 +301,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version>' = {
-  name: 'connectedClusterDeployment'
   params: {
     // Required parameters
     name: 'kccwaf001'

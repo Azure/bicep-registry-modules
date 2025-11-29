@@ -7,6 +7,14 @@
 
 This module deploys a Security Insights Data Connector.
 
+You can reference the module as follows:
+```
+module dataConnector 'br/public:avm/res/security-insights/data-connector:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -37,6 +45,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with minimal required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -44,7 +54,6 @@ This instance deploys the module with minimal required parameters.
 
 ```bicep
 module dataConnector 'br/public:avm/res/security-insights/data-connector:<version>' = {
-  name: 'dataConnectorDeployment'
   params: {
     // Required parameters
     properties: {
@@ -139,6 +148,8 @@ param name = 'MicrosoftThreatIntelligence'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -146,7 +157,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module dataConnector 'br/public:avm/res/security-insights/data-connector:<version>' = {
-  name: 'dataConnectorDeployment'
   params: {
     // Required parameters
     properties: {
@@ -246,6 +256,8 @@ param name = 'MicrosoftThreatIntelligence'
 
 This instance deploys the module with WAF-aligned requirements.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -253,7 +265,6 @@ This instance deploys the module with WAF-aligned requirements.
 
 ```bicep
 module dataConnector 'br/public:avm/res/security-insights/data-connector:<version>' = {
-  name: 'dataConnectorDeployment'
   params: {
     // Required parameters
     properties: {

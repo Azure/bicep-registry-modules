@@ -2,6 +2,14 @@
 
 This module deploys a Data Collection Rule.
 
+You can reference the module as follows:
+```
+module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -41,6 +49,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module AMA (Azure Monitor Agent) Settings DCR.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/agent-settings]
+
 
 <details>
 
@@ -48,7 +58,6 @@ This instance deploys the module AMA (Azure Monitor Agent) Settings DCR.
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -143,6 +152,8 @@ param location = '<location>'
 
 This instance deploys the module to setup collection of custom logs and ingestion-time transformation.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/customadv]
+
 
 <details>
 
@@ -150,7 +161,6 @@ This instance deploys the module to setup collection of custom logs and ingestio
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -462,6 +472,8 @@ param tags = {
 
 This instance deploys the module to setup collection of custom logs.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/custombasic]
+
 
 <details>
 
@@ -469,7 +481,6 @@ This instance deploys the module to setup collection of custom logs.
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -722,6 +733,8 @@ param tags = {
 
 This instance deploys the module to setup the collection of IIS logs.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/customiis]
+
 
 <details>
 
@@ -729,7 +742,6 @@ This instance deploys the module to setup the collection of IIS logs.
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -919,6 +931,8 @@ param tags = {
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -926,7 +940,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -1108,6 +1121,8 @@ param location = '<location>'
 
 This instance deploys the module to setup sending data to Azure Monitor Logs with Logs ingestion API.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/direct]
+
 
 <details>
 
@@ -1115,7 +1130,6 @@ This instance deploys the module to setup sending data to Azure Monitor Logs wit
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -1320,6 +1334,8 @@ param tags = {
 
 This instance deploys the module to setup the collection of Linux-specific performance counters and Linux Syslog.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/linux]
+
 
 <details>
 
@@ -1327,7 +1343,6 @@ This instance deploys the module to setup the collection of Linux-specific perfo
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -1856,6 +1871,8 @@ param tags = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -1863,7 +1880,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -2209,6 +2225,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -2216,7 +2234,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -2607,6 +2624,8 @@ param tags = {
 
 This instance deploys the module to setup the connection of Windows-specific performance counters and Windows Event Logs.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows]
+
 
 <details>
 
@@ -2614,7 +2633,6 @@ This instance deploys the module to setup the connection of Windows-specific per
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {

@@ -7,6 +7,14 @@
 
 This module deploys a Kubernetes Runtime Load Balancer for MetalLB and related networking services.
 
+You can reference the module as follows:
+```
+module loadBalancer 'br/public:avm/res/kubernetes-runtime/load-balancer:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -39,6 +47,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -46,7 +56,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module loadBalancer 'br/public:avm/res/kubernetes-runtime/load-balancer:<version>' = {
-  name: 'loadBalancerDeployment'
   params: {
     // Required parameters
     addresses: [
@@ -121,6 +130,8 @@ param name = 'krlbmin001'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -128,7 +139,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module loadBalancer 'br/public:avm/res/kubernetes-runtime/load-balancer:<version>' = {
-  name: 'loadBalancerDeployment'
   params: {
     // Required parameters
     addresses: [

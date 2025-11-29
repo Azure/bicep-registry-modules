@@ -7,6 +7,14 @@
 
 This module deploys a Azure Arc Gateway.
 
+You can reference the module as follows:
+```
+module gateway 'br/public:avm/res/hybrid-compute/gateway:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -38,6 +46,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -45,7 +55,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module gateway 'br/public:avm/res/hybrid-compute/gateway:<version>' = {
-  name: 'gatewayDeployment'
   params: {
     name: 'hcgmin001'
   }
@@ -91,6 +100,8 @@ param name = 'hcgmin001'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -98,7 +109,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module gateway 'br/public:avm/res/hybrid-compute/gateway:<version>' = {
-  name: 'gatewayDeployment'
   params: {
     name: 'hcgwaf001'
   }

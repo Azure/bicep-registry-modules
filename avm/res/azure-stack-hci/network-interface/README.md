@@ -7,6 +7,14 @@
 
 This module deploys an Azure Stack HCI network interface.
 
+You can reference the module as follows:
+```
+module networkInterface 'br/public:avm/res/azure-stack-hci/network-interface:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -38,6 +46,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -45,7 +55,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module networkInterface 'br/public:avm/res/azure-stack-hci/network-interface:<version>' = {
-  name: 'networkInterfaceDeployment'
   params: {
     // Required parameters
     customLocationResourceId: '<customLocationResourceId>'
@@ -128,6 +137,8 @@ param name = 'ashniminnetworkinterface'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -135,7 +146,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module networkInterface 'br/public:avm/res/azure-stack-hci/network-interface:<version>' = {
-  name: 'networkInterfaceDeployment'
   params: {
     // Required parameters
     customLocationResourceId: '<customLocationResourceId>'

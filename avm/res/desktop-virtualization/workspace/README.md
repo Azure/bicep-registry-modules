@@ -7,6 +7,14 @@
 
 This module deploys an Azure Virtual Desktop Workspace.
 
+You can reference the module as follows:
+```
+module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -43,6 +51,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -50,7 +60,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     name: 'dvwsmin002'
   }
@@ -96,6 +105,8 @@ param name = 'dvwsmin002'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -103,7 +114,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'dvwsmax001'
@@ -551,6 +561,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -558,7 +570,6 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'dvwswaf002'
