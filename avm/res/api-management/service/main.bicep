@@ -84,7 +84,7 @@ param skuCapacity int = 3
 param subnetResourceId string?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.ApiManagement/service@2025-05-01'>.tags?
+param tags resourceInput<'Microsoft.ApiManagement/service@2024-05-01'>.tags?
 
 @description('Optional. The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only.')
 @allowed([
