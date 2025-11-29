@@ -38,7 +38,7 @@ This Bicep Module helps to create Bing Search Kind resource. You may need to reg
 
 Deploy a Bing Search v7 resource with the free SKU
 
-```bicep
+```
 module bing-search-resource 'br/public:ai/bing-resource:1.0.2' = {
   name: 'bing-search-resource'
   params: {
@@ -54,7 +54,7 @@ module bing-search-resource 'br/public:ai/bing-resource:1.0.2' = {
 
 Deploy a Bing Custom Search resource with the standard SKU
 
-```bicep
+```
 module bing-search-resource 'br/public:ai/bing-resource:1.0.2' = {
   name: 'bing-search-resource'
   params: {
