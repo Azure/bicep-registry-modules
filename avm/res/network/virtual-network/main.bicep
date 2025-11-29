@@ -448,18 +448,22 @@ type cidrPrefixType =
 
 @sealed()
 @export()
+type ipamPoolPrefixAllocationsType = {
+  @description('Required. The resource ID of the IPAM pool to allocate the address prefix from.')
+  ipamPoolResourceId: string
+
+  @description('Required. The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses).')
+  cidr: cidrPrefixType
+}
+
+@sealed()
+@export()
 type ipamAddressPrefixesType = {
   @description('Required. The allocation method for the address prefix. Must be set to `ipam` for IPAM-based allocation.')
   by: 'ipam'
 
   @description('Required. Array of IPAM pool prefix allocations specifying which pools to allocate address space from.')
-  ipamPoolPrefixAllocations: {
-    @description('Required. The resource ID of the IPAM pool to allocate the address prefix from.')
-    ipamPoolResourceId: string
-
-    @description('Required. The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses).')
-    cidr: cidrPrefixType
-  }[]
+  ipamPoolPrefixAllocations: ipamPoolPrefixAllocationsType[]
 }
 
 @sealed()
