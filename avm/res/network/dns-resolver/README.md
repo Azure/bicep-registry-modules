@@ -3,7 +3,7 @@
 This module deploys a DNS Resolver.
 
 You can reference the module as follows:
-```
+```bicep
 module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
   params: { (...) }
 }

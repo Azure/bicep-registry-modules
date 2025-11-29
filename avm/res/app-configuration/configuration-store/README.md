@@ -3,7 +3,7 @@
 This module deploys an App Configuration Store.
 
 You can reference the module as follows:
-```
+```bicep
 module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
   params: { (...) }
 }

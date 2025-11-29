@@ -3,7 +3,7 @@
 Private Link Private DNS Zones
 
 You can reference the module as follows:
-```
+```bicep
 module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>' = {
   params: { (...) }
 }

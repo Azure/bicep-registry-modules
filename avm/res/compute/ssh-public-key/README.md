@@ -5,7 +5,7 @@ This module deploys a Public SSH Key.
 > Note: The resource does not auto-generate the key for you.
 
 You can reference the module as follows:
-```
+```bicep
 module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
   params: { (...) }
 }

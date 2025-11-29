@@ -3,7 +3,7 @@
 This module deploys a Consumption Budget for a Subscription.
 
 You can reference the module as follows:
-```
+```bicep
 module budget 'br/public:avm/res/consumption/budget/sub-scope:<version>' = {
   params: { (...) }
 }

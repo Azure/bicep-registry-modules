@@ -3,7 +3,7 @@
 This module deploys a Public DNS zone.
 
 You can reference the module as follows:
-```
+```bicep
 module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
   params: { (...) }
 }

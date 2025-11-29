@@ -3,7 +3,7 @@
 This module deploys a Container Instance Container Group.
 
 You can reference the module as follows:
-```
+```bicep
 module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
   params: { (...) }
 }

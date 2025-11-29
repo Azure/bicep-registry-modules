@@ -3,7 +3,7 @@
 This module deploys a Compute Disk
 
 You can reference the module as follows:
-```
+```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
   params: { (...) }
 }

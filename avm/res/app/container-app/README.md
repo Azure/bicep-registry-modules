@@ -3,7 +3,7 @@
 This module deploys a Container App.
 
 You can reference the module as follows:
-```
+```bicep
 module containerApp 'br/public:avm/res/app/container-app:<version>' = {
   params: { (...) }
 }

@@ -3,7 +3,7 @@
 This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.
 
 You can reference the module as follows:
-```
+```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
   params: { (...) }
 }

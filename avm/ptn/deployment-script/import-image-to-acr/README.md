@@ -3,7 +3,7 @@
 This modules deployes an image to an Azure Container Registry.
 
 You can reference the module as follows:
-```
+```bicep
 module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr:<version>' = {
   params: { (...) }
 }

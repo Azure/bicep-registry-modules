@@ -3,7 +3,7 @@
 This module deploys a Proximity Placement Group.
 
 You can reference the module as follows:
-```
+```bicep
 module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-group:<version>' = {
   params: { (...) }
 }

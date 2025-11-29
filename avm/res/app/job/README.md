@@ -3,7 +3,7 @@
 This module deploys a Container App Job.
 
 You can reference the module as follows:
-```
+```bicep
 module job 'br/public:avm/res/app/job:<version>' = {
   params: { (...) }
 }

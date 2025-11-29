@@ -3,7 +3,7 @@
 This module deploys an Azure SQL Server Database.
 
 You can reference the module as follows:
-```
+```bicep
 module server 'br/public:avm/res/sql/server/database:<version>' = {
   params: { (...) }
 }

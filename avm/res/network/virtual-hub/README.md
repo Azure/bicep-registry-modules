@@ -4,7 +4,7 @@ This module deploys a Virtual Hub.
 If you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module.
 
 You can reference the module as follows:
-```
+```bicep
 module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
   params: { (...) }
 }

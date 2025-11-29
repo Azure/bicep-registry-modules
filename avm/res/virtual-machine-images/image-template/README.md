@@ -3,7 +3,7 @@
 This module deploys a Virtual Machine Image Template that can be consumed by the Azure Image Builder (AIB).
 
 You can reference the module as follows:
-```
+```bicep
 module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<version>' = {
   params: { (...) }
 }

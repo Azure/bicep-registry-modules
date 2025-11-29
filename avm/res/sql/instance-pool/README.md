@@ -3,7 +3,7 @@
 This module deploys an Azure SQL Server Instance Pool.
 
 You can reference the module as follows:
-```
+```bicep
 module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
   params: { (...) }
 }

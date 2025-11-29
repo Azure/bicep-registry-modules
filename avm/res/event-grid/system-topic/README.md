@@ -3,7 +3,7 @@
 This module deploys an Event Grid System Topic.
 
 You can reference the module as follows:
-```
+```bicep
 module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
   params: { (...) }
 }

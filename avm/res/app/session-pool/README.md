@@ -3,7 +3,7 @@
 This module deploys a Container App Session Pool.
 
 You can reference the module as follows:
-```
+```bicep
 module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
   params: { (...) }
 }

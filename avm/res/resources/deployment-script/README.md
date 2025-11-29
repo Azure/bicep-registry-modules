@@ -3,7 +3,7 @@
 This module deploys Deployment Scripts.
 
 You can reference the module as follows:
-```
+```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
   params: { (...) }
 }

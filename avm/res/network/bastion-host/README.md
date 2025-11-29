@@ -3,7 +3,7 @@
 This module deploys a Bastion Host.
 
 You can reference the module as follows:
-```
+```bicep
 module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
   params: { (...) }
 }

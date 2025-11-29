@@ -3,7 +3,7 @@
 This module deploys an Azure Monitor Private Link Scope.
 
 You can reference the module as follows:
-```
+```bicep
 module privateLinkScope 'br/public:avm/res/insights/private-link-scope:<version>' = {
   params: { (...) }
 }

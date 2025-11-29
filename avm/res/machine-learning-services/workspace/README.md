@@ -3,7 +3,7 @@
 This module deploys a Machine Learning Services Workspace.
 
 You can reference the module as follows:
-```
+```bicep
 module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
   params: { (...) }
 }

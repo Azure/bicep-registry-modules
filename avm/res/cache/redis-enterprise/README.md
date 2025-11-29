@@ -3,7 +3,7 @@
 This module deploys a Redis Enterprise or Azure Managed Redis cache.
 
 You can reference the module as follows:
-```
+```bicep
 module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   params: { (...) }
 }

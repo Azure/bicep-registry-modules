@@ -3,7 +3,7 @@
 This module deploys a Private DNS Zone SOA record.
 
 You can reference the module as follows:
-```
+```bicep
 module privateDnsZone 'br/public:avm/res/network/private-dns-zone/soa:<version>' = {
   params: { (...) }
 }

@@ -3,7 +3,7 @@
 This module deploys an Alert Processing Rule.
 
 You can reference the module as follows:
-```
+```bicep
 module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = {
   params: { (...) }
 }

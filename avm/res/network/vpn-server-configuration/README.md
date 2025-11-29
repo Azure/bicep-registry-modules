@@ -3,7 +3,7 @@
 This module deploys a VPN Server Configuration for a Virtual Hub P2S Gateway.
 
 You can reference the module as follows:
-```
+```bicep
 module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuration:<version>' = {
   params: { (...) }
 }

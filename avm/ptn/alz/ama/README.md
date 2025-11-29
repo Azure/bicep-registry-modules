@@ -3,7 +3,7 @@
 This modules deployes resources for Azure Monitoring Agent (AMA) to be used within Azure Landing Zones
 
 You can reference the module as follows:
-```
+```bicep
 module ama 'br/public:avm/ptn/alz/ama:<version>' = {
   params: { (...) }
 }

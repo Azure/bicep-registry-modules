@@ -3,7 +3,7 @@
 This module deploys a Network Manager.
 
 You can reference the module as follows:
-```
+```bicep
 module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
   params: { (...) }
 }

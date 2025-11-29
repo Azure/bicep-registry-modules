@@ -3,7 +3,7 @@
 This module deploys an Azure Dev Center Network Connection.
 
 You can reference the module as follows:
-```
+```bicep
 module networkConnection 'br/public:avm/res/dev-center/network-connection:<version>' = {
   params: { (...) }
 }

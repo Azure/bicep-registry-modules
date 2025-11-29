@@ -3,7 +3,7 @@
 This module deploys a Power BI Dedicated Capacity.
 
 You can reference the module as follows:
-```
+```bicep
 module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
   params: { (...) }
 }

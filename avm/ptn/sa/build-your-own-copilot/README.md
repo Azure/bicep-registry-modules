@@ -10,7 +10,7 @@ This module deploys a comprehensive Build Your Own Copilot solution accelerator 
 
 
 You can reference the module as follows:
-```
+```bicep
 module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version>' = {
   params: { (...) }
 }

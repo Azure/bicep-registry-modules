@@ -1,14 +1,14 @@
 # Azure Stack HCI Virtual Machine Instance `[Microsoft.AzureStackHCI/virtualMachineInstances]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
+>
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
 This module deploys an Azure Stack HCI virtual machine.
 
 You can reference the module as follows:
-```
+```bicep
 module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine-instance:<version>' = {
   params: { (...) }
 }

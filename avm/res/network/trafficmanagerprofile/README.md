@@ -3,7 +3,7 @@
 This module deploys a Traffic Manager Profile.
 
 You can reference the module as follows:
-```
+```bicep
 module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<version>' = {
   params: { (...) }
 }

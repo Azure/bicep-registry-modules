@@ -3,7 +3,7 @@
 This module deploys a Storage Account Blob Container.
 
 You can reference the module as follows:
-```
+```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account/blob-service/container:<version>' = {
   params: { (...) }
 }

@@ -3,7 +3,7 @@
 This module deploys a User Assigned Identity.
 
 You can reference the module as follows:
-```
+```bicep
 module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:<version>' = {
   params: { (...) }
 }

@@ -3,7 +3,7 @@
 This module deploys an Azure Container Registry (ACR).
 
 You can reference the module as follows:
-```
+```bicep
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   params: { (...) }
 }

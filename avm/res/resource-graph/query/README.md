@@ -3,7 +3,7 @@
 This module deploys a Resource Graph Query.
 
 You can reference the module as follows:
-```
+```bicep
 module query 'br/public:avm/res/resource-graph/query:<version>' = {
   params: { (...) }
 }

@@ -3,7 +3,7 @@
 This module deploys a Public IP Address.
 
 You can reference the module as follows:
-```
+```bicep
 module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' = {
   params: { (...) }
 }

@@ -3,7 +3,7 @@
 This module deploys an API Management Service Policy.
 
 You can reference the module as follows:
-```
+```bicep
 module service 'br/public:avm/res/api-management/service/policy:<version>' = {
   params: { (...) }
 }

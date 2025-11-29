@@ -3,7 +3,7 @@
 This module deploys a Web Test.
 
 You can reference the module as follows:
-```
+```bicep
 module webtest 'br/public:avm/res/insights/webtest:<version>' = {
   params: { (...) }
 }

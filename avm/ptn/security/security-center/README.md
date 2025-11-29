@@ -3,7 +3,7 @@
 This module deploys an Azure Security Center (Defender for Cloud) Configuration.
 
 You can reference the module as follows:
-```
+```bicep
 module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
   params: { (...) }
 }

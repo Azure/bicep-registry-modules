@@ -3,7 +3,7 @@
 This module deploys a Front Door Web Application Firewall (WAF) Policy.
 
 You can reference the module as follows:
-```
+```bicep
 module frontDoorWebApplicationFirewallPolicy 'br/public:avm/res/network/front-door-web-application-firewall-policy:<version>' = {
   params: { (...) }
 }

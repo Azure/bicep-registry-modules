@@ -3,7 +3,7 @@
 This module deploys a Role Assignment at a Management Group scope.
 
 You can reference the module as follows:
-```
+```bicep
 module roleAssignment 'br/public:avm/res/authorization/role-assignment/mg-scope:<version>' = {
   params: { (...) }
 }

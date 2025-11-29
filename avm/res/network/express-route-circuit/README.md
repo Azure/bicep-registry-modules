@@ -3,7 +3,7 @@
 This module deploys an Express Route Circuit.
 
 You can reference the module as follows:
-```
+```bicep
 module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<version>' = {
   params: { (...) }
 }

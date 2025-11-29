@@ -3,7 +3,7 @@
 This module deploys an Activity Log Alert.
 
 You can reference the module as follows:
-```
+```bicep
 module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>' = {
   params: { (...) }
 }

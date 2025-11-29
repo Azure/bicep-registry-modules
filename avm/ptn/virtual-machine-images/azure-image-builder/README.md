@@ -3,7 +3,7 @@
 This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery.
 
 You can reference the module as follows:
-```
+```bicep
 module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>' = {
   params: { (...) }
 }

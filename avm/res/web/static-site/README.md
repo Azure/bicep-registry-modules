@@ -3,7 +3,7 @@
 This module deploys a Static Web App.
 
 You can reference the module as follows:
-```
+```bicep
 module staticSite 'br/public:avm/res/web/static-site:<version>' = {
   params: { (...) }
 }

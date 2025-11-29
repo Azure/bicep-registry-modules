@@ -3,7 +3,7 @@
 This module deploys an Azure NetApp Files Account and the associated resource types such as backups, capacity pools and volumes.
 
 You can reference the module as follows:
-```
+```bicep
 module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
   params: { (...) }
 }

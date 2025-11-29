@@ -3,7 +3,7 @@
 This component deploys an Application Insights instance.
 
 You can reference the module as follows:
-```
+```bicep
 module component 'br/public:avm/res/insights/component:<version>' = {
   params: { (...) }
 }

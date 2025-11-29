@@ -3,7 +3,7 @@
 This module deploys a DevTest Lab.
 
 You can reference the module as follows:
-```
+```bicep
 module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
   params: { (...) }
 }

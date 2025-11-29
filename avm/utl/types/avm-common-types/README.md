@@ -6,7 +6,7 @@ Details for how to implement these interfaces can be found in the AVM documentat
 
 
 You can reference the module as follows:
-```
+```bicep
 module avmCommonTypes 'br/public:avm/utl/types/avm-common-types:<version>' = {
   params: { (...) }
 }

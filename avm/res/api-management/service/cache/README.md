@@ -3,7 +3,7 @@
 This module deploys an API Management Service Cache.
 
 You can reference the module as follows:
-```
+```bicep
 module service 'br/public:avm/res/api-management/service/cache:<version>' = {
   params: { (...) }
 }

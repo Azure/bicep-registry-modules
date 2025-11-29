@@ -3,7 +3,7 @@
 This module deploys a Compute Image.
 
 You can reference the module as follows:
-```
+```bicep
 module image 'br/public:avm/res/compute/image:<version>' = {
   params: { (...) }
 }

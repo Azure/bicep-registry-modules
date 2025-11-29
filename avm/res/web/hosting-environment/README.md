@@ -3,7 +3,7 @@
 This module deploys an App Service Environment.
 
 You can reference the module as follows:
-```
+```bicep
 module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' = {
   params: { (...) }
 }

@@ -3,7 +3,7 @@
 This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.
 
 You can reference the module as follows:
-```
+```bicep
 module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>' = {
   params: { (...) }
 }

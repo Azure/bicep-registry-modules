@@ -3,7 +3,7 @@
 This module deploys the Managed DevOps Pool resource.
 
 You can reference the module as follows:
-```
+```bicep
 module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
   params: { (...) }
 }

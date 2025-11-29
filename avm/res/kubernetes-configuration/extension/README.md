@@ -3,7 +3,7 @@
 This module deploys a Kubernetes Configuration Extension.
 
 You can reference the module as follows:
-```
+```bicep
 module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
   params: { (...) }
 }

@@ -3,7 +3,7 @@
 This module deploys a Kubernetes Configuration Flux Configuration.
 
 You can reference the module as follows:
-```
+```bicep
 module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:<version>' = {
   params: { (...) }
 }

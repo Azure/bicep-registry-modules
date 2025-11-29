@@ -3,7 +3,7 @@
 This module deploys a Batch Account.
 
 You can reference the module as follows:
-```
+```bicep
 module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
   params: { (...) }
 }

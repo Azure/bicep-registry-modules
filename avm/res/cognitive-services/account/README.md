@@ -3,7 +3,7 @@
 This module deploys a Cognitive Service.
 
 You can reference the module as follows:
-```
+```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   params: { (...) }
 }

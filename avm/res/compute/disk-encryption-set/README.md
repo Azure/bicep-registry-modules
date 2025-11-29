@@ -3,7 +3,7 @@
 This module deploys a Disk Encryption Set. The module will attempt to set permissions on the provided Key Vault for any used user-assigned identity.
 
 You can reference the module as follows:
-```
+```bicep
 module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version>' = {
   params: { (...) }
 }

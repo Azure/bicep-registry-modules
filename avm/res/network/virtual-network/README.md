@@ -3,7 +3,7 @@
 This module deploys a Virtual Network (vNet).
 
 You can reference the module as follows:
-```
+```bicep
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   params: { (...) }
 }

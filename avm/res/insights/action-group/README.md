@@ -3,7 +3,7 @@
 This module deploys an Action Group.
 
 You can reference the module as follows:
-```
+```bicep
 module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
   params: { (...) }
 }

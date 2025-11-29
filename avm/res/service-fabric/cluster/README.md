@@ -3,7 +3,7 @@
 This module deploys a Service Fabric Cluster.
 
 You can reference the module as follows:
-```
+```bicep
 module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
   params: { (...) }
 }

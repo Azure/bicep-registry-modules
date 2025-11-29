@@ -3,7 +3,7 @@
 This module deploys a Private DNS Zone SRV record.
 
 You can reference the module as follows:
-```
+```bicep
 module privateDnsZone 'br/public:avm/res/network/private-dns-zone/srv:<version>' = {
   params: { (...) }
 }

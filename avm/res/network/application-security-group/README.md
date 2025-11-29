@@ -3,7 +3,7 @@
 This module deploys an Application Security Group (ASG).
 
 You can reference the module as follows:
-```
+```bicep
 module applicationSecurityGroup 'br/public:avm/res/network/application-security-group:<version>' = {
   params: { (...) }
 }

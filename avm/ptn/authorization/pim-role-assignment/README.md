@@ -3,7 +3,7 @@
 This module deploys a PIM Role Assignment at a Management Group, Subscription or Resource Group scope.
 
 You can reference the module as follows:
-```
+```bicep
 module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<version>' = {
   params: { (...) }
 }

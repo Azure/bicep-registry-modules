@@ -3,7 +3,7 @@
 This module deploys a custom role definition to a Management Group.
 
 You can reference the module as follows:
-```
+```bicep
 module roleDefinition 'br/public:avm/ptn/authorization/role-definition:<version>' = {
   params: { (...) }
 }

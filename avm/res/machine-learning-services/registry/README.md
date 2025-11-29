@@ -3,7 +3,7 @@
 This module deploys an Azure Machine Learning Registry.
 
 You can reference the module as follows:
-```
+```bicep
 module registry 'br/public:avm/res/machine-learning-services/registry:<version>' = {
   params: { (...) }
 }

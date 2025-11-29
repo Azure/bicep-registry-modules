@@ -3,7 +3,7 @@
 This module deploys a Service Bus Namespace.
 
 You can reference the module as follows:
-```
+```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   params: { (...) }
 }

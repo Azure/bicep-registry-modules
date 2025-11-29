@@ -3,7 +3,7 @@
 This module deploys a Policy Insights Remediation.
 
 You can reference the module as follows:
-```
+```bicep
 module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
   params: { (...) }
 }

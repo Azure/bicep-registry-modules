@@ -10,7 +10,7 @@ This module contains the resources required to deploy the [Chat-with-your-data-s
 
 
 You can reference the module as follows:
-```
+```bicep
 module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   params: { (...) }
 }

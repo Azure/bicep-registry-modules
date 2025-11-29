@@ -3,7 +3,7 @@
 This module deploys a Network Watcher.
 
 You can reference the module as follows:
-```
+```bicep
 module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
   params: { (...) }
 }

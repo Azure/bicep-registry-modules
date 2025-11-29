@@ -3,7 +3,7 @@
 This module deploys a Log Analytics Workspace.
 
 You can reference the module as follows:
-```
+```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
   params: { (...) }
 }

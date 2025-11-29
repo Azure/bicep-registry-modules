@@ -3,7 +3,7 @@
 This module deploys an App Service Plan.
 
 You can reference the module as follows:
-```
+```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
   params: { (...) }
 }

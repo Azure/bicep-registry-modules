@@ -3,7 +3,7 @@
 This module deploys a Policy Assignment at a Resource Group scope. Optionally, it further assigns permissions to the policy's identity (if configured) to various scopes. Note, if you provide any role definition ids and or define additional scopes to assign permissions to, set permissions are deployled as a permutation of the provided parameters. In other words, each role would be provided to each scope for the assignment's identity.
 
 You can reference the module as follows:
-```
+```bicep
 module policyAssignment 'br/public:avm/res/authorization/policy-assignment/rg-scope:<version>' = {
   params: { (...) }
 }

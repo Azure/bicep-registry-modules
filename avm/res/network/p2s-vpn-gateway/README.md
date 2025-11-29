@@ -3,7 +3,7 @@
 This module deploys a Virtual Hub P2S Gateway.
 
 You can reference the module as follows:
-```
+```bicep
 module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
   params: { (...) }
 }

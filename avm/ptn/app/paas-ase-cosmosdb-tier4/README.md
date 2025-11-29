@@ -3,7 +3,7 @@
 Creates a PaaS ASE with CosmosDB Tier 4 resiliency configuration.
 
 You can reference the module as follows:
-```
+```bicep
 module paasAseCosmosdbTier4 'br/public:avm/ptn/app/paas-ase-cosmosdb-tier4:<version>' = {
   params: { (...) }
 }

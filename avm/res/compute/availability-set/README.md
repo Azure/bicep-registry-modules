@@ -3,7 +3,7 @@
 This module deploys an Availability Set.
 
 You can reference the module as follows:
-```
+```bicep
 module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = {
   params: { (...) }
 }

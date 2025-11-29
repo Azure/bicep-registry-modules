@@ -3,7 +3,7 @@
 This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework
 
 You can reference the module as follows:
-```
+```bicep
 module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
   params: { (...) }
 }

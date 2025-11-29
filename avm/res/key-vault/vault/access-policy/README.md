@@ -3,7 +3,7 @@
 This module deploys a Key Vault Access Policy.
 
 You can reference the module as follows:
-```
+```bicep
 module vault 'br/public:avm/res/key-vault/vault/access-policy:<version>' = {
   params: { (...) }
 }

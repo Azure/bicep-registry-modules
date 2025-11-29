@@ -3,7 +3,7 @@
 This module deploys a Key Vault Secret.
 
 You can reference the module as follows:
-```
+```bicep
 module vault 'br/public:avm/res/key-vault/vault/secret:<version>' = {
   params: { (...) }
 }

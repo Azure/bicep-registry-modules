@@ -3,7 +3,7 @@
 This module deploys a Maintenance Configuration.
 
 You can reference the module as follows:
-```
+```bicep
 module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:<version>' = {
   params: { (...) }
 }

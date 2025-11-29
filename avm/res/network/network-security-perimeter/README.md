@@ -3,7 +3,7 @@
 This module deploys a Network Security Perimeter (NSP).
 
 You can reference the module as follows:
-```
+```bicep
 module networkSecurityPerimeter 'br/public:avm/res/network/network-security-perimeter:<version>' = {
   params: { (...) }
 }

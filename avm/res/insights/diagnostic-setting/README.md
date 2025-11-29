@@ -3,7 +3,7 @@
 This module deploys a Subscription wide export of the Activity Log.
 
 You can reference the module as follows:
-```
+```bicep
 module diagnosticSetting 'br/public:avm/res/insights/diagnostic-setting:<version>' = {
   params: { (...) }
 }

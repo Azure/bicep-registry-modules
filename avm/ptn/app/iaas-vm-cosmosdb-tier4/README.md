@@ -3,7 +3,7 @@
 Creates an IaaS VM with CosmosDB Tier 4 resiliency configuration.
 
 You can reference the module as follows:
-```
+```bicep
 module iaasVmCosmosdbTier4 'br/public:avm/ptn/app/iaas-vm-cosmosdb-tier4:<version>' = {
   params: { (...) }
 }

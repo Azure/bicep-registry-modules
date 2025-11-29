@@ -3,7 +3,7 @@
 This module deploys a Role Assignment for a specific resource.
 
 You can reference the module as follows:
-```
+```bicep
 module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:<version>' = {
   params: { (...) }
 }

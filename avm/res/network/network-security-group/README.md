@@ -3,7 +3,7 @@
 This module deploys a Network security Group (NSG).
 
 You can reference the module as follows:
-```
+```bicep
 module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<version>' = {
   params: { (...) }
 }

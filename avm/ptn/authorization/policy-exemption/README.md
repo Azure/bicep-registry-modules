@@ -3,7 +3,7 @@
 This module deploys a Policy Exemption at a Management Group, Subscription or Resource Group scope.
 
 You can reference the module as follows:
-```
+```bicep
 module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
   params: { (...) }
 }

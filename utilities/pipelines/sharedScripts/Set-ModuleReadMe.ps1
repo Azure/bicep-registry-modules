@@ -2064,7 +2064,7 @@ function Initialize-ReadMe {
         $targetVersion = '<version>'
         $referenceBlock = @(
             'You can reference the module as follows:',
-            '```',
+            '```bicep',
             "module $moduleNameCamelCase 'br/public:$($brLink):$($targetVersion)' = {",
             '  params: { (...) }',
             '}',

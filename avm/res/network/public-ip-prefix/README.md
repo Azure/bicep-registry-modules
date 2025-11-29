@@ -3,7 +3,7 @@
 This module deploys a Public IP Prefix.
 
 You can reference the module as follows:
-```
+```bicep
 module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
   params: { (...) }
 }

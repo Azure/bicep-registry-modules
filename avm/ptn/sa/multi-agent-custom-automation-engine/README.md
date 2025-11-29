@@ -6,7 +6,7 @@ This module contains the resources required to deploy the [Multi-Agent Custom Au
 
 
 You can reference the module as follows:
-```
+```bicep
 module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom-automation-engine:<version>' = {
   params: { (...) }
 }

@@ -3,7 +3,7 @@
 This module deploys an Application Gateway Web Application Firewall (WAF) Policy.
 
 You can reference the module as follows:
-```
+```bicep
 module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network/application-gateway-web-application-firewall-policy:<version>' = {
   params: { (...) }
 }

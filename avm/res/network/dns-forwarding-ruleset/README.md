@@ -3,7 +3,7 @@
 This template deploys an dns forwarding ruleset.
 
 You can reference the module as follows:
-```
+```bicep
 module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<version>' = {
   params: { (...) }
 }

@@ -3,7 +3,7 @@
 This module deploys an Azure Firewall.
 
 You can reference the module as follows:
-```
+```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
   params: { (...) }
 }

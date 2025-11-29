@@ -3,7 +3,7 @@
 This module deploys a DDoS Protection Plan.
 
 You can reference the module as follows:
-```
+```bicep
 module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<version>' = {
   params: { (...) }
 }

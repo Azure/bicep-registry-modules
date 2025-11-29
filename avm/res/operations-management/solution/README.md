@@ -3,7 +3,7 @@
 This module deploys an Operations Management Solution.
 
 You can reference the module as follows:
-```
+```bicep
 module solution 'br/public:avm/res/operations-management/solution:<version>' = {
   params: { (...) }
 }

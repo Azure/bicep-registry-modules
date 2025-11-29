@@ -3,7 +3,7 @@
 This module deploys an Event Grid Namespace.
 
 You can reference the module as follows:
-```
+```bicep
 module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
   params: { (...) }
 }

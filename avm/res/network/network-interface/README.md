@@ -3,7 +3,7 @@
 This module deploys a Network Interface.
 
 You can reference the module as follows:
-```
+```bicep
 module networkInterface 'br/public:avm/res/network/network-interface:<version>' = {
   params: { (...) }
 }

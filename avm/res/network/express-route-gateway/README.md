@@ -3,7 +3,7 @@
 This module deploys an Express Route Gateway.
 
 You can reference the module as follows:
-```
+```bicep
 module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<version>' = {
   params: { (...) }
 }

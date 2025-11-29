@@ -3,7 +3,7 @@
 This module deploys a Service Endpoint Policy.
 
 You can reference the module as follows:
-```
+```bicep
 module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:<version>' = {
   params: { (...) }
 }

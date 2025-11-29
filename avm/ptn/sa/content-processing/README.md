@@ -5,7 +5,7 @@ This module contains the resources required to deploy the [Content Processing so
 
 
 You can reference the module as follows:
-```
+```bicep
 module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
   params: { (...) }
 }

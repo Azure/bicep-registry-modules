@@ -3,7 +3,7 @@
 This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).
 
 You can reference the module as follows:
-```
+```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   params: { (...) }
 }

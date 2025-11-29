@@ -3,7 +3,7 @@
 This module deploys a DBforPostgreSQL Flexible Server.
 
 You can reference the module as follows:
-```
+```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
   params: { (...) }
 }

@@ -1,14 +1,14 @@
 # App ManagedEnvironments `[Microsoft.App/managedEnvironments]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
+>
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
 This module deploys an App Managed Environment (also known as a Container App Environment).
 
 You can reference the module as follows:
-```
+```bicep
 module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
   params: { (...) }
 }

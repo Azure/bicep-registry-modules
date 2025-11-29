@@ -3,7 +3,7 @@
 This module deploys a VPN Site.
 
 You can reference the module as follows:
-```
+```bicep
 module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
   params: { (...) }
 }

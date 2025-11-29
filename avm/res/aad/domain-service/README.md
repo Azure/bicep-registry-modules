@@ -3,7 +3,7 @@
 This module deploys an Microsoft Entra Domain Services (Azure AD DS) instance.
 
 You can reference the module as follows:
-```
+```bicep
 module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
   params: { (...) }
 }

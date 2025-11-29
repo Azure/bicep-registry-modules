@@ -3,7 +3,7 @@
 This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps.
 
 You can reference the module as follows:
-```
+```bicep
 module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
   params: { (...) }
 }

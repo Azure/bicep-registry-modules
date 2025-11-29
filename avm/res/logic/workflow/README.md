@@ -3,7 +3,7 @@
 This module deploys a Logic App (Workflow).
 
 You can reference the module as follows:
-```
+```bicep
 module workflow 'br/public:avm/res/logic/workflow:<version>' = {
   params: { (...) }
 }

@@ -3,7 +3,7 @@
 This module deploys an Azure Dev Center.
 
 You can reference the module as follows:
-```
+```bicep
 module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
   params: { (...) }
 }

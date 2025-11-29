@@ -3,7 +3,7 @@
 This module will allow you to create a service group and also associate resource to this service group, if you have permissions upon those resources.
 
 You can reference the module as follows:
-```
+```bicep
 module serviceGroup 'br/public:avm/res/management/service-group:<version>' = {
   params: { (...) }
 }

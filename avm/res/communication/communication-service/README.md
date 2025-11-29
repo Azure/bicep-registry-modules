@@ -3,7 +3,7 @@
 This module deploys a Communication Service
 
 You can reference the module as follows:
-```
+```bicep
 module communicationService 'br/public:avm/res/communication/communication-service:<version>' = {
   params: { (...) }
 }

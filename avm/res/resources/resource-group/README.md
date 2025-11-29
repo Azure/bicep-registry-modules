@@ -3,7 +3,7 @@
 This module deploys a Resource Group.
 
 You can reference the module as follows:
-```
+```bicep
 module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
   params: { (...) }
 }

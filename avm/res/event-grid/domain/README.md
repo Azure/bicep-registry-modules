@@ -3,7 +3,7 @@
 This module deploys an Event Grid Domain.
 
 You can reference the module as follows:
-```
+```bicep
 module domain 'br/public:avm/res/event-grid/domain:<version>' = {
   params: { (...) }
 }

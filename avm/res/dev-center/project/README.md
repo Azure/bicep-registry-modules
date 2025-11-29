@@ -3,7 +3,7 @@
 This module deploys a Dev Center Project.
 
 You can reference the module as follows:
-```
+```bicep
 module project 'br/public:avm/res/dev-center/project:<version>' = {
   params: { (...) }
 }

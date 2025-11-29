@@ -3,7 +3,7 @@
 This module deploys a Finops hub from the Finops toolkit.
 
 You can reference the module as follows:
-```
+```bicep
 module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   params: { (...) }
 }

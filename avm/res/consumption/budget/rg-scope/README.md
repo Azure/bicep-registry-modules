@@ -3,7 +3,7 @@
 This module deploys a Consumption Budget for a Resource Group.
 
 You can reference the module as follows:
-```
+```bicep
 module budget 'br/public:avm/res/consumption/budget/rg-scope:<version>' = {
   params: { (...) }
 }

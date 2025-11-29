@@ -3,7 +3,7 @@
 This module deploys a Load test.
 
 You can reference the module as follows:
-```
+```bicep
 module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
   params: { (...) }
 }

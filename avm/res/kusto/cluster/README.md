@@ -3,7 +3,7 @@
 This module deploys a Kusto Cluster.
 
 You can reference the module as follows:
-```
+```bicep
 module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   params: { (...) }
 }

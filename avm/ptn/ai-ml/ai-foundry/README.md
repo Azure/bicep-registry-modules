@@ -3,7 +3,7 @@
 Creates an AI Foundry account and project with Standard Agent Services.
 
 You can reference the module as follows:
-```
+```bicep
 module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
   params: { (...) }
 }

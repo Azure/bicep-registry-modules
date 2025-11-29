@@ -3,7 +3,7 @@
 This module deploys a Data Collection Rule.
 
 You can reference the module as follows:
-```
+```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
   params: { (...) }
 }

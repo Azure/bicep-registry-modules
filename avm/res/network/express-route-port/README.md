@@ -3,7 +3,7 @@
 This module deploys an Express Route Port resource used by Express Route Direct.
 
 You can reference the module as follows:
-```
+```bicep
 module expressRoutePort 'br/public:avm/res/network/express-route-port:<version>' = {
   params: { (...) }
 }

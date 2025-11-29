@@ -3,7 +3,7 @@
 This module deploys a Data Collection Endpoint.
 
 You can reference the module as follows:
-```
+```bicep
 module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoint:<version>' = {
   params: { (...) }
 }

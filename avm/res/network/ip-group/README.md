@@ -3,7 +3,7 @@
 This module deploys an IP Group.
 
 You can reference the module as follows:
-```
+```bicep
 module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
   params: { (...) }
 }

@@ -3,7 +3,7 @@
 This module deploys an Email Service
 
 You can reference the module as follows:
-```
+```bicep
 module emailService 'br/public:avm/res/communication/email-service:<version>' = {
   params: { (...) }
 }

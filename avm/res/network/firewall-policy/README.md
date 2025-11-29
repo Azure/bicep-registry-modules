@@ -3,7 +3,7 @@
 This module deploys a Firewall Policy.
 
 You can reference the module as follows:
-```
+```bicep
 module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
   params: { (...) }
 }

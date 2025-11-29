@@ -6,7 +6,7 @@ This module contains the resources required to deploy the [Modernize Your Code S
 
 
 You can reference the module as follows:
-```
+```bicep
 module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = {
   params: { (...) }
 }

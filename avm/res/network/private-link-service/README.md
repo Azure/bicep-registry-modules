@@ -3,7 +3,7 @@
 This module deploys a Private Link Service.
 
 You can reference the module as follows:
-```
+```bicep
 module privateLinkService 'br/public:avm/res/network/private-link-service:<version>' = {
   params: { (...) }
 }

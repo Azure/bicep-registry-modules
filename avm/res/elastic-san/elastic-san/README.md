@@ -3,7 +3,7 @@
 This module deploys an Elastic SAN.
 
 You can reference the module as follows:
-```
+```bicep
 module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   params: { (...) }
 }

@@ -5,7 +5,7 @@ The module encompasses all essential components required for building, managing,
 By integrating with Microsoft Entra ID for secure identity management and utilizing private endpoints for services like Key Vault and Blob Storage, the module ensures secure communication and data access.
 
 You can reference the module as follows:
-```
+```bicep
 module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
   params: { (...) }
 }

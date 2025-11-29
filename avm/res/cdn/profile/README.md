@@ -3,7 +3,7 @@
 This module deploys a CDN Profile.
 
 You can reference the module as follows:
-```
+```bicep
 module profile 'br/public:avm/res/cdn/profile:<version>' = {
   params: { (...) }
 }

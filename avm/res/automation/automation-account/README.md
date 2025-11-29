@@ -3,7 +3,7 @@
 This module deploys an Azure Automation Account.
 
 You can reference the module as follows:
-```
+```bicep
 module automationAccount 'br/public:avm/res/automation/automation-account:<version>' = {
   params: { (...) }
 }

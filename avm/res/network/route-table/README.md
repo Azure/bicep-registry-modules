@@ -3,7 +3,7 @@
 This module deploys a User Defined Route Table (UDR).
 
 You can reference the module as follows:
-```
+```bicep
 module routeTable 'br/public:avm/res/network/route-table:<version>' = {
   params: { (...) }
 }

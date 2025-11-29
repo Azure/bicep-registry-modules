@@ -5,7 +5,7 @@ This module deploys a Azure Cosmos DB for MongoDB (vCore) cluster.
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.
 
 You can reference the module as follows:
-```
+```bicep
 module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
   params: { (...) }
 }

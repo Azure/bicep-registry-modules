@@ -3,7 +3,7 @@
 This module deploys a Local Network Gateway.
 
 You can reference the module as follows:
-```
+```bicep
 module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<version>' = {
   params: { (...) }
 }

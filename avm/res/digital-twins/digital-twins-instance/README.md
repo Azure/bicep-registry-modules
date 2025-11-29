@@ -3,7 +3,7 @@
 This module deploys an Azure Digital Twins Instance.
 
 You can reference the module as follows:
-```
+```bicep
 module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-instance:<version>' = {
   params: { (...) }
 }

@@ -6,7 +6,7 @@ This module deploys the [Conversation Knowledge Mining Solution Accelerator](htt
 
 
 You can reference the module as follows:
-```
+```bicep
 module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>' = {
   params: { (...) }
 }

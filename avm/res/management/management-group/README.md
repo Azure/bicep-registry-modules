@@ -7,7 +7,7 @@ This module has some known **limitations**:
 - It can't manage the Root (/) management group
 
 You can reference the module as follows:
-```
+```bicep
 module managementGroup 'br/public:avm/res/management/management-group:<version>' = {
   params: { (...) }
 }

@@ -3,7 +3,7 @@
 This module deploys a Metric Alert.
 
 You can reference the module as follows:
-```
+```bicep
 module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
   params: { (...) }
 }

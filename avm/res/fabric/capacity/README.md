@@ -3,7 +3,7 @@
 This module deploys Fabric capacities, which provide the compute resources for all the experiences in Fabric.
 
 You can reference the module as follows:
-```
+```bicep
 module capacity 'br/public:avm/res/fabric/capacity:<version>' = {
   params: { (...) }
 }

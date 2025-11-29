@@ -3,7 +3,7 @@
 This module deploys an Application Gateway for Containers
 
 You can reference the module as follows:
-```
+```bicep
 module trafficController 'br/public:avm/res/service-networking/traffic-controller:<version>' = {
   params: { (...) }
 }

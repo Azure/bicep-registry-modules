@@ -3,7 +3,7 @@
 This module deploys Azure Service Health Alerts to notify you of service issues, planned maintenance, and health advisories that may affect your Azure services.
 
 You can reference the module as follows:
-```
+```bicep
 module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts:<version>' = {
   params: { (...) }
 }

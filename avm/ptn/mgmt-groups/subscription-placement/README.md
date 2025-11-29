@@ -3,7 +3,7 @@
 This module allows for placement of subscriptions to management groups.
 
 You can reference the module as follows:
-```
+```bicep
 module subscriptionPlacement 'br/public:avm/ptn/mgmt-groups/subscription-placement:<version>' = {
   params: { (...) }
 }

@@ -3,7 +3,7 @@
 This module deploys a Virtual Machine Scale Set.
 
 You can reference the module as follows:
-```
+```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
   params: { (...) }
 }

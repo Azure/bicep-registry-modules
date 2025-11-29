@@ -3,7 +3,7 @@
 This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed.
 
 You can reference the module as follows:
-```
+```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: { (...) }
 }

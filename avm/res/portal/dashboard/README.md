@@ -3,7 +3,7 @@
 This module deploys a Portal Dashboard.
 
 You can reference the module as follows:
-```
+```bicep
 module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
   params: { (...) }
 }

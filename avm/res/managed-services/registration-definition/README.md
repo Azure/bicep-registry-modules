@@ -1,7 +1,7 @@
 # Registration Definitions `[Microsoft.ManagedServices/registrationDefinitions]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
+>
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
@@ -10,7 +10,7 @@ This type of delegation is very similar to role assignments but here the princip
 The templates are run towards the tenant where the Azure resources you want to delegate access to are, providing 'authorizations' (aka. access delegation) to principals in a remote/managing tenant.
 
 You can reference the module as follows:
-```
+```bicep
 module registrationDefinition 'br/public:avm/res/managed-services/registration-definition:<version>' = {
   params: { (...) }
 }

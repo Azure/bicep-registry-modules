@@ -7,7 +7,7 @@ Please review the [Usage examples](https://github.com/Azure/bicep-registry-modul
 Also please ensure you review the [Notes section of the module's README](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty#Notes) for important information about the module as well as features that exist outside of parameter inputs.
 
 You can reference the module as follows:
-```
+```bicep
 module empty 'br/public:avm/ptn/alz/empty:<version>' = {
   params: { (...) }
 }

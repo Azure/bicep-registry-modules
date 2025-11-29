@@ -3,7 +3,7 @@
 This module deploys a Virtual WAN.
 
 You can reference the module as follows:
-```
+```bicep
 module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
   params: { (...) }
 }

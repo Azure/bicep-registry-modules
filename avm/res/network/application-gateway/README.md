@@ -3,7 +3,7 @@
 This module deploys a Network Application Gateway.
 
 You can reference the module as follows:
-```
+```bicep
 module applicationGateway 'br/public:avm/res/network/application-gateway:<version>' = {
   params: { (...) }
 }

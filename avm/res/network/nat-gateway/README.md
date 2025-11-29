@@ -3,7 +3,7 @@
 This module deploys a NAT Gateway.
 
 You can reference the module as follows:
-```
+```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   params: { (...) }
 }

@@ -3,7 +3,7 @@
 This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).
 
 You can reference the module as follows:
-```
+```bicep
 module gallery 'br/public:avm/res/compute/gallery:<version>' = {
   params: { (...) }
 }

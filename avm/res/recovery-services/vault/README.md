@@ -3,7 +3,7 @@
 This module deploys a Recovery Services Vault.
 
 You can reference the module as follows:
-```
+```bicep
 module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
   params: { (...) }
 }

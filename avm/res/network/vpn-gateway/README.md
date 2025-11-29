@@ -3,7 +3,7 @@
 This module deploys a VPN Gateway.
 
 You can reference the module as follows:
-```
+```bicep
 module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
   params: { (...) }
 }

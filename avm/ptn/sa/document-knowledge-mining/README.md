@@ -9,7 +9,7 @@ This module contains the resources required to deploy the [Document Knowledge Mi
 
 
 You can reference the module as follows:
-```
+```bicep
 module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<version>' = {
   params: { (...) }
 }

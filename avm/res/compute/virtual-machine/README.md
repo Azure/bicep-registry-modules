@@ -3,7 +3,7 @@
 This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.
 
 You can reference the module as follows:
-```
+```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: { (...) }
 }

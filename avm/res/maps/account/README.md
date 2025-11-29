@@ -3,7 +3,7 @@
 This module deploys an Azure Maps Account.
 
 You can reference the module as follows:
-```
+```bicep
 module account 'br/public:avm/res/maps/account:<version>' = {
   params: { (...) }
 }

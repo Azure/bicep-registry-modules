@@ -1,14 +1,14 @@
 # Hub Networking `[Network/HubNetworking]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
+>
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
 This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.
 
 You can reference the module as follows:
-```
+```bicep
 module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
   params: { (...) }
 }

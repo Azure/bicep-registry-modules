@@ -3,7 +3,7 @@
 This module deploys an API Management Service Product Group.
 
 You can reference the module as follows:
-```
+```bicep
 module service 'br/public:avm/res/api-management/service/product/group:<version>' = {
   params: { (...) }
 }

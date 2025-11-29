@@ -3,7 +3,7 @@
 This module deploys a Search Service.
 
 You can reference the module as follows:
-```
+```bicep
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
   params: { (...) }
 }

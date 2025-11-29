@@ -3,7 +3,7 @@
 This module deploys a Private Endpoint.
 
 You can reference the module as follows:
-```
+```bicep
 module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = {
   params: { (...) }
 }

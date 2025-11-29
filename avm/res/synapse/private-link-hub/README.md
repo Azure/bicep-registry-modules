@@ -3,7 +3,7 @@
 This module deploys an Azure Synapse Analytics (Private Link Hub).
 
 You can reference the module as follows:
-```
+```bicep
 module privateLinkHub 'br/public:avm/res/synapse/private-link-hub:<version>' = {
   params: { (...) }
 }

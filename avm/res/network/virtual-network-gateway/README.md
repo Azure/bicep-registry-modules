@@ -3,7 +3,7 @@
 This module deploys a Virtual Network Gateway.
 
 You can reference the module as follows:
-```
+```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
   params: { (...) }
 }

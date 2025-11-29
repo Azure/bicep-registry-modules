@@ -3,7 +3,7 @@
 This module deploys a SQL Role Definision in a CosmosDB Account.
 
 You can reference the module as follows:
-```
+```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account/sql-role-definition:<version>' = {
   params: { (...) }
 }

@@ -3,7 +3,7 @@
 This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope.
 
 You can reference the module as follows:
-```
+```bicep
 module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<version>' = {
   params: { (...) }
 }

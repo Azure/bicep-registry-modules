@@ -3,7 +3,7 @@
 This module deploys a Virtual Network Gateway Connection.
 
 You can reference the module as follows:
-```
+```bicep
 module connection 'br/public:avm/res/network/connection:<version>' = {
   params: { (...) }
 }

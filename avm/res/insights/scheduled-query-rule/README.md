@@ -1,14 +1,14 @@
 # Scheduled Query Rules `[Microsoft.Insights/scheduledQueryRules]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
+>
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
 This module deploys a Scheduled Query Rule.
 
 You can reference the module as follows:
-```
+```bicep
 module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<version>' = {
   params: { (...) }
 }

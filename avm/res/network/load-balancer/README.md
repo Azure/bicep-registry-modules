@@ -3,7 +3,7 @@
 This module deploys a Load Balancer.
 
 You can reference the module as follows:
-```
+```bicep
 module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
   params: { (...) }
 }
