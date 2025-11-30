@@ -20,6 +20,10 @@ param serviceShort string = 'cicgmax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Required. The object id of the \'Standby Pool Resource Provider\' Enterprise Application. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-StandbyPoolResourceProviderEnterpriseApplicationObjectId\'.')
+@secure()
+param standbyPoolResourceProviderEnterpriseApplicationObjectId string = ''
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -36,7 +40,11 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    containerGroupProfileName: 'dep-${namePrefix}-cg-${serviceShort}'
+    standbyPoolContainerGroupProfileName: 'dep-${namePrefix}-cgp-${serviceShort}'
+    standbyContainerGroupPoolName: 'dep-${namePrefix}-scgp-${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    standbyPoolResourceProviderEnterpriseApplicationObjectId: standbyPoolResourceProviderEnterpriseApplicationObjectId
   }
 }
 
@@ -92,6 +100,11 @@ module testDeployment '../../../main.bicep' = [
               initialDelaySeconds: 10
               periodSeconds: 5
               failureThreshold: 3
+            }
+            configMap: {
+              keyValuePairs: {
+                aKey: 'aValue'
+              }
             }
             environmentVariables: [
               {
@@ -170,6 +183,32 @@ module testDeployment '../../../main.bicep' = [
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
+      }
+      extensions: [
+        {
+          name: 'vk-realtime-metrics'
+          properties: {
+            extensionType: 'realtime-metrics'
+            version: '1.0'
+          }
+        }
+      ]
+      containerGroupProfile: {
+        resourceId: nestedDependencies.outputs.containerGroupProfileResourceId
+        revision: 1
+      }
+      identityAcls: {
+        acls: [
+          {
+            access: 'All'
+            identity: nestedDependencies.outputs.managedIdentityResourceId
+          }
+        ]
+        defaultAccess: 'User'
+      }
+      standbyPoolProfile: {
+        failContainerGroupCreateOnReuseFailure: false
+        resourceId: nestedDependencies.outputs.standbyContainerGroupPoolResourceId
       }
     }
   }

@@ -7,18 +7,157 @@ param location string = resourceGroup().location
 @description('Required. The name of the log analytics workspace to create.')
 param logAnalyticsWorkspaceName string
 
+@description('Required. The name of the container group profile to create.')
+param containerGroupProfileName string
+
+@description('Required. The name of the container group profile to create for the Standby Pool.')
+param standbyPoolContainerGroupProfileName string
+
+@description('Required. The name of the standby container group pool to create.')
+param standbyContainerGroupPoolName string
+
+@description('Required. The object id of the \'Standby Pool Resource Provider\' Enterprise Application.')
+@secure()
+param standbyPoolResourceProviderEnterpriseApplicationObjectId string
+
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-07-01' = {
   name: logAnalyticsWorkspaceName
   location: location
 }
 
+resource profile 'Microsoft.ContainerInstance/containerGroupProfiles@2025-09-01' = {
+  name: containerGroupProfileName
+  location: location
+  properties: {
+    containers: [
+      {
+        name: 'a-container'
+        properties: {
+          command: []
+          environmentVariables: []
+          image: 'mcr.microsoft.com/azuredocs/aci-helloworld:latest'
+          ports: [
+            {
+              port: 8000
+            }
+          ]
+          resources: {
+            requests: {
+              cpu: 1
+              memoryInGB: json('1.5')
+            }
+          }
+          securityContext: {
+            privileged: false
+          }
+        }
+      }
+    ]
+    imageRegistryCredentials: []
+    ipAddress: {
+      ports: [
+        {
+          port: 8000
+          protocol: 'TCP'
+        }
+      ]
+      type: 'Public'
+    }
+    osType: 'Linux'
+    sku: 'Standard'
+  }
+}
+
+resource standbyPoolProfile 'Microsoft.ContainerInstance/containerGroupProfiles@2025-09-01' = {
+  name: standbyPoolContainerGroupProfileName
+  location: location
+  properties: {
+    containers: [
+      {
+        name: 'a-container'
+        properties: {
+          command: []
+          environmentVariables: []
+          image: 'mcr.microsoft.com/azuredocs/aci-helloworld:latest'
+          ports: [
+            {
+              port: 8000
+            }
+          ]
+          resources: {
+            requests: {
+              cpu: 1
+              memoryInGB: json('1.5')
+            }
+          }
+          securityContext: {
+            privileged: false
+          }
+        }
+      }
+    ]
+    imageRegistryCredentials: []
+    ipAddress: {
+      ports: [
+        {
+          port: 8000
+          protocol: 'TCP'
+        }
+      ]
+      type: 'Public'
+    }
+    osType: 'Linux'
+    sku: 'Standard'
+  }
+}
+
+// Ref: https://learn.microsoft.com/en-us/azure/container-instances/container-instances-standby-pool-create?tabs=rest#prerequisites
+resource standbyPoolProfilePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${standbyPoolProfile.id}-${location}-Standby-Pool-Resource-Provider-Standby-Container-Group-Pool-Contributor-RoleAssignment')
+  scope: standbyPoolProfile
+  properties: {
+    principalId: standbyPoolResourceProviderEnterpriseApplicationObjectId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '39fcb0de-8844-4706-b050-c28ddbe3ff83'
+    ) // Standby Container Group Pool Contributor
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource standbyContainerGroupPool 'Microsoft.StandbyPool/standbyContainerGroupPools@2025-03-01' = {
+  name: standbyContainerGroupPoolName
+  location: location
+  properties: {
+    containerGroupProperties: {
+      containerGroupProfile: {
+        id: standbyPoolProfile.id
+        revision: 1
+      }
+    }
+    elasticityProfile: {
+      maxReadyCapacity: 3
+      refillPolicy: 'always'
+    }
+  }
+  dependsOn: [
+    standbyPoolProfilePermissions
+  ]
+}
+
 @description('The resource ID of the created Log Analytics Workspace.')
 output logAnalyticsWorkspaceResourceId string = logAnalyticsWorkspace.id
+
+@description('The resource ID of the created Container Group Profile.')
+output containerGroupProfileResourceId string = profile.id
+
+@description('The resource ID of the created Standby Container Group Pool.')
+output standbyContainerGroupPoolResourceId string = standbyContainerGroupPool.id
 
 @description('The resource ID of the created managed identity.')
 output managedIdentityResourceId string = managedIdentity.id
