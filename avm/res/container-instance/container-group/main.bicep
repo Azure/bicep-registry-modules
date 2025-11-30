@@ -240,17 +240,17 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01'
           type: ipAddress.?type ?? 'Public'
         }
       : null
-    sku: sku
-    subnetIds: [
-      for subnet in subnets ?? []: {
-        id: subnet.subnetResourceId
-        name: subnet.?name
-      }
-    ]
-    volumes: volumes
+    // sku: sku
+    // subnetIds: [
+    //   for subnet in subnets ?? []: {
+    //     id: subnet.subnetResourceId
+    //     name: subnet.?name
+    //   }
+    // ]
+    // volumes: volumes
     dnsConfig: dnsConfig
-    priority: priority
-    confidentialComputeProperties: confidentialComputeProperties
+    // priority: priority
+    // confidentialComputeProperties: confidentialComputeProperties
     containerGroupProfile: !empty(containerGroupProfile)
       ? {
           id: containerGroupProfile!.resourceId
