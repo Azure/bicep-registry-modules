@@ -228,6 +228,8 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01'
     // imageRegistryCredentials: imageRegistryCredentials
     // initContainers: initContainers
     // restartPolicy: restartPolicy
+    // sku: sku
+    // volumes: volumes
     osType: empty(containerGroupProfile) ? osType : null
     priority: empty(containerGroupProfile) ? priority : null
     ipAddress: !empty(ipAddress)
@@ -241,14 +243,12 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01'
           type: ipAddress.?type ?? 'Public'
         }
       : null
-    // sku: sku
     subnetIds: [
       for subnet in subnets ?? []: {
         id: subnet.subnetResourceId
         name: subnet.?name
       }
     ]
-    // volumes: volumes
     dnsConfig: dnsConfig
     confidentialComputeProperties: confidentialComputeProperties
     containerGroupProfile: !empty(containerGroupProfile)
