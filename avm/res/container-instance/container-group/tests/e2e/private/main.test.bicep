@@ -98,6 +98,15 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      extensions: [
+        {
+          name: 'vk-realtime-metrics'
+          properties: {
+            extensionType: 'realtime-metrics' // The extension type 'realtime-metrics' are only supported for container group with virtual network.
+            version: '1.0'
+          }
+        }
+      ]
       ipAddress: {
         type: 'Private'
         ports: [

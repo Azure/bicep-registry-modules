@@ -725,15 +725,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
     ]
     name: '<name>'
     // Non-required parameters
-    extensions: [
-      {
-        name: 'vk-realtime-metrics'
-        properties: {
-          extensionType: 'realtime-metrics'
-          version: '1.0'
-        }
-      }
-    ]
     identityAcls: {
       acls: [
         {
@@ -880,17 +871,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       "value": "<name>"
     },
     // Non-required parameters
-    "extensions": {
-      "value": [
-        {
-          "name": "vk-realtime-metrics",
-          "properties": {
-            "extensionType": "realtime-metrics",
-            "version": "1.0"
-          }
-        }
-      ]
-    },
     "identityAcls": {
       "value": {
         "acls": [
@@ -1043,15 +1023,6 @@ param containers = [
 ]
 param name = '<name>'
 // Non-required parameters
-param extensions = [
-  {
-    name: 'vk-realtime-metrics'
-    properties: {
-      extensionType: 'realtime-metrics'
-      version: '1.0'
-    }
-  }
-]
 param identityAcls = {
   acls: [
     {
@@ -1162,6 +1133,15 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
     ]
     name: 'cicgprivate001'
     // Non-required parameters
+    extensions: [
+      {
+        name: 'vk-realtime-metrics'
+        properties: {
+          extensionType: 'realtime-metrics'
+          version: '1.0'
+        }
+      }
+    ]
     ipAddress: {
       ports: [
         {
@@ -1256,6 +1236,17 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       "value": "cicgprivate001"
     },
     // Non-required parameters
+    "extensions": {
+      "value": [
+        {
+          "name": "vk-realtime-metrics",
+          "properties": {
+            "extensionType": "realtime-metrics",
+            "version": "1.0"
+          }
+        }
+      ]
+    },
     "ipAddress": {
       "value": {
         "ports": [
@@ -1346,6 +1337,15 @@ param containers = [
 ]
 param name = 'cicgprivate001'
 // Non-required parameters
+param extensions = [
+  {
+    name: 'vk-realtime-metrics'
+    properties: {
+      extensionType: 'realtime-metrics'
+      version: '1.0'
+    }
+  }
+]
 param ipAddress = {
   ports: [
     {

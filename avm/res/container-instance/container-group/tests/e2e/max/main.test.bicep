@@ -176,15 +176,6 @@ module testDeployment '../../../main.bicep' = [
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
-      extensions: [
-        {
-          name: 'vk-realtime-metrics'
-          properties: {
-            extensionType: 'realtime-metrics'
-            version: '1.0'
-          }
-        }
-      ]
       identityAcls: {
         acls: [
           {
