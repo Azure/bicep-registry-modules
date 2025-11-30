@@ -252,7 +252,7 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01'
     containerGroupProfile: !empty(containerGroupProfile)
       ? {
           id: containerGroupProfile!.resourceId
-          revision: containerGroupProfile!.?revision
+          revision: containerGroupProfile!.revision
         }
       : null
     extensions: extensions
@@ -547,8 +547,8 @@ type containerGroupProfileType = {
   @description('Required. The container group profile reference resourceid.')
   resourceId: string
 
-  @description('Optional. The container group profile reference revision.')
-  revision: int?
+  @description('Required. The container group profile reference revision.')
+  revision: int
 }
 
 @export()
