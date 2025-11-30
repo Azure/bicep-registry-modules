@@ -168,40 +168,40 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01'
     // if the memoryInGB would accept fractional numbers for int...
     // so the only option is the json() function for memoryInGB,
     // and it means to copy everything else prop by prop
-    containers: [
-      for (container, index) in containers: {
-        name: container.name
-        properties: {
-          configMap: container.properties.?configMap
-          command: container.properties.?command
-          environmentVariables: container.properties.?environmentVariables
-          image: container.properties.?image
-          livenessProbe: container.properties.?livenessProbe
-          ports: container.properties.?ports
-          readinessProbe: container.properties.?readinessProbe
-          resources: !empty(container.properties.?resources)
-            ? {
-                requests: {
-                  cpu: container.properties.resources!.requests.cpu
-                  gpu: container.properties.resources!.requests.?gpu
-                  memoryInGB: json(container.properties.resources!.requests.?memoryInGB)
-                }
-                limits: !empty(container.properties.resources!.?limits)
-                  ? {
-                      cpu: container.properties.resources!.?limits.?cpu
-                      gpu: container.properties.resources!.?limits.?gpu
-                      memoryInGB: !empty(container.properties.resources!.?limits.?memoryInGB)
-                        ? json(container.properties.resources!.?limits.?memoryInGB!)
-                        : null
-                    }
-                  : null
-              }
-            : null
-          securityContext: container.properties.?securityContext
-          volumeMounts: container.properties.?volumeMounts
-        }
-      }
-    ]
+    // containers: [
+    //   for (container, index) in containers: {
+    //     name: container.name
+    //     properties: {
+    //       configMap: container.properties.?configMap
+    //       command: container.properties.?command
+    //       environmentVariables: container.properties.?environmentVariables
+    //       image: container.properties.?image
+    //       livenessProbe: container.properties.?livenessProbe
+    //       ports: container.properties.?ports
+    //       readinessProbe: container.properties.?readinessProbe
+    //       resources: !empty(container.properties.?resources)
+    //         ? {
+    //             requests: {
+    //               cpu: container.properties.resources!.requests.cpu
+    //               gpu: container.properties.resources!.requests.?gpu
+    //               memoryInGB: json(container.properties.resources!.requests.?memoryInGB)
+    //             }
+    //             limits: !empty(container.properties.resources!.?limits)
+    //               ? {
+    //                   cpu: container.properties.resources!.?limits.?cpu
+    //                   gpu: container.properties.resources!.?limits.?gpu
+    //                   memoryInGB: !empty(container.properties.resources!.?limits.?memoryInGB)
+    //                     ? json(container.properties.resources!.?limits.?memoryInGB!)
+    //                     : null
+    //                 }
+    //               : null
+    //           }
+    //         : null
+    //       securityContext: container.properties.?securityContext
+    //       volumeMounts: container.properties.?volumeMounts
+    //     }
+    //   }
+    // ]
     diagnostics: !empty(logAnalytics)
       ? {
           logAnalytics: {
