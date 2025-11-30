@@ -225,7 +225,7 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01'
             : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
         }
       : null
-    imageRegistryCredentials: imageRegistryCredentials
+    // imageRegistryCredentials: imageRegistryCredentials
     // initContainers: initContainers
     restartPolicy: restartPolicy
     volumes: volumes
