@@ -225,10 +225,10 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01'
             : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
         }
       : null
+    // imageRegistryCredentials: imageRegistryCredentials
     // initContainers: initContainers
+    // restartPolicy: restartPolicy
     // sku: sku
-    imageRegistryCredentials: imageRegistryCredentials
-    restartPolicy: restartPolicy
     volumes: volumes
     osType: empty(containerGroupProfile) ? osType : null
     priority: empty(containerGroupProfile) ? priority : null
