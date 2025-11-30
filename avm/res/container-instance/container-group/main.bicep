@@ -179,22 +179,24 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01'
           livenessProbe: container.properties.?livenessProbe
           ports: container.properties.?ports
           readinessProbe: container.properties.?readinessProbe
-          resources: {
-            requests: {
-              cpu: container.properties.resources.requests.cpu
-              gpu: container.properties.resources.requests.?gpu
-              memoryInGB: json(container.properties.resources.requests.?memoryInGB)
-            }
-            limits: !empty(container.properties.resources.?limits)
-              ? {
-                  cpu: container.properties.resources.?limits.?cpu
-                  gpu: container.properties.resources.?limits.?gpu
-                  memoryInGB: !empty(container.properties.resources.?limits.?memoryInGB)
-                    ? json(container.properties.resources.?limits.?memoryInGB!)
-                    : null
+          resources: !empty(container.properties.?resources)
+            ? {
+                requests: {
+                  cpu: container.properties.resources!.requests.cpu
+                  gpu: container.properties.resources!.requests.?gpu
+                  memoryInGB: json(container.properties.resources!.requests.?memoryInGB)
                 }
-              : null
-          }
+                limits: !empty(container.properties.resources!.?limits)
+                  ? {
+                      cpu: container.properties.resources!.?limits.?cpu
+                      gpu: container.properties.resources!.?limits.?gpu
+                      memoryInGB: !empty(container.properties.resources!.?limits.?memoryInGB)
+                        ? json(container.properties.resources!.?limits.?memoryInGB!)
+                        : null
+                    }
+                  : null
+              }
+            : null
           securityContext: container.properties.?securityContext
           volumeMounts: container.properties.?volumeMounts
         }
