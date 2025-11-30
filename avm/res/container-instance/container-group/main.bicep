@@ -202,32 +202,32 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01'
         }
       }
     ]
-    // diagnostics: !empty(logAnalytics)
-    //   ? {
-    //       logAnalytics: {
-    //         logType: logAnalytics!.logType
-    //         workspaceId: law!.properties.customerId
-    //         workspaceKey: law!.listKeys().primarySharedKey
-    //         #disable-next-line use-secure-value-for-secure-inputs use-resource-id-functions // Not a secret
-    //         workspaceResourceId: logAnalytics!.?workspaceResourceId
-    //         metadata: logAnalytics!.?metadata
-    //       }
-    //     }
-    //   : null
-    // encryptionProperties: !empty(customerManagedKey)
-    //   ? {
-    //       identity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? cMKUserAssignedIdentity.id : null
-    //       vaultBaseUrl: cMKKeyVault!.properties.vaultUri
-    //       keyName: customerManagedKey!.keyName
-    //       // FYI: Key Rotation is not (yet) supported by the RP
-    //       keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-    //         ? customerManagedKey!.keyVersion!
-    //         : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
-    //     }
-    //   : null
+    diagnostics: !empty(logAnalytics)
+      ? {
+          logAnalytics: {
+            logType: logAnalytics!.logType
+            workspaceId: law!.properties.customerId
+            workspaceKey: law!.listKeys().primarySharedKey
+            #disable-next-line use-secure-value-for-secure-inputs use-resource-id-functions // Not a secret
+            workspaceResourceId: logAnalytics!.?workspaceResourceId
+            metadata: logAnalytics!.?metadata
+          }
+        }
+      : null
+    encryptionProperties: !empty(customerManagedKey)
+      ? {
+          identity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? cMKUserAssignedIdentity.id : null
+          vaultBaseUrl: cMKKeyVault!.properties.vaultUri
+          keyName: customerManagedKey!.keyName
+          // FYI: Key Rotation is not (yet) supported by the RP
+          keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
+            ? customerManagedKey!.keyVersion!
+            : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
+        }
+      : null
     // imageRegistryCredentials: imageRegistryCredentials
     // initContainers: initContainers
-    restartPolicy: restartPolicy
+    // restartPolicy: restartPolicy
     osType: empty(containerGroupProfile) ? osType : null
     ipAddress: !empty(ipAddress)
       ? {
@@ -241,13 +241,13 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01'
         }
       : null
     // sku: sku
-    subnetIds: [
-      for subnet in subnets ?? []: {
-        id: subnet.subnetResourceId
-        name: subnet.?name
-      }
-    ]
-    volumes: volumes
+    // subnetIds: [
+    //   for subnet in subnets ?? []: {
+    //     id: subnet.subnetResourceId
+    //     name: subnet.?name
+    //   }
+    // ]
+    // volumes: volumes
     dnsConfig: dnsConfig
     // priority: priority
     confidentialComputeProperties: confidentialComputeProperties
