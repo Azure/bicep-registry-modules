@@ -33,7 +33,7 @@ resource profile 'Microsoft.ContainerInstance/containerGroupProfiles@2025-09-01'
         properties: {
           command: []
           environmentVariables: []
-          image: 'confiimage'
+          image: 'mcr.microsoft.com/azuredocs/aci-helloworld:latest'
           ports: [
             {
               port: 8000
@@ -51,7 +51,18 @@ resource profile 'Microsoft.ContainerInstance/containerGroupProfiles@2025-09-01'
         }
       }
     ]
+    imageRegistryCredentials: []
+    ipAddress: {
+      ports: [
+        {
+          port: 8000
+          protocol: 'TCP'
+        }
+      ]
+      type: 'Public'
+    }
     osType: 'Linux'
+    sku: 'Standard'
   }
 }
 
@@ -62,10 +73,12 @@ resource standbyContainerGroupPool 'Microsoft.StandbyPool/standbyContainerGroupP
     containerGroupProperties: {
       containerGroupProfile: {
         id: profile.id
+        revision: 1
       }
     }
     elasticityProfile: {
       maxReadyCapacity: 3
+      refillPolicy: 'always'
     }
   }
 }
