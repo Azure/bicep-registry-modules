@@ -52,7 +52,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags keyValuePairType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
