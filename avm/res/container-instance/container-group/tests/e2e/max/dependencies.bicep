@@ -29,7 +29,7 @@ resource profile 'Microsoft.ContainerInstance/containerGroupProfiles@2025-09-01'
   properties: {
     containers: [
       {
-        name: 'accdemo'
+        name: 'Privileged'
         properties: {
           command: []
           environmentVariables: []
