@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "15644458401446756601"
+      "templateHash": "8358211481812289845"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet)."
@@ -286,6 +286,27 @@
         "__bicep_export!": true
       }
     },
+    "ipamPoolPrefixAllocationsType": {
+      "type": "object",
+      "properties": {
+        "ipamPoolResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the IPAM pool to allocate the address prefix from."
+          }
+        },
+        "cidr": {
+          "$ref": "#/definitions/cidrPrefixType",
+          "metadata": {
+            "description": "Required. The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses)."
+          }
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
     "ipamAddressPrefixesType": {
       "type": "object",
       "properties": {
@@ -301,21 +322,7 @@
         "ipamPoolPrefixAllocations": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "ipamPoolResourceId": {
-                "type": "string",
-                "metadata": {
-                  "description": "Required. The resource ID of the IPAM pool to allocate the address prefix from."
-                }
-              },
-              "cidr": {
-                "$ref": "#/definitions/cidrPrefixType",
-                "metadata": {
-                  "description": "Required. The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses)."
-                }
-              }
-            }
+            "$ref": "#/definitions/ipamPoolPrefixAllocationsType"
           },
           "metadata": {
             "description": "Required. Array of IPAM pool prefix allocations specifying which pools to allocate address space from."
@@ -846,7 +853,7 @@
       }
     },
     "tags": {
-      "type": "object",
+      "$ref": "#/definitions/keyValuePairType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Tags of the resource."
