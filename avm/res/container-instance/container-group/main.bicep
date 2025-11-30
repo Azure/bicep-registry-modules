@@ -226,7 +226,7 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01'
         }
       : null
     // imageRegistryCredentials: imageRegistryCredentials
-    // initContainers: initContainers
+    initContainers: initContainers
     restartPolicy: empty(containerGroupProfile) ? restartPolicy : null
     sku: empty(containerGroupProfile) ? sku : null
     osType: empty(containerGroupProfile) ? osType : null
