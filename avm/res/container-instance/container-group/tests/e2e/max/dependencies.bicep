@@ -91,6 +91,7 @@ resource standbyContainerGroupPool 'Microsoft.StandbyPool/standbyContainerGroupP
     containerGroupProperties: {
       containerGroupProfile: {
         id: profile.id
+        revision: 1
       }
     }
     elasticityProfile: {
