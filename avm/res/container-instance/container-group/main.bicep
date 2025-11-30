@@ -31,16 +31,16 @@ param location string = resourceGroup().location
 param logAnalytics logAnalyticsType?
 
 @description('Optional. The DNS config information for a container group.')
-param dnsConfig resourceInput<'Microsoft.ContainerInstance/containerGroups@2023-05-01'>.properties.dnsConfig?
+param dnsConfig resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.dnsConfig?
 
 @description('Optional. A list of container definitions which will be executed before the application container starts.')
-param initContainers resourceInput<'Microsoft.ContainerInstance/containerGroups@2023-05-01'>.properties.initContainers?
+param initContainers resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.initContainers?
 
 @description('Optional. The subnets to use by the container group.')
 param subnets containerGroupSubnetType[]?
 
 @description('Optional. Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to your containergroup.')
-param volumes resourceInput<'Microsoft.ContainerInstance/containerGroups@2023-05-01'>.properties.volumes?
+param volumes resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.volumes?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
@@ -51,7 +51,7 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.ContainerInstance/containerGroups@2023-05-01'>.tags?
+param tags resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -63,7 +63,7 @@ param enableTelemetry bool = true
 ])
 param sku string = 'Standard'
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
@@ -464,7 +464,7 @@ type logAnalyticsType = {
   workspaceResourceId: string
 
   @description('Optional. Metadata for log analytics.')
-  metadata: resourceInput<'Microsoft.ContainerInstance/containerGroups@2023-05-01'>.properties.diagnostics.logAnalytics.metadata?
+  metadata: resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.diagnostics.logAnalytics.metadata?
 }
 
 @export()
