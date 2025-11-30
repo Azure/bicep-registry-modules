@@ -36,6 +36,8 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    containerGroupProfileName: 'dep-${namePrefix}-cgp-${serviceShort}'
+    standbyContainerGroupPoolName: 'dep-${namePrefix}-scgp-${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
   }
 }
@@ -92,6 +94,11 @@ module testDeployment '../../../main.bicep' = [
               initialDelaySeconds: 10
               periodSeconds: 5
               failureThreshold: 3
+            }
+            configMap: {
+              keyValuePairs: {
+                aKey: 'aValue'
+              }
             }
             environmentVariables: [
               {
@@ -170,6 +177,31 @@ module testDeployment '../../../main.bicep' = [
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
+      }
+      extensions: [
+        {
+          name: 'vk-realtime-metrics'
+          properties: {
+            extensionType: 'realtime-metrics'
+            version: '1.0'
+          }
+        }
+      ]
+      containerGroupProfile: {
+        resourceId: nestedDependencies.outputs.containerGroupProfileResourceId
+      }
+      identityAcls: {
+        acls: [
+          {
+            access: 'All'
+            identity: nestedDependencies.outputs.managedIdentityResourceId
+          }
+        ]
+        defaultAccess: 'User'
+      }
+      standbyPoolProfile: {
+        failContainerGroupCreateOnReuseFailure: false
+        resourceId: nestedDependencies.outputs.standbyContainerGroupPoolResourceId
       }
     }
   }

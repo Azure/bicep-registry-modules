@@ -24,7 +24,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
-| `Microsoft.ContainerInstance/containerGroups` | 2023-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerinstance_containergroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerInstance/2023-05-01/containerGroups)</li></ul> |
+| `Microsoft.ContainerInstance/containerGroups` | 2025-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerinstance_containergroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerInstance/2025-09-01/containerGroups)</li></ul> |
 
 ## Usage examples
 
@@ -652,6 +652,11 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             '/bin/sh'
             'node /usr/src/app/index.js & (sleep 10; touch /tmp/ready); wait'
           ]
+          configMap: {
+            keyValuePairs: {
+              aKey: 'aValue'
+            }
+          }
           environmentVariables: [
             {
               name: 'CLIENT_ID'
@@ -719,6 +724,27 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
     ]
     name: '<name>'
     // Non-required parameters
+    containerGroupProfile: {
+      resourceId: '<resourceId>'
+    }
+    extensions: [
+      {
+        name: 'vk-realtime-metrics'
+        properties: {
+          extensionType: 'realtime-metrics'
+          version: '1.0'
+        }
+      }
+    ]
+    identityAcls: {
+      acls: [
+        {
+          access: 'All'
+          identity: '<identity>'
+        }
+      ]
+      defaultAccess: 'User'
+    }
     ipAddress: {
       ports: [
         {
@@ -745,6 +771,10 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
+    }
+    standbyPoolProfile: {
+      failContainerGroupCreateOnReuseFailure: false
+      resourceId: '<resourceId>'
     }
     tags: {
       Environment: 'Non-Prod'
@@ -781,6 +811,11 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
               "/bin/sh",
               "node /usr/src/app/index.js & (sleep 10; touch /tmp/ready); wait"
             ],
+            "configMap": {
+              "keyValuePairs": {
+                "aKey": "aValue"
+              }
+            },
             "environmentVariables": [
               {
                 "name": "CLIENT_ID",
@@ -851,6 +886,33 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       "value": "<name>"
     },
     // Non-required parameters
+    "containerGroupProfile": {
+      "value": {
+        "resourceId": "<resourceId>"
+      }
+    },
+    "extensions": {
+      "value": [
+        {
+          "name": "vk-realtime-metrics",
+          "properties": {
+            "extensionType": "realtime-metrics",
+            "version": "1.0"
+          }
+        }
+      ]
+    },
+    "identityAcls": {
+      "value": {
+        "acls": [
+          {
+            "access": "All",
+            "identity": "<identity>"
+          }
+        ],
+        "defaultAccess": "User"
+      }
+    },
     "ipAddress": {
       "value": {
         "ports": [
@@ -888,6 +950,12 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         ]
       }
     },
+    "standbyPoolProfile": {
+      "value": {
+        "failContainerGroupCreateOnReuseFailure": false,
+        "resourceId": "<resourceId>"
+      }
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -920,6 +988,11 @@ param containers = [
         '/bin/sh'
         'node /usr/src/app/index.js & (sleep 10; touch /tmp/ready); wait'
       ]
+      configMap: {
+        keyValuePairs: {
+          aKey: 'aValue'
+        }
+      }
       environmentVariables: [
         {
           name: 'CLIENT_ID'
@@ -987,6 +1060,27 @@ param containers = [
 ]
 param name = '<name>'
 // Non-required parameters
+param containerGroupProfile = {
+  resourceId: '<resourceId>'
+}
+param extensions = [
+  {
+    name: 'vk-realtime-metrics'
+    properties: {
+      extensionType: 'realtime-metrics'
+      version: '1.0'
+    }
+  }
+]
+param identityAcls = {
+  acls: [
+    {
+      access: 'All'
+      identity: '<identity>'
+    }
+  ]
+  defaultAccess: 'User'
+}
 param ipAddress = {
   ports: [
     {
@@ -1013,6 +1107,10 @@ param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
+}
+param standbyPoolProfile = {
+  failContainerGroupCreateOnReuseFailure: false
+  resourceId: '<resourceId>'
 }
 param tags = {
   Environment: 'Non-Prod'
@@ -1573,9 +1671,13 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`confidentialComputeProperties`](#parameter-confidentialcomputeproperties) | object | The properties for confidential container group. |
+| [`containerGroupProfile`](#parameter-containergroupprofile) | object | The reference container group profile properties. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`dnsConfig`](#parameter-dnsconfig) | object | The DNS config information for a container group. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`extensions`](#parameter-extensions) | array | The extensions used by virtual kubelet. |
+| [`identityAcls`](#parameter-identityacls) | object | The access control levels of the identities. |
 | [`imageRegistryCredentials`](#parameter-imageregistrycredentials) | array | The image registry credentials by which the container group is created from. |
 | [`initContainers`](#parameter-initcontainers) | array | A list of container definitions which will be executed before the application container starts. |
 | [`ipAddress`](#parameter-ipaddress) | object | The IP address type of the container group. |
@@ -1587,6 +1689,7 @@ param tags = {
 | [`priority`](#parameter-priority) | string | The priority of the container group. |
 | [`restartPolicy`](#parameter-restartpolicy) | string | Restart policy for all containers within the container group. - Always: Always restart. OnFailure: Restart on failure. Never: Never restart. - Always, OnFailure, Never. |
 | [`sku`](#parameter-sku) | string | The container group SKU. |
+| [`standbyPoolProfile`](#parameter-standbypoolprofile) | object | The reference standby pool profile properties. |
 | [`subnets`](#parameter-subnets) | array | The subnets to use by the container group. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`volumes`](#parameter-volumes) | array | Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to your containergroup. |
@@ -1647,6 +1750,7 @@ The properties of the container instance.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`command`](#parameter-containerspropertiescommand) | array | The command to execute within the container instance. |
+| [`configMap`](#parameter-containerspropertiesconfigmap) | object | The config map. |
 | [`environmentVariables`](#parameter-containerspropertiesenvironmentvariables) | array | The environment variables to set in the container instance. |
 | [`livenessProbe`](#parameter-containerspropertieslivenessprobe) | object | The liveness probe. |
 | [`ports`](#parameter-containerspropertiesports) | array | The exposed ports on the container instance. |
@@ -1826,6 +1930,13 @@ The command to execute within the container instance.
 
 - Required: No
 - Type: array
+
+### Parameter: `containers.properties.configMap`
+
+The config map.
+
+- Required: No
+- Type: object
 
 ### Parameter: `containers.properties.environmentVariables`
 
@@ -2025,27 +2136,6 @@ The exposed ports on the container instance.
 
 - Required: No
 - Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`port`](#parameter-containerspropertiesportsport) | int | The port number exposed on the container instance. |
-| [`protocol`](#parameter-containerspropertiesportsprotocol) | string | The protocol associated with the port number. |
-
-### Parameter: `containers.properties.ports.port`
-
-The port number exposed on the container instance.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `containers.properties.ports.protocol`
-
-The protocol associated with the port number.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `containers.properties.readinessProbe`
 
@@ -2327,6 +2417,46 @@ Name for the container group.
 - Required: Yes
 - Type: string
 
+### Parameter: `confidentialComputeProperties`
+
+The properties for confidential container group.
+
+- Required: No
+- Type: object
+
+### Parameter: `containerGroupProfile`
+
+The reference container group profile properties.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourceId`](#parameter-containergroupprofileresourceid) | string | The container group profile reference resourceid. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`revision`](#parameter-containergroupprofilerevision) | int | The container group profile reference revision. |
+
+### Parameter: `containerGroupProfile.resourceId`
+
+The container group profile reference resourceid.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containerGroupProfile.revision`
+
+The container group profile reference revision.
+
+- Required: No
+- Type: int
+
 ### Parameter: `customerManagedKey`
 
 The customer managed key definition.
@@ -2398,6 +2528,20 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `extensions`
+
+The extensions used by virtual kubelet.
+
+- Required: No
+- Type: array
+
+### Parameter: `identityAcls`
+
+The access control levels of the identities.
+
+- Required: No
+- Type: object
 
 ### Parameter: `imageRegistryCredentials`
 
@@ -2739,6 +2883,39 @@ The container group SKU.
     'Standard'
   ]
   ```
+
+### Parameter: `standbyPoolProfile`
+
+The reference standby pool profile properties.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourceId`](#parameter-standbypoolprofileresourceid) | string | The standby pool profile reference resource id. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`failContainerGroupCreateOnReuseFailure`](#parameter-standbypoolprofilefailcontainergroupcreateonreusefailure) | bool | The flag to determine whether ACI should fail the create request if the container group can not be obtained from standby pool. |
+
+### Parameter: `standbyPoolProfile.resourceId`
+
+The standby pool profile reference resource id.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `standbyPoolProfile.failContainerGroupCreateOnReuseFailure`
+
+The flag to determine whether ACI should fail the create request if the container group can not be obtained from standby pool.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `subnets`
 

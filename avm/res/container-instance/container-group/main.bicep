@@ -79,6 +79,21 @@ param availabilityZone int
 @description('Optional. The priority of the container group.')
 param priority 'Regular' | 'Spot' = 'Regular'
 
+@description('Optional. The properties for confidential container group.')
+param confidentialComputeProperties resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.confidentialComputeProperties?
+
+@description('Optional. The reference container group profile properties.')
+param containerGroupProfile containerGroupProfileType?
+
+@description('Optional. The extensions used by virtual kubelet.')
+param extensions resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.extensions?
+
+@description('Optional. The access control levels of the identities.')
+param identityAcls resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.identityAcls?
+
+@description('Optional. The reference standby pool profile properties.')
+param standbyPoolProfile standbyPoolProfileType?
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -142,7 +157,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01' = {
+resource containergroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01' = {
   name: name
   location: location
   identity: identity
@@ -157,6 +172,7 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
       for (container, index) in containers: {
         name: container.name
         properties: {
+          configMap: container.properties.?configMap
           command: container.properties.?command
           environmentVariables: container.properties.?environmentVariables
           image: container.properties.?image
@@ -232,10 +248,21 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
     volumes: volumes
     dnsConfig: dnsConfig
     priority: priority
-
-    // TODO Add support for the following properties:
-    // confidentialComputeProperties:
-    // extensions:
+    confidentialComputeProperties: confidentialComputeProperties
+    containerGroupProfile: !empty(containerGroupProfile)
+      ? {
+          id: containerGroupProfile!.resourceId
+          revision: containerGroupProfile!.?revision
+        }
+      : null
+    extensions: extensions
+    identityAcls: identityAcls
+    standbyPoolProfile: !empty(standbyPoolProfile)
+      ? {
+          failContainerGroupCreateOnReuseFailure: standbyPoolProfile!.?failContainerGroupCreateOnReuseFailure
+          id: standbyPoolProfile!.resourceId
+        }
+      : null
   }
 }
 
@@ -260,7 +287,7 @@ output resourceId string = containergroup.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The IPv4 address of the container group.')
-output iPv4Address string = containergroup.properties.ipAddress.ip
+output iPv4Address string? = containergroup.properties.?ipAddress.?ip
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = containergroup.?identity.?principalId
@@ -326,6 +353,9 @@ type containerType = {
 
   @description('Required. The properties of the container instance.')
   properties: {
+    @description('Optional. The config map.')
+    configMap: resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.containers[*].properties.configMap?
+
     @description('Required. The name of the container source image.')
     image: string
 
@@ -336,13 +366,7 @@ type containerType = {
     readinessProbe: containerProbeType?
 
     @description('Optional. The exposed ports on the container instance.')
-    ports: {
-      @description('Required. The port number exposed on the container instance.')
-      port: int
-
-      @description('Required. The protocol associated with the port number.')
-      protocol: string
-    }[]?
+    ports: resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.containers[*].properties.ports?
 
     @description('Required. The resource requirements of the container instance.')
     resources: {
@@ -515,4 +539,24 @@ type containerGpuType = {
 
   @description('Required. The SKU of the GPU resource.')
   sku: ('K80' | 'P100' | 'V100')
+}
+
+@export()
+@description('The type of a container group profile.')
+type containerGroupProfileType = {
+  @description('Required. The container group profile reference resourceid.')
+  resourceId: string
+
+  @description('Optional. The container group profile reference revision.')
+  revision: int?
+}
+
+@export()
+@description('The type of a container group profile.')
+type standbyPoolProfileType = {
+  @description('Required. The standby pool profile reference resource id.')
+  resourceId: string
+
+  @description('Optional. The flag to determine whether ACI should fail the create request if the container group can not be obtained from standby pool.')
+  failContainerGroupCreateOnReuseFailure: bool?
 }
