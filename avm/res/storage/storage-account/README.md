@@ -6195,6 +6195,7 @@ Whether or not public network access is allowed for this resource. For security 
   [
     'Disabled'
     'Enabled'
+    'SecuredByPerimeter'
   ]
   ```
 
