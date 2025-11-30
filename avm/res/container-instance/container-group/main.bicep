@@ -249,7 +249,7 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01'
     ]
     // volumes: volumes
     dnsConfig: dnsConfig
-    // priority: priority
+    priority: priority
     confidentialComputeProperties: confidentialComputeProperties
     containerGroupProfile: !empty(containerGroupProfile)
       ? {
