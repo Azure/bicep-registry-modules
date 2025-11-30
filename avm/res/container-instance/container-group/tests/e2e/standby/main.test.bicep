@@ -69,6 +69,8 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      priority: ''
+      restartPolicy: ''
       containerGroupProfile: {
         resourceId: nestedDependencies.outputs.containerGroupProfileResourceId
         revision: 1

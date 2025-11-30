@@ -18,6 +18,7 @@ param osType string = 'Linux'
   'Always'
   'OnFailure'
   'Never'
+  ''
 ])
 param restartPolicy string = 'Always'
 
@@ -77,7 +78,7 @@ param customerManagedKey customerManagedKeyWithAutoRotateType?
 param availabilityZone int
 
 @description('Optional. The priority of the container group.')
-param priority 'Regular' | 'Spot' = 'Regular'
+param priority 'Regular' | 'Spot' | '' = 'Regular'
 
 @description('Optional. The properties for confidential container group.')
 param confidentialComputeProperties resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.confidentialComputeProperties?
