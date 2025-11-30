@@ -16,7 +16,7 @@ This module deploys a Data Collection Rule.
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
-| `Microsoft.Insights/dataCollectionRules` | 2023-03-11 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_datacollectionrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionRules)</li></ul> |
+| `Microsoft.Insights/dataCollectionRules` | 2024-03-11 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_datacollectionrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2024-03-11/dataCollectionRules)</li></ul> |
 
 ## Usage examples
 
@@ -34,8 +34,10 @@ The following section provides usage examples for the module, which were used to
 - [Send data to Azure Monitor Logs with Logs ingestion API](#example-6-send-data-to-azure-monitor-logs-with-logs-ingestion-api)
 - [Collecting Linux-specific information](#example-7-collecting-linux-specific-information)
 - [Using large parameter set](#example-8-using-large-parameter-set)
-- [WAF-aligned](#example-9-waf-aligned)
-- [Collecting Windows-specific information](#example-10-collecting-windows-specific-information)
+- [Collecting metrics from Azure resources using Platform Telemetry DCR](#example-9-collecting-metrics-from-azure-resources-using-platform-telemetry-dcr)
+- [WAF-aligned](#example-10-waf-aligned)
+- [Collecting Windows-specific information](#example-11-collecting-windows-specific-information)
+- [Collecting custom text logs with ingestion-time transformation](#example-12-collecting-custom-text-logs-with-ingestion-time-transformation)
 
 ### Example 1: _Agent Settings_
 
@@ -2205,7 +2207,175 @@ param tags = {
 </details>
 <p>
 
-### Example 9: _WAF-aligned_
+### Example 9: _Collecting metrics from Azure resources using Platform Telemetry DCR_
+
+This instance collects metrics from Azure resources using Platform Telemetry and sends them to a Log Analytics workspace.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
+  name: 'dataCollectionRuleDeployment'
+  params: {
+    // Required parameters
+    dataCollectionRuleProperties: {
+      dataFlows: [
+        {
+          destinations: [
+            '<logAnalyticsWorkspaceName>'
+          ]
+          streams: [
+            'Microsoft.Compute/virtualMachines:Metrics-Percentage CPU'
+            'Microsoft.KeyVault/vaults:Metrics-Group-All'
+          ]
+        }
+      ]
+      dataSources: {
+        platformTelemetry: [
+          {
+            name: 'myPlatformTelemetryDataSource'
+            streams: [
+              'Microsoft.Compute/virtualMachines:Metrics-Percentage CPU'
+              'Microsoft.KeyVault/vaults:Metrics-Group-All'
+            ]
+          }
+        ]
+      }
+      description: 'Data Collection Rule to collect monitoring data from your Azure resources'
+      destinations: {
+        logAnalytics: [
+          {
+            name: '<name>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+      }
+      kind: 'PlatformTelemetry'
+    }
+    name: 'idcrpltele001'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "dataCollectionRuleProperties": {
+      "value": {
+        "dataFlows": [
+          {
+            "destinations": [
+              "<logAnalyticsWorkspaceName>"
+            ],
+            "streams": [
+              "Microsoft.Compute/virtualMachines:Metrics-Percentage CPU",
+              "Microsoft.KeyVault/vaults:Metrics-Group-All"
+            ]
+          }
+        ],
+        "dataSources": {
+          "platformTelemetry": [
+            {
+              "name": "myPlatformTelemetryDataSource",
+              "streams": [
+                "Microsoft.Compute/virtualMachines:Metrics-Percentage CPU",
+                "Microsoft.KeyVault/vaults:Metrics-Group-All"
+              ]
+            }
+          ]
+        },
+        "description": "Data Collection Rule to collect monitoring data from your Azure resources",
+        "destinations": {
+          "logAnalytics": [
+            {
+              "name": "<name>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ]
+        },
+        "kind": "PlatformTelemetry"
+      }
+    },
+    "name": {
+      "value": "idcrpltele001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/data-collection-rule:<version>'
+
+// Required parameters
+param dataCollectionRuleProperties = {
+  dataFlows: [
+    {
+      destinations: [
+        '<logAnalyticsWorkspaceName>'
+      ]
+      streams: [
+        'Microsoft.Compute/virtualMachines:Metrics-Percentage CPU'
+        'Microsoft.KeyVault/vaults:Metrics-Group-All'
+      ]
+    }
+  ]
+  dataSources: {
+    platformTelemetry: [
+      {
+        name: 'myPlatformTelemetryDataSource'
+        streams: [
+          'Microsoft.Compute/virtualMachines:Metrics-Percentage CPU'
+          'Microsoft.KeyVault/vaults:Metrics-Group-All'
+        ]
+      }
+    ]
+  }
+  description: 'Data Collection Rule to collect monitoring data from your Azure resources'
+  destinations: {
+    logAnalytics: [
+      {
+        name: '<name>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+  }
+  kind: 'PlatformTelemetry'
+}
+param name = 'idcrpltele001'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 10: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -2603,7 +2773,7 @@ param tags = {
 </details>
 <p>
 
-### Example 10: _Collecting Windows-specific information_
+### Example 11: _Collecting Windows-specific information_
 
 This instance deploys the module to setup the connection of Windows-specific performance counters and Windows Event Logs.
 
@@ -3001,6 +3171,168 @@ param tags = {
 </details>
 <p>
 
+### Example 12: _Collecting custom text logs with ingestion-time transformation_
+
+This instance deploys the module to setup collection of custom logs and ingestion-time transformation.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
+  name: 'dataCollectionRuleDeployment'
+  params: {
+    // Required parameters
+    dataCollectionRuleProperties: {
+      dataFlows: [
+        {
+          destinations: [
+            '<logAnalyticsWorkspaceName>'
+          ]
+          streams: [
+            'Microsoft-Table-LAQueryLogs'
+          ]
+          transformKql: 'source | where QueryText !contains \'LAQueryLogs\''
+        }
+        {
+          destinations: [
+            '<logAnalyticsWorkspaceName>'
+          ]
+          streams: [
+            'Microsoft-Table-Event'
+          ]
+          transformKql: 'source | project-away ParameterXml'
+        }
+      ]
+      description: 'Data Collection Rule with ingestion-time transformation'
+      destinations: {
+        logAnalytics: [
+          {
+            name: '<name>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+      }
+      kind: 'WorkspaceTransforms'
+    }
+    name: 'idcrwktrns001'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "dataCollectionRuleProperties": {
+      "value": {
+        "dataFlows": [
+          {
+            "destinations": [
+              "<logAnalyticsWorkspaceName>"
+            ],
+            "streams": [
+              "Microsoft-Table-LAQueryLogs"
+            ],
+            "transformKql": "source | where QueryText !contains \"LAQueryLogs\""
+          },
+          {
+            "destinations": [
+              "<logAnalyticsWorkspaceName>"
+            ],
+            "streams": [
+              "Microsoft-Table-Event"
+            ],
+            "transformKql": "source | project-away ParameterXml"
+          }
+        ],
+        "description": "Data Collection Rule with ingestion-time transformation",
+        "destinations": {
+          "logAnalytics": [
+            {
+              "name": "<name>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ]
+        },
+        "kind": "WorkspaceTransforms"
+      }
+    },
+    "name": {
+      "value": "idcrwktrns001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/data-collection-rule:<version>'
+
+// Required parameters
+param dataCollectionRuleProperties = {
+  dataFlows: [
+    {
+      destinations: [
+        '<logAnalyticsWorkspaceName>'
+      ]
+      streams: [
+        'Microsoft-Table-LAQueryLogs'
+      ]
+      transformKql: 'source | where QueryText !contains \'LAQueryLogs\''
+    }
+    {
+      destinations: [
+        '<logAnalyticsWorkspaceName>'
+      ]
+      streams: [
+        'Microsoft-Table-Event'
+      ]
+      transformKql: 'source | project-away ParameterXml'
+    }
+  ]
+  description: 'Data Collection Rule with ingestion-time transformation'
+  destinations: {
+    logAnalytics: [
+      {
+        name: '<name>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+  }
+  kind: 'WorkspaceTransforms'
+}
+param name = 'idcrwktrns001'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -3038,6 +3370,8 @@ The kind of data collection rule.
 | [`All`](#variant-datacollectionrulepropertieskind-all) | The type for the properties of the data collection rule of the kind 'All'. |
 | [`AgentSettings`](#variant-datacollectionrulepropertieskind-agentsettings) | The type for the properties of the 'AgentSettings' data collection rule. |
 | [`Direct`](#variant-datacollectionrulepropertieskind-direct) | The type for the properties of the 'Direct' data collection rule. |
+| [`WorkspaceTransforms`](#variant-datacollectionrulepropertieskind-workspacetransforms) | The type for the properties of the 'WorkspaceTransforms' data collection rule. |
+| [`PlatformTelemetry`](#variant-datacollectionrulepropertieskind-platformtelemetry) | The type for the properties of the 'PlatformTelemetry' data collection rule. |
 
 ### Variant: `dataCollectionRuleProperties.kind-Linux`
 The type for the properties of the 'Linux' data collection rule.
@@ -3051,7 +3385,7 @@ To use this variant, set the property `kind` to `Linux`.
 | [`dataFlows`](#parameter-datacollectionrulepropertieskind-linuxdataflows) | array | The specification of data flows. |
 | [`dataSources`](#parameter-datacollectionrulepropertieskind-linuxdatasources) | object | Specification of data sources that will be collected. |
 | [`destinations`](#parameter-datacollectionrulepropertieskind-linuxdestinations) | object | Specification of destinations that can be used in data flows. |
-| [`kind`](#parameter-datacollectionrulepropertieskind-linuxkind) | string | The platform type specifies the type of resources this rule can apply to. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-linuxkind) | string | The kind of the resource. |
 
 **Optional parameters**
 
@@ -3084,7 +3418,7 @@ Specification of destinations that can be used in data flows.
 
 ### Parameter: `dataCollectionRuleProperties.kind-Linux.kind`
 
-The platform type specifies the type of resources this rule can apply to.
+The kind of the resource.
 
 - Required: Yes
 - Type: string
@@ -3128,7 +3462,7 @@ To use this variant, set the property `kind` to `Windows`.
 | [`dataFlows`](#parameter-datacollectionrulepropertieskind-windowsdataflows) | array | The specification of data flows. |
 | [`dataSources`](#parameter-datacollectionrulepropertieskind-windowsdatasources) | object | Specification of data sources that will be collected. |
 | [`destinations`](#parameter-datacollectionrulepropertieskind-windowsdestinations) | object | Specification of destinations that can be used in data flows. |
-| [`kind`](#parameter-datacollectionrulepropertieskind-windowskind) | string | The platform type specifies the type of resources this rule can apply to. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-windowskind) | string | The kind of the resource. |
 
 **Optional parameters**
 
@@ -3161,7 +3495,7 @@ Specification of destinations that can be used in data flows.
 
 ### Parameter: `dataCollectionRuleProperties.kind-Windows.kind`
 
-The platform type specifies the type of resources this rule can apply to.
+The kind of the resource.
 
 - Required: Yes
 - Type: string
@@ -3205,7 +3539,7 @@ To use this variant, set the property `kind` to `All`.
 | [`dataFlows`](#parameter-datacollectionrulepropertieskind-alldataflows) | array | The specification of data flows. |
 | [`dataSources`](#parameter-datacollectionrulepropertieskind-alldatasources) | object | Specification of data sources that will be collected. |
 | [`destinations`](#parameter-datacollectionrulepropertieskind-alldestinations) | object | Specification of destinations that can be used in data flows. |
-| [`kind`](#parameter-datacollectionrulepropertieskind-allkind) | string | The platform type specifies the type of resources this rule can apply to. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-allkind) | string | The kind of the resource. |
 
 **Optional parameters**
 
@@ -3238,7 +3572,7 @@ Specification of destinations that can be used in data flows.
 
 ### Parameter: `dataCollectionRuleProperties.kind-All.kind`
 
-The platform type specifies the type of resources this rule can apply to.
+The kind of the resource.
 
 - Required: Yes
 - Type: string
@@ -3280,7 +3614,7 @@ To use this variant, set the property `kind` to `AgentSettings`.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`agentSettings`](#parameter-datacollectionrulepropertieskind-agentsettingsagentsettings) | object | Agent settings used to modify agent behavior on a given host. |
-| [`kind`](#parameter-datacollectionrulepropertieskind-agentsettingskind) | string | The platform type specifies the type of resources this rule can apply to. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-agentsettingskind) | string | The kind of the resource. |
 
 **Optional parameters**
 
@@ -3338,7 +3672,7 @@ The value of the agent setting.
 
 ### Parameter: `dataCollectionRuleProperties.kind-AgentSettings.kind`
 
-The platform type specifies the type of resources this rule can apply to.
+The kind of the resource.
 
 - Required: Yes
 - Type: string
@@ -3367,7 +3701,7 @@ To use this variant, set the property `kind` to `Direct`.
 | :-- | :-- | :-- |
 | [`dataFlows`](#parameter-datacollectionrulepropertieskind-directdataflows) | array | The specification of data flows. |
 | [`destinations`](#parameter-datacollectionrulepropertieskind-directdestinations) | object | Specification of destinations that can be used in data flows. |
-| [`kind`](#parameter-datacollectionrulepropertieskind-directkind) | string | The platform type specifies the type of resources this rule can apply to. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-directkind) | string | The kind of the resource. |
 | [`streamDeclarations`](#parameter-datacollectionrulepropertieskind-directstreamdeclarations) | object | Declaration of custom streams used in this rule. |
 
 **Optional parameters**
@@ -3393,7 +3727,7 @@ Specification of destinations that can be used in data flows.
 
 ### Parameter: `dataCollectionRuleProperties.kind-Direct.kind`
 
-The platform type specifies the type of resources this rule can apply to.
+The kind of the resource.
 
 - Required: Yes
 - Type: string
@@ -3419,6 +3753,162 @@ The resource ID of the data collection endpoint that this rule can be used with.
 - Type: string
 
 ### Parameter: `dataCollectionRuleProperties.kind-Direct.description`
+
+Description of the data collection rule.
+
+- Required: No
+- Type: string
+
+### Variant: `dataCollectionRuleProperties.kind-WorkspaceTransforms`
+The type for the properties of the 'WorkspaceTransforms' data collection rule.
+
+To use this variant, set the property `kind` to `WorkspaceTransforms`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataFlows`](#parameter-datacollectionrulepropertieskind-workspacetransformsdataflows) | array | The specification of data flows. Should include a separate dataflow for each table that will have a transformation. Use a where clause in the query if only certain records should be transformed. |
+| [`destinations`](#parameter-datacollectionrulepropertieskind-workspacetransformsdestinations) | object | Specification of destinations that can be used in data flows. For WorkspaceTransforms, only one Log Analytics workspace destination is supported. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-workspacetransformskind) | string | The kind of the resource. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-datacollectionrulepropertieskind-workspacetransformsdescription) | string | Description of the data collection rule. |
+
+### Parameter: `dataCollectionRuleProperties.kind-WorkspaceTransforms.dataFlows`
+
+The specification of data flows. Should include a separate dataflow for each table that will have a transformation. Use a where clause in the query if only certain records should be transformed.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-WorkspaceTransforms.destinations`
+
+Specification of destinations that can be used in data flows. For WorkspaceTransforms, only one Log Analytics workspace destination is supported.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties.kind-WorkspaceTransforms.kind`
+
+The kind of the resource.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'WorkspaceTransforms'
+  ]
+  ```
+
+### Parameter: `dataCollectionRuleProperties.kind-WorkspaceTransforms.description`
+
+Description of the data collection rule.
+
+- Required: No
+- Type: string
+
+### Variant: `dataCollectionRuleProperties.kind-PlatformTelemetry`
+The type for the properties of the 'PlatformTelemetry' data collection rule.
+
+To use this variant, set the property `kind` to `PlatformTelemetry`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataFlows`](#parameter-datacollectionrulepropertieskind-platformtelemetrydataflows) | array | The specification of data flows. |
+| [`dataSources`](#parameter-datacollectionrulepropertieskind-platformtelemetrydatasources) | object | Specification of data sources that will be collected. |
+| [`destinations`](#parameter-datacollectionrulepropertieskind-platformtelemetrydestinations) | object | Specification of destinations. Choose a single destination type of either logAnalytics, storageAccounts, or eventHubs. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-platformtelemetrykind) | string | The kind of the resource. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-datacollectionrulepropertieskind-platformtelemetrydescription) | string | Description of the data collection rule. |
+
+### Parameter: `dataCollectionRuleProperties.kind-PlatformTelemetry.dataFlows`
+
+The specification of data flows.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-PlatformTelemetry.dataSources`
+
+Specification of data sources that will be collected.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`platformTelemetry`](#parameter-datacollectionrulepropertieskind-platformtelemetrydatasourcesplatformtelemetry) | array | The list of platform telemetry configurations. |
+
+### Parameter: `dataCollectionRuleProperties.kind-PlatformTelemetry.dataSources.platformTelemetry`
+
+The list of platform telemetry configurations.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-PlatformTelemetry.destinations`
+
+Specification of destinations. Choose a single destination type of either logAnalytics, storageAccounts, or eventHubs.
+
+- Required: Yes
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubs`](#parameter-datacollectionrulepropertieskind-platformtelemetrydestinationseventhubs) | array | The list of Event Hub destinations. |
+| [`logAnalytics`](#parameter-datacollectionrulepropertieskind-platformtelemetrydestinationsloganalytics) | array | The list of Log Analytics destinations. |
+| [`storageAccounts`](#parameter-datacollectionrulepropertieskind-platformtelemetrydestinationsstorageaccounts) | array | The list of Storage Account destinations. |
+
+### Parameter: `dataCollectionRuleProperties.kind-PlatformTelemetry.destinations.eventHubs`
+
+The list of Event Hub destinations.
+
+- Required: No
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-PlatformTelemetry.destinations.logAnalytics`
+
+The list of Log Analytics destinations.
+
+- Required: No
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-PlatformTelemetry.destinations.storageAccounts`
+
+The list of Storage Account destinations.
+
+- Required: No
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-PlatformTelemetry.kind`
+
+The kind of the resource.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'PlatformTelemetry'
+  ]
+  ```
+
+### Parameter: `dataCollectionRuleProperties.kind-PlatformTelemetry.description`
 
 Description of the data collection rule.
 
