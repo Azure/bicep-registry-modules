@@ -726,6 +726,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
     // Non-required parameters
     containerGroupProfile: {
       resourceId: '<resourceId>'
+      revision: 1
     }
     extensions: [
       {
@@ -888,7 +889,8 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
     // Non-required parameters
     "containerGroupProfile": {
       "value": {
-        "resourceId": "<resourceId>"
+        "resourceId": "<resourceId>",
+        "revision": 1
       }
     },
     "extensions": {
@@ -1062,6 +1064,7 @@ param name = '<name>'
 // Non-required parameters
 param containerGroupProfile = {
   resourceId: '<resourceId>'
+  revision: 1
 }
 param extensions = [
   {
@@ -2436,11 +2439,6 @@ The reference container group profile properties.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`resourceId`](#parameter-containergroupprofileresourceid) | string | The container group profile reference resourceid. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`revision`](#parameter-containergroupprofilerevision) | int | The container group profile reference revision. |
 
 ### Parameter: `containerGroupProfile.resourceId`
@@ -2454,7 +2452,7 @@ The container group profile reference resourceid.
 
 The container group profile reference revision.
 
-- Required: No
+- Required: Yes
 - Type: int
 
 ### Parameter: `customerManagedKey`

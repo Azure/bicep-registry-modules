@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "7209658557700714215"
+      "templateHash": "6329659557801066319"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group."
@@ -619,9 +619,8 @@
         },
         "revision": {
           "type": "int",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The container group profile reference revision."
+            "description": "Required. The container group profile reference revision."
           }
         }
       },
@@ -1103,7 +1102,7 @@
         "dnsConfig": "[parameters('dnsConfig')]",
         "priority": "[parameters('priority')]",
         "confidentialComputeProperties": "[parameters('confidentialComputeProperties')]",
-        "containerGroupProfile": "[if(not(empty(parameters('containerGroupProfile'))), createObject('id', parameters('containerGroupProfile').resourceId, 'revision', tryGet(parameters('containerGroupProfile'), 'revision')), null())]",
+        "containerGroupProfile": "[if(not(empty(parameters('containerGroupProfile'))), createObject('id', parameters('containerGroupProfile').resourceId, 'revision', parameters('containerGroupProfile').revision), null())]",
         "extensions": "[parameters('extensions')]",
         "identityAcls": "[parameters('identityAcls')]",
         "standbyPoolProfile": "[if(not(empty(parameters('standbyPoolProfile'))), createObject('failContainerGroupCreateOnReuseFailure', tryGet(parameters('standbyPoolProfile'), 'failContainerGroupCreateOnReuseFailure'), 'id', parameters('standbyPoolProfile').resourceId), null())]"

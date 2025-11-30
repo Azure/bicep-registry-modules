@@ -194,6 +194,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       containerGroupProfile: {
         resourceId: nestedDependencies.outputs.containerGroupProfileResourceId
+        revision: 1
       }
       identityAcls: {
         acls: [
