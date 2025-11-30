@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "16707558135062665137"
+      "version": "0.39.26.7824",
+      "templateHash": "17877109603856139203"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet)."
@@ -712,8 +712,7 @@
             }
           },
           "metadata": {
-            "description": "Returns the number of hosts available for a given CIDR prefix.",
-            "__bicep_export!": true
+            "description": "Returns the number of hosts available for a given CIDR prefix."
           }
         },
         "getCidrHostCount": {
@@ -1080,8 +1079,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "17724025092193098982"
+              "version": "0.39.26.7824",
+              "templateHash": "1577743749847662679"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet."
@@ -1506,8 +1505,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "14693992582511188820"
+              "version": "0.39.26.7824",
+              "templateHash": "3289008023609371329"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering."
@@ -1663,8 +1662,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "14693992582511188820"
+              "version": "0.39.26.7824",
+              "templateHash": "3289008023609371329"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering."
