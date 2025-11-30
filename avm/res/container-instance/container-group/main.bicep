@@ -173,32 +173,32 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01'
         name: container.name
         properties: {
           configMap: container.properties.?configMap
-          // command: container.properties.?command
-          // environmentVariables: container.properties.?environmentVariables
-          // image: container.properties.?image
-          // livenessProbe: container.properties.?livenessProbe
-          // ports: container.properties.?ports
-          // readinessProbe: container.properties.?readinessProbe
-          // resources: !empty(container.properties.?resources)
-          //   ? {
-          //       requests: {
-          //         cpu: container.properties.resources!.requests.cpu
-          //         gpu: container.properties.resources!.requests.?gpu
-          //         memoryInGB: json(container.properties.resources!.requests.?memoryInGB)
-          //       }
-          //       limits: !empty(container.properties.resources!.?limits)
-          //         ? {
-          //             cpu: container.properties.resources!.?limits.?cpu
-          //             gpu: container.properties.resources!.?limits.?gpu
-          //             memoryInGB: !empty(container.properties.resources!.?limits.?memoryInGB)
-          //               ? json(container.properties.resources!.?limits.?memoryInGB!)
-          //               : null
-          //           }
-          //         : null
-          //     }
-          //   : null
-          // securityContext: container.properties.?securityContext
-          // volumeMounts: container.properties.?volumeMounts
+          command: container.properties.?command
+          environmentVariables: container.properties.?environmentVariables
+          image: container.properties.?image
+          livenessProbe: container.properties.?livenessProbe
+          ports: container.properties.?ports
+          readinessProbe: container.properties.?readinessProbe
+          resources: !empty(container.properties.?resources)
+            ? {
+                requests: {
+                  cpu: container.properties.resources!.requests.cpu
+                  gpu: container.properties.resources!.requests.?gpu
+                  memoryInGB: json(container.properties.resources!.requests.?memoryInGB)
+                }
+                limits: !empty(container.properties.resources!.?limits)
+                  ? {
+                      cpu: container.properties.resources!.?limits.?cpu
+                      gpu: container.properties.resources!.?limits.?gpu
+                      memoryInGB: !empty(container.properties.resources!.?limits.?memoryInGB)
+                        ? json(container.properties.resources!.?limits.?memoryInGB!)
+                        : null
+                    }
+                  : null
+              }
+            : null
+          securityContext: container.properties.?securityContext
+          volumeMounts: container.properties.?volumeMounts
         }
       }
     ]
@@ -225,8 +225,6 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01'
             : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
         }
       : null
-    imageRegistryCredentials: imageRegistryCredentials
-    initContainers: initContainers
     restartPolicy: empty(containerGroupProfile) ? restartPolicy : null
     sku: empty(containerGroupProfile) ? sku : null
     osType: empty(containerGroupProfile) ? osType : null
@@ -243,6 +241,8 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01'
           id: standbyPoolProfile!.resourceId
         }
       : null
+    imageRegistryCredentials: imageRegistryCredentials
+    initContainers: initContainers
     volumes: volumes
     ipAddress: !empty(ipAddress)
       ? {
