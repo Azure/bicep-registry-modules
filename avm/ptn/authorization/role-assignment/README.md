@@ -2,6 +2,14 @@
 
 This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.
 
+You can reference the module as follows:
+```bicep
+module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -35,6 +43,8 @@ The following section provides usage examples for the module, which were used to
 
 This module deploys a Role Assignment at a Management Group scope using minimal parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mg.defaults]
+
 
 <details>
 
@@ -42,7 +52,6 @@ This module deploys a Role Assignment at a Management Group scope using minimal 
 
 ```bicep
 module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>' = {
-  name: 'roleAssignmentDeployment'
   params: {
     // Required parameters
     principalId: '<principalId>'
@@ -109,6 +118,8 @@ param principalType = 'ServicePrincipal'
 
 This module deploys a Role Assignment at a Management Group scope using common parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mg.max]
+
 
 <details>
 
@@ -116,7 +127,6 @@ This module deploys a Role Assignment at a Management Group scope using common p
 
 ```bicep
 module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>' = {
-  name: 'roleAssignmentDeployment'
   params: {
     // Required parameters
     principalId: '<principalId>'
@@ -193,6 +203,8 @@ param principalType = 'ServicePrincipal'
 
 This module deploys a Role Assignment at a Resource Group scope using minimal parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rg.default]
+
 
 <details>
 
@@ -200,7 +212,6 @@ This module deploys a Role Assignment at a Resource Group scope using minimal pa
 
 ```bicep
 module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>' = {
-  name: 'roleAssignmentDeployment'
   params: {
     // Required parameters
     principalId: '<principalId>'
@@ -277,6 +288,8 @@ param subscriptionId = '<subscriptionId>'
 
 This module deploys a Role Assignment at a Resource Group scope using common parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rg.max]
+
 
 <details>
 
@@ -284,7 +297,6 @@ This module deploys a Role Assignment at a Resource Group scope using common par
 
 ```bicep
 module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>' = {
-  name: 'roleAssignmentDeployment'
   params: {
     // Required parameters
     principalId: '<principalId>'
@@ -366,6 +378,8 @@ param subscriptionId = '<subscriptionId>'
 
 This module deploys a Role Assignment at a Subscription scope using minimal parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sub.default]
+
 
 <details>
 
@@ -373,7 +387,6 @@ This module deploys a Role Assignment at a Subscription scope using minimal para
 
 ```bicep
 module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>' = {
-  name: 'roleAssignmentDeployment'
   params: {
     // Required parameters
     principalId: '<principalId>'
@@ -445,6 +458,8 @@ param subscriptionId = '<subscriptionId>'
 
 This module deploys a Role Assignment at a Subscription scope using common parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sub.max]
+
 
 <details>
 
@@ -452,7 +467,6 @@ This module deploys a Role Assignment at a Subscription scope using common param
 
 ```bicep
 module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>' = {
-  name: 'roleAssignmentDeployment'
   params: {
     // Required parameters
     principalId: '<principalId>'

@@ -2,6 +2,14 @@
 
 This module deploys an Azure Security Center (Defender for Cloud) Configuration.
 
+You can reference the module as follows:
+```bicep
+module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -37,6 +45,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with default parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -44,7 +54,6 @@ This instance deploys the module with default parameters.
 
 ```bicep
 module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
-  name: 'securityCenterDeployment'
   params: {
     // Required parameters
     scope: '<scope>'
@@ -106,6 +115,8 @@ param location = '<location>'
 
 This instance deploys the module with default parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -113,7 +124,6 @@ This instance deploys the module with default parameters.
 
 ```bicep
 module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
-  name: 'securityCenterDeployment'
   params: {
     // Required parameters
     scope: '<scope>'
@@ -205,6 +215,8 @@ param securityContactProperties = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -212,7 +224,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
-  name: 'securityCenterDeployment'
   params: {
     // Required parameters
     scope: '<scope>'

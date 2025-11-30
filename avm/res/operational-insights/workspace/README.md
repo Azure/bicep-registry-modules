@@ -2,6 +2,14 @@
 
 This module deploys a Log Analytics Workspace.
 
+You can reference the module as follows:
+```bicep
+module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -48,6 +56,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with advanced features like custom tables, data exports & encryption.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/adv]
+
 
 <details>
 
@@ -55,7 +65,6 @@ This instance deploys the module with advanced features like custom tables, data
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'oiwadv001'
@@ -983,6 +992,8 @@ param tags = {
 
 This instance deploys a Log Analytics Cluster with Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity and links the Log Analytics Workspace to it.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
 > **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
 ```text
 The test is skipped because the Log Analytics Cluster resource is very restrictive when it comes to how many instance one can have and how to lifecycle them.
@@ -995,7 +1006,6 @@ For further information, please refer to: [ref](https://learn.microsoft.com/en-u
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'oiwmhsmu001'
@@ -1163,6 +1173,8 @@ param location = '<location>'
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -1170,7 +1182,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     name: 'oiwmin001'
   }
@@ -1216,6 +1227,8 @@ param name = 'oiwmin001'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -1223,7 +1236,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'oiwmax001'
@@ -2219,6 +2231,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -2226,7 +2240,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'oiwwaf001'

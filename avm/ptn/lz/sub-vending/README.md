@@ -2,6 +2,14 @@
 
 This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).
 
+You can reference the module as follows:
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -89,6 +97,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys a subscription with a multiple virtual networks.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/additional-vnets]
+
 
 <details>
 
@@ -96,7 +106,6 @@ This instance deploys a subscription with a multiple virtual networks.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     additionalVirtualNetworks: [
       {
@@ -486,6 +495,8 @@ param virtualNetworkSubnets = [
 
 This instance deploys a subscription with a bastion host.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/bastion]
+
 
 <details>
 
@@ -493,7 +504,6 @@ This instance deploys a subscription with a bastion host.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     resourceProviders: {}
     subscriptionAliasEnabled: true
@@ -675,6 +685,8 @@ param virtualNetworkSubnets = [
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -682,7 +694,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     resourceProviders: {}
     subscriptionAliasEnabled: true
@@ -777,6 +788,8 @@ param subscriptionWorkload = 'Production'
 
 This instance deploys a subscription with a hub-spoke network topology.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/hub-spoke]
+
 
 <details>
 
@@ -784,7 +797,6 @@ This instance deploys a subscription with a hub-spoke network topology.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     deploymentScriptLocation: '<deploymentScriptLocation>'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
@@ -1103,6 +1115,8 @@ param virtualNetworkUseRemoteGateways = false
 
 This instance deploys a subscription with a hub-spoke network topology with NAT gateway.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/nat-gateway]
+
 
 <details>
 
@@ -1110,7 +1124,6 @@ This instance deploys a subscription with a hub-spoke network topology with NAT 
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     resourceProviders: {
       'Microsoft.Network': []
@@ -1347,6 +1360,8 @@ param virtualNetworkSubnets = [
 
 This instance deploys the module with PIM Active Role assignments.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/pim-active-role-assignments]
+
 
 <details>
 
@@ -1354,7 +1369,6 @@ This instance deploys the module with PIM Active Role assignments.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     pimRoleAssignments: [
       {
@@ -1543,6 +1557,8 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 
 This instance deploys the module with PIM Eligible Role assignments.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/pim-eligible-role-assignments]
+
 
 <details>
 
@@ -1550,7 +1566,6 @@ This instance deploys the module with PIM Eligible Role assignments.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     pimRoleAssignments: [
       {
@@ -1717,6 +1732,8 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 
 This instance deploys the module with RBAC conditions for the role assignments.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rbac-condition]
+
 
 <details>
 
@@ -1724,7 +1741,6 @@ This instance deploys the module with RBAC conditions for the role assignments.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     resourceProviders: {}
     roleAssignmentEnabled: true
@@ -1886,6 +1902,8 @@ param subscriptionWorkload = 'Production'
 
 This instance deploys the module to test standalone NSG deployments.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/standalone-nsg]
+
 
 <details>
 
@@ -1893,7 +1911,6 @@ This instance deploys the module to test standalone NSG deployments.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     networkSecurityGroupResourceGroupName: '<networkSecurityGroupResourceGroupName>'
     networkSecurityGroups: [
@@ -2097,6 +2114,8 @@ param subscriptionWorkload = 'Production'
 
 This instance deploys the module with user-assigned managed identities.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/user-assigned-identities]
+
 
 <details>
 
@@ -2104,7 +2123,6 @@ This instance deploys the module with user-assigned managed identities.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     resourceProviders: {}
     roleAssignmentEnabled: true
@@ -2336,6 +2354,8 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 
 This instance deploys a subscription with a vwan network topology.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/vwan-spoke]
+
 
 <details>
 
@@ -2343,7 +2363,6 @@ This instance deploys a subscription with a vwan network topology.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     deploymentScriptLocation: '<deploymentScriptLocation>'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'

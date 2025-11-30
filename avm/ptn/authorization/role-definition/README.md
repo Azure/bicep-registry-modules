@@ -2,6 +2,14 @@
 
 This module deploys a custom role definition to a Management Group.
 
+You can reference the module as follows:
+```bicep
+module roleDefinition 'br/public:avm/ptn/authorization/role-definition:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -31,6 +39,8 @@ The following section provides usage examples for the module, which were used to
 
 This module deploys a Role Definition at a Management Group scope using minimal parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mg.default]
+
 
 <details>
 
@@ -38,7 +48,6 @@ This module deploys a Role Definition at a Management Group scope using minimal 
 
 ```bicep
 module roleDefinition 'br/public:avm/ptn/authorization/role-definition:<version>' = {
-  name: 'roleDefinitionDeployment'
   params: {
     // Required parameters
     name: 'rbac-custom-role-reader'
@@ -106,6 +115,8 @@ param location = '<location>'
 
 This module deploys a Role Definition at a Management Group scope using loadJsonContent to load a custom role definition stored in a JSON file.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mg.loadJson]
+
 
 <details>
 
@@ -113,7 +124,6 @@ This module deploys a Role Definition at a Management Group scope using loadJson
 
 ```bicep
 module roleDefinition 'br/public:avm/ptn/authorization/role-definition:<version>' = {
-  name: 'roleDefinitionDeployment'
   params: {
     // Required parameters
     name: '<name>'

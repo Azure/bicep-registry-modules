@@ -2,6 +2,14 @@
 
 This module deploys an App Configuration Store.
 
+You can reference the module as follows:
+```bicep
+module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -42,6 +50,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -49,7 +59,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
-  name: 'configurationStoreDeployment'
   params: {
     // Required parameters
     name: 'accmin001'
@@ -106,6 +115,8 @@ param enablePurgeProtection = false
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/encr]
+
 
 <details>
 
@@ -113,7 +124,6 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
-  name: 'configurationStoreDeployment'
   params: {
     // Required parameters
     name: 'accencr001'
@@ -263,6 +273,8 @@ param softDeleteRetentionInDays = 1
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -270,7 +282,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
-  name: 'configurationStoreDeployment'
   params: {
     // Required parameters
     name: 'accmax001'
@@ -619,6 +630,8 @@ param tags = {
 
 This instance deploys the module with private endpoints.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/pe]
+
 
 <details>
 
@@ -626,7 +639,6 @@ This instance deploys the module with private endpoints.
 
 ```bicep
 module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
-  name: 'configurationStoreDeployment'
   params: {
     // Required parameters
     name: 'accpe001'
@@ -776,6 +788,8 @@ param softDeleteRetentionInDays = 1
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -783,7 +797,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
-  name: 'configurationStoreDeployment'
   params: {
     // Required parameters
     name: 'accwaf001'
