@@ -356,8 +356,8 @@ type containerType = {
     @description('Optional. The config map.')
     configMap: resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.containers[*].properties.configMap?
 
-    @description('Required. The name of the container source image.')
-    image: string
+    @description('Conditional. The name of the container source image. Required if no containerGroupProfile is provided.')
+    image: string?
 
     @description('Optional. The liveness probe.')
     livenessProbe: containerProbeType?
@@ -368,7 +368,7 @@ type containerType = {
     @description('Optional. The exposed ports on the container instance.')
     ports: resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.containers[*].properties.ports?
 
-    @description('Required. The resource requirements of the container instance.')
+    @description('Conditional. The resource requirements of the container instance.  Required if no containerGroupProfile is provided.')
     resources: {
       @description('Required. The resource requests of this container instance.')
       requests: {
@@ -393,7 +393,7 @@ type containerType = {
         @description('Optional. The memory limit in GB of this container instance.')
         memoryInGB: string?
       }?
-    }
+    }?
 
     @description('Optional. The security context of the container instance.')
     securityContext: {
