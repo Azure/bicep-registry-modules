@@ -1850,7 +1850,7 @@ The properties of the container instance.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`image`](#parameter-containerspropertiesimage) | string | The name of the container source image. Required if no containerGroupProfile is provided. |
-| [`resources`](#parameter-containerspropertiesresources) | object | The resource requirements of the container instance.  Required if no containerGroupProfile is provided. |
+| [`resources`](#parameter-containerspropertiesresources) | object | The resource requirements of the container instance. Required if no containerGroupProfile is provided. |
 
 **Optional parameters**
 
@@ -1874,7 +1874,7 @@ The name of the container source image. Required if no containerGroupProfile is 
 
 ### Parameter: `containers.properties.resources`
 
-The resource requirements of the container instance.  Required if no containerGroupProfile is provided.
+The resource requirements of the container instance. Required if no containerGroupProfile is provided.
 
 - Required: No
 - Type: object

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "14450286827360119567"
+      "templateHash": "12027243415220231866"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group."
@@ -246,7 +246,7 @@
               },
               "nullable": true,
               "metadata": {
-                "description": "Conditional. The resource requirements of the container instance.  Required if no containerGroupProfile is provided."
+                "description": "Conditional. The resource requirements of the container instance. Required if no containerGroupProfile is provided."
               }
             },
             "securityContext": {
@@ -1070,9 +1070,9 @@
                 "livenessProbe": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'livenessProbe')]",
                 "ports": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'ports')]",
                 "readinessProbe": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'readinessProbe')]",
-                "resources": "[if(not(empty(tryGet(parameters('containers')[copyIndex('containers')].properties, 'resources'))), createObject('requests', createObject('cpu', parameters('containers')[copyIndex('containers')].properties.resources.requests.cpu, 'gpu', tryGet(parameters('containers')[copyIndex('containers')].properties.resources.requests, 'gpu'), 'memoryInGB', json(tryGet(parameters('containers')[copyIndex('containers')].properties.resources.requests, 'memoryInGB'))), 'limits', if(not(empty(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'))), createObject('cpu', tryGet(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'), 'cpu'), 'gpu', tryGet(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'), 'gpu'), 'memoryInGB', if(not(empty(tryGet(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'), 'memoryInGB'))), json(tryGet(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'), 'memoryInGB')), null())), null())), null())]",
                 "securityContext": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'securityContext')]",
-                "volumeMounts": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'volumeMounts')]"
+                "volumeMounts": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'volumeMounts')]",
+                "resources": "[if(not(empty(tryGet(parameters('containers')[copyIndex('containers')].properties, 'resources'))), createObject('requests', createObject('cpu', parameters('containers')[copyIndex('containers')].properties.resources.requests.cpu, 'gpu', tryGet(parameters('containers')[copyIndex('containers')].properties.resources.requests, 'gpu'), 'memoryInGB', json(tryGet(parameters('containers')[copyIndex('containers')].properties.resources.requests, 'memoryInGB'))), 'limits', if(not(empty(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'))), createObject('cpu', tryGet(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'), 'cpu'), 'gpu', tryGet(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'), 'gpu'), 'memoryInGB', if(not(empty(tryGet(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'), 'memoryInGB'))), json(tryGet(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'), 'memoryInGB')), null())), null())), null())]"
               }
             }
           },

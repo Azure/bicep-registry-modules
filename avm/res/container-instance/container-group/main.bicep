@@ -370,7 +370,7 @@ type containerType = {
     @description('Optional. The exposed ports on the container instance.')
     ports: resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.containers[*].properties.ports?
 
-    @description('Conditional. The resource requirements of the container instance.  Required if no containerGroupProfile is provided.')
+    @description('Conditional. The resource requirements of the container instance. Required if no containerGroupProfile is provided.')
     resources: {
       @description('Required. The resource requests of this container instance.')
       requests: {
