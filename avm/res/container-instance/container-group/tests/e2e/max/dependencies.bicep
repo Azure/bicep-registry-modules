@@ -13,6 +13,10 @@ param containerGroupProfileName string
 @description('Required. The name of the standby container group pool to create.')
 param standbyContainerGroupPoolName string
 
+@description('Required. The object id of the \'Standby Pool Resource Provider\' Enterprise Application.')
+@secure()
+param standbyPoolResourceProviderEnterpriseApplicationObjectId string
+
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
@@ -66,6 +70,20 @@ resource profile 'Microsoft.ContainerInstance/containerGroupProfiles@2025-09-01'
   }
 }
 
+// Ref: https://learn.microsoft.com/en-us/azure/container-instances/container-instances-standby-pool-create?tabs=rest#prerequisites
+resource profilePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${profile.id}-${location}-Standby-Pool-Resource-Provider-Standby-Container-Group-Pool-Contributor-RoleAssignment')
+  scope: profile
+  properties: {
+    principalId: standbyPoolResourceProviderEnterpriseApplicationObjectId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '39fcb0de-8844-4706-b050-c28ddbe3ff83'
+    ) // Standby Container Group Pool Contributor
+    principalType: 'ServicePrincipal'
+  }
+}
+
 resource standbyContainerGroupPool 'Microsoft.StandbyPool/standbyContainerGroupPools@2025-03-01' = {
   name: standbyContainerGroupPoolName
   location: location
@@ -80,6 +98,9 @@ resource standbyContainerGroupPool 'Microsoft.StandbyPool/standbyContainerGroupP
       refillPolicy: 'always'
     }
   }
+  dependsOn: [
+    profilePermissions
+  ]
 }
 
 @description('The resource ID of the created Log Analytics Workspace.')

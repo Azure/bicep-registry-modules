@@ -20,6 +20,10 @@ param serviceShort string = 'cicgmax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Required. The object id of the \'Standby Pool Resource Provider\' Enterprise Application. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-StandbyPoolResourceProviderEnterpriseApplicationObjectId\'.')
+@secure()
+param standbyPoolResourceProviderEnterpriseApplicationObjectId string = ''
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -39,6 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
     containerGroupProfileName: 'dep-${namePrefix}-cgp-${serviceShort}'
     standbyContainerGroupPoolName: 'dep-${namePrefix}-scgp-${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    standbyPoolResourceProviderEnterpriseApplicationObjectId: standbyPoolResourceProviderEnterpriseApplicationObjectId
   }
 }
 
