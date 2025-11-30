@@ -368,6 +368,7 @@ function Invoke-ResourceRemoval {
                             $retryCount++
                         }
                     } while (($workspaceStateContent.properties.replication.enabled -or $workspaceStateContent.properties.replication.provisioningState -ne 'Succeeded') -and $retryCount -lt $retryLimit)
+                    Start-Sleep -Seconds 30  # Additional wait to ensure replication is fully disabled and avoid leftovers in the Entra ID
 
                     if ($retryCount -ge $retryLimit) {
                         Write-Warning ('    [!] Workspace replication was not disabled after {0} seconds. Continuing with resource removal.' -f ($retryCount * $retryInterval))
