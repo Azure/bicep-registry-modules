@@ -116,7 +116,7 @@ module component 'br/public:avm/res/insights/component:<version>' = {
   name: 'componentDeployment'
   params: {
     // Required parameters
-    name: 'icmax001'
+    name: 'icpmax001'
     workspaceResourceId: '<workspaceResourceId>'
     // Non-required parameters
     diagnosticSettings: [
@@ -187,7 +187,7 @@ module component 'br/public:avm/res/insights/component:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "icmax001"
+      "value": "icpmax001"
     },
     "workspaceResourceId": {
       "value": "<workspaceResourceId>"
@@ -282,7 +282,7 @@ module component 'br/public:avm/res/insights/component:<version>' = {
 using 'br/public:avm/res/insights/component:<version>'
 
 // Required parameters
-param name = 'icmax001'
+param name = 'icpmax001'
 param workspaceResourceId = '<workspaceResourceId>'
 // Non-required parameters
 param diagnosticSettings = [
