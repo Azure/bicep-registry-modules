@@ -8,6 +8,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Updated `Microsoft.Network/virtualNetworks` and `Microsoft.Network/virtualNetworks/subnets` API version from `2024-01-01` to `2025-01-01`
 
+### Breaking Changes
+
 ## 0.1.3
 
 ### Changes

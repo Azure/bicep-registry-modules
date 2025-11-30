@@ -21,6 +21,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Parameter `ipamPoolNumberOfIpAddres`*: Removed. IPAM allocations now use `cidr` property (e.g., `/24`) which automatically converts to number of addresses
 - Subnet type `addressPrefix`, `addressPrefixes`, `ipamPoolPrefixAllocations` : Replaced by single `addressSpace` property using `subnetIpAddressesType` discriminated union
 
+### Breaking Changes
+
 ## 0.7.1
 
 ### Changes
