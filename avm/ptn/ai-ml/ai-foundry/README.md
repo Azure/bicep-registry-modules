@@ -1125,7 +1125,7 @@ Values to establish private networking for the AI Foundry account and project.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`aiServicesPrivateDnsZoneResourceId`](#parameter-aifoundryconfigurationnetworkingaiservicesprivatednszoneresourceid) | string | The Resource ID of the Private DNS Zone for the Azure AI Services account. |
-| [`cognitiveServicesPrivateDnsZoneResourceId`](#parameter-aifoundryconfigurationnetworkingcognitiveservicesprivatednszoneresourceid) | string | The Resource ID of the Private DNS Zone for the Azure AI Services account. |
+| [`cognitiveServicesPrivateDnsZoneResourceId`](#parameter-aifoundryconfigurationnetworkingcognitiveservicesprivatednszoneresourceid) | string | The Resource ID of the Private DNS Zone for the Azure Cognitive Services account. |
 | [`openAiPrivateDnsZoneResourceId`](#parameter-aifoundryconfigurationnetworkingopenaiprivatednszoneresourceid) | string | The Resource ID of the Private DNS Zone for the OpenAI account. |
 
 **Optional parameters**
