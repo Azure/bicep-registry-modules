@@ -40,7 +40,8 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    containerGroupProfileName: 'dep-${namePrefix}-cgp-${serviceShort}'
+    containerGroupProfileName: 'dep-${namePrefix}-cg-${serviceShort}'
+    standbyPoolContainerGroupProfileName: 'dep-${namePrefix}-cgp-${serviceShort}'
     standbyContainerGroupPoolName: 'dep-${namePrefix}-scgp-${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     standbyPoolResourceProviderEnterpriseApplicationObjectId: standbyPoolResourceProviderEnterpriseApplicationObjectId
