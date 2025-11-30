@@ -29,7 +29,7 @@ resource profile 'Microsoft.ContainerInstance/containerGroupProfiles@2025-09-01'
   properties: {
     containers: [
       {
-        name: 'Privileged'
+        name: 'a-container'
         properties: {
           command: []
           environmentVariables: []
@@ -46,10 +46,10 @@ resource profile 'Microsoft.ContainerInstance/containerGroupProfiles@2025-09-01'
             }
           }
           securityContext: {
-            privileged: false
+            privileged: true
             capabilities: {
               add: [
-                'CAP_NET_ADMIN'
+                'Privileged'
               ]
             }
           }
