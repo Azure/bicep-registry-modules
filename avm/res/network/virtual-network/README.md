@@ -2612,8 +2612,8 @@ If the encrypted VNet allows VM that does not support encryption. Can only be us
 
 | Function | Description |
 | :-- | :-- |
-| `getCidrHostCount` | Returns the number of hosts available for a given CIDR prefix. |
-| `getCidrHostCounts` | Returns the number of hosts available for a given CIDR prefix. |
+| `getCidrHostCount` |  |
+| `getCidrHostCounts` |  |
 
 ## Outputs
 
