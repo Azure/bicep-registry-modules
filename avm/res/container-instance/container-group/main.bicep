@@ -228,8 +228,8 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01'
     // imageRegistryCredentials: imageRegistryCredentials
     // initContainers: initContainers
     // restartPolicy: restartPolicy
-    sku: sku
     volumes: volumes
+    sku: empty(containerGroupProfile) ? sku : null
     osType: empty(containerGroupProfile) ? osType : null
     priority: empty(containerGroupProfile) ? priority : null
     ipAddress: !empty(ipAddress)
