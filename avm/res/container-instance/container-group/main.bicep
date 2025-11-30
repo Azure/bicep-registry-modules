@@ -179,6 +179,8 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01'
           livenessProbe: container.properties.?livenessProbe
           ports: container.properties.?ports
           readinessProbe: container.properties.?readinessProbe
+          securityContext: container.properties.?securityContext
+          volumeMounts: container.properties.?volumeMounts
           resources: !empty(container.properties.?resources)
             ? {
                 requests: {
@@ -197,8 +199,6 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01'
                   : null
               }
             : null
-          securityContext: container.properties.?securityContext
-          volumeMounts: container.properties.?volumeMounts
         }
       }
     ]
