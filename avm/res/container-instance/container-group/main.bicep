@@ -241,12 +241,12 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01'
         }
       : null
     // sku: sku
-    // subnetIds: [
-    //   for subnet in subnets ?? []: {
-    //     id: subnet.subnetResourceId
-    //     name: subnet.?name
-    //   }
-    // ]
+    subnetIds: [
+      for subnet in subnets ?? []: {
+        id: subnet.subnetResourceId
+        name: subnet.?name
+      }
+    ]
     // volumes: volumes
     dnsConfig: dnsConfig
     // priority: priority
