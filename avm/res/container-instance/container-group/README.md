@@ -34,171 +34,19 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/container-instance/container-group:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using CMK ](#example-2-using-cmk)
+- [Using CMK ](#example-1-using-cmk)
+- [Using only defaults](#example-2-using-only-defaults)
 - [Using only defaults and low memory containers](#example-3-using-only-defaults-and-low-memory-containers)
 - [Using large parameter set](#example-4-using-large-parameter-set)
 - [Using private network](#example-5-using-private-network)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Deploying with standby container group pool](#example-6-deploying-with-standby-container-group-pool)
+- [WAF-aligned](#example-7-waf-aligned)
 
-### Example 1: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
-  params: {
-    // Required parameters
-    availabilityZone: -1
-    containers: [
-      {
-        name: 'az-aci-x-001'
-        properties: {
-          image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
-          ports: [
-            {
-              port: 443
-              protocol: 'Tcp'
-            }
-          ]
-          resources: {
-            requests: {
-              cpu: 2
-              memoryInGB: '2'
-            }
-          }
-        }
-      }
-    ]
-    name: 'cicgmin001'
-    // Non-required parameters
-    ipAddress: {
-      ports: [
-        {
-          port: 443
-          protocol: 'Tcp'
-        }
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "availabilityZone": {
-      "value": -1
-    },
-    "containers": {
-      "value": [
-        {
-          "name": "az-aci-x-001",
-          "properties": {
-            "image": "mcr.microsoft.com/azuredocs/aci-helloworld",
-            "ports": [
-              {
-                "port": 443,
-                "protocol": "Tcp"
-              }
-            ],
-            "resources": {
-              "requests": {
-                "cpu": 2,
-                "memoryInGB": "2"
-              }
-            }
-          }
-        }
-      ]
-    },
-    "name": {
-      "value": "cicgmin001"
-    },
-    // Non-required parameters
-    "ipAddress": {
-      "value": {
-        "ports": [
-          {
-            "port": 443,
-            "protocol": "Tcp"
-          }
-        ]
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/container-instance/container-group:<version>'
-
-// Required parameters
-param availabilityZone = -1
-param containers = [
-  {
-    name: 'az-aci-x-001'
-    properties: {
-      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
-      ports: [
-        {
-          port: 443
-          protocol: 'Tcp'
-        }
-      ]
-      resources: {
-        requests: {
-          cpu: 2
-          memoryInGB: '2'
-        }
-      }
-    }
-  }
-]
-param name = 'cicgmin001'
-// Non-required parameters
-param ipAddress = {
-  ports: [
-    {
-      port: 443
-      protocol: 'Tcp'
-    }
-  ]
-}
-```
-
-</details>
-<p>
-
-### Example 2: _Using CMK _
+### Example 1: _Using CMK _
 
 This instance deploys the module with a customer-managed key (CMK).
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/encr]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
 
 
 <details>
@@ -474,6 +322,159 @@ param managedIdentities = {
 </details>
 <p>
 
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
+  params: {
+    // Required parameters
+    availabilityZone: -1
+    containers: [
+      {
+        name: 'az-aci-x-001'
+        properties: {
+          image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+          ports: [
+            {
+              port: 443
+              protocol: 'Tcp'
+            }
+          ]
+          resources: {
+            requests: {
+              cpu: 2
+              memoryInGB: '2'
+            }
+          }
+        }
+      }
+    ]
+    name: 'cicgmin001'
+    // Non-required parameters
+    ipAddress: {
+      ports: [
+        {
+          port: 443
+          protocol: 'Tcp'
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
+    "containers": {
+      "value": [
+        {
+          "name": "az-aci-x-001",
+          "properties": {
+            "image": "mcr.microsoft.com/azuredocs/aci-helloworld",
+            "ports": [
+              {
+                "port": 443,
+                "protocol": "Tcp"
+              }
+            ],
+            "resources": {
+              "requests": {
+                "cpu": 2,
+                "memoryInGB": "2"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "name": {
+      "value": "cicgmin001"
+    },
+    // Non-required parameters
+    "ipAddress": {
+      "value": {
+        "ports": [
+          {
+            "port": 443,
+            "protocol": "Tcp"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-instance/container-group:<version>'
+
+// Required parameters
+param availabilityZone = -1
+param containers = [
+  {
+    name: 'az-aci-x-001'
+    properties: {
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 443
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: '2'
+        }
+      }
+    }
+  }
+]
+param name = 'cicgmin001'
+// Non-required parameters
+param ipAddress = {
+  ports: [
+    {
+      port: 443
+      protocol: 'Tcp'
+    }
+  ]
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _Using only defaults and low memory containers_
 
 This instance deploys the module with the minimum set of required parameters and with low memory.
@@ -724,10 +725,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
     ]
     name: '<name>'
     // Non-required parameters
-    containerGroupProfile: {
-      resourceId: '<resourceId>'
-      revision: 1
-    }
     extensions: [
       {
         name: 'vk-realtime-metrics'
@@ -772,10 +769,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
-    }
-    standbyPoolProfile: {
-      failContainerGroupCreateOnReuseFailure: false
-      resourceId: '<resourceId>'
     }
     tags: {
       Environment: 'Non-Prod'
@@ -887,12 +880,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       "value": "<name>"
     },
     // Non-required parameters
-    "containerGroupProfile": {
-      "value": {
-        "resourceId": "<resourceId>",
-        "revision": 1
-      }
-    },
     "extensions": {
       "value": [
         {
@@ -950,12 +937,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
-      }
-    },
-    "standbyPoolProfile": {
-      "value": {
-        "failContainerGroupCreateOnReuseFailure": false,
-        "resourceId": "<resourceId>"
       }
     },
     "tags": {
@@ -1062,10 +1043,6 @@ param containers = [
 ]
 param name = '<name>'
 // Non-required parameters
-param containerGroupProfile = {
-  resourceId: '<resourceId>'
-  revision: 1
-}
 param extensions = [
   {
     name: 'vk-realtime-metrics'
@@ -1110,10 +1087,6 @@ param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
-}
-param standbyPoolProfile = {
-  failContainerGroupCreateOnReuseFailure: false
-  resourceId: '<resourceId>'
 }
 param tags = {
   Environment: 'Non-Prod'
@@ -1400,7 +1373,138 @@ param subnets = [
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 6: _Deploying with standby container group pool_
+
+This instance deploys the module with the parameters required to have the container instance used a standby container pool.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/standby]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
+  params: {
+    // Required parameters
+    availabilityZone: -1
+    containers: [
+      {
+        name: 'az-aci-x-001'
+        properties: {
+          configMap: {
+            keyValuePairs: {
+              aKey: 'aValue'
+            }
+          }
+        }
+      }
+    ]
+    name: 'cicgsb001'
+    // Non-required parameters
+    containerGroupProfile: {
+      resourceId: '<resourceId>'
+      revision: 1
+    }
+    standbyPoolProfile: {
+      failContainerGroupCreateOnReuseFailure: false
+      resourceId: '<resourceId>'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
+    "containers": {
+      "value": [
+        {
+          "name": "az-aci-x-001",
+          "properties": {
+            "configMap": {
+              "keyValuePairs": {
+                "aKey": "aValue"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "name": {
+      "value": "cicgsb001"
+    },
+    // Non-required parameters
+    "containerGroupProfile": {
+      "value": {
+        "resourceId": "<resourceId>",
+        "revision": 1
+      }
+    },
+    "standbyPoolProfile": {
+      "value": {
+        "failContainerGroupCreateOnReuseFailure": false,
+        "resourceId": "<resourceId>"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-instance/container-group:<version>'
+
+// Required parameters
+param availabilityZone = -1
+param containers = [
+  {
+    name: 'az-aci-x-001'
+    properties: {
+      configMap: {
+        keyValuePairs: {
+          aKey: 'aValue'
+        }
+      }
+    }
+  }
+]
+param name = 'cicgsb001'
+// Non-required parameters
+param containerGroupProfile = {
+  resourceId: '<resourceId>'
+  revision: 1
+}
+param standbyPoolProfile = {
+  failContainerGroupCreateOnReuseFailure: false
+  resourceId: '<resourceId>'
+}
+```
+
+</details>
+<p>
+
+### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1741,12 +1845,12 @@ The properties of the container instance.
 - Required: Yes
 - Type: object
 
-**Required parameters**
+**Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`image`](#parameter-containerspropertiesimage) | string | The name of the container source image. |
-| [`resources`](#parameter-containerspropertiesresources) | object | The resource requirements of the container instance. |
+| [`image`](#parameter-containerspropertiesimage) | string | The name of the container source image. Required if no containerGroupProfile is provided. |
+| [`resources`](#parameter-containerspropertiesresources) | object | The resource requirements of the container instance.  Required if no containerGroupProfile is provided. |
 
 **Optional parameters**
 
@@ -1763,16 +1867,16 @@ The properties of the container instance.
 
 ### Parameter: `containers.properties.image`
 
-The name of the container source image.
+The name of the container source image. Required if no containerGroupProfile is provided.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `containers.properties.resources`
 
-The resource requirements of the container instance.
+The resource requirements of the container instance.  Required if no containerGroupProfile is provided.
 
-- Required: Yes
+- Required: No
 - Type: object
 
 **Required parameters**
@@ -2979,7 +3083,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
