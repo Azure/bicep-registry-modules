@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/storage/storage-account/CHANGELOG.md).
 
+## 0.30.0
+
+### Changes
+
+- Updated `publicNetworkAccess` enum to include `SecuredByPerimeter`
+
+### Breaking Changes
+
+- None
+
 ## 0.29.0
 
 ### Changes

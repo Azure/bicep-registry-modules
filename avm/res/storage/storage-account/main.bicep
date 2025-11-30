@@ -170,6 +170,7 @@ param allowedCopyScope string?
 @allowed([
   'Enabled'
   'Disabled'
+  'SecuredByPerimeter'
 ])
 param publicNetworkAccess string?
 
