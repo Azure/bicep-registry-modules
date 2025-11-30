@@ -205,10 +205,10 @@ module testDeployment '../../../main.bicep' = [
         ]
         defaultAccess: 'User'
       }
-      standbyPoolProfile: {
-        failContainerGroupCreateOnReuseFailure: false
-        resourceId: nestedDependencies.outputs.standbyContainerGroupPoolResourceId
-      }
+      // standbyPoolProfile: {
+      //   failContainerGroupCreateOnReuseFailure: false
+      //   resourceId: nestedDependencies.outputs.standbyContainerGroupPoolResourceId
+      // }
     }
   }
 ]
