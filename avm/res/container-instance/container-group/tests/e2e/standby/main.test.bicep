@@ -69,14 +69,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      ipAddress: {
-        ports: [
-          {
-            protocol: 'Tcp'
-            port: 443
-          }
-        ]
-      }
       containerGroupProfile: {
         resourceId: nestedDependencies.outputs.containerGroupProfileResourceId
         revision: 1
