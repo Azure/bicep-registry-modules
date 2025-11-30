@@ -46,12 +46,7 @@ resource profile 'Microsoft.ContainerInstance/containerGroupProfiles@2025-09-01'
             }
           }
           securityContext: {
-            privileged: true
-            capabilities: {
-              add: [
-                'Privileged'
-              ]
-            }
+            privileged: false
           }
         }
       }
