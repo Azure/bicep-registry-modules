@@ -18,7 +18,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added `keyValuePairType` exported type for generic key-value pairs
 - Improved type safety and IntelliSense support for IPAM pool allocations
 - Parameter `addressPrefixes`: Changed from `array` to `ipAddressesType` discriminated union. Now requires `by: 'addressPrefixes'` discriminator with `addressPrefixes` array, or `by: 'ipam'` with `ipamPoolPrefixAllocations`
-- Parameter `ipamPoolNumberOfIpAddres`*: Removed. IPAM allocations now use `cidr` property (e.g., `/24`) which automatically converts to number of addresses
+- Parameter `ipamPoolNumberOfIpAddresses`*: Removed. IPAM allocations now use `cidr` property (e.g., `/24`) which automatically converts to number of addresses
 - Subnet type `addressPrefix`, `addressPrefixes`, `ipamPoolPrefixAllocations` : Replaced by single `addressSpace` property using `subnetIpAddressesType` discriminated union
 
 ### Breaking Changes
