@@ -26,23 +26,9 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: resourceLocation
-  tags: {
-    SecurityControl: 'Ignore' // ignore security policies imposed on testing subscriptions
-  }
-}
-
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  params: {
-    // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
-    location: resourceLocation
-    managedIdentityName: 'dep-${namePrefix}-msi-ds-${serviceShort}'
-    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-  }
 }
 
 // ============== //
@@ -57,13 +43,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      publicNetworkAccess: 'Disabled'
-      replications: [
-        {
-          name: nestedDependencies.outputs.pairedRegionName
-          location: nestedDependencies.outputs.pairedRegionName
-        }
-      ]
+      acrSku: 'Standard'
     }
   }
 ]

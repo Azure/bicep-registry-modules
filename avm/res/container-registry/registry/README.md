@@ -66,14 +66,8 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     // Required parameters
     name: 'crrmin001'
     // Non-required parameters
+    acrSku: 'Standard'
     location: '<location>'
-    publicNetworkAccess: 'Disabled'
-    replications: [
-      {
-        location: '<location>'
-        name: '<name>'
-      }
-    ]
   }
 }
 ```
@@ -95,19 +89,11 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       "value": "crrmin001"
     },
     // Non-required parameters
+    "acrSku": {
+      "value": "Standard"
+    },
     "location": {
       "value": "<location>"
-    },
-    "publicNetworkAccess": {
-      "value": "Disabled"
-    },
-    "replications": {
-      "value": [
-        {
-          "location": "<location>",
-          "name": "<name>"
-        }
-      ]
     }
   }
 }
@@ -126,14 +112,8 @@ using 'br/public:avm/res/container-registry/registry:<version>'
 // Required parameters
 param name = 'crrmin001'
 // Non-required parameters
+param acrSku = 'Standard'
 param location = '<location>'
-param publicNetworkAccess = 'Disabled'
-param replications = [
-  {
-    location: '<location>'
-    name: '<name>'
-  }
-]
 ```
 
 </details>
@@ -788,7 +768,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    exportPolicyStatus: 'disabled'
+    exportPolicyStatus: 'enabled'
     location: '<location>'
     privateEndpoints: [
       {
@@ -802,7 +782,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         subnetResourceId: '<subnetResourceId>'
       }
     ]
-    publicNetworkAccess: 'Disabled'
     quarantinePolicyStatus: 'enabled'
     replications: [
       {
@@ -863,7 +842,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       ]
     },
     "exportPolicyStatus": {
-      "value": "disabled"
+      "value": "enabled"
     },
     "location": {
       "value": "<location>"
@@ -881,9 +860,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
-    },
-    "publicNetworkAccess": {
-      "value": "Disabled"
     },
     "quarantinePolicyStatus": {
       "value": "enabled"
@@ -944,7 +920,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param exportPolicyStatus = 'disabled'
+param exportPolicyStatus = 'enabled'
 param location = '<location>'
 param privateEndpoints = [
   {
@@ -958,7 +934,6 @@ param privateEndpoints = [
     subnetResourceId: '<subnetResourceId>'
   }
 ]
-param publicNetworkAccess = 'Disabled'
 param quarantinePolicyStatus = 'enabled'
 param replications = [
   {

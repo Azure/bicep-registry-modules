@@ -83,8 +83,7 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      exportPolicyStatus: 'disabled'
-      publicNetworkAccess: 'Disabled'
+      exportPolicyStatus: 'enabled'
       azureADAuthenticationAsArmPolicyStatus: 'enabled'
       softDeletePolicyStatus: 'disabled'
       softDeletePolicyDays: 7
