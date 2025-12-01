@@ -452,7 +452,7 @@ type ipamPoolPrefixAllocationsType = {
   @description('Required. The resource ID of the IPAM pool to allocate the address prefix from.')
   ipamPoolResourceId: string
 
-  @description('Required. The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses).')
+  @description('Required. The CIDR prefix size to allocate from the IPAM pool (e.g., `/24` for a /24 subnet with 256 addresses).')
   cidr: cidrPrefixType
 }
 
