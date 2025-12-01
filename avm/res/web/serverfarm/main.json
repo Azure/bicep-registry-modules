@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "12751842228698714349"
+      "version": "0.39.26.7824",
+      "templateHash": "11416547858083431424"
     },
     "name": "App Service Plan",
     "description": "This module deploys an App Service Plan."
@@ -327,6 +327,13 @@
         "description": "Optional. Zone Redundant server farms can only be used on Premium or ElasticPremium SKU tiers within ZRS Supported regions (https://learn.microsoft.com/en-us/azure/storage/common/redundancy-regions-zrs)."
       }
     },
+    "hyperV": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. If Hyper-V container app service plan true, false otherwise."
+      }
+    },
     "lock": {
       "$ref": "#/definitions/lockType",
       "nullable": true,
@@ -428,7 +435,8 @@
         "reserved": "[parameters('reserved')]",
         "targetWorkerCount": "[parameters('targetWorkerCount')]",
         "targetWorkerSizeId": "[parameters('targetWorkerSize')]",
-        "zoneRedundant": "[parameters('zoneRedundant')]"
+        "zoneRedundant": "[parameters('zoneRedundant')]",
+        "hyperV": "[parameters('hyperV')]"
       }
     },
     "appServicePlan_diagnosticSettings": {
