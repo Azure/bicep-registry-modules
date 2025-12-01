@@ -1,4 +1,3 @@
-
 metadata name = 'avm/ptn/alz/empty'
 metadata description = '''
 Azure Landing Zones - Bicep - Empty
@@ -248,10 +247,6 @@ resource mgSubPlacement 'Microsoft.Management/managementGroups/subscriptions@202
 module mgCustomPolicyDefinitionsWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforeCustomPolicyDefinitions): if (waitForConsistencyCounterBeforeCustomPolicyDefinitions > 0 && !(empty(managementGroupCustomPolicyDefinitions))) {
     name: '${deploymentNames.mgCustomPolicyDefinitionsWait}-${index}'
-    dependsOn: [
-      mg
-      mgExisting
-    ]
   }
 ]
 
@@ -271,10 +266,6 @@ module mgCustomPolicyDefinitions 'modules/policy-definitions.bicep' = if (!empty
 module mgCustomPolicySetDefinitionsWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforeCustomPolicySetDefinitions): if (waitForConsistencyCounterBeforeCustomPolicySetDefinitions > 0 && !empty(managementGroupCustomPolicySetDefinitions)) {
     name: '${deploymentNames.mgCustomPolicySetDefinitionsWait}-${index}'
-    dependsOn: [
-      mg
-      mgExisting
-    ]
   }
 ]
 
@@ -295,10 +286,6 @@ module mgCustomPolicySetDefinitions 'modules/policy-set-definitions.bicep' = if 
 module mgPolicyAssignmentsWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforePolicyAssignments): if (waitForConsistencyCounterBeforePolicyAssignments > 0 && !empty(filteredManagementGroupPolicyAssignments)) {
     name: '${deploymentNames.mgPolicyAssignmentsWait}-${index}'
-    dependsOn: [
-      mg
-      mgExisting
-    ]
   }
 ]
 
@@ -345,10 +332,6 @@ module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.
 module mgRoleDefinitionsWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforeCustomRoleDefinitions): if (waitForConsistencyCounterBeforeCustomRoleDefinitions > 0 && !empty(managementGroupCustomRoleDefinitions)) {
     name: '${deploymentNames.mgRoleDefinitionsWait}-${index}'
-    dependsOn: [
-      mg
-      mgExisting
-    ]
   }
 ]
 
@@ -379,10 +362,6 @@ module mgRoleDefinitions 'br/public:avm/ptn/authorization/role-definition:0.1.1'
 module mgRoleAssignmentsWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforeRoleAssignments): if (waitForConsistencyCounterBeforeRoleAssignments > 0 && !empty(formattedRoleAssignments)) {
     name: '${deploymentNames.mgRoleAssignmentsWait}-${index}'
-    dependsOn: [
-      mg
-      mgExisting
-    ]
   }
 ]
 
@@ -551,6 +530,3 @@ type roleDefinitionType = {
   @description('Optional. The permission not data actions of the custom role definition.')
   notDataActions: resourceInput<'Microsoft.Authorization/roleDefinitions@2022-05-01-preview'>.properties.permissions[*].notDataActions?
 }
-
-
-
