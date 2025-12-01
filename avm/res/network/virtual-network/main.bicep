@@ -503,7 +503,7 @@ type keyValuePairType = {
 }
 
 // Functions to get number of hosts in a CIDR prefix
-@description('Returns the number of hosts available for a given CIDR prefix.')
+@description('Returns a lookup table mapping CIDR prefixes to their corresponding number of IP addresses.')
 func getCidrHostCounts() keyValuePairType => {
   '/1': '2147483648' // 2,147,483,648 addresses
   '/2': '1073741824' // 1,073,741,824 addresses
