@@ -998,6 +998,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
           by: 'addressPrefix'
         }
         name: 'AzureBastionSubnet'
+        networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
       {
         addressSpace: {
@@ -1073,7 +1074,8 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
             "addressPrefix": "10.1.0.64/26",
             "by": "addressPrefix"
           },
-          "name": "AzureBastionSubnet"
+          "name": "AzureBastionSubnet",
+          "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>"
         },
         {
           "addressSpace": {
@@ -1142,6 +1144,7 @@ param subnets = [
       by: 'addressPrefix'
     }
     name: 'AzureBastionSubnet'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
   }
   {
     addressSpace: {
@@ -1599,12 +1602,12 @@ Array of IPAM pool prefix allocations specifying which pools to allocate address
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`cidr`](#parameter-addressprefixesby-ipamipampoolprefixallocationscidr) | string | The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses). |
+| [`cidr`](#parameter-addressprefixesby-ipamipampoolprefixallocationscidr) | string | The CIDR prefix size to allocate from the IPAM pool (e.g., `/24` for a /24 subnet with 256 addresses). |
 | [`ipamPoolResourceId`](#parameter-addressprefixesby-ipamipampoolprefixallocationsipampoolresourceid) | string | The resource ID of the IPAM pool to allocate the address prefix from. |
 
 ### Parameter: `addressPrefixes.by-ipam.ipamPoolPrefixAllocations.cidr`
 
-The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses).
+The CIDR prefix size to allocate from the IPAM pool (e.g., `/24` for a /24 subnet with 256 addresses).
 
 - Required: Yes
 - Type: string
@@ -2243,12 +2246,12 @@ Array of IPAM pool prefix allocations specifying which pools to allocate address
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`cidr`](#parameter-subnetsaddressspaceby-ipamipampoolprefixallocationscidr) | string | The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses). |
+| [`cidr`](#parameter-subnetsaddressspaceby-ipamipampoolprefixallocationscidr) | string | The CIDR prefix size to allocate from the IPAM pool (e.g., `/24` for a /24 subnet with 256 addresses). |
 | [`ipamPoolResourceId`](#parameter-subnetsaddressspaceby-ipamipampoolprefixallocationsipampoolresourceid) | string | The resource ID of the IPAM pool to allocate the address prefix from. |
 
 ### Parameter: `subnets.addressSpace.by-ipam.ipamPoolPrefixAllocations.cidr`
 
-The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses).
+The CIDR prefix size to allocate from the IPAM pool (e.g., `/24` for a /24 subnet with 256 addresses).
 
 - Required: Yes
 - Type: string
@@ -2578,19 +2581,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`>Any_other_property<`](#parameter-tags>any_other_property<) | string | A key-value pair. (e.g., Environment: Production) |
-
-### Parameter: `tags.>Any_other_property<`
-
-A key-value pair. (e.g., Environment: Production)
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `virtualNetworkBgpCommunity`
 
 The BGP community associated with the virtual network.
@@ -2626,7 +2616,7 @@ If the encrypted VNet allows VM that does not support encryption. Can only be us
 | Function | Description |
 | :-- | :-- |
 | `getCidrHostCount` | Returns the number of hosts available for a given CIDR prefix. |
-| `getCidrHostCounts` | Returns the number of hosts available for a given CIDR prefix. |
+| `getCidrHostCounts` | Returns a lookup table mapping CIDR prefixes to their corresponding number of IP addresses. |
 
 ## Outputs
 

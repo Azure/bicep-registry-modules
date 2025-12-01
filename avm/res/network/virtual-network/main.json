@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "10131257606361885705"
+      "templateHash": "10522197727149107230"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet)."
@@ -298,7 +298,7 @@
         "cidr": {
           "$ref": "#/definitions/cidrPrefixType",
           "metadata": {
-            "description": "Required. The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses)."
+            "description": "Required. The CIDR prefix size to allocate from the IPAM pool (e.g., `/24` for a /24 subnet with 256 addresses)."
           }
         }
       },
@@ -715,7 +715,7 @@
             }
           },
           "metadata": {
-            "description": "Returns the number of hosts available for a given CIDR prefix."
+            "description": "Returns a lookup table mapping CIDR prefixes to their corresponding number of IP addresses."
           }
         },
         "getCidrHostCount": {
@@ -855,11 +855,14 @@
       }
     },
     "tags": {
-      "$ref": "#/definitions/keyValuePairType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/virtualNetworks@2025-01-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
