@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "17877109603856139203"
+      "templateHash": "10131257606361885705"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet)."
@@ -428,7 +428,10 @@
       "type": "object",
       "properties": {},
       "additionalProperties": {
-        "type": "string"
+        "type": "string",
+        "metadata": {
+          "description": "Required. A key-value pair. (e.g., Environment: Production)"
+        }
       },
       "metadata": {
         "__bicep_export!": true
@@ -852,7 +855,7 @@
       }
     },
     "tags": {
-      "type": "object",
+      "$ref": "#/definitions/keyValuePairType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Tags of the resource."

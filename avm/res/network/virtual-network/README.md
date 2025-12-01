@@ -2578,6 +2578,19 @@ Tags of the resource.
 - Required: No
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-tags>any_other_property<) | string | A key-value pair. (e.g., Environment: Production) |
+
+### Parameter: `tags.>Any_other_property<`
+
+A key-value pair. (e.g., Environment: Production)
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `virtualNetworkBgpCommunity`
 
 The BGP community associated with the virtual network.
