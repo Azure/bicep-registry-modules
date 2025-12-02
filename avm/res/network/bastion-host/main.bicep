@@ -155,7 +155,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.9.0' = if (empty(bastionSubnetPublicIpResourceId) && (skuName != 'Developer') && (!enablePrivateOnlyBastion)) {
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.9.1' = if (empty(bastionSubnetPublicIpResourceId) && (skuName != 'Developer') && (!enablePrivateOnlyBastion)) {
   name: '${uniqueString(deployment().name, location)}-Bastion-PIP'
   params: {
     name: publicIPAddressObject.name
@@ -212,7 +212,7 @@ var bastionpropertiesVar = union(
     : {})
 )
 
-resource azureBastion 'Microsoft.Network/bastionHosts@2024-07-01' = {
+resource azureBastion 'Microsoft.Network/bastionHosts@2025-01-01' = {
   name: name
   location: location
   tags: tags ?? {} // The empty object is a workaround for error when deploying with the Developer SKU. The error seems unrelated to the tags, but it is resolved by adding the empty object.
