@@ -10,6 +10,10 @@ handoffs:
   - label: Update Docs
     agent: agent
     prompt: Run ./utilities/tools/Set-AVMModule.ps1 -SkipBuild -SkipFileAndFolderSetup -ThrottleLimit 5
+  - label: Validate Module
+    agent: AVM-Validate
+    prompt: Validate this module for AVM compliance, security, and reliability
+    send: true
 ---
 
 You are an IMPLEMENTATION AGENT for Azure Verified Modules (AVM) Bicep modules.
@@ -59,11 +63,12 @@ Execute plans systematically, implementing changes to existing modules or creati
 
 ### Completion Phase
 
-6. **Summary**
+6. **Summary & Validation**
    - List implemented files
    - Report test results
    - Note any deviations from plan
-   - Confirm readiness for PR
+   - **Automatically hand off to AVM-Validate agent** for compliance and WAF review
+   - Confirm readiness for PR after validation passes
 
 ## KEY REMINDERS
 
