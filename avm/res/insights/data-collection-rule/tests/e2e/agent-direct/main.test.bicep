@@ -34,7 +34,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     dataCollectionEndpointName: 'dep-${namePrefix}-dce-${serviceShort}'
-    storageAccountName: take('dep${namePrefix}sa${guid(serviceShort)}', 24)
+    storageAccountName: take('dep${namePrefix}sa${uniqueString(deployment().name)}', 24)
     eventHubNamespaceName: 'dep-${namePrefix}-ehns-${serviceShort}'
     location: resourceLocation
   }
