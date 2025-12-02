@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "607499648260820830"
+      "templateHash": "16245032338754367530"
     },
     "name": "Data Collection Rules",
     "description": "This module deploys a Data Collection Rule."
@@ -391,6 +391,15 @@
           ],
           "metadata": {
             "description": "Required. The platform type specifies the type of resources this rule can apply to."
+          }
+        },
+        "dataSources": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Insights/dataCollectionRules@2024-03-11#properties/properties/properties/dataSources"
+            },
+            "description": "Required. Specification of data sources that will be collected."
           }
         },
         "dataFlows": {

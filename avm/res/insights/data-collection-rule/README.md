@@ -70,7 +70,6 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
             'blobNamedPerf'
             'myEh1'
             'tableNamedPerf'
-            'tableUnnamed'
           ]
           streams: [
             'Microsoft-Perf'
@@ -78,29 +77,12 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
         }
         {
           destinations: [
-            'blobNamedWin'
+            'blobNamedPerf'
             'myEh1'
-            'tableNamedWin'
-            'tableUnnamed'
+            'tableNamedPerf'
           ]
           streams: [
             'Microsoft-Event'
-          ]
-        }
-        {
-          destinations: [
-            'blobNamedIIS'
-          ]
-          streams: [
-            'Microsoft-W3CIISLog'
-          ]
-        }
-        {
-          destinations: [
-            'blobNamedTextLogs'
-          ]
-          streams: [
-            'Custom-Text-logs'
           ]
         }
       ]
@@ -146,7 +128,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
       }
       kind: 'AgentDirectToStore'
     }
-    name: 'idcragd001'
+    name: 'idcrag001'
     // Non-required parameters
     location: '<location>'
     tags: {
@@ -178,8 +160,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
             "destinations": [
               "blobNamedPerf",
               "myEh1",
-              "tableNamedPerf",
-              "tableUnnamed"
+              "tableNamedPerf"
             ],
             "streams": [
               "Microsoft-Perf"
@@ -187,29 +168,12 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
           },
           {
             "destinations": [
-              "blobNamedWin",
+              "blobNamedPerf",
               "myEh1",
-              "tableNamedWin",
-              "tableUnnamed"
+              "tableNamedPerf"
             ],
             "streams": [
               "Microsoft-Event"
-            ]
-          },
-          {
-            "destinations": [
-              "blobNamedIIS"
-            ],
-            "streams": [
-              "Microsoft-W3CIISLog"
-            ]
-          },
-          {
-            "destinations": [
-              "blobNamedTextLogs"
-            ],
-            "streams": [
-              "Custom-Text-logs"
             ]
           }
         ],
@@ -257,7 +221,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
       }
     },
     "name": {
-      "value": "idcragd001"
+      "value": "idcrag001"
     },
     // Non-required parameters
     "location": {
@@ -292,7 +256,6 @@ param dataCollectionRuleProperties = {
         'blobNamedPerf'
         'myEh1'
         'tableNamedPerf'
-        'tableUnnamed'
       ]
       streams: [
         'Microsoft-Perf'
@@ -300,29 +263,12 @@ param dataCollectionRuleProperties = {
     }
     {
       destinations: [
-        'blobNamedWin'
+        'blobNamedPerf'
         'myEh1'
-        'tableNamedWin'
-        'tableUnnamed'
+        'tableNamedPerf'
       ]
       streams: [
         'Microsoft-Event'
-      ]
-    }
-    {
-      destinations: [
-        'blobNamedIIS'
-      ]
-      streams: [
-        'Microsoft-W3CIISLog'
-      ]
-    }
-    {
-      destinations: [
-        'blobNamedTextLogs'
-      ]
-      streams: [
-        'Custom-Text-logs'
       ]
     }
   ]
@@ -368,7 +314,7 @@ param dataCollectionRuleProperties = {
   }
   kind: 'AgentDirectToStore'
 }
-param name = 'idcragd001'
+param name = 'idcrag001'
 // Non-required parameters
 param location = '<location>'
 param tags = {
@@ -4124,6 +4070,7 @@ To use this variant, set the property `kind` to `AgentDirectToStore`.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`dataFlows`](#parameter-datacollectionrulepropertieskind-agentdirecttostoredataflows) | array | The specification of data flows. |
+| [`dataSources`](#parameter-datacollectionrulepropertieskind-agentdirecttostoredatasources) | object | Specification of data sources that will be collected. |
 | [`destinations`](#parameter-datacollectionrulepropertieskind-agentdirecttostoredestinations) | object | Specification of destinations that can be used in data flows. |
 | [`kind`](#parameter-datacollectionrulepropertieskind-agentdirecttostorekind) | string | The platform type specifies the type of resources this rule can apply to. |
 
@@ -4139,6 +4086,13 @@ The specification of data flows.
 
 - Required: Yes
 - Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.dataSources`
+
+Specification of data sources that will be collected.
+
+- Required: Yes
+- Type: object
 
 ### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.destinations`
 

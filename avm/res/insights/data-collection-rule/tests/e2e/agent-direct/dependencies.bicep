@@ -75,6 +75,16 @@ resource eventHubNamespace 'Microsoft.EventHub/namespaces@2025-05-01-preview' = 
   }
 }
 
+resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2025-05-01-preview' = {
+  parent: eventHubNamespace
+  name: 'insights-agentdirectstore'
+  properties: {
+    messageRetentionInDays: 1
+    partitionCount: 2
+    status: 'Active'
+  }
+}
+
 @description('The resource ID of the created Storage Account.')
 output storageAccountResourceId string = azureStorage.id
 
@@ -84,8 +94,8 @@ output storageContainerName string = blobContainer.name
 @description('The name of the created Storage Table.')
 output storageTableName string = storageTable.name
 
-@description('The resource ID of the created Event Hub Namespace.')
-output eventHubNamespaceResourceId string = eventHubNamespace.id
+@description('The resource ID of the created Event Hub.')
+output eventHubResourceId string = eventHub.id
 
 @description('The resource ID of the created Data Collection Endpoint.')
 output dataCollectionEndpointResourceId string = dataCollectionEndpoint.id

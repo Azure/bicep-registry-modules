@@ -13,7 +13,7 @@ param resourceGroupName string = 'dep-${namePrefix}-insights.dataCollectionRules
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'idcragd'
+param serviceShort string = 'idcrag'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -81,7 +81,6 @@ module testDeployment '../../../main.bicep' = [
               'myEh1'
               'blobNamedPerf'
               'tableNamedPerf'
-              'tableUnnamed'
             ]
           }
           {
@@ -90,25 +89,8 @@ module testDeployment '../../../main.bicep' = [
             ]
             destinations: [
               'myEh1'
-              'blobNamedWin'
-              'tableNamedWin'
-              'tableUnnamed'
-            ]
-          }
-          {
-            streams: [
-              'Microsoft-W3CIISLog'
-            ]
-            destinations: [
-              'blobNamedIIS'
-            ]
-          }
-          {
-            streams: [
-              'Custom-Text-logs'
-            ]
-            destinations: [
-              'blobNamedTextLogs'
+              'blobNamedPerf'
+              'tableNamedPerf'
             ]
           }
         ]
@@ -130,7 +112,7 @@ module testDeployment '../../../main.bicep' = [
           ]
           eventHubsDirect: [
             {
-              eventHubResourceId: nestedDependencies.outputs.eventHubNamespaceResourceId
+              eventHubResourceId: nestedDependencies.outputs.eventHubResourceId
               name: 'myEh1'
             }
           ]
