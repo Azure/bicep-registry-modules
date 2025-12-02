@@ -2227,6 +2227,8 @@ param tags = {
 
 This instance collects metrics from Azure resources using Platform Telemetry and sends them to a Log Analytics workspace.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/plat-tele]
+
 
 <details>
 
@@ -2234,7 +2236,6 @@ This instance collects metrics from Azure resources using Platform Telemetry and
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -3193,6 +3194,8 @@ param tags = {
 
 This instance deploys the module to setup collection of custom logs and ingestion-time transformation.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/wksp-trans]
+
 
 <details>
 
@@ -3200,7 +3203,6 @@ This instance deploys the module to setup collection of custom logs and ingestio
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -3388,6 +3390,7 @@ The kind of data collection rule.
 | [`All`](#variant-datacollectionrulepropertieskind-all) | The type for the properties of the data collection rule of the kind 'All'. |
 | [`AgentSettings`](#variant-datacollectionrulepropertieskind-agentsettings) | The type for the properties of the 'AgentSettings' data collection rule. |
 | [`Direct`](#variant-datacollectionrulepropertieskind-direct) | The type for the properties of the 'Direct' data collection rule. |
+| [`AgentDirectToStore`](#variant-datacollectionrulepropertieskind-agentdirecttostore) | The type for the properties of the 'AgentDirectToStore' data collection rule. |
 | [`WorkspaceTransforms`](#variant-datacollectionrulepropertieskind-workspacetransforms) | The type for the properties of the 'WorkspaceTransforms' data collection rule. |
 | [`PlatformTelemetry`](#variant-datacollectionrulepropertieskind-platformtelemetry) | The type for the properties of the 'PlatformTelemetry' data collection rule. |
 
@@ -3773,6 +3776,59 @@ The resource ID of the data collection endpoint that this rule can be used with.
 ### Parameter: `dataCollectionRuleProperties.kind-Direct.description`
 
 Description of the data collection rule.
+
+- Required: No
+- Type: string
+
+### Variant: `dataCollectionRuleProperties.kind-AgentDirectToStore`
+The type for the properties of the 'AgentDirectToStore' data collection rule.
+
+To use this variant, set the property `kind` to `AgentDirectToStore`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataFlows`](#parameter-datacollectionrulepropertieskind-agentdirecttostoredataflows) | array | The specification of data flows. |
+| [`destinations`](#parameter-datacollectionrulepropertieskind-agentdirecttostoredestinations) | object | Specification of destinations that can be used in data flows. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-agentdirecttostorekind) | string | The platform type specifies the type of resources this rule can apply to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-datacollectionrulepropertieskind-agentdirecttostoredescription) | string | The resource ID of the data collection endpoint that this rule can be used with. |
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.dataFlows`
+
+The specification of data flows.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.destinations`
+
+Specification of destinations that can be used in data flows.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.kind`
+
+The platform type specifies the type of resources this rule can apply to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AgentDirectToStore'
+  ]
+  ```
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.description`
+
+The resource ID of the data collection endpoint that this rule can be used with.
 
 - Required: No
 - Type: string
