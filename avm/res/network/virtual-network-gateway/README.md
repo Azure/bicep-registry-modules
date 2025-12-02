@@ -2,6 +2,14 @@
 
 This module deploys a Virtual Network Gateway.
 
+You can reference the module as follows:
+```bicep
+module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -50,6 +58,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the VPN Active Active with BGP settings.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/activeActiveBGP]
+
 
 <details>
 
@@ -57,7 +67,6 @@ This instance deploys the module with the VPN Active Active with BGP settings.
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -198,6 +207,8 @@ param vpnType = 'RouteBased'
 
 This instance deploys the module with the VPN Active Active with APIPA BGP settings.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/activeActiveBgpAPIPA]
+
 
 <details>
 
@@ -205,7 +216,6 @@ This instance deploys the module with the VPN Active Active with APIPA BGP setti
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -370,6 +380,8 @@ param vpnType = 'RouteBased'
 
 This instance deploys the module with the VPN Active Active without BGP settings.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/activeActiveExistingPip]
+
 
 <details>
 
@@ -377,7 +389,6 @@ This instance deploys the module with the VPN Active Active without BGP settings
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -526,6 +537,8 @@ param vpnType = 'RouteBased'
 
 This instance deploys the module with the VPN Active Active without BGP settings.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/activeActiveNoBGP]
+
 
 <details>
 
@@ -533,7 +546,6 @@ This instance deploys the module with the VPN Active Active without BGP settings
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -674,6 +686,8 @@ param vpnType = 'RouteBased'
 
 This instance deploys the module with the VPN Active Passive with APIPA BGP settings.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/activePassiveBGP]
+
 
 <details>
 
@@ -681,7 +695,6 @@ This instance deploys the module with the VPN Active Passive with APIPA BGP sett
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -837,6 +850,8 @@ param vpnType = 'RouteBased'
 
 This instance deploys the module with the VPN Active Passive with APIPA BGP settings and existing primary public IP.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/activePassiveExistingPip]
+
 
 <details>
 
@@ -844,7 +859,6 @@ This instance deploys the module with the VPN Active Passive with APIPA BGP sett
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -1005,6 +1019,8 @@ param vpnType = 'RouteBased'
 
 This instance deploys the module with the VPN Active Passive without BGP settings.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/activePassiveNoBGP]
+
 
 <details>
 
@@ -1012,7 +1028,6 @@ This instance deploys the module with the VPN Active Passive without BGP setting
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -1153,6 +1168,8 @@ param vpnType = 'RouteBased'
 
 This instance deploys the module with custom routes configuration for Point-to-Site VPN clients.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/customRoute]
+
 
 <details>
 
@@ -1160,7 +1177,6 @@ This instance deploys the module with custom routes configuration for Point-to-S
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -1279,6 +1295,8 @@ param vpnType = 'RouteBased'
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -1286,7 +1304,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -1356,6 +1373,8 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 This instance deploys the module with the ExpressRoute set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/expressRoute]
+
 
 <details>
 
@@ -1363,7 +1382,6 @@ This instance deploys the module with the ExpressRoute set of required parameter
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -1373,15 +1391,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     name: 'nvger002'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
-    domainNameLabel: [
-      'dm-nvger'
-    ]
-    primaryPublicIPName: 'pip-nvger'
-    publicIpAvailabilityZones: [
-      1
-      2
-      3
-    ]
     skuName: 'ErGw1AZ'
   }
 }
@@ -1415,21 +1424,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "<virtualNetworkResourceId>"
     },
     // Non-required parameters
-    "domainNameLabel": {
-      "value": [
-        "dm-nvger"
-      ]
-    },
-    "primaryPublicIPName": {
-      "value": "pip-nvger"
-    },
-    "publicIpAvailabilityZones": {
-      "value": [
-        1,
-        2,
-        3
-      ]
-    },
     "skuName": {
       "value": "ErGw1AZ"
     }
@@ -1455,15 +1449,6 @@ param gatewayType = 'ExpressRoute'
 param name = 'nvger002'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
-param domainNameLabel = [
-  'dm-nvger'
-]
-param primaryPublicIPName = 'pip-nvger'
-param publicIpAvailabilityZones = [
-  1
-  2
-  3
-]
 param skuName = 'ErGw1AZ'
 ```
 
@@ -1474,6 +1459,8 @@ param skuName = 'ErGw1AZ'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -1481,7 +1468,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -1892,6 +1878,8 @@ param vpnType = 'RouteBased'
 
 This instance deploys the module with a SKU that does not support Availability Zones.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/vpn-no-az]
+
 
 <details>
 
@@ -1899,7 +1887,6 @@ This instance deploys the module with a SKU that does not support Availability Z
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -1982,6 +1969,8 @@ param skuName = 'VpnGw1'
 
 This instance deploys the module with the VPN set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/vpn]
+
 
 <details>
 
@@ -1989,7 +1978,6 @@ This instance deploys the module with the VPN set of required parameters.
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -2130,6 +2118,8 @@ param vpnType = 'RouteBased'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -2137,7 +2127,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -3855,10 +3844,10 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.9.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

@@ -12,6 +12,13 @@ param tags object?
 @description('Required. Name of the Container Apps Managed Environment.')
 param containerAppsEnvironmentName string
 
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+@description('Optional. Whether to allow or block all public traffic.')
+param publicNetworkAccess string = 'Disabled'
+
 @description('Required. Name of the Azure Container Registry.')
 param containerRegistryName string
 
@@ -106,6 +113,7 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.11.
         sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
       }
     }
+    publicNetworkAccess: publicNetworkAccess
     appInsightsConnectionString: appInsightsConnectionString
     zoneRedundant: zoneRedundant
     workloadProfiles: workloadProfiles

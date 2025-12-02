@@ -2,15 +2,29 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/operational-insights/workspace/CHANGELOG.md).
 
-## 0.12.1
+## 0.14.0
 
 ### Changes
 
-- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+- Added `defaultDataCollectionRuleResourceId` parameter.
+- Added `SecuredByPerimeter` to allowed values for `publicNetworkAccessForIngestion` and `publicNetworkAccessForQuery`.
+- Updated API version to `2025-07-01`.
+- Updated API version of the Sentinel onboarding to `2025-09-01`.
 
 ### Breaking Changes
 
 - None
+
+## 0.13.0
+
+### Changes
+
+- Updated LockType to 'avm-common-types version' `0.6.1`, enabling custom notes for locks.
+- Expanded documentation of diverse parameters
+
+### Breaking Changes
+
+- Changed lower bound of `tables.retentionInDays` & `tables.totalRetentionInDays` to `4` as per their official limits. To use the default, don't provide the value or use `null`. This replaces the previous `-1` value that translated to the default.
 
 ## 0.12.0
 

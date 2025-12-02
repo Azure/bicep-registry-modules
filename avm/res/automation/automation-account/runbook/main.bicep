@@ -68,7 +68,7 @@ var publishContentLink = empty(uri)
       uri: !empty(uri)
         ? (empty(scriptStorageAccountResourceId)
             ? uri
-            : '${uri}?${storageAccount.listAccountSas('2021-04-01', accountSasProperties).accountSasToken}')
+            : '${uri}?${storageAccount!.listAccountSas('2021-04-01', accountSasProperties).accountSasToken}')
         : null
       version: !empty(version) ? version : null
     }

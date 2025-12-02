@@ -2,6 +2,14 @@
 
 This module deploys a Log Analytics Workspace.
 
+You can reference the module as follows:
+```bicep
+module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -18,7 +26,7 @@ This module deploys a Log Analytics Workspace.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces)</li></ul> |
 | `Microsoft.OperationalInsights/workspaces/dataExports` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_dataexports.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/dataExports)</li></ul> |
 | `Microsoft.OperationalInsights/workspaces/dataSources` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_datasources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/dataSources)</li></ul> |
 | `Microsoft.OperationalInsights/workspaces/linkedServices` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_linkedservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/linkedServices)</li></ul> |
@@ -27,7 +35,7 @@ This module deploys a Log Analytics Workspace.
 | `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_storageinsightconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/storageInsightConfigs)</li></ul> |
 | `Microsoft.OperationalInsights/workspaces/tables` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/tables)</li></ul> |
 | `Microsoft.OperationsManagement/solutions` | 2015-11-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationsmanagement_solutions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions)</li></ul> |
-| `Microsoft.SecurityInsights/onboardingStates` | 2024-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.securityinsights_onboardingstates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2024-03-01/onboardingStates)</li></ul> |
+| `Microsoft.SecurityInsights/onboardingStates` | 2025-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.securityinsights_onboardingstates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2025-09-01/onboardingStates)</li></ul> |
 
 ## Usage examples
 
@@ -38,13 +46,17 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/operational-insights/workspace:<version>`.
 
 - [Advanced features](#example-1-advanced-features)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using Log Analytics Cluster with Customer-Managed-Keys](#example-2-using-log-analytics-cluster-with-customer-managed-keys)
+- [Using default Data Collection Rule](#example-3-using-default-data-collection-rule)
+- [Using only defaults](#example-4-using-only-defaults)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Advanced features_
 
-This instance deploys the module with advanced features like custom tables and data exports.
+This instance deploys the module with advanced features like custom tables, data exports & encryption.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/adv]
 
 
 <details>
@@ -53,7 +65,6 @@ This instance deploys the module with advanced features like custom tables and d
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'oiwadv001'
@@ -223,7 +234,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         ]
       }
     ]
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -543,9 +553,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -859,7 +866,6 @@ param linkedStorageAccounts = [
     ]
   }
 ]
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -982,9 +988,121 @@ param tags = {
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 2: _Using Log Analytics Cluster with Customer-Managed-Keys_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys a Log Analytics Cluster with Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity and links the Log Analytics Workspace to it.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because the Log Analytics Cluster resource is very restrictive when it comes to how many instance one can have and how to lifecycle them.
+For further information, please refer to: [ref](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/logs-dedicated-clusters?tabs=azure-portal#delete-cluster)
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
+  params: {
+    // Required parameters
+    name: 'oiwmhsmu001'
+    // Non-required parameters
+    dailyQuotaGb: 10
+    linkedServices: [
+      {
+        name: 'Cluster'
+        writeAccessResourceId: '<writeAccessResourceId>'
+      }
+    ]
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    skuName: 'LACluster'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "oiwmhsmu001"
+    },
+    // Non-required parameters
+    "dailyQuotaGb": {
+      "value": 10
+    },
+    "linkedServices": {
+      "value": [
+        {
+          "name": "Cluster",
+          "writeAccessResourceId": "<writeAccessResourceId>"
+        }
+      ]
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "skuName": {
+      "value": "LACluster"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operational-insights/workspace:<version>'
+
+// Required parameters
+param name = 'oiwmhsmu001'
+// Non-required parameters
+param dailyQuotaGb = 10
+param linkedServices = [
+  {
+    name: 'Cluster'
+    writeAccessResourceId: '<writeAccessResourceId>'
+  }
+]
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param skuName = 'LACluster'
+```
+
+</details>
+<p>
+
+### Example 3: _Using default Data Collection Rule_
+
+This instance deploys the module with a default Data Collection Rule.
 
 
 <details>
@@ -996,8 +1114,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
   name: 'workspaceDeployment'
   params: {
     // Required parameters
-    name: 'oiwmin001'
+    name: 'oiwdcr001'
     // Non-required parameters
+    defaultDataCollectionRuleResourceId: '<defaultDataCollectionRuleResourceId>'
     location: '<location>'
   }
 }
@@ -1017,9 +1136,12 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
   "parameters": {
     // Required parameters
     "name": {
-      "value": "oiwmin001"
+      "value": "oiwdcr001"
     },
     // Non-required parameters
+    "defaultDataCollectionRuleResourceId": {
+      "value": "<defaultDataCollectionRuleResourceId>"
+    },
     "location": {
       "value": "<location>"
     }
@@ -1038,17 +1160,20 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 using 'br/public:avm/res/operational-insights/workspace:<version>'
 
 // Required parameters
-param name = 'oiwmin001'
+param name = 'oiwdcr001'
 // Non-required parameters
+param defaultDataCollectionRuleResourceId = '<defaultDataCollectionRuleResourceId>'
 param location = '<location>'
 ```
 
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 4: _Using only defaults_
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
 
 <details>
@@ -1057,7 +1182,60 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: 'workspaceDeployment'
+  params: {
+    name: 'oiwmin001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "oiwmin001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operational-insights/workspace:<version>'
+
+param name = 'oiwmin001'
+```
+
+</details>
+<p>
+
+### Example 5: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
   params: {
     // Required parameters
     name: 'oiwmax001'
@@ -2049,9 +2227,11 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
 
 <details>
@@ -2060,7 +2240,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'oiwwaf001'
@@ -2189,7 +2368,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         ]
       }
     ]
-    location: '<location>'
     managedIdentities: {
       systemAssigned: true
     }
@@ -2374,9 +2552,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true
@@ -2555,7 +2730,6 @@ param linkedStorageAccounts = [
     ]
   }
 ]
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
 }
@@ -2608,6 +2782,7 @@ param tags = {
 | [`dataExports`](#parameter-dataexports) | array | LAW data export instances to be deployed. |
 | [`dataRetention`](#parameter-dataretention) | int | Number of days data will be retained for. |
 | [`dataSources`](#parameter-datasources) | array | LAW data sources to configure. |
+| [`defaultDataCollectionRuleResourceId`](#parameter-defaultdatacollectionruleresourceid) | string | The resource ID of the default Data Collection Rule to use for this workspace. Note: the default DCR is not applicable on workspace creation and the workspace must be listed as a destination in the DCR. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`features`](#parameter-features) | object | The workspace features. |
@@ -2624,7 +2799,7 @@ param tags = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`savedSearches`](#parameter-savedsearches) | array | Kusto Query Language searches to save. |
 | [`skuCapacityReservationLevel`](#parameter-skucapacityreservationlevel) | int | The capacity reservation level in GB for this workspace, when CapacityReservation sku is selected. Must be in increments of 100 between 100 and 5000. |
-| [`skuName`](#parameter-skuname) | string | The name of the SKU. |
+| [`skuName`](#parameter-skuname) | string | The name of the SKU. Must be 'LACluster' to be linked to a Log Analytics cluster. |
 | [`storageInsightsConfigs`](#parameter-storageinsightsconfigs) | array | List of storage accounts to be read by the workspace. |
 | [`tables`](#parameter-tables) | array | LAW custom tables to be deployed. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -2899,6 +3074,13 @@ Tags to configure in the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `defaultDataCollectionRuleResourceId`
+
+The resource ID of the default Data Collection Rule to use for this workspace. Note: the default DCR is not applicable on workspace creation and the workspace must be listed as a destination in the DCR.
+
+- Required: No
+- Type: string
 
 ### Parameter: `diagnosticSettings`
 
@@ -3187,32 +3369,32 @@ List of services to be linked.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-linkedservicesname) | string | Name of the linked service. |
+| [`name`](#parameter-linkedservicesname) | string | Name of the linked service. E.g., 'Automation' for an automation account, or 'Cluster' for a Log Analytics Cluster. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`resourceId`](#parameter-linkedservicesresourceid) | string | The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access. |
-| [`writeAccessResourceId`](#parameter-linkedserviceswriteaccessresourceid) | string | The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access. |
+| [`resourceId`](#parameter-linkedservicesresourceid) | string | The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access (e.g., Automation Accounts). |
+| [`writeAccessResourceId`](#parameter-linkedserviceswriteaccessresourceid) | string | The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access (e.g., Log Analytics Clusters). |
 
 ### Parameter: `linkedServices.name`
 
-Name of the linked service.
+Name of the linked service. E.g., 'Automation' for an automation account, or 'Cluster' for a Log Analytics Cluster.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `linkedServices.resourceId`
 
-The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access.
+The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access (e.g., Automation Accounts).
 
 - Required: No
 - Type: string
 
 ### Parameter: `linkedServices.writeAccessResourceId`
 
-The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access.
+The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access (e.g., Log Analytics Clusters).
 
 - Required: No
 - Type: string
@@ -3317,6 +3499,7 @@ The network access type for accessing Log Analytics ingestion.
   [
     'Disabled'
     'Enabled'
+    'SecuredByPerimeter'
   ]
   ```
 
@@ -3332,6 +3515,7 @@ The network access type for accessing Log Analytics query.
   [
     'Disabled'
     'Enabled'
+    'SecuredByPerimeter'
   ]
   ```
 
@@ -3578,7 +3762,7 @@ The capacity reservation level in GB for this workspace, when CapacityReservatio
 
 ### Parameter: `skuName`
 
-The name of the SKU.
+The name of the SKU. Must be 'LACluster' to be linked to a Log Analytics cluster.
 
 - Required: No
 - Type: string
@@ -3657,11 +3841,11 @@ LAW custom tables to be deployed.
 | :-- | :-- | :-- |
 | [`plan`](#parameter-tablesplan) | string | The plan for the table. |
 | [`restoredLogs`](#parameter-tablesrestoredlogs) | object | The restored logs for the table. |
-| [`retentionInDays`](#parameter-tablesretentionindays) | int | The retention in days for the table. |
+| [`retentionInDays`](#parameter-tablesretentionindays) | int | The retention in days for the table. Don't provide to use the default workspace retention. |
 | [`roleAssignments`](#parameter-tablesroleassignments) | array | The role assignments for the table. |
 | [`schema`](#parameter-tablesschema) | object | The schema for the table. |
 | [`searchResults`](#parameter-tablessearchresults) | object | The search results for the table. |
-| [`totalRetentionInDays`](#parameter-tablestotalretentionindays) | int | The total retention in days for the table. |
+| [`totalRetentionInDays`](#parameter-tablestotalretentionindays) | int | The total retention in days for the table. Don't provide use the default table retention. |
 
 ### Parameter: `tables.name`
 
@@ -3715,10 +3899,12 @@ The timestamp to start the restore from (UTC).
 
 ### Parameter: `tables.retentionInDays`
 
-The retention in days for the table.
+The retention in days for the table. Don't provide to use the default workspace retention.
 
 - Required: No
 - Type: int
+- MinValue: 4
+- MaxValue: 730
 
 ### Parameter: `tables.roleAssignments`
 
@@ -4007,10 +4193,12 @@ The timestamp to start the search from (UTC).
 
 ### Parameter: `tables.totalRetentionInDays`
 
-The total retention in days for the table.
+The total retention in days for the table. Don't provide use the default table retention.
 
 - Required: No
 - Type: int
+- MinValue: 4
+- MaxValue: 2555
 
 ### Parameter: `tags`
 
@@ -4040,8 +4228,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/operations-management/solution:0.3.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
