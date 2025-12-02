@@ -1,12 +1,13 @@
 ---
 mode: 'agent'
 description: 'Triage Open GitHub Issues related to the specific resource module.'
-tools: ['search', 'runCommands', 'runTasks', 'usages', 'think', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos', 'documentation', 'search', 'get_issue', 'get_issue_comments', 'get_pull_request', 'get_pull_request_comments', 'list_issues', 'search_issues', 'search_pull_requests']
+tools: ['search', 'runCommands', 'runTasks', 'usages', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos', 'Azure MCP/documentation', 'search', 'get_issue', 'get_issue_comments', 'get_pull_request', 'get_pull_request_comments', 'github/github-mcp-server/list_issues', 'github/github-mcp-server/search_issues', 'github/github-mcp-server/search_pull_requests', 'Bicep (EXPERIMENTAL)/list_avm_metadata']
 ---
 
 # Triage Open GitHub Issues for Resource Module
 
 ## 1. Objective
+
 As an AI agent, your task is to list all open GitHub Issues related to this resource module `${input:resource}` in the `${input:provider}` and provide triaging for them.
 
 > [!IMPORTANT]
@@ -55,6 +56,7 @@ Here is a ReAct-style Thought–Action–Observation execution flow that you MUS
 
 
 ## 5. Output Format
+
 The output table must comply with the final action and should look similar to this example:
 
 | Issue                                                                | Title                                          | Relevance | Category | Findings           |
@@ -77,6 +79,7 @@ The output table must comply with the final action and should look similar to th
 The findings from the analysis for each issue should be provided using the following format:
 ```markdown
 ## Issue: {IssueTitle}
+
 - **Category**: {Documentation | Code Quality | Examples | Compliance | Consistency | Testing}
 - **Severity**: {Low | Medium | High | Critical}
 - **File(s)**: {affected file paths}
@@ -104,11 +107,13 @@ The findings from the analysis for each issue should be provided using the follo
 > Before completing your analysis, verify you have completed ALL of the following:
 
 ### Checklist for Complete Analysis:
+
 - [ ] **Step 4**: Complete execution of all steps
 - [ ] **Step 5**: Summary table has been outputted including correct categories for 5.1.
 - [ ] **Step 6**: The complete findings list has been generated.
 
 ### Failure Conditions:
+
 - **INCOMPLETE**: If you skip any mandatory section (4, 5 or 6)
 - **NO ISSUES**: If you don't fetch github issues or can't find any relevant issues.
 - **VAGUE**: If you provide general statements instead of specific property differences
@@ -118,6 +123,7 @@ The findings from the analysis for each issue should be provided using the follo
 > If any of the above conditions are met, the analysis is considered incomplete and must be redone.
 
 ## 8. Constraints
+
 - ⚠️ **No File Modifications**: This is a planning task only. Do not edit any files.
 - ⚠️ **AVM Compliance**: All recommendations must align with AVM specifications.
 - ⚠️ **Stable Versions Only**: Prioritize stable API versions unless a preview is explicitly required.
