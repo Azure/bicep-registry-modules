@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Send data to Azure Blob Storage with Logs ingestion API - E2E Test - Agent Direct'
-metadata description = 'This instance deploys the module to setup sending data to Azure Blob Storage with Logs ingestion API using the AgentDirectToStore kind'
+metadata name = 'Send data to Azure Storage or Event Hub (Preview)'
+metadata description = 'This instance deploys the module to setup sending data to Azure Storage or Event Hub with Logs ingestion API using the AgentDirectToStore kind'
 
 // Parameters //
 // ========== //

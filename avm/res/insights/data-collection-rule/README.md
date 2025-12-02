@@ -34,7 +34,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/insights/data-collection-rule:<version>`.
 
-- [Send data to Azure Blob Storage with Logs ingestion API - E2E Test - Agent Direct](#example-1-send-data-to-azure-blob-storage-with-logs-ingestion-api---e2e-test---agent-direct)
+- [Send data to Azure Storage or Event Hub (Preview)](#example-1-send-data-to-azure-storage-or-event-hub-preview)
 - [Agent Settings](#example-2-agent-settings)
 - [Collecting custom text logs with ingestion-time transformation](#example-3-collecting-custom-text-logs-with-ingestion-time-transformation)
 - [Collecting custom text logs](#example-4-collecting-custom-text-logs)
@@ -48,9 +48,9 @@ The following section provides usage examples for the module, which were used to
 - [Collecting Windows-specific information](#example-12-collecting-windows-specific-information)
 - [Collecting custom text logs with ingestion-time transformation](#example-13-collecting-custom-text-logs-with-ingestion-time-transformation)
 
-### Example 1: _Send data to Azure Blob Storage with Logs ingestion API - E2E Test - Agent Direct_
+### Example 1: _Send data to Azure Storage or Event Hub (Preview)_
 
-This instance deploys the module to setup sending data to Azure Blob Storage with Logs ingestion API using the AgentDirectToStore kind
+This instance deploys the module to setup sending data to Azure Storage or Event Hub with Logs ingestion API using the AgentDirectToStore kind
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/agent-direct]
 
