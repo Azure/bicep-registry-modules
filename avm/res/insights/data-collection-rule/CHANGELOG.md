@@ -6,7 +6,13 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added support for preview feature `AgentDirectToStore` kind type.
+- Added support for `WorkspaceTransforms` kind in data collection rules, enabling advanced data transformation capabilities.
+- Added support for `PlatformTelemetry` kind in data collection rules, enabling collection of metrics from Azure Resources.
+- Updated API version to `2024-03-11` to leverage the latest features and improvements.
+
+### Breaking Changes
+
+- None
 
 ## 0.8.0
 

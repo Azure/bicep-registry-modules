@@ -2,6 +2,14 @@
 
 This modules deployes resources for Azure Monitoring Agent (AMA) to be used within Azure Landing Zones
 
+You can reference the module as follows:
+```bicep
+module ama 'br/public:avm/ptn/alz/ama:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -36,6 +44,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -43,7 +53,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module ama 'br/public:avm/ptn/alz/ama:<version>' = {
-  name: 'amaDeployment'
   params: {
     // Required parameters
     dataCollectionRuleChangeTrackingName: 'alz-ama-dcr-ct-alzamamin'
@@ -112,6 +121,8 @@ param userAssignedIdentityName = 'alz-ama-identity-alzamamin'
 
 This instance deploys the module with the maximum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -119,7 +130,6 @@ This instance deploys the module with the maximum set of required parameters.
 
 ```bicep
 module ama 'br/public:avm/ptn/alz/ama:<version>' = {
-  name: 'amaDeployment'
   params: {
     // Required parameters
     dataCollectionRuleChangeTrackingName: 'alz-ama-dcr-ct-alzamamax'

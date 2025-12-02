@@ -2,6 +2,14 @@
 
 This module deploys an Microsoft Entra Domain Services (Azure AD DS) instance.
 
+You can reference the module as follows:
+```bicep
+module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -35,6 +43,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -42,7 +52,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
-  name: 'domainServiceDeployment'
   params: {
     // Required parameters
     domainName: 'onmicrosoft.com'
