@@ -79,13 +79,13 @@ var dataCollectionRulePropertiesUnion = union(
   {
     description: dataCollectionRuleProperties.?description
   },
-  contains(['Linux', 'Windows', 'All', 'PlatformTelemetry'], dataCollectionRuleProperties.kind)
+  contains(['Linux', 'Windows', 'All', 'PlatformTelemetry', 'AgentDirectToStore'], dataCollectionRuleProperties.kind)
     ? {
         dataSources: dataCollectionRuleProperties.dataSources
       }
     : {},
   contains(
-      ['Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms', 'PlatformTelemetry'],
+      ['Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms', 'PlatformTelemetry', 'AgentDirectToStore'],
       dataCollectionRuleProperties.kind
     )
     ? {
@@ -102,12 +102,6 @@ var dataCollectionRulePropertiesUnion = union(
   dataCollectionRuleProperties.kind == 'AgentSettings'
     ? {
         agentSettings: dataCollectionRuleProperties.agentSettings
-      }
-    : {},
-  dataCollectionRuleProperties.kind == 'AgentDirectToStore'
-    ? {
-        dataFlows: dataCollectionRuleProperties.dataFlows
-        destinations: dataCollectionRuleProperties.destinations
       }
     : {}
 )

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "7250225478620775039"
+      "templateHash": "607499648260820830"
     },
     "name": "Data Collection Rules",
     "description": "This module deploys a Data Collection Rule."
@@ -773,7 +773,7 @@
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
-    "dataCollectionRulePropertiesUnion": "[union(createObject('description', tryGet(parameters('dataCollectionRuleProperties'), 'description')), if(contains(createArray('Linux', 'Windows', 'All', 'PlatformTelemetry'), parameters('dataCollectionRuleProperties').kind), createObject('dataSources', parameters('dataCollectionRuleProperties').dataSources), createObject()), if(contains(createArray('Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms', 'PlatformTelemetry'), parameters('dataCollectionRuleProperties').kind), createObject('dataFlows', parameters('dataCollectionRuleProperties').dataFlows, 'destinations', parameters('dataCollectionRuleProperties').destinations), createObject()), if(contains(createArray('Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms'), parameters('dataCollectionRuleProperties').kind), createObject('dataCollectionEndpointId', tryGet(parameters('dataCollectionRuleProperties'), 'dataCollectionEndpointResourceId'), 'streamDeclarations', tryGet(parameters('dataCollectionRuleProperties'), 'streamDeclarations')), createObject()), if(equals(parameters('dataCollectionRuleProperties').kind, 'AgentSettings'), createObject('agentSettings', parameters('dataCollectionRuleProperties').agentSettings), createObject()), if(equals(parameters('dataCollectionRuleProperties').kind, 'AgentDirectToStore'), createObject('dataFlows', parameters('dataCollectionRuleProperties').dataFlows, 'destinations', parameters('dataCollectionRuleProperties').destinations), createObject()))]",
+    "dataCollectionRulePropertiesUnion": "[union(createObject('description', tryGet(parameters('dataCollectionRuleProperties'), 'description')), if(contains(createArray('Linux', 'Windows', 'All', 'PlatformTelemetry', 'AgentDirectToStore'), parameters('dataCollectionRuleProperties').kind), createObject('dataSources', parameters('dataCollectionRuleProperties').dataSources), createObject()), if(contains(createArray('Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms', 'PlatformTelemetry', 'AgentDirectToStore'), parameters('dataCollectionRuleProperties').kind), createObject('dataFlows', parameters('dataCollectionRuleProperties').dataFlows, 'destinations', parameters('dataCollectionRuleProperties').destinations), createObject()), if(contains(createArray('Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms'), parameters('dataCollectionRuleProperties').kind), createObject('dataCollectionEndpointId', tryGet(parameters('dataCollectionRuleProperties'), 'dataCollectionEndpointResourceId'), 'streamDeclarations', tryGet(parameters('dataCollectionRuleProperties'), 'streamDeclarations')), createObject()), if(equals(parameters('dataCollectionRuleProperties').kind, 'AgentSettings'), createObject('agentSettings', parameters('dataCollectionRuleProperties').agentSettings), createObject()))]",
     "enableReferencedModulesTelemetry": false
   },
   "resources": {
