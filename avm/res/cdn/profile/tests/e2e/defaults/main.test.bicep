@@ -38,8 +38,8 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: 'dep-${namePrefix}-test-${serviceShort}'
-      location: resourceLocation
-      sku: 'Standard_Microsoft'
+      location: 'global'
+      sku: 'Standard_AzureFrontDoor'
     }
   }
 ]

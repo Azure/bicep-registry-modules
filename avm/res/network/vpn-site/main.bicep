@@ -5,22 +5,22 @@ metadata description = 'This module deploys a VPN Site.'
 param name string
 
 @description('Required. Resource ID of the virtual WAN to link to.')
-param virtualWanId string
+param virtualWanResourceId string
 
 @description('Optional. Location where all resources will be created.')
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/vpnSites@2024-07-01'>.tags?
 
 @description('Conditional. An array of IP address ranges that can be used by subnets of the virtual network. Required if no bgpProperties or VPNSiteLinks are configured.')
-param addressPrefixes array = []
+param addressPrefixes string[]?
 
 @description('Conditional. BGP settings details. Note: This is a deprecated property, please use the corresponding VpnSiteLinks property instead. Required if no addressPrefixes or VPNSiteLinks are configured.')
-param bgpProperties object = {}
+param bgpProperties resourceInput<'Microsoft.Network/vpnSites@2024-07-01'>.properties.bgpProperties?
 
 @description('Optional. List of properties of the device.')
-param deviceProperties object = {}
+param deviceProperties resourceInput<'Microsoft.Network/vpnSites@2024-07-01'>.properties.deviceProperties?
 
 @description('Optional. The IP-address for the VPN-site. Note: This is a deprecated property, please use the corresponding VpnSiteLinks property instead.')
 param ipAddress string = ''
@@ -29,19 +29,19 @@ param ipAddress string = ''
 param isSecuritySite bool = false
 
 @description('Optional. The Office365 breakout policy.')
-param o365Policy object = {}
+param o365Policy resourceInput<'Microsoft.Network/vpnSites@2024-07-01'>.properties.o365Policy?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. List of all VPN site links.')
-param vpnSiteLinks array = []
+param vpnSiteLinks resourceInput<'Microsoft.Network/vpnSites@2024-07-01'>.properties.vpnSiteLinks?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -96,7 +96,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource vpnSite 'Microsoft.Network/vpnSites@2023-04-01' = {
+resource vpnSite 'Microsoft.Network/vpnSites@2024-10-01' = {
   name: name
   location: location
   tags: tags
@@ -106,15 +106,15 @@ resource vpnSite 'Microsoft.Network/vpnSites@2023-04-01' = {
           addressPrefixes: addressPrefixes
         }
       : null
-    bgpProperties: !empty(bgpProperties) ? bgpProperties : null
-    deviceProperties: !empty(deviceProperties) ? deviceProperties : null
-    ipAddress: !empty(ipAddress) ? ipAddress : null
+    bgpProperties: bgpProperties
+    deviceProperties: deviceProperties
+    ipAddress: ipAddress
     isSecuritySite: isSecuritySite
-    o365Policy: !empty(o365Policy) ? o365Policy : null
+    o365Policy: o365Policy
     virtualWan: {
-      id: virtualWanId
+      id: virtualWanResourceId
     }
-    vpnSiteLinks: !empty(vpnSiteLinks) ? vpnSiteLinks : null
+    vpnSiteLinks: vpnSiteLinks
   }
 }
 

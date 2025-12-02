@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "14532557776599347999"
+      "version": "0.38.5.1644",
+      "templateHash": "15478402428616366676"
     },
     "name": "Public IP Addresses",
     "description": "This module deploys a Public IP Address."
@@ -481,10 +481,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/publicIPAddresses@2024-10-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "diagnosticSettings": {
       "type": "array",

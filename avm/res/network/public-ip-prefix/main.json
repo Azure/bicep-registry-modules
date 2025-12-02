@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "278559440389095138"
+      "version": "0.38.5.1644",
+      "templateHash": "16696551315455925798"
     },
     "name": "Public IP Prefixes",
     "description": "This module deploys a Public IP Prefix."
@@ -209,17 +209,23 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/publicIPPrefixes@2024-10-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "customIPPrefix": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/publicIPPrefixes@2024-01-01#properties/properties/properties/customIPPrefix"
+        },
         "description": "Optional. The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range."
-      }
+      },
+      "nullable": true
     },
     "ipTags": {
       "type": "array",
@@ -308,7 +314,7 @@
       },
       "zones": "[map(parameters('availabilityZones'), lambda('zone', string(lambdaVariables('zone'))))]",
       "properties": {
-        "customIPPrefix": "[if(not(empty(parameters('customIPPrefix'))), parameters('customIPPrefix'), null())]",
+        "customIPPrefix": "[parameters('customIPPrefix')]",
         "publicIPAddressVersion": "[parameters('publicIPAddressVersion')]",
         "prefixLength": "[parameters('prefixLength')]",
         "ipTags": "[parameters('ipTags')]"

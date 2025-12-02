@@ -31,9 +31,16 @@ function Sync-AvmModulesList {
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Add-GitHubIssueToProject.ps1')
 
     # get CSV data
-    $targetModules = Get-AvmCsvData -ModuleIndex 'Bicep-Resource' | Where-Object { ($_.ModuleStatus -eq 'Available') -or ($_.ModuleStatus -eq 'Orphaned') } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
-    $targetPatterns = Get-AvmCsvData -ModuleIndex 'Bicep-Pattern' | Where-Object { ($_.ModuleStatus -eq 'Available') -or ($_.ModuleStatus -eq 'Orphaned') } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
-    $targetUtilities = Get-AvmCsvData -ModuleIndex 'Bicep-Utility' | Where-Object { ($_.ModuleStatus -eq 'Available') -or ($_.ModuleStatus -eq 'Orphaned') } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
+    $targetModules = Get-AvmCsvData -ModuleIndex 'Bicep-Resource' | Where-Object {
+        (($_.ModuleStatus -eq 'Available') -or ($_.ModuleStatus -eq 'Orphaned')) -and
+        ($_.ModuleName -split '\/').Count -eq 4 # only top level modules
+    } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
+    $targetPatterns = Get-AvmCsvData -ModuleIndex 'Bicep-Pattern' | Where-Object {
+        ($_.ModuleStatus -eq 'Available') -or ($_.ModuleStatus -eq 'Orphaned')
+    } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
+    $targetUtilities = Get-AvmCsvData -ModuleIndex 'Bicep-Utility' | Where-Object {
+        ($_.ModuleStatus -eq 'Available') -or ($_.ModuleStatus -eq 'Orphaned')
+    } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
 
     $issueTemplatePath = Join-Path $RepoRoot '.github' 'ISSUE_TEMPLATE' 'avm_module_issue.yml'
     $issueTemplateContent = Get-Content $issueTemplatePath
@@ -186,7 +193,7 @@ $([Environment]::NewLine)
 
     $issuesFound = $body -ne ''
 
-    $title = '[AVM core] AVM Module Issue template is not in sync with published resource modules and pattern modules list'
+    $title = '[AVM CI Environment Issue] AVM Module Issue template is not in sync with published resource modules and pattern modules list'
     $label = 'Type: AVM :a: :v: :m:,Type: Hygiene :broom:'
     $issues = gh issue list --state open --limit 500 --label $label --json 'title,url' --repo $Repo | ConvertFrom-Json -Depth 100
 

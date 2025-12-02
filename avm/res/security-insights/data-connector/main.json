@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "3012483961730299706"
+      "version": "0.39.26.7824",
+      "templateHash": "13756893623676334623"
     },
     "name": "Security Insights Data Connectors",
-    "description": "This module deploys a Security Insights Data Connector.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Security Insights Data Connector."
   },
   "definitions": {
     "dataConnectorType": {

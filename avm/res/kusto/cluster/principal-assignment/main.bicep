@@ -31,7 +31,7 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' existing = {
   name: kustoClusterName
 }
 
-resource kustoClusterPrincipalAssignment 'Microsoft.Kusto/clusters/principalAssignments@2023-08-15' = {
+resource kustoClusterPrincipalAssignment 'Microsoft.Kusto/clusters/principalAssignments@2024-04-13' = {
   name: principalId
   parent: kustoCluster
   properties: {

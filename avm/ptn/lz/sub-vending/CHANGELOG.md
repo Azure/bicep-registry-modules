@@ -2,6 +2,36 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/lz/sub-vending/CHANGELOG.md).
 
+## 0.4.1
+
+### Changes
+
+- Fixed routingConfiguration when creating additional virtual Wan connection to use correct vHub resource Id when virtualNetworkVwanAssociatedRouteTableResourceId is not provided.
+
+### Breaking Changes
+
+- **None**
+
+## 0.4.0
+
+### Changes
+
+- Added functionality to create a standalone network security group instead of associating a network security group to each subnet created by the module.
+
+### Breaking Changes
+
+- **None**
+
+## 0.3.8
+
+### Changes
+
+- Updated additional vNet to virtual WAN hub connection name suffix expression to align with expression used for primary vNet to virtual WAN hub connection name
+
+### Breaking Changes
+
+- None
+
 ## 0.3.7
 
 ### Changes

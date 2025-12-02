@@ -18,7 +18,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
   location: location
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -46,7 +46,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     }
   }
 
-  resource key 'keys@2024-11-01' = {
+  resource key 'keys@2025-05-01' = {
     name: 'dataFactoryEncryptionKey'
     properties: {
       kty: 'RSA'
@@ -78,7 +78,7 @@ resource keyVaultCryptoUserRoleAssignment 'Microsoft.Authorization/roleAssignmen
 }
 
 // Virtual Network for secure networking
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-10-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -113,7 +113,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' = {
   }
 }
 
-resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-11-01' = {
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2024-10-01' = {
   name: networkSecurityGroupName
   location: location
   properties: {
