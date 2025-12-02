@@ -2,6 +2,14 @@
 
 This module deploys a Compute Disk
 
+You can reference the module as follows:
+```bicep
+module disk 'br/public:avm/res/compute/disk:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -38,6 +46,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -45,7 +55,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: 'diskDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -117,6 +126,8 @@ param location = '<location>'
 
 This instance deploys the module with encryption-at-rest using a Disk Encryption Set (DES) secured by Customer-Managed Keys (CMK), and leveraging a User-Assigned Managed Identity to access the key.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/des-cmk-uami]
+
 
 <details>
 
@@ -124,7 +135,6 @@ This instance deploys the module with encryption-at-rest using a Disk Encryption
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: 'diskDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -196,6 +206,8 @@ param diskSizeGB = 1
 
 This instance deploys the module with an image reference.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/image]
+
 
 <details>
 
@@ -203,7 +215,6 @@ This instance deploys the module with an image reference.
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: 'diskDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -280,6 +291,8 @@ param location = '<location>'
 
 This instance deploys the module with a custom image that is imported from a VHD in a storage account.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/import]
+
 
 <details>
 
@@ -287,7 +300,6 @@ This instance deploys the module with a custom image that is imported from a VHD
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: 'diskDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -369,6 +381,8 @@ param storageAccountId = '<storageAccountId>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -376,7 +390,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: 'diskDeployment'
   params: {
     // Required parameters
     availabilityZone: 2
@@ -563,6 +576,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -570,7 +585,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: 'diskDeployment'
   params: {
     // Required parameters
     availabilityZone: 2

@@ -2,6 +2,14 @@
 
 This module deploys a Search Service.
 
+You can reference the module as follows:
+```bicep
+module searchService 'br/public:avm/res/search/search-service:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -42,6 +50,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -49,7 +59,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
-  name: 'searchServiceDeployment'
   params: {
     name: 'sssmin002'
   }
@@ -95,6 +104,8 @@ param name = 'sssmin002'
 
 This instance deploys the module saving admin key secrets in a key vault.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/kvSecrets]
+
 
 <details>
 
@@ -102,7 +113,6 @@ This instance deploys the module saving admin key secrets in a key vault.
 
 ```bicep
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
-  name: 'searchServiceDeployment'
   params: {
     // Required parameters
     name: 'kv-ref'
@@ -193,6 +203,8 @@ param secretsExportConfiguration = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -200,7 +212,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
-  name: 'searchServiceDeployment'
   params: {
     // Required parameters
     name: 'sssmax001'
@@ -498,6 +509,8 @@ param tags = {
 
 This instance deploys the module with private endpoints.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/pe]
+
 
 <details>
 
@@ -505,7 +518,6 @@ This instance deploys the module with private endpoints.
 
 ```bicep
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
-  name: 'searchServiceDeployment'
   params: {
     // Required parameters
     name: 'ssspr001'
@@ -709,6 +721,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -716,7 +730,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
-  name: 'searchServiceDeployment'
   params: {
     // Required parameters
     name: 'ssswaf001'

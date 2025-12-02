@@ -2,6 +2,14 @@
 
 This module deploys a Virtual Machine Scale Set.
 
+You can reference the module as follows:
+```bicep
+module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -42,6 +50,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/linux.defaults]
+
 
 <details>
 
@@ -49,7 +59,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
     adminPassword: '<adminPassword>'
@@ -245,6 +254,8 @@ param publicKeys = [
 
 This instance deploys the module with as Linux VMSS with health extension.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/linux.health]
+
 
 <details>
 
@@ -252,7 +263,6 @@ This instance deploys the module with as Linux VMSS with health extension.
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
     adminPassword: '<adminPassword>'
@@ -465,6 +475,8 @@ param publicKeys = [
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/linux.max]
+
 
 <details>
 
@@ -472,7 +484,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
     adminPassword: '<adminPassword>'
@@ -1052,6 +1063,8 @@ param vmPriority = 'Regular'
 
 This instance deploys the module with disk enryption set.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/linux.ssecmk]
+
 
 <details>
 
@@ -1059,7 +1072,6 @@ This instance deploys the module with disk enryption set.
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
     adminPassword: '<adminPassword>'
@@ -1322,6 +1334,8 @@ param publicKeys = [
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows.defaults]
+
 
 <details>
 
@@ -1329,7 +1343,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
     adminPassword: '<adminPassword>'
@@ -1505,6 +1518,8 @@ param location = '<location>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows.max]
+
 
 <details>
 
@@ -1512,7 +1527,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
     adminPassword: '<adminPassword>'
@@ -2066,6 +2080,8 @@ param vmPriority = 'Regular'
 
 This instance deploys the module with the minimum set of required parameters in uniform orchestration mode.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows.uniform]
+
 
 <details>
 
@@ -2073,7 +2089,6 @@ This instance deploys the module with the minimum set of required parameters in 
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
     adminPassword: '<adminPassword>'
@@ -2254,6 +2269,8 @@ param patchMode = 'AutomaticByOS'
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework for Windows.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows.waf-aligned]
+
 
 <details>
 
@@ -2261,7 +2278,6 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
     adminPassword: '<adminPassword>'

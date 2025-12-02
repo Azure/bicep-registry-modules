@@ -2,6 +2,14 @@
 
 This module deploys a Container Instance Container Group.
 
+You can reference the module as follows:
+```bicep
+module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -37,6 +45,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -44,7 +54,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
-  name: 'containerGroupDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -189,6 +198,8 @@ param ipAddress = {
 
 This instance deploys the module with a customer-managed key (CMK).
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/encr]
+
 
 <details>
 
@@ -196,7 +207,6 @@ This instance deploys the module with a customer-managed key (CMK).
 
 ```bicep
 module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
-  name: 'containerGroupDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -468,6 +478,8 @@ param managedIdentities = {
 
 This instance deploys the module with the minimum set of required parameters and with low memory.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/low-memory]
+
 
 <details>
 
@@ -475,7 +487,6 @@ This instance deploys the module with the minimum set of required parameters and
 
 ```bicep
 module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
-  name: 'containerGroupDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -620,6 +631,8 @@ param ipAddress = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -627,7 +640,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
-  name: 'containerGroupDeployment'
   params: {
     // Required parameters
     availabilityZone: '<availabilityZone>'
@@ -1016,6 +1028,8 @@ param tags = {
 
 This instance deploys the module within a virtual network.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/private]
+
 
 <details>
 
@@ -1023,7 +1037,6 @@ This instance deploys the module within a virtual network.
 
 ```bicep
 module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
-  name: 'containerGroupDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -1290,6 +1303,8 @@ param subnets = [
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1297,7 +1312,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
-  name: 'containerGroupDeployment'
   params: {
     // Required parameters
     availabilityZone: 1

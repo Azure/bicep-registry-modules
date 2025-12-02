@@ -2,6 +2,14 @@
 
 This module deploys a Machine Learning Services Workspace.
 
+You can reference the module as follows:
+```bicep
+module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -46,6 +54,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys an Azure AI hub workspace.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ai-hub]
+
 
 <details>
 
@@ -53,7 +63,6 @@ This instance deploys an Azure AI hub workspace.
 
 ```bicep
 module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'mlswaih001'
@@ -149,6 +158,8 @@ param workspaceHubConfig = {
 
 This instance deploys an Azure AI project workspace.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ai-project]
+
 
 <details>
 
@@ -156,7 +167,6 @@ This instance deploys an Azure AI project workspace.
 
 ```bicep
 module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'mlswaip001'
@@ -228,6 +238,8 @@ param location = '<location>'
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -235,7 +247,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'mlswmin001'
@@ -312,6 +323,8 @@ param location = '<location>'
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/encr]
+
 
 <details>
 
@@ -319,7 +332,6 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'mlswecr001'
@@ -482,6 +494,8 @@ param primaryUserAssignedIdentity = '<primaryUserAssignedIdentity>'
 
 This instance deploys an Azure ML managed feature store.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/feature-store]
+
 
 <details>
 
@@ -489,7 +503,6 @@ This instance deploys an Azure ML managed feature store.
 
 ```bicep
 module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'mlswfs001'
@@ -588,6 +601,8 @@ param location = '<location>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -595,7 +610,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'mlswmax001'
@@ -1145,6 +1159,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1152,7 +1168,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'mlswwaf001'

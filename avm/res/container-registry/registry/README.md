@@ -2,6 +2,14 @@
 
 This module deploys an Azure Container Registry (ACR).
 
+You can reference the module as follows:
+```bicep
+module registry 'br/public:avm/res/container-registry/registry:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -45,6 +53,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -52,7 +62,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: 'registryDeployment'
   params: {
     // Required parameters
     name: 'crrmin001'
@@ -114,6 +123,8 @@ param location = '<location>'
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/encr]
+
 
 <details>
 
@@ -121,7 +132,6 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: 'registryDeployment'
   params: {
     // Required parameters
     name: 'crrencr001'
@@ -222,6 +232,8 @@ param publicNetworkAccess = 'Disabled'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -229,7 +241,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: 'registryDeployment'
   params: {
     // Required parameters
     name: 'crrmax001'
@@ -623,6 +634,8 @@ param webhooks = [
 
 This instance deploys the module with the scopeMaps feature.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/scope]
+
 
 <details>
 
@@ -630,7 +643,6 @@ This instance deploys the module with the scopeMaps feature.
 
 ```bicep
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: 'registryDeployment'
   params: {
     // Required parameters
     name: 'crrs001'
@@ -721,6 +733,8 @@ param scopeMaps = [
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -728,7 +742,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: 'registryDeployment'
   params: {
     // Required parameters
     name: 'crrwaf001'

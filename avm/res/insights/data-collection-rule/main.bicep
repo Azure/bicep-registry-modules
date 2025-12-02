@@ -79,15 +79,22 @@ var dataCollectionRulePropertiesUnion = union(
   {
     description: dataCollectionRuleProperties.?description
   },
-  dataCollectionRuleProperties.kind == 'Linux' || dataCollectionRuleProperties.kind == 'Windows' || dataCollectionRuleProperties.kind == 'All'
+  contains(['Linux', 'Windows', 'All', 'PlatformTelemetry'], dataCollectionRuleProperties.kind)
     ? {
         dataSources: dataCollectionRuleProperties.dataSources
       }
     : {},
-  dataCollectionRuleProperties.kind == 'Linux' || dataCollectionRuleProperties.kind == 'Windows' || dataCollectionRuleProperties.kind == 'All' || dataCollectionRuleProperties.kind == 'Direct'
+  contains(
+      ['Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms', 'PlatformTelemetry'],
+      dataCollectionRuleProperties.kind
+    )
     ? {
         dataFlows: dataCollectionRuleProperties.dataFlows
         destinations: dataCollectionRuleProperties.destinations
+      }
+    : {},
+  contains(['Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms'], dataCollectionRuleProperties.kind)
+    ? {
         dataCollectionEndpointId: dataCollectionRuleProperties.?dataCollectionEndpointResourceId
         streamDeclarations: dataCollectionRuleProperties.?streamDeclarations
       }
@@ -217,10 +224,12 @@ type dataCollectionRulePropertiesType =
   | agentSettingsDcrPropertiesType
   | directDcrPropertiesType
   | agentDirectToStoreType
+  | workspaceTransformsDcrPropertiesType
+  | platformTelemetryDcrPropertiesType
 
 @description('The type for the properties of the \'Linux\' data collection rule.')
 type linuxDcrPropertiesType = {
-  @description('Required. The platform type specifies the type of resources this rule can apply to.')
+  @description('Required. The kind of the resource.')
   kind: 'Linux'
 
   @description('Required. Specification of data sources that will be collected.')
@@ -244,7 +253,7 @@ type linuxDcrPropertiesType = {
 
 @description('The type for the properties of the \'Windows\' data collection rule.')
 type windowsDcrPropertiesType = {
-  @description('Required. The platform type specifies the type of resources this rule can apply to.')
+  @description('Required. The kind of the resource.')
   kind: 'Windows'
 
   @description('Required. Specification of data sources that will be collected.')
@@ -268,7 +277,7 @@ type windowsDcrPropertiesType = {
 
 @description('The type for the properties of the data collection rule of the kind \'All\'.')
 type allPlatformsDcrPropertiesType = {
-  @description('Required. The platform type specifies the type of resources this rule can apply to.')
+  @description('Required. The kind of the resource.')
   kind: 'All'
 
   @description('Required. Specification of data sources that will be collected.')
@@ -292,7 +301,7 @@ type allPlatformsDcrPropertiesType = {
 
 @description('The type for the properties of the \'AgentSettings\' data collection rule.')
 type agentSettingsDcrPropertiesType = {
-  @description('Required. The platform type specifies the type of resources this rule can apply to.')
+  @description('Required. The kind of the resource.')
   kind: 'AgentSettings'
 
   @description('Optional. Description of the data collection rule.')
@@ -319,7 +328,7 @@ type agentSettingType = {
 
 @description('The type for the properties of the \'Direct\' data collection rule.')
 type directDcrPropertiesType = {
-  @description('Required. The platform type specifies the type of resources this rule can apply to.')
+  @description('Required. The kind of the resource.')
   kind: 'Direct'
 
   @description('Required. The specification of data flows.')
@@ -351,4 +360,49 @@ type agentDirectToStoreType = {
 
   @description('Optional. The resource ID of the data collection endpoint that this rule can be used with.')
   description: string?
+}
+
+@description('The type for the properties of the \'WorkspaceTransforms\' data collection rule.')
+type workspaceTransformsDcrPropertiesType = {
+  @description('Required. The kind of the resource.')
+  kind: 'WorkspaceTransforms'
+
+  @description('Required. The specification of data flows. Should include a separate dataflow for each table that will have a transformation. Use a where clause in the query if only certain records should be transformed.')
+  dataFlows: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataFlows
+
+  @description('Required. Specification of destinations that can be used in data flows. For WorkspaceTransforms, only one Log Analytics workspace destination is supported.')
+  destinations: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.destinations
+
+  @description('Optional. Description of the data collection rule.')
+  description: string?
+}
+
+@description('The type for the properties of the \'PlatformTelemetry\' data collection rule.')
+type platformTelemetryDcrPropertiesType = {
+  @description('Required. The kind of the resource.')
+  kind: 'PlatformTelemetry'
+
+  @description('Optional. Description of the data collection rule.')
+  description: string?
+
+  @description('Required. Specification of data sources that will be collected.')
+  dataSources: {
+    @description('Required. The list of platform telemetry configurations.')
+    platformTelemetry: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataSources.platformTelemetry
+  }
+
+  @description('Required. Specification of destinations. Choose a single destination type of either logAnalytics, storageAccounts, or eventHubs.')
+  destinations: {
+    @description('Optional. The list of Log Analytics destinations.')
+    logAnalytics: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.destinations.logAnalytics?
+
+    @description('Optional. The list of Storage Account destinations.')
+    storageAccounts: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.destinations.storageAccounts?
+
+    @description('Optional. The list of Event Hub destinations.')
+    eventHubs: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.destinations.eventHubs?
+  }
+
+  @description('Required. The specification of data flows.')
+  dataFlows: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataFlows
 }
