@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "13050408210894589328"
+      "version": "0.38.5.1644",
+      "templateHash": "10574831328392487492"
     },
     "name": "Public DNS Zone A record",
     "description": "This module deploys a Public DNS Zone A record."
@@ -103,17 +103,23 @@
     },
     "aRecords": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/dnsZones/A@2018-05-01#properties/properties/properties/ARecords"
+        },
         "description": "Optional. The list of A records in the record set. Cannot be used in conjuction with the \"targetResource\" property."
-      }
+      },
+      "nullable": true
     },
     "metadata": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/dnsZones/A@2018-05-01#properties/properties/properties/metadata"
+        },
         "description": "Optional. The metadata attached to the record set."
-      }
+      },
+      "nullable": true
     },
     "ttl": {
       "type": "int",

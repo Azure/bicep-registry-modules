@@ -37,7 +37,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualWANName: 'dep-${namePrefix}-vwan-${serviceShort}'
     virtualHubName: 'dep-${namePrefix}-hub-${serviceShort}'
-    location: resourceLocation
   }
 }
 // ============== //
@@ -49,17 +48,12 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
     tags: {
       'hidden-title': 'This is visible in the resource name'
       hello: 'world'
     }
     autoScaleConfigurationBoundsMin: 2
     autoScaleConfigurationBoundsMax: 3
-    virtualHubId: nestedDependencies.outputs.virtualHubResourceId
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
+    virtualHubResourceId: nestedDependencies.outputs.virtualHubResourceId
   }
 }

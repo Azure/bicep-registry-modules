@@ -2,6 +2,41 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/ai-ml/ai-foundry/CHANGELOG.md).
 
+## 0.6.0
+
+### Changes
+
+- Updated `accounts/projects` endpoint API version to 2025-07-01-preview
+- Removed instances of `deploymentScript` that were used as waiting placeholders when deploying project connections and capability hosts
+- Updated interior module versions
+
+### Breaking Changes
+
+- None
+
+## 0.5.0
+
+### Changes
+
+- Updates of dependent resources
+
+### Breaking Changes
+
+- Changed ids of role assignments performed on Azure AI Project identity
+
+## 0.4.0
+
+### Changes
+
+- Added support for Cognitive Services `disableLocalAuth`
+- Added input parameter `aiFoundryConfiguration.disableLocalAuth`
+- Updated Project logic to only provision the `deploymentScript` "wait" scripts if creating Connections for the Project
+- Updated interior module versions
+
+### Breaking Changes
+
+- The new parameter `disableLocalAuth` is optional but defaults to `true` to match with the Cognitive Services AVM resource module. Previously in this pattern module, `disableLocalAuth` was hard set to `false` for the internal Cognitive Services resource. The new parameter `disableLocalAuth` will need to be set explicitly to `false` to keep previous version functionality. It is recommended for security reasons to use the default value of `true`.
+
 ## 0.3.0
 
 ### Changes

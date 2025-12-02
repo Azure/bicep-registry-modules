@@ -1,6 +1,5 @@
 metadata name = 'Redis Enterprise and Azure Managed Redis'
 metadata description = 'This module deploys a Redis Enterprise or Azure Managed Redis cache.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -8,22 +7,29 @@ param location string = resourceGroup().location
 @description('Required. The name of the cache resource.')
 param name string
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+@description('Optional. Whether or not public network traffic can access the Redis cluster. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
+param publicNetworkAccess string?
+
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Cache/redisEnterprise@2025-04-01'>.tags?
+param tags resourceInput<'Microsoft.Cache/redisEnterprise@2025-07-01'>.tags?
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Conditional. The managed identity definition for this resource. Required if \'customerManagedKey\' is not empty.')
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+@description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The customer managed key definition to use for the managed service.')
 param customerManagedKey customerManagedKeyType?
 
@@ -138,7 +144,7 @@ import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-co
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
-import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The cluster-level diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingMetricsOnlyType[]?
 
@@ -163,7 +169,7 @@ var formattedUserAssignedIdentities = reduce(
 
 var identity = !empty(managedIdentities)
   ? {
-      type: !empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None'
+      type: !empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None'
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -220,14 +226,15 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
   name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
     name: customerManagedKey.?keyName!
   }
 }
@@ -240,7 +247,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource redisCluster 'Microsoft.Cache/redisEnterprise@2025-05-01-preview' = {
+resource redisCluster 'Microsoft.Cache/redisEnterprise@2025-07-01' = {
   name: name
   location: location
   tags: tags
@@ -255,14 +262,21 @@ resource redisCluster 'Microsoft.Cache/redisEnterprise@2025-05-01-preview' = {
                   userAssignedIdentityResourceId: cMKUserAssignedIdentity.id
                 }
               : null
-            keyEncryptionKeyUrl: !empty(customerManagedKey.?keyVersion ?? '')
-              ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.?keyVersion}'
-              : cMKKeyVault::cMKKey!.properties.keyUriWithVersion
+            keyEncryptionKeyUrl: !empty(customerManagedKey.?keyVersion)
+              ? (!isHSMManagedCMK
+                  ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+                  : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.keyVersion!}')
+              : (!isHSMManagedCMK
+                  ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
+                  : fail('Managed HSM CMK encryption requires specifying the \'keyVersion\'.'))
           }
         }
       : null
     highAvailability: isAmr ? highAvailability : null
     minimumTlsVersion: minimumTlsVersion
+    publicNetworkAccess: !empty(publicNetworkAccess)
+      ? publicNetworkAccess!
+      : (!empty(privateEndpoints ?? []) ? 'Disabled' : 'Enabled')
   }
   sku: {
     capacity: isEnterprise ? capacity : null
@@ -286,7 +300,6 @@ module redisCluster_database 'database/main.bicep' = {
     modules: database.?modules
     port: database.?port
     persistence: database.?persistence
-    secretsExportConfiguration: database.?secretsExportConfiguration
     diagnosticSettings: database.?diagnosticSettings
   }
 }
@@ -340,7 +353,7 @@ resource redisCluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2
   }
 ]
 
-module redisEnterprise_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module redisEnterprise_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -437,16 +450,36 @@ output privateEndpoints privateEndpointOutputType[] = [
   }
 ]
 
-import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
-output exportedSecrets secretsOutputType = redisCluster_database.outputs.exportedSecrets
+@secure()
+@description('The primary access key.')
+output primaryAccessKey string? = redisCluster_database.outputs.?primaryAccessKey
+
+@secure()
+@description('The primary connection string.')
+output primaryConnectionString string? = redisCluster_database.outputs.?primaryConnectionString
+
+@secure()
+@description('The primary StackExchange.Redis connection string.')
+output primaryStackExchangeRedisConnectionString string? = redisCluster_database.outputs.?primaryStackExchangeRedisConnectionString
+
+@secure()
+@description('The secondary access key.')
+output secondaryAccessKey string? = redisCluster_database.outputs.?secondaryAccessKey
+
+@secure()
+@description('The secondary connection string.')
+output secondaryConnectionString string? = redisCluster_database.outputs.?secondaryConnectionString
+
+@secure()
+@description('The secondary StackExchange.Redis connection string.')
+output secondaryStackExchangeRedisConnectionString string? = redisCluster_database.outputs.?secondaryStackExchangeRedisConnectionString
 
 // =============== //
 //   Definitions   //
 // =============== //
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-import { geoReplicationType, moduleType, persistenceType, accessPolicyAssignmentType, secretsExportConfigurationType } from 'database/main.bicep'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { geoReplicationType, moduleType, persistenceType, accessPolicyAssignmentType } from 'database/main.bicep'
 
 @export()
 type databaseType = {
@@ -492,9 +525,6 @@ type databaseType = {
 
   @description('Optional. Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized.')
   accessPolicyAssignments: accessPolicyAssignmentType[]?
-
-  @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
-  secretsExportConfiguration: secretsExportConfigurationType?
 
   @description('Optional. The database-level diagnostic settings of the service.')
   diagnosticSettings: diagnosticSettingLogsOnlyType[]?

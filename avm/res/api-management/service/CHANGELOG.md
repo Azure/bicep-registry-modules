@@ -2,6 +2,38 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/CHANGELOG.md).
 
+## 0.12.0
+
+### Changes
+
+- Added support for `privateEndpoints` parameter
+- Added  `privateEndpoints` output
+
+### Breaking Changes
+
+- `publicNetworkAccess` is set to `Disabled` if not specified and `privateEndpoints` are configured
+
+## 0.11.2
+
+### Changes
+
+- Added support for `publicNetworkAccess` parameter
+
+### Breaking Changes
+
+- None
+
+## 0.11.1
+
+### Changes
+
+- Applied the `@secure()` decorator to the `value` parameter within the `namedValue` input object.
+- Minor json formatting adjustments
+
+### Breaking Changes
+
+- None
+
 ## 0.11.0
 
 ### Changes

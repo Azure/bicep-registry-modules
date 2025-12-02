@@ -5,7 +5,7 @@ metadata description = 'This module deploys a DocumentDB Database Accounts Greml
 param name string
 
 @description('Optional. Tags of the Gremlin graph resource.')
-param tags object?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15'>.tags?
 
 @description('Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment.')
 param databaseAccountName string
@@ -14,29 +14,29 @@ param databaseAccountName string
 param gremlinDatabaseName string
 
 @description('Optional. Indexing policy of the graph.')
-param indexingPolicy object = {}
+param indexingPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15'>.properties.resource.indexingPolicy?
 
 @description('Optional. List of paths using which data within the container can be partitioned.')
-param partitionKeyPaths array = []
+param partitionKeyPaths resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15'>.properties.resource.partitionKey.paths?
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {
   name: databaseAccountName
 
-  resource gremlinDatabase 'gremlinDatabases@2024-11-15' existing = {
+  resource gremlinDatabase 'gremlinDatabases@2025-04-15' existing = {
     name: gremlinDatabaseName
   }
 }
 
-resource gremlinGraph 'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2024-11-15' = {
+resource gremlinGraph 'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15' = {
   name: name
   tags: tags
   parent: databaseAccount::gremlinDatabase
   properties: {
     resource: {
       id: name
-      indexingPolicy: !empty(indexingPolicy) ? indexingPolicy : null
+      indexingPolicy: indexingPolicy
       partitionKey: {
-        paths: !empty(partitionKeyPaths) ? partitionKeyPaths : null
+        paths: partitionKeyPaths
       }
     }
   }

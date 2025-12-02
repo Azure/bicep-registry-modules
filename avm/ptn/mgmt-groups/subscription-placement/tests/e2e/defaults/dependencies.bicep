@@ -33,14 +33,15 @@ resource managementGroup2 'Microsoft.Management/managementGroups@2023-04-01' = {
   }
 }
 
-module subVending 'br/public:avm/ptn/lz/sub-vending:0.2.4' = {
+module subVending 'br/public:avm/ptn/lz/sub-vending:0.4.0' = {
   name: 'subVendingDeployment'
   scope: managementGroup
   params: {
     subscriptionAliasEnabled: true
-    subscriptionAliasName: 'NewSubscription'
+    subscriptionAliasName: 'AVMSubPlacementSub'
     subscriptionBillingScope: subscriptionBillingScope
-    subscriptionDisplayName: 'NewSubscription'
+    subscriptionDisplayName: 'AVMSubPlacementSub'
+
     subscriptionTags: {
       avmTest: 'true'
     }

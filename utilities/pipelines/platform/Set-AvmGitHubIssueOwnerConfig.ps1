@@ -98,6 +98,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         "`nTotals`n------"                 = $null
         'Total issues'                     = $issues.Count
         'Updated issues'                   = 0
+        'Issues to review by core team'    = 0
 
         "`nCategories`n----------"         = $null
         '📦 Module issues'                 = 0
@@ -128,7 +129,12 @@ function Set-AvmGitHubIssueOwnerConfig {
 
         if (-not $issue.title.StartsWith('[AVM Module Issue]')) {
             # Not a module issue. Skipping
-            Write-Verbose ('    ℹ️  Issue [{0}] {1}: Not a module issue but [{2}]. Skipping' -f $issue.number, $shortTitle, $issueCategory) -Verbose
+            if ([String]::IsNullOrEmpty($issueCategory)) {
+                Write-Verbose ('    ⚠️  Issue [{0}] {1}: Not a module issue and unknown category. Is skipped and should be reviewed & updated by the core team.' -f $issue.number, $shortTitle) -Verbose
+                $statistics.'Issues to review by core team'++
+            } else {
+                Write-Verbose ('    ℹ️  Issue [{0}] {1}: Not a module issue but [{2}]. Skipping' -f $issue.number, $shortTitle, $issueCategory) -Verbose
+            }
             $processedCount++
             continue
         }
@@ -148,6 +154,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 
         if ([string]::IsNullOrEmpty($moduleName)) {
             Write-Warning ('    ⚠️  Issue [{0}] {1}: No valid module name was found in the issue. Skipping' -f $issue.number, $shortTitle)
+            $statistics.'Issues to review by core team'++
             $processedCount++
             continue
         }
@@ -171,6 +178,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         # new/unknown module
         if ($null -eq $moduleCsvData) {
             Write-Warning ('    ⚠️  Issue [{0}] {1}: Module [{2}] not found in CSV. Skipping assignment.' -f $issue.number, $shortTitle, $moduleName)
+            $statistics.'Issues to review by core team'++
             $reply = @"
 **@$($issue.user.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
@@ -190,14 +198,18 @@ function Set-AvmGitHubIssueOwnerConfig {
         # existing module
         else {
             $ownerTeamMembers = [array](Get-GithubTeamMembersLogin -OrgName $RepositoryOwner -TeamName $moduleCsvData.ModuleOwnersGHTeam)
-            $reply = @"
+            if ($ownerTeamMembers) {
+                $reply = @"
 **@$($issue.user.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
 > [!IMPORTANT]
 > A member of the @Azure/$($moduleCsvData.ModuleOwnersGHTeam) team will review it soon!
 "@
+            } else {
+                Write-Warning ('    ⚠️  Issue [{0}] {1}: No members found in owner team [{2}] or team itself does not exist (e.g., because module was deprecated). Skipping comments & assignment.' -f $issue.number, $shortTitle, $moduleCsvData.ModuleOwnersGHTeam)
+                $statistics.'Issues to review by core team'++
+            }
         }
-
         # Existing assignees
         # ------------------
         $existingAssignees = $issue.assignees.login
@@ -213,6 +225,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         if ($moduleCsvData.ModuleStatus -eq 'Orphaned' -and $existingLabels -notcontains 'Status: Module Orphaned :yellow_circle:') {
             # Added as I found several incorrectly labeled issues
             Write-Warning ('    ⚠️  Issue [{0}] {1}: Module [{2}] is orphaned but not assigned the required label. Please check.' -f $issue.number, $shortTitle, $moduleName)
+            $statistics.'Issues to review by core team'++
         }
 
         # ============= #
@@ -269,6 +282,13 @@ function Set-AvmGitHubIssueOwnerConfig {
             # Assign owner team members
             # -------------------------
             foreach ($alias in ($ownerTeamMembers | Where-Object { $existingAssignees -notcontains $_ })) {
+
+                if ($timelineEvents | Where-Object { ($_.event -eq 'unassigned') -and ($_.assignee.login -eq $alias) }) {
+                    # Skipping this alias as it was previously manually unassigned
+                    Write-Verbose ('    🫷  Issue [{0}] {1}: Skipping re-assignment of owner team member [{2}] as they were manually unassigned' -f $issue.number, $shortTitle, $alias) -Verbose
+                    continue
+                }
+
                 $anyUpdate = $true
                 $statistics.'Added assignees'++
                 if ($PSCmdlet.ShouldProcess("Owner team member [$alias] to issue [$($issue.number)]", 'Assign')) {
@@ -302,8 +322,10 @@ function Set-AvmGitHubIssueOwnerConfig {
                 ($_.event -eq 'assigned') -and ($_.actor.login -ne 'avm-team-linter[bot]')
             }).assignee.login
         $assigneesToRemove = $existingAssignees | Where-Object {
-            ($ownerTeamMembers -notcontains $_) -and
-            ($usersAssignedManually -notcontains $_)
+            $wasManuallyAssigned = $usersAssignedManually -contains $_
+            $isInOwnerTeam = $ownerTeamMembers -contains $_
+            $isOrphaned = $moduleCsvData.ModuleStatus -eq 'Orphaned'
+            -not $wasManuallyAssigned -and (-not $isInOwnerTeam -or $isOrphaned)
         }
         foreach ($excessAssignee in $assigneesToRemove) {
             $anyUpdate = $true
@@ -311,7 +333,7 @@ function Set-AvmGitHubIssueOwnerConfig {
             if ($PSCmdlet.ShouldProcess("Excess assignee [$excessAssignee] from issue [$($issue.number)]", 'Remove')) {
                 $null = gh issue edit $issue.number --remove-assignee $excessAssignee --repo $fullRepositoryName
             }
-            Write-Verbose ('    🗑️  Issue [{0}] {1}: Removed excess assignee [{2}]' -f $issue.number, $shortTitle, $excessAssignee) -Verbose
+            Write-Verbose ('    ♻️  Issue [{0}] {1}: Removed excess assignee [{2}]' -f $issue.number, $shortTitle, $excessAssignee) -Verbose
         }
 
         if ($anyUpdate) {
@@ -334,7 +356,21 @@ function Set-AvmGitHubIssueOwnerConfig {
     Write-Verbose '' -Verbose
     Write-Verbose '# Assignee distribution' -Verbose
     Write-Verbose '# ---------------------' -Verbose
-    Write-Verbose ($issues | Group-Object -Property { $_.assignee.login } | ForEach-Object {
+    # Expand issues by assignees
+    # E.g., if one issue has two assignees, the list will contain two copies of that issue, one per assignee
+    $expandedList = [System.Collections.ArrayList]@()
+    foreach ($issue in $issues) {
+        $assignees = $issue.assignees
+        if (-not $assignees) {
+            $assignees = @(@{ login = 'Unassigned' })
+        }
+        foreach ($assignee in $assignees) {
+            $copy = $issue.PsObject.Copy()
+            $copy.assignee = $assignee
+            $expandedList += $copy
+        }
+    }
+    Write-Verbose ($expandedList | Group-Object -Property { $_.assignee.login } | ForEach-Object {
             [PSCustomObject]@{
                 Assignee = ($_.name ? $_.name : 'Unassigned')
                 '#'      = $_.Count
@@ -345,7 +381,7 @@ function Set-AvmGitHubIssueOwnerConfig {
     Write-Verbose ($moduleDistributionData | ForEach-Object {
             [PSCustomObject]@{
                 Name = $_.ModuleName
-                Type = ('{0} {1}' -f $_.ModuleType, ($_.ModuleType -eq 'res' ? '📄' : $_.ModuleType -eq 'ptn' ? '📁' :  $_.ModuleType -eq 'utl' ? '🔨' : '👀'))
+                Type = ('{0} {1}' -f $_.ModuleType, ($_.ModuleType -eq 'res' ? '📄' : $_.ModuleType -eq 'ptn' ? '📁' :  $_.ModuleType -eq 'utl' ? '🔨' : '⚠️'))
                 '#'  = $_.References.Count
             }
         } | Sort-Object -Property { $_.'#' } -Descending | Format-Table | Out-String) -Verbose

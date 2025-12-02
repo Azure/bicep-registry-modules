@@ -36,7 +36,7 @@ jobs:
     if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Set environment
@@ -64,7 +64,7 @@ jobs:
             baselineName: CB.AVM.WAF.Security
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
       - name: "Run Required PSRule validation with baseline [${{ matrix.baseline.friendlyName}}] on [${{ matrix.testCases.path }}]"
@@ -91,7 +91,7 @@ jobs:
             baselineName: Azure.Pillar.Security
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
       - name: "Run Optional PSRule validation with baseline [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.path }}]"
@@ -124,7 +124,7 @@ jobs:
         testCases: ${{ fromJson(inputs.moduleTestFilePaths) }}
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Set environment
@@ -153,9 +153,9 @@ jobs:
   job_publish_module: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Publishing"
     runs-on: ubuntu-latest
-    # Note: Below always() required in condition due to psrule jobs being skipped for ptn & utl modules not having defaults or waf-aligned folders
+    # Note: Below !cancelled() required in condition due to psrule jobs being skipped for ptn & utl modules not having defaults or waf-aligned folders
     if: |
-      always() &&
+      !cancelled() &&
       needs.job_module_static_validation.result == 'success' &&
       needs.job_module_deploy_validation.result == 'success' &&
       github.ref == 'refs/heads/main' &&
@@ -165,7 +165,7 @@ jobs:
       - job_module_deploy_validation
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Set environment
