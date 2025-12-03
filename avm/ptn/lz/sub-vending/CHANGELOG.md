@@ -10,16 +10,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added new parameter `virtualNetworkIpamPoolNumberOfIpAddresses` to specify the number of IP addresses to allocate from an IPAM pool
 - Updated `virtualNetworkAddressSpace` parameter to accept either CIDR notation or IPAM pool resource IDs
 - Added IPAM support for both primary virtual network and additional virtual networks
-- Made the `resourceProviders` parameter documentation fix from 0.4.2 persistent in the codebase
-
-### Breaking Changes
-
-- **None**
-
-## 0.4.2
-
-### Changes
-
 - Clarified `resourceProviders` parameter documentation to accurately reflect default behavior
 
 ### Breaking Changes
