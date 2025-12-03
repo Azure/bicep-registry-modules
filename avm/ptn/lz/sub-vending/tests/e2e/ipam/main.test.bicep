@@ -9,7 +9,7 @@ param resourceLocation string = deployment().location
 // This parameter needs to be updated with the billing account and the enrollment account of your environment.
 @description('Required. The scope of the subscription billing. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-SubscriptionBillingScope\'.')
 @secure()
-param subscriptionBillingScope string
+param subscriptionBillingScope string = ''
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -26,6 +26,8 @@ param ipamInfraSubId string = '9948cae8-8c7c-4f5f-81c1-c53317cab23d'
 @description('Optional. The resource group where the IPAM infrastructure will be deployed.')
 param ipamInfraResourceGroup string = 'rsg-blzv-perm-ipam-001'
 
+var enableDeployment = !empty(subscriptionBillingScope)
+
 // Deploy IPAM infrastructure (Network Manager and IPAM Pool)
 module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
@@ -37,7 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
   }
 }
 
-module testDeployment '../../../main.bicep' = {
+module testDeployment '../../../main.bicep' = if (enableDeployment) {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${subscriptionGuid}'
   params: {
     subscriptionAliasEnabled: true
@@ -81,7 +83,7 @@ module testDeployment '../../../main.bicep' = {
   }
 }
 
-output createdSubId string = testDeployment.outputs.subscriptionId
+output createdSubId string = enableDeployment ? testDeployment.?outputs.?subscriptionId ?? '' : ''
 output namePrefix string = namePrefix
 output serviceShort string = serviceShort
 output resourceLocation string = resourceLocation
