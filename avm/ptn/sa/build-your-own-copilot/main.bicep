@@ -19,7 +19,7 @@ param solutionName string = 'clientadvisor'
 @description('Optional. CosmosDB Location.')
 param cosmosLocation string = 'eastus2'
 
-@description('Optional. CosmosDB Location.')
+@description('Optional. CosmosDB Replica Location.')
 param cosmosReplicaLocation string = 'canadacentral'
 
 @minLength(1)

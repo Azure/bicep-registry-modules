@@ -373,7 +373,7 @@ param vmAdminUsername = 'adminuser'
 | [`containerImageName`](#parameter-containerimagename) | string | The Container Image Name to deploy on the webapp. |
 | [`containerRegistryHostname`](#parameter-containerregistryhostname) | string | The Container Registry hostname where the docker images for the frontend are located. |
 | [`cosmosLocation`](#parameter-cosmoslocation) | string | CosmosDB Location. |
-| [`cosmosReplicaLocation`](#parameter-cosmosreplicalocation) | string | CosmosDB Location. |
+| [`cosmosReplicaLocation`](#parameter-cosmosreplicalocation) | string | CosmosDB Replica Location. |
 | [`createdBy`](#parameter-createdby) | string | Tag, Created by user name. |
 | [`embeddingDeploymentCapacity`](#parameter-embeddingdeploymentcapacity) | int | Capacity of the Embedding Model deployment. |
 | [`embeddingModel`](#parameter-embeddingmodel) | string | Name of the Text Embedding model to deploy. |
@@ -452,7 +452,7 @@ CosmosDB Location.
 
 ### Parameter: `cosmosReplicaLocation`
 
-CosmosDB Location.
+CosmosDB Replica Location.
 
 - Required: No
 - Type: string

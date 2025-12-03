@@ -2,6 +2,22 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/build-your-own-copilot/CHANGELOG.md).
 
+## 0.3.0
+
+### Changes
+
+- Added new parameter `cosmosReplicaLocation` to allow configuration of Cosmos DB replica region
+- Upgraded `avm/res/compute/virtual-machine` module to version `0.21.0`
+- Upgraded `avm/res/document-db/database-account` module to version `0.18.0`
+- Upgraded `avm/res/operational-insights/workspace` module to version `0.13.0`
+- Upgraded `avm/res/sql/server` module to version `0.21.1`
+- Upgraded `avm/res/storage/storage-account` module to version `0.29.0`
+
+
+### Breaking Changes
+
+- None
+
 ## 0.2.0
 
 ### Changes
