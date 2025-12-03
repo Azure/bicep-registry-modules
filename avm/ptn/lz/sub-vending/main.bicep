@@ -314,7 +314,7 @@ param deploymentScriptStorageAccountName string = 'stgds${substring(uniqueString
 param deploymentScriptLocation string = deployment().location
 
 @description('''
-Optional. An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.
+Optional. An object of resource providers and resource providers features to register. If not specified, a default list of common resource providers will be registered. To disable resource provider registration entirely, provide an empty object `{}`.
 ''')
 param resourceProviders object = {
   'Microsoft.ApiManagement': []

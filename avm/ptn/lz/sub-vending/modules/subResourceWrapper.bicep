@@ -142,7 +142,7 @@ param deploymentScriptNetworkSecurityGroupName string = ''
 param virtualNetworkDeploymentScriptAddressPrefix string = ''
 
 @sys.description('''
-An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.
+An object of resource providers and resource providers features to register. If not specified, a default list of common resource providers will be registered. To disable resource provider registration entirely, provide an empty object `{}`.
 }`''')
 param resourceProviders object = {
   'Microsoft.ApiManagement': []
