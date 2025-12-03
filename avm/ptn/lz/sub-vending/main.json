@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "7550082996471672170"
+      "version": "0.39.26.7824",
+      "templateHash": "9269024724934095540"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1218,7 +1218,14 @@
         "addressPrefixes": {
           "type": "array",
           "metadata": {
-            "description": "Required. The address prefixes for the virtual network."
+            "description": "Required. An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `[\"10.0.0.0/16\"]`) OR a single IPAM pool resource ID. When specifying an IPAM pool resource ID, you must also set ipamPoolNumberOfIpAddresses."
+          }
+        },
+        "ipamPoolNumberOfIpAddresses": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The number of IP addresses to allocate from the IPAM pool. Required when addressPrefixes contains an IPAM pool resource ID."
           }
         },
         "location": {
@@ -1483,7 +1490,14 @@
       },
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `[\"10.0.0.0/16\",\"172.16.0.0/12\"]`."
+        "description": "Optional. An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `[\"10.0.0.0/16\",\"172.16.0.0/12\"]`) OR a single IPAM pool resource ID to allocate IP addresses from. When specifying an IPAM pool resource ID, you must also set a value for the `virtualNetworkIpamPoolNumberOfIpAddresses` parameter.\n"
+      }
+    },
+    "virtualNetworkIpamPoolNumberOfIpAddresses": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The number of IP addresses to allocate from the IPAM pool. Required when `virtualNetworkAddressSpace` contains an IPAM pool resource ID. Example: `'256'` for a /24 network.\n"
       }
     },
     "virtualNetworkSubnets": {
@@ -1901,8 +1915,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "16574186634835473532"
+              "version": "0.39.26.7824",
+              "templateHash": "2533844697716248403"
             }
           },
           "parameters": {
@@ -2038,6 +2052,9 @@
           "virtualNetworkAddressSpace": {
             "value": "[parameters('virtualNetworkAddressSpace')]"
           },
+          "virtualNetworkIpamPoolNumberOfIpAddresses": {
+            "value": "[parameters('virtualNetworkIpamPoolNumberOfIpAddresses')]"
+          },
           "virtualNetworkSubnets": {
             "value": "[parameters('virtualNetworkSubnets')]"
           },
@@ -2157,8 +2174,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "999263166460876108"
+              "version": "0.39.26.7824",
+              "templateHash": "17022144657904143249"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -3014,7 +3031,14 @@
                 "addressPrefixes": {
                   "type": "array",
                   "metadata": {
-                    "description": "Required. The address prefixes for the virtual network."
+                    "description": "Required. An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `[\"10.0.0.0/16\"]`) OR a single IPAM pool resource ID. When specifying an IPAM pool resource ID, you must also set ipamPoolNumberOfIpAddresses."
+                  }
+                },
+                "ipamPoolNumberOfIpAddresses": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The number of IP addresses to allocate from the IPAM pool. Required when addressPrefixes contains an IPAM pool resource ID."
                   }
                 },
                 "location": {
@@ -3601,7 +3625,14 @@
               },
               "defaultValue": [],
               "metadata": {
-                "description": "The address space of the virtual network, supplied as multiple CIDR blocks, e.g. `[\"10.0.0.0/16\",\"172.16.0.0/12\"]`"
+                "description": "An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `[\"10.0.0.0/16\",\"172.16.0.0/12\"]`) OR a single IPAM pool resource ID. When specifying an IPAM pool resource ID, you must also set virtualNetworkIpamPoolNumberOfIpAddresses."
+              }
+            },
+            "virtualNetworkIpamPoolNumberOfIpAddresses": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "The number of IP addresses to allocate from the IPAM pool. Required when virtualNetworkAddressSpace contains an IPAM pool resource ID."
               }
             },
             "virtualNetworkSubnets": {
@@ -4085,8 +4116,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "18107819872752296910"
+                      "version": "0.39.26.7824",
+                      "templateHash": "737414694893554439"
                     }
                   },
                   "parameters": {
@@ -4147,8 +4178,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "2654933692570559783"
+                      "version": "0.39.26.7824",
+                      "templateHash": "18132991071238568488"
                     }
                   },
                   "parameters": {
@@ -4207,8 +4238,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "1661292190117326471"
+                              "version": "0.39.26.7824",
+                              "templateHash": "409826983300954352"
                             }
                           },
                           "parameters": {
@@ -4263,8 +4294,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.38.33.27573",
-                                      "templateHash": "12489795648043380518"
+                                      "version": "0.39.26.7824",
+                                      "templateHash": "15122795269698622494"
                                     }
                                   },
                                   "parameters": {
@@ -4341,8 +4372,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "7727222932365568939"
+                              "version": "0.39.26.7824",
+                              "templateHash": "6678453199622092861"
                             }
                           },
                           "parameters": {
@@ -4396,8 +4427,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.38.33.27573",
-                                      "templateHash": "1625562912621355821"
+                                      "version": "0.39.26.7824",
+                                      "templateHash": "6143412316816181642"
                                     }
                                   },
                                   "parameters": {
@@ -5509,8 +5540,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "2654933692570559783"
+                      "version": "0.39.26.7824",
+                      "templateHash": "18132991071238568488"
                     }
                   },
                   "parameters": {
@@ -5569,8 +5600,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "1661292190117326471"
+                              "version": "0.39.26.7824",
+                              "templateHash": "409826983300954352"
                             }
                           },
                           "parameters": {
@@ -5625,8 +5656,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.38.33.27573",
-                                      "templateHash": "12489795648043380518"
+                                      "version": "0.39.26.7824",
+                                      "templateHash": "15122795269698622494"
                                     }
                                   },
                                   "parameters": {
@@ -5703,8 +5734,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "7727222932365568939"
+                              "version": "0.39.26.7824",
+                              "templateHash": "6678453199622092861"
                             }
                           },
                           "parameters": {
@@ -5758,8 +5789,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.38.33.27573",
-                                      "templateHash": "1625562912621355821"
+                                      "version": "0.39.26.7824",
+                                      "templateHash": "6143412316816181642"
                                     }
                                   },
                                   "parameters": {
@@ -5873,6 +5904,7 @@
                   "addressPrefixes": {
                     "value": "[parameters('virtualNetworkAddressSpace')]"
                   },
+                  "ipamPoolNumberOfIpAddresses": "[if(and(not(empty(parameters('virtualNetworkAddressSpace'))), contains(parameters('virtualNetworkAddressSpace')[0], '/Microsoft.Network/networkManagers/')), createObject('value', parameters('virtualNetworkIpamPoolNumberOfIpAddresses')), createObject('value', null()))]",
                   "dnsServers": {
                     "value": "[parameters('virtualNetworkDnsServers')]"
                   },
@@ -10673,8 +10705,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "6279059423618909743"
+                      "version": "0.39.26.7824",
+                      "templateHash": "2697601347448864025"
                     }
                   },
                   "parameters": {
@@ -47636,6 +47668,7 @@
                   "addressPrefixes": {
                     "value": "[parameters('additionalVirtualNetworks')[copyIndex()].addressPrefixes]"
                   },
+                  "ipamPoolNumberOfIpAddresses": "[if(and(not(empty(parameters('additionalVirtualNetworks')[copyIndex()].addressPrefixes)), contains(parameters('additionalVirtualNetworks')[copyIndex()].addressPrefixes[0], '/Microsoft.Network/networkManagers/')), createObject('value', tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'ipamPoolNumberOfIpAddresses')), createObject('value', null()))]",
                   "subnets": {
                     "copy": [
                       {
@@ -49326,8 +49359,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "6279059423618909743"
+                      "version": "0.39.26.7824",
+                      "templateHash": "2697601347448864025"
                     }
                   },
                   "parameters": {
@@ -49441,8 +49474,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "13939377559324876183"
+                      "version": "0.39.26.7824",
+                      "templateHash": "5242216955770606257"
                     }
                   },
                   "parameters": {
@@ -49511,8 +49544,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "13939377559324876183"
+                      "version": "0.39.26.7824",
+                      "templateHash": "5242216955770606257"
                     }
                   },
                   "parameters": {

@@ -52,8 +52,11 @@ param virtualNetworkName string = ''
 @sys.description('An object of tag key/value pairs to be set on the Virtual Network that is created. NOTE: Tags will be overwritten on resoruce if any exist already.')
 param virtualNetworkTags object = {}
 
-@sys.description('The address space of the virtual network, supplied as multiple CIDR blocks, e.g. `["10.0.0.0/16","172.16.0.0/12"]`')
+@sys.description('An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `["10.0.0.0/16","172.16.0.0/12"]`) OR a single IPAM pool resource ID. When specifying an IPAM pool resource ID, you must also set virtualNetworkIpamPoolNumberOfIpAddresses.')
 param virtualNetworkAddressSpace string[] = []
+
+@sys.description('The number of IP addresses to allocate from the IPAM pool. Required when virtualNetworkAddressSpace contains an IPAM pool resource ID.')
+param virtualNetworkIpamPoolNumberOfIpAddresses string?
 
 @sys.description('The subnets of the Virtual Network that will be created by this module.')
 param virtualNetworkSubnets subnetType[] = []
@@ -630,6 +633,9 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (virt
     tags: virtualNetworkTags
     location: virtualNetworkLocation
     addressPrefixes: virtualNetworkAddressSpace
+    ipamPoolNumberOfIpAddresses: !empty(virtualNetworkAddressSpace) && contains(virtualNetworkAddressSpace[0], '/Microsoft.Network/networkManagers/')
+      ? virtualNetworkIpamPoolNumberOfIpAddresses
+      : null
     dnsServers: virtualNetworkDnsServers
     ddosProtectionPlanResourceId: virtualNetworkDdosPlanResourceId
     peerings: (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(hubVirtualNetworkResourceIdChecked) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))
@@ -1730,6 +1736,9 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
     params: {
       name: vnet.name
       addressPrefixes: vnet.addressPrefixes
+      ipamPoolNumberOfIpAddresses: !empty(vnet.addressPrefixes) && contains(vnet.addressPrefixes[0], '/Microsoft.Network/networkManagers/')
+        ? vnet.?ipamPoolNumberOfIpAddresses
+        : null
       subnets: [
         for subnet in (vnet.?subnets ?? []): {
           name: subnet.name
@@ -2237,8 +2246,11 @@ type virtualNetworkType = {
   @description('Required. The name of the virtual network resource.')
   name: string
 
-  @description('Required. The address prefixes for the virtual network.')
+  @description('Required. An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `["10.0.0.0/16"]`) OR a single IPAM pool resource ID. When specifying an IPAM pool resource ID, you must also set ipamPoolNumberOfIpAddresses.')
   addressPrefixes: array
+
+  @description('Optional. The number of IP addresses to allocate from the IPAM pool. Required when addressPrefixes contains an IPAM pool resource ID.')
+  ipamPoolNumberOfIpAddresses: string?
 
   @description('Required. The location of the virtual network.')
   location: string

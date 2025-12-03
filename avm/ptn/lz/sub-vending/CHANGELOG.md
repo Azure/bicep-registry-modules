@@ -2,6 +2,19 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/lz/sub-vending/CHANGELOG.md).
 
+## 0.5.0
+
+### Changes
+
+- Added support for Azure Virtual Network Manager IPAM (IP Address Management) pools for automatic IP address allocation
+- Added new parameter `virtualNetworkIpamPoolNumberOfIpAddresses` to specify the number of IP addresses to allocate from an IPAM pool
+- Updated `virtualNetworkAddressSpace` parameter to accept either CIDR notation or IPAM pool resource IDs
+- Added IPAM support for both primary virtual network and additional virtual networks
+
+### Breaking Changes
+
+- **None**
+
 ## 0.4.2
 
 ### Changes
