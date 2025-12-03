@@ -66,7 +66,27 @@ module testDeployment '../../../main.bicep' = if (enableDeployment) {
     virtualNetworkSubnets: [
       {
         name: 'Subnet1'
-        addressPrefix: '10.120.1.0/24'
+        // Use IPAM for automatic subnet IP allocation
+        ipamPoolPrefixAllocations: [
+          {
+            pool: {
+              id: nestedDependencies.outputs.ipamPoolResourceId
+            }
+            numberOfIpAddresses: '64'
+          }
+        ]
+      }
+      {
+        name: 'Subnet2'
+        // Use IPAM for automatic subnet IP allocation
+        ipamPoolPrefixAllocations: [
+          {
+            pool: {
+              id: nestedDependencies.outputs.ipamPoolResourceId
+            }
+            numberOfIpAddresses: '32'
+          }
+        ]
       }
     ]
     virtualNetworkResourceGroupLockEnabled: false

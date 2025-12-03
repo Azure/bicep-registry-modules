@@ -659,6 +659,7 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (virt
         ? {
             name: subnet.name
             addressPrefix: subnet.?addressPrefix
+            ipamPoolPrefixAllocations: subnet.?ipamPoolPrefixAllocations
             networkSecurityGroupResourceId: (virtualNetworkDeployBastion || subnet.name == 'AzureBastionSubnet')
               ? createBastionNsg.?outputs.resourceId
               : resourceId(
@@ -1743,6 +1744,7 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
         for subnet in (vnet.?subnets ?? []): {
           name: subnet.name
           addressPrefix: subnet.?addressPrefix
+          ipamPoolPrefixAllocations: subnet.?ipamPoolPrefixAllocations
           networkSecurityGroupResourceId: ((vnet.?deployBastion ?? false) || subnet.name == 'AzureBastionSubnet')
             ? createBastionNsg.?outputs.resourceId
             : !empty(subnet.?networkSecurityGroup)
@@ -2036,6 +2038,9 @@ type subnetType = {
 
   @description('Conditional. List of address prefixes for the subnet. Required if `addressPrefix` is empty.')
   addressPrefixes: string[]?
+
+  @description('Optional. Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate.')
+  ipamPoolPrefixAllocations: object[]?
 
   @description('Optional. Application gateway IP configurations of virtual network resource.')
   applicationGatewayIPConfigurations: object[]?

@@ -10,6 +10,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added new parameter `virtualNetworkIpamPoolNumberOfIpAddresses` to specify the number of IP addresses to allocate from an IPAM pool
 - Updated `virtualNetworkAddressSpace` parameter to accept either CIDR notation or IPAM pool resource IDs
 - Added IPAM support for both primary virtual network and additional virtual networks
+- Added IPAM support for subnet address allocation via `ipamPoolPrefixAllocations` property in subnet definitions
+- Updated IPAM test scenario to demonstrate automatic subnet IP allocation from IPAM pools
 - Clarified `resourceProviders` parameter documentation to accurately reflect default behavior
 
 ### Breaking Changes

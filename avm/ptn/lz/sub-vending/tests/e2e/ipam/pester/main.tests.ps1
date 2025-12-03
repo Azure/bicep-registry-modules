@@ -105,16 +105,40 @@ Describe 'Bicep Landing Zone (Sub) Vending IPAM Tests' {
             $vnetIpam.DdosProtectionPlan | Should -BeNullOrEmpty
         }
 
-        It 'Should have a Virtual Network with one subnet' {
-            $vnetIpam.Subnets.Count | Should -Be 1
+        It 'Should have a Virtual Network with two subnets' {
+            $vnetIpam.Subnets.Count | Should -Be 2
         }
 
         It "Should have a Virtual Network with a subnet named 'Subnet1'" {
             $vnetIpam.Subnets[0].Name | Should -Be 'Subnet1'
         }
 
-        It "Should have a Virtual Network with subnet 'Subnet1' having the correct address prefix (10.120.1.0/24)" {
-            $vnetIpam.Subnets[0].AddressPrefix | Should -Be '10.120.1.0/24'
+        It "Should have a subnet 'Subnet1' that uses IPAM for address allocation" {
+            $vnetIpam.Subnets[0].IpamPoolPrefixAllocations | Should -Not -BeNullOrEmpty
+        }
+
+        It "Should have a subnet 'Subnet1' with IPAM pool allocation referencing the correct IPAM pool" {
+            $vnetIpam.Subnets[0].IpamPoolPrefixAllocations[0].Pool.Id | Should -Be $ipamPoolResourceId
+        }
+
+        It "Should have a subnet 'Subnet1' with IPAM pool allocation requesting 64 IP addresses" {
+            $vnetIpam.Subnets[0].IpamPoolPrefixAllocations[0].NumberOfIpAddresses | Should -Be '64'
+        }
+
+        It "Should have a subnet 'Subnet1' with an automatically allocated address prefix from IPAM" {
+            $vnetIpam.Subnets[0].IpamPoolPrefixAllocations[0].AllocatedAddressPrefix | Should -Not -BeNullOrEmpty
+        }
+
+        It "Should have a Virtual Network with a subnet named 'Subnet2'" {
+            $vnetIpam.Subnets[1].Name | Should -Be 'Subnet2'
+        }
+
+        It "Should have a subnet 'Subnet2' that uses IPAM for address allocation" {
+            $vnetIpam.Subnets[1].IpamPoolPrefixAllocations | Should -Not -BeNullOrEmpty
+        }
+
+        It "Should have a subnet 'Subnet2' with IPAM pool allocation requesting 32 IP addresses" {
+            $vnetIpam.Subnets[1].IpamPoolPrefixAllocations[0].NumberOfIpAddresses | Should -Be '32'
         }
     }
 }
