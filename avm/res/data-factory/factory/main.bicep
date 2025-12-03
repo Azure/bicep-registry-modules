@@ -4,17 +4,14 @@ metadata description = 'This module deploys a Data Factory.'
 @description('Required. The name of the Azure Factory to create.')
 param name string
 
-@description('Optional. The name of the Managed Virtual Network.')
-param managedVirtualNetworkName string = ''
-
-@description('Optional. An array of managed private endpoints objects created in the Data Factory managed virtual network.')
-param managedPrivateEndpoints managedPrivateEndpointType[] = []
+@description('Optional. The Managed Virtual Network configuration.')
+param managedVirtualNetwork managedVirtualNetworkType?
 
 @description('Optional. An array of objects for the configuration of an Integration Runtime.')
-param integrationRuntimes integrationRuntimesType[] = []
+param integrationRuntimes integrationRuntimesType[]?
 
 @description('Optional. An array of objects for the configuration of Linked Services.')
-param linkedServices linkedServicesType[] = []
+param linkedServices linkedServicesType[]?
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
@@ -66,19 +63,19 @@ param globalParameters resourceInput<'Microsoft.DataFactory/factories@2018-06-01
 @description('Optional. Purview Account resource identifier.')
 param purviewResourceId string?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings for all Resources in the solution.')
 param lock lockType?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
@@ -86,7 +83,7 @@ import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-com
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -107,8 +104,8 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -142,14 +139,15 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
     name: customerManagedKey.?keyName!
   }
 }
@@ -220,12 +218,16 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
               }
             : null
           keyName: customerManagedKey!.keyName
-          keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-            ? customerManagedKey!.keyVersion
+          keyVersion: !empty(customerManagedKey.?keyVersion)
+            ? customerManagedKey!.keyVersion!
             : (customerManagedKey.?autoRotationEnabled ?? true)
                 ? null
-                : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
-          vaultBaseUrl: cMKKeyVault.properties.vaultUri
+                : (!isHSMManagedCMK
+                    ? last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
+                    : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
+          vaultBaseUrl: !isHSMManagedCMK
+            ? cMKKeyVault!.properties.vaultUri
+            : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/'
         }
       : null
     purviewConfiguration: !empty(purviewResourceId)
@@ -236,17 +238,17 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
   }
 }
 
-module dataFactory_managedVirtualNetwork 'managed-virtual-network/main.bicep' = if (!empty(managedVirtualNetworkName)) {
+module dataFactory_managedVirtualNetwork 'managed-virtual-network/main.bicep' = if (!empty(managedVirtualNetwork)) {
   name: '${uniqueString(deployment().name, location)}-DataFactory-ManagedVNet'
   params: {
-    name: managedVirtualNetworkName
     dataFactoryName: dataFactory.name
-    managedPrivateEndpoints: managedPrivateEndpoints
+    name: managedVirtualNetwork!.name
+    managedPrivateEndpoints: managedVirtualNetwork!.?managedPrivateEndpoints
   }
 }
 
 module dataFactory_integrationRuntimes 'integration-runtime/main.bicep' = [
-  for (integrationRuntime, index) in integrationRuntimes: {
+  for (integrationRuntime, index) in (integrationRuntimes ?? []): {
     name: '${uniqueString(deployment().name, location)}-DataFactory-IntegrationRuntime-${index}'
     params: {
       dataFactoryName: dataFactory.name
@@ -263,7 +265,7 @@ module dataFactory_integrationRuntimes 'integration-runtime/main.bicep' = [
 ]
 
 module dataFactory_linkedServices 'linked-service/main.bicep' = [
-  for (linkedService, index) in linkedServices: {
+  for (linkedService, index) in (linkedServices ?? []): {
     name: '${uniqueString(deployment().name, location)}-DataFactory-LinkedServices-${index}'
     params: {
       dataFactoryName: dataFactory.name
@@ -336,7 +338,7 @@ resource dataFactory_roleAssignments 'Microsoft.Authorization/roleAssignments@20
   }
 ]
 
-module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-dataFactory-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -421,19 +423,15 @@ output privateEndpoints privateEndpointOutputType[] = [
 //   Definitions   //
 // =============== //
 
+import { managedPrivateEndpointType } from 'managed-virtual-network/main.bicep'
 @export()
-type managedPrivateEndpointType = {
-  @description('Required. Specify the name of managed private endpoint.')
+@description('The type for a managed virtual network.')
+type managedVirtualNetworkType = {
+  @description('Required. The name of the Managed Virtual Network.')
   name: string
 
-  @description('Required. Specify the sub-resource of the managed private endpoint.')
-  groupId: string
-
-  @description('Required. Specify the resource ID to create the managed private endpoint for.')
-  privateLinkResourceId: string
-
-  @description('Optional. Specify the FQDNS of the linked resources to create private endpoints for, depending on the type of linked resource this is required.')
-  fqdns: string[]?
+  @description('Optional. An array of managed private endpoints objects created in the Data Factory managed virtual network.')
+  managedPrivateEndpoints: managedPrivateEndpointType[]?
 }
 
 @export()

@@ -18,19 +18,19 @@ param enableTelemetry bool
 @description('Optional. The network security group (NSG) to attach to the network interface.')
 param networkSecurityGroupResourceId string = ''
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.9.0' = [
+module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.9.1' = [
   for (ipConfiguration, index) in ipConfigurations: if (!empty(ipConfiguration.?pipConfiguration) && empty(ipConfiguration.?pipConfiguration.?publicIPAddressResourceId)) {
     name: '${deployment().name}-publicIP-${index}'
     params: {
@@ -55,7 +55,7 @@ module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-a
   }
 ]
 
-module networkInterface 'br/public:avm/res/network/network-interface:0.5.2' = {
+module networkInterface 'br/public:avm/res/network/network-interface:0.5.3' = {
   name: '${deployment().name}-NetworkInterface'
   params: {
     name: networkInterfaceName

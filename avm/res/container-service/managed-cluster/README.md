@@ -2,6 +2,14 @@
 
 This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.
 
+You can reference the module as follows:
+```bicep
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -34,10 +42,11 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults and use AKS Automatic mode (PREVIEW)](#example-1-using-only-defaults-and-use-aks-automatic-mode-preview)
 - [Using only defaults](#example-2-using-only-defaults)
-- [Using Istio Service Mesh add-on](#example-3-using-istio-service-mesh-add-on)
-- [Using Kubenet Network Plugin.](#example-4-using-kubenet-network-plugin)
-- [Using Private Cluster.](#example-5-using-private-cluster)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Enabling encryption via a Disk Encryption Set (DES) using Customer-Managed-Keys (CMK) and a User-Assigned Identity](#example-3-enabling-encryption-via-a-disk-encryption-set-des-using-customer-managed-keys-cmk-and-a-user-assigned-identity)
+- [Using Istio Service Mesh add-on](#example-4-using-istio-service-mesh-add-on)
+- [Using Kubenet Network Plugin.](#example-5-using-kubenet-network-plugin)
+- [Using Private Cluster.](#example-6-using-private-cluster)
+- [WAF-aligned](#example-7-waf-aligned)
 
 ### Example 1: _Using only defaults and use AKS Automatic mode (PREVIEW)_
 
@@ -49,6 +58,8 @@ Register the NodeAutoProvisioningPreview feature flag using the az feature regis
 MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/node-autoprovision?tabs=azure-cli#enable-node-autoprovisioning) FOR CLARIFICATION.
 
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/automatic]
+
 
 <details>
 
@@ -56,7 +67,6 @@ MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](http
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: 'managedClusterDeployment'
   params: {
     // Required parameters
     name: 'csauto001'
@@ -292,6 +302,8 @@ param webApplicationRoutingEnabled = true
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -299,7 +311,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: 'managedClusterDeployment'
   params: {
     // Required parameters
     name: 'csmin001'
@@ -398,9 +409,11 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 3: _Using Istio Service Mesh add-on_
+### Example 3: _Enabling encryption via a Disk Encryption Set (DES) using Customer-Managed-Keys (CMK) and a User-Assigned Identity_
 
-This instance deploys the module with Istio Service Mesh add-on and plug a Certificate Authority from Key Vault.
+This instance deploys the module with encryption-at-rest using a Disk Encryption Set (DES) secured by Customer-Managed Keys (CMK), and leveraging a User-Assigned Managed Identity to access the key.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/des-cmk-uami]
 
 
 <details>
@@ -409,7 +422,122 @@ This instance deploys the module with Istio Service Mesh add-on and plug a Certi
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: 'managedClusterDeployment'
+  params: {
+    // Required parameters
+    name: 'csmscmk001'
+    primaryAgentPoolProfiles: [
+      {
+        count: 3
+        mode: 'System'
+        name: 'systempool'
+        vmSize: 'Standard_DS4_v2'
+      }
+    ]
+    // Non-required parameters
+    aadProfile: {
+      aadProfileEnableAzureRBAC: true
+      aadProfileManaged: true
+    }
+    diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "csmscmk001"
+    },
+    "primaryAgentPoolProfiles": {
+      "value": [
+        {
+          "count": 3,
+          "mode": "System",
+          "name": "systempool",
+          "vmSize": "Standard_DS4_v2"
+        }
+      ]
+    },
+    // Non-required parameters
+    "aadProfile": {
+      "value": {
+        "aadProfileEnableAzureRBAC": true,
+        "aadProfileManaged": true
+      }
+    },
+    "diskEncryptionSetResourceId": {
+      "value": "<diskEncryptionSetResourceId>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-service/managed-cluster:<version>'
+
+// Required parameters
+param name = 'csmscmk001'
+param primaryAgentPoolProfiles = [
+  {
+    count: 3
+    mode: 'System'
+    name: 'systempool'
+    vmSize: 'Standard_DS4_v2'
+  }
+]
+// Non-required parameters
+param aadProfile = {
+  aadProfileEnableAzureRBAC: true
+  aadProfileManaged: true
+}
+param diskEncryptionSetResourceId = '<diskEncryptionSetResourceId>'
+param managedIdentities = {
+  systemAssigned: true
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using Istio Service Mesh add-on_
+
+This instance deploys the module with Istio Service Mesh add-on and plug a Certificate Authority from Key Vault.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/istio]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
   params: {
     // Required parameters
     name: 'csist001'
@@ -567,9 +695,11 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 4: _Using Kubenet Network Plugin._
+### Example 5: _Using Kubenet Network Plugin._
 
 This instance deploys the module with Kubenet network plugin .
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/kubenet]
 
 
 <details>
@@ -578,7 +708,6 @@ This instance deploys the module with Kubenet network plugin .
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: 'managedClusterDeployment'
   params: {
     // Required parameters
     name: 'csmkube001'
@@ -915,9 +1044,11 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _Using Private Cluster._
+### Example 6: _Using Private Cluster._
 
 This instance deploys the module with a private cluster instance.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/priv]
 
 
 <details>
@@ -926,7 +1057,6 @@ This instance deploys the module with a private cluster instance.
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: 'managedClusterDeployment'
   params: {
     // Required parameters
     name: 'csmpriv001'
@@ -1174,9 +1304,11 @@ param skuTier = 'Standard'
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
 
 <details>
@@ -1185,7 +1317,6 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: 'managedClusterDeployment'
   params: {
     // Required parameters
     name: 'cswaf001'
@@ -1794,7 +1925,7 @@ param tags = {
 | [`disableLocalAccounts`](#parameter-disablelocalaccounts) | bool | If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled. |
 | [`disablePrometheusMetricsScraping`](#parameter-disableprometheusmetricsscraping) | bool | Indicates whether prometheus metrics scraping is disabled or not. If not specified the default is false. No prometheus metrics will be emitted if this field is false but the container insights enabled field is false. |
 | [`disableRunCommand`](#parameter-disableruncommand) | bool | Whether to disable run command for the cluster or not. |
-| [`diskEncryptionSetResourceId`](#parameter-diskencryptionsetresourceid) | string | The resource ID of the disc encryption set to apply to the cluster. For security reasons, this value should be provided. |
+| [`diskEncryptionSetResourceId`](#parameter-diskencryptionsetresourceid) | string | The Resource ID of the disk encryption set to use for enabling encryption at rest. For security reasons, this value should be provided. |
 | [`dnsPrefix`](#parameter-dnsprefix) | string | Specifies the DNS prefix specified when creating the managed cluster. |
 | [`dnsServiceIP`](#parameter-dnsserviceip) | string | Specifies the IP address assigned to the Kubernetes DNS service. It must be within the Kubernetes service address range specified in serviceCidr. |
 | [`dnsZoneResourceId`](#parameter-dnszoneresourceid) | string | Specifies the resource ID of connected DNS zone. It will be ignored if `webApplicationRoutingEnabled` is set to `false`. |
@@ -3270,7 +3401,7 @@ Whether to disable run command for the cluster or not.
 
 ### Parameter: `diskEncryptionSetResourceId`
 
-The resource ID of the disc encryption set to apply to the cluster. For security reasons, this value should be provided.
+The Resource ID of the disk encryption set to use for enabling encryption at rest. For security reasons, this value should be provided.
 
 - Required: No
 - Type: string
@@ -4299,4 +4430,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "10861379689695100897"
+      "version": "0.39.26.7824",
+      "templateHash": "5059808225314360251"
     },
     "name": "Application Insights Linked Storage Account",
     "description": "This component deploys an Application Insights Linked Storage Account."

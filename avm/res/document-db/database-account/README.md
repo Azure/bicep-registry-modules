@@ -1,11 +1,14 @@
 # Azure Cosmos DB account `[Microsoft.DocumentDB/databaseAccounts]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed.
+
+You can reference the module as follows:
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
@@ -23,6 +26,11 @@ This module deploys an Azure Cosmos DB account. The API used for the account is 
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandrakeyspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/cassandraKeyspaces)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandrakeyspaces_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/cassandraKeyspaces/tables)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandrakeyspaces_views.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-05-01-preview/databaseAccounts/cassandraKeyspaces/views)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraRoleAssignments` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandraroleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-05-01-preview/databaseAccounts/cassandraRoleAssignments)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandraroledefinitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-05-01-preview/databaseAccounts/cassandraRoleDefinitions)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/gremlinDatabases)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases_graphs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/gremlinDatabases/graphs)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_mongodbdatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/mongodbDatabases)</li></ul> |
@@ -46,21 +54,24 @@ The following section provides usage examples for the module, which were used to
 
 - [Using analytical storage](#example-1-using-analytical-storage)
 - [Using bounded consistency](#example-2-using-bounded-consistency)
-- [Using only defaults](#example-3-using-only-defaults)
-- [Gremlin Database](#example-4-gremlin-database)
-- [Deploying with Managed identities](#example-5-deploying-with-managed-identities)
-- [Mongo Database](#example-6-mongo-database)
-- [Deploying multiple regions](#example-7-deploying-multiple-regions)
-- [Plain](#example-8-plain)
-- [Public network restricted access with ACL](#example-9-public-network-restricted-access-with-acl)
-- [SQL Database](#example-10-sql-database)
-- [Deploying with a sql role definition and assignment](#example-11-deploying-with-a-sql-role-definition-and-assignment)
-- [API for Table](#example-12-api-for-table)
-- [WAF-aligned](#example-13-waf-aligned)
+- [Cassandra Keyspaces - WAF-aligned](#example-3-cassandra-keyspaces---waf-aligned)
+- [Using only defaults](#example-4-using-only-defaults)
+- [Gremlin Database](#example-5-gremlin-database)
+- [Deploying with Managed identities](#example-6-deploying-with-managed-identities)
+- [Mongo Database](#example-7-mongo-database)
+- [Deploying multiple regions](#example-8-deploying-multiple-regions)
+- [Plain](#example-9-plain)
+- [Public network restricted access with ACL](#example-10-public-network-restricted-access-with-acl)
+- [SQL Database](#example-11-sql-database)
+- [Deploying with a sql role definition and assignment](#example-12-deploying-with-a-sql-role-definition-and-assignment)
+- [API for Table](#example-13-api-for-table)
+- [WAF-aligned](#example-14-waf-aligned)
 
 ### Example 1: _Using analytical storage_
 
 This instance deploys the module with analytical storage enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/analytical]
 
 
 <details>
@@ -69,7 +80,6 @@ This instance deploys the module with analytical storage enabled.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'analytical'
@@ -148,6 +158,8 @@ param zoneRedundant = false
 
 This instance deploys the module specifying a default consistency level.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/boundedConsistency]
+
 
 <details>
 
@@ -155,7 +167,6 @@ This instance deploys the module specifying a default consistency level.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'bounded'
@@ -240,9 +251,11 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 3: _Using only defaults_
+### Example 3: _Cassandra Keyspaces - WAF-aligned_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with Cassandra Keyspaces in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cassandrakeyspaces-waf]
 
 
 <details>
@@ -251,7 +264,512 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'dddacswaf001'
+    // Non-required parameters
+    backupPolicyType: 'Periodic'
+    capabilitiesToAdd: [
+      'EnableCassandra'
+    ]
+    cassandraKeyspaces: [
+      {
+        name: 'cks-dddacswaf-001'
+        tables: [
+          {
+            analyticalStorageTtl: 86400
+            defaultTtl: 7200
+            name: 'secure_orders'
+            schema: {
+              clusterKeys: [
+                {
+                  name: 'order_date'
+                  orderBy: 'Desc'
+                }
+                {
+                  name: 'order_id'
+                  orderBy: 'Asc'
+                }
+              ]
+              columns: [
+                {
+                  name: 'order_id'
+                  type: 'uuid'
+                }
+                {
+                  name: 'customer_id'
+                  type: 'uuid'
+                }
+                {
+                  name: 'order_date'
+                  type: 'timestamp'
+                }
+                {
+                  name: 'total_amount'
+                  type: 'decimal'
+                }
+                {
+                  name: 'status'
+                  type: 'text'
+                }
+              ]
+              partitionKeys: [
+                {
+                  name: 'customer_id'
+                }
+              ]
+            }
+          }
+        ]
+        throughput: 1000
+      }
+      {
+        autoscaleSettingsMaxThroughput: 4000
+        name: 'cks-dddacswaf-002'
+        tables: [
+          {
+            analyticalStorageTtl: -1
+            name: 'secure_users'
+            schema: {
+              clusterKeys: [
+                {
+                  name: 'created_at'
+                  orderBy: 'Desc'
+                }
+              ]
+              columns: [
+                {
+                  name: 'user_id'
+                  type: 'uuid'
+                }
+                {
+                  name: 'email'
+                  type: 'text'
+                }
+                {
+                  name: 'created_at'
+                  type: 'timestamp'
+                }
+              ]
+              partitionKeys: [
+                {
+                  name: 'user_id'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    disableKeyBasedMetadataWriteAccess: true
+    disableLocalAuthentication: true
+    enableAnalyticalStorage: true
+    enableAutomaticFailover: true
+    failoverLocations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+      {
+        failoverPriority: 1
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    minimumTlsVersion: 'Tls12'
+    networkRestrictions: {
+      networkAclBypass: 'None'
+      publicNetworkAccess: 'Disabled'
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'Cassandra'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    tags: {
+      environment: 'production'
+      role: 'validation'
+      type: 'waf-aligned-cassandra'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddacswaf001"
+    },
+    // Non-required parameters
+    "backupPolicyType": {
+      "value": "Periodic"
+    },
+    "capabilitiesToAdd": {
+      "value": [
+        "EnableCassandra"
+      ]
+    },
+    "cassandraKeyspaces": {
+      "value": [
+        {
+          "name": "cks-dddacswaf-001",
+          "tables": [
+            {
+              "analyticalStorageTtl": 86400,
+              "defaultTtl": 7200,
+              "name": "secure_orders",
+              "schema": {
+                "clusterKeys": [
+                  {
+                    "name": "order_date",
+                    "orderBy": "Desc"
+                  },
+                  {
+                    "name": "order_id",
+                    "orderBy": "Asc"
+                  }
+                ],
+                "columns": [
+                  {
+                    "name": "order_id",
+                    "type": "uuid"
+                  },
+                  {
+                    "name": "customer_id",
+                    "type": "uuid"
+                  },
+                  {
+                    "name": "order_date",
+                    "type": "timestamp"
+                  },
+                  {
+                    "name": "total_amount",
+                    "type": "decimal"
+                  },
+                  {
+                    "name": "status",
+                    "type": "text"
+                  }
+                ],
+                "partitionKeys": [
+                  {
+                    "name": "customer_id"
+                  }
+                ]
+              }
+            }
+          ],
+          "throughput": 1000
+        },
+        {
+          "autoscaleSettingsMaxThroughput": 4000,
+          "name": "cks-dddacswaf-002",
+          "tables": [
+            {
+              "analyticalStorageTtl": -1,
+              "name": "secure_users",
+              "schema": {
+                "clusterKeys": [
+                  {
+                    "name": "created_at",
+                    "orderBy": "Desc"
+                  }
+                ],
+                "columns": [
+                  {
+                    "name": "user_id",
+                    "type": "uuid"
+                  },
+                  {
+                    "name": "email",
+                    "type": "text"
+                  },
+                  {
+                    "name": "created_at",
+                    "type": "timestamp"
+                  }
+                ],
+                "partitionKeys": [
+                  {
+                    "name": "user_id"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "disableKeyBasedMetadataWriteAccess": {
+      "value": true
+    },
+    "disableLocalAuthentication": {
+      "value": true
+    },
+    "enableAnalyticalStorage": {
+      "value": true
+    },
+    "enableAutomaticFailover": {
+      "value": true
+    },
+    "failoverLocations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        },
+        {
+          "failoverPriority": 1,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "minimumTlsVersion": {
+      "value": "Tls12"
+    },
+    "networkRestrictions": {
+      "value": {
+        "networkAclBypass": "None",
+        "publicNetworkAccess": "Disabled"
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "Cassandra",
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "environment": "production",
+        "role": "validation",
+        "type": "waf-aligned-cassandra"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddacswaf001'
+// Non-required parameters
+param backupPolicyType = 'Periodic'
+param capabilitiesToAdd = [
+  'EnableCassandra'
+]
+param cassandraKeyspaces = [
+  {
+    name: 'cks-dddacswaf-001'
+    tables: [
+      {
+        analyticalStorageTtl: 86400
+        defaultTtl: 7200
+        name: 'secure_orders'
+        schema: {
+          clusterKeys: [
+            {
+              name: 'order_date'
+              orderBy: 'Desc'
+            }
+            {
+              name: 'order_id'
+              orderBy: 'Asc'
+            }
+          ]
+          columns: [
+            {
+              name: 'order_id'
+              type: 'uuid'
+            }
+            {
+              name: 'customer_id'
+              type: 'uuid'
+            }
+            {
+              name: 'order_date'
+              type: 'timestamp'
+            }
+            {
+              name: 'total_amount'
+              type: 'decimal'
+            }
+            {
+              name: 'status'
+              type: 'text'
+            }
+          ]
+          partitionKeys: [
+            {
+              name: 'customer_id'
+            }
+          ]
+        }
+      }
+    ]
+    throughput: 1000
+  }
+  {
+    autoscaleSettingsMaxThroughput: 4000
+    name: 'cks-dddacswaf-002'
+    tables: [
+      {
+        analyticalStorageTtl: -1
+        name: 'secure_users'
+        schema: {
+          clusterKeys: [
+            {
+              name: 'created_at'
+              orderBy: 'Desc'
+            }
+          ]
+          columns: [
+            {
+              name: 'user_id'
+              type: 'uuid'
+            }
+            {
+              name: 'email'
+              type: 'text'
+            }
+            {
+              name: 'created_at'
+              type: 'timestamp'
+            }
+          ]
+          partitionKeys: [
+            {
+              name: 'user_id'
+            }
+          ]
+        }
+      }
+    ]
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableKeyBasedMetadataWriteAccess = true
+param disableLocalAuthentication = true
+param enableAnalyticalStorage = true
+param enableAutomaticFailover = true
+param failoverLocations = [
+  {
+    failoverPriority: 0
+    isZoneRedundant: false
+    locationName: '<locationName>'
+  }
+  {
+    failoverPriority: 1
+    isZoneRedundant: false
+    locationName: '<locationName>'
+  }
+]
+param minimumTlsVersion = 'Tls12'
+param networkRestrictions = {
+  networkAclBypass: 'None'
+  publicNetworkAccess: 'Disabled'
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'Cassandra'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param tags = {
+  environment: 'production'
+  role: 'validation'
+  type: 'waf-aligned-cassandra'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
     name: 'dddamin001'
@@ -304,9 +822,11 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 4: _Gremlin Database_
+### Example 5: _Gremlin Database_
 
 This instance deploys the module with a Gremlin Database.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/gremlindb]
 
 
 <details>
@@ -315,7 +835,6 @@ This instance deploys the module with a Gremlin Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'dddagrm002'
@@ -528,9 +1047,11 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 5: _Deploying with Managed identities_
+### Example 6: _Deploying with Managed identities_
 
 This instance deploys the module with an system and user assigned managed identity.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/managedIdentity]
 
 
 <details>
@@ -539,7 +1060,6 @@ This instance deploys the module with an system and user assigned managed identi
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'user-mi'
@@ -668,9 +1188,11 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 6: _Mongo Database_
+### Example 7: _Mongo Database_
 
 This instance deploys the module with a Mongo Database.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mongodb]
 
 
 <details>
@@ -679,7 +1201,6 @@ This instance deploys the module with a Mongo Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'dddamng001'
@@ -1292,9 +1813,11 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 7: _Deploying multiple regions_
+### Example 8: _Deploying multiple regions_
 
 This instance deploys the module in multiple regions with configs specific of multi region scenarios.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/multiRegion]
 
 
 <details>
@@ -1303,7 +1826,6 @@ This instance deploys the module in multiple regions with configs specific of mu
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'multi-region'
@@ -1436,9 +1958,11 @@ param sqlDatabases = [
 </details>
 <p>
 
-### Example 8: _Plain_
+### Example 9: _Plain_
 
 This instance deploys the module without a Database.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/plain]
 
 
 <details>
@@ -1447,7 +1971,6 @@ This instance deploys the module without a Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'dddapln001'
@@ -1561,9 +2084,11 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 9: _Public network restricted access with ACL_
+### Example 10: _Public network restricted access with ACL_
 
 This instance deploys the module with public network access enabled but restricted to IPs, CIDRS or subnets.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/publicRestrictedAccess]
 
 
 <details>
@@ -1572,7 +2097,6 @@ This instance deploys the module with public network access enabled but restrict
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'dddapres001'
@@ -1683,9 +2207,11 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 10: _SQL Database_
+### Example 11: _SQL Database_
 
 This instance deploys the module with a SQL Database.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sqldb]
 
 
 <details>
@@ -1694,7 +2220,6 @@ This instance deploys the module with a SQL Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'dddasql001'
@@ -2504,9 +3029,11 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 11: _Deploying with a sql role definition and assignment_
+### Example 12: _Deploying with a sql role definition and assignment_
 
 This instance deploys the module with sql role definition and assignment
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sqlroles]
 
 
 <details>
@@ -2515,12 +3042,27 @@ This instance deploys the module with sql role definition and assignment
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'dddarole001'
     // Non-required parameters
-    dataPlaneRoleAssignments: [
+    sqlDatabases: [
+      {
+        containers: [
+          {
+            indexingPolicy: {
+              automatic: true
+            }
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'simple-db'
+      }
+    ]
+    sqlRoleAssignments: [
       {
         principalId: '<principalId>'
         roleDefinitionId: '<roleDefinitionId>'
@@ -2536,7 +3078,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         scope: '<scope>'
       }
     ]
-    dataPlaneRoleDefinitions: [
+    sqlRoleDefinitions: [
       {
         assignableScopes: [
           '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
@@ -2570,22 +3112,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         roleName: 'cosmos-sql-role-test-3'
       }
     ]
-    sqlDatabases: [
-      {
-        containers: [
-          {
-            indexingPolicy: {
-              automatic: true
-            }
-            name: 'container-001'
-            paths: [
-              '/myPartitionKey'
-            ]
-          }
-        ]
-        name: 'simple-db'
-      }
-    ]
     zoneRedundant: false
   }
 }
@@ -2608,7 +3134,25 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "dddarole001"
     },
     // Non-required parameters
-    "dataPlaneRoleAssignments": {
+    "sqlDatabases": {
+      "value": [
+        {
+          "containers": [
+            {
+              "indexingPolicy": {
+                "automatic": true
+              },
+              "name": "container-001",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "simple-db"
+        }
+      ]
+    },
+    "sqlRoleAssignments": {
       "value": [
         {
           "principalId": "<principalId>",
@@ -2626,7 +3170,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         }
       ]
     },
-    "dataPlaneRoleDefinitions": {
+    "sqlRoleDefinitions": {
       "value": [
         {
           "assignableScopes": [
@@ -2662,24 +3206,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         }
       ]
     },
-    "sqlDatabases": {
-      "value": [
-        {
-          "containers": [
-            {
-              "indexingPolicy": {
-                "automatic": true
-              },
-              "name": "container-001",
-              "paths": [
-                "/myPartitionKey"
-              ]
-            }
-          ],
-          "name": "simple-db"
-        }
-      ]
-    },
     "zoneRedundant": {
       "value": false
     }
@@ -2700,7 +3226,23 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'dddarole001'
 // Non-required parameters
-param dataPlaneRoleAssignments = [
+param sqlDatabases = [
+  {
+    containers: [
+      {
+        indexingPolicy: {
+          automatic: true
+        }
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'simple-db'
+  }
+]
+param sqlRoleAssignments = [
   {
     principalId: '<principalId>'
     roleDefinitionId: '<roleDefinitionId>'
@@ -2716,7 +3258,7 @@ param dataPlaneRoleAssignments = [
     scope: '<scope>'
   }
 ]
-param dataPlaneRoleDefinitions = [
+param sqlRoleDefinitions = [
   {
     assignableScopes: [
       '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
@@ -2750,31 +3292,17 @@ param dataPlaneRoleDefinitions = [
     roleName: 'cosmos-sql-role-test-3'
   }
 ]
-param sqlDatabases = [
-  {
-    containers: [
-      {
-        indexingPolicy: {
-          automatic: true
-        }
-        name: 'container-001'
-        paths: [
-          '/myPartitionKey'
-        ]
-      }
-    ]
-    name: 'simple-db'
-  }
-]
 param zoneRedundant = false
 ```
 
 </details>
 <p>
 
-### Example 12: _API for Table_
+### Example 13: _API for Table_
 
 This instance deploys the module for an Azure Cosmos DB for Table account with two example tables.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/table]
 
 
 <details>
@@ -2783,7 +3311,6 @@ This instance deploys the module for an Azure Cosmos DB for Table account with t
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'dddatbl001'
@@ -2879,9 +3406,11 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 13: _WAF-aligned_
+### Example 14: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
 
 <details>
@@ -2890,7 +3419,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'dddawaf001'
@@ -3135,10 +3663,11 @@ param zoneRedundant = true
 | [`backupRetentionIntervalInHours`](#parameter-backupretentionintervalinhours) | int | An integer representing the time (in hours) that each backup is retained. This setting only applies to the periodic backup type. Defaults to 8. |
 | [`backupStorageRedundancy`](#parameter-backupstorageredundancy) | string | Setting that indicates the type of backup residency. This setting only applies to the periodic backup type. Defaults to "Local". |
 | [`capabilitiesToAdd`](#parameter-capabilitiestoadd) | array | A list of Azure Cosmos DB specific capabilities for the account. |
+| [`cassandraKeyspaces`](#parameter-cassandrakeyspaces) | array | Configuration for keyspaces when using Azure Cosmos DB for Apache Cassandra. |
+| [`cassandraRoleAssignments`](#parameter-cassandraroleassignments) | array | Azure Cosmos DB for Apache Cassandra native data plane role-based access control assignments. Each assignment references a role definition unique identifier and a principal identifier. |
+| [`cassandraRoleDefinitions`](#parameter-cassandraroledefinitions) | array | Configurations for Azure Cosmos DB for Apache Cassandra native role-based access control definitions. Allows the creations of custom role definitions. |
 | [`cors`](#parameter-cors) | array | The CORS policy for the Cosmos DB database account. |
 | [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | The offer type for the account. Defaults to "Standard". |
-| [`dataPlaneRoleAssignments`](#parameter-dataplaneroleassignments) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments. |
-| [`dataPlaneRoleDefinitions`](#parameter-dataplaneroledefinitions) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions. |
 | [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | The default consistency level of the account. Defaults to "Session". |
 | [`defaultIdentity`](#parameter-defaultidentity) | object | The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings for the service. |
@@ -3167,6 +3696,8 @@ param zoneRedundant = true
 | [`roleAssignments`](#parameter-roleassignments) | array | An array of control plane Azure role-based access control assignments. |
 | [`serverVersion`](#parameter-serverversion) | string | Specifies the MongoDB server version to use if using Azure Cosmos DB for MongoDB RU. Defaults to "4.2". |
 | [`sqlDatabases`](#parameter-sqldatabases) | array | Configuration for databases when using Azure Cosmos DB for NoSQL. |
+| [`sqlRoleAssignments`](#parameter-sqlroleassignments) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments. |
+| [`sqlRoleDefinitions`](#parameter-sqlroledefinitions) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions. |
 | [`tables`](#parameter-tables) | array | Configuration for databases when using Azure Cosmos DB for Table. |
 | [`tags`](#parameter-tags) | object | Tags for the resource. |
 | [`totalThroughputLimit`](#parameter-totalthroughputlimit) | int | The total throughput limit imposed on this account in request units per second (RU/s). Default to unlimited throughput. |
@@ -3274,6 +3805,335 @@ A list of Azure Cosmos DB specific capabilities for the account.
   ]
   ```
 
+### Parameter: `cassandraKeyspaces`
+
+Configuration for keyspaces when using Azure Cosmos DB for Apache Cassandra.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-cassandrakeyspacesname) | string | Name of the Cassandra keyspace. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoscaleSettingsMaxThroughput`](#parameter-cassandrakeyspacesautoscalesettingsmaxthroughput) | int | Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level and not at the keyspace level. |
+| [`tables`](#parameter-cassandrakeyspacestables) | array | Array of Cassandra tables to deploy in the keyspace. |
+| [`tags`](#parameter-cassandrakeyspacestags) | object | Tags of the Cassandra keyspace resource. |
+| [`throughput`](#parameter-cassandrakeyspacesthroughput) | int | Request Units per second (for example 10000). Cannot be set together with `autoscaleSettingsMaxThroughput`. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level and not at the keyspace level. |
+| [`views`](#parameter-cassandrakeyspacesviews) | array | Array of Cassandra views (materialized views) to deploy in the keyspace. |
+
+### Parameter: `cassandraKeyspaces.name`
+
+Name of the Cassandra keyspace.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cassandraKeyspaces.autoscaleSettingsMaxThroughput`
+
+Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level and not at the keyspace level.
+
+- Required: No
+- Type: int
+
+### Parameter: `cassandraKeyspaces.tables`
+
+Array of Cassandra tables to deploy in the keyspace.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-cassandrakeyspacestablesname) | string | Name of the table. |
+| [`schema`](#parameter-cassandrakeyspacestablesschema) | object | Schema definition for the table. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`analyticalStorageTtl`](#parameter-cassandrakeyspacestablesanalyticalstoragettl) | int | Analytical TTL for the table. |
+| [`autoscaleSettingsMaxThroughput`](#parameter-cassandrakeyspacestablesautoscalesettingsmaxthroughput) | int | Maximum autoscale throughput for the table. Cannot be used with throughput. |
+| [`defaultTtl`](#parameter-cassandrakeyspacestablesdefaultttl) | int | Default TTL (Time To Live) in seconds for data in the table. |
+| [`tags`](#parameter-cassandrakeyspacestablestags) | object | Tags for the table. |
+| [`throughput`](#parameter-cassandrakeyspacestablesthroughput) | int | Request units per second. Cannot be used with autoscaleSettingsMaxThroughput. |
+
+### Parameter: `cassandraKeyspaces.tables.name`
+
+Name of the table.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cassandraKeyspaces.tables.schema`
+
+Schema definition for the table.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `cassandraKeyspaces.tables.analyticalStorageTtl`
+
+Analytical TTL for the table.
+
+- Required: No
+- Type: int
+
+### Parameter: `cassandraKeyspaces.tables.autoscaleSettingsMaxThroughput`
+
+Maximum autoscale throughput for the table. Cannot be used with throughput.
+
+- Required: No
+- Type: int
+
+### Parameter: `cassandraKeyspaces.tables.defaultTtl`
+
+Default TTL (Time To Live) in seconds for data in the table.
+
+- Required: No
+- Type: int
+
+### Parameter: `cassandraKeyspaces.tables.tags`
+
+Tags for the table.
+
+- Required: No
+- Type: object
+
+### Parameter: `cassandraKeyspaces.tables.throughput`
+
+Request units per second. Cannot be used with autoscaleSettingsMaxThroughput.
+
+- Required: No
+- Type: int
+
+### Parameter: `cassandraKeyspaces.tags`
+
+Tags of the Cassandra keyspace resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `cassandraKeyspaces.throughput`
+
+Request Units per second (for example 10000). Cannot be set together with `autoscaleSettingsMaxThroughput`. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level and not at the keyspace level.
+
+- Required: No
+- Type: int
+
+### Parameter: `cassandraKeyspaces.views`
+
+Array of Cassandra views (materialized views) to deploy in the keyspace.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-cassandrakeyspacesviewsname) | string | Name of the view. |
+| [`viewDefinition`](#parameter-cassandrakeyspacesviewsviewdefinition) | string | View definition (CQL statement). |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoscaleSettingsMaxThroughput`](#parameter-cassandrakeyspacesviewsautoscalesettingsmaxthroughput) | int | Maximum autoscale throughput for the view. Cannot be used with throughput. |
+| [`tags`](#parameter-cassandrakeyspacesviewstags) | object | Tags for the view. |
+| [`throughput`](#parameter-cassandrakeyspacesviewsthroughput) | int | Request units per second. Cannot be used with autoscaleSettingsMaxThroughput. |
+
+### Parameter: `cassandraKeyspaces.views.name`
+
+Name of the view.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cassandraKeyspaces.views.viewDefinition`
+
+View definition (CQL statement).
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cassandraKeyspaces.views.autoscaleSettingsMaxThroughput`
+
+Maximum autoscale throughput for the view. Cannot be used with throughput.
+
+- Required: No
+- Type: int
+
+### Parameter: `cassandraKeyspaces.views.tags`
+
+Tags for the view.
+
+- Required: No
+- Type: object
+
+### Parameter: `cassandraKeyspaces.views.throughput`
+
+Request units per second. Cannot be used with autoscaleSettingsMaxThroughput.
+
+- Required: No
+- Type: int
+
+### Parameter: `cassandraRoleAssignments`
+
+Azure Cosmos DB for Apache Cassandra native data plane role-based access control assignments. Each assignment references a role definition unique identifier and a principal identifier.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-cassandraroleassignmentsprincipalid) | string | The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription. |
+| [`roleDefinitionId`](#parameter-cassandraroleassignmentsroledefinitionid) | string | The unique identifier of the Azure Cosmos DB for Apache Cassandra native role-based access control definition. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-cassandraroleassignmentsname) | string | The unique name of the role assignment. |
+| [`scope`](#parameter-cassandraroleassignmentsscope) | string | The data plane resource path for which access is being granted through this role-based access control assignment. Defaults to the current account. |
+
+### Parameter: `cassandraRoleAssignments.principalId`
+
+The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cassandraRoleAssignments.roleDefinitionId`
+
+The unique identifier of the Azure Cosmos DB for Apache Cassandra native role-based access control definition.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cassandraRoleAssignments.name`
+
+The unique name of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `cassandraRoleAssignments.scope`
+
+The data plane resource path for which access is being granted through this role-based access control assignment. Defaults to the current account.
+
+- Required: No
+- Type: string
+
+### Parameter: `cassandraRoleDefinitions`
+
+Configurations for Azure Cosmos DB for Apache Cassandra native role-based access control definitions. Allows the creations of custom role definitions.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`roleName`](#parameter-cassandraroledefinitionsrolename) | string | A user-friendly name for the role-based access control definition. Must be unique for the database account. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`assignableScopes`](#parameter-cassandraroledefinitionsassignablescopes) | array | A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. |
+| [`assignments`](#parameter-cassandraroledefinitionsassignments) | array | An array of role-based access control assignments to be created for the definition. |
+| [`dataActions`](#parameter-cassandraroledefinitionsdataactions) | array | An array of data actions that are allowed. Note: Valid data action strings are currently undocumented (API version 2025-05-01-preview). Expected to follow format similar to SQL RBAC once documented by Microsoft. |
+| [`name`](#parameter-cassandraroledefinitionsname) | string | The unique identifier of the role-based access control definition. |
+| [`notDataActions`](#parameter-cassandraroledefinitionsnotdataactions) | array | An array of data actions that are denied. Note: Unlike SQL RBAC, Cassandra supports deny rules for granular access control. Valid data action strings are currently undocumented (API version 2025-05-01-preview). |
+
+### Parameter: `cassandraRoleDefinitions.roleName`
+
+A user-friendly name for the role-based access control definition. Must be unique for the database account.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cassandraRoleDefinitions.assignableScopes`
+
+A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition.
+
+- Required: No
+- Type: array
+
+### Parameter: `cassandraRoleDefinitions.assignments`
+
+An array of role-based access control assignments to be created for the definition.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-cassandraroledefinitionsassignmentsprincipalid) | string | The unique identifier for the associated AAD principal. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-cassandraroledefinitionsassignmentsname) | string | The unique identifier of the role assignment. |
+| [`scope`](#parameter-cassandraroledefinitionsassignmentsscope) | string | The data plane resource path for which access is being granted. Defaults to the current account. |
+
+### Parameter: `cassandraRoleDefinitions.assignments.principalId`
+
+The unique identifier for the associated AAD principal.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cassandraRoleDefinitions.assignments.name`
+
+The unique identifier of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `cassandraRoleDefinitions.assignments.scope`
+
+The data plane resource path for which access is being granted. Defaults to the current account.
+
+- Required: No
+- Type: string
+
+### Parameter: `cassandraRoleDefinitions.dataActions`
+
+An array of data actions that are allowed. Note: Valid data action strings are currently undocumented (API version 2025-05-01-preview). Expected to follow format similar to SQL RBAC once documented by Microsoft.
+
+- Required: No
+- Type: array
+
+### Parameter: `cassandraRoleDefinitions.name`
+
+The unique identifier of the role-based access control definition.
+
+- Required: No
+- Type: string
+
+### Parameter: `cassandraRoleDefinitions.notDataActions`
+
+An array of data actions that are denied. Note: Unlike SQL RBAC, Cassandra supports deny rules for granular access control. Valid data action strings are currently undocumented (API version 2025-05-01-preview).
+
+- Required: No
+- Type: array
+
 ### Parameter: `cors`
 
 The CORS policy for the Cosmos DB database account.
@@ -3294,146 +4154,6 @@ The offer type for the account. Defaults to "Standard".
     'Standard'
   ]
   ```
-
-### Parameter: `dataPlaneRoleAssignments`
-
-Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalId`](#parameter-dataplaneroleassignmentsprincipalid) | string | The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription. |
-| [`roleDefinitionId`](#parameter-dataplaneroleassignmentsroledefinitionid) | string | The unique identifier of the Azure Cosmos DB for NoSQL native role-based access control definition. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-dataplaneroleassignmentsname) | string | The unique name of the role assignment. |
-| [`scope`](#parameter-dataplaneroleassignmentsscope) | string | The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level. |
-
-### Parameter: `dataPlaneRoleAssignments.principalId`
-
-The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `dataPlaneRoleAssignments.roleDefinitionId`
-
-The unique identifier of the Azure Cosmos DB for NoSQL native role-based access control definition.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `dataPlaneRoleAssignments.name`
-
-The unique name of the role assignment.
-
-- Required: No
-- Type: string
-
-### Parameter: `dataPlaneRoleAssignments.scope`
-
-The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level.
-
-- Required: No
-- Type: string
-
-### Parameter: `dataPlaneRoleDefinitions`
-
-Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`dataActions`](#parameter-dataplaneroledefinitionsdataactions) | array | An array of data actions that are allowed. |
-| [`roleName`](#parameter-dataplaneroledefinitionsrolename) | string | A user-friendly name for the role-based access control definition. This must be unique within the database account. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`assignableScopes`](#parameter-dataplaneroledefinitionsassignablescopes) | array | A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope. |
-| [`assignments`](#parameter-dataplaneroledefinitionsassignments) | array | An array of role-based access control assignments to be created for the definition. |
-| [`name`](#parameter-dataplaneroledefinitionsname) | string | The unique identifier of the role-based access control definition. |
-
-### Parameter: `dataPlaneRoleDefinitions.dataActions`
-
-An array of data actions that are allowed.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `dataPlaneRoleDefinitions.roleName`
-
-A user-friendly name for the role-based access control definition. This must be unique within the database account.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `dataPlaneRoleDefinitions.assignableScopes`
-
-A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope.
-
-- Required: No
-- Type: array
-
-### Parameter: `dataPlaneRoleDefinitions.assignments`
-
-An array of role-based access control assignments to be created for the definition.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalId`](#parameter-dataplaneroledefinitionsassignmentsprincipalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-dataplaneroledefinitionsassignmentsname) | string | Name unique identifier of the SQL Role Assignment. |
-| [`scope`](#parameter-dataplaneroledefinitionsassignmentsscope) | string | The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level. |
-
-### Parameter: `dataPlaneRoleDefinitions.assignments.principalId`
-
-The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `dataPlaneRoleDefinitions.assignments.name`
-
-Name unique identifier of the SQL Role Assignment.
-
-- Required: No
-- Type: string
-
-### Parameter: `dataPlaneRoleDefinitions.assignments.scope`
-
-The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level.
-
-- Required: No
-- Type: string
-
-### Parameter: `dataPlaneRoleDefinitions.name`
-
-The unique identifier of the role-based access control definition.
-
-- Required: No
-- Type: string
 
 ### Parameter: `defaultConsistencyLevel`
 
@@ -4934,6 +5654,146 @@ Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is u
 - Required: No
 - Type: int
 
+### Parameter: `sqlRoleAssignments`
+
+Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-sqlroleassignmentsprincipalid) | string | The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription. |
+| [`roleDefinitionId`](#parameter-sqlroleassignmentsroledefinitionid) | string | The unique identifier of the Azure Cosmos DB for NoSQL native role-based access control definition. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-sqlroleassignmentsname) | string | The unique name of the role assignment. |
+| [`scope`](#parameter-sqlroleassignmentsscope) | string | The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level. |
+
+### Parameter: `sqlRoleAssignments.principalId`
+
+The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sqlRoleAssignments.roleDefinitionId`
+
+The unique identifier of the Azure Cosmos DB for NoSQL native role-based access control definition.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sqlRoleAssignments.name`
+
+The unique name of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlRoleAssignments.scope`
+
+The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlRoleDefinitions`
+
+Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataActions`](#parameter-sqlroledefinitionsdataactions) | array | An array of data actions that are allowed. |
+| [`roleName`](#parameter-sqlroledefinitionsrolename) | string | A user-friendly name for the role-based access control definition. This must be unique within the database account. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`assignableScopes`](#parameter-sqlroledefinitionsassignablescopes) | array | A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope. |
+| [`assignments`](#parameter-sqlroledefinitionsassignments) | array | An array of role-based access control assignments to be created for the definition. |
+| [`name`](#parameter-sqlroledefinitionsname) | string | The unique identifier of the role-based access control definition. |
+
+### Parameter: `sqlRoleDefinitions.dataActions`
+
+An array of data actions that are allowed.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `sqlRoleDefinitions.roleName`
+
+A user-friendly name for the role-based access control definition. This must be unique within the database account.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sqlRoleDefinitions.assignableScopes`
+
+A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope.
+
+- Required: No
+- Type: array
+
+### Parameter: `sqlRoleDefinitions.assignments`
+
+An array of role-based access control assignments to be created for the definition.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-sqlroledefinitionsassignmentsprincipalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-sqlroledefinitionsassignmentsname) | string | Name unique identifier of the SQL Role Assignment. |
+| [`scope`](#parameter-sqlroledefinitionsassignmentsscope) | string | The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level. |
+
+### Parameter: `sqlRoleDefinitions.assignments.principalId`
+
+The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sqlRoleDefinitions.assignments.name`
+
+Name unique identifier of the SQL Role Assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlRoleDefinitions.assignments.scope`
+
+The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlRoleDefinitions.name`
+
+The unique identifier of the role-based access control definition.
+
+- Required: No
+- Type: string
+
 ### Parameter: `tables`
 
 Configuration for databases when using Azure Cosmos DB for Table.
@@ -5037,4 +5897,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

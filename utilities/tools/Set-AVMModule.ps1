@@ -102,9 +102,10 @@ function Set-AVMModule {
     # # Load helper scripts
     . (Join-Path $RepoRootPath 'utilities' 'tools' 'helper' 'Set-ModuleFileAndFolderSetup.ps1')
     . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-ParentFolderPathList.ps1')
+    . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
 
     if ($InvokeForDiff) {
-        . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
+        $resolvedPath = (Test-Path $ModuleFolderPath) ? (Resolve-Path $ModuleFolderPath).Path : $ModuleFolderPath
 
         $relevantTemplatePaths = Get-GitDiff -PathOnly -SkipStats | Where-Object { $_ -match '[\/|\\]main\.bicep$' }
         Write-Verbose ('Found [{0}] files in diff' -f $relevantTemplatePaths.Count) -Verbose

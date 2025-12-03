@@ -1,6 +1,6 @@
 ---
 description: 'Create, update, or review Azure IaC in Bicep using Azure Verified Modules (AVM).'
-tools: ['edit', 'search', 'new', 'runCommands', 'runTasks', 'usages', 'think', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests', 'documentation', 'search', 'github']
+tools: ['edit', 'search', 'new', 'runCommands', 'runTasks', 'usages', 'think', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests', 'documentation', 'search', 'github', 'Bicep (EXPERIMENTAL)/*']
 ---
 # Azure AVM Bicep Mode
 
