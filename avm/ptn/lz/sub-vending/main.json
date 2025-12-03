@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "9269024724934095540"
+      "templateHash": "4329067539058877297"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1780,7 +1780,7 @@
         "Microsoft.Web": []
       },
       "metadata": {
-        "description": "Optional. An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.\n"
+        "description": "Optional. An object of resource providers and resource providers features to register. If not specified, a default list of common resource providers will be registered. To disable resource provider registration entirely, provide an empty object `{}`.\n"
       }
     },
     "managementGroupAssociationDelayCount": {
@@ -2175,7 +2175,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "17022144657904143249"
+              "templateHash": "13060458720338161817"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -3905,7 +3905,7 @@
                 "Microsoft.Web": []
               },
               "metadata": {
-                "description": "An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.\n}`"
+                "description": "An object of resource providers and resource providers features to register. If not specified, a default list of common resource providers will be registered. To disable resource provider registration entirely, provide an empty object `{}`.\n}`"
               }
             },
             "deploymentScriptManagedIdentityName": {
