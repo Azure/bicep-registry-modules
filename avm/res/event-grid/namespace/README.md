@@ -2,6 +2,14 @@
 
 This module deploys an Event Grid Namespace.
 
+You can reference the module as follows:
+```bicep
+module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -47,6 +55,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -54,7 +64,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'egnmin001'
@@ -111,6 +120,8 @@ param location = '<location>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -118,7 +129,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'egnmax001'
@@ -735,6 +745,8 @@ param topics = [
 
 This instance deploys the module as a MQTT Broker with routing to a topic within the same Eventgrid namespace.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mqttct]
+
 
 <details>
 
@@ -742,7 +754,6 @@ This instance deploys the module as a MQTT Broker with routing to a topic within
 
 ```bicep
 module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'egnmqttct001'
@@ -1218,6 +1229,8 @@ param topicSpacesState = 'Enabled'
 
 This instance deploys the module as a MQTT Broker with routing to a custom topic.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mqttnt]
+
 
 <details>
 
@@ -1225,7 +1238,6 @@ This instance deploys the module as a MQTT Broker with routing to a custom topic
 
 ```bicep
 module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'egnmqttnt001'
@@ -1701,6 +1713,8 @@ param topicSpacesState = 'Enabled'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1708,7 +1722,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'egnwaf001'

@@ -2,6 +2,14 @@
 
 This module deploys a Storage Account File Share.
 
+You can reference the module as follows:
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account/file-service/share:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)

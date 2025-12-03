@@ -8,6 +8,14 @@ This module contains the resources required to deploy the [Document Knowledge Mi
 
 
 
+You can reference the module as follows:
+```bicep
+module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -135,6 +143,8 @@ The following section provides usage examples for the module, which were used to
 
 This test deploys the Document Knowledge Mining Solution Accelerator using parameters that deploy the enterprise-grade configuration.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/enterprise-grade]
+
 
 <details>
 
@@ -142,7 +152,6 @@ This test deploys the Document Knowledge Mining Solution Accelerator using param
 
 ```bicep
 module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<version>' = {
-  name: 'documentKnowledgeMiningDeployment'
   params: {
     // Required parameters
     aiDeploymentsLocation: '<aiDeploymentsLocation>'
@@ -239,6 +248,8 @@ param vmAdminUsername = 'adminuser'
 
 This test deploys the sandbox configuration for Document Knowledge Mining Solution Accelerator with default parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sandbox]
+
 
 <details>
 
@@ -246,7 +257,6 @@ This test deploys the sandbox configuration for Document Knowledge Mining Soluti
 
 ```bicep
 module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<version>' = {
-  name: 'documentKnowledgeMiningDeployment'
   params: {
     // Required parameters
     aiDeploymentsLocation: '<aiDeploymentsLocation>'
