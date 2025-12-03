@@ -1158,8 +1158,26 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     virtualNetworkResourceGroupName: '<virtualNetworkResourceGroupName>'
     virtualNetworkSubnets: [
       {
-        addressPrefix: '10.120.1.0/24'
+        ipamPoolPrefixAllocations: [
+          {
+            numberOfIpAddresses: '64'
+            pool: {
+              id: '<id>'
+            }
+          }
+        ]
         name: 'Subnet1'
+      }
+      {
+        ipamPoolPrefixAllocations: [
+          {
+            numberOfIpAddresses: '32'
+            pool: {
+              id: '<id>'
+            }
+          }
+        ]
+        name: 'Subnet2'
       }
     ]
   }
@@ -1257,8 +1275,26 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     "virtualNetworkSubnets": {
       "value": [
         {
-          "addressPrefix": "10.120.1.0/24",
+          "ipamPoolPrefixAllocations": [
+            {
+              "numberOfIpAddresses": "64",
+              "pool": {
+                "id": "<id>"
+              }
+            }
+          ],
           "name": "Subnet1"
+        },
+        {
+          "ipamPoolPrefixAllocations": [
+            {
+              "numberOfIpAddresses": "32",
+              "pool": {
+                "id": "<id>"
+              }
+            }
+          ],
+          "name": "Subnet2"
         }
       ]
     }
@@ -1308,8 +1344,26 @@ param virtualNetworkResourceGroupLockEnabled = false
 param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 param virtualNetworkSubnets = [
   {
-    addressPrefix: '10.120.1.0/24'
+    ipamPoolPrefixAllocations: [
+      {
+        numberOfIpAddresses: '64'
+        pool: {
+          id: '<id>'
+        }
+      }
+    ]
     name: 'Subnet1'
+  }
+  {
+    ipamPoolPrefixAllocations: [
+      {
+        numberOfIpAddresses: '32'
+        pool: {
+          id: '<id>'
+        }
+      }
+    ]
+    name: 'Subnet2'
   }
 ]
 ```
@@ -3092,6 +3146,7 @@ The subnets for the virtual network.
 | [`associateWithNatGateway`](#parameter-additionalvirtualnetworkssubnetsassociatewithnatgateway) | bool | Option to associate the subnet with the NAT gatway deployed by this module. |
 | [`defaultOutboundAccess`](#parameter-additionalvirtualnetworkssubnetsdefaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
 | [`delegation`](#parameter-additionalvirtualnetworkssubnetsdelegation) | string | The delegation to enable on the subnet. |
+| [`ipamPoolPrefixAllocations`](#parameter-additionalvirtualnetworkssubnetsipampoolprefixallocations) | array | Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate. |
 | [`natGatewayResourceId`](#parameter-additionalvirtualnetworkssubnetsnatgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
 | [`networkSecurityGroup`](#parameter-additionalvirtualnetworkssubnetsnetworksecuritygroup) | object | The network security group to be associated with this subnet. |
 | [`privateEndpointNetworkPolicies`](#parameter-additionalvirtualnetworkssubnetsprivateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
@@ -3149,6 +3204,13 @@ The delegation to enable on the subnet.
 
 - Required: No
 - Type: string
+
+### Parameter: `additionalVirtualNetworks.subnets.ipamPoolPrefixAllocations`
+
+Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate.
+
+- Required: No
+- Type: array
 
 ### Parameter: `additionalVirtualNetworks.subnets.natGatewayResourceId`
 
@@ -5516,6 +5578,7 @@ The subnets of the Virtual Network that will be created by this module.
 | [`associateWithNatGateway`](#parameter-virtualnetworksubnetsassociatewithnatgateway) | bool | Option to associate the subnet with the NAT gatway deployed by this module. |
 | [`defaultOutboundAccess`](#parameter-virtualnetworksubnetsdefaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
 | [`delegation`](#parameter-virtualnetworksubnetsdelegation) | string | The delegation to enable on the subnet. |
+| [`ipamPoolPrefixAllocations`](#parameter-virtualnetworksubnetsipampoolprefixallocations) | array | Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate. |
 | [`natGatewayResourceId`](#parameter-virtualnetworksubnetsnatgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
 | [`networkSecurityGroup`](#parameter-virtualnetworksubnetsnetworksecuritygroup) | object | The network security group to be associated with this subnet. |
 | [`privateEndpointNetworkPolicies`](#parameter-virtualnetworksubnetsprivateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
@@ -5573,6 +5636,13 @@ The delegation to enable on the subnet.
 
 - Required: No
 - Type: string
+
+### Parameter: `virtualNetworkSubnets.ipamPoolPrefixAllocations`
+
+Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate.
+
+- Required: No
+- Type: array
 
 ### Parameter: `virtualNetworkSubnets.natGatewayResourceId`
 
