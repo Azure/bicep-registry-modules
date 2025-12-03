@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added support for `resourceId` parameter in `osDisk` parameter to allow creating a VM from an osDisk
+- Added support for `resourceId` parameter in `osDisk` parameter to allow creating a VM from an osDisk.
 - Fixed incorrect implementation of the `dataDisks.managedDisk.diskEncryptionSetResourceId` parameter, now correctly passing the value thru
 
 ### Breaking Changes
@@ -69,7 +69,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Renamed `zone` parameter to `availabilityZone`
 - Changed 'availabilityZone' allowed set from [0,1,2,3] to [-1,1,2,3]. -1 works in the same way as the previous 0 to specify that no zone is to be set
-
 
 ## 0.15.1
 
