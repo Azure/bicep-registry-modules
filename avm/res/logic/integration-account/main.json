@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "11779995131744833609"
+      "version": "0.39.26.7824",
+      "templateHash": "16225967814928350816"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -855,7 +855,7 @@
         "count": "[length(coalesce(parameters('partners'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-integrationAccount-Partner-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -889,8 +889,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "6192388539836944736"
+              "version": "0.39.26.7824",
+              "templateHash": "5957527494459764713"
             },
             "name": "Integration Account Partners",
             "description": "This module deploys an Integration Account Partner."
@@ -1106,7 +1106,7 @@
         "count": "[length(coalesce(parameters('schemas'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-integrationAccount-Schema-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1152,8 +1152,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "2871465139884752886"
+              "version": "0.39.26.7824",
+              "templateHash": "6493267137511976123"
             },
             "name": "Integration Account Schemas",
             "description": "This module deploys an Integration Account Schema."
@@ -1292,7 +1292,7 @@
         "count": "[length(coalesce(parameters('maps'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-integrationAccount-Map-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1335,8 +1335,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "14980714020681019498"
+              "version": "0.39.26.7824",
+              "templateHash": "13988510098541923557"
             },
             "name": "Integration Account Maps",
             "description": "This module deploys an Integration Account Map."
@@ -1473,7 +1473,7 @@
         "count": "[length(coalesce(parameters('assemblies'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-integrationAccount-Assembly-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1513,8 +1513,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "17190273645723351668"
+              "version": "0.39.26.7824",
+              "templateHash": "11466524671580181450"
             },
             "name": "Integration Account Assemblies",
             "description": "This module deploys an Integration Account Assembly."
