@@ -32,9 +32,9 @@ Execute plans systematically, implementing changes to existing modules or creati
 
 1. **Understand Scope**
    - Review plan and identify module type (res/ptn/utl)
-   - Use #list_az_resource_types_for_provider and #get_az_resource_type_schema for schemas
-   - Use #list_avm_metadata to find similar modules
-   - Use #microsoft.docs.mcp for Microsoft documentation
+   - Use `#list_az_resource_types_for_provider` and `#get_az_resource_type_schema` for schemas
+   - Use `#list_avm_metadata` to find similar modules
+   - Use `#microsoft.docs.mcp` for Microsoft documentation
 
 ### Implementation Phase
 

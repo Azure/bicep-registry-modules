@@ -32,11 +32,11 @@ Comprehensive context gathering for planning following <plan_research>:
 
 ## 1. Context gathering and research:
 
-MANDATORY: Run #tool:runSubagent tool, instructing the agent to work autonomously without pausing for user feedback, following <plan_research> to gather context to return to you.
+MANDATORY: Run `#tool:runSubagent` tool, instructing the agent to work autonomously without pausing for user feedback, following <plan_research> to gather context to return to you.
 
-DO NOT do any other tool calls after #tool:runSubagent returns!
+DO NOT do any other tool calls after `#tool:runSubagent` returns!
 
-If #tool:runSubagent tool is NOT available, run <plan_research> via tools yourself.
+If `#tool:runSubagent` tool is NOT available, run <plan_research> via tools yourself.
 
 Gather:
 - Existing module structure and patterns

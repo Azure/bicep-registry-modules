@@ -18,8 +18,8 @@ This repository contains **Azure Verified Modules (AVM)** for Bicep - the offici
 
 ### Parsing ALL module specifications
 
-** ‼️ CRITICAL REQUIREMENTS FOR AVM BICEP MODULES ‼️**: All changes MUST comply with Azure Verified Modules (AVM) standards. Failure to comply will result in pull request rejections. Before reviewing or generating any Bicep code, always use `fetch` tool to get LLM documentation index: `https://azure.github.io/Azure-Verified-Modules/llms.txt` for the list of all AVM specifications and detailed guidelines. **READ AND ADHERE TO ALL OF THESE SPECIFICATIONS!**
-For additional guidance, follow this logic: if Microsoft Learn (Microsoft Docs) tools `documentation` and `search` are available, you MUST use them to get the most up-to-date information, otherwise use `fetch` to get documentation from Microsoft Learn (Microsoft Docs).
+** ‼️ CRITICAL REQUIREMENTS FOR AVM BICEP MODULES ‼️**: All changes MUST comply with Azure Verified Modules (AVM) standards. Failure to comply will result in pull request rejections. Before reviewing or generating any Bicep code, always use `#fetch` tool to get LLM documentation index: `https://azure.github.io/Azure-Verified-Modules/llms.txt` for the list of all AVM specifications and detailed guidelines. **READ AND ADHERE TO ALL OF THESE SPECIFICATIONS!**
+For additional guidance, follow this logic: if Microsoft Learn (Microsoft Docs) tools `documentation` and `search` are available, you MUST use them to get the most up-to-date information, otherwise use `#fetch` to get documentation from Microsoft Learn (Microsoft Docs).
 
 ## Use Available Tools
 
@@ -45,7 +45,7 @@ Start here to understand which modules are published (with the ModuleStatus bein
 
 ### Use Microsoft Container Registry (MCR) to fetch AVM Module versions
 
-Use the `fetch` tool to search for published AVM modules and check available versions:
+Use the `#fetch` tool to search for published AVM modules and check available versions:
 - **URL Pattern**: `https://mcr.microsoft.com/v2/bicep/{ModuleName as per the AVM Module index}/tags/list`
 - **Example**: `https://mcr.microsoft.com/v2/bicep/avm/res/storage/storage-account/tags/list`
 
@@ -54,18 +54,18 @@ Use the `fetch` tool to search for published AVM modules and check available ver
 
 ### Use Fetch Tool (When Bicep VS Code Extension Tools Are Not Available)
 
-For the list of resource providers or resource types available, latest API versions, and Bicep schema for specific resources, use the `microsoft_docs_fetch` tool to fetch information from Azure Resource Reference page, available at **https://learn.microsoft.com/en-us/azure/templates/**.
+For the list of resource providers or resource types available, latest API versions, and Bicep schema for specific resources, use the `#microsoft_docs_fetch` tool to fetch information from Azure Resource Reference page, available at **https://learn.microsoft.com/en-us/azure/templates/**.
 
 #### Fetching Bicep Schemas
 
-Use the `fetch` tool to get the Bicep schema for specific resources - use this to find the latest available API version:
+Use the `#fetch` tool to get the Bicep schema for specific resources - use this to find the latest available API version:
 
 - **URL for specific version**: `https://learn.microsoft.com/azure/templates/{resourceType}/{resourceName}?pivots=deployment-language-bicep`
 - **Example**: `https://learn.microsoft.com/azure/templates/Microsoft.Storage/storageAccounts?pivots=deployment-language-bicep`
 
 #### Fetching Bicep Schemas with API Version
 
-Use the `fetch` tool to get the Bicep schema for specific resources and explicit API version:
+Use the `#fetch` tool to get the Bicep schema for specific resources and explicit API version:
 
 - **URL for specific version**: `https://learn.microsoft.com/azure/templates/{resourceType}/{apiVersion}/{resourceName}`
 - **Example**: `https://learn.microsoft.com/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts?pivots=deployment-language-bicep`
@@ -74,7 +74,7 @@ Use the `fetch` tool to get the Bicep schema for specific resources and explicit
 
 You have two options:
 1. Use tools from Bicep VS Code extension: `#list_az_resource_types_for_provider`, `#get_az_resource_type_schema`, `#list_avm_metadata`.
-2. Use the `fetch` tool to get information from related URLs.
+2. Use the `#fetch` tool to get information from related URLs.
 
 > [!IMPORTANT]
 > Use only the tools above to retrieve the schema documentation for Bicep for specific versions. Do not use any other method or tool to do this, because `azure_get_schema_for_Bicep` tool does not reliably return the latest stable version.

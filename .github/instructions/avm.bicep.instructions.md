@@ -30,7 +30,7 @@ Set-AVMModule -ModuleFolderPath 'C:\avm\res\key-vault\vault'
 
 ### Always Use Quick Starts
 
-When generating AVM Bicep code and no relevant examples are found in this repository, refer to the Bicep Quick Starts in the https://github.com/Azure/azure-quickstart-templates repo. Use the `githubRepo` tool to search for relevant Bicep Quick Starts as examples of how to deploy specific resources.
+When generating AVM Bicep code and no relevant examples are found in this repository, refer to the Bicep Quick Starts in the https://github.com/Azure/azure-quickstart-templates repo. Use the `#githubRepo` tool to search for relevant Bicep Quick Starts as examples of how to deploy specific resources.
 
 ## Required Template Structure
 

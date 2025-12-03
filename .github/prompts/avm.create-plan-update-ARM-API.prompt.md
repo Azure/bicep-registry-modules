@@ -141,4 +141,4 @@ For each resource requiring an update, provide the following details:
 - ⚠️ **No File Modifications**: This is a planning task only. Do not edit any files.
 - ⚠️ **AVM Compliance**: All recommendations must align with AVM specifications.
 - ⚠️ **Stable Versions Only**: Prioritize stable API versions unless a preview is explicitly required.
-- ⚠️ **Schema Validation Required**: Use `fetch` tool only for API version and schema retrieval.
+- ⚠️ **Schema Validation Required**: Use `#fetch` tool only for API version and schema retrieval.
