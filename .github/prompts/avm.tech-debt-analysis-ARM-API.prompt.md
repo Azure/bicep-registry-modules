@@ -1,12 +1,13 @@
 ---
 mode: 'agent'
 description: 'Analyze Azure Verified Module (AVM) Bicep files and examples for technical debt, inconsistencies, documentation gaps, and quality issues.'
-tools: ['search', 'runCommands', 'runTasks', 'usages', 'think', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos', 'runTests', 'documentation', 'search']
+tools: ['search', 'runCommands', 'runTasks', 'usages', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos', 'runTests', 'Azure MCP/documentation', 'search']
 ---
 
 # Technical Debt Analysis for Azure Verified Module
 
 ## 1. Objective
+
 As an AI agent, your task is to analyze Azure Verified Module (AVM) Bicep files starting with `${file}`, including child folders of `${fileDirname}`, to identify technical debt, inconsistencies, documentation gaps, spelling mistakes, conflicting information, and quality issues in examples and documentation.
 
 > [!IMPORTANT]
@@ -122,6 +123,7 @@ For each identified issue, provide the following details:
 > Before completing your analysis, verify you have completed ALL of the following:
 
 ### Checklist for Complete Analysis:
+
 - [ ] **Step 4**: Complete execution of all ReAct steps
 - [ ] **Step 5.1**: Technical debt summary table created with ALL identified issues
 - [ ] **Step 5.2**: Issue categories legend included
@@ -130,6 +132,7 @@ For each identified issue, provide the following details:
 - [ ] **Validation**: Provided specific fixes, validation steps, and remediation guidance
 
 ### Failure Conditions:
+
 - **INCOMPLETE**: If you skip any mandatory section (5.1, 5.2, or 5.3)
 - **INSUFFICIENT**: If you don't analyze all module files or miss critical components
 - **VAGUE**: If you provide general statements instead of specific issue descriptions and fixes
@@ -139,6 +142,7 @@ For each identified issue, provide the following details:
 > If any of the above conditions are met, the analysis is considered incomplete and must be redone.
 
 ## 7. Constraints
+
 - ⚠️ **No File Modifications**: This is a planning task only. Do not edit any files.
 - ⚠️ **AVM Compliance**: All recommendations must align with AVM specifications.
 - ⚠️ **Quality Focus**: Prioritize issues that impact module quality, usability, and maintainability.

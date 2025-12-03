@@ -1,12 +1,13 @@
 ---
 mode: 'agent'
 description: 'Analyze Azure Verified Module (AVM) Bicep files for ARM API version updates and create implementation plans.'
-tools: ['search', 'runCommands', 'runTasks', 'usages', 'think', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos', 'runTests', 'documentation', 'search']
+tools: ['search', 'runCommands', 'runTasks', 'usages', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos', 'runTests', 'Azure MCP/documentation', 'search']
 ---
 
 # Analyze ARM API Version Updates for Resource Module
 
 ## 1. Objective
+
 As an AI agent, your task is to analyze Azure Verified Module (AVM) Bicep files starting with `${file}`, including child folders of `${fileDirname}`, to identify resources with outdated ARM API versions. Compare current versions against latest **stable** versions and generate detailed implementation plans for required updates.
 
 > [!IMPORTANT]
@@ -90,6 +91,7 @@ Here is a ReAct-style Thought–Action–Observation execution flow that you MUS
 For each resource requiring an update, provide the following details:
 
 #### Resource: {ResourceName}
+
 - **Current Version**: {currentApiVersion}
 - **Target Version**: {latestApiVersion}
 - **Change Type**: {Non-breaking | Potentially Breaking | Breaking}
@@ -117,6 +119,7 @@ For each resource requiring an update, provide the following details:
 > Before completing your analysis, verify you have completed ALL of the following:
 
 ### Checklist for Complete Analysis:
+
 - [ ] **Step 4**: Complete execution of all ReAct steps
 - [ ] **Step 5.1**: Summary table created with ALL resources and their status
 - [ ] **Step 5.2**: Status icons legend included
@@ -125,6 +128,7 @@ For each resource requiring an update, provide the following details:
 - [ ] **Implementation Plans**: Provided specific code changes, testing requirements, and risk assessments
 
 ### Failure Conditions:
+
 - **INCOMPLETE**: If you skip any mandatory section (5.1, 5.2, or 5.3)
 - **INSUFFICIENT**: If you don't fetch schemas for both current AND latest versions
 - **VAGUE**: If you provide general statements instead of specific property differences
@@ -137,4 +141,4 @@ For each resource requiring an update, provide the following details:
 - ⚠️ **No File Modifications**: This is a planning task only. Do not edit any files.
 - ⚠️ **AVM Compliance**: All recommendations must align with AVM specifications.
 - ⚠️ **Stable Versions Only**: Prioritize stable API versions unless a preview is explicitly required.
-- ⚠️ **Schema Validation Required**: Use `fetch` tool only for API version and schema retrieval.
+- ⚠️ **Schema Validation Required**: Use `#fetch` tool only for API version and schema retrieval.
