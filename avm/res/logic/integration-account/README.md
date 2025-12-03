@@ -162,6 +162,17 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           key2: 'value2'
         }
         name: 'map1'
+        parametersSchema: {
+          properties: {
+            discountRate: {
+              type: 'number'
+            }
+          }
+          required: [
+            'discountRate'
+          ]
+          type: 'object'
+        }
         tags: {
           tag1: 'value1'
           tag2: 'value2'
@@ -320,6 +331,17 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
             "key2": "value2"
           },
           "name": "map1",
+          "parametersSchema": {
+            "properties": {
+              "discountRate": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "discountRate"
+            ],
+            "type": "object"
+          },
           "tags": {
             "tag1": "value1",
             "tag2": "value2"
@@ -474,6 +496,17 @@ param maps = [
       key2: 'value2'
     }
     name: 'map1'
+    parametersSchema: {
+      properties: {
+        discountRate: {
+          type: 'number'
+        }
+      }
+      required: [
+        'discountRate'
+      ]
+      type: 'object'
+    }
     tags: {
       tag1: 'value1'
       tag2: 'value2'
