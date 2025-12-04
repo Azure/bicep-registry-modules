@@ -144,7 +144,7 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/enterprise-grade]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sandbox]
 
 
 <details>
@@ -214,7 +214,7 @@ param solutionName = 'macaemin'
 
 This instance deploys the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) using parameters that deploy the [WAF aligned](https://learn.microsoft.com/azure/well-architected/) configuration.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sandbox]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
 
 <details>
@@ -331,6 +331,7 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`backendContainerImageName`](#parameter-backendcontainerimagename) | string | The Container Image Name to deploy on the backend. |
 | [`backendContainerImageTag`](#parameter-backendcontainerimagetag) | string | The Container Image Tag to deploy on the backend. |
 | [`backendContainerRegistryHostname`](#parameter-backendcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the backend are located. |
+| [`cosmosDbReplicaLocation`](#parameter-cosmosdbreplicalocation) | string | Location for the Cosmos DB replica deployment. This location is used when enableRedundancy is set to true. |
 | [`createdBy`](#parameter-createdby) | string | Tag, Created by user name. |
 | [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
@@ -413,6 +414,14 @@ The Container Registry hostname where the docker images for the backend are loca
 - Required: No
 - Type: string
 - Default: `'biabcontainerreg.azurecr.io'`
+
+### Parameter: `cosmosDbReplicaLocation`
+
+Location for the Cosmos DB replica deployment. This location is used when enableRedundancy is set to true.
+
+- Required: No
+- Type: string
+- Default: `'canadacentral'`
 
 ### Parameter: `createdBy`
 
