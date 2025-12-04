@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/alz/empty/CHANGELOG.md).
 
+## 0.3.3
+
+### Changes
+
+- Enhanced dependency graph and logic. No actual change to input/output or resource deployment order, just internal improvements to make the module faster, easier to read and to maintain.
+
+### Breaking Changes
+
+- None
+
 ## 0.3.2
 
 ### Changes
