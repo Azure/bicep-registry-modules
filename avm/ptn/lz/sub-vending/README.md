@@ -1137,9 +1137,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       'Microsoft.Network': []
     }
     subscriptionAliasEnabled: true
-    subscriptionAliasName: 'dep-sub-blzv-tests-ssaipam'
+    subscriptionAliasName: '<subscriptionAliasName>'
     subscriptionBillingScope: '<subscriptionBillingScope>'
-    subscriptionDisplayName: 'dep-sub-blzv-tests-ssaipam'
+    subscriptionDisplayName: '<subscriptionDisplayName>'
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
     subscriptionTags: {
@@ -1226,13 +1226,13 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "subscriptionAliasName": {
-      "value": "dep-sub-blzv-tests-ssaipam"
+      "value": "<subscriptionAliasName>"
     },
     "subscriptionBillingScope": {
       "value": "<subscriptionBillingScope>"
     },
     "subscriptionDisplayName": {
-      "value": "dep-sub-blzv-tests-ssaipam"
+      "value": "<subscriptionDisplayName>"
     },
     "subscriptionManagementGroupAssociationEnabled": {
       "value": true
@@ -1323,9 +1323,9 @@ param resourceProviders = {
   'Microsoft.Network': []
 }
 param subscriptionAliasEnabled = true
-param subscriptionAliasName = 'dep-sub-blzv-tests-ssaipam'
+param subscriptionAliasName = '<subscriptionAliasName>'
 param subscriptionBillingScope = '<subscriptionBillingScope>'
-param subscriptionDisplayName = 'dep-sub-blzv-tests-ssaipam'
+param subscriptionDisplayName = '<subscriptionDisplayName>'
 param subscriptionManagementGroupAssociationEnabled = true
 param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
 param subscriptionTags = {

@@ -17,6 +17,9 @@ param namePrefix string = '#_namePrefix_#'
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'ssaipam'
 
+@description('Optional. A short guid for the subscription name.')
+param subscriptionGuid string = toLower(substring(newGuid(), 0, 4))
+
 @description('Optional. Subscription ID of the subscription to create the dependencies into. Injected by CI.')
 param subscriptionId string = '#_subscriptionId_#'
 
@@ -49,12 +52,12 @@ module nestedDependencies 'dependencies.bicep' = {
 }
 
 module testDeployment '../../../main.bicep' = if (enableDeployment) {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${subscriptionGuid}'
   params: {
     subscriptionAliasEnabled: true
     subscriptionBillingScope: subscriptionBillingScope
-    subscriptionAliasName: 'dep-sub-blzv-tests-${namePrefix}-${serviceShort}'
-    subscriptionDisplayName: 'dep-sub-blzv-tests-${namePrefix}-${serviceShort}'
+    subscriptionAliasName: 'dep-sub-blzv-tests-${namePrefix}-${serviceShort}-${subscriptionGuid}'
+    subscriptionDisplayName: 'dep-sub-blzv-tests-${namePrefix}-${serviceShort}-${subscriptionGuid}'
     subscriptionWorkload: 'Production'
     subscriptionTags: {
       namePrefix: namePrefix
