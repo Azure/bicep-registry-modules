@@ -40,6 +40,8 @@
     "avm/res/network/private-dns-zone/srv",
     "avm/res/network/private-dns-zone/txt",
     "avm/res/network/virtual-network/subnet",
+    "avm/res/service-bus/namespace/queue",
+    "avm/res/service-bus/namespace/topic",
     "avm/res/sql/server/database",
     "avm/res/storage/storage-account/blob-service/container",
     "avm/res/storage/storage-account/file-service/share",
