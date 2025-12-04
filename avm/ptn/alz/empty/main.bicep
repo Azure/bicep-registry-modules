@@ -229,6 +229,10 @@ resource mgExisting 'Microsoft.Management/managementGroups@2023-04-01' existing 
 module mgSubPlacementWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforeSubPlacement): if (waitForConsistencyCounterBeforeSubPlacement > 0 && !empty(subscriptionsToPlaceInManagementGroup)) {
     name: '${deploymentNames.mgSubPlacementWait}-${index}'
+    dependsOn: [
+      mg
+      mgExisting
+    ]
   }
 ]
 
@@ -237,7 +241,7 @@ resource mgSubPlacement 'Microsoft.Management/managementGroups/subscriptions@202
     scope: tenant()
     name: createOrUpdateManagementGroup ? '${managementGroupName}/${sub}' : '${mgExisting.name}/${sub}'
     dependsOn: [
-      mg
+      mgSubPlacementWait
     ]
   }
 ]
@@ -247,6 +251,10 @@ resource mgSubPlacement 'Microsoft.Management/managementGroups/subscriptions@202
 module mgCustomPolicyDefinitionsWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforeCustomPolicyDefinitions): if (waitForConsistencyCounterBeforeCustomPolicyDefinitions > 0 && !(empty(managementGroupCustomPolicyDefinitions))) {
     name: '${deploymentNames.mgCustomPolicyDefinitionsWait}-${index}'
+    dependsOn: [
+      mg
+      mgExisting
+    ]
   }
 ]
 
@@ -266,19 +274,21 @@ module mgCustomPolicyDefinitions 'modules/policy-definitions.bicep' = if (!empty
 module mgCustomPolicySetDefinitionsWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforeCustomPolicySetDefinitions): if (waitForConsistencyCounterBeforeCustomPolicySetDefinitions > 0 && !empty(managementGroupCustomPolicySetDefinitions)) {
     name: '${deploymentNames.mgCustomPolicySetDefinitionsWait}-${index}'
+    dependsOn: [
+      mgCustomPolicyDefinitions
+    ]
   }
 ]
 
 module mgCustomPolicySetDefinitions 'modules/policy-set-definitions.bicep' = if (!empty(managementGroupCustomPolicySetDefinitions)) {
   scope: managementGroup(managementGroupName)
-  dependsOn: [
-    mgCustomPolicyDefinitions
-    mgCustomPolicySetDefinitionsWait
-  ]
   name: deploymentNames.mgPolicySetDefinitions
   params: {
     managementGroupCustomPolicySetDefinitions: managementGroupCustomPolicySetDefinitions
   }
+  dependsOn: [
+    mgCustomPolicySetDefinitionsWait
+  ]
 }
 
 // Policy Assignments Created on Management Group (Optional)
@@ -286,15 +296,16 @@ module mgCustomPolicySetDefinitions 'modules/policy-set-definitions.bicep' = if 
 module mgPolicyAssignmentsWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforePolicyAssignments): if (waitForConsistencyCounterBeforePolicyAssignments > 0 && !empty(filteredManagementGroupPolicyAssignments)) {
     name: '${deploymentNames.mgPolicyAssignmentsWait}-${index}'
+    dependsOn: [
+      mgCustomPolicySetDefinitions
+    ]
   }
 ]
 
-module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.5.1' = [
+module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.5.2' = [
   for (polAsi, index) in (filteredManagementGroupPolicyAssignments ?? []): {
     scope: managementGroup(managementGroupName)
     dependsOn: [
-      mgCustomPolicyDefinitions
-      mgCustomPolicySetDefinitions
       mgPolicyAssignmentsWait
     ]
     name: take('${deploymentNames.mgPolicyAssignments}-${uniqueString(managementGroupName, polAsi.name)}', 64)
@@ -312,7 +323,7 @@ module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.
       roleDefinitionIds: polAsi.?roleDefinitionIds
       parameters: polAsi.?parameters
       parameterOverrides: polAsi.?parameterOverrides
-      managementGroupId: createOrUpdateManagementGroup ? mg.outputs.name : mgExisting.name
+      managementGroupId: createOrUpdateManagementGroup ? mg!.outputs.name : mgExisting.name
       nonComplianceMessages: polAsi.?nonComplianceMessages
       metadata: polAsi.?metadata
       overrides: polAsi.?overrides
@@ -332,6 +343,10 @@ module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.
 module mgRoleDefinitionsWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforeCustomRoleDefinitions): if (waitForConsistencyCounterBeforeCustomRoleDefinitions > 0 && !empty(managementGroupCustomRoleDefinitions)) {
     name: '${deploymentNames.mgRoleDefinitionsWait}-${index}'
+    dependsOn: [
+      mg
+      mgExisting
+    ]
   }
 ]
 
@@ -362,6 +377,9 @@ module mgRoleDefinitions 'br/public:avm/ptn/authorization/role-definition:0.1.1'
 module mgRoleAssignmentsWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforeRoleAssignments): if (waitForConsistencyCounterBeforeRoleAssignments > 0 && !empty(formattedRoleAssignments)) {
     name: '${deploymentNames.mgRoleAssignmentsWait}-${index}'
+    dependsOn: [
+      mgRoleDefinitions
+    ]
   }
 ]
 
@@ -372,7 +390,7 @@ module mgRoleAssignments 'br/public:avm/ptn/authorization/role-assignment:0.2.2'
       64
     )
     params: {
-      managementGroupId: createOrUpdateManagementGroup ? mg.outputs.name : mgExisting.name
+      managementGroupId: createOrUpdateManagementGroup ? mg!.outputs.name : mgExisting.name
       principalId: roleAssignment.principalId
       roleDefinitionIdOrName: roleAssignment.roleDefinitionId
       description: roleAssignment.?description
@@ -383,7 +401,6 @@ module mgRoleAssignments 'br/public:avm/ptn/authorization/role-assignment:0.2.2'
       enableTelemetry: enableTelemetry
     }
     dependsOn: [
-      mgRoleDefinitions
       mgRoleAssignmentsWait
     ]
   }
@@ -391,15 +408,15 @@ module mgRoleAssignments 'br/public:avm/ptn/authorization/role-assignment:0.2.2'
 
 // Outputs
 @description('The resource ID of the management group.')
-output managementGroupResourceId string = createOrUpdateManagementGroup ? mg.outputs.resourceId : mgExisting.id
+output managementGroupResourceId string = createOrUpdateManagementGroup ? mg!.outputs.resourceId : mgExisting.id
 
 @description('The ID of the management group.')
-output managementGroupId string = createOrUpdateManagementGroup ? mg.outputs.name : mgExisting.name
+output managementGroupId string = createOrUpdateManagementGroup ? mg!.outputs.name : mgExisting.name
 
 @description('The parent management group ID of the management group.')
 output managementGroupParentId string = createOrUpdateManagementGroup
   ? (managementGroupParentId ?? tenant().tenantId)
-  : mgExisting.properties.details.parent.id // Only doing this as think i've found a bug in Bicep/ARM, see: https://github.com/Azure/bicep/issues/15642
+  : mgExisting!.properties.details.parent.id // Only doing this as think i've found a bug in Bicep/ARM, see: https://github.com/Azure/bicep/issues/15642
 
 @description('The custom role definitions created on the management group.')
 output managementGroupCustomRoleDefinitionIds array = [

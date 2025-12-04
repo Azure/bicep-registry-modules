@@ -2,6 +2,26 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/alz/empty/CHANGELOG.md).
 
+## 0.3.3
+
+### Changes
+
+- Enhanced dependency graph and logic. No actual change to input/output or resource deployment order, just internal improvements to make the module faster, easier to read and to maintain.
+
+### Breaking Changes
+
+- None
+
+## 0.3.2
+
+### Changes
+
+- Updated policy assignment module reference to version `0.5.2` to include fix for management group RBAC assignments to include the management group scope of the policy assignment along with any additional management groups specified.
+
+### Breaking Changes
+
+- None
+
 ## 0.3.1
 
 ### Changes
