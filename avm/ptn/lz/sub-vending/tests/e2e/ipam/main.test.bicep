@@ -17,35 +17,44 @@ param namePrefix string = '#_namePrefix_#'
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'ssaipam'
 
-@description('Optional. A short guid for the subscription name.')
-param subscriptionGuid string = toLower(substring(newGuid(), 0, 4))
+@description('Optional. Subscription ID of the subscription to create the dependencies into. Injected by CI.')
+param subscriptionId string = '#_subscriptionId_#'
 
-@description('Optional. The subscription id where the IPAM infrastructure will be deployed.')
-param ipamInfraSubId string = '9948cae8-8c7c-4f5f-81c1-c53317cab23d'
-
-@description('Optional. The resource group where the IPAM infrastructure will be deployed.')
-param ipamInfraResourceGroup string = 'rsg-blzv-perm-ipam-001'
+@description('Optional. The name of the resource group to deploy for testing purposes.')
+@maxLength(90)
+param resourceGroupName string = 'dep-${namePrefix}-lz-ipam-${serviceShort}-rg'
 
 var enableDeployment = !empty(subscriptionBillingScope)
 
-// Deploy IPAM infrastructure (Network Manager and IPAM Pool)
+// Dependencies
+module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.2' = {
+  scope: subscription('${subscriptionId}')
+  name: '${uniqueString(deployment().name, resourceLocation)}-resourceGroup'
+  params: {
+    name: resourceGroupName
+    location: resourceLocation
+  }
+}
 module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  scope: resourceGroup(ipamInfraSubId, ipamInfraResourceGroup)
+  scope: az.resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: resourceLocation
     networkManagerName: 'vnm-${resourceLocation}-${namePrefix}-${serviceShort}'
     ipamPoolName: 'ipam-pool-${namePrefix}-${serviceShort}'
   }
+  dependsOn: [
+    resourceGroup
+  ]
 }
 
 module testDeployment '../../../main.bicep' = if (enableDeployment) {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${subscriptionGuid}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     subscriptionAliasEnabled: true
     subscriptionBillingScope: subscriptionBillingScope
-    subscriptionAliasName: 'dep-sub-blzv-tests-${namePrefix}-${serviceShort}-${subscriptionGuid}'
-    subscriptionDisplayName: 'dep-sub-blzv-tests-${namePrefix}-${serviceShort}-${subscriptionGuid}'
+    subscriptionAliasName: 'dep-sub-blzv-tests-${namePrefix}-${serviceShort}'
+    subscriptionDisplayName: 'dep-sub-blzv-tests-${namePrefix}-${serviceShort}'
     subscriptionWorkload: 'Production'
     subscriptionTags: {
       namePrefix: namePrefix
