@@ -20,27 +20,10 @@ param serviceShort string = 'ssaipam'
 @description('Optional. A short guid for the subscription name.')
 param subscriptionGuid string = toLower(substring(newGuid(), 0, 4))
 
-@description('Optional. Subscription ID of the subscription to create the dependencies into. Injected by CI.')
-param subscriptionId string = '#_subscriptionId_#'
-
 @description('Optional. The resource ID of the existing IPAM pool to use for address allocation.')
 param ipamPoolResourceId string = '/subscriptions/9948cae8-8c7c-4f5f-81c1-c53317cab23d/resourceGroups/rsg-blzv-perm-hubs-001/providers/Microsoft.Network/networkManagers/vnm-uksouth-blzv-001/ipamPools/ipam-pool-blzv-001'
 
-@description('Optional. The name of the resource group to deploy for testing purposes.')
-@maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-lz-ipam-${serviceShort}-rg'
-
 var enableDeployment = !empty(subscriptionBillingScope)
-
-// Dependencies
-module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.2' = {
-  scope: subscription('${subscriptionId}')
-  name: '${uniqueString(deployment().name, resourceLocation)}-resourceGroup'
-  params: {
-    name: resourceGroupName
-    location: resourceLocation
-  }
-}
 
 module testDeployment '../../../main.bicep' = if (enableDeployment) {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${subscriptionGuid}'
