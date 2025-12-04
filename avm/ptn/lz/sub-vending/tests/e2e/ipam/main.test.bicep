@@ -45,6 +45,7 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     networkManagerName: 'vnm-${resourceLocation}-${namePrefix}-${serviceShort}'
     ipamPoolName: 'ipam-pool-${namePrefix}-${serviceShort}'
+    subscriptionId: subscriptionId
   }
   dependsOn: [
     resourceGroup
