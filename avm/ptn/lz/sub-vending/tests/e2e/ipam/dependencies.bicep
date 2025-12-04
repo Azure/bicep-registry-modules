@@ -7,17 +7,13 @@ param networkManagerName string
 @description('Optional. The name of the IPAM pool to create.')
 param ipamPoolName string
 
-@description('Optional. Subscription ID of the subscription to create the dependencies into. Injected by CI.')
-param subscriptionId string = '#_subscriptionId_#'
-
 resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' = {
   name: networkManagerName
   location: location
   properties: {
     networkManagerScopes: {
-      subscriptions: [
-        '/subscriptions/${subscription().subscriptionId}'
-        '/subscriptions/${subscriptionId}'
+      managementGroups: [
+        '/providers/Microsoft.Management/managementGroups/#_managementGroupId_#'
       ]
     }
     networkManagerScopeAccesses: [
