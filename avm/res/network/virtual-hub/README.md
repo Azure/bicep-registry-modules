@@ -3,6 +3,14 @@
 This module deploys a Virtual Hub.
 If you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module.
 
+You can reference the module as follows:
+```bicep
+module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -39,6 +47,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -46,7 +56,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
-  name: 'virtualHubDeployment'
   params: {
     // Required parameters
     addressPrefix: '10.0.0.0/16'
@@ -105,6 +114,8 @@ param virtualWanResourceId = '<virtualWanResourceId>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -112,7 +123,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
-  name: 'virtualHubDeployment'
   params: {
     // Required parameters
     addressPrefix: '10.1.0.0/16'
@@ -367,6 +377,8 @@ param virtualRouterAutoScaleConfiguration = {
 
 This instance deploys the module the Virtual WAN hub with Routing Intent enabled; requires an existing Virtual Hub, as well the firewall Resource ID.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/routing-intent]
+
 
 <details>
 
@@ -374,7 +386,6 @@ This instance deploys the module the Virtual WAN hub with Routing Intent enabled
 
 ```bicep
 module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
-  name: 'virtualHubDeployment'
   params: {
     // Required parameters
     addressPrefix: '10.10.0.0/23'
@@ -480,6 +491,8 @@ param routingIntent = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -487,7 +500,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
-  name: 'virtualHubDeployment'
   params: {
     // Required parameters
     addressPrefix: '10.1.0.0/16'

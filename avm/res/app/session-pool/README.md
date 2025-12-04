@@ -2,6 +2,14 @@
 
 This module deploys a Container App Session Pool.
 
+You can reference the module as follows:
+```bicep
+module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -35,6 +43,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -42,7 +52,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
-  name: 'sessionPoolDeployment'
   params: {
     // Required parameters
     containerType: 'PythonLTS'
@@ -104,6 +113,8 @@ param location = '<location>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -111,7 +122,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
-  name: 'sessionPoolDeployment'
   params: {
     // Required parameters
     containerType: 'PythonLTS'
@@ -266,6 +276,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -273,7 +285,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
-  name: 'sessionPoolDeployment'
   params: {
     // Required parameters
     containerType: 'PythonLTS'

@@ -2,6 +2,14 @@
 
 This module deploys a Cognitive Service.
 
+You can reference the module as follows:
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -50,6 +58,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the AI model deployment feature, private endpoint, and network injection for agent service.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ai-model-deployment-private-agent]
+
 
 <details>
 
@@ -57,7 +67,6 @@ This instance deploys the module with the AI model deployment feature, private e
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'AIServices'
@@ -232,6 +241,8 @@ param publicNetworkAccess = 'Disabled'
 
 This instance deploys the module with the AI model deployment feature and private endpoint.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ai-model-deployment-private]
+
 
 <details>
 
@@ -239,7 +250,6 @@ This instance deploys the module with the AI model deployment feature and privat
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'AIServices'
@@ -397,6 +407,8 @@ param publicNetworkAccess = 'Disabled'
 
 This instance deploys the module with the AI model deployment feature.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ai-model-deployment]
+
 
 <details>
 
@@ -404,7 +416,6 @@ This instance deploys the module with the AI model deployment feature.
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'AIServices'
@@ -510,6 +521,8 @@ param deployments = [
 
 This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
 > **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
 ```text
 The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
@@ -521,7 +534,6 @@ The test is skipped because running the HSM scenario requires a persistent Manag
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'SpeechServices'
@@ -630,6 +642,8 @@ param sku = 'S0'
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-sami]
+
 
 <details>
 
@@ -637,7 +651,6 @@ This instance deploys the module using Customer-Managed-Keys using a System-Assi
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'SpeechServices'
@@ -734,6 +747,8 @@ param sku = 'S0'
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
+
 
 <details>
 
@@ -741,7 +756,6 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'SpeechServices'
@@ -847,6 +861,8 @@ param sku = 'S0'
 
 This instance deploys the module and stores its keys in a key vault.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/default-with-key-vault]
+
 
 <details>
 
@@ -854,7 +870,6 @@ This instance deploys the module and stores its keys in a key vault.
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'SpeechServices'
@@ -933,6 +948,8 @@ param secretsExportConfiguration = {
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -940,7 +957,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'SpeechServices'
@@ -994,6 +1010,8 @@ param name = 'csamin001'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -1001,7 +1019,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'AIServices'
@@ -1489,6 +1506,8 @@ param tags = {
 
 This instance deploys the module with the AI model deployment feature and private endpoint.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/openai-private]
+
 
 <details>
 
@@ -1496,7 +1515,6 @@ This instance deploys the module with the AI model deployment feature and privat
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'OpenAI'
@@ -1645,6 +1663,8 @@ param publicNetworkAccess = 'Disabled'
 
 This instance deploys the module as a Speech Service.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/speech]
+
 
 <details>
 
@@ -1652,7 +1672,6 @@ This instance deploys the module as a Speech Service.
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'SpeechServices'
@@ -1814,6 +1833,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1821,7 +1842,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'Face'
