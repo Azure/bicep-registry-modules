@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/lz/sub-vending/CHANGELOG.md).
 
+## 0.4.2
+
+### Changes
+
+- Clarified `resourceProviders` parameter documentation to accurately reflect default behavior
+
+### Breaking Changes
+
+- **None**
+
 ## 0.4.1
 
 ### Changes
