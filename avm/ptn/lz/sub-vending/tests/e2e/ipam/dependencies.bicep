@@ -14,6 +14,7 @@ resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' = {
     networkManagerScopes: {
       managementGroups: [
         '/providers/Microsoft.Management/managementGroups/#_managementGroupId_#'
+        '/providers/Microsoft.Management/managementGroups/bicep-lz-vending-automation'
       ]
     }
     networkManagerScopeAccesses: [
