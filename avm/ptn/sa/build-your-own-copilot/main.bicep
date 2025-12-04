@@ -19,6 +19,9 @@ param solutionName string = 'clientadvisor'
 @description('Optional. CosmosDB Location.')
 param cosmosLocation string = 'eastus2'
 
+@description('Optional. CosmosDB Replica Location.')
+param cosmosReplicaLocation string = 'canadacentral'
+
 @minLength(1)
 @description('Optional. GPT model deployment type.')
 @allowed([
@@ -219,29 +222,12 @@ var replicaLocation = replicaRegionPairs[resourceGroup().location]
 @description('Optional. The tags to apply to all deployed Azure resources.')
 param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
 
-// Region pairs list based on article in [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions) for supported high availability regions for CosmosDB.
-var cosmosDbZoneRedundantHaRegionPairs = {
-  australiaeast: 'uksouth' //'southeastasia'
-  centralus: 'eastus2'
-  eastasia: 'southeastasia'
-  eastus: 'centralus'
-  eastus2: 'centralus'
-  japaneast: 'australiaeast'
-  northeurope: 'westeurope'
-  southeastasia: 'eastasia'
-  uksouth: 'westeurope'
-  westeurope: 'northeurope'
-}
-
 var allTags = union(
   {
     'azd-env-name': solutionName
   },
   tags
 )
-
-// Paired location calculated based on 'location' parameter. This location will be used by applicable resources if `enableScalability` is set to `true`
-var cosmosDbHaLocation = cosmosDbZoneRedundantHaRegionPairs[resourceGroup().location]
 
 @description('Optional. Tag, Created by user name.')
 param createdBy string = contains(deployer(), 'userPrincipalName')
@@ -267,7 +253,7 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
 // WAF best practices for Log Analytics: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-log-analytics
 // WAF PSRules for Log Analytics: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#azure-monitor-logs
 var logAnalyticsWorkspaceResourceName = 'log-${solutionSuffix}'
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.12.0' = if (enableMonitoring) {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.13.0' = if (enableMonitoring) {
   name: take('avm.res.operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
   params: {
     name: logAnalyticsWorkspaceResourceName
@@ -390,6 +376,7 @@ module virtualNetwork 'modules/virtualNetwork.bicep' = if (enablePrivateNetworki
     enableTelemetry: enableTelemetry
   }
 }
+
 // Azure Bastion Host
 var bastionHostName = 'bas-${solutionSuffix}'
 module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePrivateNetworking) {
@@ -425,7 +412,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePr
 
 // Jumpbox Virtual Machine
 var jumpboxVmName = take('vm-jumpbox-${solutionSuffix}', 15)
-module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enablePrivateNetworking) {
+module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
   params: {
     name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
@@ -493,7 +480,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
   }
 }
 
-module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.2' = {
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.2' = if (enablePrivateNetworking) {
   name: take('${jumpboxVmName}-jumpbox-maintenance-config', 64)
   params: {
     name: 'mc-${jumpboxVmName}'
@@ -531,40 +518,33 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 
 // ========== Private DNS Zones ========== //
 var privateDnsZones = [
-  'privatelink.cognitiveservices.azure.com'
-  'privatelink.openai.azure.com'
-  'privatelink.services.ai.azure.com'
-  'privatelink.azurewebsites.net'
+  'privatelink.documents.azure.com'
+  'privatelink.search.windows.net'
+  'privatelink${environment().suffixes.sqlServerHostname}'
   'privatelink.blob.${environment().suffixes.storage}'
   'privatelink.queue.${environment().suffixes.storage}'
   'privatelink.file.${environment().suffixes.storage}'
-  'privatelink.documents.azure.com'
+  'privatelink.cognitiveservices.azure.com'
+  'privatelink.openai.azure.com'
+  'privatelink.services.ai.azure.com'
   'privatelink.vaultcore.azure.net'
-  'privatelink${environment().suffixes.sqlServerHostname}'
-  'privatelink.search.windows.net'
+  'privatelink.azurewebsites.net'
 ]
 
 // DNS Zone Index Constants
 var dnsZoneIndex = {
-  cognitiveServices: 0
-  openAI: 1
-  aiServices: 2
-  appService: 3
-  storageBlob: 4
-  storageQueue: 5
-  storageFile: 6
-  cosmosDB: 7
-  keyVault: 8
-  sqlServer: 9
-  searchService: 10
+  cosmosDB: 0
+  searchService: 1
+  sqlServer: 2
+  storageBlob: 3
+  storageQueue: 4
+  storageFile: 5
+  cognitiveServices: 6
+  openAI: 7
+  aiServices: 8
+  keyVault: 9
+  appService: 10
 }
-
-// List of DNS zone indices that correspond to AI-related services.
-var aiRelatedDnsZoneIndices = [
-  dnsZoneIndex.cognitiveServices
-  dnsZoneIndex.openAI
-  dnsZoneIndex.aiServices
-]
 
 // ===================================================
 // DEPLOY PRIVATE DNS ZONES
@@ -817,7 +797,7 @@ module aiFoundryAiServices 'modules/ai-services.bicep' = {
 var cosmosDbResourceName = 'cosmos-${solutionSuffix}'
 var cosmosDbDatabaseName = 'db_conversation_history'
 var collectionName = 'conversations'
-module cosmosDb 'br/public:avm/res/document-db/database-account:0.17.0' = {
+module cosmosDb 'br/public:avm/res/document-db/database-account:0.18.0' = {
   name: take('avm.res.document-db.database-account.${cosmosDbResourceName}', 64)
   params: {
     // Required parameters
@@ -838,7 +818,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.17.0' = {
         ]
       }
     ]
-    dataPlaneRoleDefinitions: [
+    sqlRoleDefinitions: [
       {
         // Cosmos DB Built-in Data Contributor: https://docs.azure.cn/en-us/cosmos-db/nosql/security/reference-data-plane-roles#cosmos-db-built-in-data-contributor
         roleName: 'Cosmos DB SQL Data Contributor'
@@ -881,12 +861,12 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.17.0' = {
           {
             failoverPriority: 0
             isZoneRedundant: true
-            locationName: solutionLocation
+            locationName: cosmosLocation
           }
           {
             failoverPriority: 1
             isZoneRedundant: true
-            locationName: cosmosDbHaLocation
+            locationName: cosmosReplicaLocation
           }
         ]
       : [
@@ -897,13 +877,12 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.17.0' = {
           }
         ]
   }
-  dependsOn: [keyvault, avmStorageAccount]
 }
 
 // ========== AVM WAF ========== //
 // ========== Storage account module ========== //
 var storageAccountName = 'st${solutionSuffix}'
-module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.27.1' = {
+module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.29.0' = {
   name: take('avm.res.storage.storage-account.${storageAccountName}', 64)
   params: {
     name: storageAccountName
@@ -986,14 +965,13 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.27.1' = {
       ]
     }
   }
-  dependsOn: [keyvault]
 }
 
 // working version of saving storage account secrets in key vault using AVM module
 module saveStorageAccountSecretsInKeyVault 'br/public:avm/res/key-vault/vault:0.13.3' = {
   name: take('saveStorageAccountSecretsInKeyVault.${keyVaultName}', 64)
   params: {
-    name: keyVaultName
+    name: keyvault.outputs.name
     enablePurgeProtection: enablePurgeProtection
     enableVaultForDeployment: true
     enableVaultForDiskEncryption: true
@@ -1005,7 +983,7 @@ module saveStorageAccountSecretsInKeyVault 'br/public:avm/res/key-vault/vault:0.
     secrets: [
       {
         name: 'ADLS-ACCOUNT-NAME'
-        value: storageAccountName
+        value: avmStorageAccount.outputs.name
       }
       {
         name: 'ADLS-ACCOUNT-CONTAINER'
@@ -1066,7 +1044,7 @@ resource maintenanceWindow 'Microsoft.Maintenance/publicMaintenanceConfiguration
 // ========== AVM WAF ========== //
 // ========== SQL module ========== //
 var sqlDbName = 'sqldb-${solutionSuffix}'
-module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
+module sqlDBModule 'br/public:avm/res/sql/server:0.21.1' = {
   name: take('avm.res.sql.server.${sqlDbName}', 64)
   params: {
     // Required parameters
@@ -1134,22 +1112,7 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
       useStorageAccountAccessKey: false
       createStorageRoleAssignment: true
     }
-    privateEndpoints: enablePrivateNetworking
-      ? [
-          {
-            privateDnsZoneGroup: {
-              privateDnsZoneGroupConfigs: [
-                {
-                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.sqlServer]!.outputs.resourceId
-                }
-              ]
-            }
-            service: 'sqlServer'
-            subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
-            tags: allTags
-          }
-        ]
-      : []
+    privateEndpoints: []
     firewallRules: (!enablePrivateNetworking)
       ? [
           {
@@ -1166,6 +1129,36 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
       : []
     tags: allTags
   }
+  dependsOn: [avmPrivateDnsZones]
+}
+
+module sqlDbPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.1' = if (enablePrivateNetworking) {
+  name: take('avm.res.network.private-endpoint.sql-${solutionSuffix}', 64)
+  params: {
+    name: 'pep-sql-${solutionSuffix}'
+    location: solutionLocation
+    tags: tags
+    enableTelemetry: enableTelemetry
+    subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
+    customNetworkInterfaceName: 'nic-sql-${solutionSuffix}'
+    privateLinkServiceConnections: [
+      {
+        name: 'pl-sqlserver-${solutionSuffix}'
+        properties: {
+          privateLinkServiceId: sqlDBModule.outputs.resourceId
+          groupIds: ['sqlServer']
+        }
+      }
+    ]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.sqlServer]!.outputs.resourceId
+        }
+      ]
+    }
+  }
+  dependsOn: [aiFoundryAiServices, searchService, cosmosDb, keyvault]
 }
 
 // ========== Frontend server farm ========== //
@@ -1195,7 +1188,7 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.5.0' = {
 // WAF best practices for web app service: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/app-service-web-apps
 // PSRule for Web Server Farm: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#app-service
 
-//NOTE: AVM module adds 1 MB of overhead to the template. Keeping vanilla resource to save template size.
+// NOTE: AVM module adds 1 MB of overhead to the template. Keeping vanilla resource to save template size.
 var webSiteResourceName = 'app-${solutionSuffix}'
 module webSite 'modules/web-sites.bicep' = {
   name: take('module.web-sites.${webSiteResourceName}', 64)
