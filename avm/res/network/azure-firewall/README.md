@@ -2,6 +2,14 @@
 
 This module deploys an Azure Firewall.
 
+You can reference the module as follows:
+```bicep
+module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -45,6 +53,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module and attaches an existing public IP address.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/addpip]
+
 
 <details>
 
@@ -52,7 +62,6 @@ This instance deploys the module and attaches an existing public IP address.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafaddpip001'
@@ -171,6 +180,8 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 This instance deploys the module with the Basic SKU.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/basic]
+
 
 <details>
 
@@ -178,7 +189,6 @@ This instance deploys the module with the Basic SKU.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafbasic001'
@@ -255,6 +265,8 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 This instance deploys the module and will create a public IP address.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/custompip]
+
 
 <details>
 
@@ -262,7 +274,6 @@ This instance deploys the module and will create a public IP address.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafcstpip001'
@@ -410,6 +421,8 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -417,7 +430,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafmin001'
@@ -479,6 +491,8 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 This instance deploys the module a vWAN with an existing IP.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/hubbyoip]
+
 
 <details>
 
@@ -486,7 +500,6 @@ This instance deploys the module a vWAN with an existing IP.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafhubbyoip001'
@@ -548,6 +561,8 @@ param virtualHubResourceId = '<virtualHubResourceId>'
 
 This instance deploys the module a vWAN in a typical hub setting.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/hubcommon]
+
 
 <details>
 
@@ -555,7 +570,6 @@ This instance deploys the module a vWAN in a typical hub setting.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafhubcom001'
@@ -639,6 +653,8 @@ param virtualHubResourceId = '<virtualHubResourceId>'
 
 This instance deploys the module a vWAN minimum hub setting.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/hubmin]
+
 
 <details>
 
@@ -646,7 +662,6 @@ This instance deploys the module a vWAN minimum hub setting.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafhubmin001'
@@ -725,6 +740,8 @@ param virtualHubResourceId = '<virtualHubResourceId>'
 
 This instance deploys the module and sets up a Firewall management nic to support features such as Forced Tunneling and Packet Capture.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/managementnic]
+
 
 <details>
 
@@ -732,7 +749,6 @@ This instance deploys the module and sets up a Firewall management nic to suppor
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'naftunn001'
@@ -835,6 +851,8 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -842,7 +860,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafmax001'
@@ -1355,6 +1372,8 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 This instance deploys the module and will use a public IP prefix.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/publicipprefix]
+
 
 <details>
 
@@ -1362,7 +1381,6 @@ This instance deploys the module and will use a public IP prefix.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafpip001'
@@ -1480,6 +1498,8 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1487,7 +1507,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafwaf001'

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "8576356756053854729"
+      "version": "0.39.26.7824",
+      "templateHash": "3585942119874432771"
     },
     "name": "Application Insights",
     "description": "This component deploys an Application Insights instance."
@@ -416,7 +416,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Insights/components@2020-10-01#properties/tags"
+          "source": "Microsoft.Insights/components@2020-02-02#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -605,8 +605,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "9567302051678045750"
+              "version": "0.39.26.7824",
+              "templateHash": "5059808225314360251"
             },
             "name": "Application Insights Linked Storage Account",
             "description": "This component deploys an Application Insights Linked Storage Account."

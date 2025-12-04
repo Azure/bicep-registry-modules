@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "10726125216102895767"
+      "version": "0.39.26.7824",
+      "templateHash": "6434695407713682713"
     },
     "name": "Log Analytics Workspace Data Exports",
     "description": "This module deploys a Log Analytics Workspace Data Export."

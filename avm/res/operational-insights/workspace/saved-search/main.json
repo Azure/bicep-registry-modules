@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "602297590400262634"
+      "version": "0.39.26.7824",
+      "templateHash": "3727577253995784529"
     },
     "name": "Log Analytics Workspace Saved Searches",
     "description": "This module deploys a Log Analytics Workspace Saved Search."

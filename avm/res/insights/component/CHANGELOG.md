@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/insights/component/CHANGELOG.md).
 
+## 0.7.1
+
+### Changes
+
+- Fixed API version for `tags` parameter type
+
+### Breaking Changes
+
+- None
+
 ## 0.7.0
 
 ### Changes

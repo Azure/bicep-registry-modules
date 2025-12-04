@@ -2,6 +2,14 @@
 
 This module deploys a Storage Account.
 
+You can reference the module as follows:
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -63,6 +71,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module as a Blob Storage account.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/blob]
+
 
 <details>
 
@@ -70,7 +80,6 @@ This instance deploys the module as a Blob Storage account.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssablob001'
@@ -132,6 +141,8 @@ param skuName = 'Standard_LRS'
 
 This instance deploys the module as a Premium Block Blob Storage account.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/block]
+
 
 <details>
 
@@ -139,7 +150,6 @@ This instance deploys the module as a Premium Block Blob Storage account.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssablock001'
@@ -201,6 +211,8 @@ param skuName = 'Premium_LRS'
 
 This instance deploys the module with the minimum set of required parameters for the changefeed configuration.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/changefeed]
+
 
 <details>
 
@@ -208,7 +220,6 @@ This instance deploys the module with the minimum set of required parameters for
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssachf001'
@@ -276,6 +287,8 @@ param blobServices = {
 
 This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
 > **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
 ```text
 The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
@@ -287,10 +300,9 @@ The test is skipped because running the HSM scenario requires a persistent Manag
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
-    name: 'ssauhsm001'
+    name: 'ssauhsmu001'
     // Non-required parameters
     blobServices: {
       containers: [
@@ -328,7 +340,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssauhsm001"
+      "value": "ssauhsmu001"
     },
     // Non-required parameters
     "blobServices": {
@@ -370,7 +382,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'ssauhsm001'
+param name = 'ssauhsmu001'
 // Non-required parameters
 param blobServices = {
   containers: [
@@ -399,6 +411,8 @@ param managedIdentities = {
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-sami]
+
 
 <details>
 
@@ -406,7 +420,6 @@ This instance deploys the module using Customer-Managed-Keys using a System-Assi
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: '<name>'
@@ -550,6 +563,8 @@ param privateEndpoints = [
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
+
 
 <details>
 
@@ -557,7 +572,6 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssauacr001'
@@ -724,6 +738,8 @@ param privateEndpoints = [
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -731,7 +747,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssamin001'
@@ -810,6 +825,8 @@ This instance deploys the module within an Azure Extended Zone.
 > Please refer to the [documentation](https://learn.microsoft.com/en-us/azure/extended-zones/request-access) for more information.
 
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/extended-location]
+
 
 <details>
 
@@ -817,7 +834,6 @@ This instance deploys the module within an Azure Extended Zone.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssaexzn001'
@@ -894,6 +910,8 @@ param skuName = 'Premium_LRS'
 
 This instance deploys the module with the immutability policy enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/immutability]
+
 
 <details>
 
@@ -901,7 +919,6 @@ This instance deploys the module with the immutability policy enabled.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssaim001'
@@ -1048,6 +1065,8 @@ param networkAcls = {
 
 This instance deploys the module saving all its secrets in a key vault.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/kvSecrets]
+
 
 <details>
 
@@ -1055,7 +1074,6 @@ This instance deploys the module saving all its secrets in a key vault.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'kvref'
@@ -1130,6 +1148,8 @@ param secretsExportConfiguration = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -1137,7 +1157,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssamax001'
@@ -2769,6 +2788,8 @@ param tags = {
 
 This instance deploys the module with a NFS File Share.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/nfs]
+
 
 <details>
 
@@ -2776,7 +2797,6 @@ This instance deploys the module with a NFS File Share.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssanfs001'
@@ -2864,6 +2884,8 @@ param skuName = 'Premium_LRS'
 
 This instance deploys the module with Object Replication features to async replicate blobs from one account to another.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/object-replication]
+
 
 <details>
 
@@ -2871,7 +2893,6 @@ This instance deploys the module with Object Replication features to async repli
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssaobre001'
@@ -3010,6 +3031,8 @@ param skuName = 'Standard_LRS'
 
 This instance deploys the module as Storage Account version 1.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/v1]
+
 
 <details>
 
@@ -3017,7 +3040,6 @@ This instance deploys the module as Storage Account version 1.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssav1001'
@@ -3074,6 +3096,8 @@ param kind = 'Storage'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -3081,7 +3105,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssawaf001'

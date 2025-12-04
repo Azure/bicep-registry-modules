@@ -6,6 +6,14 @@ Please review the [Usage examples](https://github.com/Azure/bicep-registry-modul
 
 Also please ensure you review the [Notes section of the module's README](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty#Notes) for important information about the module as well as features that exist outside of parameter inputs.
 
+You can reference the module as follows:
+```bicep
+module empty 'br/public:avm/ptn/alz/empty:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -43,6 +51,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -50,7 +60,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module empty 'br/public:avm/ptn/alz/empty:<version>' = {
-  name: 'emptyDeployment'
   params: {
     managementGroupName: 'mg-test-alzempmin'
   }
@@ -96,6 +105,8 @@ param managementGroupName = 'mg-test-alzempmin'
 
 This instance deploys the module with the maximum set of parameters possible.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -103,7 +114,6 @@ This instance deploys the module with the maximum set of parameters possible.
 
 ```bicep
 module empty 'br/public:avm/ptn/alz/empty:<version>' = {
-  name: 'emptyDeployment'
   params: {
     // Required parameters
     managementGroupName: 'mg-test-alzempmax'
@@ -1119,7 +1129,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/ptn/authorization/policy-assignment:0.5.1` | Remote reference |
+| `br/public:avm/ptn/authorization/policy-assignment:0.5.2` | Remote reference |
 | `br/public:avm/ptn/authorization/role-assignment:0.2.2` | Remote reference |
 | `br/public:avm/ptn/authorization/role-definition:0.1.1` | Remote reference |
 | `br/public:avm/res/management/management-group:0.1.2` | Remote reference |
