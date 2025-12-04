@@ -53,6 +53,9 @@ param aiServiceLocation string
 })
 param contentUnderstandingLocation string = 'swedencentral'
 
+@description('Optional. Location for the Cosmos DB replica deployment. This location is used when enableRedundancy is set to true.')
+param cosmosDbReplicaLocation string = 'canadacentral'
+
 @minLength(1)
 @description('Optional. GPT model deployment type.')
 @allowed([
@@ -173,21 +176,6 @@ var replicaRegionPairs = {
   westeurope: 'northeurope'
 }
 var replicaLocation = replicaRegionPairs[resourceGroup().location]
-// Region pairs list based on article in [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions) for supported high availability regions for CosmosDB.
-var cosmosDbZoneRedundantHaRegionPairs = {
-  australiaeast: 'uksouth' //'southeastasia'
-  centralus: 'eastus2'
-  eastasia: 'southeastasia'
-  eastus: 'centralus'
-  eastus2: 'centralus'
-  japaneast: 'australiaeast'
-  northeurope: 'westeurope'
-  southeastasia: 'eastasia'
-  uksouth: 'westeurope'
-  westeurope: 'northeurope'
-}
-// Paired location calculated based on 'location' parameter. This location will be used by applicable resources if `enableScalability` is set to `true`
-var cosmosDbHaLocation = cosmosDbZoneRedundantHaRegionPairs[resourceGroup().location]
 
 // ========== Resource Group Tag ========== //
 resource resourceGroupTags 'Microsoft.Resources/tags@2024-07-01' = {
@@ -228,7 +216,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 
 // ========== Log Analytics Workspace ========== //
 var logAnalyticsWorkspaceResourceName = 'log-${solutionSuffix}'
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.13.0' = if (enableMonitoring) {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.14.0' = if (enableMonitoring) {
   name: take('avm.res.operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
   params: {
     name: logAnalyticsWorkspaceResourceName
@@ -288,7 +276,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
 
 // ========== Application Insights ========== //
 var applicationInsightsResourceName = 'appi-${solutionSuffix}'
-module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (enableMonitoring) {
+module applicationInsights 'br/public:avm/res/insights/component:0.7.1' = if (enableMonitoring) {
   name: take('avm.res.insights.component.${applicationInsightsResourceName}', 64)
   params: {
     name: applicationInsightsResourceName
@@ -387,7 +375,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 
 // Jumpbox Virtual Machine
 var jumpboxVmName = take('vm-jumpbox-${solutionSuffix}', 15)
-module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enablePrivateNetworking) {
+module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
   params: {
     name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
@@ -1172,7 +1160,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.18.0' = {
           {
             failoverPriority: 1
             isZoneRedundant: true
-            locationName: cosmosDbHaLocation
+            locationName: cosmosDbReplicaLocation
           }
         ]
       : [
@@ -1235,7 +1223,7 @@ resource maintenanceWindow 'Microsoft.Maintenance/publicMaintenanceConfiguration
 //========== SQL Database module ========== //
 var sqlServerResourceName = 'sql-${solutionSuffix}'
 var sqlDbModuleName = 'sqldb-${solutionSuffix}'
-module sqlDBModule 'br/public:avm/res/sql/server:0.21.0' = {
+module sqlDBModule 'br/public:avm/res/sql/server:0.21.1' = {
   name: take('avm.res.sql.server.${sqlServerResourceName}', 64)
   params: {
     name: sqlServerResourceName
@@ -1405,7 +1393,7 @@ var databaseRoles = [
   'db_datawriter'
 ]
 //========== Deployment script to create Sql User and Role  ========== //
-module createSqlUserAndRole 'br/public:avm/res/resources/deployment-script:0.5.1' = {
+module createSqlUserAndRole 'br/public:avm/res/resources/deployment-script:0.5.2' = {
   name: take('avm.res.resources.deployment-script.createSqlUserAndRole', 64)
   params: {
     kind: 'AzurePowerShell'
