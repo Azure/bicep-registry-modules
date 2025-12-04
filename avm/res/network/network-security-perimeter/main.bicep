@@ -98,8 +98,8 @@ module networkSecurityPerimeter_profiles 'profile/main.bicep' = [
 
 @batchSize(1)
 resource networkSecurityPerimeter_resourceAssociations 'Microsoft.Network/networkSecurityPerimeters/resourceAssociations@2024-07-01' = [
-  for (resourceAssociation, index) in (resourceAssociations ?? []): {
-    name: '${guid(resourceAssociation.privateLinkResource, name, resourceAssociation.profile)}-nsp-ra'
+  for resourceAssociation in (resourceAssociations ?? []): {
+    name: resourceAssociation.?name ?? '${guid(resourceAssociation.privateLinkResource, name, resourceAssociation.profile)}-nsp-ra'
     parent: networkSecurityPerimeter
     properties: {
       privateLinkResource: {
@@ -201,6 +201,10 @@ type profileType = {
 @export()
 @description('The type for a resource association.')
 type resourceAssociationType = {
+  @description('Optional. The name of the resource association.')
+  @maxLength(80)
+  name: string?
+
   @description('Required. The resource identifier of the resource association.')
   privateLinkResource: string
 

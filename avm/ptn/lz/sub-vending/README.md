@@ -2,6 +2,14 @@
 
 This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).
 
+You can reference the module as follows:
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -89,6 +97,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys a subscription with a multiple virtual networks.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/additional-vnets]
+
 
 <details>
 
@@ -96,7 +106,6 @@ This instance deploys a subscription with a multiple virtual networks.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     additionalVirtualNetworks: [
       {
@@ -486,6 +495,8 @@ param virtualNetworkSubnets = [
 
 This instance deploys a subscription with a bastion host.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/bastion]
+
 
 <details>
 
@@ -493,7 +504,6 @@ This instance deploys a subscription with a bastion host.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     resourceProviders: {}
     subscriptionAliasEnabled: true
@@ -675,6 +685,8 @@ param virtualNetworkSubnets = [
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -682,7 +694,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     resourceProviders: {}
     subscriptionAliasEnabled: true
@@ -777,6 +788,8 @@ param subscriptionWorkload = 'Production'
 
 This instance deploys a subscription with a hub-spoke network topology.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/hub-spoke]
+
 
 <details>
 
@@ -784,7 +797,6 @@ This instance deploys a subscription with a hub-spoke network topology.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     deploymentScriptLocation: '<deploymentScriptLocation>'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
@@ -1103,6 +1115,8 @@ param virtualNetworkUseRemoteGateways = false
 
 This instance deploys a subscription with a hub-spoke network topology with NAT gateway.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/nat-gateway]
+
 
 <details>
 
@@ -1110,7 +1124,6 @@ This instance deploys a subscription with a hub-spoke network topology with NAT 
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     resourceProviders: {
       'Microsoft.Network': []
@@ -1347,6 +1360,8 @@ param virtualNetworkSubnets = [
 
 This instance deploys the module with PIM Active Role assignments.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/pim-active-role-assignments]
+
 
 <details>
 
@@ -1354,7 +1369,6 @@ This instance deploys the module with PIM Active Role assignments.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     pimRoleAssignments: [
       {
@@ -1543,6 +1557,8 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 
 This instance deploys the module with PIM Eligible Role assignments.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/pim-eligible-role-assignments]
+
 
 <details>
 
@@ -1550,7 +1566,6 @@ This instance deploys the module with PIM Eligible Role assignments.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     pimRoleAssignments: [
       {
@@ -1717,6 +1732,8 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 
 This instance deploys the module with RBAC conditions for the role assignments.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rbac-condition]
+
 
 <details>
 
@@ -1724,7 +1741,6 @@ This instance deploys the module with RBAC conditions for the role assignments.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     resourceProviders: {}
     roleAssignmentEnabled: true
@@ -1886,6 +1902,8 @@ param subscriptionWorkload = 'Production'
 
 This instance deploys the module to test standalone NSG deployments.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/standalone-nsg]
+
 
 <details>
 
@@ -1893,7 +1911,6 @@ This instance deploys the module to test standalone NSG deployments.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     networkSecurityGroupResourceGroupName: '<networkSecurityGroupResourceGroupName>'
     networkSecurityGroups: [
@@ -2097,6 +2114,8 @@ param subscriptionWorkload = 'Production'
 
 This instance deploys the module with user-assigned managed identities.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/user-assigned-identities]
+
 
 <details>
 
@@ -2104,7 +2123,6 @@ This instance deploys the module with user-assigned managed identities.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     resourceProviders: {}
     roleAssignmentEnabled: true
@@ -2336,6 +2354,8 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 
 This instance deploys a subscription with a vwan network topology.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/vwan-spoke]
+
 
 <details>
 
@@ -2343,7 +2363,6 @@ This instance deploys a subscription with a vwan network topology.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     deploymentScriptLocation: '<deploymentScriptLocation>'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
@@ -2568,7 +2587,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | [`networkSecurityGroups`](#parameter-networksecuritygroups) | array | The list of network security groups to create that are standalone from the NSGs that can be created as part of the `virtualNetworkSubnets` parameter input. |
 | [`peerAllVirtualNetworks`](#parameter-peerallvirtualnetworks) | bool | Flag to do mesh peering of all virtual networks deployed into the new subscription. |
 | [`pimRoleAssignments`](#parameter-pimroleassignments) | array | Supply an array of objects containing the details of the PIM role assignments to create.<p><p>Each object must contain the following `keys`:<li>`principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.<li>`definition` = The Resource ID of a Built-in or custom RBAC Role Definition as follows:<p>  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition<p>    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`<li>`relativeScope` = 2 options can be provided for input value:<p>    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope<p>    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.<p> |
-| [`resourceProviders`](#parameter-resourceproviders) | object | An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.<p> |
+| [`resourceProviders`](#parameter-resourceproviders) | object | An object of resource providers and resource providers features to register. If not specified, a default list of common resource providers will be registered. To disable resource provider registration entirely, provide an empty object `{}`.<p> |
 | [`roleAssignmentEnabled`](#parameter-roleassignmentenabled) | bool | Whether to create role assignments or not. If true, supply the array of role assignment objects in the parameter called `roleAssignments`.<p> |
 | [`roleAssignments`](#parameter-roleassignments) | array | Supply an array of objects containing the details of the role assignments to create.<p><p>Each object must contain the following `keys`:<li>`principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.<li>`definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:<p>  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Role Based Access Control Administrator, and User Access Administrator). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.<p>  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition<p>    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`<li>`relativeScope` = 2 options can be provided for input value:<p>    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope<p>    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.<p> |
 | [`routeTables`](#parameter-routetables) | array | The list of route tables to create. |
@@ -4012,7 +4031,7 @@ The ticket system name for the role eligibility assignment.
 
 ### Parameter: `resourceProviders`
 
-An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.<p>
+An object of resource providers and resource providers features to register. If not specified, a default list of common resource providers will be registered. To disable resource provider registration entirely, provide an empty object `{}`.<p>
 
 - Required: No
 - Type: object
@@ -5713,4 +5732,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

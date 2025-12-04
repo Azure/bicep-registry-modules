@@ -2,6 +2,14 @@
 
 This component deploys an Application Insights instance.
 
+You can reference the module as follows:
+```bicep
+module component 'br/public:avm/res/insights/component:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -37,6 +45,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -44,7 +54,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module component 'br/public:avm/res/insights/component:<version>' = {
-  name: 'componentDeployment'
   params: {
     // Required parameters
     name: 'icmin001'
@@ -106,6 +115,8 @@ param location = '<location>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -113,10 +124,9 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module component 'br/public:avm/res/insights/component:<version>' = {
-  name: 'componentDeployment'
   params: {
     // Required parameters
-    name: 'icmax001'
+    name: 'icpmax001'
     workspaceResourceId: '<workspaceResourceId>'
     // Non-required parameters
     diagnosticSettings: [
@@ -137,6 +147,7 @@ module component 'br/public:avm/res/insights/component:<version>' = {
     disableLocalAuth: true
     flowType: 'Redfield'
     forceCustomerStorageForProfiler: true
+    immediatePurgeDataOn30Days: true
     linkedStorageAccountResourceId: '<linkedStorageAccountResourceId>'
     location: '<location>'
     lock: {
@@ -186,7 +197,7 @@ module component 'br/public:avm/res/insights/component:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "icmax001"
+      "value": "icpmax001"
     },
     "workspaceResourceId": {
       "value": "<workspaceResourceId>"
@@ -218,6 +229,9 @@ module component 'br/public:avm/res/insights/component:<version>' = {
       "value": "Redfield"
     },
     "forceCustomerStorageForProfiler": {
+      "value": true
+    },
+    "immediatePurgeDataOn30Days": {
       "value": true
     },
     "linkedStorageAccountResourceId": {
@@ -278,7 +292,7 @@ module component 'br/public:avm/res/insights/component:<version>' = {
 using 'br/public:avm/res/insights/component:<version>'
 
 // Required parameters
-param name = 'icmax001'
+param name = 'icpmax001'
 param workspaceResourceId = '<workspaceResourceId>'
 // Non-required parameters
 param diagnosticSettings = [
@@ -299,6 +313,7 @@ param disableIpMasking = false
 param disableLocalAuth = true
 param flowType = 'Redfield'
 param forceCustomerStorageForProfiler = true
+immediatePurgeDataOn30Days: true
 param linkedStorageAccountResourceId = '<linkedStorageAccountResourceId>'
 param location = '<location>'
 param lock = {
@@ -339,6 +354,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -346,7 +363,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module component 'br/public:avm/res/insights/component:<version>' = {
-  name: 'componentDeployment'
   params: {
     // Required parameters
     name: 'icwaf001'
@@ -485,6 +501,8 @@ param tags = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`flowType`](#parameter-flowtype) | string | Used by the Application Insights system to determine what kind of flow this component was created by. This is to be set to 'Bluefield' when creating/updating a component via the REST API. |
 | [`forceCustomerStorageForProfiler`](#parameter-forcecustomerstorageforprofiler) | bool | Force users to create their own storage account for profiler and debugger. |
+| [`immediatePurgeDataOn30Days`](#parameter-immediatepurgedataon30days) | bool | Purge data immediately after 30 days. |
+| [`ingestionMode`](#parameter-ingestionmode) | string | Indicates the flow of the ingestion. |
 | [`kind`](#parameter-kind) | string | The kind of application that this component refers to, used to customize UI. This value is a freeform string, values should typically be one of the following: web, ios, other, store, java, phone. |
 | [`linkedStorageAccountResourceId`](#parameter-linkedstorageaccountresourceid) | string | Linked storage account resource ID. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -710,6 +728,28 @@ Force users to create their own storage account for profiler and debugger.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `immediatePurgeDataOn30Days`
+
+Purge data immediately after 30 days.
+
+- Required: No
+- Type: bool
+
+### Parameter: `ingestionMode`
+
+Indicates the flow of the ingestion.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ApplicationInsights'
+    'ApplicationInsightsWithDiagnosticSettings'
+    'LogAnalytics'
+  ]
+  ```
 
 ### Parameter: `kind`
 
@@ -979,9 +1019,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.3.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

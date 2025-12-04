@@ -2,6 +2,27 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-hub/CHANGELOG.md).
 
+## 0.4.3
+
+### Changes
+
+- Update API versions to 2025-01-01
+- Added additional resource derived types
+
+### Breaking Changes
+
+- None
+
+## 0.4.2
+
+### Changes
+
+- Updated all resource API versions to where available to address lint warnings.
+
+### Breaking Changes
+
+- None
+
 ## 0.4.1
 
 ### Changes

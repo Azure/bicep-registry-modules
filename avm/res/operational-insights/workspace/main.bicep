@@ -7,7 +7,7 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. The name of the SKU.')
+@description('Optional. The name of the SKU. Must be \'LACluster\' to be linked to a Log Analytics cluster.')
 @allowed([
   'CapacityReservation'
   'Free'
@@ -61,10 +61,14 @@ param dataRetention int = 365
 @minValue(-1)
 param dailyQuotaGb int = -1
 
+@description('Optional. The resource ID of the default Data Collection Rule to use for this workspace. Note: the default DCR is not applicable on workspace creation and the workspace must be listed as a destination in the DCR.')
+param defaultDataCollectionRuleResourceId string?
+
 @description('Optional. The network access type for accessing Log Analytics ingestion.')
 @allowed([
   'Enabled'
   'Disabled'
+  'SecuredByPerimeter'
 ])
 param publicNetworkAccessForIngestion string = 'Enabled'
 
@@ -72,6 +76,7 @@ param publicNetworkAccessForIngestion string = 'Enabled'
 @allowed([
   'Enabled'
   'Disabled'
+  'SecuredByPerimeter'
 ])
 param publicNetworkAccessForQuery string = 'Enabled'
 
@@ -190,7 +195,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-07-01' = {
   location: location
   name: name
   tags: tags
@@ -214,6 +219,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02
     publicNetworkAccessForQuery: publicNetworkAccessForQuery
     forceCmkForQuery: forceCmkForQuery
     replication: replication
+    defaultDataCollectionRuleResourceId: defaultDataCollectionRuleResourceId
   }
   identity: identity
 }
@@ -372,7 +378,7 @@ module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/
 ]
 
 // Onboard the Log Analytics Workspace to Sentinel if SecurityInsights is in gallerySolutions and onboardWorkspaceToSentinel is set to true
-resource logAnalyticsWorkspace_sentinelOnboarding 'Microsoft.SecurityInsights/onboardingStates@2024-03-01' = if (!empty(filter(
+resource logAnalyticsWorkspace_sentinelOnboarding 'Microsoft.SecurityInsights/onboardingStates@2025-09-01' = if (!empty(filter(
   gallerySolutions ?? [],
   item => startsWith(item.name, 'SecurityInsights')
 )) && onboardWorkspaceToSentinel) {
@@ -520,13 +526,13 @@ type storageInsightsConfigType = {
 @export()
 @description('Properties of the linked service.')
 type linkedServiceType = {
-  @description('Required. Name of the linked service.')
+  @description('Required. Name of the linked service. E.g., \'Automation\' for an automation account, or \'Cluster\' for a Log Analytics Cluster.')
   name: string
 
-  @description('Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access.')
+  @description('Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require read access (e.g., Automation Accounts).')
   resourceId: string?
 
-  @description('Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access.')
+  @description('Optional. The resource id of the resource that will be linked to the workspace. This should be used for linking resources which require write access (e.g., Log Analytics Clusters).')
   writeAccessResourceId: string?
 }
 
@@ -656,10 +662,14 @@ type tableType = {
   @description('Optional. The search results for the table.')
   searchResults: searchResultsType?
 
-  @description('Optional. The retention in days for the table.')
+  @description('Optional. The retention in days for the table. Don\'t provide to use the default workspace retention.')
+  @minValue(4)
+  @maxValue(730)
   retentionInDays: int?
 
-  @description('Optional. The total retention in days for the table.')
+  @description('Optional. The total retention in days for the table. Don\'t provide use the default table retention.')
+  @minValue(4)
+  @maxValue(2555)
   totalRetentionInDays: int?
 
   @description('Optional. The role assignments for the table.')
