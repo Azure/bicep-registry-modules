@@ -13,7 +13,7 @@ resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' = {
   properties: {
     networkManagerScopes: {
       subscriptions: [
-        subscription().subscriptionId
+        '/subscriptions/${subscription().subscriptionId}'
       ]
     }
     networkManagerScopeAccesses: [
