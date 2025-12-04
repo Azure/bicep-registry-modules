@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/authorization/policy-assignment/CHANGELOG.md).
 
+## 0.5.2
+
+### Changes
+
+- Fixed bug where management groups for RBAC assignments were not being correctly processed and only those management groups specified in the `additionalManagementGroupsIDsToAssignRbacTo` parameter were being used instead of combining them with the management group scope of the policy assignment.
+
+### Breaking Changes
+
+- None
+
 ## 0.5.1
 
 ### Changes
