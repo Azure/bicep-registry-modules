@@ -4,7 +4,7 @@ metadata description = 'This instance deploys the module with a virtual network 
 targetScope = 'managementGroup'
 
 @description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
+param resourceLocation string = 'uksouth' // IPAM only works within a region today so restrict to 'uksouth' for testing.
 
 // This parameter needs to be updated with the billing account and the enrollment account of your environment.
 @description('Required. The scope of the subscription billing. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-SubscriptionBillingScope\'.')
@@ -23,6 +23,9 @@ param subscriptionGuid string = toLower(substring(newGuid(), 0, 4))
 @description('Optional. Subscription ID of the subscription to create the dependencies into. Injected by CI.')
 param subscriptionId string = '#_subscriptionId_#'
 
+@description('Optional. The resource ID of the existing IPAM pool to use for address allocation.')
+param ipamPoolResourceId string = '/subscriptions/9948cae8-8c7c-4f5f-81c1-c53317cab23d/resourceGroups/rsg-blzv-perm-hubs-001/providers/Microsoft.Network/networkManagers/vnm-uksouth-blzv-001/ipamPools/ipam-pool-blzv-001'
+
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-lz-ipam-${serviceShort}-rg'
@@ -37,18 +40,6 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.2' = {
     name: resourceGroupName
     location: resourceLocation
   }
-}
-module nestedDependencies 'dependencies.bicep' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  scope: az.resourceGroup(subscriptionId, resourceGroupName)
-  params: {
-    location: resourceLocation
-    networkManagerName: 'vnm-${resourceLocation}-${namePrefix}-${serviceShort}'
-    ipamPoolName: 'ipam-pool-${namePrefix}-${serviceShort}'
-  }
-  dependsOn: [
-    resourceGroup
-  ]
 }
 
 module testDeployment '../../../main.bicep' = if (enableDeployment) {
@@ -71,7 +62,7 @@ module testDeployment '../../../main.bicep' = if (enableDeployment) {
     virtualNetworkResourceGroupName: 'rsg-${resourceLocation}-net-ipam-${namePrefix}-${serviceShort}'
     // Use IPAM pool resource ID instead of CIDR notation
     virtualNetworkAddressSpace: [
-      nestedDependencies.outputs.ipamPoolResourceId
+      ipamPoolResourceId
     ]
     // Allocate 256 IP addresses (equivalent to a /24 network)
     virtualNetworkIpamPoolNumberOfIpAddresses: '256'
@@ -82,7 +73,7 @@ module testDeployment '../../../main.bicep' = if (enableDeployment) {
         ipamPoolPrefixAllocations: [
           {
             pool: {
-              id: nestedDependencies.outputs.ipamPoolResourceId
+              id: ipamPoolResourceId
             }
             numberOfIpAddresses: '64'
           }
@@ -94,7 +85,7 @@ module testDeployment '../../../main.bicep' = if (enableDeployment) {
         ipamPoolPrefixAllocations: [
           {
             pool: {
-              id: nestedDependencies.outputs.ipamPoolResourceId
+              id: ipamPoolResourceId
             }
             numberOfIpAddresses: '32'
           }
@@ -119,4 +110,3 @@ output createdSubId string = enableDeployment ? testDeployment.?outputs.?subscri
 output namePrefix string = namePrefix
 output serviceShort string = serviceShort
 output resourceLocation string = resourceLocation
-output ipamPoolResourceId string = nestedDependencies.outputs.ipamPoolResourceId
