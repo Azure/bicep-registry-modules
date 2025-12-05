@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "7550082996471672170"
+      "version": "0.39.26.7824",
+      "templateHash": "2827890037228340123"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1034,6 +1034,16 @@
             "description": "Conditional. List of address prefixes for the subnet. Required if `addressPrefix` is empty."
           }
         },
+        "ipamPoolPrefixAllocations": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate."
+          }
+        },
         "applicationGatewayIPConfigurations": {
           "type": "array",
           "items": {
@@ -1218,7 +1228,14 @@
         "addressPrefixes": {
           "type": "array",
           "metadata": {
-            "description": "Required. The address prefixes for the virtual network."
+            "description": "Required. An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `[\"10.0.0.0/16\"]`) OR a single IPAM pool resource ID. When specifying an IPAM pool resource ID, you must also set ipamPoolNumberOfIpAddresses."
+          }
+        },
+        "ipamPoolNumberOfIpAddresses": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The number of IP addresses to allocate from the IPAM pool. Required when addressPrefixes contains an IPAM pool resource ID."
           }
         },
         "location": {
@@ -1483,7 +1500,14 @@
       },
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `[\"10.0.0.0/16\",\"172.16.0.0/12\"]`."
+        "description": "Optional. An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `[\"10.0.0.0/16\",\"172.16.0.0/12\"]`) OR a single IPAM pool resource ID to allocate IP addresses from. When specifying an IPAM pool resource ID, you must also set a value for the `virtualNetworkIpamPoolNumberOfIpAddresses` parameter.\n"
+      }
+    },
+    "virtualNetworkIpamPoolNumberOfIpAddresses": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The number of IP addresses to allocate from the IPAM pool. Required when `virtualNetworkAddressSpace` contains an IPAM pool resource ID. Example: `'256'` for a /24 network.\n"
       }
     },
     "virtualNetworkSubnets": {
@@ -1766,7 +1790,7 @@
         "Microsoft.Web": []
       },
       "metadata": {
-        "description": "Optional. An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.\n"
+        "description": "Optional. An object of resource providers and resource providers features to register. If not specified, a default list of common resource providers will be registered. To disable resource provider registration entirely, provide an empty object `{}`.\n"
       }
     },
     "managementGroupAssociationDelayCount": {
@@ -1901,8 +1925,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "16574186634835473532"
+              "version": "0.39.26.7824",
+              "templateHash": "2533844697716248403"
             }
           },
           "parameters": {
@@ -2038,6 +2062,9 @@
           "virtualNetworkAddressSpace": {
             "value": "[parameters('virtualNetworkAddressSpace')]"
           },
+          "virtualNetworkIpamPoolNumberOfIpAddresses": {
+            "value": "[parameters('virtualNetworkIpamPoolNumberOfIpAddresses')]"
+          },
           "virtualNetworkSubnets": {
             "value": "[parameters('virtualNetworkSubnets')]"
           },
@@ -2157,8 +2184,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "999263166460876108"
+              "version": "0.39.26.7824",
+              "templateHash": "4395253011660210539"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -2497,6 +2524,16 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Conditional. List of address prefixes for the subnet. Required if `addressPrefix` is empty."
+                  }
+                },
+                "ipamPoolPrefixAllocations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate."
                   }
                 },
                 "applicationGatewayIPConfigurations": {
@@ -3014,7 +3051,14 @@
                 "addressPrefixes": {
                   "type": "array",
                   "metadata": {
-                    "description": "Required. The address prefixes for the virtual network."
+                    "description": "Required. An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `[\"10.0.0.0/16\"]`) OR a single IPAM pool resource ID. When specifying an IPAM pool resource ID, you must also set ipamPoolNumberOfIpAddresses."
+                  }
+                },
+                "ipamPoolNumberOfIpAddresses": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The number of IP addresses to allocate from the IPAM pool. Required when addressPrefixes contains an IPAM pool resource ID."
                   }
                 },
                 "location": {
@@ -3601,7 +3645,14 @@
               },
               "defaultValue": [],
               "metadata": {
-                "description": "The address space of the virtual network, supplied as multiple CIDR blocks, e.g. `[\"10.0.0.0/16\",\"172.16.0.0/12\"]`"
+                "description": "An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `[\"10.0.0.0/16\",\"172.16.0.0/12\"]`) OR a single IPAM pool resource ID. When specifying an IPAM pool resource ID, you must also set virtualNetworkIpamPoolNumberOfIpAddresses."
+              }
+            },
+            "virtualNetworkIpamPoolNumberOfIpAddresses": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "The number of IP addresses to allocate from the IPAM pool. Required when virtualNetworkAddressSpace contains an IPAM pool resource ID."
               }
             },
             "virtualNetworkSubnets": {
@@ -3874,7 +3925,7 @@
                 "Microsoft.Web": []
               },
               "metadata": {
-                "description": "An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.\n}`"
+                "description": "An object of resource providers and resource providers features to register. If not specified, a default list of common resource providers will be registered. To disable resource provider registration entirely, provide an empty object `{}`.\n}`"
               }
             },
             "deploymentScriptManagedIdentityName": {
@@ -4085,8 +4136,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "18107819872752296910"
+                      "version": "0.39.26.7824",
+                      "templateHash": "737414694893554439"
                     }
                   },
                   "parameters": {
@@ -4147,8 +4198,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "2654933692570559783"
+                      "version": "0.39.26.7824",
+                      "templateHash": "18132991071238568488"
                     }
                   },
                   "parameters": {
@@ -4207,8 +4258,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "1661292190117326471"
+                              "version": "0.39.26.7824",
+                              "templateHash": "409826983300954352"
                             }
                           },
                           "parameters": {
@@ -4263,8 +4314,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.38.33.27573",
-                                      "templateHash": "12489795648043380518"
+                                      "version": "0.39.26.7824",
+                                      "templateHash": "15122795269698622494"
                                     }
                                   },
                                   "parameters": {
@@ -4341,8 +4392,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "7727222932365568939"
+                              "version": "0.39.26.7824",
+                              "templateHash": "6678453199622092861"
                             }
                           },
                           "parameters": {
@@ -4396,8 +4447,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.38.33.27573",
-                                      "templateHash": "1625562912621355821"
+                                      "version": "0.39.26.7824",
+                                      "templateHash": "6143412316816181642"
                                     }
                                   },
                                   "parameters": {
@@ -5509,8 +5560,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "2654933692570559783"
+                      "version": "0.39.26.7824",
+                      "templateHash": "18132991071238568488"
                     }
                   },
                   "parameters": {
@@ -5569,8 +5620,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "1661292190117326471"
+                              "version": "0.39.26.7824",
+                              "templateHash": "409826983300954352"
                             }
                           },
                           "parameters": {
@@ -5625,8 +5676,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.38.33.27573",
-                                      "templateHash": "12489795648043380518"
+                                      "version": "0.39.26.7824",
+                                      "templateHash": "15122795269698622494"
                                     }
                                   },
                                   "parameters": {
@@ -5703,8 +5754,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "7727222932365568939"
+                              "version": "0.39.26.7824",
+                              "templateHash": "6678453199622092861"
                             }
                           },
                           "parameters": {
@@ -5758,8 +5809,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.38.33.27573",
-                                      "templateHash": "1625562912621355821"
+                                      "version": "0.39.26.7824",
+                                      "templateHash": "6143412316816181642"
                                     }
                                   },
                                   "parameters": {
@@ -5873,6 +5924,7 @@
                   "addressPrefixes": {
                     "value": "[parameters('virtualNetworkAddressSpace')]"
                   },
+                  "ipamPoolNumberOfIpAddresses": "[if(and(not(empty(parameters('virtualNetworkAddressSpace'))), contains(parameters('virtualNetworkAddressSpace')[0], '/Microsoft.Network/networkManagers/')), createObject('value', parameters('virtualNetworkIpamPoolNumberOfIpAddresses')), createObject('value', null()))]",
                   "dnsServers": {
                     "value": "[parameters('virtualNetworkDnsServers')]"
                   },
@@ -5885,7 +5937,7 @@
                       {
                         "name": "value",
                         "count": "[length(parameters('virtualNetworkSubnets'))]",
-                        "input": "[if(not(empty(parameters('virtualNetworkSubnets'))), createObject('name', parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'addressPrefix', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'addressPrefix'), 'networkSecurityGroupResourceId', if(or(parameters('virtualNetworkDeployBastion'), equals(parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'AzureBastionSubnet')), tryGet(if(and(and(and(and(parameters('virtualNetworkDeployBastion'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), reference('createBastionNsg'), null()), 'outputs', 'resourceId', 'value'), resourceId(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/networkSecurityGroups', format('{0}', tryGet(if(not(empty(parameters('virtualNetworkSubnets'))), reference(format('createLzNsg[{0}]', copyIndex('value'))), null()), 'outputs', 'name', 'value')))), 'routeTableResourceId', if(and(not(empty(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'routeTableName'))), not(empty(parameters('routeTablesResourceGroupName')))), resourceId(parameters('subscriptionId'), parameters('routeTablesResourceGroupName'), 'Microsoft.Network/routeTables', coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'routeTableName'), '')), null()), 'natGatewayResourceId', if(and(parameters('virtualNetworkDeployNatGateway'), coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'associateWithNatGateway'), false())), tryGet(if(and(parameters('virtualNetworkDeployNatGateway'), and(and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName'))))), reference('createNatGateway'), null()), 'outputs', 'resourceId', 'value'), null()), 'delegation', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'delegation')), createObject())]"
+                        "input": "[if(not(empty(parameters('virtualNetworkSubnets'))), createObject('name', parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'addressPrefix', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'addressPrefix'), 'ipamPoolPrefixAllocations', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'ipamPoolPrefixAllocations'), 'networkSecurityGroupResourceId', if(or(parameters('virtualNetworkDeployBastion'), equals(parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'AzureBastionSubnet')), tryGet(if(and(and(and(and(parameters('virtualNetworkDeployBastion'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), reference('createBastionNsg'), null()), 'outputs', 'resourceId', 'value'), resourceId(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/networkSecurityGroups', format('{0}', tryGet(if(not(empty(parameters('virtualNetworkSubnets'))), reference(format('createLzNsg[{0}]', copyIndex('value'))), null()), 'outputs', 'name', 'value')))), 'routeTableResourceId', if(and(not(empty(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'routeTableName'))), not(empty(parameters('routeTablesResourceGroupName')))), resourceId(parameters('subscriptionId'), parameters('routeTablesResourceGroupName'), 'Microsoft.Network/routeTables', coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'routeTableName'), '')), null()), 'natGatewayResourceId', if(and(parameters('virtualNetworkDeployNatGateway'), coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'associateWithNatGateway'), false())), tryGet(if(and(parameters('virtualNetworkDeployNatGateway'), and(and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName'))))), reference('createNatGateway'), null()), 'outputs', 'resourceId', 'value'), null()), 'delegation', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'delegation')), createObject())]"
                       }
                     ]
                   },
@@ -10673,8 +10725,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "6279059423618909743"
+                      "version": "0.39.26.7824",
+                      "templateHash": "2697601347448864025"
                     }
                   },
                   "parameters": {
@@ -47636,12 +47688,13 @@
                   "addressPrefixes": {
                     "value": "[parameters('additionalVirtualNetworks')[copyIndex()].addressPrefixes]"
                   },
+                  "ipamPoolNumberOfIpAddresses": "[if(and(not(empty(parameters('additionalVirtualNetworks')[copyIndex()].addressPrefixes)), contains(parameters('additionalVirtualNetworks')[copyIndex()].addressPrefixes[0], '/Microsoft.Network/networkManagers/')), createObject('value', tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'ipamPoolNumberOfIpAddresses')), createObject('value', null()))]",
                   "subnets": {
                     "copy": [
                       {
                         "name": "value",
                         "count": "[length(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray()))]",
-                        "input": "[createObject('name', coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')].name, 'addressPrefix', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'addressPrefix'), 'networkSecurityGroupResourceId', if(or(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployBastion'), false()), equals(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')].name, 'AzureBastionSubnet')), tryGet(if(and(and(and(and(parameters('virtualNetworkDeployBastion'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), reference('createBastionNsg'), null()), 'outputs', 'resourceId', 'value'), if(not(empty(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'networkSecurityGroup'))), resourceId(parameters('subscriptionId'), parameters('additionalVirtualNetworks')[copyIndex()].resourceGroupName, 'Microsoft.Network/networkSecurityGroups', filter(variables('nsgArrayFormatted'), lambda('nsg', equals(lambdaVariables('nsg').nsgName, tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'networkSecurityGroup', 'name'))))[0].nsgName), null())), 'routeTableResourceId', if(and(not(empty(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'routeTableName'))), not(empty(parameters('routeTablesResourceGroupName')))), resourceId(parameters('subscriptionId'), parameters('routeTablesResourceGroupName'), 'Microsoft.Network/routeTables', coalesce(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'routeTableName'), '')), null()), 'natGatewayResourceId', if(and(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployNatGateway'), false()), coalesce(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'associateWithNatGateway'), false())), tryGet(if(and(not(empty(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray()))), coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployNatGateway'), false())), reference(format('createAdditonalNatGateway[{0}]', copyIndex())), null()), 'outputs', 'resourceId', 'value'), null()), 'delegation', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'delegation'))]"
+                        "input": "[createObject('name', coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')].name, 'addressPrefix', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'addressPrefix'), 'ipamPoolPrefixAllocations', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'ipamPoolPrefixAllocations'), 'networkSecurityGroupResourceId', if(or(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployBastion'), false()), equals(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')].name, 'AzureBastionSubnet')), tryGet(if(and(and(and(and(parameters('virtualNetworkDeployBastion'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), reference('createBastionNsg'), null()), 'outputs', 'resourceId', 'value'), if(not(empty(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'networkSecurityGroup'))), resourceId(parameters('subscriptionId'), parameters('additionalVirtualNetworks')[copyIndex()].resourceGroupName, 'Microsoft.Network/networkSecurityGroups', filter(variables('nsgArrayFormatted'), lambda('nsg', equals(lambdaVariables('nsg').nsgName, tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'networkSecurityGroup', 'name'))))[0].nsgName), null())), 'routeTableResourceId', if(and(not(empty(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'routeTableName'))), not(empty(parameters('routeTablesResourceGroupName')))), resourceId(parameters('subscriptionId'), parameters('routeTablesResourceGroupName'), 'Microsoft.Network/routeTables', coalesce(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'routeTableName'), '')), null()), 'natGatewayResourceId', if(and(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployNatGateway'), false()), coalesce(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'associateWithNatGateway'), false())), tryGet(if(and(not(empty(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray()))), coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployNatGateway'), false())), reference(format('createAdditonalNatGateway[{0}]', copyIndex())), null()), 'outputs', 'resourceId', 'value'), null()), 'delegation', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'delegation'))]"
                       }
                     ]
                   },
@@ -49326,8 +49379,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "6279059423618909743"
+                      "version": "0.39.26.7824",
+                      "templateHash": "2697601347448864025"
                     }
                   },
                   "parameters": {
@@ -49441,8 +49494,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "13939377559324876183"
+                      "version": "0.39.26.7824",
+                      "templateHash": "5242216955770606257"
                     }
                   },
                   "parameters": {
@@ -49511,8 +49564,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "13939377559324876183"
+                      "version": "0.39.26.7824",
+                      "templateHash": "5242216955770606257"
                     }
                   },
                   "parameters": {
