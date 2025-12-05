@@ -109,6 +109,7 @@ module testDeployment '../../../main.bicep' = [
         2
         3
       ]
+      deleteOption: 'Detach'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
