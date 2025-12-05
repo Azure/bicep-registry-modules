@@ -28,6 +28,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.Logic/integrationAccounts` | 2019-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.logic_integrationaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts)</li></ul> |
 | `Microsoft.Logic/integrationAccounts/assemblies` | 2019-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.logic_integrationaccounts_assemblies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts/assemblies)</li></ul> |
+| `Microsoft.Logic/integrationAccounts/certificates` | 2019-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.logic_integrationaccounts_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/integrationAccounts)</li></ul> |
 | `Microsoft.Logic/integrationAccounts/maps` | 2019-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.logic_integrationaccounts_maps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts/maps)</li></ul> |
 | `Microsoft.Logic/integrationAccounts/partners` | 2019-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.logic_integrationaccounts_partners.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts/partners)</li></ul> |
 | `Microsoft.Logic/integrationAccounts/schemas` | 2019-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.logic_integrationaccounts_schemas.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts/schemas)</li></ul> |
@@ -133,6 +134,25 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         name: 'assembly1'
       }
     ]
+    certificates: [
+      {
+        key: {
+          keyName: '<keyName>'
+          keyVault: {
+            id: '<id>'
+          }
+        }
+        metadata: {
+          key1: 'value1'
+          key2: 'value2'
+        }
+        name: '<name>'
+        tags: {
+          tag1: 'value1'
+          tag2: 'value2'
+        }
+      }
+    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -162,17 +182,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           key2: 'value2'
         }
         name: 'map1'
-        parametersSchema: {
-          properties: {
-            discountRate: {
-              type: 'number'
-            }
-          }
-          required: [
-            'discountRate'
-          ]
-          type: 'object'
-        }
         tags: {
           tag1: 'value1'
           tag2: 'value2'
@@ -295,6 +304,27 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         }
       ]
     },
+    "certificates": {
+      "value": [
+        {
+          "key": {
+            "keyName": "<keyName>",
+            "keyVault": {
+              "id": "<id>"
+            }
+          },
+          "metadata": {
+            "key1": "value1",
+            "key2": "value2"
+          },
+          "name": "<name>",
+          "tags": {
+            "tag1": "value1",
+            "tag2": "value2"
+          }
+        }
+      ]
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -331,17 +361,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
             "key2": "value2"
           },
           "name": "map1",
-          "parametersSchema": {
-            "properties": {
-              "discountRate": {
-                "type": "number"
-              }
-            },
-            "required": [
-              "discountRate"
-            ],
-            "type": "object"
-          },
           "tags": {
             "tag1": "value1",
             "tag2": "value2"
@@ -467,6 +486,25 @@ param assemblies = [
     name: 'assembly1'
   }
 ]
+param certificates = [
+  {
+    key: {
+      keyName: '<keyName>'
+      keyVault: {
+        id: '<id>'
+      }
+    }
+    metadata: {
+      key1: 'value1'
+      key2: 'value2'
+    }
+    name: '<name>'
+    tags: {
+      tag1: 'value1'
+      tag2: 'value2'
+    }
+  }
+]
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -496,17 +534,6 @@ param maps = [
       key2: 'value2'
     }
     name: 'map1'
-    parametersSchema: {
-      properties: {
-        discountRate: {
-          type: 'number'
-        }
-      }
-      required: [
-        'discountRate'
-      ]
-      type: 'object'
-    }
     tags: {
       tag1: 'value1'
       tag2: 'value2'
@@ -822,6 +849,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`assemblies`](#parameter-assemblies) | array | All assemblies to create. |
+| [`certificates`](#parameter-certificates) | array | All certificates to create. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -908,6 +936,118 @@ The assembly metadata.
 - Type: object
 
 ### Parameter: `assemblies.tags`
+
+Resource tags.
+
+- Required: No
+- Type: object
+
+### Parameter: `certificates`
+
+All certificates to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-certificatesname) | string | The Name of the certificate resource. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`key`](#parameter-certificateskey) | object | The key details in the key vault. |
+| [`location`](#parameter-certificateslocation) | string | Resource location. |
+| [`metadata`](#parameter-certificatesmetadata) | object | The certificate metadata. |
+| [`publicCertificate`](#parameter-certificatespubliccertificate) | string | The public certificate. |
+| [`tags`](#parameter-certificatestags) | object | Resource tags. |
+
+### Parameter: `certificates.name`
+
+The Name of the certificate resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `certificates.key`
+
+The key details in the key vault.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyName`](#parameter-certificateskeykeyname) | string | The private key name in key vault. |
+| [`keyVault`](#parameter-certificateskeykeyvault) | object | The key vault reference. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVersion`](#parameter-certificateskeykeyversion) | string | The private key version in key vault. |
+
+### Parameter: `certificates.key.keyName`
+
+The private key name in key vault.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `certificates.key.keyVault`
+
+The key vault reference.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-certificateskeykeyvaultid) | string | The resource id of the key vault. |
+
+### Parameter: `certificates.key.keyVault.id`
+
+The resource id of the key vault.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `certificates.key.keyVersion`
+
+The private key version in key vault.
+
+- Required: No
+- Type: string
+
+### Parameter: `certificates.location`
+
+Resource location.
+
+- Required: No
+- Type: string
+
+### Parameter: `certificates.metadata`
+
+The certificate metadata.
+
+- Required: No
+- Type: object
+
+### Parameter: `certificates.publicCertificate`
+
+The public certificate.
+
+- Required: No
+- Type: string
+
+### Parameter: `certificates.tags`
 
 Resource tags.
 

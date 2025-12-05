@@ -31,6 +31,9 @@ param maps integrationAccountMapType[]?
 @description('Optional. All assemblies to create.')
 param assemblies integrationAccountAssemblyType[]?
 
+@description('Optional. All certificates to create.')
+param certificates integrationAccountCertificateType[]?
+
 @description('Optional. The state. - Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended.')
 @allowed([
   'Completed'
@@ -274,6 +277,21 @@ module integrationAccount_assemblies 'assembly/main.bicep' = [
   }
 ]
 
+module integrationAccount_certificates 'certificate/main.bicep' = [
+  for (certificate, index) in (certificates ?? []): {
+    name: '${uniqueString(deployment().name, location)}-integrationAccount-Certificate-${index}'
+    params: {
+      name: certificate.name
+      location: location
+      integrationAccountName: integrationAccount.name
+      key: certificate.?key
+      metadata: certificate.?metadata
+      publicCertificate: certificate.?publicCertificate
+      tags: certificate.?tags ?? tags
+    }
+  }
+]
+
 resource integrationAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: roleAssignment.?name ?? guid(
@@ -325,6 +343,28 @@ type integrationAccountPartnerType = {
 
   @description('Optional. The partner metadata.')
   metadata: object?
+
+  @description('Optional. Resource tags.')
+  tags: object?
+}
+
+import { keyVaultKeyReferenceType } from 'certificate/main.bicep'
+@description('The type for an integration account certificate.')
+type integrationAccountCertificateType = {
+  @description('Required. The Name of the certificate resource.')
+  name: string
+
+  @description('Optional. Resource location.')
+  location: string?
+
+  @description('Optional. The key details in the key vault.')
+  key: keyVaultKeyReferenceType?
+
+  @description('Optional. The certificate metadata.')
+  metadata: object?
+
+  @description('Optional. The public certificate.')
+  publicCertificate: string?
 
   @description('Optional. Resource tags.')
   tags: object?
