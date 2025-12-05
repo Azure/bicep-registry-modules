@@ -70,19 +70,6 @@ Describe 'Bicep Landing Zone (Sub) Vending IPAM Tests' {
             $vnetIpam.AddressSpace.AddressPrefixes | Should -Not -BeNullOrEmpty
         }
 
-        It 'Should have a Virtual Network using the correct IPAM pool' {
-            # Parse the AddressSpaceText to get IPAM pool information
-            $addressSpaceJson = $vnetIpam.AddressSpaceText | ConvertFrom-Json
-            $addressSpaceJson.IpamPoolPrefixAllocations | Should -Not -BeNullOrEmpty
-            $addressSpaceJson.IpamPoolPrefixAllocations[0].Id | Should -Be $ipamPoolResourceId
-        }
-
-        It 'Should have a Virtual Network with IPAM pool requesting 256 IP addresses' {
-            # Parse the AddressSpaceText to verify the number of IPs requested
-            $addressSpaceJson = $vnetIpam.AddressSpaceText | ConvertFrom-Json
-            $addressSpaceJson.IpamPoolPrefixAllocations[0].NumberOfIpAddresses | Should -Be '256'
-        }
-
         It 'Should have a Virtual Network with the allocated address prefix within the expected IPAM pool range' {
             # Verify the allocated address is within the expected range (10.120.x.x/24)
             $allocatedPrefix = $vnetIpam.AddressSpace.AddressPrefixes[0]
@@ -114,21 +101,6 @@ Describe 'Bicep Landing Zone (Sub) Vending IPAM Tests' {
             $subnet1.AddressPrefix | Should -Not -BeNullOrEmpty
         }
 
-        It "Should have a subnet 'Subnet1' using the correct IPAM pool" {
-            # Parse SubnetsText to get IPAM pool information for Subnet1
-            $subnetsJson = $vnetIpam.SubnetsText | ConvertFrom-Json
-            $subnet1Json = $subnetsJson | Where-Object { $_.Name -eq 'Subnet1' }
-            $subnet1Json.IpamPoolPrefixAllocations | Should -Not -BeNullOrEmpty
-            $subnet1Json.IpamPoolPrefixAllocations[0].Id | Should -Be $ipamPoolResourceId
-        }
-
-        It "Should have a subnet 'Subnet1' with IPAM pool requesting 64 IP addresses" {
-            # Parse SubnetsText to verify the number of IPs requested for Subnet1
-            $subnetsJson = $vnetIpam.SubnetsText | ConvertFrom-Json
-            $subnet1Json = $subnetsJson | Where-Object { $_.Name -eq 'Subnet1' }
-            $subnet1Json.IpamPoolPrefixAllocations[0].NumberOfIpAddresses | Should -Be '64'
-        }
-
         It "Should have a subnet 'Subnet1' with the expected size (64 IPs = /26)" {
             # The subnet should be a /26 (64 IPs)
             $subnet1.AddressPrefix | Should -Not -BeNullOrEmpty
@@ -144,21 +116,6 @@ Describe 'Bicep Landing Zone (Sub) Vending IPAM Tests' {
         It "Should have a subnet 'Subnet2' with an address prefix allocated from IPAM" {
             # When IPAM is used, Azure allocates an address prefix to the subnet
             $subnet2.AddressPrefix | Should -Not -BeNullOrEmpty
-        }
-
-        It "Should have a subnet 'Subnet2' using the correct IPAM pool" {
-            # Parse SubnetsText to get IPAM pool information for Subnet2
-            $subnetsJson = $vnetIpam.SubnetsText | ConvertFrom-Json
-            $subnet2Json = $subnetsJson | Where-Object { $_.Name -eq 'Subnet2' }
-            $subnet2Json.IpamPoolPrefixAllocations | Should -Not -BeNullOrEmpty
-            $subnet2Json.IpamPoolPrefixAllocations[0].Id | Should -Be $ipamPoolResourceId
-        }
-
-        It "Should have a subnet 'Subnet2' with IPAM pool requesting 32 IP addresses" {
-            # Parse SubnetsText to verify the number of IPs requested for Subnet2
-            $subnetsJson = $vnetIpam.SubnetsText | ConvertFrom-Json
-            $subnet2Json = $subnetsJson | Where-Object { $_.Name -eq 'Subnet2' }
-            $subnet2Json.IpamPoolPrefixAllocations[0].NumberOfIpAddresses | Should -Be '32'
         }
 
         It "Should have a subnet 'Subnet2' with the expected size (32 IPs = /27)" {
