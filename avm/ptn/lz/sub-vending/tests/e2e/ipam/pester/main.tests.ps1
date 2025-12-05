@@ -65,27 +65,35 @@ Describe 'Bicep Landing Zone (Sub) Vending IPAM Tests' {
             $vnetIpam.Location | Should -Be $location
         }
 
-        It 'Should have a Virtual Network that uses IPAM for address allocation' {
-            # The AddressSpace should have IpamPoolPrefixAllocations instead of AddressPrefixes
-            $vnetIpam.AddressSpace.IpamPoolPrefixAllocations | Should -Not -BeNullOrEmpty
+        It 'Should have a Virtual Network with address prefixes allocated from IPAM' {
+            # When IPAM is used, Azure allocates address prefixes
+            $vnetIpam.AddressSpace.AddressPrefixes | Should -Not -BeNullOrEmpty
         }
 
-        It 'Should have a Virtual Network with IPAM pool allocation referencing the correct IPAM pool' {
-            $vnetIpam.AddressSpace.IpamPoolPrefixAllocations.Id | Should -Be $ipamPoolResourceId
+        It 'Should have a Virtual Network using the correct IPAM pool' {
+            # Parse the AddressSpaceText to get IPAM pool information
+            $addressSpaceJson = $vnetIpam.AddressSpaceText | ConvertFrom-Json
+            $addressSpaceJson.IpamPoolPrefixAllocations | Should -Not -BeNullOrEmpty
+            $addressSpaceJson.IpamPoolPrefixAllocations[0].Id | Should -Be $ipamPoolResourceId
         }
 
-        It 'Should have a Virtual Network with IPAM pool allocation requesting 256 IP addresses' {
-            $vnetIpam.AddressSpace.IpamPoolPrefixAllocations.NumberOfIpAddresses | Should -Be '256'
+        It 'Should have a Virtual Network with IPAM pool requesting 256 IP addresses' {
+            # Parse the AddressSpaceText to verify the number of IPs requested
+            $addressSpaceJson = $vnetIpam.AddressSpaceText | ConvertFrom-Json
+            $addressSpaceJson.IpamPoolPrefixAllocations[0].NumberOfIpAddresses | Should -Be '256'
         }
 
-        It 'Should have a Virtual Network with an automatically allocated address prefix from the IPAM pool' {
-            # When IPAM is used, Azure automatically assigns an address prefix
-            $vnetIpam.AddressSpace.IpamPoolPrefixAllocations.AllocatedAddressPrefixes | Should -Not -BeNullOrEmpty
+        It 'Should have a Virtual Network with the allocated address prefix within the expected IPAM pool range' {
+            # Verify the allocated address is within the expected range (10.120.x.x/24)
+            $allocatedPrefix = $vnetIpam.AddressSpace.AddressPrefixes[0]
+            $allocatedPrefix | Should -Not -BeNullOrEmpty
+            $allocatedPrefix | Should -Match '^10\.120\.\d+\.\d+/24$'
         }
 
-        It 'Should have a Virtual Network with the allocated address prefix within the IPAM pool range (10.120.0.0/16)' {
-            $allocatedPrefix = $vnetIpam.AddressSpace.IpamPoolPrefixAllocations.AllocatedAddressPrefixes
-            $allocatedPrefix | Should -Match '10.120.0.0/24'
+        It 'Should have a Virtual Network with address space allocated with the expected size (256 IPs = /24)' {
+            # Verify the allocated CIDR is a /24 (256 IP addresses)
+            $allocatedPrefix = $vnetIpam.AddressSpace.AddressPrefixes[0]
+            $allocatedPrefix | Should -Match '/24$'
         }
 
         It 'Should have a Virtual Network with DDoS protection disabled' {
@@ -101,40 +109,64 @@ Describe 'Bicep Landing Zone (Sub) Vending IPAM Tests' {
             $subnet1.Name | Should -Be 'Subnet1'
         }
 
-        It "Should have a subnet 'Subnet1' that uses IPAM for address allocation" {
-            $subnet1.IpamPoolPrefixAllocations | Should -Not -BeNullOrEmpty
+        It "Should have a subnet 'Subnet1' with an address prefix allocated from IPAM" {
+            # When IPAM is used, Azure allocates an address prefix to the subnet
+            $subnet1.AddressPrefix | Should -Not -BeNullOrEmpty
         }
 
-        It "Should have a subnet 'Subnet1' with IPAM pool allocation referencing the correct IPAM pool" {
-            $subnet1.IpamPoolPrefixAllocations.Id | Should -Be $ipamPoolResourceId
+        It "Should have a subnet 'Subnet1' using the correct IPAM pool" {
+            # Parse SubnetsText to get IPAM pool information for Subnet1
+            $subnetsJson = $vnetIpam.SubnetsText | ConvertFrom-Json
+            $subnet1Json = $subnetsJson | Where-Object { $_.Name -eq 'Subnet1' }
+            $subnet1Json.IpamPoolPrefixAllocations | Should -Not -BeNullOrEmpty
+            $subnet1Json.IpamPoolPrefixAllocations[0].Id | Should -Be $ipamPoolResourceId
         }
 
-        It "Should have a subnet 'Subnet1' with IPAM pool allocation requesting 64 IP addresses" {
-            $subnet1.IpamPoolPrefixAllocations.NumberOfIpAddresses | Should -Be '64'
+        It "Should have a subnet 'Subnet1' with IPAM pool requesting 64 IP addresses" {
+            # Parse SubnetsText to verify the number of IPs requested for Subnet1
+            $subnetsJson = $vnetIpam.SubnetsText | ConvertFrom-Json
+            $subnet1Json = $subnetsJson | Where-Object { $_.Name -eq 'Subnet1' }
+            $subnet1Json.IpamPoolPrefixAllocations[0].NumberOfIpAddresses | Should -Be '64'
         }
 
-        It "Should have a subnet 'Subnet1' with an automatically allocated address prefix from IPAM" {
-            $subnet1.IpamPoolPrefixAllocations.AllocatedAddressPrefixes | Should -Not -BeNullOrEmpty
+        It "Should have a subnet 'Subnet1' with the expected size (64 IPs = /26)" {
+            # The subnet should be a /26 (64 IPs)
+            $subnet1.AddressPrefix | Should -Not -BeNullOrEmpty
+            # AddressPrefix can be an array, get the first element if it is
+            $prefix = if ($subnet1.AddressPrefix -is [array]) { $subnet1.AddressPrefix[0] } else { $subnet1.AddressPrefix }
+            $prefix | Should -Match '/26$'
         }
 
         It "Should have a Virtual Network with a subnet named 'Subnet2'" {
             $subnet2.Name | Should -Be 'Subnet2'
         }
 
-        It "Should have a subnet 'Subnet2' that uses IPAM for address allocation" {
-            $subnet2.IpamPoolPrefixAllocations | Should -Not -BeNullOrEmpty
+        It "Should have a subnet 'Subnet2' with an address prefix allocated from IPAM" {
+            # When IPAM is used, Azure allocates an address prefix to the subnet
+            $subnet2.AddressPrefix | Should -Not -BeNullOrEmpty
         }
 
-        It "Should have a subnet 'Subnet2' with IPAM pool allocation referencing the correct IPAM pool" {
-            $subnet2.IpamPoolPrefixAllocations.Id | Should -Be $ipamPoolResourceId
+        It "Should have a subnet 'Subnet2' using the correct IPAM pool" {
+            # Parse SubnetsText to get IPAM pool information for Subnet2
+            $subnetsJson = $vnetIpam.SubnetsText | ConvertFrom-Json
+            $subnet2Json = $subnetsJson | Where-Object { $_.Name -eq 'Subnet2' }
+            $subnet2Json.IpamPoolPrefixAllocations | Should -Not -BeNullOrEmpty
+            $subnet2Json.IpamPoolPrefixAllocations[0].Id | Should -Be $ipamPoolResourceId
         }
 
-        It "Should have a subnet 'Subnet2' with IPAM pool allocation requesting 32 IP addresses" {
-            $subnet2.IpamPoolPrefixAllocations.NumberOfIpAddresses | Should -Be '32'
+        It "Should have a subnet 'Subnet2' with IPAM pool requesting 32 IP addresses" {
+            # Parse SubnetsText to verify the number of IPs requested for Subnet2
+            $subnetsJson = $vnetIpam.SubnetsText | ConvertFrom-Json
+            $subnet2Json = $subnetsJson | Where-Object { $_.Name -eq 'Subnet2' }
+            $subnet2Json.IpamPoolPrefixAllocations[0].NumberOfIpAddresses | Should -Be '32'
         }
 
-        It "Should have a subnet 'Subnet2' with an automatically allocated address prefix from IPAM" {
-            $subnet2.IpamPoolPrefixAllocations.AllocatedAddressPrefixes | Should -Not -BeNullOrEmpty
+        It "Should have a subnet 'Subnet2' with the expected size (32 IPs = /27)" {
+            # The subnet should be a /27 (32 IPs)
+            $subnet2.AddressPrefix | Should -Not -BeNullOrEmpty
+            # AddressPrefix can be an array, get the first element if it is
+            $prefix = if ($subnet2.AddressPrefix -is [array]) { $subnet2.AddressPrefix[0] } else { $subnet2.AddressPrefix }
+            $prefix | Should -Match '/27$'
         }
     }
 }
