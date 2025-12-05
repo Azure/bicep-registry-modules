@@ -2,6 +2,15 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/document-db/database-account/CHANGELOG.md).
 
+## 0.18.1
+
+### Changes
+
+Added support to specify SecuredByPerimeter for PublicNetworkAccess
+
+### Breaking Changes
+
+- None
 ## 0.18.0
 
 ### Changes
