@@ -14,11 +14,11 @@ param properties object
 @description('Conditional. The name of the parent Static Web App. Required if the template is used in a standalone deployment.')
 param staticSiteName string
 
-resource staticSite 'Microsoft.Web/staticSites@2022-03-01' existing = {
+resource staticSite 'Microsoft.Web/staticSites@2025-03-01' existing = {
   name: staticSiteName
 }
 
-resource config 'Microsoft.Web/staticSites/config@2022-03-01' = {
+resource config 'Microsoft.Web/staticSites/config@2025-03-01' = {
   #disable-next-line BCP225 // Disables incorrect error that `name` cannot be determined at compile time.
   name: kind
   parent: staticSite

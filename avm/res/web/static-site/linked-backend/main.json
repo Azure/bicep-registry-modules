@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "13255454067128443657"
+      "version": "0.39.26.7824",
+      "templateHash": "13754478918350667323"
     },
     "name": "Static Web App Site Linked Backends",
     "description": "This module deploys a Custom Function App into a Static Web App Site using the Linked Backends property."
@@ -41,7 +41,7 @@
   "resources": [
     {
       "type": "Microsoft.Web/staticSites/linkedBackends",
-      "apiVersion": "2022-03-01",
+      "apiVersion": "2025-03-01",
       "name": "[format('{0}/{1}', parameters('staticSiteName'), parameters('name'))]",
       "properties": {
         "backendResourceId": "[parameters('backendResourceId')]",
