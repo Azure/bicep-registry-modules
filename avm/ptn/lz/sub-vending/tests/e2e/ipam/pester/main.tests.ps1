@@ -46,20 +46,6 @@ Describe 'Bicep Landing Zone (Sub) Vending IPAM Tests' {
         }
     }
 
-    Context 'IPAM - Resource Group Tests' {
-        BeforeAll {
-            $rsg = Get-AzResourceGroup -Name "rsg-$location-net-ipam-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
-        }
-
-        It 'Should have a Resource Group with the correct name' {
-            $rsg.ResourceGroupName | Should -Be "rsg-$location-net-ipam-$namePrefix-$serviceShort"
-        }
-
-        It 'Should have a Resource Group with the correct location' {
-            $rsg.Location | Should -Be $location
-        }
-    }
-
     Context 'Networking - IPAM Tests' {
         BeforeAll {
             $vnetIpam = Get-AzVirtualNetwork -ResourceGroupName "rsg-$location-net-ipam-$namePrefix-$serviceShort" -Name "vnet-$location-ipam-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue

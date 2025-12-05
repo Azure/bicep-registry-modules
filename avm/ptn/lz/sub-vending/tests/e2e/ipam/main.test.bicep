@@ -93,3 +93,4 @@ output createdSubId string = enableDeployment ? testDeployment.?outputs.?subscri
 output namePrefix string = namePrefix
 output serviceShort string = serviceShort
 output resourceLocation string = resourceLocation
+output ipamPoolResourceId string = ipamPoolResourceId
