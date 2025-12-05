@@ -49,6 +49,8 @@ Describe 'Bicep Landing Zone (Sub) Vending IPAM Tests' {
     Context 'Networking - IPAM Tests' {
         BeforeAll {
             $vnetIpam = Get-AzVirtualNetwork -ResourceGroupName "rsg-$location-net-ipam-$namePrefix-$serviceShort" -Name "vnet-$location-ipam-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
+            $subnet1 = $vnetIpam.Subnets[0]
+            $subnet2 = $vnetIpam.Subnets[1]
         }
 
         It "Should have a Virtual Network in the correct Resource Group (rsg-$location-net-ipam-$namePrefix-$serviceShort)" {
@@ -69,21 +71,21 @@ Describe 'Bicep Landing Zone (Sub) Vending IPAM Tests' {
         }
 
         It 'Should have a Virtual Network with IPAM pool allocation referencing the correct IPAM pool' {
-            $vnetIpam.AddressSpace.IpamPoolPrefixAllocations[0].Pool.Id | Should -Be $ipamPoolResourceId
+            $vnetIpam.AddressSpace.IpamPoolPrefixAllocations.Id | Should -Be $ipamPoolResourceId
         }
 
         It 'Should have a Virtual Network with IPAM pool allocation requesting 256 IP addresses' {
-            $vnetIpam.AddressSpace.IpamPoolPrefixAllocations[0].NumberOfIpAddresses | Should -Be '256'
+            $vnetIpam.AddressSpace.IpamPoolPrefixAllocations.NumberOfIpAddresses | Should -Be '256'
         }
 
         It 'Should have a Virtual Network with an automatically allocated address prefix from the IPAM pool' {
             # When IPAM is used, Azure automatically assigns an address prefix
-            $vnetIpam.AddressSpace.IpamPoolPrefixAllocations[0].AllocatedAddressPrefix | Should -Not -BeNullOrEmpty
+            $vnetIpam.AddressSpace.IpamPoolPrefixAllocations.AllocatedAddressPrefixes | Should -Not -BeNullOrEmpty
         }
 
         It 'Should have a Virtual Network with the allocated address prefix within the IPAM pool range (10.120.0.0/16)' {
-            $allocatedPrefix = $vnetIpam.AddressSpace.IpamPoolPrefixAllocations[0].AllocatedAddressPrefix
-            $allocatedPrefix | Should -Match '^10\.120\.\d{1,3}\.\d{1,3}\/\d{1,2}$'
+            $allocatedPrefix = $vnetIpam.AddressSpace.IpamPoolPrefixAllocations.AllocatedAddressPrefixes
+            $allocatedPrefix | Should -Match '10.120.0.0/24'
         }
 
         It 'Should have a Virtual Network with DDoS protection disabled' {
@@ -96,35 +98,43 @@ Describe 'Bicep Landing Zone (Sub) Vending IPAM Tests' {
         }
 
         It "Should have a Virtual Network with a subnet named 'Subnet1'" {
-            $vnetIpam.Subnets[0].Name | Should -Be 'Subnet1'
+            $subnet1.Name | Should -Be 'Subnet1'
         }
 
         It "Should have a subnet 'Subnet1' that uses IPAM for address allocation" {
-            $vnetIpam.Subnets[0].IpamPoolPrefixAllocations | Should -Not -BeNullOrEmpty
+            $subnet1.IpamPoolPrefixAllocations | Should -Not -BeNullOrEmpty
         }
 
         It "Should have a subnet 'Subnet1' with IPAM pool allocation referencing the correct IPAM pool" {
-            $vnetIpam.Subnets[0].IpamPoolPrefixAllocations[0].Pool.Id | Should -Be $ipamPoolResourceId
+            $subnet1.IpamPoolPrefixAllocations.Id | Should -Be $ipamPoolResourceId
         }
 
         It "Should have a subnet 'Subnet1' with IPAM pool allocation requesting 64 IP addresses" {
-            $vnetIpam.Subnets[0].IpamPoolPrefixAllocations[0].NumberOfIpAddresses | Should -Be '64'
+            $subnet1.IpamPoolPrefixAllocations.NumberOfIpAddresses | Should -Be '64'
         }
 
         It "Should have a subnet 'Subnet1' with an automatically allocated address prefix from IPAM" {
-            $vnetIpam.Subnets[0].IpamPoolPrefixAllocations[0].AllocatedAddressPrefix | Should -Not -BeNullOrEmpty
+            $subnet1.IpamPoolPrefixAllocations.AllocatedAddressPrefixes | Should -Not -BeNullOrEmpty
         }
 
         It "Should have a Virtual Network with a subnet named 'Subnet2'" {
-            $vnetIpam.Subnets[1].Name | Should -Be 'Subnet2'
+            $subnet2.Name | Should -Be 'Subnet2'
         }
 
         It "Should have a subnet 'Subnet2' that uses IPAM for address allocation" {
-            $vnetIpam.Subnets[1].IpamPoolPrefixAllocations | Should -Not -BeNullOrEmpty
+            $subnet2.IpamPoolPrefixAllocations | Should -Not -BeNullOrEmpty
+        }
+
+        It "Should have a subnet 'Subnet2' with IPAM pool allocation referencing the correct IPAM pool" {
+            $subnet2.IpamPoolPrefixAllocations.Id | Should -Be $ipamPoolResourceId
         }
 
         It "Should have a subnet 'Subnet2' with IPAM pool allocation requesting 32 IP addresses" {
-            $vnetIpam.Subnets[1].IpamPoolPrefixAllocations[0].NumberOfIpAddresses | Should -Be '32'
+            $subnet2.IpamPoolPrefixAllocations.NumberOfIpAddresses | Should -Be '32'
+        }
+
+        It "Should have a subnet 'Subnet2' with an automatically allocated address prefix from IPAM" {
+            $subnet2.IpamPoolPrefixAllocations.AllocatedAddressPrefixes | Should -Not -BeNullOrEmpty
         }
     }
 }
