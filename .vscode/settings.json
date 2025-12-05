@@ -34,5 +34,25 @@
     {
       "text": "The first line should be a summary of no more than 50 characters, starting with one of: `AVM-RES:` (resource module), `AVM-PTN:` (pattern module), `AVM-UTL:` (utility module), or `CHORE:`|`NEW:`|`FIX:`|`CHANGE:`|`BREAKING CHANGE:`|`TESTS:`|`SECURITY:`|`COMPLEX:`|`DOCS:`|`ACTIONS:` for other updates. The second line should be blank. The following lines should be a detailed summary, each item starting with a `-`. Any summary item that is security related should start with `SECURITY:`. Any summary item that causes a breaking change to a feature/interface/dependency should start with `BREAKING CHANGE:`. For AVM module changes, specify the module path (e.g., avm/res/storage/storage-account)."
     }
-  ]
+  ],
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#3214c7",
+    "activityBar.background": "#3214c7",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#000000",
+    "activityBarBadge.foreground": "#e7e7e7",
+    "commandCenter.border": "#e7e7e799",
+    "sash.hoverBorder": "#3214c7",
+    "statusBar.background": "#260f99",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#3214c7",
+    "statusBarItem.remoteBackground": "#260f99",
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "titleBar.activeBackground": "#260f99",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#260f9999",
+    "titleBar.inactiveForeground": "#e7e7e799"
+  },
+  "peacock.color": "#260f99"
 }
