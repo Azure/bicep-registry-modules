@@ -80,7 +80,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}01'
     certDeploymentScriptName: 'dep-${namePrefix}-cds-${serviceShort}01'
     certificateName: certificateName
   }
