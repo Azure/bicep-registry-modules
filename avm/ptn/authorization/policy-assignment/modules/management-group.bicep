@@ -108,7 +108,7 @@ resource policyAssignment 'Microsoft.Authorization/policyAssignments@2025-01-01'
 }
 
 module managementGroupRoleAssignments 'management-group-additional-rbac-asi-def-loop.bicep' = [
-  for roleDefinitionId in roleDefinitionIds: if (!empty(roleDefinitionIds) && !empty(additionalManagementGroupsIDsToAssignRbacTo) && identity == 'SystemAssigned') {
+  for roleDefinitionId in roleDefinitionIds: if (!empty(roleDefinitionIds) && !empty(finalArrayOfManagementGroupsToAssignRbacTo) && identity == 'SystemAssigned') {
     name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC'
     params: {
       name: name
