@@ -1,5 +1,5 @@
 metadata name = 'Role Assignments (Management Group scope)'
-metadata description = 'This module deploys a Role Assignment to a Management Group scope.'
+metadata description = 'This module deploys a Role Assignment at a Management Group scope.'
 
 targetScope = 'managementGroup'
 

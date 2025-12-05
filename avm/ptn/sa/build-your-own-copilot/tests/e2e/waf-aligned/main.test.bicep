@@ -9,7 +9,7 @@ metadata description = 'This instance deploys the Build Your Own Copilot Solutio
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-waf-${namePrefix}-sa.byoc-${serviceShort}-rg'
+param resourceGroupName string = 'dep-waf-${namePrefix}-sa.ca-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints. Remove.')
 param serviceShort string = 'byoc-waf'
@@ -26,6 +26,12 @@ param virtualMachineAdminPassword string = newGuid()
 // ============ //
 #disable-next-line no-hardcoded-location // A value to avoid ongoing capacity challenges with Server Farm for frontend webapp in AVM Azure testing subscription
 var enforcedLocation = 'australiaeast'
+
+#disable-next-line no-hardcoded-location
+var enforcedComosLocation = 'australiaeast'
+
+#disable-next-line no-hardcoded-location
+var enforcedCosmosReplicaLocation = 'canadacentral'
 
 // General resources
 // =================
@@ -44,7 +50,10 @@ module testDeployment '../../../main.bicep' = [
       scope: resourceGroup
       name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
       params: {
+        solutionName: take('${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}', 15)
         azureAiServiceLocation: enforcedLocation
+        cosmosLocation: enforcedComosLocation
+        cosmosReplicaLocation: enforcedCosmosReplicaLocation
         enablePrivateNetworking: true
         enableMonitoring: true
         enablePurgeProtection: true

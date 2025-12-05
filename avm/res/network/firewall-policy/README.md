@@ -2,6 +2,14 @@
 
 This module deploys a Firewall Policy.
 
+You can reference the module as follows:
+```bicep
+module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -17,8 +25,8 @@ This module deploys a Firewall Policy.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.Network/firewallPolicies` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_firewallpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/firewallPolicies)</li></ul> |
-| `Microsoft.Network/firewallPolicies/ruleCollectionGroups` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_firewallpolicies_rulecollectiongroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/firewallPolicies/ruleCollectionGroups)</li></ul> |
+| `Microsoft.Network/firewallPolicies` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_firewallpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/firewallPolicies)</li></ul> |
+| `Microsoft.Network/firewallPolicies/ruleCollectionGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_firewallpolicies_rulecollectiongroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/firewallPolicies/ruleCollectionGroups)</li></ul> |
 
 ## Usage examples
 
@@ -36,6 +44,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -43,7 +53,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
-  name: 'firewallPolicyDeployment'
   params: {
     name: 'nfpmin001'
   }
@@ -89,6 +98,8 @@ param name = 'nfpmin001'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -96,12 +107,12 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
-  name: 'firewallPolicyDeployment'
   params: {
     // Required parameters
     name: 'nfpmax001'
     // Non-required parameters
     allowSqlRedirect: true
+    enableProxy: true
     intrusionDetection: {
       mode: 'Alert'
     }
@@ -172,6 +183,10 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
         ]
       }
     ]
+    servers: [
+      '10.0.0.4'
+      '10.0.0.5'
+    ]
     snat: {
       autoLearnPrivateRanges: 'Enabled'
     }
@@ -203,6 +218,9 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
     },
     // Non-required parameters
     "allowSqlRedirect": {
+      "value": true
+    },
+    "enableProxy": {
       "value": true
     },
     "intrusionDetection": {
@@ -287,6 +305,12 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
         }
       ]
     },
+    "servers": {
+      "value": [
+        "10.0.0.4",
+        "10.0.0.5"
+      ]
+    },
     "snat": {
       "value": {
         "autoLearnPrivateRanges": "Enabled"
@@ -320,6 +344,7 @@ using 'br/public:avm/res/network/firewall-policy:<version>'
 param name = 'nfpmax001'
 // Non-required parameters
 param allowSqlRedirect = true
+param enableProxy = true
 param intrusionDetection = {
   mode: 'Alert'
 }
@@ -390,6 +415,10 @@ param ruleCollectionGroups = [
     ]
   }
 ]
+param servers = [
+  '10.0.0.4'
+  '10.0.0.5'
+]
 param snat = {
   autoLearnPrivateRanges: 'Enabled'
 }
@@ -408,6 +437,8 @@ param tier = 'Premium'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -415,7 +446,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
-  name: 'firewallPolicyDeployment'
   params: {
     // Required parameters
     name: 'nfpwaf001'
@@ -1231,4 +1261,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
