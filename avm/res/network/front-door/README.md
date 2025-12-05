@@ -1,12 +1,20 @@
 # Azure Front Doors `[Microsoft.Network/frontDoors]`
 
 > ⚠️THIS MODULE IS DEPRECATED.⚠️
-> 
+>
 > - It will no longer receive any updates.
 > - The module can still be used as is (references to any existing versions will keep working), but it is not recommended for new deployments.
 > - It is recommended to migrate to a replacement/alternative version of the module, if available.
 
 DEPRECATED - This module deploys an Azure Front Door.
+
+You can reference the module as follows:
+```bicep
+module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
@@ -42,6 +50,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -49,7 +59,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
-  name: 'frontDoorDeployment'
   params: {
     // Required parameters
     backendPools: [
@@ -353,6 +362,8 @@ param location = '<location>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -360,7 +371,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
-  name: 'frontDoorDeployment'
   params: {
     // Required parameters
     backendPools: [
@@ -844,6 +854,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -851,7 +863,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
-  name: 'frontDoorDeployment'
   params: {
     // Required parameters
     backendPools: [
@@ -1654,4 +1665,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
