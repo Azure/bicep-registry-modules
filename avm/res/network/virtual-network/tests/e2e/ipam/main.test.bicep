@@ -55,11 +55,11 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      addressPrefixes: {
+      addressSpace: {
         by: 'ipam'
         ipamPoolPrefixAllocations: [
           {
-            cidr: '/24'
+            cidr: 24
             ipamPoolResourceId: nestedDependencies.outputs.networkManagerIpamPoolId
           }
         ]
@@ -71,7 +71,7 @@ module testDeployment '../../../main.bicep' = [
             by: 'ipam'
             ipamPoolPrefixAllocations: [
               {
-                cidr: '/26'
+                cidr: 26
                 ipamPoolResourceId: nestedDependencies.outputs.networkManagerIpamPoolId
               }
             ]
@@ -83,7 +83,7 @@ module testDeployment '../../../main.bicep' = [
             by: 'ipam'
             ipamPoolPrefixAllocations: [
               {
-                cidr: '/28'
+                cidr: 28
                 ipamPoolResourceId: nestedDependencies.outputs.networkManagerIpamPoolId
               }
             ]
@@ -95,7 +95,7 @@ module testDeployment '../../../main.bicep' = [
             by: 'ipam'
             ipamPoolPrefixAllocations: [
               {
-                cidr: '/29'
+                cidr: 29
                 ipamPoolResourceId: nestedDependencies.outputs.networkManagerIpamPoolId
               }
             ]

@@ -62,7 +62,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   params: {
     // Required parameters
-    addressPrefixes: {
+    addressSpace: {
       addressPrefixes: [
         '10.0.0.0/16'
       ]
@@ -88,7 +88,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "addressPrefixes": {
+    "addressSpace": {
       "value": {
         "addressPrefixes": [
           "10.0.0.0/16"
@@ -118,7 +118,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
-param addressPrefixes = {
+param addressSpace = {
   addressPrefixes: [
     '10.0.0.0/16'
   ]
@@ -147,11 +147,11 @@ You can find the full example and the setup of its dependencies in the deploymen
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   params: {
     // Required parameters
-    addressPrefixes: {
+    addressSpace: {
       by: 'ipam'
       ipamPoolPrefixAllocations: [
         {
-          cidr: '/24'
+          cidr: 24
           ipamPoolResourceId: '<ipamPoolResourceId>'
         }
       ]
@@ -165,7 +165,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
           by: 'ipam'
           ipamPoolPrefixAllocations: [
             {
-              cidr: '/26'
+              cidr: 26
               ipamPoolResourceId: '<ipamPoolResourceId>'
             }
           ]
@@ -177,7 +177,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
           by: 'ipam'
           ipamPoolPrefixAllocations: [
             {
-              cidr: '/28'
+              cidr: 28
               ipamPoolResourceId: '<ipamPoolResourceId>'
             }
           ]
@@ -189,7 +189,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
           by: 'ipam'
           ipamPoolPrefixAllocations: [
             {
-              cidr: '/29'
+              cidr: 29
               ipamPoolResourceId: '<ipamPoolResourceId>'
             }
           ]
@@ -214,12 +214,12 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "addressPrefixes": {
+    "addressSpace": {
       "value": {
         "by": "ipam",
         "ipamPoolPrefixAllocations": [
           {
-            "cidr": "/24",
+            "cidr": 24,
             "ipamPoolResourceId": "<ipamPoolResourceId>"
           }
         ]
@@ -239,7 +239,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
             "by": "ipam",
             "ipamPoolPrefixAllocations": [
               {
-                "cidr": "/26",
+                "cidr": 26,
                 "ipamPoolResourceId": "<ipamPoolResourceId>"
               }
             ]
@@ -251,7 +251,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
             "by": "ipam",
             "ipamPoolPrefixAllocations": [
               {
-                "cidr": "/28",
+                "cidr": 28,
                 "ipamPoolResourceId": "<ipamPoolResourceId>"
               }
             ]
@@ -263,7 +263,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
             "by": "ipam",
             "ipamPoolPrefixAllocations": [
               {
-                "cidr": "/29",
+                "cidr": 29,
                 "ipamPoolResourceId": "<ipamPoolResourceId>"
               }
             ]
@@ -287,11 +287,11 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
-param addressPrefixes = {
+param addressSpace = {
   by: 'ipam'
   ipamPoolPrefixAllocations: [
     {
-      cidr: '/24'
+      cidr: 24
       ipamPoolResourceId: '<ipamPoolResourceId>'
     }
   ]
@@ -305,7 +305,7 @@ param subnets = [
       by: 'ipam'
       ipamPoolPrefixAllocations: [
         {
-          cidr: '/26'
+          cidr: 26
           ipamPoolResourceId: '<ipamPoolResourceId>'
         }
       ]
@@ -317,7 +317,7 @@ param subnets = [
       by: 'ipam'
       ipamPoolPrefixAllocations: [
         {
-          cidr: '/28'
+          cidr: 28
           ipamPoolResourceId: '<ipamPoolResourceId>'
         }
       ]
@@ -329,7 +329,7 @@ param subnets = [
       by: 'ipam'
       ipamPoolPrefixAllocations: [
         {
-          cidr: '/29'
+          cidr: 29
           ipamPoolResourceId: '<ipamPoolResourceId>'
         }
       ]
@@ -357,7 +357,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   params: {
     // Required parameters
-    addressPrefixes: {
+    addressSpace: {
       addressPrefixes: [
         '10.0.0.0/21'
         'fd00:592b:3014::/64'
@@ -396,7 +396,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "addressPrefixes": {
+    "addressSpace": {
       "value": {
         "addressPrefixes": [
           "10.0.0.0/21",
@@ -441,7 +441,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
-param addressPrefixes = {
+param addressSpace = {
   addressPrefixes: [
     '10.0.0.0/21'
     'fd00:592b:3014::/64'
@@ -483,7 +483,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   params: {
     // Required parameters
-    addressPrefixes: {
+    addressSpace: {
       addressPrefixes: [
         '<addressPrefix>'
       ]
@@ -640,7 +640,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "addressPrefixes": {
+    "addressSpace": {
       "value": {
         "addressPrefixes": [
           "<addressPrefix>"
@@ -815,7 +815,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
-param addressPrefixes = {
+param addressSpace = {
   addressPrefixes: [
     '<addressPrefix>'
   ]
@@ -975,7 +975,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   params: {
     // Required parameters
-    addressPrefixes: {
+    addressSpace: {
       addressPrefixes: [
         '10.1.0.0/24'
       ]
@@ -1043,7 +1043,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "addressPrefixes": {
+    "addressSpace": {
       "value": {
         "addressPrefixes": [
           "10.1.0.0/24"
@@ -1121,7 +1121,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
-param addressPrefixes = {
+param addressSpace = {
   addressPrefixes: [
     '10.1.0.0/24'
   ]
@@ -1192,7 +1192,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   params: {
     // Required parameters
-    addressPrefixes: {
+    addressSpace: {
       addressPrefixes: [
         '<addressPrefix>'
       ]
@@ -1306,7 +1306,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "addressPrefixes": {
+    "addressSpace": {
       "value": {
         "addressPrefixes": [
           "<addressPrefix>"
@@ -1434,7 +1434,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
-param addressPrefixes = {
+param addressSpace = {
   addressPrefixes: [
     '<addressPrefix>'
   ]
@@ -1542,7 +1542,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefixes`](#parameter-addressprefixes) | object | The address space configuration for the Virtual Network. Use `by: 'addressPrefixes'` with an array of CIDR ranges for manual allocation, or `by: 'ipam'` with IPAM pool resource IDs and CIDR prefix sizes for dynamic IPAM-based allocation. |
+| [`addressSpace`](#parameter-addressspace) | object | The address space configuration for the Virtual Network. Use `by: 'addressPrefixes'` with an array of CIDR ranges for manual allocation, or `by: 'ipam'` with IPAM pool resource IDs and CIDR prefix sizes for dynamic IPAM-based allocation. |
 | [`name`](#parameter-name) | string | The name of the Virtual Network (vNet). |
 
 **Optional parameters**
@@ -1565,7 +1565,7 @@ param tags = {
 | [`vnetEncryption`](#parameter-vnetencryption) | bool | Indicates if encryption is enabled on virtual network and if VM without encryption is allowed in encrypted VNet. Requires the EnableVNetEncryption feature to be registered for the subscription and a supported region to use this property. |
 | [`vnetEncryptionEnforcement`](#parameter-vnetencryptionenforcement) | string | If the encrypted VNet allows VM that does not support encryption. Can only be used when vnetEncryption is enabled. |
 
-### Parameter: `addressPrefixes`
+### Parameter: `addressSpace`
 
 The address space configuration for the Virtual Network. Use `by: 'addressPrefixes'` with an array of CIDR ranges for manual allocation, or `by: 'ipam'` with IPAM pool resource IDs and CIDR prefix sizes for dynamic IPAM-based allocation.
 
@@ -1577,10 +1577,10 @@ The address space configuration for the Virtual Network. Use `by: 'addressPrefix
 
 | Variant | Description |
 | :-- | :-- |
-| [`ipam`](#variant-addressprefixesby-ipam) |  |
-| [`addressPrefixes`](#variant-addressprefixesby-addressprefixes) |  |
+| [`ipam`](#variant-addressspaceby-ipam) |  |
+| [`addressPrefixes`](#variant-addressspaceby-addressprefixes) |  |
 
-### Variant: `addressPrefixes.by-ipam`
+### Variant: `addressSpace.by-ipam`
 
 
 To use this variant, set the property `by` to `ipam`.
@@ -1589,10 +1589,10 @@ To use this variant, set the property `by` to `ipam`.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`by`](#parameter-addressprefixesby-ipamby) | string | The allocation method for the address prefix. Must be set to `ipam` for IPAM-based allocation. |
-| [`ipamPoolPrefixAllocations`](#parameter-addressprefixesby-ipamipampoolprefixallocations) | array | Array of IPAM pool prefix allocations specifying which pools to allocate address space from. |
+| [`by`](#parameter-addressspaceby-ipamby) | string | The allocation method for the address prefix. Must be set to `ipam` for IPAM-based allocation. |
+| [`ipamPoolPrefixAllocations`](#parameter-addressspaceby-ipamipampoolprefixallocations) | array | Array of IPAM pool prefix allocations specifying which pools to allocate address space from. |
 
-### Parameter: `addressPrefixes.by-ipam.by`
+### Parameter: `addressSpace.by-ipam.by`
 
 The allocation method for the address prefix. Must be set to `ipam` for IPAM-based allocation.
 
@@ -1605,7 +1605,7 @@ The allocation method for the address prefix. Must be set to `ipam` for IPAM-bas
   ]
   ```
 
-### Parameter: `addressPrefixes.by-ipam.ipamPoolPrefixAllocations`
+### Parameter: `addressSpace.by-ipam.ipamPoolPrefixAllocations`
 
 Array of IPAM pool prefix allocations specifying which pools to allocate address space from.
 
@@ -1616,60 +1616,60 @@ Array of IPAM pool prefix allocations specifying which pools to allocate address
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`cidr`](#parameter-addressprefixesby-ipamipampoolprefixallocationscidr) | string | The CIDR prefix size to allocate from the IPAM pool (e.g., `/24` for a /24 subnet with 256 addresses). |
-| [`ipamPoolResourceId`](#parameter-addressprefixesby-ipamipampoolprefixallocationsipampoolresourceid) | string | The resource ID of the IPAM pool to allocate the address prefix from. |
+| [`cidr`](#parameter-addressspaceby-ipamipampoolprefixallocationscidr) | int | The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses). |
+| [`ipamPoolResourceId`](#parameter-addressspaceby-ipamipampoolprefixallocationsipampoolresourceid) | string | The resource ID of the IPAM pool to allocate the address prefix from. |
 
-### Parameter: `addressPrefixes.by-ipam.ipamPoolPrefixAllocations.cidr`
+### Parameter: `addressSpace.by-ipam.ipamPoolPrefixAllocations.cidr`
 
-The CIDR prefix size to allocate from the IPAM pool (e.g., `/24` for a /24 subnet with 256 addresses).
+The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses).
 
 - Required: Yes
-- Type: string
+- Type: int
 - Allowed:
   ```Bicep
   [
-    '/1'
-    '/10'
-    '/11'
-    '/12'
-    '/13'
-    '/14'
-    '/15'
-    '/16'
-    '/17'
-    '/18'
-    '/19'
-    '/2'
-    '/20'
-    '/21'
-    '/22'
-    '/23'
-    '/24'
-    '/25'
-    '/26'
-    '/27'
-    '/28'
-    '/29'
-    '/3'
-    '/30'
-    '/31'
-    '/4'
-    '/5'
-    '/6'
-    '/7'
-    '/8'
-    '/9'
+    1
+    2
+    3
+    4
+    5
+    6
+    7
+    8
+    9
+    10
+    11
+    12
+    13
+    14
+    15
+    16
+    17
+    18
+    19
+    20
+    21
+    22
+    23
+    24
+    25
+    26
+    27
+    28
+    29
+    30
+    31
   ]
   ```
 
-### Parameter: `addressPrefixes.by-ipam.ipamPoolPrefixAllocations.ipamPoolResourceId`
+### Parameter: `addressSpace.by-ipam.ipamPoolPrefixAllocations.ipamPoolResourceId`
 
 The resource ID of the IPAM pool to allocate the address prefix from.
 
 - Required: Yes
 - Type: string
 
-### Variant: `addressPrefixes.by-addressPrefixes`
+### Variant: `addressSpace.by-addressPrefixes`
 
 
 To use this variant, set the property `by` to `addressPrefixes`.
@@ -1678,17 +1678,17 @@ To use this variant, set the property `by` to `addressPrefixes`.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefixes`](#parameter-addressprefixesby-addressprefixesaddressprefixes) | array | Array of manually specified address prefixes in CIDR notation (e.g., `["10.0.0.0/16", "10.1.0.0/16"]`). |
-| [`by`](#parameter-addressprefixesby-addressprefixesby) | string | The allocation method for the address prefix. Must be set to `addressPrefixes` for manually specified address prefixes. |
+| [`addressPrefixes`](#parameter-addressspaceby-addressprefixesaddressprefixes) | array | Array of manually specified address prefixes in CIDR notation (e.g., `["10.0.0.0/16", "10.1.0.0/16"]`). |
+| [`by`](#parameter-addressspaceby-addressprefixesby) | string | The allocation method for the address prefix. Must be set to `addressPrefixes` for manually specified address prefixes. |
 
-### Parameter: `addressPrefixes.by-addressPrefixes.addressPrefixes`
+### Parameter: `addressSpace.by-addressPrefixes.addressPrefixes`
 
 Array of manually specified address prefixes in CIDR notation (e.g., `["10.0.0.0/16", "10.1.0.0/16"]`).
 
 - Required: Yes
 - Type: array
 
-### Parameter: `addressPrefixes.by-addressPrefixes.by`
+### Parameter: `addressSpace.by-addressPrefixes.by`
 
 The allocation method for the address prefix. Must be set to `addressPrefixes` for manually specified address prefixes.
 
@@ -2260,49 +2260,49 @@ Array of IPAM pool prefix allocations specifying which pools to allocate address
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`cidr`](#parameter-subnetsaddressspaceby-ipamipampoolprefixallocationscidr) | string | The CIDR prefix size to allocate from the IPAM pool (e.g., `/24` for a /24 subnet with 256 addresses). |
+| [`cidr`](#parameter-subnetsaddressspaceby-ipamipampoolprefixallocationscidr) | int | The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses). |
 | [`ipamPoolResourceId`](#parameter-subnetsaddressspaceby-ipamipampoolprefixallocationsipampoolresourceid) | string | The resource ID of the IPAM pool to allocate the address prefix from. |
 
 ### Parameter: `subnets.addressSpace.by-ipam.ipamPoolPrefixAllocations.cidr`
 
-The CIDR prefix size to allocate from the IPAM pool (e.g., `/24` for a /24 subnet with 256 addresses).
+The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses).
 
 - Required: Yes
-- Type: string
+- Type: int
 - Allowed:
   ```Bicep
   [
-    '/1'
-    '/10'
-    '/11'
-    '/12'
-    '/13'
-    '/14'
-    '/15'
-    '/16'
-    '/17'
-    '/18'
-    '/19'
-    '/2'
-    '/20'
-    '/21'
-    '/22'
-    '/23'
-    '/24'
-    '/25'
-    '/26'
-    '/27'
-    '/28'
-    '/29'
-    '/3'
-    '/30'
-    '/31'
-    '/4'
-    '/5'
-    '/6'
-    '/7'
-    '/8'
-    '/9'
+    1
+    2
+    3
+    4
+    5
+    6
+    7
+    8
+    9
+    10
+    11
+    12
+    13
+    14
+    15
+    16
+    17
+    18
+    19
+    20
+    21
+    22
+    23
+    24
+    25
+    26
+    27
+    28
+    29
+    30
+    31
   ]
   ```
 
@@ -2636,6 +2636,7 @@ If the encrypted VNet allows VM that does not support encryption. Can only be us
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `addressSpace` | array | The address space of the virtual network. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the virtual network. |
 | `resourceGroupName` | string | The resource group the virtual network was deployed into. |

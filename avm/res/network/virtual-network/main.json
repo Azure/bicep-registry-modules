@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "10522197727149107230"
+      "templateHash": "10830435694894396713"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet)."
@@ -127,7 +127,7 @@
           }
         },
         "addressSpace": {
-          "$ref": "#/definitions/subnetIpAddressesType",
+          "$ref": "#/definitions/subnetAddressSpaceType",
           "metadata": {
             "description": "Required. The address space configuration for the subnet. Supports IPAM-based allocation, multiple address prefixes, or a single address prefix."
           }
@@ -248,39 +248,39 @@
       }
     },
     "cidrPrefixType": {
-      "type": "string",
+      "type": "int",
       "allowedValues": [
-        "/1",
-        "/10",
-        "/11",
-        "/12",
-        "/13",
-        "/14",
-        "/15",
-        "/16",
-        "/17",
-        "/18",
-        "/19",
-        "/2",
-        "/20",
-        "/21",
-        "/22",
-        "/23",
-        "/24",
-        "/25",
-        "/26",
-        "/27",
-        "/28",
-        "/29",
-        "/3",
-        "/30",
-        "/31",
-        "/4",
-        "/5",
-        "/6",
-        "/7",
-        "/8",
-        "/9"
+        1,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        2,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        3,
+        30,
+        31,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
       ],
       "metadata": {
         "__bicep_export!": true
@@ -298,7 +298,7 @@
         "cidr": {
           "$ref": "#/definitions/cidrPrefixType",
           "metadata": {
-            "description": "Required. The CIDR prefix size to allocate from the IPAM pool (e.g., `/24` for a /24 subnet with 256 addresses)."
+            "description": "Required. The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses)."
           }
         }
       },
@@ -385,7 +385,7 @@
         "__bicep_export!": true
       }
     },
-    "ipAddressesType": {
+    "addressSpaceType": {
       "type": "object",
       "discriminator": {
         "propertyName": "by",
@@ -403,7 +403,7 @@
         "description": "Discriminated union type for Virtual Network address space configuration. Supports either IPAM-based allocation or manually specified address prefixes."
       }
     },
-    "subnetIpAddressesType": {
+    "subnetAddressSpaceType": {
       "type": "object",
       "discriminator": {
         "propertyName": "by",
@@ -681,37 +681,37 @@
           "output": {
             "$ref": "#/definitions/keyValuePairType",
             "value": {
-              "/1": "2147483648",
-              "/2": "1073741824",
-              "/3": "536870912",
-              "/4": "268435456",
-              "/5": "134217728",
-              "/6": "67108864",
-              "/7": "33554432",
-              "/8": "16777216",
-              "/9": "8388608",
-              "/10": "4194304",
-              "/11": "2097152",
-              "/12": "1048576",
-              "/13": "524288",
-              "/14": "262144",
-              "/15": "131072",
-              "/16": "65536",
-              "/17": "32768",
-              "/18": "16384",
-              "/19": "8192",
-              "/20": "4096",
-              "/21": "2048",
-              "/22": "1024",
-              "/23": "512",
-              "/24": "256",
-              "/25": "128",
-              "/26": "64",
-              "/27": "32",
-              "/28": "16",
-              "/29": "8",
-              "/30": "4",
-              "/31": "2"
+              "1": "2147483648",
+              "2": "1073741824",
+              "3": "536870912",
+              "4": "268435456",
+              "5": "134217728",
+              "6": "67108864",
+              "7": "33554432",
+              "8": "16777216",
+              "9": "8388608",
+              "10": "4194304",
+              "11": "2097152",
+              "12": "1048576",
+              "13": "524288",
+              "14": "262144",
+              "15": "131072",
+              "16": "65536",
+              "17": "32768",
+              "18": "16384",
+              "19": "8192",
+              "20": "4096",
+              "21": "2048",
+              "22": "1024",
+              "23": "512",
+              "24": "256",
+              "25": "128",
+              "26": "64",
+              "27": "32",
+              "28": "16",
+              "29": "8",
+              "30": "4",
+              "31": "2"
             }
           },
           "metadata": {
@@ -721,13 +721,13 @@
         "getCidrHostCount": {
           "parameters": [
             {
-              "$ref": "#/definitions/cidrPrefixType",
+              "type": "int",
               "name": "cidrPrefix"
             }
           ],
           "output": {
             "type": "string",
-            "value": "[__bicep.getCidrHostCounts()[parameters('cidrPrefix')]]"
+            "value": "[__bicep.getCidrHostCounts()[format('{0}', parameters('cidrPrefix'))]]"
           },
           "metadata": {
             "description": "Returns the number of hosts available for a given CIDR prefix.",
@@ -751,8 +751,8 @@
         "description": "Optional. Location for all resources."
       }
     },
-    "addressPrefixes": {
-      "$ref": "#/definitions/ipAddressesType",
+    "addressSpace": {
+      "$ref": "#/definitions/addressSpaceType",
       "metadata": {
         "description": "Required. The address space configuration for the Virtual Network. Use `by: 'addressPrefixes'` with an array of CIDR ranges for manual allocation, or `by: 'ipam'` with IPAM pool resource IDs and CIDR prefix sizes for dynamic IPAM-based allocation."
       }
@@ -896,7 +896,7 @@
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
-    "formattedVirtualNetworkAddressSpace": "[if(equals(parameters('addressPrefixes').by, 'ipam'), createObject('ipamPoolPrefixAllocations', map(parameters('addressPrefixes').ipamPoolPrefixAllocations, lambda('ipamPoolPrefixAllocation', createObject('pool', createObject('id', lambdaVariables('ipamPoolPrefixAllocation').ipamPoolResourceId), 'numberOfIpAddresses', __bicep.getCidrHostCount(lambdaVariables('ipamPoolPrefixAllocation').cidr))))), createObject('addressPrefixes', parameters('addressPrefixes').addressPrefixes))]"
+    "formattedVirtualNetworkAddressSpace": "[if(equals(parameters('addressSpace').by, 'ipam'), createObject('ipamPoolPrefixAllocations', map(parameters('addressSpace').ipamPoolPrefixAllocations, lambda('ipamPoolPrefixAllocation', createObject('pool', createObject('id', lambdaVariables('ipamPoolPrefixAllocation').ipamPoolResourceId), 'numberOfIpAddresses', __bicep.getCidrHostCount(lambdaVariables('ipamPoolPrefixAllocation').cidr))))), createObject('addressPrefixes', parameters('addressSpace').addressPrefixes))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -1819,6 +1819,16 @@
         "count": "[length(coalesce(parameters('subnets'), createArray()))]",
         "input": "[reference(format('virtualNetwork_subnets[{0}]', copyIndex())).outputs.resourceId.value]"
       }
+    },
+    "addressSpace": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "metadata": {
+        "description": "The address space of the virtual network."
+      },
+      "value": "[reference('virtualNetwork').addressSpace.addressPrefixes]"
     },
     "location": {
       "type": "string",

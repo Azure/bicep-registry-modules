@@ -43,11 +43,11 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      addressPrefixes: {
+      addressSpace: {
+        by: 'addressPrefixes'
         addressPrefixes: [
           '10.0.0.0/16'
         ]
-        by: 'addressPrefixes'
       }
     }
   }

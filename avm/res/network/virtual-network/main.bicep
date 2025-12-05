@@ -8,7 +8,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Required. The address space configuration for the Virtual Network. Use `by: \'addressPrefixes\'` with an array of CIDR ranges for manual allocation, or `by: \'ipam\'` with IPAM pool resource IDs and CIDR prefix sizes for dynamic IPAM-based allocation.')
-param addressPrefixes ipAddressesType
+param addressSpace addressSpaceType
 
 @description('Optional. The BGP community associated with the virtual network.')
 param virtualNetworkBgpCommunity string?
@@ -91,9 +91,9 @@ var formattedRoleAssignments = [
   })
 ]
 
-var formattedVirtualNetworkAddressSpace = addressPrefixes.by == 'ipam'
+var formattedVirtualNetworkAddressSpace = addressSpace.by == 'ipam'
   ? {
-      ipamPoolPrefixAllocations: map(addressPrefixes.ipamPoolPrefixAllocations, ipamPoolPrefixAllocation => {
+      ipamPoolPrefixAllocations: map(addressSpace.ipamPoolPrefixAllocations, ipamPoolPrefixAllocation => {
         pool: {
           id: ipamPoolPrefixAllocation.ipamPoolResourceId
         }
@@ -101,7 +101,7 @@ var formattedVirtualNetworkAddressSpace = addressPrefixes.by == 'ipam'
       })
     }
   : {
-      addressPrefixes: addressPrefixes.addressPrefixes
+      addressPrefixes: addressSpace.addressPrefixes
     }
 
 // ============ //
@@ -315,6 +315,9 @@ output subnetResourceIds array = [
   for (subnet, index) in (subnets ?? []): virtualNetwork_subnets[index].outputs.resourceId
 ]
 
+@description('The address space of the virtual network.')
+output addressSpace string[] = virtualNetwork.properties.addressSpace.addressPrefixes
+
 @description('The location the resource was deployed into.')
 output location string = virtualNetwork.location
 
@@ -373,7 +376,7 @@ type subnetType = {
   name: string
 
   @description('Required. The address space configuration for the subnet. Supports IPAM-based allocation, multiple address prefixes, or a single address prefix.')
-  addressSpace: subnetIpAddressesType
+  addressSpace: subnetAddressSpaceType
 
   @description('Optional. Application gateway IP configurations of virtual network resource.')
   applicationGatewayIPConfigurations: object[]?
@@ -414,37 +417,37 @@ type subnetType = {
 
 @export()
 type cidrPrefixType =
-  | '/1' // 2,147,483,648 addresses
-  | '/2' // 1,073,741,824 addresses
-  | '/3' // 536,870,912 addresses
-  | '/4' // 268,435,456 addresses
-  | '/5' // 134,217,728 addresses
-  | '/6' // 67,108,864 addresses
-  | '/7' // 33,554,432 addresses
-  | '/8' // 16,777,216 addresses
-  | '/9' // 8,388,608 addresses
-  | '/10' // 4,194,304 addresses
-  | '/11' // 2,097,152 addresses
-  | '/12' // 1,048,576 addresses
-  | '/13' // 524,288 addresses
-  | '/14' // 262,144 addresses
-  | '/15' // 131,072 addresses
-  | '/16' // 65,536 addresses
-  | '/17' // 32,768 addresses
-  | '/18' // 16,384 addresses
-  | '/19' // 8,192 addresses
-  | '/20' // 4,096 addresses
-  | '/21' // 2,048 addresses
-  | '/22' // 1,024 addresses
-  | '/23' // 512 addresses
-  | '/24' // 256 addresses
-  | '/25' // 128 addresses
-  | '/26' // 64 addresses
-  | '/27' // 32 addresses
-  | '/28' // 16 addresses
-  | '/29' // 8 addresses
-  | '/30' // 4 addresses
-  | '/31' // 2 addresses
+  | 1 // 2,147,483,648 addresses
+  | 2 // 1,073,741,824 addresses
+  | 3 // 536,870,912 addresses
+  | 4 // 268,435,456 addresses
+  | 5 // 134,217,728 addresses
+  | 6 // 67,108,864 addresses
+  | 7 // 33,554,432 addresses
+  | 8 // 16,777,216 addresses
+  | 9 // 8,388,608 addresses
+  | 10 // 4,194,304 addresses
+  | 11 // 2,097,152 addresses
+  | 12 // 1,048,576 addresses
+  | 13 // 524,288 addresses
+  | 14 // 262,144 addresses
+  | 15 // 131,072 addresses
+  | 16 // 65,536 addresses
+  | 17 // 32,768 addresses
+  | 18 // 16,384 addresses
+  | 19 // 8,192 addresses
+  | 20 // 4,096 addresses
+  | 21 // 2,048 addresses
+  | 22 // 1,024 addresses
+  | 23 // 512 addresses
+  | 24 // 256 addresses
+  | 25 // 128 addresses
+  | 26 // 64 addresses
+  | 27 // 32 addresses
+  | 28 // 16 addresses
+  | 29 // 8 addresses
+  | 30 // 4 addresses
+  | 31 // 2 addresses
 
 @sealed()
 @export()
@@ -452,7 +455,7 @@ type ipamPoolPrefixAllocationsType = {
   @description('Required. The resource ID of the IPAM pool to allocate the address prefix from.')
   ipamPoolResourceId: string
 
-  @description('Required. The CIDR prefix size to allocate from the IPAM pool (e.g., `/24` for a /24 subnet with 256 addresses).')
+  @description('Required. The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses).')
   cidr: cidrPrefixType
 }
 
@@ -489,12 +492,12 @@ type addressPrefixType = {
 @export()
 @discriminator('by')
 @description('Discriminated union type for Virtual Network address space configuration. Supports either IPAM-based allocation or manually specified address prefixes.')
-type ipAddressesType = ipamAddressPrefixesType | addressPrefixesType
+type addressSpaceType = ipamAddressPrefixesType | addressPrefixesType
 
 @export()
 @discriminator('by')
 @description('Discriminated union type for Subnet address configuration. Supports IPAM-based allocation, multiple address prefixes, or a single address prefix.')
-type subnetIpAddressesType = ipamAddressPrefixesType | addressPrefixesType | addressPrefixType
+type subnetAddressSpaceType = ipamAddressPrefixesType | addressPrefixesType | addressPrefixType
 
 @export()
 type keyValuePairType = {
@@ -505,39 +508,39 @@ type keyValuePairType = {
 // Functions to get number of hosts in a CIDR prefix
 @description('Returns a lookup table mapping CIDR prefixes to their corresponding number of IP addresses.')
 func getCidrHostCounts() keyValuePairType => {
-  '/1': '2147483648' // 2,147,483,648 addresses
-  '/2': '1073741824' // 1,073,741,824 addresses
-  '/3': '536870912' // 536,870,912 addresses
-  '/4': '268435456' // 268,435,456 addresses
-  '/5': '134217728' // 134,217,728 addresses
-  '/6': '67108864' // 67,108,864 addresses
-  '/7': '33554432' // 33,554,432 addresses
-  '/8': '16777216' // 16,777,216 addresses
-  '/9': '8388608' // 8,388,608 addresses
-  '/10': '4194304' // 4,194,304 addresses
-  '/11': '2097152' // 2,097,152 addresses
-  '/12': '1048576' // 1,048,576 addresses
-  '/13': '524288' // 524,288 addresses
-  '/14': '262144' // 262,144 addresses
-  '/15': '131072' // 131,072 addresses
-  '/16': '65536' // 65,536 addresses
-  '/17': '32768' // 32,768 addresses
-  '/18': '16384' // 16,384 addresses
-  '/19': '8192' // 8,192 addresses
-  '/20': '4096' // 4,096 addresses
-  '/21': '2048' // 2,048 addresses
-  '/22': '1024' // 1,024 addresses
-  '/23': '512' // 512 addresses
-  '/24': '256' // 256 addresses
-  '/25': '128' // 128 addresses
-  '/26': '64' // 64 addresses
-  '/27': '32' // 32 addresses
-  '/28': '16' // 16 addresses
-  '/29': '8' // 8 addresses
-  '/30': '4' // 4 addresses
-  '/31': '2' // 2 addresses
+  '1': '2147483648' // 2,147,483,648 addresses
+  '2': '1073741824' // 1,073,741,824 addresses
+  '3': '536870912' // 536,870,912 addresses
+  '4': '268435456' // 268,435,456 addresses
+  '5': '134217728' // 134,217,728 addresses
+  '6': '67108864' // 67,108,864 addresses
+  '7': '33554432' // 33,554,432 addresses
+  '8': '16777216' // 16,777,216 addresses
+  '9': '8388608' // 8,388,608 addresses
+  '10': '4194304' // 4,194,304 addresses
+  '11': '2097152' // 2,097,152 addresses
+  '12': '1048576' // 1,048,576 addresses
+  '13': '524288' // 524,288 addresses
+  '14': '262144' // 262,144 addresses
+  '15': '131072' // 131,072 addresses
+  '16': '65536' // 65,536 addresses
+  '17': '32768' // 32,768 addresses
+  '18': '16384' // 16,384 addresses
+  '19': '8192' // 8,192 addresses
+  '20': '4096' // 4,096 addresses
+  '21': '2048' // 2,048 addresses
+  '22': '1024' // 1,024 addresses
+  '23': '512' // 512 addresses
+  '24': '256' // 256 addresses
+  '25': '128' // 128 addresses
+  '26': '64' // 64 addresses
+  '27': '32' // 32 addresses
+  '28': '16' // 16 addresses
+  '29': '8' // 8 addresses
+  '30': '4' // 4 addresses
+  '31': '2' // 2 addresses
 }
 
 @export()
 @description('Returns the number of hosts available for a given CIDR prefix.')
-func getCidrHostCount(cidrPrefix cidrPrefixType) string => getCidrHostCounts()[cidrPrefix]
+func getCidrHostCount(cidrPrefix int) string => getCidrHostCounts()['${cidrPrefix}']
