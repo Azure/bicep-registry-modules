@@ -38,8 +38,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [With a NAT-Gateway](#example-3-with-a-nat-gateway)
-- [WAF-aligned](#example-4-waf-aligned)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -367,77 +366,7 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _With a NAT-Gateway_
-
-This instance deploys the module and associates it with a NAT-Gateway resource.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/nat-gw]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' = {
-  params: {
-    // Required parameters
-    name: 'npianatgw001'
-    // Non-required parameters
-    location: '<location>'
-    natGatewayResourceId: '<natGatewayResourceId>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "npianatgw001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "natGatewayResourceId": {
-      "value": "<natGatewayResourceId>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/network/public-ip-address:<version>'
-
-// Required parameters
-param name = 'npianatgw001'
-// Non-required parameters
-param location = '<location>'
-param natGatewayResourceId = '<natGatewayResourceId>'
-```
-
-</details>
-<p>
-
-### Example 4: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -689,7 +618,6 @@ param tags = {
 | [`ipTags`](#parameter-iptags) | array | The list of tags associated with the public IP address. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`natGatewayResourceId`](#parameter-natgatewayresourceid) | string | The resource ID of the NAT Gateway to associate with the public IP address. |
 | [`publicIPAddressVersion`](#parameter-publicipaddressversion) | string | IP address version. |
 | [`publicIPAllocationMethod`](#parameter-publicipallocationmethod) | string | The public IP address allocation method. |
 | [`publicIpPrefixResourceId`](#parameter-publicipprefixresourceid) | string | Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix. |
@@ -1090,13 +1018,6 @@ Specify the name of lock.
 ### Parameter: `lock.notes`
 
 Specify the notes of the lock.
-
-- Required: No
-- Type: string
-
-### Parameter: `natGatewayResourceId`
-
-The resource ID of the NAT Gateway to associate with the public IP address.
 
 - Required: No
 - Type: string

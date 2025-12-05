@@ -67,9 +67,6 @@ param ddosSettings ddosSettingsType?
 ])
 param deleteOption string?
 
-@description('Optional. The resource ID of the NAT Gateway to associate with the public IP address.')
-param natGatewayResourceId string?
-
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
@@ -176,11 +173,6 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2025-01-01' = {
     idleTimeoutInMinutes: idleTimeoutInMinutes
     ipTags: ipTags
     deleteOption: deleteOption
-    natGateway: !empty(natGatewayResourceId)
-      ? {
-          id: natGatewayResourceId
-        }
-      : null
   }
 }
 

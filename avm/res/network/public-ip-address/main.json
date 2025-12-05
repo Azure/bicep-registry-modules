@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "10003784041761154869"
+      "templateHash": "12962630401113346402"
     },
     "name": "Public IP Addresses",
     "description": "This module deploys a Public IP Address."
@@ -459,13 +459,6 @@
         "description": "Optional. The delete option for the public IP address."
       }
     },
-    "natGatewayResourceId": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The resource ID of the NAT Gateway to associate with the public IP address."
-      }
-    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
@@ -579,8 +572,7 @@
         "publicIPPrefix": "[if(not(empty(parameters('publicIpPrefixResourceId'))), createObject('id', parameters('publicIpPrefixResourceId')), null())]",
         "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
         "ipTags": "[parameters('ipTags')]",
-        "deleteOption": "[parameters('deleteOption')]",
-        "natGateway": "[if(not(empty(parameters('natGatewayResourceId'))), createObject('id', parameters('natGatewayResourceId')), null())]"
+        "deleteOption": "[parameters('deleteOption')]"
       }
     },
     "publicIpAddress_lock": {
