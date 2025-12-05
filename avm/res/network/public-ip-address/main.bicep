@@ -65,7 +65,7 @@ param ddosSettings ddosSettingsType?
   'Delete'
   'Detach'
 ])
-param deleteOption string = 'Detach'
+param deleteOption string?
 
 @description('Optional. The resource ID of the NAT Gateway to associate with the public IP address.')
 param natGatewayResourceId string?
