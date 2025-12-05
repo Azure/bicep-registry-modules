@@ -60,6 +60,16 @@ param skuTier string = 'Regional'
 @description('Optional. The DDoS protection plan configuration associated with the public IP address.')
 param ddosSettings ddosSettingsType?
 
+@description('Optional. The delete option for the public IP address.')
+@allowed([
+  'Delete'
+  'Detach'
+])
+param deleteOption string = 'Detach'
+
+@description('Optional. The resource ID of the NAT Gateway to associate with the public IP address.')
+param natGatewayResourceId string?
+
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
@@ -144,7 +154,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
+resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2025-01-01' = {
   name: name
   location: location
   tags: tags
@@ -165,6 +175,12 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
       : null
     idleTimeoutInMinutes: idleTimeoutInMinutes
     ipTags: ipTags
+    deleteOption: deleteOption
+    natGateway: !empty(natGatewayResourceId)
+      ? {
+          id: natGatewayResourceId
+        }
+      : null
   }
 }
 
