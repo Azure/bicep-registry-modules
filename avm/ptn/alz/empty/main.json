@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "10081226781674952940"
+      "templateHash": "4073948387612201548"
     },
     "name": "avm/ptn/alz/empty",
     "description": "Azure Landing Zones - Bicep - Empty\n\nPlease review the [Usage examples](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty#Usage-examples) section in the module's README, but please ensure for the `max` example you review the entire [directory](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty/tests/e2e/max) to see the supplementary files that are required for the example.\n\nAlso please ensure you review the [Notes section of the module's README](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty#Notes) for important information about the module as well as features that exist outside of parameter inputs."
@@ -739,7 +739,7 @@
       "scope": "/",
       "name": "[if(parameters('createOrUpdateManagementGroup'), format('{0}/{1}', parameters('managementGroupName'), parameters('subscriptionsToPlaceInManagementGroup')[copyIndex()]), format('{0}/{1}', parameters('managementGroupName'), parameters('subscriptionsToPlaceInManagementGroup')[copyIndex()]))]",
       "dependsOn": [
-        "mg"
+        "mgSubPlacementWait"
       ]
     },
     "mg": {
@@ -899,7 +899,11 @@
           },
           "resources": []
         }
-      }
+      },
+      "dependsOn": [
+        "mg",
+        "mgExisting"
+      ]
     },
     "mgCustomPolicyDefinitionsWait": {
       "copy": {
@@ -932,7 +936,11 @@
           },
           "resources": []
         }
-      }
+      },
+      "dependsOn": [
+        "mg",
+        "mgExisting"
+      ]
     },
     "mgCustomPolicyDefinitions": {
       "condition": "[not(empty(parameters('managementGroupCustomPolicyDefinitions')))]",
@@ -1061,7 +1069,10 @@
           },
           "resources": []
         }
-      }
+      },
+      "dependsOn": [
+        "mgCustomPolicyDefinitions"
+      ]
     },
     "mgCustomPolicySetDefinitions": {
       "condition": "[not(empty(parameters('managementGroupCustomPolicySetDefinitions')))]",
@@ -1168,7 +1179,6 @@
         }
       },
       "dependsOn": [
-        "mgCustomPolicyDefinitions",
         "mgCustomPolicySetDefinitionsWait"
       ]
     },
@@ -1203,7 +1213,10 @@
           },
           "resources": []
         }
-      }
+      },
+      "dependsOn": [
+        "mgCustomPolicySetDefinitions"
+      ]
     },
     "mgPolicyAssignments": {
       "copy": {
@@ -2833,8 +2846,6 @@
       },
       "dependsOn": [
         "mg",
-        "mgCustomPolicyDefinitions",
-        "mgCustomPolicySetDefinitions",
         "mgPolicyAssignmentsWait"
       ]
     },
@@ -2869,7 +2880,11 @@
           },
           "resources": []
         }
-      }
+      },
+      "dependsOn": [
+        "mg",
+        "mgExisting"
+      ]
     },
     "mgRoleDefinitions": {
       "copy": {
@@ -3104,7 +3119,10 @@
           },
           "resources": []
         }
-      }
+      },
+      "dependsOn": [
+        "mgRoleDefinitions"
+      ]
     },
     "mgRoleAssignments": {
       "copy": {
@@ -3810,8 +3828,7 @@
       },
       "dependsOn": [
         "mg",
-        "mgRoleAssignmentsWait",
-        "mgRoleDefinitions"
+        "mgRoleAssignmentsWait"
       ]
     }
   },
