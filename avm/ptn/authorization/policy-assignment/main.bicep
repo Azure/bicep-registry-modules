@@ -111,7 +111,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 module policyAssignment_mg 'modules/management-group.bicep' = if (empty(subscriptionId) && empty(resourceGroupName)) {
-  name: '${uniqueString(deployment().name, location)}-PolicyAssignment-MG-Module'
+  name: 'pol-asi-mg-${uniqueString(managementGroup().name, managementGroupId, location, name)}'
   scope: managementGroup(managementGroupId)
   params: {
     name: name
