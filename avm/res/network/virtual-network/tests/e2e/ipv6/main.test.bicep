@@ -43,17 +43,23 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      addressPrefixes: [
-        '10.0.0.0/21'
-        'fd00:592b:3014::/64'
-      ]
+      addressSpace: {
+        by: 'addressPrefixes'
+        addressPrefixes: [
+          '10.0.0.0/21'
+          'fd00:592b:3014::/64'
+        ]
+      }
       subnets: [
         {
           name: 'ipv6-subnet'
-          addressPrefixes: [
-            '10.0.0.0/24'
-            'fd00:592b:3014::/64'
-          ]
+          addressSpace: {
+            by: 'addressPrefixes'
+            addressPrefixes: [
+              '10.0.0.0/24'
+              'fd00:592b:3014::/64'
+            ]
+          }
         }
       ]
     }

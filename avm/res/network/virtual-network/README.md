@@ -15,6 +15,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 - [Resource Types](#Resource-Types)
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
+- [Exported functions](#Exported-functions)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
@@ -27,9 +28,9 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/virtualNetworks` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks)</li></ul> |
-| `Microsoft.Network/virtualNetworks/subnets` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets)</li></ul> |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
+| `Microsoft.Network/virtualNetworks` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualNetworks)</li></ul> |
+| `Microsoft.Network/virtualNetworks/subnets` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualNetworks/subnets)</li></ul> |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
 
 ## Usage examples
 
@@ -61,9 +62,12 @@ You can find the full example and the setup of its dependencies in the deploymen
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   params: {
     // Required parameters
-    addressPrefixes: [
-      '10.0.0.0/16'
-    ]
+    addressSpace: {
+      addressPrefixes: [
+        '10.0.0.0/16'
+      ]
+      by: 'addressPrefixes'
+    }
     name: 'nvnmin001'
     // Non-required parameters
     location: '<location>'
@@ -84,10 +88,13 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "addressPrefixes": {
-      "value": [
-        "10.0.0.0/16"
-      ]
+    "addressSpace": {
+      "value": {
+        "addressPrefixes": [
+          "10.0.0.0/16"
+        ],
+        "by": "addressPrefixes"
+      }
     },
     "name": {
       "value": "nvnmin001"
@@ -111,9 +118,12 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
-param addressPrefixes = [
-  '10.0.0.0/16'
-]
+param addressSpace = {
+  addressPrefixes: [
+    '10.0.0.0/16'
+  ]
+  by: 'addressPrefixes'
+}
 param name = 'nvnmin001'
 // Non-required parameters
 param location = '<location>'
@@ -137,45 +147,53 @@ You can find the full example and the setup of its dependencies in the deploymen
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   params: {
     // Required parameters
-    addressPrefixes: [
-      '<networkManagerIpamPoolId>'
-    ]
+    addressSpace: {
+      by: 'ipam'
+      ipamPoolPrefixAllocations: [
+        {
+          cidr: 24
+          ipamPoolResourceId: '<ipamPoolResourceId>'
+        }
+      ]
+    }
     name: 'nvnipam001'
     // Non-required parameters
-    ipamPoolNumberOfIpAddresses: '254'
     location: '<location>'
     subnets: [
       {
-        ipamPoolPrefixAllocations: [
-          {
-            numberOfIpAddresses: '64'
-            pool: {
-              id: '<id>'
+        addressSpace: {
+          by: 'ipam'
+          ipamPoolPrefixAllocations: [
+            {
+              cidr: 26
+              ipamPoolResourceId: '<ipamPoolResourceId>'
             }
-          }
-        ]
+          ]
+        }
         name: 'subnet-1'
       }
       {
-        ipamPoolPrefixAllocations: [
-          {
-            numberOfIpAddresses: '16'
-            pool: {
-              id: '<id>'
+        addressSpace: {
+          by: 'ipam'
+          ipamPoolPrefixAllocations: [
+            {
+              cidr: 28
+              ipamPoolResourceId: '<ipamPoolResourceId>'
             }
-          }
-        ]
+          ]
+        }
         name: 'subnet-2'
       }
       {
-        ipamPoolPrefixAllocations: [
-          {
-            numberOfIpAddresses: '8'
-            pool: {
-              id: '<id>'
+        addressSpace: {
+          by: 'ipam'
+          ipamPoolPrefixAllocations: [
+            {
+              cidr: 29
+              ipamPoolResourceId: '<ipamPoolResourceId>'
             }
-          }
-        ]
+          ]
+        }
         name: 'subnet-3'
       }
     ]
@@ -196,54 +214,60 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "addressPrefixes": {
-      "value": [
-        "<networkManagerIpamPoolId>"
-      ]
+    "addressSpace": {
+      "value": {
+        "by": "ipam",
+        "ipamPoolPrefixAllocations": [
+          {
+            "cidr": 24,
+            "ipamPoolResourceId": "<ipamPoolResourceId>"
+          }
+        ]
+      }
     },
     "name": {
       "value": "nvnipam001"
     },
     // Non-required parameters
-    "ipamPoolNumberOfIpAddresses": {
-      "value": "254"
-    },
     "location": {
       "value": "<location>"
     },
     "subnets": {
       "value": [
         {
-          "ipamPoolPrefixAllocations": [
-            {
-              "numberOfIpAddresses": "64",
-              "pool": {
-                "id": "<id>"
+          "addressSpace": {
+            "by": "ipam",
+            "ipamPoolPrefixAllocations": [
+              {
+                "cidr": 26,
+                "ipamPoolResourceId": "<ipamPoolResourceId>"
               }
-            }
-          ],
+            ]
+          },
           "name": "subnet-1"
         },
         {
-          "ipamPoolPrefixAllocations": [
-            {
-              "numberOfIpAddresses": "16",
-              "pool": {
-                "id": "<id>"
+          "addressSpace": {
+            "by": "ipam",
+            "ipamPoolPrefixAllocations": [
+              {
+                "cidr": 28,
+                "ipamPoolResourceId": "<ipamPoolResourceId>"
               }
-            }
-          ],
+            ]
+          },
           "name": "subnet-2"
         },
         {
-          "ipamPoolPrefixAllocations": [
-            {
-              "numberOfIpAddresses": "8",
-              "pool": {
-                "id": "<id>"
+          "addressSpace": {
+            "by": "ipam",
+            "ipamPoolPrefixAllocations": [
+              {
+                "cidr": 29,
+                "ipamPoolResourceId": "<ipamPoolResourceId>"
               }
-            }
-          ],
+            ]
+          },
           "name": "subnet-3"
         }
       ]
@@ -263,45 +287,53 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
-param addressPrefixes = [
-  '<networkManagerIpamPoolId>'
-]
+param addressSpace = {
+  by: 'ipam'
+  ipamPoolPrefixAllocations: [
+    {
+      cidr: 24
+      ipamPoolResourceId: '<ipamPoolResourceId>'
+    }
+  ]
+}
 param name = 'nvnipam001'
 // Non-required parameters
-param ipamPoolNumberOfIpAddresses = '254'
 param location = '<location>'
 param subnets = [
   {
-    ipamPoolPrefixAllocations: [
-      {
-        numberOfIpAddresses: '64'
-        pool: {
-          id: '<id>'
+    addressSpace: {
+      by: 'ipam'
+      ipamPoolPrefixAllocations: [
+        {
+          cidr: 26
+          ipamPoolResourceId: '<ipamPoolResourceId>'
         }
-      }
-    ]
+      ]
+    }
     name: 'subnet-1'
   }
   {
-    ipamPoolPrefixAllocations: [
-      {
-        numberOfIpAddresses: '16'
-        pool: {
-          id: '<id>'
+    addressSpace: {
+      by: 'ipam'
+      ipamPoolPrefixAllocations: [
+        {
+          cidr: 28
+          ipamPoolResourceId: '<ipamPoolResourceId>'
         }
-      }
-    ]
+      ]
+    }
     name: 'subnet-2'
   }
   {
-    ipamPoolPrefixAllocations: [
-      {
-        numberOfIpAddresses: '8'
-        pool: {
-          id: '<id>'
+    addressSpace: {
+      by: 'ipam'
+      ipamPoolPrefixAllocations: [
+        {
+          cidr: 29
+          ipamPoolResourceId: '<ipamPoolResourceId>'
         }
-      }
-    ]
+      ]
+    }
     name: 'subnet-3'
   }
 ]
@@ -325,19 +357,25 @@ You can find the full example and the setup of its dependencies in the deploymen
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   params: {
     // Required parameters
-    addressPrefixes: [
-      '10.0.0.0/21'
-      'fd00:592b:3014::/64'
-    ]
+    addressSpace: {
+      addressPrefixes: [
+        '10.0.0.0/21'
+        'fd00:592b:3014::/64'
+      ]
+      by: 'addressPrefixes'
+    }
     name: 'nvnipv6001'
     // Non-required parameters
     location: '<location>'
     subnets: [
       {
-        addressPrefixes: [
-          '10.0.0.0/24'
-          'fd00:592b:3014::/64'
-        ]
+        addressSpace: {
+          addressPrefixes: [
+            '10.0.0.0/24'
+            'fd00:592b:3014::/64'
+          ]
+          by: 'addressPrefixes'
+        }
         name: 'ipv6-subnet'
       }
     ]
@@ -358,11 +396,14 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "addressPrefixes": {
-      "value": [
-        "10.0.0.0/21",
-        "fd00:592b:3014::/64"
-      ]
+    "addressSpace": {
+      "value": {
+        "addressPrefixes": [
+          "10.0.0.0/21",
+          "fd00:592b:3014::/64"
+        ],
+        "by": "addressPrefixes"
+      }
     },
     "name": {
       "value": "nvnipv6001"
@@ -374,10 +415,13 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     "subnets": {
       "value": [
         {
-          "addressPrefixes": [
-            "10.0.0.0/24",
-            "fd00:592b:3014::/64"
-          ],
+          "addressSpace": {
+            "addressPrefixes": [
+              "10.0.0.0/24",
+              "fd00:592b:3014::/64"
+            ],
+            "by": "addressPrefixes"
+          },
           "name": "ipv6-subnet"
         }
       ]
@@ -397,19 +441,25 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
-param addressPrefixes = [
-  '10.0.0.0/21'
-  'fd00:592b:3014::/64'
-]
+param addressSpace = {
+  addressPrefixes: [
+    '10.0.0.0/21'
+    'fd00:592b:3014::/64'
+  ]
+  by: 'addressPrefixes'
+}
 param name = 'nvnipv6001'
 // Non-required parameters
 param location = '<location>'
 param subnets = [
   {
-    addressPrefixes: [
-      '10.0.0.0/24'
-      'fd00:592b:3014::/64'
-    ]
+    addressSpace: {
+      addressPrefixes: [
+        '10.0.0.0/24'
+        'fd00:592b:3014::/64'
+      ]
+      by: 'addressPrefixes'
+    }
     name: 'ipv6-subnet'
   }
 ]
@@ -433,9 +483,12 @@ You can find the full example and the setup of its dependencies in the deploymen
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   params: {
     // Required parameters
-    addressPrefixes: [
-      '<addressPrefix>'
-    ]
+    addressSpace: {
+      addressPrefixes: [
+        '<addressPrefix>'
+      ]
+      by: 'addressPrefixes'
+    }
     name: 'nvnmax001'
     // Non-required parameters
     diagnosticSettings: [
@@ -483,11 +536,17 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     ]
     subnets: [
       {
-        addressPrefix: '<addressPrefix>'
+        addressSpace: {
+          addressPrefix: '<addressPrefix>'
+          by: 'addressPrefix'
+        }
         name: 'GatewaySubnet'
       }
       {
-        addressPrefix: '<addressPrefix>'
+        addressSpace: {
+          addressPrefix: '<addressPrefix>'
+          by: 'addressPrefix'
+        }
         name: 'az-subnet-x-001'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
         roleAssignments: [
@@ -514,32 +573,48 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         ]
       }
       {
-        addressPrefix: '<addressPrefix>'
+        addressSpace: {
+          addressPrefix: '<addressPrefix>'
+          by: 'addressPrefix'
+        }
         delegation: 'Microsoft.Netapp/volumes'
         name: 'az-subnet-x-002'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
       {
-        addressPrefix: '<addressPrefix>'
+        addressSpace: {
+          addressPrefix: '<addressPrefix>'
+          by: 'addressPrefix'
+        }
+        delegation: 'Microsoft.Netapp/volumes'
         name: 'az-subnet-x-003'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
         privateEndpointNetworkPolicies: 'Disabled'
         privateLinkServiceNetworkPolicies: 'Enabled'
       }
       {
-        addressPrefix: '<addressPrefix>'
+        addressSpace: {
+          addressPrefix: '<addressPrefix>'
+          by: 'addressPrefix'
+        }
         name: 'az-subnet-x-004'
         natGatewayResourceId: ''
         networkSecurityGroupResourceId: ''
         routeTableResourceId: ''
       }
       {
-        addressPrefix: '<addressPrefix>'
+        addressSpace: {
+          addressPrefix: '<addressPrefix>'
+          by: 'addressPrefix'
+        }
         name: 'AzureBastionSubnet'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
       {
-        addressPrefix: '<addressPrefix>'
+        addressSpace: {
+          addressPrefix: '<addressPrefix>'
+          by: 'addressPrefix'
+        }
         name: 'AzureFirewallSubnet'
       }
     ]
@@ -565,10 +640,13 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "addressPrefixes": {
-      "value": [
-        "<addressPrefix>"
-      ]
+    "addressSpace": {
+      "value": {
+        "addressPrefixes": [
+          "<addressPrefix>"
+        ],
+        "by": "addressPrefixes"
+      }
     },
     "name": {
       "value": "nvnmax001"
@@ -632,11 +710,17 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     "subnets": {
       "value": [
         {
-          "addressPrefix": "<addressPrefix>",
+          "addressSpace": {
+            "addressPrefix": "<addressPrefix>",
+            "by": "addressPrefix"
+          },
           "name": "GatewaySubnet"
         },
         {
-          "addressPrefix": "<addressPrefix>",
+          "addressSpace": {
+            "addressPrefix": "<addressPrefix>",
+            "by": "addressPrefix"
+          },
           "name": "az-subnet-x-001",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
           "roleAssignments": [
@@ -663,32 +747,48 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
           ]
         },
         {
-          "addressPrefix": "<addressPrefix>",
+          "addressSpace": {
+            "addressPrefix": "<addressPrefix>",
+            "by": "addressPrefix"
+          },
           "delegation": "Microsoft.Netapp/volumes",
           "name": "az-subnet-x-002",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>"
         },
         {
-          "addressPrefix": "<addressPrefix>",
+          "addressSpace": {
+            "addressPrefix": "<addressPrefix>",
+            "by": "addressPrefix"
+          },
+          "delegation": "Microsoft.Netapp/volumes",
           "name": "az-subnet-x-003",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
           "privateEndpointNetworkPolicies": "Disabled",
           "privateLinkServiceNetworkPolicies": "Enabled"
         },
         {
-          "addressPrefix": "<addressPrefix>",
+          "addressSpace": {
+            "addressPrefix": "<addressPrefix>",
+            "by": "addressPrefix"
+          },
           "name": "az-subnet-x-004",
           "natGatewayResourceId": "",
           "networkSecurityGroupResourceId": "",
           "routeTableResourceId": ""
         },
         {
-          "addressPrefix": "<addressPrefix>",
+          "addressSpace": {
+            "addressPrefix": "<addressPrefix>",
+            "by": "addressPrefix"
+          },
           "name": "AzureBastionSubnet",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>"
         },
         {
-          "addressPrefix": "<addressPrefix>",
+          "addressSpace": {
+            "addressPrefix": "<addressPrefix>",
+            "by": "addressPrefix"
+          },
           "name": "AzureFirewallSubnet"
         }
       ]
@@ -715,9 +815,12 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
-param addressPrefixes = [
-  '<addressPrefix>'
-]
+param addressSpace = {
+  addressPrefixes: [
+    '<addressPrefix>'
+  ]
+  by: 'addressPrefixes'
+}
 param name = 'nvnmax001'
 // Non-required parameters
 param diagnosticSettings = [
@@ -765,11 +868,17 @@ param roleAssignments = [
 ]
 param subnets = [
   {
-    addressPrefix: '<addressPrefix>'
+    addressSpace: {
+      addressPrefix: '<addressPrefix>'
+      by: 'addressPrefix'
+    }
     name: 'GatewaySubnet'
   }
   {
-    addressPrefix: '<addressPrefix>'
+    addressSpace: {
+      addressPrefix: '<addressPrefix>'
+      by: 'addressPrefix'
+    }
     name: 'az-subnet-x-001'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
     roleAssignments: [
@@ -796,32 +905,48 @@ param subnets = [
     ]
   }
   {
-    addressPrefix: '<addressPrefix>'
+    addressSpace: {
+      addressPrefix: '<addressPrefix>'
+      by: 'addressPrefix'
+    }
     delegation: 'Microsoft.Netapp/volumes'
     name: 'az-subnet-x-002'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
   }
   {
-    addressPrefix: '<addressPrefix>'
+    addressSpace: {
+      addressPrefix: '<addressPrefix>'
+      by: 'addressPrefix'
+    }
+    delegation: 'Microsoft.Netapp/volumes'
     name: 'az-subnet-x-003'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
     privateEndpointNetworkPolicies: 'Disabled'
     privateLinkServiceNetworkPolicies: 'Enabled'
   }
   {
-    addressPrefix: '<addressPrefix>'
+    addressSpace: {
+      addressPrefix: '<addressPrefix>'
+      by: 'addressPrefix'
+    }
     name: 'az-subnet-x-004'
     natGatewayResourceId: ''
     networkSecurityGroupResourceId: ''
     routeTableResourceId: ''
   }
   {
-    addressPrefix: '<addressPrefix>'
+    addressSpace: {
+      addressPrefix: '<addressPrefix>'
+      by: 'addressPrefix'
+    }
     name: 'AzureBastionSubnet'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
   }
   {
-    addressPrefix: '<addressPrefix>'
+    addressSpace: {
+      addressPrefix: '<addressPrefix>'
+      by: 'addressPrefix'
+    }
     name: 'AzureFirewallSubnet'
   }
 ]
@@ -850,9 +975,12 @@ You can find the full example and the setup of its dependencies in the deploymen
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   params: {
     // Required parameters
-    addressPrefixes: [
-      '10.1.0.0/24'
-    ]
+    addressSpace: {
+      addressPrefixes: [
+        '10.1.0.0/24'
+      ]
+      by: 'addressPrefixes'
+    }
     name: 'nvnpeer001'
     // Non-required parameters
     location: '<location>'
@@ -871,16 +999,25 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     ]
     subnets: [
       {
-        addressPrefix: '10.1.0.0/26'
+        addressSpace: {
+          addressPrefix: '10.1.0.0/26'
+          by: 'addressPrefix'
+        }
         name: 'GatewaySubnet'
       }
       {
-        addressPrefix: '10.1.0.64/26'
+        addressSpace: {
+          addressPrefix: '10.1.0.64/26'
+          by: 'addressPrefix'
+        }
         name: 'AzureBastionSubnet'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
       {
-        addressPrefix: '10.1.0.128/26'
+        addressSpace: {
+          addressPrefix: '10.1.0.128/26'
+          by: 'addressPrefix'
+        }
         name: 'AzureFirewallSubnet'
       }
     ]
@@ -906,10 +1043,13 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "addressPrefixes": {
-      "value": [
-        "10.1.0.0/24"
-      ]
+    "addressSpace": {
+      "value": {
+        "addressPrefixes": [
+          "10.1.0.0/24"
+        ],
+        "by": "addressPrefixes"
+      }
     },
     "name": {
       "value": "nvnpeer001"
@@ -936,16 +1076,25 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     "subnets": {
       "value": [
         {
-          "addressPrefix": "10.1.0.0/26",
+          "addressSpace": {
+            "addressPrefix": "10.1.0.0/26",
+            "by": "addressPrefix"
+          },
           "name": "GatewaySubnet"
         },
         {
-          "addressPrefix": "10.1.0.64/26",
+          "addressSpace": {
+            "addressPrefix": "10.1.0.64/26",
+            "by": "addressPrefix"
+          },
           "name": "AzureBastionSubnet",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>"
         },
         {
-          "addressPrefix": "10.1.0.128/26",
+          "addressSpace": {
+            "addressPrefix": "10.1.0.128/26",
+            "by": "addressPrefix"
+          },
           "name": "AzureFirewallSubnet"
         }
       ]
@@ -972,9 +1121,12 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
-param addressPrefixes = [
-  '10.1.0.0/24'
-]
+param addressSpace = {
+  addressPrefixes: [
+    '10.1.0.0/24'
+  ]
+  by: 'addressPrefixes'
+}
 param name = 'nvnpeer001'
 // Non-required parameters
 param location = '<location>'
@@ -993,16 +1145,25 @@ param peerings = [
 ]
 param subnets = [
   {
-    addressPrefix: '10.1.0.0/26'
+    addressSpace: {
+      addressPrefix: '10.1.0.0/26'
+      by: 'addressPrefix'
+    }
     name: 'GatewaySubnet'
   }
   {
-    addressPrefix: '10.1.0.64/26'
+    addressSpace: {
+      addressPrefix: '10.1.0.64/26'
+      by: 'addressPrefix'
+    }
     name: 'AzureBastionSubnet'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
   }
   {
-    addressPrefix: '10.1.0.128/26'
+    addressSpace: {
+      addressPrefix: '10.1.0.128/26'
+      by: 'addressPrefix'
+    }
     name: 'AzureFirewallSubnet'
   }
 ]
@@ -1031,9 +1192,12 @@ You can find the full example and the setup of its dependencies in the deploymen
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   params: {
     // Required parameters
-    addressPrefixes: [
-      '<addressPrefix>'
-    ]
+    addressSpace: {
+      addressPrefixes: [
+        '<addressPrefix>'
+      ]
+      by: 'addressPrefixes'
+    }
     name: 'nvnwaf001'
     // Non-required parameters
     diagnosticSettings: [
@@ -1058,11 +1222,17 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     location: '<location>'
     subnets: [
       {
-        addressPrefix: '<addressPrefix>'
+        addressSpace: {
+          addressPrefix: '<addressPrefix>'
+          by: 'addressPrefix'
+        }
         name: 'GatewaySubnet'
       }
       {
-        addressPrefix: '<addressPrefix>'
+        addressSpace: {
+          addressPrefix: '<addressPrefix>'
+          by: 'addressPrefix'
+        }
         name: 'az-subnet-x-001'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
         roleAssignments: [
@@ -1079,25 +1249,38 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         ]
       }
       {
-        addressPrefix: '<addressPrefix>'
+        addressSpace: {
+          addressPrefix: '<addressPrefix>'
+          by: 'addressPrefix'
+        }
         delegation: 'Microsoft.Netapp/volumes'
         name: 'az-subnet-x-002'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
       {
-        addressPrefix: '<addressPrefix>'
+        addressSpace: {
+          addressPrefix: '<addressPrefix>'
+          by: 'addressPrefix'
+        }
+        delegation: 'Microsoft.Netapp/volumes'
         name: 'az-subnet-x-003'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
         privateEndpointNetworkPolicies: 'Disabled'
         privateLinkServiceNetworkPolicies: 'Enabled'
       }
       {
-        addressPrefix: '<addressPrefix>'
+        addressSpace: {
+          addressPrefix: '<addressPrefix>'
+          by: 'addressPrefix'
+        }
         name: 'AzureBastionSubnet'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
       {
-        addressPrefix: '<addressPrefix>'
+        addressSpace: {
+          addressPrefix: '<addressPrefix>'
+          by: 'addressPrefix'
+        }
         name: 'AzureFirewallSubnet'
       }
     ]
@@ -1123,10 +1306,13 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "addressPrefixes": {
-      "value": [
-        "<addressPrefix>"
-      ]
+    "addressSpace": {
+      "value": {
+        "addressPrefixes": [
+          "<addressPrefix>"
+        ],
+        "by": "addressPrefixes"
+      }
     },
     "name": {
       "value": "nvnwaf001"
@@ -1163,11 +1349,17 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     "subnets": {
       "value": [
         {
-          "addressPrefix": "<addressPrefix>",
+          "addressSpace": {
+            "addressPrefix": "<addressPrefix>",
+            "by": "addressPrefix"
+          },
           "name": "GatewaySubnet"
         },
         {
-          "addressPrefix": "<addressPrefix>",
+          "addressSpace": {
+            "addressPrefix": "<addressPrefix>",
+            "by": "addressPrefix"
+          },
           "name": "az-subnet-x-001",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
           "roleAssignments": [
@@ -1184,25 +1376,38 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
           ]
         },
         {
-          "addressPrefix": "<addressPrefix>",
+          "addressSpace": {
+            "addressPrefix": "<addressPrefix>",
+            "by": "addressPrefix"
+          },
           "delegation": "Microsoft.Netapp/volumes",
           "name": "az-subnet-x-002",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>"
         },
         {
-          "addressPrefix": "<addressPrefix>",
+          "addressSpace": {
+            "addressPrefix": "<addressPrefix>",
+            "by": "addressPrefix"
+          },
+          "delegation": "Microsoft.Netapp/volumes",
           "name": "az-subnet-x-003",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
           "privateEndpointNetworkPolicies": "Disabled",
           "privateLinkServiceNetworkPolicies": "Enabled"
         },
         {
-          "addressPrefix": "<addressPrefix>",
+          "addressSpace": {
+            "addressPrefix": "<addressPrefix>",
+            "by": "addressPrefix"
+          },
           "name": "AzureBastionSubnet",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>"
         },
         {
-          "addressPrefix": "<addressPrefix>",
+          "addressSpace": {
+            "addressPrefix": "<addressPrefix>",
+            "by": "addressPrefix"
+          },
           "name": "AzureFirewallSubnet"
         }
       ]
@@ -1229,9 +1434,12 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
-param addressPrefixes = [
-  '<addressPrefix>'
-]
+param addressSpace = {
+  addressPrefixes: [
+    '<addressPrefix>'
+  ]
+  by: 'addressPrefixes'
+}
 param name = 'nvnwaf001'
 // Non-required parameters
 param diagnosticSettings = [
@@ -1256,11 +1464,17 @@ param flowTimeoutInMinutes = 20
 param location = '<location>'
 param subnets = [
   {
-    addressPrefix: '<addressPrefix>'
+    addressSpace: {
+      addressPrefix: '<addressPrefix>'
+      by: 'addressPrefix'
+    }
     name: 'GatewaySubnet'
   }
   {
-    addressPrefix: '<addressPrefix>'
+    addressSpace: {
+      addressPrefix: '<addressPrefix>'
+      by: 'addressPrefix'
+    }
     name: 'az-subnet-x-001'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
     roleAssignments: [
@@ -1277,25 +1491,38 @@ param subnets = [
     ]
   }
   {
-    addressPrefix: '<addressPrefix>'
+    addressSpace: {
+      addressPrefix: '<addressPrefix>'
+      by: 'addressPrefix'
+    }
     delegation: 'Microsoft.Netapp/volumes'
     name: 'az-subnet-x-002'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
   }
   {
-    addressPrefix: '<addressPrefix>'
+    addressSpace: {
+      addressPrefix: '<addressPrefix>'
+      by: 'addressPrefix'
+    }
+    delegation: 'Microsoft.Netapp/volumes'
     name: 'az-subnet-x-003'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
     privateEndpointNetworkPolicies: 'Disabled'
     privateLinkServiceNetworkPolicies: 'Enabled'
   }
   {
-    addressPrefix: '<addressPrefix>'
+    addressSpace: {
+      addressPrefix: '<addressPrefix>'
+      by: 'addressPrefix'
+    }
     name: 'AzureBastionSubnet'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
   }
   {
-    addressPrefix: '<addressPrefix>'
+    addressSpace: {
+      addressPrefix: '<addressPrefix>'
+      by: 'addressPrefix'
+    }
     name: 'AzureFirewallSubnet'
   }
 ]
@@ -1315,7 +1542,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefixes`](#parameter-addressprefixes) | array | An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`. |
+| [`addressSpace`](#parameter-addressspace) | object | The address space configuration for the Virtual Network. Use `by: 'addressPrefixes'` with an array of CIDR ranges for manual allocation, or `by: 'ipam'` with IPAM pool resource IDs and CIDR prefix sizes for dynamic IPAM-based allocation. |
 | [`name`](#parameter-name) | string | The name of the Virtual Network (vNet). |
 
 **Optional parameters**
@@ -1328,7 +1555,6 @@ param tags = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`enableVmProtection`](#parameter-enablevmprotection) | bool | Indicates if VM protection is enabled for all the subnets in the virtual network. |
 | [`flowTimeoutInMinutes`](#parameter-flowtimeoutinminutes) | int | The flow timeout in minutes for the Virtual Network, which is used to enable connection tracking for intra-VM flows. Possible values are between 4 and 30 minutes. Default value 0 will set the property to null. |
-| [`ipamPoolNumberOfIpAddresses`](#parameter-ipampoolnumberofipaddresses) | string | Number of IP addresses allocated from the pool. To be used only when the addressPrefix param is defined with a resource ID of an IPAM pool. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`peerings`](#parameter-peerings) | array | Virtual Network Peering configurations. |
@@ -1339,12 +1565,141 @@ param tags = {
 | [`vnetEncryption`](#parameter-vnetencryption) | bool | Indicates if encryption is enabled on virtual network and if VM without encryption is allowed in encrypted VNet. Requires the EnableVNetEncryption feature to be registered for the subscription and a supported region to use this property. |
 | [`vnetEncryptionEnforcement`](#parameter-vnetencryptionenforcement) | string | If the encrypted VNet allows VM that does not support encryption. Can only be used when vnetEncryption is enabled. |
 
-### Parameter: `addressPrefixes`
+### Parameter: `addressSpace`
 
-An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`.
+The address space configuration for the Virtual Network. Use `by: 'addressPrefixes'` with an array of CIDR ranges for manual allocation, or `by: 'ipam'` with IPAM pool resource IDs and CIDR prefix sizes for dynamic IPAM-based allocation.
+
+- Required: Yes
+- Type: object
+- Discriminator: `by`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`ipam`](#variant-addressspaceby-ipam) |  |
+| [`addressPrefixes`](#variant-addressspaceby-addressprefixes) |  |
+
+### Variant: `addressSpace.by-ipam`
+
+
+To use this variant, set the property `by` to `ipam`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`by`](#parameter-addressspaceby-ipamby) | string | The allocation method for the address prefix. Must be set to `ipam` for IPAM-based allocation. |
+| [`ipamPoolPrefixAllocations`](#parameter-addressspaceby-ipamipampoolprefixallocations) | array | Array of IPAM pool prefix allocations specifying which pools to allocate address space from. |
+
+### Parameter: `addressSpace.by-ipam.by`
+
+The allocation method for the address prefix. Must be set to `ipam` for IPAM-based allocation.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ipam'
+  ]
+  ```
+
+### Parameter: `addressSpace.by-ipam.ipamPoolPrefixAllocations`
+
+Array of IPAM pool prefix allocations specifying which pools to allocate address space from.
 
 - Required: Yes
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cidr`](#parameter-addressspaceby-ipamipampoolprefixallocationscidr) | int | The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses). |
+| [`ipamPoolResourceId`](#parameter-addressspaceby-ipamipampoolprefixallocationsipampoolresourceid) | string | The resource ID of the IPAM pool to allocate the address prefix from. |
+
+### Parameter: `addressSpace.by-ipam.ipamPoolPrefixAllocations.cidr`
+
+The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses).
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+    4
+    5
+    6
+    7
+    8
+    9
+    10
+    11
+    12
+    13
+    14
+    15
+    16
+    17
+    18
+    19
+    20
+    21
+    22
+    23
+    24
+    25
+    26
+    27
+    28
+    29
+    30
+    31
+  ]
+  ```
+
+### Parameter: `addressSpace.by-ipam.ipamPoolPrefixAllocations.ipamPoolResourceId`
+
+The resource ID of the IPAM pool to allocate the address prefix from.
+
+- Required: Yes
+- Type: string
+
+### Variant: `addressSpace.by-addressPrefixes`
+
+
+To use this variant, set the property `by` to `addressPrefixes`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefixes`](#parameter-addressspaceby-addressprefixesaddressprefixes) | array | Array of manually specified address prefixes in CIDR notation (e.g., `["10.0.0.0/16", "10.1.0.0/16"]`). |
+| [`by`](#parameter-addressspaceby-addressprefixesby) | string | The allocation method for the address prefix. Must be set to `addressPrefixes` for manually specified address prefixes. |
+
+### Parameter: `addressSpace.by-addressPrefixes.addressPrefixes`
+
+Array of manually specified address prefixes in CIDR notation (e.g., `["10.0.0.0/16", "10.1.0.0/16"]`).
+
+- Required: Yes
+- Type: array
+
+### Parameter: `addressSpace.by-addressPrefixes.by`
+
+The allocation method for the address prefix. Must be set to `addressPrefixes` for manually specified address prefixes.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'addressPrefixes'
+  ]
+  ```
 
 ### Parameter: `name`
 
@@ -1536,13 +1891,6 @@ The flow timeout in minutes for the Virtual Network, which is used to enable con
 - Type: int
 - Default: `0`
 - MaxValue: 30
-
-### Parameter: `ipamPoolNumberOfIpAddresses`
-
-Number of IP addresses allocated from the pool. To be used only when the addressPrefix param is defined with a resource ID of an IPAM pool.
-
-- Required: No
-- Type: string
 
 ### Parameter: `location`
 
@@ -1840,15 +2188,8 @@ An Array of subnets to deploy to the Virtual Network.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`addressSpace`](#parameter-subnetsaddressspace) | object | The address space configuration for the subnet. Supports IPAM-based allocation, multiple address prefixes, or a single address prefix. |
 | [`name`](#parameter-subnetsname) | string | The Name of the subnet resource. |
-
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`addressPrefix`](#parameter-subnetsaddressprefix) | string | The address prefix for the subnet. Required if `addressPrefixes` is empty. |
-| [`addressPrefixes`](#parameter-subnetsaddressprefixes) | array | List of address prefixes for the subnet. Required if `addressPrefix` is empty. |
-| [`ipamPoolPrefixAllocations`](#parameter-subnetsipampoolprefixallocations) | array | The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty and the VNet address space configured to use IPAM Pool. |
 
 **Optional parameters**
 
@@ -1867,33 +2208,181 @@ An Array of subnets to deploy to the Virtual Network.
 | [`serviceEndpoints`](#parameter-subnetsserviceendpoints) | array | The service endpoints to enable on the subnet. |
 | [`sharingScope`](#parameter-subnetssharingscope) | string | Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty. |
 
+### Parameter: `subnets.addressSpace`
+
+The address space configuration for the subnet. Supports IPAM-based allocation, multiple address prefixes, or a single address prefix.
+
+- Required: Yes
+- Type: object
+- Discriminator: `by`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`ipam`](#variant-subnetsaddressspaceby-ipam) |  |
+| [`addressPrefixes`](#variant-subnetsaddressspaceby-addressprefixes) |  |
+| [`addressPrefix`](#variant-subnetsaddressspaceby-addressprefix) |  |
+
+### Variant: `subnets.addressSpace.by-ipam`
+
+
+To use this variant, set the property `by` to `ipam`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`by`](#parameter-subnetsaddressspaceby-ipamby) | string | The allocation method for the address prefix. Must be set to `ipam` for IPAM-based allocation. |
+| [`ipamPoolPrefixAllocations`](#parameter-subnetsaddressspaceby-ipamipampoolprefixallocations) | array | Array of IPAM pool prefix allocations specifying which pools to allocate address space from. |
+
+### Parameter: `subnets.addressSpace.by-ipam.by`
+
+The allocation method for the address prefix. Must be set to `ipam` for IPAM-based allocation.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ipam'
+  ]
+  ```
+
+### Parameter: `subnets.addressSpace.by-ipam.ipamPoolPrefixAllocations`
+
+Array of IPAM pool prefix allocations specifying which pools to allocate address space from.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cidr`](#parameter-subnetsaddressspaceby-ipamipampoolprefixallocationscidr) | int | The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses). |
+| [`ipamPoolResourceId`](#parameter-subnetsaddressspaceby-ipamipampoolprefixallocationsipampoolresourceid) | string | The resource ID of the IPAM pool to allocate the address prefix from. |
+
+### Parameter: `subnets.addressSpace.by-ipam.ipamPoolPrefixAllocations.cidr`
+
+The CIDR prefix size to allocate from the IPAM pool (e.g., `24` for a /24 subnet with 256 addresses).
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+    4
+    5
+    6
+    7
+    8
+    9
+    10
+    11
+    12
+    13
+    14
+    15
+    16
+    17
+    18
+    19
+    20
+    21
+    22
+    23
+    24
+    25
+    26
+    27
+    28
+    29
+    30
+    31
+  ]
+  ```
+
+### Parameter: `subnets.addressSpace.by-ipam.ipamPoolPrefixAllocations.ipamPoolResourceId`
+
+The resource ID of the IPAM pool to allocate the address prefix from.
+
+- Required: Yes
+- Type: string
+
+### Variant: `subnets.addressSpace.by-addressPrefixes`
+
+
+To use this variant, set the property `by` to `addressPrefixes`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefixes`](#parameter-subnetsaddressspaceby-addressprefixesaddressprefixes) | array | Array of manually specified address prefixes in CIDR notation (e.g., `["10.0.0.0/16", "10.1.0.0/16"]`). |
+| [`by`](#parameter-subnetsaddressspaceby-addressprefixesby) | string | The allocation method for the address prefix. Must be set to `addressPrefixes` for manually specified address prefixes. |
+
+### Parameter: `subnets.addressSpace.by-addressPrefixes.addressPrefixes`
+
+Array of manually specified address prefixes in CIDR notation (e.g., `["10.0.0.0/16", "10.1.0.0/16"]`).
+
+- Required: Yes
+- Type: array
+
+### Parameter: `subnets.addressSpace.by-addressPrefixes.by`
+
+The allocation method for the address prefix. Must be set to `addressPrefixes` for manually specified address prefixes.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'addressPrefixes'
+  ]
+  ```
+
+### Variant: `subnets.addressSpace.by-addressPrefix`
+
+
+To use this variant, set the property `by` to `addressPrefix`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefix`](#parameter-subnetsaddressspaceby-addressprefixaddressprefix) | string | The manually specified address prefix in CIDR notation (e.g., `10.0.0.0/24`). |
+| [`by`](#parameter-subnetsaddressspaceby-addressprefixby) | string | The allocation method for the address prefix. Must be set to `addressPrefix` for a single manually specified address prefix. |
+
+### Parameter: `subnets.addressSpace.by-addressPrefix.addressPrefix`
+
+The manually specified address prefix in CIDR notation (e.g., `10.0.0.0/24`).
+
+- Required: Yes
+- Type: string
+
+### Parameter: `subnets.addressSpace.by-addressPrefix.by`
+
+The allocation method for the address prefix. Must be set to `addressPrefix` for a single manually specified address prefix.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'addressPrefix'
+  ]
+  ```
+
 ### Parameter: `subnets.name`
 
 The Name of the subnet resource.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `subnets.addressPrefix`
-
-The address prefix for the subnet. Required if `addressPrefixes` is empty.
-
-- Required: No
-- Type: string
-
-### Parameter: `subnets.addressPrefixes`
-
-List of address prefixes for the subnet. Required if `addressPrefix` is empty.
-
-- Required: No
-- Type: array
-
-### Parameter: `subnets.ipamPoolPrefixAllocations`
-
-The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty and the VNet address space configured to use IPAM Pool.
-
-- Required: No
-- Type: array
 
 ### Parameter: `subnets.applicationGatewayIPConfigurations`
 
@@ -2136,10 +2625,18 @@ If the encrypted VNet allows VM that does not support encryption. Can only be us
   ]
   ```
 
+## Exported functions
+
+| Function | Description |
+| :-- | :-- |
+| `getCidrHostCount` | Returns the number of hosts available for a given CIDR prefix. |
+| `getCidrHostCounts` | Returns a lookup table mapping CIDR prefixes to their corresponding number of IP addresses. |
+
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `addressSpace` | array | The address space of the virtual network. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the virtual network. |
 | `resourceGroupName` | string | The resource group the virtual network was deployed into. |
