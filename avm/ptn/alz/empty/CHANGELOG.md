@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/alz/empty/CHANGELOG.md).
 
+## 0.3.4
+
+### Changes
+
+- Updated deployment names to remove usage of `deployment().name` to avoid reduce the number of deployments and improve performance in redeploys and when used in a deployment stack. No functional changes to the module.
+
+### Breaking Changes
+
+- None
+
 ## 0.3.3
 
 ### Changes
