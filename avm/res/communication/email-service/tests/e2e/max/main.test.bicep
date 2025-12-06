@@ -77,6 +77,11 @@ module testDeployment '../../../main.bicep' = [
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
+        {
+          roleDefinitionIdOrName: 'Communication and Email Service Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
       ]
       tags: {
         'hidden-title': 'This is visible in the resource name'
