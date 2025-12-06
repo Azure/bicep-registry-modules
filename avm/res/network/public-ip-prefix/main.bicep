@@ -27,19 +27,19 @@ param prefixLength int
 ])
 param publicIPAddressVersion string = 'IPv4'
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Network/publicIPPrefixes@2024-10-01'>.tags?
+param tags resourceInput<'Microsoft.Network/publicIPPrefixes@2025-01-01'>.tags?
 
 @description('Optional. The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range.')
-param customIPPrefix resourceInput<'Microsoft.Network/publicIPPrefixes@2024-01-01'>.properties.customIPPrefix?
+param customIPPrefix resourceInput<'Microsoft.Network/publicIPPrefixes@2025-01-01'>.properties.customIPPrefix?
 
 @description('Optional. The list of tags associated with the public IP prefix.')
 param ipTags ipTagType[]?
@@ -107,7 +107,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource publicIpPrefix 'Microsoft.Network/publicIPPrefixes@2024-01-01' = {
+resource publicIpPrefix 'Microsoft.Network/publicIPPrefixes@2025-01-01' = {
   name: name
   location: location
   tags: tags
