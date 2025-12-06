@@ -33,6 +33,12 @@ Optional. The number of parallel threads to use for the generation.
 .PARAMETER SkipVersionCheck
 Optional. Do not check for the latest Bicep CLI version.
 
+.PARAMETER InvokeForDiff
+Optional. Build files only for those modules who's files have changed (based on diff of branch to origin/main)
+
+.PARAMETER RepoRootPath
+Optional. Path to the root of the repository.
+
 .EXAMPLE
 Set-AVMModule -ModuleFolderPath 'C:\avm\res\key-vault\vault'
 
@@ -52,25 +58,36 @@ For the [key-vault\vault] module or any of its children, build only the Bicep mo
 Set-AVMModule -ModuleFolderPath 'C:\avm\res' -Recurse
 
 For all modules in path [C:\avm\res], build the Bicep module template & generate the ReadMe.
+
+.EXAMPLE
+Set-AVMModule -InvokeForDiff
+
+For all modules that have been changed, build the Bicep module template & generate the ReadMe.
 #>
 function Set-AVMModule {
 
     [CmdletBinding(SupportsShouldProcess = $true)]
     param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(ParameterSetName = 'Path', Mandatory = $true)]
         [string] $ModuleFolderPath,
 
-        [Parameter(Mandatory = $false)]
+        [Parameter(ParameterSetName = 'Path', Mandatory = $false)]
         [switch] $Recurse,
+
+        [Parameter(ParameterSetName = 'Path', Mandatory = $false)]
+        [switch] $SkipFileAndFolderSetup,
+
+        [Parameter(ParameterSetName = 'Diff', Mandatory = $false)]
+        [switch] $InvokeForDiff,
+
+        [Parameter(ParameterSetName = 'Diff', Mandatory = $false)]
+        [string] $RepoRootPath = (Get-Item -Path $PSScriptRoot).parent.parent.FullName,
 
         [Parameter(Mandatory = $false)]
         [switch] $SkipBuild,
 
         [Parameter(Mandatory = $false)]
         [switch] $SkipReadMe,
-
-        [Parameter(Mandatory = $false)]
-        [switch] $SkipFileAndFolderSetup,
 
         [Parameter(Mandatory = $false)]
         [switch] $SkipVersionCheck,
@@ -83,31 +100,60 @@ function Set-AVMModule {
     )
 
     # # Load helper scripts
-    . (Join-Path $PSScriptRoot 'helper' 'Set-ModuleFileAndFolderSetup.ps1')
+    . (Join-Path $RepoRootPath 'utilities' 'tools' 'helper' 'Set-ModuleFileAndFolderSetup.ps1')
+    . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-ParentFolderPathList.ps1')
+    . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
 
-    $resolvedPath = (Test-Path $ModuleFolderPath) ? (Resolve-Path $ModuleFolderPath).Path : $ModuleFolderPath
+    if ($InvokeForDiff) {
+        $resolvedPath = (Test-Path $ModuleFolderPath) ? (Resolve-Path $ModuleFolderPath).Path : $ModuleFolderPath
 
-    # Build up module file & folder structure if not yet existing. Should only run if an actual module path was provided (and not any of their parent paths)
-    if (-not $SkipFileAndFolderSetup -and (($resolvedPath -split '[\\|\/]avm[\\|\/](res|ptn|utl)[\\|\/].+?[\\|\/].+').count -gt 1)) {
-        if ($PSCmdlet.ShouldProcess("File & folder structure for path [$resolvedPath]", 'Setup')) {
-            Set-ModuleFileAndFolderSetup -FullModuleFolderPath $resolvedPath
-        }
-    }
+        $relevantTemplatePaths = Get-GitDiff -PathOnly -SkipStats | Where-Object { $_ -match '[\/|\\]main\.bicep$' }
+        Write-Verbose ('Found [{0}] files in diff' -f $relevantTemplatePaths.Count) -Verbose
 
-    if ($Recurse) {
-        $childInput = @{
-            Path    = $resolvedPath
-            Recurse = $Recurse
-            File    = $true
-            Filter  = 'main.bicep'
+        # Handling relevant parent modules that would be affected by a diff in a child
+        $parentTemplatePaths = $relevantTemplatePaths | ForEach-Object {
+            Get-ParentFolderPathList -Path (Split-Path $_) -Filter 'OnlyModules'
+        } | ForEach-Object { Join-Path $_ 'main.bicep' } | Where-Object { Test-Path $_ } | Select-Object -Unique
+        Write-Verbose ('Union with [{0}] relevant parent folder template files' -f $parentTemplatePaths.Count) -Verbose
+        $relevantTemplatePaths += $parentTemplatePaths
+        $relevantTemplatePaths = $relevantTemplatePaths | Sort-Object -Unique
+
+        Write-Verbose ('Running for [{0}] relevant files' -f $relevantTemplatePaths.Count) -Verbose
+        $relevantTemplatePaths | ForEach-Object {
+            $RelPath = (($_ -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
+            Write-Verbose " - $RelPath" -Verbose
         }
-        if ($Depth) {
-            $childInput.Depth = $Depth
-        }
-        $relevantTemplatePaths = (Get-ChildItem @childInput).FullName
     } else {
-        $relevantTemplatePaths = Join-Path $resolvedPath 'main.bicep'
+        $resolvedPath = (Resolve-Path $ModuleFolderPath).Path
+
+        # Build up module file & folder structure if not yet existing. Should only run if an actual module path was provided (and not any of their parent paths)
+        if (-not $SkipFileAndFolderSetup -and (($resolvedPath -split '[\\|\/]avm[\\|\/](res|ptn|utl)[\\|\/].+?[\\|\/].+').count -gt 1)) {
+            if ($PSCmdlet.ShouldProcess("File & folder structure for path [$resolvedPath]", 'Setup')) {
+                Set-ModuleFileAndFolderSetup -FullModuleFolderPath $resolvedPath
+            }
+        }
+
+        if ($Recurse) {
+            $childInput = @{
+                Path    = $resolvedPath
+                Recurse = $Recurse
+                File    = $true
+                Filter  = 'main.bicep'
+            }
+            if ($Depth) {
+                $childInput.Depth = $Depth
+            }
+            $relevantTemplatePaths = (Get-ChildItem @childInput).FullName
+        } else {
+            $relevantTemplatePaths = Join-Path $resolvedPath 'main.bicep'
+        }
     }
+
+    if ($relevantTemplatePaths.Count -eq 0) {
+        Write-Verbose 'No relevant template paths found.' -Verbose
+        return
+    }
+
 
     if (-not $SkipVersionCheck) {
 
@@ -183,7 +229,7 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
     }
 
     # Using threading to speed up the process
-    if ($PSCmdlet.ShouldProcess(('Building & generation of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath), 'Execute')) {
+    if ($PSCmdlet.ShouldProcess(('Building & generation of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
         try {
             $job = $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
                 $identifierElements = $_ -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]'
