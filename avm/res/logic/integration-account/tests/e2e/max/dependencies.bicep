@@ -13,9 +13,42 @@ param certificateName string
 @description('Required. The name of the Deployment Script to create for the Certificate generation.')
 param certDeploymentScriptName string
 
+@description('Required. The name of the Storage Account to create for deployment script.')
+param storageAccountName string
+
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
+}
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' = {
+  name: storageAccountName
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+  properties: {
+    accessTier: 'Hot'
+    allowBlobPublicAccess: false
+    allowSharedKeyAccess: false // Disable shared key access
+    supportsHttpsTrafficOnly: true
+    minimumTlsVersion: 'TLS1_2'
+  }
+}
+
+// Grant Storage Blob Data Contributor to managed identity
+resource storageBlobPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${managedIdentity.name}-${storageAccount.name}-StorageBlobDataContributor-RoleAssignment')
+  scope: storageAccount
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+    ) // Storage Blob Data Contributor
+    principalType: 'ServicePrincipal'
+  }
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
@@ -64,10 +97,14 @@ resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01'
     arguments: '-KeyVaultName "${keyVault.name}" -CertName "${certificateName}"'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-CertificateInKeyVault.ps1')
     cleanupPreference: 'OnSuccess'
-    containerSettings: {
-      containerGroupName: '${certDeploymentScriptName}-cg'
+    storageAccountSettings: {
+      storageAccountName: storageAccount.name
     }
   }
+  dependsOn: [
+    keyPermissions
+    storageBlobPermissions
+  ]
 }
 
 @description('The principal ID of the created Managed Identity.')
@@ -78,3 +115,6 @@ output managedIdentityResourceId string = managedIdentity.id
 
 @description('The resource ID of the created Key Vault.')
 output keyVaultResourceId string = keyVault.id
+
+@description('The resource ID of the created Storage Account.')
+output storageAccountResourceId string = storageAccount.id
