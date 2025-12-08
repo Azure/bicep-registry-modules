@@ -144,38 +144,38 @@ var deploymentNameIndexSuffixReserve = 4
 var deploymentNameBaseMax = 64 - deploymentNameIndexSuffixReserve
 
 var deploymentNames = {
-  mg: take('${uniqueString(deployment().name, location)}-alz-mg-${managementGroupName}', 64)
-  mgSubPlacement: take('${uniqueString(deployment().name, location)}-alz-sub-place-${managementGroupName}', 64)
+  mg: take('${uniqueString(managementGroupName, location)}-alz-mg-${managementGroupName}', 64)
+  mgSubPlacement: take('${uniqueString(managementGroupName, location)}-alz-sub-place-${managementGroupName}', 64)
   mgSubPlacementWait: take(
-    '${uniqueString(deployment().name, location)}-alz-sub-place-wait-${managementGroupName}',
+    '${uniqueString(managementGroupName, location)}-alz-sub-place-wait-${managementGroupName}',
     deploymentNameBaseMax
   )
-  mgRoleAssignments: take('${uniqueString(deployment().name, location)}-alz-mg-rbac-asi-${managementGroupName}', 64)
-  mgRoleDefinitions: take('${uniqueString(deployment().name, location)}-alz-mg-rbac-def-${managementGroupName}', 64)
+  mgRoleAssignments: take('${uniqueString(managementGroupName, location)}-alz-mg-rbac-asi-${managementGroupName}', 64)
+  mgRoleDefinitions: take('${uniqueString(managementGroupName, location)}-alz-mg-rbac-def-${managementGroupName}', 64)
   mgRoleDefinitionsWait: take(
-    '${uniqueString(deployment().name, location)}-alz-rbac-def-wait-${managementGroupName}',
+    '${uniqueString(managementGroupName, location)}-alz-rbac-def-wait-${managementGroupName}',
     deploymentNameBaseMax
   )
   mgRoleAssignmentsWait: take(
-    '${uniqueString(deployment().name, location)}-alz-rbac-asi-wait-${managementGroupName}',
+    '${uniqueString(managementGroupName, location)}-alz-rbac-asi-wait-${managementGroupName}',
     deploymentNameBaseMax
   )
   mgCustomPolicyDefinitionsWait: take(
-    '${uniqueString(deployment().name, location)}-alz-pol-def-wait-${managementGroupName}',
+    '${uniqueString(managementGroupName, location)}-alz-pol-def-wait-${managementGroupName}',
     deploymentNameBaseMax
   )
   mgCustomPolicySetDefinitionsWait: take(
-    '${uniqueString(deployment().name, location)}-alz-pol-init-wait-${managementGroupName}',
+    '${uniqueString(managementGroupName, location)}-alz-pol-init-wait-${managementGroupName}',
     deploymentNameBaseMax
   )
-  mgPolicyDefinitions: take('${uniqueString(deployment().name, location)}-alz-mg-pol-def-${managementGroupName}', 64)
+  mgPolicyDefinitions: take('${uniqueString(managementGroupName, location)}-alz-mg-pol-def-${managementGroupName}', 64)
   mgPolicySetDefinitions: take(
-    '${uniqueString(deployment().name, location)}-alz-mg-pol-init-${managementGroupName}',
+    '${uniqueString(managementGroupName, location)}-alz-mg-pol-init-${managementGroupName}',
     64
   )
-  mgPolicyAssignments: take('${uniqueString(deployment().name, location)}-alz-mg-pol-asi-${managementGroupName}', 64)
+  mgPolicyAssignments: take('${uniqueString(managementGroupName, location)}-alz-mg-pol-asi-${managementGroupName}', 64)
   mgPolicyAssignmentsWait: take(
-    '${uniqueString(deployment().name, location)}-alz-pol-asi-wait${managementGroupName}',
+    '${uniqueString(managementGroupName, location)}-alz-pol-asi-wait${managementGroupName}',
     deploymentNameBaseMax
   )
 }
@@ -302,7 +302,7 @@ module mgPolicyAssignmentsWait 'modules/wait.bicep' = [
   }
 ]
 
-module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.5.2' = [
+module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.5.3' = [
   for (polAsi, index) in (filteredManagementGroupPolicyAssignments ?? []): {
     scope: managementGroup(managementGroupName)
     dependsOn: [
@@ -383,7 +383,7 @@ module mgRoleAssignmentsWait 'modules/wait.bicep' = [
   }
 ]
 
-module mgRoleAssignments 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = [
+module mgRoleAssignments 'br/public:avm/ptn/authorization/role-assignment:0.2.3' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: take(
       '${deploymentNames.mgRoleAssignments}-${uniqueString(managementGroupName, roleAssignment.principalId, roleAssignment.roleDefinitionId)}',
