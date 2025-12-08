@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "4073948387612201548"
+      "templateHash": "16077793607676555018"
     },
     "name": "avm/ptn/alz/empty",
     "description": "Azure Landing Zones - Bicep - Empty\n\nPlease review the [Usage examples](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty#Usage-examples) section in the module's README, but please ensure for the `max` example you review the entire [directory](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty/tests/e2e/max) to see the supplementary files that are required for the example.\n\nAlso please ensure you review the [Notes section of the module's README](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty#Notes) for important information about the module as well as features that exist outside of parameter inputs."
@@ -683,19 +683,19 @@
     "deploymentNameIndexSuffixReserve": 4,
     "deploymentNameBaseMax": "[sub(64, variables('deploymentNameIndexSuffixReserve'))]",
     "deploymentNames": {
-      "mg": "[take(format('{0}-alz-mg-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), 64)]",
-      "mgSubPlacement": "[take(format('{0}-alz-sub-place-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), 64)]",
-      "mgSubPlacementWait": "[take(format('{0}-alz-sub-place-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), variables('deploymentNameBaseMax'))]",
-      "mgRoleAssignments": "[take(format('{0}-alz-mg-rbac-asi-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), 64)]",
-      "mgRoleDefinitions": "[take(format('{0}-alz-mg-rbac-def-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), 64)]",
-      "mgRoleDefinitionsWait": "[take(format('{0}-alz-rbac-def-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), variables('deploymentNameBaseMax'))]",
-      "mgRoleAssignmentsWait": "[take(format('{0}-alz-rbac-asi-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), variables('deploymentNameBaseMax'))]",
-      "mgCustomPolicyDefinitionsWait": "[take(format('{0}-alz-pol-def-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), variables('deploymentNameBaseMax'))]",
-      "mgCustomPolicySetDefinitionsWait": "[take(format('{0}-alz-pol-init-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), variables('deploymentNameBaseMax'))]",
-      "mgPolicyDefinitions": "[take(format('{0}-alz-mg-pol-def-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), 64)]",
-      "mgPolicySetDefinitions": "[take(format('{0}-alz-mg-pol-init-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), 64)]",
-      "mgPolicyAssignments": "[take(format('{0}-alz-mg-pol-asi-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), 64)]",
-      "mgPolicyAssignmentsWait": "[take(format('{0}-alz-pol-asi-wait{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName')), variables('deploymentNameBaseMax'))]"
+      "mg": "[take(format('{0}-alz-mg-{1}', uniqueString(parameters('managementGroupName'), parameters('location')), parameters('managementGroupName')), 64)]",
+      "mgSubPlacement": "[take(format('{0}-alz-sub-place-{1}', uniqueString(parameters('managementGroupName'), parameters('location')), parameters('managementGroupName')), 64)]",
+      "mgSubPlacementWait": "[take(format('{0}-alz-sub-place-wait-{1}', uniqueString(parameters('managementGroupName'), parameters('location')), parameters('managementGroupName')), variables('deploymentNameBaseMax'))]",
+      "mgRoleAssignments": "[take(format('{0}-alz-mg-rbac-asi-{1}', uniqueString(parameters('managementGroupName'), parameters('location')), parameters('managementGroupName')), 64)]",
+      "mgRoleDefinitions": "[take(format('{0}-alz-mg-rbac-def-{1}', uniqueString(parameters('managementGroupName'), parameters('location')), parameters('managementGroupName')), 64)]",
+      "mgRoleDefinitionsWait": "[take(format('{0}-alz-rbac-def-wait-{1}', uniqueString(parameters('managementGroupName'), parameters('location')), parameters('managementGroupName')), variables('deploymentNameBaseMax'))]",
+      "mgRoleAssignmentsWait": "[take(format('{0}-alz-rbac-asi-wait-{1}', uniqueString(parameters('managementGroupName'), parameters('location')), parameters('managementGroupName')), variables('deploymentNameBaseMax'))]",
+      "mgCustomPolicyDefinitionsWait": "[take(format('{0}-alz-pol-def-wait-{1}', uniqueString(parameters('managementGroupName'), parameters('location')), parameters('managementGroupName')), variables('deploymentNameBaseMax'))]",
+      "mgCustomPolicySetDefinitionsWait": "[take(format('{0}-alz-pol-init-wait-{1}', uniqueString(parameters('managementGroupName'), parameters('location')), parameters('managementGroupName')), variables('deploymentNameBaseMax'))]",
+      "mgPolicyDefinitions": "[take(format('{0}-alz-mg-pol-def-{1}', uniqueString(parameters('managementGroupName'), parameters('location')), parameters('managementGroupName')), 64)]",
+      "mgPolicySetDefinitions": "[take(format('{0}-alz-mg-pol-init-{1}', uniqueString(parameters('managementGroupName'), parameters('location')), parameters('managementGroupName')), 64)]",
+      "mgPolicyAssignments": "[take(format('{0}-alz-mg-pol-asi-{1}', uniqueString(parameters('managementGroupName'), parameters('location')), parameters('managementGroupName')), 64)]",
+      "mgPolicyAssignmentsWait": "[take(format('{0}-alz-pol-asi-wait{1}', uniqueString(parameters('managementGroupName'), parameters('location')), parameters('managementGroupName')), variables('deploymentNameBaseMax'))]"
     },
     "filteredManagementGroupPolicyAssignments": "[filter(coalesce(parameters('managementGroupPolicyAssignments'), createArray()), lambda('polAsi', not(contains(parameters('managementGroupExcludedPolicyAssignments'), lambdaVariables('polAsi').name))))]"
   },
@@ -1305,7 +1305,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "4091301079110824490"
+              "templateHash": "5565449481173786091"
             },
             "name": "Policy Assignments (All scopes)",
             "description": "This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope."
@@ -1496,7 +1496,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[take(format('46d3xbcp.ptn.authorization-policyassignment.{0}.{1}', replace('0.5.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+              "name": "[take(format('46d3xbcp.ptn.authorization-policyassignment.{0}.{1}', replace('0.5.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
               "location": "[parameters('location')]",
               "properties": {
                 "mode": "Incremental",
@@ -1517,7 +1517,7 @@
               "condition": "[and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('{0}-PolicyAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))]",
+              "name": "[format('pol-asi-mg-{0}', uniqueString(managementGroup().name, parameters('managementGroupId'), parameters('location'), parameters('name')))]",
               "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('managementGroupId'))]",
               "location": "[deployment().location]",
               "properties": {
@@ -1574,7 +1574,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.39.26.7824",
-                      "templateHash": "3522442314177871322"
+                      "templateHash": "1968943732444241317"
                     },
                     "name": "Policy Assignments (Management Group scope)",
                     "description": "This module deploys a Policy Assignment at a Management Group scope."
@@ -1756,7 +1756,7 @@
                       "condition": "[and(and(not(empty(parameters('roleDefinitionIds'))), not(empty(variables('finalArrayOfManagementGroupsToAssignRbacTo')))), equals(parameters('identity'), 'SystemAssigned'))]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC', uniqueString(deployment().name, parameters('location'), parameters('roleDefinitionIds')[copyIndex()], parameters('name')))]",
+                      "name": "[format('pol-asi-mg-rbac-mgs-loop-{0}', uniqueString(managementGroup().name, parameters('location'), parameters('roleDefinitionIds')[copyIndex()], parameters('name')))]",
                       "location": "[deployment().location]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -1784,7 +1784,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.39.26.7824",
-                              "templateHash": "11943394730159030733"
+                              "templateHash": "8639566005973420575"
                             }
                           },
                           "parameters": {
@@ -1830,7 +1830,7 @@
                               },
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2025-04-01",
-                              "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC', uniqueString(deployment().name, parameters('location'), parameters('roleDefinitionId'), parameters('name')))]",
+                              "name": "[format('pol-asi-mg-rbac-mg-{0}', uniqueString(managementGroup().name, parameters('managementGroupsIDsToAssignRbacTo')[copyIndex()], parameters('location'), parameters('roleDefinitionId'), parameters('name'), parameters('policyAssignmentIdentityId')))]",
                               "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('managementGroupsIDsToAssignRbacTo')[copyIndex()])]",
                               "location": "[deployment().location]",
                               "properties": {
@@ -1917,7 +1917,7 @@
                       "condition": "[and(and(not(empty(parameters('roleDefinitionIds'))), not(empty(parameters('additionalSubscriptionIDsToAssignRbacTo')))), equals(parameters('identity'), 'SystemAssigned'))]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC-Subs', uniqueString(deployment().name, parameters('location'), parameters('roleDefinitionIds')[copyIndex()], parameters('name')))]",
+                      "name": "[format('pol-asi-mg-rbac-subs-loop-{0}', uniqueString(managementGroup().name, parameters('location'), parameters('roleDefinitionIds')[copyIndex()], parameters('name')))]",
                       "location": "[deployment().location]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -1945,7 +1945,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.39.26.7824",
-                              "templateHash": "5852722490435240271"
+                              "templateHash": "2176271204397150134"
                             }
                           },
                           "parameters": {
@@ -1991,7 +1991,7 @@
                               },
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2025-04-01",
-                              "name": "[format('{0}-PolicyAssignment-MG-Module-RBAC-Sub-{1}', uniqueString(deployment().name, parameters('location'), parameters('roleDefinitionId'), parameters('name')), substring(parameters('subscriptionIDsToAssignRbacTo')[copyIndex()], 0, 8))]",
+                              "name": "[format('pol-asi-mg-rbac-sub-{0}', uniqueString(managementGroup().name, parameters('subscriptionIDsToAssignRbacTo')[copyIndex()], parameters('location'), parameters('roleDefinitionId'), parameters('name'), parameters('policyAssignmentIdentityId')))]",
                               "subscriptionId": "[parameters('subscriptionIDsToAssignRbacTo')[copyIndex()]]",
                               "location": "[deployment().location]",
                               "properties": {
@@ -2078,7 +2078,7 @@
                       "condition": "[and(and(not(empty(parameters('roleDefinitionIds'))), not(empty(parameters('additionalResourceGroupResourceIDsToAssignRbacTo')))), equals(parameters('identity'), 'SystemAssigned'))]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC-RGs', uniqueString(deployment().name, parameters('location'), parameters('roleDefinitionIds')[copyIndex()], parameters('name')))]",
+                      "name": "[format('pol-asi-mg-rbac-rgs-loop-{0}', uniqueString(managementGroup().name, parameters('location'), parameters('roleDefinitionIds')[copyIndex()], parameters('name')))]",
                       "location": "[deployment().location]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -2106,7 +2106,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.39.26.7824",
-                              "templateHash": "905227369220927938"
+                              "templateHash": "15683202765386697571"
                             }
                           },
                           "parameters": {
@@ -2152,7 +2152,7 @@
                               },
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2025-04-01",
-                              "name": "[format('{0}-PolicyAssignment-MG-Module-RBAC-RG-Sub-{1}', uniqueString(deployment().name, parameters('location'), parameters('roleDefinitionId'), parameters('name'), parameters('resourceGroupResourceIDsToAssignRbacTo')[copyIndex()]), substring(split(parameters('resourceGroupResourceIDsToAssignRbacTo')[copyIndex()], '/')[2], 0, 8))]",
+                              "name": "[format('pol-asi-mg-rbac-rg-{0}', uniqueString(managementGroup().name, parameters('resourceGroupResourceIDsToAssignRbacTo')[copyIndex()], parameters('location'), parameters('roleDefinitionId'), parameters('name'), parameters('policyAssignmentIdentityId')))]",
                               "subscriptionId": "[split(parameters('resourceGroupResourceIDsToAssignRbacTo')[copyIndex()], '/')[2]]",
                               "resourceGroup": "[split(parameters('resourceGroupResourceIDsToAssignRbacTo')[copyIndex()], '/')[4]]",
                               "properties": {
@@ -2269,7 +2269,7 @@
               "condition": "[and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('{0}-PolicyAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))]",
+              "name": "[format('pol-asi-sub-{0}', uniqueString(managementGroup().name, parameters('subscriptionId'), parameters('location'), parameters('name')))]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "location": "[deployment().location]",
               "properties": {
@@ -2535,7 +2535,7 @@
               "condition": "[and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('{0}-PolicyAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))]",
+              "name": "[format('pol-asi-rg-{0}', uniqueString(managementGroup().name, parameters('subscriptionId'), parameters('resourceGroupName'), parameters('location'), parameters('name')))]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('resourceGroupName')]",
               "properties": {
@@ -3169,8 +3169,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "15934868457214952424"
+              "version": "0.39.26.7824",
+              "templateHash": "3482607618921017961"
             },
             "name": "Role Assignments (All scopes)",
             "description": "This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope."
@@ -3275,7 +3275,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.ptn.authorization-roleassignment.{0}.{1}', replace('0.2.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.ptn.authorization-roleassignment.{0}.{1}', replace('0.2.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3295,8 +3295,8 @@
             {
               "condition": "[and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('role-asi-mg-{0}', uniqueString(managementGroup().name, parameters('managementGroupId'), parameters('location'), parameters('roleDefinitionIdOrName'), parameters('principalId')))]",
               "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('managementGroupId'))]",
               "location": "[deployment().location]",
               "properties": {
@@ -3328,8 +3328,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "2146197675736538693"
+                      "version": "0.39.26.7824",
+                      "templateHash": "17757124846757844493"
                     },
                     "name": "Role Assignments (Management Group scope)",
                     "description": "This module deploys a Role Assignment at a Management Group scope."
@@ -3458,8 +3458,8 @@
             {
               "condition": "[and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('role-asi-sub-{0}', uniqueString(managementGroup().name, parameters('subscriptionId'), parameters('location'), parameters('roleDefinitionIdOrName'), parameters('principalId')))]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "location": "[deployment().location]",
               "properties": {
@@ -3491,8 +3491,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "18268822790511715012"
+                      "version": "0.39.26.7824",
+                      "templateHash": "17966277059112419137"
                     },
                     "name": "Role Assignments (Subscription scope)",
                     "description": "This module deploys a Role Assignment at a Subscription scope."
@@ -3626,8 +3626,8 @@
             {
               "condition": "[and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('role-asi-rg-{0}', uniqueString(managementGroup().name, parameters('subscriptionId'), parameters('resourceGroupName'), parameters('location'), parameters('roleDefinitionIdOrName'), parameters('principalId')))]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('resourceGroupName')]",
               "properties": {
@@ -3662,8 +3662,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "8200662209265445642"
+                      "version": "0.39.26.7824",
+                      "templateHash": "15596389954699354305"
                     },
                     "name": "Role Assignments (Resource Group scope)",
                     "description": "This module deploys a Role Assignment at a Resource Group scope."
@@ -3807,21 +3807,21 @@
               "metadata": {
                 "description": "The GUID of the Role Assignment."
               },
-              "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value))]"
+              "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('role-asi-mg-{0}', uniqueString(managementGroup().name, parameters('managementGroupId'), parameters('location'), parameters('roleDefinitionIdOrName'), parameters('principalId')))), '2025-04-01').outputs.name.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('role-asi-sub-{0}', uniqueString(managementGroup().name, parameters('subscriptionId'), parameters('location'), parameters('roleDefinitionIdOrName'), parameters('principalId')))), '2025-04-01').outputs.name.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('role-asi-rg-{0}', uniqueString(managementGroup().name, parameters('subscriptionId'), parameters('resourceGroupName'), parameters('location'), parameters('roleDefinitionIdOrName'), parameters('principalId')))), '2025-04-01').outputs.name.value))]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the Role Assignment."
               },
-              "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value))]"
+              "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('role-asi-mg-{0}', uniqueString(managementGroup().name, parameters('managementGroupId'), parameters('location'), parameters('roleDefinitionIdOrName'), parameters('principalId')))), '2025-04-01').outputs.resourceId.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('role-asi-sub-{0}', uniqueString(managementGroup().name, parameters('subscriptionId'), parameters('location'), parameters('roleDefinitionIdOrName'), parameters('principalId')))), '2025-04-01').outputs.resourceId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('role-asi-rg-{0}', uniqueString(managementGroup().name, parameters('subscriptionId'), parameters('resourceGroupName'), parameters('location'), parameters('roleDefinitionIdOrName'), parameters('principalId')))), '2025-04-01').outputs.resourceId.value))]"
             },
             "scope": {
               "type": "string",
               "metadata": {
                 "description": "The scope this Role Assignment applies to."
               },
-              "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.scope.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.scope.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.scope.value))]"
+              "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('role-asi-mg-{0}', uniqueString(managementGroup().name, parameters('managementGroupId'), parameters('location'), parameters('roleDefinitionIdOrName'), parameters('principalId')))), '2025-04-01').outputs.scope.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('role-asi-sub-{0}', uniqueString(managementGroup().name, parameters('subscriptionId'), parameters('location'), parameters('roleDefinitionIdOrName'), parameters('principalId')))), '2025-04-01').outputs.scope.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('role-asi-rg-{0}', uniqueString(managementGroup().name, parameters('subscriptionId'), parameters('resourceGroupName'), parameters('location'), parameters('roleDefinitionIdOrName'), parameters('principalId')))), '2025-04-01').outputs.scope.value))]"
             }
           }
         }
