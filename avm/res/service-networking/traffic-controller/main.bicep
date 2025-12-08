@@ -13,15 +13,15 @@ param enableTelemetry bool = true
 @description('Optional. Resource tags.')
 param tags resourceInput<'Microsoft.ServiceNetworking/trafficControllers@2025-01-01'>.tags?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings for all Resources in the solution.')
 param lock lockType?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
