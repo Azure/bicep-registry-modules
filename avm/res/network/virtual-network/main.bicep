@@ -117,39 +117,25 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-@description('Required. The AddressSpace that contains an array of IP address ranges that can be used by subnets.')
-param addressSpace addressSpaceType
-
-@export()
-@description('The type for an address space.')
-type addressSpaceType = {
-  @description('Conditional. A list of address blocks reserved for this virtual network in CIDR notation. Required if `ipamPoolPrefixAllocations` is empty.')
-  addressPrefixes: string[]?
-
-  @description('Conditional. A list of IPAM Pools allocating IP address prefixes. Required if `addressPrefixes` is empty.')
-  ipamPoolPrefixAllocations: {
-    @description('Required. The number of IP addresses to allocate.')
-    numberOfIpAddresses: int
-
-    @description('Required. Resource id of the associated Azure IpamPool resource.')
-    poolResourceId: string
-  }[]?
-}
-
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   name: name
   location: location
   tags: tags
   properties: {
-    addressSpace: {
-      addressPrefixes: addressSpace.?addressPrefixes
-      ipamPoolPrefixAllocations: map(addressSpace.?ipamPoolPrefixAllocations ?? [], allocation => {
-        numberOfIpAddresses: string(allocation.numberOfIpAddresses)
-        pool: {
-          id: allocation.poolResourceId
+    addressSpace: contains(addressPrefixes[0], '/Microsoft.Network/networkManagers/')
+      ? {
+          ipamPoolPrefixAllocations: [
+            {
+              pool: {
+                id: addressPrefixes[0]
+              }
+              numberOfIpAddresses: ipamPoolNumberOfIpAddresses
+            }
+          ]
         }
-      })
-    }
+      : {
+          addressPrefixes: addressPrefixes
+        }
     bgpCommunities: !empty(virtualNetworkBgpCommunity)
       ? {
           virtualNetworkCommunity: virtualNetworkBgpCommunity!
