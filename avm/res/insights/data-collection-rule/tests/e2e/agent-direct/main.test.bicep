@@ -50,7 +50,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       dataCollectionRuleProperties: {
         kind: 'AgentDirectToStore'
         description: 'Send data to Agent Direct Storage. Based on the example at https://learn.microsoft.com/en-us/azure/azure-monitor/vm/send-event-hubs-storage'
