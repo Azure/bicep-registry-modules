@@ -355,7 +355,7 @@ type agentDirectToStoreType = {
   @description('Required. Specification of destinations that can be used in data flows.')
   destinations: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.destinations
 
-  @description('Optional. The resource ID of the data collection endpoint that this rule can be used with.')
+  @description('Optional. Description of the data collection rule.')
   description: string?
 }
 
