@@ -117,7 +117,7 @@ param virtualNetworkResourceGroupName string = ''
 
 @maxLength(90)
 @description('Optional. The name of the resource group to create the user-assigned managed identities in.')
-param userAssignedIdentityResourceGroupName string = 'rsg-${toLower(replace(deployment().location, ' ', ''))}-identities'
+param userAssignedIdentityResourceGroupName string = 'rsg-${deployment().location}-identities'
 
 @description('''Optional. An object of Tag key & value pairs to be appended to the Resource Group that the Virtual Network is created in.
 
@@ -131,7 +131,7 @@ param virtualNetworkResourceGroupLockEnabled bool = true
 
 @description('''Optional. The location of the virtual network. Use region shortnames e.g. `uksouth`, `eastus`, etc. Defaults to the region where the ARM/Bicep deployment is targeted to unless overridden.
 ''')
-param virtualNetworkLocation string = toLower(replace(deployment().location, ' ', ''))
+param virtualNetworkLocation string = deployment().location
 
 @minLength(2)
 @maxLength(64)
@@ -289,20 +289,20 @@ param pimRoleAssignments pimRoleAssignmentTypeType[] = []
 param enableTelemetry bool = true
 
 @description('Optional. The name of the resource group to create the deployment script for resource providers registration.')
-param deploymentScriptResourceGroupName string = 'rsg-${toLower(replace(deployment().location, ' ', ''))}-ds'
+param deploymentScriptResourceGroupName string = 'rsg-${deployment().location}-ds'
 
 @description('Optional. The name of the deployment script to register resource providers.')
-param deploymentScriptName string = 'ds-${toLower(replace(deployment().location, ' ', ''))}'
+param deploymentScriptName string = 'ds-${deployment().location}'
 
 @description('Optional. The name of the user managed identity for the resource providers registration deployment script.')
-param deploymentScriptManagedIdentityName string = 'id-${toLower(replace(deployment().location, ' ', ''))}'
+param deploymentScriptManagedIdentityName string = 'id-${deployment().location}'
 
 @maxLength(64)
 @description('Optional. The name of the private virtual network for the deployment script. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length.')
-param deploymentScriptVirtualNetworkName string = 'vnet-ds-${toLower(replace(deployment().location, ' ', ''))}'
+param deploymentScriptVirtualNetworkName string = 'vnet-ds-${deployment().location}'
 
 @description('Optional. The name of the network security group for the deployment script private subnet.')
-param deploymentScriptNetworkSecurityGroupName string = 'nsg-ds-${toLower(replace(deployment().location, ' ', ''))}'
+param deploymentScriptNetworkSecurityGroupName string = 'nsg-ds-${deployment().location}'
 
 @description('Optional. The address prefix of the private virtual network for the deployment script.')
 param virtualNetworkDeploymentScriptAddressPrefix string = '192.168.0.0/24'
@@ -311,7 +311,7 @@ param virtualNetworkDeploymentScriptAddressPrefix string = '192.168.0.0/24'
 param deploymentScriptStorageAccountName string = 'stgds${substring(uniqueString(deployment().name,existingSubscriptionId,subscriptionAliasName,subscriptionDisplayName, virtualNetworkLocation), 0, 10)}'
 
 @description('Optional. The location of the deployment script. Use region shortnames e.g. uksouth, eastus, etc.')
-param deploymentScriptLocation string = toLower(replace(deployment().location, ' ', ''))
+param deploymentScriptLocation string = deployment().location
 
 @description('''
 Optional. An object of resource providers and resource providers features to register. If not specified, a default list of common resource providers will be registered. To disable resource provider registration entirely, provide an empty object `{}`.
@@ -427,6 +427,110 @@ var deploymentNames = {
   )
 }
 
+var azureRegionShortNameDisplayNameAsKey = {
+  'australia southeast': 'australiasoutheast'
+  'west central us': 'westcentralus'
+  'chile central': 'chilecentral'
+  'east us 2 euap': 'eastus2euap'
+  'japan west': 'japanwest'
+  'west us 2': 'westus2'
+  'uae central': 'uaecentral'
+  'france central': 'francecentral'
+  'east us 2': 'eastus2'
+  'malaysia west': 'malaysiawest'
+  'korea south': 'koreasouth'
+  'switzerland west': 'switzerlandwest'
+  'west us': 'westus'
+  'australia central 2': 'australiacentral2'
+  'north europe': 'northeurope'
+  'switzerland north': 'switzerlandnorth'
+  'uae north': 'uaenorth'
+  'australia east': 'australiaeast'
+  'new zealand north': 'newzealandnorth'
+  'japan east': 'japaneast'
+  'norway east': 'norwayeast'
+  'south india': 'southindia'
+  'korea central': 'koreacentral'
+  'malaysia south': 'malaysiasouth'
+  'uk south': 'uksouth'
+  'qatar central': 'qatarcentral'
+  'canada east': 'canadaeast'
+  'north central us': 'northcentralus'
+  'east asia': 'eastasia'
+  'uk west': 'ukwest'
+  'brazil southeast': 'brazilsoutheast'
+  'canada central': 'canadacentral'
+  'germany north': 'germanynorth'
+  'west india': 'westindia'
+  'italy north': 'italynorth'
+  'israel central': 'israelcentral'
+  'brazil south': 'brazilsouth'
+  'central us euap': 'centraluseuap'
+  'germany west central': 'germanywestcentral'
+  'south africa north': 'southafricanorth'
+  'sweden south': 'swedensouth'
+  'poland central': 'polandcentral'
+  'spain central': 'spaincentral'
+  'south central us': 'southcentralus'
+  'east us': 'eastus'
+  'southeast asia': 'southeastasia'
+  'france south': 'francesouth'
+  'australia central': 'australiacentral'
+  'central us': 'centralus'
+  'central india': 'centralindia'
+  'norway west': 'norwaywest'
+  'mexico central': 'mexicocentral'
+  'west europe': 'westeurope'
+  'south africa west': 'southafricawest'
+  'west us 3': 'westus3'
+  'taiwan north': 'taiwannorth'
+  'sweden central': 'swedencentral'
+  'usgov virginia': 'usgovvirginia'
+  'usgov texas': 'usgovtexas'
+  'usgov arizona': 'usgovarizona'
+  'usdod east': 'usdodeast'
+  'usdod central': 'usdodcentral'
+  'indonesia central': 'indonesiacentral'
+}
+
+var locationLowered = toLower(deployment().location)
+var locationLoweredAndSpacesRemoved = contains(locationLowered, ' ')
+  ? azureRegionShortNameDisplayNameAsKey[locationLowered]
+  : locationLowered
+
+// Normalized resource names - replaces deployment().location in default values to remove spaces and capitals
+var userAssignedIdentityResourceGroupNameNormalized = userAssignedIdentityResourceGroupName == 'rsg-${deployment().location}-identities'
+  ? 'rsg-${locationLoweredAndSpacesRemoved}-identities'
+  : userAssignedIdentityResourceGroupName
+
+var virtualNetworkLocationNormalized = virtualNetworkLocation == deployment().location
+  ? locationLoweredAndSpacesRemoved
+  : virtualNetworkLocation
+
+var deploymentScriptResourceGroupNameNormalized = deploymentScriptResourceGroupName == 'rsg-${deployment().location}-ds'
+  ? 'rsg-${locationLoweredAndSpacesRemoved}-ds'
+  : deploymentScriptResourceGroupName
+
+var deploymentScriptNameNormalized = deploymentScriptName == 'ds-${deployment().location}'
+  ? 'ds-${locationLoweredAndSpacesRemoved}'
+  : deploymentScriptName
+
+var deploymentScriptManagedIdentityNameNormalized = deploymentScriptManagedIdentityName == 'id-${deployment().location}'
+  ? 'id-${locationLoweredAndSpacesRemoved}'
+  : deploymentScriptManagedIdentityName
+
+var deploymentScriptVirtualNetworkNameNormalized = deploymentScriptVirtualNetworkName == 'vnet-ds-${deployment().location}'
+  ? 'vnet-ds-${locationLoweredAndSpacesRemoved}'
+  : deploymentScriptVirtualNetworkName
+
+var deploymentScriptNetworkSecurityGroupNameNormalized = deploymentScriptNetworkSecurityGroupName == 'nsg-ds-${deployment().location}'
+  ? 'nsg-ds-${locationLoweredAndSpacesRemoved}'
+  : deploymentScriptNetworkSecurityGroupName
+
+var deploymentScriptLocationNormalized = deploymentScriptLocation == deployment().location
+  ? locationLoweredAndSpacesRemoved
+  : deploymentScriptLocation
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.lz-subvending.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, virtualNetworkLocation), 0, 4)}'
@@ -474,7 +578,7 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     virtualNetworkResourceGroupName: virtualNetworkResourceGroupName
     virtualNetworkResourceGroupTags: virtualNetworkResourceGroupTags
     virtualNetworkResourceGroupLockEnabled: virtualNetworkResourceGroupLockEnabled
-    virtualNetworkLocation: virtualNetworkLocation
+    virtualNetworkLocation: virtualNetworkLocationNormalized
     virtualNetworkName: virtualNetworkName
     virtualNetworkTags: virtualNetworkTags
     virtualNetworkAddressSpace: virtualNetworkAddressSpace
@@ -494,20 +598,20 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     roleAssignmentEnabled: roleAssignmentEnabled
     roleAssignments: roleAssignments
     pimRoleAssignments: pimRoleAssignments
-    deploymentScriptResourceGroupName: deploymentScriptResourceGroupName
-    deploymentScriptName: deploymentScriptName
-    deploymentScriptManagedIdentityName: deploymentScriptManagedIdentityName
+    deploymentScriptResourceGroupName: deploymentScriptResourceGroupNameNormalized
+    deploymentScriptName: deploymentScriptNameNormalized
+    deploymentScriptManagedIdentityName: deploymentScriptManagedIdentityNameNormalized
     resourceProviders: resourceProviders
-    deploymentScriptVirtualNetworkName: deploymentScriptVirtualNetworkName
-    deploymentScriptLocation: deploymentScriptLocation
-    deploymentScriptNetworkSecurityGroupName: deploymentScriptNetworkSecurityGroupName
+    deploymentScriptVirtualNetworkName: deploymentScriptVirtualNetworkNameNormalized
+    deploymentScriptLocation: deploymentScriptLocationNormalized
+    deploymentScriptNetworkSecurityGroupName: deploymentScriptNetworkSecurityGroupNameNormalized
     virtualNetworkDeploymentScriptAddressPrefix: virtualNetworkDeploymentScriptAddressPrefix
     deploymentScriptStorageAccountName: deploymentScriptStorageAccountName
     virtualNetworkDeployNatGateway: virtualNetworkDeployNatGateway
     virtualNetworkNatGatewayConfiguration: virtualNetworkNatGatewayConfiguration
     virtualNetworkBastionConfiguration: virtualNetworkBastionConfiguration
     virtualNetworkDeployBastion: virtualNetworkDeployBastion
-    userAssignedIdentityResourceGroupName: userAssignedIdentityResourceGroupName
+    userAssignedIdentityResourceGroupName: userAssignedIdentityResourceGroupNameNormalized
     userAssignedManagedIdentities: userAssignedManagedIdentities
     userAssignedIdentitiesResourceGroupLockEnabled: userAssignedIdentitiesResourceGroupLockEnabled
     peerAllVirtualNetworks: peerAllVirtualNetworks

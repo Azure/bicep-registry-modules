@@ -3526,7 +3526,7 @@ The location of the deployment script. Use region shortnames e.g. uksouth, eastu
 
 - Required: No
 - Type: string
-- Default: `[toLower(replace(deployment().location, ' ', ''))]`
+- Default: `[deployment().location]`
 
 ### Parameter: `deploymentScriptManagedIdentityName`
 
@@ -3534,7 +3534,7 @@ The name of the user managed identity for the resource providers registration de
 
 - Required: No
 - Type: string
-- Default: `[format('id-{0}', toLower(replace(deployment().location, ' ', '')))]`
+- Default: `[format('id-{0}', deployment().location)]`
 
 ### Parameter: `deploymentScriptName`
 
@@ -3542,7 +3542,7 @@ The name of the deployment script to register resource providers.
 
 - Required: No
 - Type: string
-- Default: `[format('ds-{0}', toLower(replace(deployment().location, ' ', '')))]`
+- Default: `[format('ds-{0}', deployment().location)]`
 
 ### Parameter: `deploymentScriptNetworkSecurityGroupName`
 
@@ -3550,7 +3550,7 @@ The name of the network security group for the deployment script private subnet.
 
 - Required: No
 - Type: string
-- Default: `[format('nsg-ds-{0}', toLower(replace(deployment().location, ' ', '')))]`
+- Default: `[format('nsg-ds-{0}', deployment().location)]`
 
 ### Parameter: `deploymentScriptResourceGroupName`
 
@@ -3558,7 +3558,7 @@ The name of the resource group to create the deployment script for resource prov
 
 - Required: No
 - Type: string
-- Default: `[format('rsg-{0}-ds', toLower(replace(deployment().location, ' ', '')))]`
+- Default: `[format('rsg-{0}-ds', deployment().location)]`
 
 ### Parameter: `deploymentScriptStorageAccountName`
 
@@ -3574,7 +3574,7 @@ The name of the private virtual network for the deployment script. The string mu
 
 - Required: No
 - Type: string
-- Default: `[format('vnet-ds-{0}', toLower(replace(deployment().location, ' ', '')))]`
+- Default: `[format('vnet-ds-{0}', deployment().location)]`
 
 ### Parameter: `enableTelemetry`
 
@@ -4902,7 +4902,7 @@ The name of the resource group to create the user-assigned managed identities in
 
 - Required: No
 - Type: string
-- Default: `[format('rsg-{0}-identities', toLower(replace(deployment().location, ' ', '')))]`
+- Default: `[format('rsg-{0}-identities', deployment().location)]`
 
 ### Parameter: `userAssignedManagedIdentities`
 
@@ -5407,7 +5407,7 @@ The location of the virtual network. Use region shortnames e.g. `uksouth`, `east
 
 - Required: No
 - Type: string
-- Default: `[toLower(replace(deployment().location, ' ', ''))]`
+- Default: `[deployment().location]`
 
 ### Parameter: `virtualNetworkName`
 
