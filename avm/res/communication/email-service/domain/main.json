@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "7644722574448944629"
+      "templateHash": "10733265579935855716"
     },
     "name": "Email Services Domains",
     "description": "This module deploys an Email Service Domain"
@@ -73,7 +73,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -148,7 +148,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -179,7 +179,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Communication/emailServices/domains@2023-04-01#properties/tags"
+          "source": "Microsoft.Communication/emailServices/domains@2025-05-01#properties/tags"
         },
         "description": "Optional. Endpoint tags."
       },
@@ -256,12 +256,12 @@
     "emailService": {
       "existing": true,
       "type": "Microsoft.Communication/emailServices",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2025-05-01",
       "name": "[parameters('emailServiceName')]"
     },
     "domain": {
       "type": "Microsoft.Communication/emailServices/domains",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2025-05-01",
       "name": "[format('{0}/{1}', parameters('emailServiceName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -343,7 +343,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "7017896381373476636"
+              "templateHash": "12879185510541651328"
             },
             "name": "Sender Usernames",
             "description": "This module deploys an Sender"
@@ -384,7 +384,7 @@
           "resources": [
             {
               "type": "Microsoft.Communication/emailServices/domains/senderUsernames",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2025-05-01",
               "name": "[format('{0}/{1}/{2}', parameters('emailServiceName'), parameters('domainName'), parameters('name'))]",
               "properties": {
                 "username": "[parameters('username')]",
@@ -454,6 +454,20 @@
         "description": "The verification records for the domain."
       },
       "value": "[reference('domain').verificationRecords]"
+    },
+    "fromSenderDomain": {
+      "type": "string",
+      "metadata": {
+        "description": "The from sender domain for the domain."
+      },
+      "value": "[reference('domain').fromSenderDomain]"
+    },
+    "mailFromSenderDomain": {
+      "type": "string",
+      "metadata": {
+        "description": "The mail from sender domain for the domain."
+      },
+      "value": "[reference('domain').mailFromSenderDomain]"
     }
   }
 }
