@@ -13,7 +13,7 @@ param name string
 param location string = 'global'
 
 @description('Optional. Endpoint tags.')
-param tags resourceInput<'Microsoft.Communication/emailServices/domains@2025-05-01'>.tags?
+param tags resourceInput<'Microsoft.Communication/emailServices/domains@2023-04-01'>.tags?
 
 @allowed([
   'AzureManaged'
@@ -70,11 +70,11 @@ var formattedRoleAssignments = [
 // Resources      //
 // ============== //
 
-resource emailService 'Microsoft.Communication/emailServices@2025-05-01' existing = {
-  name: emailServiceName
+resource emailService 'Microsoft.Communication/emailServices@2023-04-01'' existing = {
+name: emailServiceName
 }
 
-resource domain 'Microsoft.Communication/emailServices/domains@2025-05-01' = {
+resource domain 'Microsoft.Communication/emailServices/domains@2023-04-01' = {
   name: name
   location: location
   tags: tags
@@ -139,7 +139,7 @@ output resourceId string = domain.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The verification records for the domain.')
-output verificationRecords resourceOutput<'Microsoft.Communication/emailServices/domains@2025-05-01'>.properties.verificationRecords = domain.properties.verificationRecords
+output verificationRecords resourceOutput<'Microsoft.Communication/emailServices/domains@2023-04-01'>.properties.verificationRecords = domain.properties.verificationRecords
 
 @description('The from sender domain for the domain.')
 output fromSenderDomain string = domain.properties.fromSenderDomain

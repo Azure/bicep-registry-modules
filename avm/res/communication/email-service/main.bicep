@@ -13,7 +13,7 @@ param location string = 'global'
 param enableTelemetry bool = true
 
 @description('Optional. Endpoint tags.')
-param tags resourceInput<'Microsoft.Communication/emailServices@2025-05-01'>.tags?
+param tags resourceInput<'Microsoft.Communication/emailServices@2023-04-01'>.tags?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
@@ -81,13 +81,13 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource email 'Microsoft.Communication/emailServices@2025-05-01' = {
-  name: name
-  location: location
-  tags: tags
-  properties: {
-    dataLocation: dataLocation
-  }
+resource email 'Microsoft.Communication/emailServices@2023-04-01'' = {
+name: name
+location: location
+tags: tags
+properties: {
+dataLocation: dataLocation
+}
 }
 
 module email_domains 'domain/main.bicep' = [
@@ -157,7 +157,7 @@ output domainResourceIds string[] = [for (domain, index) in (domains ?? []): ema
 output domainNames string[] = [for (domain, index) in (domains ?? []): email_domains[index].outputs.name]
 
 @description('The list of verification records for each domain.')
-output domainVerificationRecords resourceOutput<'Microsoft.Communication/emailServices/domains@2025-05-01'>.properties.verificationRecords[] = [
+output domainVerificationRecords resourceOutput<'Microsoft.Communication/emailServices/domains@2023-04-01'>.properties.verificationRecords[] = [
   for (domain, index) in (domains ?? []): email_domains[index].outputs.verificationRecords
 ]
 
@@ -189,7 +189,7 @@ type domainType = {
   location: string?
 
   @description('Optional. Endpoint tags.')
-  tags: resourceInput<'Microsoft.Communication/emailServices/domains@2025-05-01'>.tags?
+  tags: resourceInput<'Microsoft.Communication/emailServices/domains@2023-04-01'>.tags?
 
   @description('Optional. Describes how the Domain resource is being managed.')
   domainManagement: ('AzureManaged' | 'CustomerManaged' | 'CustomerManagedInExchangeOnline')?
