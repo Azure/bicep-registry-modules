@@ -81,13 +81,13 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource email 'Microsoft.Communication/emailServices@2023-04-01'' = {
-name: name
-location: location
-tags: tags
-properties: {
-dataLocation: dataLocation
-}
+resource email 'Microsoft.Communication/emailServices@2023-04-01' = {
+  name: name
+  location: location
+  tags: tags
+  properties: {
+    dataLocation: dataLocation
+  }
 }
 
 module email_domains 'domain/main.bicep' = [
