@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/bastion-host/CHANGELOG.md).
 
-## 0.8.1
+## 0.8.2
 
 ### Changes
 
@@ -11,7 +11,17 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- none
+- None
+
+## 0.8.1
+
+### Changes
+
+- Updated child module deployment names to use stable identifiers instead of `deployment().name` to prevent deployment history accumulation when using Azure Deployment Stacks.
+
+### Breaking Changes
+
+- None
 
 ## 0.8.0
 
