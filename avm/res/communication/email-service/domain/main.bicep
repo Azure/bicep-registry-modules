@@ -13,7 +13,7 @@ param name string
 param location string = 'global'
 
 @description('Optional. Endpoint tags.')
-param tags resourceInput<'Microsoft.Communication/emailServices/domains@2023-04-01'>.tags?
+param tags resourceInput<'Microsoft.Communication/emailServices/domains@2025-05-01'>.tags?
 
 @allowed([
   'AzureManaged'
@@ -33,11 +33,11 @@ param userEngagementTracking string = 'Disabled'
 @description('Optional. The domains to deploy into this namespace.')
 param senderUsernames senderUsernameType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -70,11 +70,11 @@ var formattedRoleAssignments = [
 // Resources      //
 // ============== //
 
-resource emailService 'Microsoft.Communication/emailServices@2023-04-01' existing = {
+resource emailService 'Microsoft.Communication/emailServices@2025-05-01' existing = {
   name: emailServiceName
 }
 
-resource domain 'Microsoft.Communication/emailServices/domains@2023-04-01' = {
+resource domain 'Microsoft.Communication/emailServices/domains@2025-05-01' = {
   name: name
   location: location
   tags: tags

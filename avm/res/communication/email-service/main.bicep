@@ -13,13 +13,13 @@ param location string = 'global'
 param enableTelemetry bool = true
 
 @description('Optional. Endpoint tags.')
-param tags resourceInput<'Microsoft.Communication/emailServices@2023-04-01'>.tags?
+param tags resourceInput<'Microsoft.Communication/emailServices@2025-05-01'>.tags?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -81,7 +81,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource email 'Microsoft.Communication/emailServices@2023-04-01' = {
+resource email 'Microsoft.Communication/emailServices@2025-05-01' = {
   name: name
   location: location
   tags: tags
@@ -189,7 +189,7 @@ type domainType = {
   location: string?
 
   @description('Optional. Endpoint tags.')
-  tags: resourceInput<'Microsoft.Communication/emailServices/domains@2023-04-01'>.tags?
+  tags: resourceInput<'Microsoft.Communication/emailServices/domains@2025-05-01'>.tags?
 
   @description('Optional. Describes how the Domain resource is being managed.')
   domainManagement: ('AzureManaged' | 'CustomerManaged' | 'CustomerManagedInExchangeOnline')?
