@@ -117,7 +117,7 @@ param virtualNetworkResourceGroupName string = ''
 
 @maxLength(90)
 @description('Optional. The name of the resource group to create the user-assigned managed identities in.')
-param userAssignedIdentityResourceGroupName string = 'rsg-${deployment().location}-identities'
+param userAssignedIdentityResourceGroupName string = 'rsg-${toLower(replace(deployment().location, ' ', ''))}-identities'
 
 @description('''Optional. An object of Tag key & value pairs to be appended to the Resource Group that the Virtual Network is created in.
 
@@ -131,7 +131,7 @@ param virtualNetworkResourceGroupLockEnabled bool = true
 
 @description('''Optional. The location of the virtual network. Use region shortnames e.g. `uksouth`, `eastus`, etc. Defaults to the region where the ARM/Bicep deployment is targeted to unless overridden.
 ''')
-param virtualNetworkLocation string = deployment().location
+param virtualNetworkLocation string = toLower(replace(deployment().location, ' ', ''))
 
 @minLength(2)
 @maxLength(64)
@@ -289,20 +289,20 @@ param pimRoleAssignments pimRoleAssignmentTypeType[] = []
 param enableTelemetry bool = true
 
 @description('Optional. The name of the resource group to create the deployment script for resource providers registration.')
-param deploymentScriptResourceGroupName string = 'rsg-${deployment().location}-ds'
+param deploymentScriptResourceGroupName string = 'rsg-${toLower(replace(deployment().location, ' ', ''))}-ds'
 
 @description('Optional. The name of the deployment script to register resource providers.')
-param deploymentScriptName string = 'ds-${deployment().location}'
+param deploymentScriptName string = 'ds-${toLower(replace(deployment().location, ' ', ''))}'
 
 @description('Optional. The name of the user managed identity for the resource providers registration deployment script.')
-param deploymentScriptManagedIdentityName string = 'id-${deployment().location}'
+param deploymentScriptManagedIdentityName string = 'id-${toLower(replace(deployment().location, ' ', ''))}'
 
 @maxLength(64)
 @description('Optional. The name of the private virtual network for the deployment script. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length.')
-param deploymentScriptVirtualNetworkName string = 'vnet-ds-${deployment().location}'
+param deploymentScriptVirtualNetworkName string = 'vnet-ds-${toLower(replace(deployment().location, ' ', ''))}'
 
 @description('Optional. The name of the network security group for the deployment script private subnet.')
-param deploymentScriptNetworkSecurityGroupName string = 'nsg-ds-${deployment().location}'
+param deploymentScriptNetworkSecurityGroupName string = 'nsg-ds-${toLower(replace(deployment().location, ' ', ''))}'
 
 @description('Optional. The address prefix of the private virtual network for the deployment script.')
 param virtualNetworkDeploymentScriptAddressPrefix string = '192.168.0.0/24'
@@ -311,7 +311,7 @@ param virtualNetworkDeploymentScriptAddressPrefix string = '192.168.0.0/24'
 param deploymentScriptStorageAccountName string = 'stgds${substring(uniqueString(deployment().name,existingSubscriptionId,subscriptionAliasName,subscriptionDisplayName, virtualNetworkLocation), 0, 10)}'
 
 @description('Optional. The location of the deployment script. Use region shortnames e.g. uksouth, eastus, etc.')
-param deploymentScriptLocation string = deployment().location
+param deploymentScriptLocation string = toLower(replace(deployment().location, ' ', ''))
 
 @description('''
 Optional. An object of resource providers and resource providers features to register. If not specified, a default list of common resource providers will be registered. To disable resource provider registration entirely, provide an empty object `{}`.
