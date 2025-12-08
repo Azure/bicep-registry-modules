@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "5226712678510639930"
+      "templateHash": "181594447493335746"
     },
     "name": "Email Services",
     "description": "This module deploys an Email Service"
@@ -34,7 +34,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Communication/emailServices/domains@2025-05-01#properties/tags"
+              "source": "Microsoft.Communication/emailServices/domains@2023-04-01#properties/tags"
             },
             "description": "Optional. Endpoint tags."
           },
@@ -266,7 +266,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Communication/emailServices@2025-05-01#properties/tags"
+          "source": "Microsoft.Communication/emailServices@2023-04-01#properties/tags"
         },
         "description": "Optional. Endpoint tags."
       },
@@ -346,7 +346,7 @@
     },
     "email": {
       "type": "Microsoft.Communication/emailServices",
-      "apiVersion": "2025-05-01",
+      "apiVersion": "2023-04-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -440,7 +440,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "10733265579935855716"
+              "templateHash": "2484451445381873117"
             },
             "name": "Email Services Domains",
             "description": "This module deploys an Email Service Domain"
@@ -613,7 +613,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Communication/emailServices/domains@2025-05-01#properties/tags"
+                  "source": "Microsoft.Communication/emailServices/domains@2023-04-01#properties/tags"
                 },
                 "description": "Optional. Endpoint tags."
               },
@@ -690,12 +690,12 @@
             "emailService": {
               "existing": true,
               "type": "Microsoft.Communication/emailServices",
-              "apiVersion": "2025-05-01",
+              "apiVersion": "2023-04-01",
               "name": "[parameters('emailServiceName')]"
             },
             "domain": {
               "type": "Microsoft.Communication/emailServices/domains",
-              "apiVersion": "2025-05-01",
+              "apiVersion": "2023-04-01",
               "name": "[format('{0}/{1}', parameters('emailServiceName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -777,7 +777,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.39.26.7824",
-                      "templateHash": "12879185510541651328"
+                      "templateHash": "7017896381373476636"
                     },
                     "name": "Sender Usernames",
                     "description": "This module deploys an Sender"
@@ -818,7 +818,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.Communication/emailServices/domains/senderUsernames",
-                      "apiVersion": "2025-05-01",
+                      "apiVersion": "2023-04-01",
                       "name": "[format('{0}/{1}/{2}', parameters('emailServiceName'), parameters('domainName'), parameters('name'))]",
                       "properties": {
                         "username": "[parameters('username')]",
@@ -882,7 +882,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Communication/emailServices/domains@2025-05-01#properties/properties/properties/verificationRecords",
+                  "source": "Microsoft.Communication/emailServices/domains@2023-04-01#properties/properties/properties/verificationRecords",
                   "output": true
                 },
                 "description": "The verification records for the domain."
@@ -938,7 +938,7 @@
       "metadata": {
         "description": "The location the email service was deployed into."
       },
-      "value": "[reference('email', '2025-05-01', 'full').location]"
+      "value": "[reference('email', '2023-04-01', 'full').location]"
     },
     "domainResourceIds": {
       "type": "array",
@@ -972,7 +972,7 @@
         "type": "object",
         "metadata": {
           "__bicep_resource_derived_type!": {
-            "source": "Microsoft.Communication/emailServices/domains@2025-05-01#properties/properties/properties/verificationRecords",
+            "source": "Microsoft.Communication/emailServices/domains@2023-04-01#properties/properties/properties/verificationRecords",
             "output": true
           }
         }

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "12879185510541651328"
+      "templateHash": "7017896381373476636"
     },
     "name": "Sender Usernames",
     "description": "This module deploys an Sender"
@@ -46,7 +46,7 @@
   "resources": [
     {
       "type": "Microsoft.Communication/emailServices/domains/senderUsernames",
-      "apiVersion": "2025-05-01",
+      "apiVersion": "2023-04-01",
       "name": "[format('{0}/{1}/{2}', parameters('emailServiceName'), parameters('domainName'), parameters('name'))]",
       "properties": {
         "username": "[parameters('username')]",
