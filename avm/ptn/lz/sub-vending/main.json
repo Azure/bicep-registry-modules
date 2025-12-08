@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "2827890037228340123"
+      "templateHash": "13369259174673196140"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1450,7 +1450,7 @@
     },
     "userAssignedIdentityResourceGroupName": {
       "type": "string",
-      "defaultValue": "[format('rsg-{0}-identities', deployment().location)]",
+      "defaultValue": "[format('rsg-{0}-identities', toLower(replace(deployment().location, ' ', '')))]",
       "maxLength": 90,
       "metadata": {
         "description": "Optional. The name of the resource group to create the user-assigned managed identities in."
@@ -1472,7 +1472,7 @@
     },
     "virtualNetworkLocation": {
       "type": "string",
-      "defaultValue": "[deployment().location]",
+      "defaultValue": "[toLower(replace(deployment().location, ' ', ''))]",
       "metadata": {
         "description": "Optional. The location of the virtual network. Use region shortnames e.g. `uksouth`, `eastus`, etc. Defaults to the region where the ARM/Bicep deployment is targeted to unless overridden.\n"
       }
@@ -1666,28 +1666,28 @@
     },
     "deploymentScriptResourceGroupName": {
       "type": "string",
-      "defaultValue": "[format('rsg-{0}-ds', deployment().location)]",
+      "defaultValue": "[format('rsg-{0}-ds', toLower(replace(deployment().location, ' ', '')))]",
       "metadata": {
         "description": "Optional. The name of the resource group to create the deployment script for resource providers registration."
       }
     },
     "deploymentScriptName": {
       "type": "string",
-      "defaultValue": "[format('ds-{0}', deployment().location)]",
+      "defaultValue": "[format('ds-{0}', toLower(replace(deployment().location, ' ', '')))]",
       "metadata": {
         "description": "Optional. The name of the deployment script to register resource providers."
       }
     },
     "deploymentScriptManagedIdentityName": {
       "type": "string",
-      "defaultValue": "[format('id-{0}', deployment().location)]",
+      "defaultValue": "[format('id-{0}', toLower(replace(deployment().location, ' ', '')))]",
       "metadata": {
         "description": "Optional. The name of the user managed identity for the resource providers registration deployment script."
       }
     },
     "deploymentScriptVirtualNetworkName": {
       "type": "string",
-      "defaultValue": "[format('vnet-ds-{0}', deployment().location)]",
+      "defaultValue": "[format('vnet-ds-{0}', toLower(replace(deployment().location, ' ', '')))]",
       "maxLength": 64,
       "metadata": {
         "description": "Optional. The name of the private virtual network for the deployment script. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length."
@@ -1695,7 +1695,7 @@
     },
     "deploymentScriptNetworkSecurityGroupName": {
       "type": "string",
-      "defaultValue": "[format('nsg-ds-{0}', deployment().location)]",
+      "defaultValue": "[format('nsg-ds-{0}', toLower(replace(deployment().location, ' ', '')))]",
       "metadata": {
         "description": "Optional. The name of the network security group for the deployment script private subnet."
       }
@@ -1716,7 +1716,7 @@
     },
     "deploymentScriptLocation": {
       "type": "string",
-      "defaultValue": "[deployment().location]",
+      "defaultValue": "[toLower(replace(deployment().location, ' ', ''))]",
       "metadata": {
         "description": "Optional. The location of the deployment script. Use region shortnames e.g. uksouth, eastus, etc."
       }
