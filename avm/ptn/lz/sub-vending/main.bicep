@@ -145,8 +145,13 @@ param virtualNetworkName string?
 ''')
 param virtualNetworkTags object = {}
 
-@description('''Optional. The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `["10.0.0.0/16","172.16.0.0/12"]`.''')
+@description('''Optional. An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `["10.0.0.0/16","172.16.0.0/12"]`) OR a single IPAM pool resource ID to allocate IP addresses from. When specifying an IPAM pool resource ID, you must also set a value for the `virtualNetworkIpamPoolNumberOfIpAddresses` parameter.
+''')
 param virtualNetworkAddressSpace string[] = []
+
+@description('''Optional. The number of IP addresses to allocate from the IPAM pool. Required when `virtualNetworkAddressSpace` contains an IPAM pool resource ID. Example: `'256'` for a /24 network.
+''')
+param virtualNetworkIpamPoolNumberOfIpAddresses string?
 
 @description('''Optional. The subnets of the Virtual Network that will be created by this module.''')
 param virtualNetworkSubnets subnetType[]?
@@ -309,7 +314,7 @@ param deploymentScriptStorageAccountName string = 'stgds${substring(uniqueString
 param deploymentScriptLocation string = deployment().location
 
 @description('''
-Optional. An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.
+Optional. An object of resource providers and resource providers features to register. If not specified, a default list of common resource providers will be registered. To disable resource provider registration entirely, provide an empty object `{}`.
 ''')
 param resourceProviders object = {
   'Microsoft.ApiManagement': []
@@ -473,6 +478,7 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     virtualNetworkName: virtualNetworkName
     virtualNetworkTags: virtualNetworkTags
     virtualNetworkAddressSpace: virtualNetworkAddressSpace
+    virtualNetworkIpamPoolNumberOfIpAddresses: virtualNetworkIpamPoolNumberOfIpAddresses
     virtualNetworkSubnets: virtualNetworkSubnets
     virtualNetworkDnsServers: virtualNetworkDnsServers
     virtualNetworkDdosPlanResourceId: virtualNetworkDdosPlanResourceId
