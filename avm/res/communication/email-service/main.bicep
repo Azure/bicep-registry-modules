@@ -41,6 +41,10 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
+  'Communication and Email Service Owner': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '09976791-48a7-449e-bb21-39d1a415f350'
+  )
 }
 
 var formattedRoleAssignments = [

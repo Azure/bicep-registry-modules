@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/network/private-link-private-dns-zones/CHANGELOG.md).
 
+## 0.7.1
+
+### Changes
+
+- Updated child module deployment names to use stable identifiers instead of `deployment().name` to prevent deployment history accumulation when using Azure Deployment Stacks.
+
+### Breaking Changes
+
+- None
+
 ## 0.7.0
 
 ### Changes

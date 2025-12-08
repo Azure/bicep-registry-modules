@@ -109,7 +109,7 @@ resource policyAssignment 'Microsoft.Authorization/policyAssignments@2025-01-01'
 
 module managementGroupRoleAssignments 'management-group-additional-rbac-asi-def-loop.bicep' = [
   for roleDefinitionId in roleDefinitionIds: if (!empty(roleDefinitionIds) && !empty(finalArrayOfManagementGroupsToAssignRbacTo) && identity == 'SystemAssigned') {
-    name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC'
+    name: 'pol-asi-mg-rbac-mgs-loop-${uniqueString(managementGroup().name, location, roleDefinitionId, name)}'
     params: {
       name: name
       policyAssignmentIdentityId: policyAssignment.identity.principalId
@@ -121,7 +121,7 @@ module managementGroupRoleAssignments 'management-group-additional-rbac-asi-def-
 
 module additionalSubscriptionRoleAssignments 'subscription-additional-rbac-asi-def-loop.bicep' = [
   for roleDefinitionId in roleDefinitionIds: if (!empty(roleDefinitionIds) && !empty(additionalSubscriptionIDsToAssignRbacTo) && identity == 'SystemAssigned') {
-    name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-Subs'
+    name: 'pol-asi-mg-rbac-subs-loop-${uniqueString(managementGroup().name, location, roleDefinitionId, name)}'
     params: {
       name: name
       policyAssignmentIdentityId: policyAssignment.identity.principalId
@@ -133,7 +133,7 @@ module additionalSubscriptionRoleAssignments 'subscription-additional-rbac-asi-d
 
 module additionalResourceGroupRoleAssignments 'resource-group-additional-rbac-asi-def-loop.bicep' = [
   for roleDefinitionId in roleDefinitionIds: if (!empty(roleDefinitionIds) && !empty(additionalResourceGroupResourceIDsToAssignRbacTo) && identity == 'SystemAssigned') {
-    name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-RGs'
+    name: 'pol-asi-mg-rbac-rgs-loop-${uniqueString(managementGroup().name, location, roleDefinitionId, name)}'
     params: {
       name: name
       policyAssignmentIdentityId: policyAssignment.identity.principalId

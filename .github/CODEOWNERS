@@ -1,6 +1,6 @@
-* @Azure/bicep-admins @Azure/avm-core-team-technical-bicep
-/.github/ @Azure/bicep-admins @Azure/avm-core-team-technical-bicep
-/scripts/ @Azure/bicep-admins @Azure/avm-core-team-technical-bicep
+* @Azure/avm-core-team-technical-bicep
+/.github/ @Azure/avm-core-team-technical-bicep
+/scripts/ @Azure/avm-core-team-technical-bicep
 /avm/ @Azure/avm-core-team-technical-bicep
 /utilities/ @Azure/avm-core-team-technical-bicep
 /avm/ptn/ai-ml/ai-foundry/ @Azure/avm-ptn-aiml-aifoundry-module-owners-bicep @Azure/avm-module-reviewers-bicep
