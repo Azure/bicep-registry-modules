@@ -11,7 +11,7 @@ param location string = resourceGroup().location
 param enableTelemetry bool = true
 
 @description('Optional. Resource tags.')
-param tags resourceInput<'Microsoft.ServiceNetworking/trafficControllers@2023-11-01'>.tags?
+param tags resourceInput<'Microsoft.ServiceNetworking/trafficControllers@2025-01-01'>.tags?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings for all Resources in the solution.')
@@ -31,6 +31,9 @@ param frontends frontendType[]?
 @maxLength(1)
 @description('Optional. List of Application Gateway for Containers associations. At this time, the number of associations is limited to 1.')
 param associations associationType[]?
+
+@description('Optional. Security policy configurations for the Application Gateway for Containers.')
+param securityPolicyConfigurations resourceInput<'Microsoft.ServiceNetworking/trafficControllers@2025-01-01'>.properties.securityPolicyConfigurations?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -80,11 +83,13 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource trafficController 'Microsoft.ServiceNetworking/trafficControllers@2023-11-01' = {
+resource trafficController 'Microsoft.ServiceNetworking/trafficControllers@2025-01-01' = {
   name: name
   location: location
   tags: tags
-  properties: {}
+  properties: {
+    securityPolicyConfigurations: securityPolicyConfigurations
+  }
 }
 
 resource trafficController_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
