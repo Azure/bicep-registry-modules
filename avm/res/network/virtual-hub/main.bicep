@@ -32,7 +32,7 @@ param hubRoutingPreference resourceInput<'Microsoft.Network/virtualHubs@2025-01-
 @description('Optional. The preferred routing gateway types.')
 param preferredRoutingGateway resourceInput<'Microsoft.Network/virtualHubs@2025-01-01'>.properties.preferredRoutingGateway?
 
-@description('Optional. VirtualHub route tables.')
+@description('Optional. The VirtualHub route tables.')
 param routeTableRoutes array?
 
 @description('Optional. ID of the Security Partner Provider to link to.')
