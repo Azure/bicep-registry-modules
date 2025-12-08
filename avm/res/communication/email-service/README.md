@@ -188,6 +188,11 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Communication and Email Service Owner'
+      }
     ]
     tags: {
       Environment: 'Non-Prod'
@@ -291,6 +296,11 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Communication and Email Service Owner"
         }
       ]
     },
@@ -385,6 +395,11 @@ param roleAssignments = [
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Communication and Email Service Owner'
   }
 ]
 param tags = {
@@ -848,6 +863,7 @@ Array of role assignments to create.
   - `'Reader'`
   - `'Role Based Access Control Administrator'`
   - `'User Access Administrator'`
+  - `'Communication and Email Service Owner'`
 
 **Required parameters**
 
