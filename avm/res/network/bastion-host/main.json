@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "16144738936916842011"
+      "version": "0.39.26.7824",
+      "templateHash": "15279070503934328796"
     },
     "name": "Bastion Hosts",
     "description": "This module deploys a Bastion Host."
@@ -890,8 +890,8 @@
     "publicIPAddress": {
       "condition": "[and(and(empty(parameters('bastionSubnetPublicIpResourceId')), not(equals(parameters('skuName'), 'Developer'))), not(parameters('enablePrivateOnlyBastion')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-Bastion-PIP', uniqueString(deployment().name, parameters('location')))]",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-Bastion-PIP', uniqueString(subscription().id, resourceGroup().id, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"

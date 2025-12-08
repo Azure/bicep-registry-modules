@@ -360,7 +360,7 @@ resource pdnsZonesLock 'Microsoft.Authorization/locks@2020-05-01' = [
 
 module pdnsZoneVnetLinks 'modules/virtual-network-link.bicep' = [
   for zone in combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink: {
-    name: '${uniqueString(deployment().name, zone.pdnsZoneName, location)}-pdns-zone-vnet-links-loop'
+    name: '${uniqueString(subscription().id, resourceGroup().id, zone.pdnsZoneName, location)}-pdns-zone-vnet-links-loop'
     params: {
       privateDnsZoneName: zone.pdnsZoneName
       virtualNetworkLinks: zone.virtualNetworkLinks
