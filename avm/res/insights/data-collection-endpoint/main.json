@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "3496169930403221612"
+      "version": "0.39.26.7824",
+      "templateHash": "17022110250692868595"
     },
     "name": "Data Collection Endpoints",
     "description": "This module deploys a Data Collection Endpoint."
