@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Updated cross-module reference to `public-ip-address` to the newest version `0.9.1`.
+- Updated cross-module reference to `public-ip-address` to the newest version `0.10.0`.
 - Updated Bastion API version to `2025-01-01`.
 
 ### Breaking Changes

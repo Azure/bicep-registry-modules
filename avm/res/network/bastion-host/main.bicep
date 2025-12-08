@@ -155,7 +155,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.9.1' = if (empty(bastionSubnetPublicIpResourceId) && (skuName != 'Developer') && (!enablePrivateOnlyBastion)) {
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.10.0' = if (empty(bastionSubnetPublicIpResourceId) && (skuName != 'Developer') && (!enablePrivateOnlyBastion)) {
   name: '${uniqueString(subscription().id, resourceGroup().id, location)}-Bastion-PIP'
   params: {
     name: publicIPAddressObject.name
@@ -291,7 +291,7 @@ output ipConfAzureBastionSubnet object = skuName == 'Developer' ? {} : azureBast
 // Definitions      //
 // ================ //
 
-import { dnsSettingsType, ipTagType, ddosSettingsType } from 'br/public:avm/res/network/public-ip-address:0.9.0'
+import { dnsSettingsType, ipTagType, ddosSettingsType } from 'br/public:avm/res/network/public-ip-address:0.10.0'
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 
 @export()
