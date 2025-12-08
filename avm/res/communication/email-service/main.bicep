@@ -161,6 +161,16 @@ output domainVerificationRecords resourceOutput<'Microsoft.Communication/emailSe
   for (domain, index) in (domains ?? []): email_domains[index].outputs.verificationRecords
 ]
 
+@description('The list of from sender domains for each domain.')
+output domainFromSenderDomains string[] = [
+  for (domain, index) in (domains ?? []): email_domains[index].outputs.fromSenderDomain
+]
+
+@description('The list of mail from sender domains for each domain.')
+output domainMailFromSenderDomains string[] = [
+  for (domain, index) in (domains ?? []): email_domains[index].outputs.mailFromSenderDomain
+]
+
 // =========== //
 // Definitions //
 // =========== //

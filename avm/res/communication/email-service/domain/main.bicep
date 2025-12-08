@@ -141,6 +141,12 @@ output resourceGroupName string = resourceGroup().name
 @description('The verification records for the domain.')
 output verificationRecords resourceOutput<'Microsoft.Communication/emailServices/domains@2025-05-01'>.properties.verificationRecords = domain.properties.verificationRecords
 
+@description('The from sender domain for the domain.')
+output fromSenderDomain string = domain.properties.fromSenderDomain
+
+@description('The mail from sender domain for the domain.')
+output mailFromSenderDomain string = domain.properties.mailFromSenderDomain
+
 // =========== //
 // Definitions //
 // =========== //
