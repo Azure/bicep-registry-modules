@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "15834665816044845644"
+      "version": "0.36.177.2456",
+      "templateHash": "16748208297449362021"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing."
@@ -744,7 +744,7 @@
       "condition": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enablePeering]",
       "existing": true,
       "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2025-01-01",
+      "apiVersion": "2024-05-01",
       "name": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key]"
     },
     "hubVirtualNetworkPeering": {
@@ -753,7 +753,7 @@
         "count": "[length(coalesce(flatten(variables('hubVirtualNetworkPeerings')), createArray()))]"
       },
       "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-      "apiVersion": "2025-01-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}-to-{2}-peering', items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key, items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key, coalesce(flatten(variables('hubVirtualNetworkPeerings')), createArray())[copyIndex()].remoteVirtualNetworkName)]",
       "properties": {
         "allowForwardedTraffic": "[coalesce(coalesce(flatten(variables('hubVirtualNetworkPeerings')), createArray())[copyIndex()].allowForwardedTraffic, false())]",
@@ -794,8 +794,8 @@
         "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
-      "name": "[format('{0}-{1}-nvn', uniqueString(subscription().id, resourceGroup().id, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-{1}-nvn', uniqueString(deployment().name, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -852,8 +852,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "15393147213974991892"
+              "version": "0.35.1.17967",
+              "templateHash": "16195883788906927531"
             },
             "name": "Virtual Networks",
             "description": "This module deploys a Virtual Network (vNet)."
@@ -959,9 +959,6 @@
                     "description": "Optional. If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false."
                   }
                 }
-              },
-              "metadata": {
-                "__bicep_export!": true
               }
             },
             "subnetType": {
@@ -1135,9 +1132,6 @@
                     "description": "Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty."
                   }
                 }
-              },
-              "metadata": {
-                "__bicep_export!": true
               }
             },
             "diagnosticSettingFullType": {
@@ -1283,19 +1277,12 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
-                },
-                "notes": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specify the notes of the lock."
-                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
                 }
               }
             },
@@ -1544,7 +1531,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.7.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.7.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1585,7 +1572,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
               },
               "dependsOn": [
                 "virtualNetwork"
@@ -1662,8 +1649,8 @@
                 "batchSize": 1
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2025-04-01",
-              "name": "[format('{0}-subnet-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-subnet-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -1732,8 +1719,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "11087937906182478872"
+                      "version": "0.35.1.17967",
+                      "templateHash": "9728353654559466189"
                     },
                     "name": "Virtual Network Subnets",
                     "description": "This module deploys a Virtual Network Subnet."
@@ -1989,7 +1976,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-virtualnetworksubnet.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-virtualnetworksubnet.{0}.{1}', replace('0.1.2', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -2119,8 +2106,8 @@
                 "count": "[length(coalesce(parameters('peerings'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2025-04-01",
-              "name": "[format('{0}-virtualNetworkPeering-local-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-virtualNetworkPeering-local-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -2158,8 +2145,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "4173704498931603856"
+                      "version": "0.35.1.17967",
+                      "templateHash": "11179987886456111827"
                     },
                     "name": "Virtual Network Peerings",
                     "description": "This module deploys a Virtual Network Peering."
@@ -2274,8 +2261,8 @@
               },
               "condition": "[coalesce(tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'remotePeeringEnabled'), false())]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2025-04-01",
-              "name": "[format('{0}-virtualNetworkPeering-remote-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-virtualNetworkPeering-remote-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
               "subscriptionId": "[split(coalesce(parameters('peerings'), createArray())[copyIndex()].remoteVirtualNetworkResourceId, '/')[2]]",
               "resourceGroup": "[split(coalesce(parameters('peerings'), createArray())[copyIndex()].remoteVirtualNetworkResourceId, '/')[4]]",
               "properties": {
@@ -2315,8 +2302,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "4173704498931603856"
+                      "version": "0.35.1.17967",
+                      "templateHash": "11179987886456111827"
                     },
                     "name": "Virtual Network Peerings",
                     "description": "This module deploys a Virtual Network Peering."
@@ -2484,8 +2471,8 @@
         "count": "[length(flatten(variables('hubVirtualNetworkPeerings')))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
-      "name": "[format('{0}-{1}-nvnp', uniqueString(subscription().id, resourceGroup().id, parameters('location')), flatten(variables('hubVirtualNetworkPeerings'))[copyIndex()].remoteVirtualNetworkName)]",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-{1}-nvnp', uniqueString(deployment().name, parameters('location')), flatten(variables('hubVirtualNetworkPeerings'))[copyIndex()].remoteVirtualNetworkName)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2502,8 +2489,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "4631812802404624805"
+              "version": "0.36.177.2456",
+              "templateHash": "4461721076505384845"
             },
             "name": "Virtual Networks",
             "description": "This module deploys a Virtual Network."
@@ -2559,8 +2546,8 @@
         "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
-      "name": "[format('{0}-{1}-nrt', uniqueString(subscription().id, resourceGroup().id, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-{1}-nrt', uniqueString(deployment().name, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2599,13 +2586,63 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "14650513269044871980"
+              "version": "0.34.44.8038",
+              "templateHash": "2458661232490352903"
             },
             "name": "Route Tables",
             "description": "This module deploys a User Defined Route Table (UDR)."
           },
           "definitions": {
+            "routeType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Name of the route."
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "nextHopType": {
+                      "type": "string",
+                      "allowedValues": [
+                        "Internet",
+                        "None",
+                        "VirtualAppliance",
+                        "VirtualNetworkGateway",
+                        "VnetLocal"
+                      ],
+                      "metadata": {
+                        "description": "Required. The type of Azure hop the packet should be sent to."
+                      }
+                    },
+                    "addressPrefix": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The destination CIDR to which the route applies."
+                      }
+                    },
+                    "nextHopIpAddress": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Properties of the route."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a route."
+              }
+            },
             "lockType": {
               "type": "object",
               "properties": {
@@ -2627,19 +2664,12 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
-                },
-                "notes": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specify the notes of the lock."
-                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -2714,7 +2744,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             }
@@ -2735,13 +2765,13 @@
             },
             "routes": {
               "type": "array",
-              "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/routeTables@2024-07-01#properties/properties/properties/routes"
-                },
-                "description": "Optional. An array of routes to be established within the hub route table."
+              "items": {
+                "$ref": "#/definitions/routeType"
               },
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. An array of routes to be established within the hub route table."
+              }
             },
             "disableBgpRoutePropagation": {
               "type": "bool",
@@ -2769,13 +2799,10 @@
             },
             "tags": {
               "type": "object",
+              "nullable": true,
               "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/routeTables@2024-07-01#properties/tags"
-                },
                 "description": "Optional. Tags of the resource."
-              },
-              "nullable": true
+              }
             },
             "enableTelemetry": {
               "type": "bool",
@@ -2807,7 +2834,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[take(format('46d3xbcp.res.network-routetable.{0}.{1}', replace('0.5.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+              "name": "[take(format('46d3xbcp.res.network-routetable.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2825,7 +2852,7 @@
             },
             "routeTable": {
               "type": "Microsoft.Network/routeTables",
-              "apiVersion": "2024-07-01",
+              "apiVersion": "2023-04-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -2842,7 +2869,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
               },
               "dependsOn": [
                 "routeTable"
@@ -2898,7 +2925,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('routeTable', '2024-07-01', 'full').location]"
+              "value": "[reference('routeTable', '2023-04-01', 'full').location]"
             }
           }
         }
@@ -2914,8 +2941,8 @@
       },
       "condition": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableBastion]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
-      "name": "[format('{0}-{1}-nbh', uniqueString(subscription().id, resourceGroup().id, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-{1}-nbh', uniqueString(deployment().name, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2975,327 +3002,13 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "1210394124185833155"
+              "version": "0.33.93.31351",
+              "templateHash": "2586599138991803385"
             },
             "name": "Bastion Hosts",
             "description": "This module deploys a Bastion Host."
           },
           "definitions": {
-            "publicIPAddressObjectType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the Public IP Address."
-                  }
-                },
-                "publicIpPrefixResourceId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix."
-                  }
-                },
-                "publicIPAllocationMethod": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Dynamic",
-                    "Static"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The public IP address allocation method."
-                  }
-                },
-                "availabilityZones": {
-                  "type": "array",
-                  "items": {
-                    "type": "int"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. A list of availability zones denoting the IP allocated for the resource needs to come from."
-                  }
-                },
-                "publicIPAddressVersion": {
-                  "type": "string",
-                  "allowedValues": [
-                    "IPv4",
-                    "IPv6"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. IP address version."
-                  }
-                },
-                "dnsSettings": {
-                  "$ref": "#/definitions/dnsSettingsType",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The DNS settings of the public IP address."
-                  }
-                },
-                "ipTags": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/ipTagType"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The list of tags associated with the public IP address."
-                  }
-                },
-                "lock": {
-                  "$ref": "#/definitions/lockType",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The lock settings of the service."
-                  }
-                },
-                "skuName": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Basic",
-                    "Standard"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a public IP address SKU."
-                  }
-                },
-                "skuTier": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Global",
-                    "Regional"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Tier of a public IP address SKU."
-                  }
-                },
-                "ddosSettings": {
-                  "$ref": "#/definitions/ddosSettingsType",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The DDoS protection plan configuration associated with the public IP address."
-                  }
-                },
-                "location": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Location for the Public IP resource."
-                  }
-                },
-                "roleAssignments": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/roleAssignmentType"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Array of role assignments to create for the Public IP resource."
-                  }
-                },
-                "enableTelemetry": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable usage telemetry for the Public IP module."
-                  }
-                },
-                "idleTimeoutInMinutes": {
-                  "type": "int",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Idle timeout in minutes for the Public IP resource."
-                  }
-                },
-                "tags": {
-                  "type": "object",
-                  "metadata": {
-                    "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.Network/publicIPAddresses@2024-07-01#properties/tags"
-                    },
-                    "description": "Optional. Tags to apply to the Public IP resource."
-                  },
-                  "nullable": true
-                },
-                "diagnosticSettings": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/diagnosticSettingFullType"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Diagnostic settings for the Public IP resource."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided."
-              }
-            },
-            "ddosSettingsType": {
-              "type": "object",
-              "properties": {
-                "ddosProtectionPlan": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The resource ID of the DDOS protection plan associated with the public IP address."
-                      }
-                    }
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The DDoS protection plan associated with the public IP address."
-                  }
-                },
-                "protectionMode": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Enabled"
-                  ],
-                  "metadata": {
-                    "description": "Required. The DDoS protection policy customizations."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.9.0"
-                }
-              }
-            },
-            "diagnosticSettingFullType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The name of the diagnostic setting."
-                  }
-                },
-                "logCategoriesAndGroups": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "category": {
-                        "type": "string",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                        }
-                      },
-                      "categoryGroup": {
-                        "type": "string",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                        }
-                      },
-                      "enabled": {
-                        "type": "bool",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
-                  }
-                },
-                "metricCategories": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "category": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-                        }
-                      },
-                      "enabled": {
-                        "type": "bool",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
-                  }
-                },
-                "logAnalyticsDestinationType": {
-                  "type": "string",
-                  "allowedValues": [
-                    "AzureDiagnostics",
-                    "Dedicated"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
-                  }
-                },
-                "workspaceResourceId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-                  }
-                },
-                "storageAccountResourceId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-                  }
-                },
-                "eventHubAuthorizationRuleResourceId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-                  }
-                },
-                "eventHubName": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-                  }
-                },
-                "marketplacePartnerResourceId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
-                  }
-                }
-              },
-              "metadata": {
-                "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
-                }
-              }
-            },
             "diagnosticSettingLogsOnlyType": {
               "type": "object",
               "properties": {
@@ -3389,72 +3102,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a diagnostic setting. To be used if only logs are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
-                }
-              }
-            },
-            "dnsSettingsType": {
-              "type": "object",
-              "properties": {
-                "domainNameLabel": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system."
-                  }
-                },
-                "domainNameLabelScope": {
-                  "type": "string",
-                  "allowedValues": [
-                    "NoReuse",
-                    "ResourceGroupReuse",
-                    "SubscriptionReuse",
-                    "TenantReuse"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN."
-                  }
-                },
-                "fqdn": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The Fully Qualified Domain Name of the A DNS record associated with the public IP. This is the concatenation of the domainNameLabel and the regionalized DNS zone."
-                  }
-                },
-                "reverseFqdn": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The reverse FQDN. A user-visible, fully qualified domain name that resolves to this public IP address. If the reverseFqdn is specified, then a PTR DNS record is created pointing from the IP address in the in-addr.arpa domain to the reverse FQDN."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.9.0"
-                }
-              }
-            },
-            "ipTagType": {
-              "type": "object",
-              "properties": {
-                "ipTagType": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The IP tag type."
-                  }
-                },
-                "tag": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The IP tag."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.9.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -3479,19 +3127,12 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
-                },
-                "notes": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specify the notes of the lock."
-                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -3566,7 +3207,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             }
@@ -3599,7 +3240,7 @@
               }
             },
             "publicIPAddressObject": {
-              "$ref": "#/definitions/publicIPAddressObjectType",
+              "type": "object",
               "defaultValue": {
                 "name": "[format('{0}-pip', parameters('name'))]"
               },
@@ -3705,13 +3346,10 @@
             },
             "tags": {
               "type": "object",
+              "nullable": true,
               "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/bastionHosts@2024-07-01#properties/tags"
-                },
                 "description": "Optional. Tags of the resource."
-              },
-              "nullable": true
+              }
             },
             "enableTelemetry": {
               "type": "bool",
@@ -3720,7 +3358,7 @@
                 "description": "Optional. Enable/Disable usage telemetry for module."
               }
             },
-            "availabilityZones": {
+            "zones": {
               "type": "array",
               "items": {
                 "type": "int"
@@ -3732,7 +3370,7 @@
                 3
               ],
               "metadata": {
-                "description": "Optional. The list of Availability zones to use for the zone-redundant resources."
+                "description": "Optional. A list of availability zones denoting where the Bastion Host resource needs to come from. This is not supported for the Developer SKU."
               }
             }
           },
@@ -3758,7 +3396,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-bastionhost.{0}.{1}', replace('0.8.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-bastionhost.{0}.{1}', replace('0.6.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3776,14 +3414,14 @@
             },
             "azureBastion": {
               "type": "Microsoft.Network/bastionHosts",
-              "apiVersion": "2024-07-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[coalesce(parameters('tags'), createObject())]",
               "sku": {
                 "name": "[parameters('skuName')]"
               },
-              "zones": "[if(equals(parameters('skuName'), 'Developer'), createArray(), map(parameters('availabilityZones'), lambda('zone', format('{0}', lambdaVariables('zone')))))]",
+              "zones": "[if(equals(parameters('skuName'), 'Developer'), createArray(), map(parameters('zones'), lambda('zone', string(lambdaVariables('zone')))))]",
               "properties": "[union(createObject('scaleUnits', if(or(equals(parameters('skuName'), 'Basic'), equals(parameters('skuName'), 'Developer')), 2, parameters('scaleUnits')), 'ipConfigurations', if(equals(parameters('skuName'), 'Developer'), createArray(), createArray(createObject('name', 'IpConfAzureBastionSubnet', 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureBastionSubnet', parameters('virtualNetworkResourceId')))), if(not(parameters('enablePrivateOnlyBastion')), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('bastionSubnetPublicIpResourceId'))), parameters('bastionSubnetPublicIpResourceId'), reference('publicIPAddress').outputs.resourceId.value))), createObject())))))), if(equals(parameters('skuName'), 'Developer'), createObject('virtualNetwork', createObject('id', parameters('virtualNetworkResourceId'))), createObject()), if(or(or(equals(parameters('skuName'), 'Basic'), equals(parameters('skuName'), 'Standard')), equals(parameters('skuName'), 'Premium')), createObject('enableKerberos', parameters('enableKerberos')), createObject()), if(or(equals(parameters('skuName'), 'Standard'), equals(parameters('skuName'), 'Premium')), createObject('enableTunneling', if(equals(parameters('skuName'), 'Standard'), true(), if(parameters('enableSessionRecording'), false(), true())), 'disableCopyPaste', parameters('disableCopyPaste'), 'enableFileCopy', parameters('enableFileCopy'), 'enableIpConnect', parameters('enableIpConnect'), 'enableShareableLink', parameters('enableShareableLink')), createObject()), if(equals(parameters('skuName'), 'Premium'), createObject('enableSessionRecording', parameters('enableSessionRecording'), 'enablePrivateOnlyBastion', parameters('enablePrivateOnlyBastion')), createObject()))]",
               "dependsOn": [
                 "publicIPAddress"
@@ -3797,7 +3435,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
               },
               "dependsOn": [
                 "azureBastion"
@@ -3860,8 +3498,8 @@
             "publicIPAddress": {
               "condition": "[and(and(empty(parameters('bastionSubnetPublicIpResourceId')), not(equals(parameters('skuName'), 'Developer'))), not(parameters('enablePrivateOnlyBastion')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2025-04-01",
-              "name": "[format('{0}-Bastion-PIP', uniqueString(subscription().id, resourceGroup().id, parameters('location')))]",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-Bastion-PIP', uniqueString(deployment().name, parameters('location')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -3883,18 +3521,6 @@
                   "diagnosticSettings": {
                     "value": "[tryGet(parameters('publicIPAddressObject'), 'diagnosticSettings')]"
                   },
-                  "ddosSettings": {
-                    "value": "[tryGet(parameters('publicIPAddressObject'), 'ddosSettings')]"
-                  },
-                  "dnsSettings": {
-                    "value": "[tryGet(parameters('publicIPAddressObject'), 'dnsSettings')]"
-                  },
-                  "idleTimeoutInMinutes": {
-                    "value": "[tryGet(parameters('publicIPAddressObject'), 'idleTimeoutInMinutes')]"
-                  },
-                  "ipTags": {
-                    "value": "[tryGet(parameters('publicIPAddressObject'), 'ipTags')]"
-                  },
                   "publicIPAddressVersion": {
                     "value": "[tryGet(parameters('publicIPAddressObject'), 'publicIPAddressVersion')]"
                   },
@@ -3902,7 +3528,7 @@
                     "value": "[tryGet(parameters('publicIPAddressObject'), 'publicIPAllocationMethod')]"
                   },
                   "publicIpPrefixResourceId": {
-                    "value": "[tryGet(parameters('publicIPAddressObject'), 'publicIpPrefixResourceId')]"
+                    "value": "[tryGet(parameters('publicIPAddressObject'), 'publicIPPrefixResourceId')]"
                   },
                   "roleAssignments": {
                     "value": "[tryGet(parameters('publicIPAddressObject'), 'roleAssignments')]"
@@ -3916,8 +3542,8 @@
                   "tags": {
                     "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'tags'), parameters('tags'))]"
                   },
-                  "availabilityZones": {
-                    "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'availabilityZones'), if(not(empty(parameters('availabilityZones'))), parameters('availabilityZones'), null()))]"
+                  "zones": {
+                    "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'zones'), if(greater(length(parameters('zones')), 0), parameters('zones'), null()))]"
                   }
                 },
                 "template": {
@@ -3927,8 +3553,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "14921988046704902194"
+                      "version": "0.33.93.31351",
+                      "templateHash": "5168739580767459761"
                     },
                     "name": "Public IP Addresses",
                     "description": "This module deploys a Public IP Address."
@@ -4280,7 +3906,7 @@
                         "description": "Optional. The public IP address allocation method."
                       }
                     },
-                    "availabilityZones": {
+                    "zones": {
                       "type": "array",
                       "items": {
                         "type": "int"
@@ -4438,7 +4064,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.9.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.8.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -4464,7 +4090,7 @@
                         "name": "[parameters('skuName')]",
                         "tier": "[parameters('skuTier')]"
                       },
-                      "zones": "[map(parameters('availabilityZones'), lambda('zone', string(lambdaVariables('zone'))))]",
+                      "zones": "[map(parameters('zones'), lambda('zone', string(lambdaVariables('zone'))))]",
                       "properties": {
                         "ddosSettings": "[parameters('ddosSettings')]",
                         "dnsSettings": "[parameters('dnsSettings')]",
@@ -4621,7 +4247,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('azureBastion', '2024-07-01', 'full').location]"
+              "value": "[reference('azureBastion', '2024-05-01', 'full').location]"
             },
             "ipConfAzureBastionSubnet": {
               "type": "object",
@@ -4644,8 +4270,8 @@
       },
       "condition": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableAzureFirewall]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
-      "name": "[format('{0}-{1}-naf', uniqueString(subscription().id, resourceGroup().id, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-{1}-naf', uniqueString(deployment().name, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -4715,7 +4341,7 @@
           "threatIntelMode": {
             "value": "[tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'threatIntelMode')]"
           },
-          "availabilityZones": {
+          "zones": {
             "value": "[tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'zones')]"
           }
         },
@@ -4726,8 +4352,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "13804372370557758807"
+              "version": "0.36.1.42791",
+              "templateHash": "3706058764629825741"
             },
             "name": "Azure Firewalls",
             "description": "This module deploys an Azure Firewall."
@@ -5339,7 +4965,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -5364,19 +4990,12 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
-                },
-                "notes": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specify the notes of the lock."
-                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -5451,7 +5070,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             }
@@ -5486,7 +5105,7 @@
               "type": "string",
               "defaultValue": "",
               "metadata": {
-                "description": "Optional. The Public IP resource ID to associate to the Azure Firewall. If empty, then the Public IP that is created as part of this module will be applied to the Azure Firewall."
+                "description": "Optional. The Public IP resource ID to associate to the AzureFirewallSubnet. If empty, then the Public IP that is created as part of this module will be applied to the AzureFirewallSubnet."
               }
             },
             "additionalPublicIpConfigurations": {
@@ -5560,7 +5179,7 @@
               "$ref": "#/definitions/hubIPAddressesType",
               "nullable": true,
               "metadata": {
-                "description": "Conditional. IP addresses associated with AzureFirewall. Required if `virtualHubId` is supplied & `publicIPResourceID` is empty."
+                "description": "Conditional. IP addresses associated with AzureFirewall. Required if `virtualHubId` is supplied."
               }
             },
             "virtualHubResourceId": {
@@ -5596,30 +5215,22 @@
                 "description": "Optional. The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default."
               }
             },
-            "availabilityZones": {
+            "zones": {
               "type": "array",
-              "items": {
-                "type": "int"
-              },
               "defaultValue": [
                 1,
                 2,
                 3
               ],
-              "allowedValues": [
-                1,
-                2,
-                3
-              ],
               "metadata": {
-                "description": "Optional. The list of Availability zones to use for the zone-redundant resources."
+                "description": "Optional. Zone numbers e.g. 1,2,3."
               }
             },
-            "enableManagementNic": {
+            "enableForcedTunneling": {
               "type": "bool",
               "defaultValue": false,
               "metadata": {
-                "description": "Optional. Enable/Disable to support Forced Tunneling and Packet capture scenarios."
+                "description": "Optional. Enable/Disable forced tunneling."
               }
             },
             "diagnosticSettings": {
@@ -5694,7 +5305,7 @@
             ],
             "enableReferencedModulesTelemetry": false,
             "azureSkuName": "[if(empty(parameters('virtualNetworkResourceId')), 'AZFW_Hub', 'AZFW_VNet')]",
-            "requiresManagementIp": "[if(or(equals(parameters('azureSkuTier'), 'Basic'), parameters('enableManagementNic')), true(), false())]",
+            "requiresManagementIp": "[if(or(equals(parameters('azureSkuTier'), 'Basic'), parameters('enableForcedTunneling')), true(), false())]",
             "isCreateDefaultManagementIP": "[and(empty(parameters('managementIPResourceID')), variables('requiresManagementIp'))]",
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -5709,7 +5320,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-azurefirewall.{0}.{1}', replace('0.9.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-azurefirewall.{0}.{1}', replace('0.7.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -5727,12 +5338,12 @@
             },
             "azureFirewall": {
               "type": "Microsoft.Network/azureFirewalls",
-              "apiVersion": "2024-10-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
-              "zones": "[map(parameters('availabilityZones'), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
+              "zones": "[if(equals(length(parameters('zones')), 0), null(), parameters('zones'))]",
               "tags": "[parameters('tags')]",
-              "properties": "[if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('autoscaleConfiguration', createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), 'threatIntelMode', parameters('threatIntelMode'), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'ipConfigurations', concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'name', 'value')), 'properties', union(if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('virtualNetworkResourceId')))), createObject()), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'resourceId', 'value')))), createObject())))), variables('additionalPublicIpConfigurationsVar')), 'managementIpConfiguration', if(variables('requiresManagementIp'), createObject('name', if(not(empty(parameters('managementIPResourceID'))), last(split(parameters('managementIPResourceID'), '/')), tryGet(if(and(variables('isCreateDefaultManagementIP'), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('managementIPAddress'), null()), 'outputs', 'name', 'value')), 'properties', createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallManagementSubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(parameters('managementIPResourceID'))), parameters('managementIPResourceID'), tryGet(if(and(variables('isCreateDefaultManagementIP'), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('managementIPAddress'), null()), 'outputs', 'resourceId', 'value'))))), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'applicationRuleCollections', coalesce(parameters('applicationRuleCollections'), createArray()), 'natRuleCollections', coalesce(parameters('natRuleCollections'), createArray()), 'networkRuleCollections', coalesce(parameters('networkRuleCollections'), createArray())), createObject('autoscaleConfiguration', createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'ipConfigurations', if(not(empty(parameters('publicIPResourceID'))), concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'name', 'value')), 'properties', union(if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('virtualNetworkResourceId')))), createObject()), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'resourceId', 'value')))), createObject())))), variables('additionalPublicIpConfigurationsVar')), null()), 'hubIPAddresses', if(not(empty(parameters('publicIPResourceID'))), null(), if(not(empty(parameters('hubIPAddresses'))), parameters('hubIPAddresses'), null())), 'virtualHub', if(not(empty(parameters('virtualHubResourceId'))), createObject('id', parameters('virtualHubResourceId')), null())))]",
+              "properties": "[if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('threatIntelMode', parameters('threatIntelMode'), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'ipConfigurations', concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), reference('publicIPAddress').outputs.name.value), 'properties', union(if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('virtualNetworkResourceId')))), createObject()), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), reference('publicIPAddress').outputs.resourceId.value))), createObject())))), variables('additionalPublicIpConfigurationsVar')), 'managementIpConfiguration', if(variables('requiresManagementIp'), createObject('name', if(not(empty(parameters('managementIPResourceID'))), last(split(parameters('managementIPResourceID'), '/')), reference('managementIPAddress').outputs.name.value), 'properties', createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallManagementSubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(parameters('managementIPResourceID'))), parameters('managementIPResourceID'), reference('managementIPAddress').outputs.resourceId.value)))), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'applicationRuleCollections', coalesce(parameters('applicationRuleCollections'), createArray()), 'natRuleCollections', coalesce(parameters('natRuleCollections'), createArray()), 'networkRuleCollections', coalesce(parameters('networkRuleCollections'), createArray())), createObject('autoscaleConfiguration', createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'hubIPAddresses', if(not(empty(parameters('hubIPAddresses'))), parameters('hubIPAddresses'), null()), 'virtualHub', if(not(empty(parameters('virtualHubResourceId'))), createObject('id', parameters('virtualHubResourceId')), null())))]",
               "dependsOn": [
                 "managementIPAddress",
                 "publicIPAddress"
@@ -5746,7 +5357,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
               },
               "dependsOn": [
                 "azureFirewall"
@@ -5818,8 +5429,8 @@
             "publicIPAddress": {
               "condition": "[and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet'))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2025-04-01",
-              "name": "[format('{0}-Firewall-PIP', uniqueString(subscription().id, resourceGroup().id, parameters('location')))]",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-Firewall-PIP', uniqueString(deployment().name, parameters('location')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -5840,29 +5451,14 @@
                   "location": {
                     "value": "[parameters('location')]"
                   },
+                  "lock": {
+                    "value": "[parameters('lock')]"
+                  },
                   "tags": {
                     "value": "[coalesce(tryGet(parameters('publicIPAddressObject'), 'tags'), parameters('tags'))]"
                   },
-                  "availabilityZones": {
-                    "value": "[parameters('availabilityZones')]"
-                  },
-                  "ipTags": {
-                    "value": "[tryGet(parameters('publicIPAddressObject'), 'ipTags')]"
-                  },
-                  "ddosSettings": {
-                    "value": "[tryGet(parameters('publicIPAddressObject'), 'ddosSettings')]"
-                  },
-                  "dnsSettings": {
-                    "value": "[tryGet(parameters('publicIPAddressObject'), 'dnsSettings')]"
-                  },
-                  "idleTimeoutInMinutes": {
-                    "value": "[tryGet(parameters('publicIPAddressObject'), 'idleTimeoutInMinutes')]"
-                  },
-                  "publicIPAddressVersion": {
-                    "value": "[tryGet(parameters('publicIPAddressObject'), 'publicIPAddressVersion')]"
-                  },
-                  "lock": {
-                    "value": "[parameters('lock')]"
+                  "zones": {
+                    "value": "[parameters('zones')]"
                   },
                   "enableTelemetry": {
                     "value": "[variables('enableReferencedModulesTelemetry')]"
@@ -5875,8 +5471,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.5.1644",
-                      "templateHash": "7550528442771433353"
+                      "version": "0.33.93.31351",
+                      "templateHash": "5168739580767459761"
                     },
                     "name": "Public IP Addresses",
                     "description": "This module deploys a Public IP Address."
@@ -6118,19 +5714,12 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
-                        },
-                        "notes": {
-                          "type": "string",
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. Specify the notes of the lock."
-                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
                         }
                       }
                     },
@@ -6235,7 +5824,7 @@
                         "description": "Optional. The public IP address allocation method."
                       }
                     },
-                    "availabilityZones": {
+                    "zones": {
                       "type": "array",
                       "items": {
                         "type": "int"
@@ -6351,13 +5940,10 @@
                     },
                     "tags": {
                       "type": "object",
+                      "nullable": true,
                       "metadata": {
-                        "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/publicIPAddresses@2024-10-01#properties/tags"
-                        },
                         "description": "Optional. Tags of the resource."
-                      },
-                      "nullable": true
+                      }
                     },
                     "diagnosticSettings": {
                       "type": "array",
@@ -6396,7 +5982,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.9.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.8.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -6422,7 +6008,7 @@
                         "name": "[parameters('skuName')]",
                         "tier": "[parameters('skuTier')]"
                       },
-                      "zones": "[map(parameters('availabilityZones'), lambda('zone', string(lambdaVariables('zone'))))]",
+                      "zones": "[map(parameters('zones'), lambda('zone', string(lambdaVariables('zone'))))]",
                       "properties": {
                         "ddosSettings": "[parameters('ddosSettings')]",
                         "dnsSettings": "[parameters('dnsSettings')]",
@@ -6441,7 +6027,7 @@
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
                       },
                       "dependsOn": [
                         "publicIpAddress"
@@ -6554,8 +6140,8 @@
             "managementIPAddress": {
               "condition": "[and(variables('isCreateDefaultManagementIP'), equals(variables('azureSkuName'), 'AZFW_VNet'))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2025-04-01",
-              "name": "[format('{0}-Firewall-MIP', uniqueString(subscription().id, resourceGroup().id, parameters('location')))]",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-Firewall-MIP', uniqueString(deployment().name, parameters('location')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -6577,26 +6163,8 @@
                   "tags": {
                     "value": "[coalesce(tryGet(parameters('managementIPAddressObject'), 'tags'), parameters('tags'))]"
                   },
-                  "availabilityZones": {
-                    "value": "[parameters('availabilityZones')]"
-                  },
-                  "ipTags": {
-                    "value": "[tryGet(parameters('publicIPAddressObject'), 'ipTags')]"
-                  },
-                  "ddosSettings": {
-                    "value": "[tryGet(parameters('publicIPAddressObject'), 'ddosSettings')]"
-                  },
-                  "dnsSettings": {
-                    "value": "[tryGet(parameters('publicIPAddressObject'), 'dnsSettings')]"
-                  },
-                  "idleTimeoutInMinutes": {
-                    "value": "[tryGet(parameters('publicIPAddressObject'), 'idleTimeoutInMinutes')]"
-                  },
-                  "publicIPAddressVersion": {
-                    "value": "[tryGet(parameters('publicIPAddressObject'), 'publicIPAddressVersion')]"
-                  },
-                  "lock": {
-                    "value": "[parameters('lock')]"
+                  "zones": {
+                    "value": "[parameters('zones')]"
                   },
                   "enableTelemetry": {
                     "value": "[variables('enableReferencedModulesTelemetry')]"
@@ -6609,8 +6177,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.5.1644",
-                      "templateHash": "7550528442771433353"
+                      "version": "0.33.93.31351",
+                      "templateHash": "5168739580767459761"
                     },
                     "name": "Public IP Addresses",
                     "description": "This module deploys a Public IP Address."
@@ -6852,19 +6420,12 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
-                        },
-                        "notes": {
-                          "type": "string",
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. Specify the notes of the lock."
-                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
                         }
                       }
                     },
@@ -6969,7 +6530,7 @@
                         "description": "Optional. The public IP address allocation method."
                       }
                     },
-                    "availabilityZones": {
+                    "zones": {
                       "type": "array",
                       "items": {
                         "type": "int"
@@ -7085,13 +6646,10 @@
                     },
                     "tags": {
                       "type": "object",
+                      "nullable": true,
                       "metadata": {
-                        "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/publicIPAddresses@2024-10-01#properties/tags"
-                        },
                         "description": "Optional. Tags of the resource."
-                      },
-                      "nullable": true
+                      }
                     },
                     "diagnosticSettings": {
                       "type": "array",
@@ -7130,7 +6688,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.9.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.8.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -7156,7 +6714,7 @@
                         "name": "[parameters('skuName')]",
                         "tier": "[parameters('skuTier')]"
                       },
-                      "zones": "[map(parameters('availabilityZones'), lambda('zone', string(lambdaVariables('zone'))))]",
+                      "zones": "[map(parameters('zones'), lambda('zone', string(lambdaVariables('zone'))))]",
                       "properties": {
                         "ddosSettings": "[parameters('ddosSettings')]",
                         "dnsSettings": "[parameters('dnsSettings')]",
@@ -7175,7 +6733,7 @@
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
                       },
                       "dependsOn": [
                         "publicIpAddress"
@@ -7348,7 +6906,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('azureFirewall', '2024-10-01', 'full').location]"
+              "value": "[reference('azureFirewall', '2024-05-01', 'full').location]"
             }
           }
         }
@@ -7364,8 +6922,8 @@
       },
       "condition": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableAzureFirewall]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
-      "name": "[format('{0}-{1}-nafs', uniqueString(subscription().id, resourceGroup().id, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-{1}-nafs', uniqueString(deployment().name, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -7385,8 +6943,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "16198341345337060173"
+              "version": "0.36.177.2456",
+              "templateHash": "11012657474272986842"
             },
             "name": "Existing Virtual Network Subnets",
             "description": "This module retrieves an existing Virtual Network Subnet."
@@ -7437,8 +6995,8 @@
       },
       "condition": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableAzureFirewall]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
-      "name": "[format('{0}-{1}-nafsa', uniqueString(subscription().id, resourceGroup().id, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-{1}-nafsa', uniqueString(deployment().name, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -7465,8 +7023,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "9308825730626019253"
+              "version": "0.36.177.2456",
+              "templateHash": "10553951738547470795"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet."
