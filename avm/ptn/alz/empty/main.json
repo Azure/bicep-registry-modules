@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "791094728781649833"
+      "version": "0.39.26.7824",
+      "templateHash": "4073948387612201548"
     },
     "name": "avm/ptn/alz/empty",
     "description": "Azure Landing Zones - Bicep - Empty\n\nPlease review the [Usage examples](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty#Usage-examples) section in the module's README, but please ensure for the `max` example you review the entire [directory](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty/tests/e2e/max) to see the supplementary files that are required for the example.\n\nAlso please ensure you review the [Notes section of the module's README](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty#Notes) for important information about the module as well as features that exist outside of parameter inputs."
@@ -739,13 +739,13 @@
       "scope": "/",
       "name": "[if(parameters('createOrUpdateManagementGroup'), format('{0}/{1}', parameters('managementGroupName'), parameters('subscriptionsToPlaceInManagementGroup')[copyIndex()]), format('{0}/{1}', parameters('managementGroupName'), parameters('subscriptionsToPlaceInManagementGroup')[copyIndex()]))]",
       "dependsOn": [
-        "mg"
+        "mgSubPlacementWait"
       ]
     },
     "mg": {
       "condition": "[parameters('createOrUpdateManagementGroup')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[variables('deploymentNames').mg]",
       "location": "[deployment().location]",
       "properties": {
@@ -877,7 +877,7 @@
       },
       "condition": "[and(greater(parameters('waitForConsistencyCounterBeforeSubPlacement'), 0), not(empty(parameters('subscriptionsToPlaceInManagementGroup'))))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-{1}', variables('deploymentNames').mgSubPlacementWait, copyIndex())]",
       "location": "[deployment().location]",
       "properties": {
@@ -891,15 +891,19 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "15051604611823441266"
+              "version": "0.39.26.7824",
+              "templateHash": "12451131946120120504"
             },
             "name": "avm/ptn/alz/empty/wait",
             "description": "Azure Landing Zones - Bicep - Empty - Wait Module\n\nThis module is used to create sequential empty/blank ARM deployments to introduce an artificial wait between deployments in the pattern module. When the `wait()` and `retry()` functions become available in GA in Bicep, this approach will be deprecated and we will migrate to using those functions instead.\n"
           },
           "resources": []
         }
-      }
+      },
+      "dependsOn": [
+        "mg",
+        "mgExisting"
+      ]
     },
     "mgCustomPolicyDefinitionsWait": {
       "copy": {
@@ -910,7 +914,7 @@
       },
       "condition": "[and(greater(parameters('waitForConsistencyCounterBeforeCustomPolicyDefinitions'), 0), not(empty(parameters('managementGroupCustomPolicyDefinitions'))))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-{1}', variables('deploymentNames').mgCustomPolicyDefinitionsWait, copyIndex())]",
       "location": "[deployment().location]",
       "properties": {
@@ -924,20 +928,24 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "15051604611823441266"
+              "version": "0.39.26.7824",
+              "templateHash": "12451131946120120504"
             },
             "name": "avm/ptn/alz/empty/wait",
             "description": "Azure Landing Zones - Bicep - Empty - Wait Module\n\nThis module is used to create sequential empty/blank ARM deployments to introduce an artificial wait between deployments in the pattern module. When the `wait()` and `retry()` functions become available in GA in Bicep, this approach will be deprecated and we will migrate to using those functions instead.\n"
           },
           "resources": []
         }
-      }
+      },
+      "dependsOn": [
+        "mg",
+        "mgExisting"
+      ]
     },
     "mgCustomPolicyDefinitions": {
       "condition": "[not(empty(parameters('managementGroupCustomPolicyDefinitions')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[variables('deploymentNames').mgPolicyDefinitions]",
       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('managementGroupName'))]",
       "location": "[deployment().location]",
@@ -958,8 +966,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "7961145735630215484"
+              "version": "0.39.26.7824",
+              "templateHash": "4069473875242794338"
             },
             "name": "avm/ptn/alz/empty/policy-definitions",
             "description": "Azure Landing Zones - Bicep - Empty - Policy Definitions Module"
@@ -1039,7 +1047,7 @@
       },
       "condition": "[and(greater(parameters('waitForConsistencyCounterBeforeCustomPolicySetDefinitions'), 0), not(empty(parameters('managementGroupCustomPolicySetDefinitions'))))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-{1}', variables('deploymentNames').mgCustomPolicySetDefinitionsWait, copyIndex())]",
       "location": "[deployment().location]",
       "properties": {
@@ -1053,20 +1061,23 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "15051604611823441266"
+              "version": "0.39.26.7824",
+              "templateHash": "12451131946120120504"
             },
             "name": "avm/ptn/alz/empty/wait",
             "description": "Azure Landing Zones - Bicep - Empty - Wait Module\n\nThis module is used to create sequential empty/blank ARM deployments to introduce an artificial wait between deployments in the pattern module. When the `wait()` and `retry()` functions become available in GA in Bicep, this approach will be deprecated and we will migrate to using those functions instead.\n"
           },
           "resources": []
         }
-      }
+      },
+      "dependsOn": [
+        "mgCustomPolicyDefinitions"
+      ]
     },
     "mgCustomPolicySetDefinitions": {
       "condition": "[not(empty(parameters('managementGroupCustomPolicySetDefinitions')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[variables('deploymentNames').mgPolicySetDefinitions]",
       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('managementGroupName'))]",
       "location": "[deployment().location]",
@@ -1087,8 +1098,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "16035681111931765254"
+              "version": "0.39.26.7824",
+              "templateHash": "3449711888096468278"
             },
             "name": "avm/ptn/alz/empty/policy-set-definitions",
             "description": "Azure Landing Zones - Bicep - Empty - Policy Set Definitions Module"
@@ -1168,7 +1179,6 @@
         }
       },
       "dependsOn": [
-        "mgCustomPolicyDefinitions",
         "mgCustomPolicySetDefinitionsWait"
       ]
     },
@@ -1181,7 +1191,7 @@
       },
       "condition": "[and(greater(parameters('waitForConsistencyCounterBeforePolicyAssignments'), 0), not(empty(variables('filteredManagementGroupPolicyAssignments'))))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-{1}', variables('deploymentNames').mgPolicyAssignmentsWait, copyIndex())]",
       "location": "[deployment().location]",
       "properties": {
@@ -1195,15 +1205,18 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "15051604611823441266"
+              "version": "0.39.26.7824",
+              "templateHash": "12451131946120120504"
             },
             "name": "avm/ptn/alz/empty/wait",
             "description": "Azure Landing Zones - Bicep - Empty - Wait Module\n\nThis module is used to create sequential empty/blank ARM deployments to introduce an artificial wait between deployments in the pattern module. When the `wait()` and `retry()` functions become available in GA in Bicep, this approach will be deprecated and we will migrate to using those functions instead.\n"
           },
           "resources": []
         }
-      }
+      },
+      "dependsOn": [
+        "mgCustomPolicySetDefinitions"
+      ]
     },
     "mgPolicyAssignments": {
       "copy": {
@@ -1211,7 +1224,7 @@
         "count": "[length(coalesce(variables('filteredManagementGroupPolicyAssignments'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('{0}-{1}', variables('deploymentNames').mgPolicyAssignments, uniqueString(parameters('managementGroupName'), coalesce(variables('filteredManagementGroupPolicyAssignments'), createArray())[copyIndex()].name)), 64)]",
       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('managementGroupName'))]",
       "location": "[deployment().location]",
@@ -1291,8 +1304,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13340836300551333841"
+              "version": "0.39.26.7824",
+              "templateHash": "4091301079110824490"
             },
             "name": "Policy Assignments (All scopes)",
             "description": "This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope."
@@ -1483,7 +1496,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[take(format('46d3xbcp.ptn.authorization-policyassignment.{0}.{1}', replace('0.5.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+              "name": "[take(format('46d3xbcp.ptn.authorization-policyassignment.{0}.{1}', replace('0.5.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
               "location": "[parameters('location')]",
               "properties": {
                 "mode": "Incremental",
@@ -1503,7 +1516,7 @@
             "policyAssignment_mg": {
               "condition": "[and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-PolicyAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))]",
               "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('managementGroupId'))]",
               "location": "[deployment().location]",
@@ -1560,8 +1573,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "16696735039358850323"
+                      "version": "0.39.26.7824",
+                      "templateHash": "3522442314177871322"
                     },
                     "name": "Policy Assignments (Management Group scope)",
                     "description": "This module deploys a Policy Assignment at a Management Group scope."
@@ -1740,9 +1753,9 @@
                         "name": "managementGroupRoleAssignments",
                         "count": "[length(parameters('roleDefinitionIds'))]"
                       },
-                      "condition": "[and(and(not(empty(parameters('roleDefinitionIds'))), not(empty(parameters('additionalManagementGroupsIDsToAssignRbacTo')))), equals(parameters('identity'), 'SystemAssigned'))]",
+                      "condition": "[and(and(not(empty(parameters('roleDefinitionIds'))), not(empty(variables('finalArrayOfManagementGroupsToAssignRbacTo')))), equals(parameters('identity'), 'SystemAssigned'))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC', uniqueString(deployment().name, parameters('location'), parameters('roleDefinitionIds')[copyIndex()], parameters('name')))]",
                       "location": "[deployment().location]",
                       "properties": {
@@ -1770,8 +1783,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.37.4.10188",
-                              "templateHash": "6866566455345128487"
+                              "version": "0.39.26.7824",
+                              "templateHash": "11943394730159030733"
                             }
                           },
                           "parameters": {
@@ -1816,7 +1829,7 @@
                                 "count": "[length(parameters('managementGroupsIDsToAssignRbacTo'))]"
                               },
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC', uniqueString(deployment().name, parameters('location'), parameters('roleDefinitionId'), parameters('name')))]",
                               "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('managementGroupsIDsToAssignRbacTo')[copyIndex()])]",
                               "location": "[deployment().location]",
@@ -1842,8 +1855,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.37.4.10188",
-                                      "templateHash": "9372315288124069987"
+                                      "version": "0.39.26.7824",
+                                      "templateHash": "10827247913795553672"
                                     }
                                   },
                                   "parameters": {
@@ -1903,7 +1916,7 @@
                       },
                       "condition": "[and(and(not(empty(parameters('roleDefinitionIds'))), not(empty(parameters('additionalSubscriptionIDsToAssignRbacTo')))), equals(parameters('identity'), 'SystemAssigned'))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC-Subs', uniqueString(deployment().name, parameters('location'), parameters('roleDefinitionIds')[copyIndex()], parameters('name')))]",
                       "location": "[deployment().location]",
                       "properties": {
@@ -1931,8 +1944,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.37.4.10188",
-                              "templateHash": "14456224861384112444"
+                              "version": "0.39.26.7824",
+                              "templateHash": "5852722490435240271"
                             }
                           },
                           "parameters": {
@@ -1977,7 +1990,7 @@
                                 "count": "[length(parameters('subscriptionIDsToAssignRbacTo'))]"
                               },
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[format('{0}-PolicyAssignment-MG-Module-RBAC-Sub-{1}', uniqueString(deployment().name, parameters('location'), parameters('roleDefinitionId'), parameters('name')), substring(parameters('subscriptionIDsToAssignRbacTo')[copyIndex()], 0, 8))]",
                               "subscriptionId": "[parameters('subscriptionIDsToAssignRbacTo')[copyIndex()]]",
                               "location": "[deployment().location]",
@@ -2003,8 +2016,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.37.4.10188",
-                                      "templateHash": "3858413328521914948"
+                                      "version": "0.39.26.7824",
+                                      "templateHash": "297261946822960846"
                                     }
                                   },
                                   "parameters": {
@@ -2064,7 +2077,7 @@
                       },
                       "condition": "[and(and(not(empty(parameters('roleDefinitionIds'))), not(empty(parameters('additionalResourceGroupResourceIDsToAssignRbacTo')))), equals(parameters('identity'), 'SystemAssigned'))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC-RGs', uniqueString(deployment().name, parameters('location'), parameters('roleDefinitionIds')[copyIndex()], parameters('name')))]",
                       "location": "[deployment().location]",
                       "properties": {
@@ -2092,8 +2105,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.37.4.10188",
-                              "templateHash": "14885565573528717585"
+                              "version": "0.39.26.7824",
+                              "templateHash": "905227369220927938"
                             }
                           },
                           "parameters": {
@@ -2138,7 +2151,7 @@
                                 "count": "[length(parameters('resourceGroupResourceIDsToAssignRbacTo'))]"
                               },
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[format('{0}-PolicyAssignment-MG-Module-RBAC-RG-Sub-{1}', uniqueString(deployment().name, parameters('location'), parameters('roleDefinitionId'), parameters('name'), parameters('resourceGroupResourceIDsToAssignRbacTo')[copyIndex()]), substring(split(parameters('resourceGroupResourceIDsToAssignRbacTo')[copyIndex()], '/')[2], 0, 8))]",
                               "subscriptionId": "[split(parameters('resourceGroupResourceIDsToAssignRbacTo')[copyIndex()], '/')[2]]",
                               "resourceGroup": "[split(parameters('resourceGroupResourceIDsToAssignRbacTo')[copyIndex()], '/')[4]]",
@@ -2164,8 +2177,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.37.4.10188",
-                                      "templateHash": "2244198828379535633"
+                                      "version": "0.39.26.7824",
+                                      "templateHash": "15559047093658721746"
                                     }
                                   },
                                   "parameters": {
@@ -2255,7 +2268,7 @@
             "policyAssignment_sub": {
               "condition": "[and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-PolicyAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "location": "[deployment().location]",
@@ -2306,8 +2319,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "7020424788908864147"
+                      "version": "0.39.26.7824",
+                      "templateHash": "656621665529853593"
                     },
                     "name": "Policy Assignments (Subscription scope)",
                     "description": "This module deploys a Policy Assignment at a Subscription scope."
@@ -2521,7 +2534,7 @@
             "policyAssignment_rg": {
               "condition": "[and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-PolicyAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('resourceGroupName')]",
@@ -2572,8 +2585,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "1655694359990844863"
+                      "version": "0.39.26.7824",
+                      "templateHash": "12278402966630035063"
                     },
                     "name": "Policy Assignments (Resource Group scope)",
                     "description": "This module deploys a Policy Assignment at a Resource Group scope."
@@ -2833,8 +2846,6 @@
       },
       "dependsOn": [
         "mg",
-        "mgCustomPolicyDefinitions",
-        "mgCustomPolicySetDefinitions",
         "mgPolicyAssignmentsWait"
       ]
     },
@@ -2847,7 +2858,7 @@
       },
       "condition": "[and(greater(parameters('waitForConsistencyCounterBeforeCustomRoleDefinitions'), 0), not(empty(parameters('managementGroupCustomRoleDefinitions'))))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-{1}', variables('deploymentNames').mgRoleDefinitionsWait, copyIndex())]",
       "location": "[deployment().location]",
       "properties": {
@@ -2861,15 +2872,19 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "15051604611823441266"
+              "version": "0.39.26.7824",
+              "templateHash": "12451131946120120504"
             },
             "name": "avm/ptn/alz/empty/wait",
             "description": "Azure Landing Zones - Bicep - Empty - Wait Module\n\nThis module is used to create sequential empty/blank ARM deployments to introduce an artificial wait between deployments in the pattern module. When the `wait()` and `retry()` functions become available in GA in Bicep, this approach will be deprecated and we will migrate to using those functions instead.\n"
           },
           "resources": []
         }
-      }
+      },
+      "dependsOn": [
+        "mg",
+        "mgExisting"
+      ]
     },
     "mgRoleDefinitions": {
       "copy": {
@@ -2877,7 +2892,7 @@
         "count": "[length(coalesce(parameters('managementGroupCustomRoleDefinitions'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('{0}-{1}', variables('deploymentNames').mgRoleDefinitions, uniqueString(parameters('managementGroupName'), coalesce(parameters('managementGroupCustomRoleDefinitions'), createArray())[copyIndex()].name)), 64)]",
       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('managementGroupName'))]",
       "location": "[deployment().location]",
@@ -3082,7 +3097,7 @@
       },
       "condition": "[and(greater(parameters('waitForConsistencyCounterBeforeRoleAssignments'), 0), not(empty(variables('formattedRoleAssignments'))))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-{1}', variables('deploymentNames').mgRoleAssignmentsWait, copyIndex())]",
       "location": "[deployment().location]",
       "properties": {
@@ -3096,15 +3111,18 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "15051604611823441266"
+              "version": "0.39.26.7824",
+              "templateHash": "12451131946120120504"
             },
             "name": "avm/ptn/alz/empty/wait",
             "description": "Azure Landing Zones - Bicep - Empty - Wait Module\n\nThis module is used to create sequential empty/blank ARM deployments to introduce an artificial wait between deployments in the pattern module. When the `wait()` and `retry()` functions become available in GA in Bicep, this approach will be deprecated and we will migrate to using those functions instead.\n"
           },
           "resources": []
         }
-      }
+      },
+      "dependsOn": [
+        "mgRoleDefinitions"
+      ]
     },
     "mgRoleAssignments": {
       "copy": {
@@ -3112,7 +3130,7 @@
         "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('{0}-{1}', variables('deploymentNames').mgRoleAssignments, uniqueString(parameters('managementGroupName'), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId)), 64)]",
       "location": "[deployment().location]",
       "properties": {
@@ -3810,8 +3828,7 @@
       },
       "dependsOn": [
         "mg",
-        "mgRoleAssignmentsWait",
-        "mgRoleDefinitions"
+        "mgRoleAssignmentsWait"
       ]
     }
   },

@@ -4,6 +4,14 @@ Creates an Azure Container Registry and an Azure Container Apps environment.
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case
 
+You can reference the module as follows:
+```bicep
+module containerAppsStack 'br/public:avm/ptn/azd/container-apps-stack:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -46,6 +54,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with zoneRedundant enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/zone-redundant]
+
 
 <details>
 
@@ -53,7 +63,6 @@ This instance deploys the module with zoneRedundant enabled.
 
 ```bicep
 module containerAppsStack 'br/public:avm/ptn/azd/container-apps-stack:<version>' = {
-  name: 'containerAppsStackDeployment'
   params: {
     // Required parameters
     containerAppsEnvironmentName: 'acaszrcae001'
@@ -215,6 +224,7 @@ param zoneRedundant = true
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether to allow or block all public traffic. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Zone redundancy setting. |
 
@@ -359,6 +369,21 @@ Location for all Resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
+### Parameter: `publicNetworkAccess`
+
+Whether to allow or block all public traffic.
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
 ### Parameter: `tags`
 
 Tags of the resource.
@@ -396,4 +421,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

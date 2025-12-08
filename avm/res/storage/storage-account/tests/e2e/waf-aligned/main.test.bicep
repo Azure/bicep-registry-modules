@@ -159,6 +159,8 @@ module testDeployment '../../../main.bicep' = [
         containerDeleteRetentionPolicyDays: 10
         deleteRetentionPolicyEnabled: true
         deleteRetentionPolicyDays: 9
+        isVersioningEnabled: true
+        versionDeletePolicyDays: 3
       }
       fileServices: {
         diagnosticSettings: [

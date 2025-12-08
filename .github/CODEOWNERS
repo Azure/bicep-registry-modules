@@ -1,6 +1,6 @@
-* @Azure/bicep-admins @Azure/avm-core-team-technical-bicep
-/.github/ @Azure/bicep-admins @Azure/avm-core-team-technical-bicep
-/scripts/ @Azure/bicep-admins @Azure/avm-core-team-technical-bicep
+* @Azure/avm-core-team-technical-bicep
+/.github/ @Azure/avm-core-team-technical-bicep
+/scripts/ @Azure/avm-core-team-technical-bicep
 /avm/ @Azure/avm-core-team-technical-bicep
 /utilities/ @Azure/avm-core-team-technical-bicep
 /avm/ptn/ai-ml/ai-foundry/ @Azure/avm-ptn-aiml-aifoundry-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -143,6 +143,7 @@
 /avm/res/managed-identity/user-assigned-identity/ @Azure/avm-res-managedidentity-userassignedidentity-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/managed-services/registration-definition/ @Azure/avm-res-managedservices-registrationdefinition-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/management/management-group/ @Azure/avm-res-management-managementgroup-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/management/service-group/ @Azure/avm-res-management-servicegroup-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/maps/account/ @Azure/avm-res-maps-account-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/net-app/net-app-account/ @Azure/avm-res-netapp-netappaccount-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/application-gateway/ @Azure/avm-res-network-applicationgateway-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -185,6 +186,7 @@
 /avm/res/network/vpn-gateway/ @Azure/avm-res-network-vpngateway-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/vpn-server-configuration/ @Azure/avm-res-network-vpnserverconfiguration-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/vpn-site/ @Azure/avm-res-network-vpnsite-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/operational-insights/cluster/ @Azure/avm-res-operationalinsights-cluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/operational-insights/workspace/ @Azure/avm-res-operationalinsights-workspace-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/operations-management/solution/ @Azure/avm-res-operationsmanagement-solution-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/portal/dashboard/ @Azure/avm-res-portal-dashboard-module-owners-bicep @Azure/avm-module-reviewers-bicep

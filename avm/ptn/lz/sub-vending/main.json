@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "11036118962451026960"
+      "version": "0.39.26.7824",
+      "templateHash": "2827890037228340123"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1034,6 +1034,16 @@
             "description": "Conditional. List of address prefixes for the subnet. Required if `addressPrefix` is empty."
           }
         },
+        "ipamPoolPrefixAllocations": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate."
+          }
+        },
         "applicationGatewayIPConfigurations": {
           "type": "array",
           "items": {
@@ -1218,7 +1228,14 @@
         "addressPrefixes": {
           "type": "array",
           "metadata": {
-            "description": "Required. The address prefixes for the virtual network."
+            "description": "Required. An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `[\"10.0.0.0/16\"]`) OR a single IPAM pool resource ID. When specifying an IPAM pool resource ID, you must also set ipamPoolNumberOfIpAddresses."
+          }
+        },
+        "ipamPoolNumberOfIpAddresses": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The number of IP addresses to allocate from the IPAM pool. Required when addressPrefixes contains an IPAM pool resource ID."
           }
         },
         "location": {
@@ -1483,7 +1500,14 @@
       },
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `[\"10.0.0.0/16\",\"172.16.0.0/12\"]`."
+        "description": "Optional. An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `[\"10.0.0.0/16\",\"172.16.0.0/12\"]`) OR a single IPAM pool resource ID to allocate IP addresses from. When specifying an IPAM pool resource ID, you must also set a value for the `virtualNetworkIpamPoolNumberOfIpAddresses` parameter.\n"
+      }
+    },
+    "virtualNetworkIpamPoolNumberOfIpAddresses": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The number of IP addresses to allocate from the IPAM pool. Required when `virtualNetworkAddressSpace` contains an IPAM pool resource ID. Example: `'256'` for a /24 network.\n"
       }
     },
     "virtualNetworkSubnets": {
@@ -1766,7 +1790,7 @@
         "Microsoft.Web": []
       },
       "metadata": {
-        "description": "Optional. An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.\n"
+        "description": "Optional. An object of resource providers and resource providers features to register. If not specified, a default list of common resource providers will be registered. To disable resource provider registration entirely, provide an empty object `{}`.\n"
       }
     },
     "managementGroupAssociationDelayCount": {
@@ -1867,7 +1891,7 @@
     "createSubscription": {
       "condition": "[and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[variables('deploymentNames').createSubscription]",
       "location": "[deployment().location]",
       "properties": {
@@ -1901,8 +1925,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "2432840958642647721"
+              "version": "0.39.26.7824",
+              "templateHash": "2533844697716248403"
             }
           },
           "parameters": {
@@ -1992,7 +2016,7 @@
     "createSubscriptionResources": {
       "condition": "[or(parameters('subscriptionAliasEnabled'), not(empty(parameters('existingSubscriptionId'))))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[variables('deploymentNames').createSubscriptionResources]",
       "location": "[deployment().location]",
       "properties": {
@@ -2037,6 +2061,9 @@
           },
           "virtualNetworkAddressSpace": {
             "value": "[parameters('virtualNetworkAddressSpace')]"
+          },
+          "virtualNetworkIpamPoolNumberOfIpAddresses": {
+            "value": "[parameters('virtualNetworkIpamPoolNumberOfIpAddresses')]"
           },
           "virtualNetworkSubnets": {
             "value": "[parameters('virtualNetworkSubnets')]"
@@ -2157,8 +2184,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "12076241841135701361"
+              "version": "0.39.26.7824",
+              "templateHash": "4395253011660210539"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -2497,6 +2524,16 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Conditional. List of address prefixes for the subnet. Required if `addressPrefix` is empty."
+                  }
+                },
+                "ipamPoolPrefixAllocations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate."
                   }
                 },
                 "applicationGatewayIPConfigurations": {
@@ -3014,7 +3051,14 @@
                 "addressPrefixes": {
                   "type": "array",
                   "metadata": {
-                    "description": "Required. The address prefixes for the virtual network."
+                    "description": "Required. An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `[\"10.0.0.0/16\"]`) OR a single IPAM pool resource ID. When specifying an IPAM pool resource ID, you must also set ipamPoolNumberOfIpAddresses."
+                  }
+                },
+                "ipamPoolNumberOfIpAddresses": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The number of IP addresses to allocate from the IPAM pool. Required when addressPrefixes contains an IPAM pool resource ID."
                   }
                 },
                 "location": {
@@ -3601,7 +3645,14 @@
               },
               "defaultValue": [],
               "metadata": {
-                "description": "The address space of the virtual network, supplied as multiple CIDR blocks, e.g. `[\"10.0.0.0/16\",\"172.16.0.0/12\"]`"
+                "description": "An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `[\"10.0.0.0/16\",\"172.16.0.0/12\"]`) OR a single IPAM pool resource ID. When specifying an IPAM pool resource ID, you must also set virtualNetworkIpamPoolNumberOfIpAddresses."
+              }
+            },
+            "virtualNetworkIpamPoolNumberOfIpAddresses": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "The number of IP addresses to allocate from the IPAM pool. Required when virtualNetworkAddressSpace contains an IPAM pool resource ID."
               }
             },
             "virtualNetworkSubnets": {
@@ -3874,7 +3925,7 @@
                 "Microsoft.Web": []
               },
               "metadata": {
-                "description": "An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.\n}`"
+                "description": "An object of resource providers and resource providers features to register. If not specified, a default list of common resource providers will be registered. To disable resource provider registration entirely, provide an empty object `{}`.\n}`"
               }
             },
             "deploymentScriptManagedIdentityName": {
@@ -4027,10 +4078,10 @@
             "virtualWanHubResourceGroupName": "[if(not(empty(variables('virtualHubResourceIdChecked'))), split(variables('virtualHubResourceIdChecked'), '/')[4], '')]",
             "virtualWanHubConnectionName": "[format('vhc-{0}-{1}', parameters('virtualNetworkName'), substring(guid(variables('virtualHubResourceIdChecked'), parameters('virtualNetworkName'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkLocation'), parameters('subscriptionId')), 0, 5))]",
             "virtualWanHubConnectionAssociatedRouteTable": "[if(not(empty(parameters('virtualNetworkVwanAssociatedRouteTableResourceId'))), parameters('virtualNetworkVwanAssociatedRouteTableResourceId'), format('{0}/hubRouteTables/defaultRouteTable', variables('virtualHubResourceIdChecked')))]",
-            "virutalWanHubDefaultRouteTableId": {
+            "virtualWanHubDefaultRouteTableId": {
               "id": "[format('{0}/hubRouteTables/defaultRouteTable', variables('virtualHubResourceIdChecked'))]"
             },
-            "virtualWanHubConnectionPropogatedRouteTables": "[if(not(empty(parameters('virtualNetworkVwanPropagatedRouteTablesResourceIds'))), parameters('virtualNetworkVwanPropagatedRouteTablesResourceIds'), array(variables('virutalWanHubDefaultRouteTableId')))]",
+            "virtualWanHubConnectionPropogatedRouteTables": "[if(not(empty(parameters('virtualNetworkVwanPropagatedRouteTablesResourceIds'))), parameters('virtualNetworkVwanPropagatedRouteTablesResourceIds'), array(variables('virtualWanHubDefaultRouteTableId')))]",
             "virtualWanHubConnectionPropogatedLabels": "[if(not(empty(parameters('virtualNetworkVwanPropagatedLabels'))), parameters('virtualNetworkVwanPropagatedLabels'), createArray('default'))]",
             "resourceProvidersFormatted": "[replace(string(parameters('resourceProviders')), '\"', '\\\"')]",
             "nsgArrayFormatted": "[if(not(empty(parameters('additionalVirtualNetworks'))), flatten(map(parameters('additionalVirtualNetworks'), lambda('vnet', map(coalesce(tryGet(lambdaVariables('vnet'), 'subnets'), createArray()), lambda('subnet', createObject('vnetResourceGroupName', lambdaVariables('vnet').resourceGroupName, 'subnetName', lambdaVariables('subnet').name, 'nsgName', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'name'), format('nsg-{0}-{1}-{2}', lambdaVariables('subnet').name, lambdaVariables('vnet').name, substring(guid(coalesce(lambdaVariables('vnet').name, 'vnet'), lambdaVariables('vnet').resourceGroupName, lambdaVariables('subnet').name), 0, 4))), 'nsgLocation', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'location'), lambdaVariables('vnet').location), 'nsgRules', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'securityRules'), null()), 'nsgTags', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'tags'), null()))))))), createArray())]",
@@ -4062,7 +4113,7 @@
             "moveSubscriptionToManagementGroup": {
               "condition": "[and(parameters('subscriptionManagementGroupAssociationEnabled'), not(empty(parameters('subscriptionManagementGroupId'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[variables('deploymentNames').moveSubscriptionToManagementGroup]",
               "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('subscriptionManagementGroupId'))]",
               "location": "[deployment().location]",
@@ -4085,8 +4136,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "10119532997954158148"
+                      "version": "0.39.26.7824",
+                      "templateHash": "737414694893554439"
                     }
                   },
                   "parameters": {
@@ -4121,7 +4172,7 @@
             "tagSubscription": {
               "condition": "[not(empty(parameters('subscriptionTags')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[variables('deploymentNames').tagSubscription]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "location": "[deployment().location]",
@@ -4147,8 +4198,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "15753993745852490416"
+                      "version": "0.39.26.7824",
+                      "templateHash": "18132991071238568488"
                     }
                   },
                   "parameters": {
@@ -4185,7 +4236,7 @@
                     {
                       "condition": "[and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-Tags-Sub', deployment().name)]",
                       "location": "[deployment().location]",
                       "properties": {
@@ -4207,8 +4258,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.37.4.10188",
-                              "templateHash": "17777929966904635893"
+                              "version": "0.39.26.7824",
+                              "templateHash": "409826983300954352"
                             }
                           },
                           "parameters": {
@@ -4240,7 +4291,7 @@
                               "apiVersion": "2025-04-01",
                               "name": "[parameters('name')]",
                               "properties": {
-                                "tags": "[if(parameters('onlyUpdate'), union(coalesce(tryGet(if(parameters('onlyUpdate'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2022-09-01'), null()), 'outputs', 'existingTags', 'value'), createObject()), parameters('tags')), parameters('tags'))]"
+                                "tags": "[if(parameters('onlyUpdate'), union(coalesce(tryGet(if(parameters('onlyUpdate'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2025-04-01'), null()), 'outputs', 'existingTags', 'value'), createObject()), parameters('tags')), parameters('tags'))]"
                               },
                               "dependsOn": [
                                 "[subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name))]"
@@ -4249,7 +4300,7 @@
                             {
                               "condition": "[parameters('onlyUpdate')]",
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[format('{0}-ReadTags', deployment().name)]",
                               "location": "[deployment().location]",
                               "properties": {
@@ -4263,8 +4314,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.37.4.10188",
-                                      "templateHash": "17895554561530196302"
+                                      "version": "0.39.26.7824",
+                                      "templateHash": "15122795269698622494"
                                     }
                                   },
                                   "parameters": {
@@ -4303,7 +4354,7 @@
                               "metadata": {
                                 "description": "The applied tags."
                               },
-                              "value": "[if(parameters('onlyUpdate'), union(coalesce(tryGet(if(parameters('onlyUpdate'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2022-09-01'), null()), 'outputs', 'existingTags', 'value'), createObject()), parameters('tags')), parameters('tags'))]"
+                              "value": "[if(parameters('onlyUpdate'), union(coalesce(tryGet(if(parameters('onlyUpdate'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2025-04-01'), null()), 'outputs', 'existingTags', 'value'), createObject()), parameters('tags')), parameters('tags'))]"
                             },
                             "resourceId": {
                               "type": "string",
@@ -4319,7 +4370,7 @@
                     {
                       "condition": "[and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId'))))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-Tags-RG', deployment().name)]",
                       "resourceGroup": "[parameters('resourceGroupName')]",
                       "properties": {
@@ -4341,8 +4392,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.37.4.10188",
-                              "templateHash": "2329361910473224649"
+                              "version": "0.39.26.7824",
+                              "templateHash": "6678453199622092861"
                             }
                           },
                           "parameters": {
@@ -4374,7 +4425,7 @@
                               "apiVersion": "2025-04-01",
                               "name": "[parameters('name')]",
                               "properties": {
-                                "tags": "[if(parameters('onlyUpdate'), union(coalesce(tryGet(if(parameters('onlyUpdate'), reference(resourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2022-09-01'), null()), 'outputs', 'existingTags', 'value'), createObject()), parameters('tags')), parameters('tags'))]"
+                                "tags": "[if(parameters('onlyUpdate'), union(coalesce(tryGet(if(parameters('onlyUpdate'), reference(resourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2025-04-01'), null()), 'outputs', 'existingTags', 'value'), createObject()), parameters('tags')), parameters('tags'))]"
                               },
                               "dependsOn": [
                                 "[resourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name))]"
@@ -4383,7 +4434,7 @@
                             {
                               "condition": "[parameters('onlyUpdate')]",
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[format('{0}-ReadTags', deployment().name)]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -4396,8 +4447,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.37.4.10188",
-                                      "templateHash": "17671496048922498595"
+                                      "version": "0.39.26.7824",
+                                      "templateHash": "6143412316816181642"
                                     }
                                   },
                                   "parameters": {
@@ -4450,7 +4501,7 @@
                               "metadata": {
                                 "description": "The applied tags."
                               },
-                              "value": "[if(parameters('onlyUpdate'), union(coalesce(tryGet(if(parameters('onlyUpdate'), reference(resourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2022-09-01'), null()), 'outputs', 'existingTags', 'value'), createObject()), parameters('tags')), parameters('tags'))]"
+                              "value": "[if(parameters('onlyUpdate'), union(coalesce(tryGet(if(parameters('onlyUpdate'), reference(resourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2025-04-01'), null()), 'outputs', 'existingTags', 'value'), createObject()), parameters('tags')), parameters('tags'))]"
                             }
                           }
                         }
@@ -4463,21 +4514,21 @@
                       "metadata": {
                         "description": "The name of the tags resource."
                       },
-                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), coalesce(tryGet(if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2022-09-01'), null()), 'outputs', 'name', 'value'), ''), coalesce(tryGet(if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2022-09-01'), null()), 'outputs', 'name', 'value'), ''))]"
+                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), coalesce(tryGet(if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2025-04-01'), null()), 'outputs', 'name', 'value'), ''), coalesce(tryGet(if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2025-04-01'), null()), 'outputs', 'name', 'value'), ''))]"
                     },
                     "tags": {
                       "type": "object",
                       "metadata": {
                         "description": "The applied tags."
                       },
-                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), coalesce(tryGet(if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2022-09-01'), null()), 'outputs', 'tags', 'value'), createObject()), coalesce(tryGet(if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2022-09-01'), null()), 'outputs', 'tags', 'value'), createObject()))]"
+                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), coalesce(tryGet(if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2025-04-01'), null()), 'outputs', 'tags', 'value'), createObject()), coalesce(tryGet(if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2025-04-01'), null()), 'outputs', 'tags', 'value'), createObject()))]"
                     },
                     "resourceId": {
                       "type": "string",
                       "metadata": {
                         "description": "The resource ID of the applied tags."
                       },
-                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), coalesce(tryGet(if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2022-09-01'), null()), 'outputs', 'resourceId', 'value'), ''), coalesce(tryGet(if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2022-09-01'), null()), 'outputs', 'resourceId', 'value'), ''))]"
+                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), coalesce(tryGet(if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2025-04-01'), null()), 'outputs', 'resourceId', 'value'), ''), coalesce(tryGet(if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2025-04-01'), null()), 'outputs', 'resourceId', 'value'), ''))]"
                     }
                   }
                 }
@@ -4486,7 +4537,7 @@
             "createResourceGroupForLzNetworking": {
               "condition": "[and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[variables('deploymentNames').createResourceGroupForLzNetworking]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "location": "[deployment().location]",
@@ -4983,7 +5034,7 @@
             "createResourceGroupForIdentities": {
               "condition": "[not(empty(parameters('userAssignedManagedIdentities')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[variables('deploymentNames').createResourceGroupForIdentities]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "location": "[deployment().location]",
@@ -5480,7 +5531,7 @@
             "tagResourceGroup": {
               "condition": "[and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), not(empty(parameters('virtualNetworkResourceGroupTags'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[variables('deploymentNames').tagResoruceGroupForLzNetworking]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "location": "[deployment().location]",
@@ -5509,8 +5560,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "15753993745852490416"
+                      "version": "0.39.26.7824",
+                      "templateHash": "18132991071238568488"
                     }
                   },
                   "parameters": {
@@ -5547,7 +5598,7 @@
                     {
                       "condition": "[and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-Tags-Sub', deployment().name)]",
                       "location": "[deployment().location]",
                       "properties": {
@@ -5569,8 +5620,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.37.4.10188",
-                              "templateHash": "17777929966904635893"
+                              "version": "0.39.26.7824",
+                              "templateHash": "409826983300954352"
                             }
                           },
                           "parameters": {
@@ -5602,7 +5653,7 @@
                               "apiVersion": "2025-04-01",
                               "name": "[parameters('name')]",
                               "properties": {
-                                "tags": "[if(parameters('onlyUpdate'), union(coalesce(tryGet(if(parameters('onlyUpdate'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2022-09-01'), null()), 'outputs', 'existingTags', 'value'), createObject()), parameters('tags')), parameters('tags'))]"
+                                "tags": "[if(parameters('onlyUpdate'), union(coalesce(tryGet(if(parameters('onlyUpdate'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2025-04-01'), null()), 'outputs', 'existingTags', 'value'), createObject()), parameters('tags')), parameters('tags'))]"
                               },
                               "dependsOn": [
                                 "[subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name))]"
@@ -5611,7 +5662,7 @@
                             {
                               "condition": "[parameters('onlyUpdate')]",
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[format('{0}-ReadTags', deployment().name)]",
                               "location": "[deployment().location]",
                               "properties": {
@@ -5625,8 +5676,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.37.4.10188",
-                                      "templateHash": "17895554561530196302"
+                                      "version": "0.39.26.7824",
+                                      "templateHash": "15122795269698622494"
                                     }
                                   },
                                   "parameters": {
@@ -5665,7 +5716,7 @@
                               "metadata": {
                                 "description": "The applied tags."
                               },
-                              "value": "[if(parameters('onlyUpdate'), union(coalesce(tryGet(if(parameters('onlyUpdate'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2022-09-01'), null()), 'outputs', 'existingTags', 'value'), createObject()), parameters('tags')), parameters('tags'))]"
+                              "value": "[if(parameters('onlyUpdate'), union(coalesce(tryGet(if(parameters('onlyUpdate'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2025-04-01'), null()), 'outputs', 'existingTags', 'value'), createObject()), parameters('tags')), parameters('tags'))]"
                             },
                             "resourceId": {
                               "type": "string",
@@ -5681,7 +5732,7 @@
                     {
                       "condition": "[and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId'))))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-Tags-RG', deployment().name)]",
                       "resourceGroup": "[parameters('resourceGroupName')]",
                       "properties": {
@@ -5703,8 +5754,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.37.4.10188",
-                              "templateHash": "2329361910473224649"
+                              "version": "0.39.26.7824",
+                              "templateHash": "6678453199622092861"
                             }
                           },
                           "parameters": {
@@ -5736,7 +5787,7 @@
                               "apiVersion": "2025-04-01",
                               "name": "[parameters('name')]",
                               "properties": {
-                                "tags": "[if(parameters('onlyUpdate'), union(coalesce(tryGet(if(parameters('onlyUpdate'), reference(resourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2022-09-01'), null()), 'outputs', 'existingTags', 'value'), createObject()), parameters('tags')), parameters('tags'))]"
+                                "tags": "[if(parameters('onlyUpdate'), union(coalesce(tryGet(if(parameters('onlyUpdate'), reference(resourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2025-04-01'), null()), 'outputs', 'existingTags', 'value'), createObject()), parameters('tags')), parameters('tags'))]"
                               },
                               "dependsOn": [
                                 "[resourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name))]"
@@ -5745,7 +5796,7 @@
                             {
                               "condition": "[parameters('onlyUpdate')]",
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[format('{0}-ReadTags', deployment().name)]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -5758,8 +5809,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.37.4.10188",
-                                      "templateHash": "17671496048922498595"
+                                      "version": "0.39.26.7824",
+                                      "templateHash": "6143412316816181642"
                                     }
                                   },
                                   "parameters": {
@@ -5812,7 +5863,7 @@
                               "metadata": {
                                 "description": "The applied tags."
                               },
-                              "value": "[if(parameters('onlyUpdate'), union(coalesce(tryGet(if(parameters('onlyUpdate'), reference(resourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2022-09-01'), null()), 'outputs', 'existingTags', 'value'), createObject()), parameters('tags')), parameters('tags'))]"
+                              "value": "[if(parameters('onlyUpdate'), union(coalesce(tryGet(if(parameters('onlyUpdate'), reference(resourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2025-04-01'), null()), 'outputs', 'existingTags', 'value'), createObject()), parameters('tags')), parameters('tags'))]"
                             }
                           }
                         }
@@ -5825,21 +5876,21 @@
                       "metadata": {
                         "description": "The name of the tags resource."
                       },
-                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), coalesce(tryGet(if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2022-09-01'), null()), 'outputs', 'name', 'value'), ''), coalesce(tryGet(if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2022-09-01'), null()), 'outputs', 'name', 'value'), ''))]"
+                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), coalesce(tryGet(if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2025-04-01'), null()), 'outputs', 'name', 'value'), ''), coalesce(tryGet(if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2025-04-01'), null()), 'outputs', 'name', 'value'), ''))]"
                     },
                     "tags": {
                       "type": "object",
                       "metadata": {
                         "description": "The applied tags."
                       },
-                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), coalesce(tryGet(if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2022-09-01'), null()), 'outputs', 'tags', 'value'), createObject()), coalesce(tryGet(if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2022-09-01'), null()), 'outputs', 'tags', 'value'), createObject()))]"
+                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), coalesce(tryGet(if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2025-04-01'), null()), 'outputs', 'tags', 'value'), createObject()), coalesce(tryGet(if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2025-04-01'), null()), 'outputs', 'tags', 'value'), createObject()))]"
                     },
                     "resourceId": {
                       "type": "string",
                       "metadata": {
                         "description": "The resource ID of the applied tags."
                       },
-                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), coalesce(tryGet(if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2022-09-01'), null()), 'outputs', 'resourceId', 'value'), ''), coalesce(tryGet(if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2022-09-01'), null()), 'outputs', 'resourceId', 'value'), ''))]"
+                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), coalesce(tryGet(if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2025-04-01'), null()), 'outputs', 'resourceId', 'value'), ''), coalesce(tryGet(if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2025-04-01'), null()), 'outputs', 'resourceId', 'value'), ''))]"
                     }
                   }
                 }
@@ -5851,7 +5902,7 @@
             "createLzVnet": {
               "condition": "[and(and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[variables('deploymentNames').createLzVnet]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('virtualNetworkResourceGroupName')]",
@@ -5873,6 +5924,7 @@
                   "addressPrefixes": {
                     "value": "[parameters('virtualNetworkAddressSpace')]"
                   },
+                  "ipamPoolNumberOfIpAddresses": "[if(and(not(empty(parameters('virtualNetworkAddressSpace'))), contains(parameters('virtualNetworkAddressSpace')[0], '/Microsoft.Network/networkManagers/')), createObject('value', parameters('virtualNetworkIpamPoolNumberOfIpAddresses')), createObject('value', null()))]",
                   "dnsServers": {
                     "value": "[parameters('virtualNetworkDnsServers')]"
                   },
@@ -5885,7 +5937,7 @@
                       {
                         "name": "value",
                         "count": "[length(parameters('virtualNetworkSubnets'))]",
-                        "input": "[if(not(empty(parameters('virtualNetworkSubnets'))), createObject('name', parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'addressPrefix', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'addressPrefix'), 'networkSecurityGroupResourceId', if(or(parameters('virtualNetworkDeployBastion'), equals(parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'AzureBastionSubnet')), tryGet(if(and(and(and(and(parameters('virtualNetworkDeployBastion'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), reference('createBastionNsg'), null()), 'outputs', 'resourceId', 'value'), resourceId(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/networkSecurityGroups', format('{0}', tryGet(if(not(empty(parameters('virtualNetworkSubnets'))), reference(format('createLzNsg[{0}]', copyIndex('value'))), null()), 'outputs', 'name', 'value')))), 'routeTableResourceId', if(and(not(empty(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'routeTableName'))), not(empty(parameters('routeTablesResourceGroupName')))), resourceId(parameters('subscriptionId'), parameters('routeTablesResourceGroupName'), 'Microsoft.Network/routeTables', coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'routeTableName'), '')), null()), 'natGatewayResourceId', if(and(parameters('virtualNetworkDeployNatGateway'), coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'associateWithNatGateway'), false())), tryGet(if(and(parameters('virtualNetworkDeployNatGateway'), and(and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName'))))), reference('createNatGateway'), null()), 'outputs', 'resourceId', 'value'), null()), 'delegation', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'delegation')), createObject())]"
+                        "input": "[if(not(empty(parameters('virtualNetworkSubnets'))), createObject('name', parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'addressPrefix', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'addressPrefix'), 'ipamPoolPrefixAllocations', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'ipamPoolPrefixAllocations'), 'networkSecurityGroupResourceId', if(or(parameters('virtualNetworkDeployBastion'), equals(parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'AzureBastionSubnet')), tryGet(if(and(and(and(and(parameters('virtualNetworkDeployBastion'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), reference('createBastionNsg'), null()), 'outputs', 'resourceId', 'value'), resourceId(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/networkSecurityGroups', format('{0}', tryGet(if(not(empty(parameters('virtualNetworkSubnets'))), reference(format('createLzNsg[{0}]', copyIndex('value'))), null()), 'outputs', 'name', 'value')))), 'routeTableResourceId', if(and(not(empty(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'routeTableName'))), not(empty(parameters('routeTablesResourceGroupName')))), resourceId(parameters('subscriptionId'), parameters('routeTablesResourceGroupName'), 'Microsoft.Network/routeTables', coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'routeTableName'), '')), null()), 'natGatewayResourceId', if(and(parameters('virtualNetworkDeployNatGateway'), coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'associateWithNatGateway'), false())), tryGet(if(and(parameters('virtualNetworkDeployNatGateway'), and(and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName'))))), reference('createNatGateway'), null()), 'outputs', 'resourceId', 'value'), null()), 'delegation', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'delegation')), createObject())]"
                       }
                     ]
                   },
@@ -7523,7 +7575,7 @@
             "createBastionNsg": {
               "condition": "[and(and(and(and(parameters('virtualNetworkDeployBastion'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[variables('deploymentNames').createBastionNsg]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('virtualNetworkResourceGroupName')]",
@@ -8322,7 +8374,7 @@
               },
               "condition": "[not(empty(parameters('virtualNetworkSubnets')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-{1}', variables('deploymentNames').createLzNsg, copyIndex())]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('virtualNetworkResourceGroupName')]",
@@ -8981,7 +9033,7 @@
               },
               "condition": "[and(not(empty(parameters('networkSecurityGroups'))), not(empty(parameters('networkSecurityGroupResourceGroupName'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-{1}', variables('deploymentNames').createLzNsg, copyIndex())]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('networkSecurityGroupResourceGroupName')]",
@@ -9640,7 +9692,7 @@
               },
               "condition": "[and(not(empty(parameters('routeTables'))), not(empty(parameters('routeTablesResourceGroupName'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-{1}', variables('deploymentNames').createLzRouteTable, copyIndex())]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('routeTablesResourceGroupName')]",
@@ -9985,7 +10037,7 @@
               },
               "condition": "[not(empty(parameters('additionalVirtualNetworks')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('createAdditionalVnetNsgs-{0}-{1}', copyIndex(), uniqueString('createAdditionalVnetNsgs', deployment().name))]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[variables('nsgArrayFormatted')[copyIndex()].vnetResourceGroupName]",
@@ -10643,7 +10695,7 @@
             "createLzVirtualWanConnection": {
               "condition": "[and(and(and(and(and(and(and(and(parameters('virtualNetworkEnabled'), parameters('virtualNetworkPeeringEnabled')), not(empty(variables('virtualHubResourceIdChecked')))), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), not(empty(variables('virtualWanHubResourceGroupName')))), not(empty(variables('virtualWanHubSubscriptionId'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[variables('deploymentNames').createLzVirtualWanConnection]",
               "subscriptionId": "[variables('virtualWanHubSubscriptionId')]",
               "resourceGroup": "[variables('virtualWanHubResourceGroupName')]",
@@ -10673,8 +10725,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "17543656022324673718"
+                      "version": "0.39.26.7824",
+                      "templateHash": "2697601347448864025"
                     }
                   },
                   "parameters": {
@@ -10762,7 +10814,7 @@
               },
               "condition": "[and(parameters('roleAssignmentEnabled'), not(empty(variables('roleAssignmentsSubscription'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzRoleAssignmentsSub, uniqueString(variables('roleAssignmentsSubscription')[copyIndex()].principalId, variables('roleAssignmentsSubscription')[copyIndex()].definition, variables('roleAssignmentsSubscription')[copyIndex()].relativeScope)), 64)]",
               "location": "[deployment().location]",
               "properties": {
@@ -11463,7 +11515,7 @@
               },
               "condition": "[and(parameters('roleAssignmentEnabled'), not(empty(variables('roleAssignmentsResourceGroupSelf'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzRoleAssignmentsRsgsSelf, uniqueString(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].principalId, variables('roleAssignmentsResourceGroupSelf')[copyIndex()].definition, variables('roleAssignmentsResourceGroupSelf')[copyIndex()].relativeScope)), 64)]",
               "location": "[deployment().location]",
               "properties": {
@@ -12170,7 +12222,7 @@
               },
               "condition": "[and(parameters('roleAssignmentEnabled'), not(empty(variables('roleAssignmentsResourceGroupNotSelf'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzRoleAssignmentsRsgsNotSelf, uniqueString(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].principalId, variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].definition, variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].relativeScope)), 64)]",
               "location": "[deployment().location]",
               "properties": {
@@ -12874,7 +12926,7 @@
               },
               "condition": "[and(parameters('roleAssignmentEnabled'), not(empty(variables('umiRoleAssignmentsSubscriptionFlattened'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzUMIRoleAssignmentsSub, uniqueString(format('{0}-{1}', variables('deploymentNames').createUserAssignedIdentities, copyIndex()), variables('umiRoleAssignmentsSubscriptionFlattened')[copyIndex()].definition, variables('umiRoleAssignmentsSubscriptionFlattened')[copyIndex()].relativeScope)), 64)]",
               "location": "[deployment().location]",
               "properties": {
@@ -13579,7 +13631,7 @@
               },
               "condition": "[and(parameters('roleAssignmentEnabled'), not(empty(variables('umiRoleAssignmentsResourceGroupSelfFlattened'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzUMIRoleAssignmentsRsgsSelf, uniqueString(format('{0}-{1}', variables('deploymentNames').createUserAssignedIdentities, copyIndex()), variables('umiRoleAssignmentsResourceGroupSelfFlattened')[copyIndex()].definition, variables('umiRoleAssignmentsResourceGroupSelfFlattened')[copyIndex()].relativeScope)), 64)]",
               "location": "[deployment().location]",
               "properties": {
@@ -14287,7 +14339,7 @@
               },
               "condition": "[and(parameters('roleAssignmentEnabled'), not(empty(variables('umiRoleAssignmentsResourceGroupNotSelfFlattened'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzUMIRoleAssignmentsRsgsNotSelf, uniqueString(format('{0}-{1}', variables('deploymentNames').createUserAssignedIdentities, copyIndex()), variables('umiRoleAssignmentsResourceGroupNotSelfFlattened')[copyIndex()].definition, variables('umiRoleAssignmentsResourceGroupNotSelfFlattened')[copyIndex()].relativeScope)), 64)]",
               "location": "[deployment().location]",
               "properties": {
@@ -14995,7 +15047,7 @@
               },
               "condition": "[and(and(parameters('roleAssignmentEnabled'), not(empty(variables('pimRoleAssignmentsSubscription')))), equals(variables('pimRoleAssignmentsSubscription')[copyIndex()].roleAssignmentType, 'Active'))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzPimRoleAssignmentsSub, uniqueString(variables('pimRoleAssignmentsSubscription')[copyIndex()].principalId, variables('pimRoleAssignmentsSubscription')[copyIndex()].definition, variables('pimRoleAssignmentsSubscription')[copyIndex()].relativeScope)), 64)]",
               "location": "[deployment().location]",
               "properties": {
@@ -16830,7 +16882,7 @@
               },
               "condition": "[and(and(parameters('roleAssignmentEnabled'), not(empty(variables('pimRoleAssignmentsSubscription')))), equals(variables('pimRoleAssignmentsSubscription')[copyIndex()].roleAssignmentType, 'Eligible'))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzPimRoleAssignmentsSub, uniqueString(variables('pimRoleAssignmentsSubscription')[copyIndex()].principalId, variables('pimRoleAssignmentsSubscription')[copyIndex()].definition, variables('pimRoleAssignmentsSubscription')[copyIndex()].relativeScope)), 64)]",
               "location": "[deployment().location]",
               "properties": {
@@ -18665,7 +18717,7 @@
               },
               "condition": "[and(and(parameters('roleAssignmentEnabled'), not(empty(variables('pimRoleAssignmentsResourceGroupSelf')))), equals(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentType, 'Eligible'))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzPimRoleAssignmentsRsgsSelf, uniqueString(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].principalId, variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].definition, variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].relativeScope)), 64)]",
               "location": "[deployment().location]",
               "properties": {
@@ -20506,7 +20558,7 @@
               },
               "condition": "[and(and(parameters('roleAssignmentEnabled'), not(empty(variables('pimRoleAssignmentsResourceGroupSelf')))), equals(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentType, 'Active'))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzPimRoleAssignmentsRsgsSelf, uniqueString(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].principalId, variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].definition, variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].relativeScope)), 64)]",
               "location": "[deployment().location]",
               "properties": {
@@ -22347,7 +22399,7 @@
               },
               "condition": "[and(and(parameters('roleAssignmentEnabled'), not(empty(variables('pimRoleAssignmentsResourceGroupNotSelf')))), equals(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentType, 'Eligible'))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzPimRoleAssignmentsRsgsNotSelf, uniqueString(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].principalId, variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].definition, variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].relativeScope)), 64)]",
               "location": "[deployment().location]",
               "properties": {
@@ -24182,7 +24234,7 @@
               },
               "condition": "[and(and(parameters('roleAssignmentEnabled'), not(empty(variables('pimRoleAssignmentsResourceGroupNotSelf')))), equals(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentType, 'Active'))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzPimRoleAssignmentsRsgsNotSelf, uniqueString(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].principalId, variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].definition, variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].relativeScope)), 64)]",
               "location": "[deployment().location]",
               "properties": {
@@ -26013,7 +26065,7 @@
             "createResourceGroupForDeploymentScript": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[variables('deploymentNames').createResourceGroupForDeploymentScript]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "location": "[deployment().location]",
@@ -26509,7 +26561,7 @@
             "createResourceGroupForRouteTables": {
               "condition": "[and(not(empty(parameters('routeTablesResourceGroupName'))), not(empty(parameters('routeTables'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[variables('deploymentNames').createResourceGroupForRouteTables]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "location": "[deployment().location]",
@@ -27005,7 +27057,7 @@
             "createResourceGroupForNetworkSecurityGroups": {
               "condition": "[and(not(empty(parameters('networkSecurityGroupResourceGroupName'))), not(empty(parameters('networkSecurityGroups'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[variables('deploymentNames').createResourceGroupForNetworkSecurityGroups]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "location": "[deployment().location]",
@@ -27501,7 +27553,7 @@
             "createManagedIdentityForDeploymentScript": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[variables('deploymentNames').createDeploymentScriptManagedIdentity]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('deploymentScriptResourceGroupName')]",
@@ -27986,7 +28038,7 @@
             "createRoleAssignmentsDeploymentScript": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}', variables('deploymentNames').createRoleAssignmentsDeploymentScript), 64)]",
               "location": "[deployment().location]",
               "properties": {
@@ -28679,7 +28731,7 @@
             "createRoleAssignmentsDeploymentScriptStorageAccount": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}', variables('deploymentNames').createRoleAssignmentsDeploymentScriptStorageAccount), 64)]",
               "location": "[deployment().location]",
               "properties": {
@@ -29378,7 +29430,7 @@
             "createDsNsg": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[variables('deploymentNames').createDsNsg]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('deploymentScriptResourceGroupName')]",
@@ -30030,7 +30082,7 @@
             "dsFilePrivateDNSZone": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[variables('deploymentNames').createDsFilePrivateDnsZone]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('deploymentScriptResourceGroupName')]",
@@ -33402,7 +33454,7 @@
             "createDsStorageAccount": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[variables('deploymentNames').createDsStorageAccount]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('deploymentScriptResourceGroupName')]",
@@ -39319,7 +39371,7 @@
             "createDsVnet": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[variables('deploymentNames').createdsVnet]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('deploymentScriptResourceGroupName')]",
@@ -40971,7 +41023,7 @@
             "registerResourceProviders": {
               "condition": "[not(empty(parameters('resourceProviders')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[variables('deploymentNames').registerResourceProviders]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('deploymentScriptResourceGroupName')]",
@@ -41552,7 +41604,7 @@
             "createNatGateway": {
               "condition": "[and(parameters('virtualNetworkDeployNatGateway'), and(and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[variables('deploymentNames').createNatGateway]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('virtualNetworkResourceGroupName')]",
@@ -43229,7 +43281,7 @@
               },
               "condition": "[and(not(empty(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray()))), coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployNatGateway'), false()))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('createAdditonalNatGateway-{0}-{1}', copyIndex(), uniqueString('createAdditonalNatGateway', deployment().name))]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('additionalVirtualNetworks')[copyIndex()].resourceGroupName]",
@@ -44902,7 +44954,7 @@
             "createBastionHost": {
               "condition": "[and(parameters('virtualNetworkDeployBastion'), and(and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[variables('deploymentNames').createBastionHost]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('virtualNetworkResourceGroupName')]",
@@ -46621,7 +46673,7 @@
               },
               "condition": "[not(empty(parameters('userAssignedManagedIdentities')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-{1}', variables('deploymentNames').createUserAssignedIdentities, copyIndex())]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('userAssignedIdentityResourceGroupName')]",
@@ -47119,7 +47171,7 @@
               },
               "condition": "[and(parameters('virtualNetworkEnabled'), not(empty(parameters('additionalVirtualNetworks'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('createResourceGroupForAdditionalLzNetworking-{0}-{1}', copyIndex(), uniqueString('createResourceGroupForAdditionalLzNetworking', deployment().name))]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "location": "[deployment().location]",
@@ -47620,7 +47672,7 @@
               },
               "condition": "[and(parameters('virtualNetworkEnabled'), not(empty(parameters('additionalVirtualNetworks'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('createAdditionalVnets-{0}-{1}', copyIndex(), uniqueString('createAdditionalVnets', deployment().name))]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('additionalVirtualNetworks')[copyIndex()].resourceGroupName]",
@@ -47636,12 +47688,13 @@
                   "addressPrefixes": {
                     "value": "[parameters('additionalVirtualNetworks')[copyIndex()].addressPrefixes]"
                   },
+                  "ipamPoolNumberOfIpAddresses": "[if(and(not(empty(parameters('additionalVirtualNetworks')[copyIndex()].addressPrefixes)), contains(parameters('additionalVirtualNetworks')[copyIndex()].addressPrefixes[0], '/Microsoft.Network/networkManagers/')), createObject('value', tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'ipamPoolNumberOfIpAddresses')), createObject('value', null()))]",
                   "subnets": {
                     "copy": [
                       {
                         "name": "value",
                         "count": "[length(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray()))]",
-                        "input": "[createObject('name', coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')].name, 'addressPrefix', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'addressPrefix'), 'networkSecurityGroupResourceId', if(or(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployBastion'), false()), equals(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')].name, 'AzureBastionSubnet')), tryGet(if(and(and(and(and(parameters('virtualNetworkDeployBastion'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), reference('createBastionNsg'), null()), 'outputs', 'resourceId', 'value'), if(not(empty(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'networkSecurityGroup'))), resourceId(parameters('subscriptionId'), parameters('additionalVirtualNetworks')[copyIndex()].resourceGroupName, 'Microsoft.Network/networkSecurityGroups', filter(variables('nsgArrayFormatted'), lambda('nsg', equals(lambdaVariables('nsg').nsgName, tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'networkSecurityGroup', 'name'))))[0].nsgName), null())), 'routeTableResourceId', if(and(not(empty(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'routeTableName'))), not(empty(parameters('routeTablesResourceGroupName')))), resourceId(parameters('subscriptionId'), parameters('routeTablesResourceGroupName'), 'Microsoft.Network/routeTables', coalesce(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'routeTableName'), '')), null()), 'natGatewayResourceId', if(and(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployNatGateway'), false()), coalesce(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'associateWithNatGateway'), false())), tryGet(if(and(not(empty(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray()))), coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployNatGateway'), false())), reference(format('createAdditonalNatGateway[{0}]', copyIndex())), null()), 'outputs', 'resourceId', 'value'), null()), 'delegation', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'delegation'))]"
+                        "input": "[createObject('name', coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')].name, 'addressPrefix', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'addressPrefix'), 'ipamPoolPrefixAllocations', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'ipamPoolPrefixAllocations'), 'networkSecurityGroupResourceId', if(or(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployBastion'), false()), equals(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')].name, 'AzureBastionSubnet')), tryGet(if(and(and(and(and(parameters('virtualNetworkDeployBastion'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), reference('createBastionNsg'), null()), 'outputs', 'resourceId', 'value'), if(not(empty(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'networkSecurityGroup'))), resourceId(parameters('subscriptionId'), parameters('additionalVirtualNetworks')[copyIndex()].resourceGroupName, 'Microsoft.Network/networkSecurityGroups', filter(variables('nsgArrayFormatted'), lambda('nsg', equals(lambdaVariables('nsg').nsgName, tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'networkSecurityGroup', 'name'))))[0].nsgName), null())), 'routeTableResourceId', if(and(not(empty(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'routeTableName'))), not(empty(parameters('routeTablesResourceGroupName')))), resourceId(parameters('subscriptionId'), parameters('routeTablesResourceGroupName'), 'Microsoft.Network/routeTables', coalesce(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'routeTableName'), '')), null()), 'natGatewayResourceId', if(and(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployNatGateway'), false()), coalesce(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'associateWithNatGateway'), false())), tryGet(if(and(not(empty(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray()))), coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployNatGateway'), false())), reference(format('createAdditonalNatGateway[{0}]', copyIndex())), null()), 'outputs', 'resourceId', 'value'), null()), 'delegation', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'delegation'))]"
                       }
                     ]
                   },
@@ -49296,7 +49349,7 @@
               },
               "condition": "[and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('additionalVirtualNetworks')))), or(not(empty(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'alternativeVwanHubResourceId'), ''))), not(empty(variables('virtualHubResourceIdChecked')))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('createAdditionalLzVirtualWanConnection-{0}-{1}', copyIndex(), uniqueString('createAdditionalLzVirtualWanConnection', deployment().name))]",
               "subscriptionId": "[split(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'alternativeVwanHubResourceId'), variables('virtualHubResourceIdChecked')), '/')[2]]",
               "resourceGroup": "[split(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'alternativeVwanHubResourceId'), variables('virtualHubResourceIdChecked')), '/')[4]]",
@@ -49318,7 +49371,7 @@
                   "enableInternetSecurity": {
                     "value": "[parameters('virtualNetworkVwanEnableInternetSecurity')]"
                   },
-                  "routingConfiguration": "[if(not(parameters('vHubRoutingIntentEnabled')), createObject('value', createObject('associatedRouteTable', createObject('id', variables('virtualWanHubConnectionAssociatedRouteTable')), 'propagatedRouteTables', createObject('ids', variables('virtualWanHubConnectionPropogatedRouteTables'), 'labels', variables('virtualWanHubConnectionPropogatedLabels')))), createObject('value', createObject()))]"
+                  "routingConfiguration": "[if(not(parameters('vHubRoutingIntentEnabled')), createObject('value', createObject('associatedRouteTable', createObject('id', if(not(empty(parameters('virtualNetworkVwanAssociatedRouteTableResourceId'))), parameters('virtualNetworkVwanAssociatedRouteTableResourceId'), format('{0}/hubRouteTables/defaultRouteTable', coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'alternativeVwanHubResourceId'), variables('virtualHubResourceIdChecked'))))), 'propagatedRouteTables', createObject('ids', if(not(empty(parameters('virtualNetworkVwanPropagatedRouteTablesResourceIds'))), parameters('virtualNetworkVwanPropagatedRouteTablesResourceIds'), array(createObject('id', format('{0}/hubRouteTables/defaultRouteTable', coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'alternativeVwanHubResourceId'), variables('virtualHubResourceIdChecked')))))), 'labels', variables('virtualWanHubConnectionPropogatedLabels')))), createObject('value', createObject()))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -49326,8 +49379,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "17543656022324673718"
+                      "version": "0.39.26.7824",
+                      "templateHash": "2697601347448864025"
                     }
                   },
                   "parameters": {
@@ -49415,7 +49468,7 @@
               },
               "condition": "[and(and(parameters('peerAllVirtualNetworks'), not(empty(parameters('additionalVirtualNetworks')))), not(equals(variables('peeringCombinations')[copyIndex()].sourceResourceGroupName, parameters('virtualNetworkResourceGroupName'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('meshPeerAdditionalVnets-{0}-{1}', copyIndex(), uniqueString('meshPeerAdditionalVnets', deployment().name))]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[variables('peeringCombinations')[copyIndex()].sourceResourceGroupName]",
@@ -49441,8 +49494,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "8720977001389603483"
+                      "version": "0.39.26.7824",
+                      "templateHash": "5242216955770606257"
                     }
                   },
                   "parameters": {
@@ -49485,7 +49538,7 @@
               },
               "condition": "[and(and(parameters('peerAllVirtualNetworks'), and(and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName'))))), equals(variables('peeringCombinations')[copyIndex()].sourceResourceGroupName, parameters('virtualNetworkResourceGroupName')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('meshPeerFromPrimaryVnet-{0}-{1}', copyIndex(), uniqueString('meshPeerFromPrimaryVnet', deployment().name))]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[variables('peeringCombinations')[copyIndex()].sourceResourceGroupName]",
@@ -49511,8 +49564,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "8720977001389603483"
+                      "version": "0.39.26.7824",
+                      "templateHash": "5242216955770606257"
                     }
                   },
                   "parameters": {

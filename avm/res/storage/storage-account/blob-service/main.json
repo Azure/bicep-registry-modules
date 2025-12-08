@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "7119131193841840607"
+      "version": "0.38.33.27573",
+      "templateHash": "16519807023802262557"
     },
     "name": "Storage Account blob Services",
     "description": "This module deploys a Storage Account Blob Service."
@@ -489,7 +489,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Use versioning to automatically maintain previous versions of your blobs."
+        "description": "Optional. Use versioning to automatically maintain previous versions of your blobs. Cannot be enabled for ADLS Gen2 storage accounts."
       }
     },
     "lastAccessTimeTrackingPolicyEnabled": {
@@ -566,7 +566,7 @@
           "allowPermanentDelete": "[if(and(parameters('deleteRetentionPolicyEnabled'), parameters('deleteRetentionPolicyAllowPermanentDelete')), true(), null())]"
         },
         "isVersioningEnabled": "[parameters('isVersioningEnabled')]",
-        "lastAccessTimeTrackingPolicy": "[if(not(equals(reference('storageAccount', '2025-01-01', 'full').kind, 'Storage')), createObject('enable', parameters('lastAccessTimeTrackingPolicyEnabled'), 'name', if(equals(parameters('lastAccessTimeTrackingPolicyEnabled'), true()), 'AccessTimeTracking', null()), 'trackingGranularityInDays', if(equals(parameters('lastAccessTimeTrackingPolicyEnabled'), true()), 1, null())), null())]",
+        "lastAccessTimeTrackingPolicy": "[if(and(not(equals(reference('storageAccount', '2025-01-01', 'full').kind, 'Storage')), empty(tryGet(reference('storageAccount', '2025-01-01', 'full'), 'extendedLocation'))), createObject('enable', parameters('lastAccessTimeTrackingPolicyEnabled'), 'name', if(equals(parameters('lastAccessTimeTrackingPolicyEnabled'), true()), 'AccessTimeTracking', null()), 'trackingGranularityInDays', if(equals(parameters('lastAccessTimeTrackingPolicyEnabled'), true()), 1, null())), null())]",
         "restorePolicy": "[if(parameters('restorePolicyEnabled'), createObject('enabled', true(), 'days', parameters('restorePolicyDays')), null())]"
       },
       "dependsOn": [
@@ -620,7 +620,7 @@
         "count": "[length(coalesce(parameters('containers'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Container-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -675,8 +675,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "5026123498979497429"
+              "version": "0.38.33.27573",
+              "templateHash": "18247497253572624333"
             },
             "name": "Storage Account Blob Containers",
             "description": "This module deploys a Storage Account Blob Container."
@@ -783,7 +783,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -987,7 +987,7 @@
             "container_immutabilityPolicy": {
               "condition": "[not(empty(coalesce(parameters('immutabilityPolicy'), createObject())))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-ImmutPol', deployment().name), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -1017,8 +1017,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "10782942397325758470"
+                      "version": "0.38.33.27573",
+                      "templateHash": "1872120962131123050"
                     },
                     "name": "Storage Account Blob Container Immutability Policies",
                     "description": "This module deploys a Storage Account Blob Container Immutability Policy."

@@ -134,6 +134,11 @@ module testDeployment '../../../main.bicep' = [
       intrusionDetection: {
         mode: 'Alert'
       }
+      servers: [
+        '10.0.0.4'
+        '10.0.0.5'
+      ]
+      enableProxy: true
     }
   }
 ]
