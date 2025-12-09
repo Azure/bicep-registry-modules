@@ -228,7 +228,7 @@ output associations array = [
 
 @description('The security policies of the Application Gateway for Containers.')
 output securityPolicies array = [
-  for (securityPolicy, i) in (!empty(securityPolicies) ? array(securityPolicies) : []): {
+  for (securityPolicy, i) in (securityPolicies ?? []): {
     name: trafficController_securityPolicies[i].outputs.name
     resourceId: trafficController_securityPolicies[i].outputs.resourceId
   }
