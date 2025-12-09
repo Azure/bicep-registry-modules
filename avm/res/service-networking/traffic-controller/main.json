@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "16374865963025922699"
+      "templateHash": "1427839355704725494"
     },
     "name": "Application Gateway for Containers",
     "description": "This module deploys an Application Gateway for Containers"
@@ -839,7 +839,9 @@
         }
       },
       "dependsOn": [
-        "trafficController"
+        "trafficController",
+        "trafficController_associations",
+        "trafficController_frontends"
       ]
     }
   },

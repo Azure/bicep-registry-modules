@@ -182,6 +182,10 @@ module trafficController_securityPolicies 'security-policy/main.bicep' = [
       location: location
       wafPolicyResourceId: securityPolicy.wafPolicyResourceId
     }
+    dependsOn: [
+      trafficController_associations
+      trafficController_frontends
+    ]
   }
 ]
 
