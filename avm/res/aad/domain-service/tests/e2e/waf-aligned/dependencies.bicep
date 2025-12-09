@@ -13,6 +13,9 @@ param replicaVirtualNetworkName string
 @description('Required. The name of the Key Vault to create.')
 param keyVaultName string
 
+@description('Required. The name of the Storage Account to create.')
+param storageAccountName string
+
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
@@ -288,6 +291,22 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   }
 }
 
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' = {
+  name: storageAccountName
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+  properties: {
+    supportsHttpsTrafficOnly: true
+    allowBlobPublicAccess: false
+    minimumTlsVersion: 'TLS1_2'
+    // The only way to mount a storage account in Azure Container Instance(ACI) is via an access key.
+    allowSharedKeyAccess: true
+  }
+}
+
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
@@ -317,8 +336,12 @@ resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01'
     }
   }
   properties: {
-    azPowerShellVersion: '11.0'
+    azPowerShellVersion: '14.0'
     retentionInterval: 'P1D'
+    storageAccountSettings: {
+      storageAccountName: storageAccount.name
+      storageAccountKey: storageAccount.listKeys().keys[0].value
+    }
     arguments: ' -KeyVaultName "${keyVault.name}" -ResourceGroupName "${resourceGroup().name}" -NamePrefix "${namePrefix}" -CertPWSecretName "${certPWSecretName}" -CertSecretName "${certSecretName}"'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-PfxCertificateInKeyVault.ps1')
   }
