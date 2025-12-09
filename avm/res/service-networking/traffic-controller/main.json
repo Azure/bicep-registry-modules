@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "1427839355704725494"
+      "templateHash": "6468075545050711083"
     },
     "name": "Application Gateway for Containers",
     "description": "This module deploys an Application Gateway for Containers"
@@ -886,11 +886,34 @@
     },
     "frontends": {
       "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "The name of the frontend."
+            }
+          },
+          "resourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "The resource ID of the frontend."
+            }
+          },
+          "fqdn": {
+            "type": "string",
+            "metadata": {
+              "description": "The FQDN of the frontend."
+            }
+          }
+        }
+      },
       "metadata": {
         "description": "The frontends of the Application Gateway for Containers."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('frontends'))), array(parameters('frontends')), createArray()))]",
+        "count": "[length(coalesce(parameters('frontends'), createArray()))]",
         "input": {
           "name": "[reference(format('trafficController_frontends[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('trafficController_frontends[{0}]', copyIndex())).outputs.resourceId.value]",
@@ -900,11 +923,34 @@
     },
     "associations": {
       "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "The name of the association."
+            }
+          },
+          "resourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "The resource ID of the association."
+            }
+          },
+          "subnetResourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "The subnet resource ID associated with the association."
+            }
+          }
+        }
+      },
       "metadata": {
         "description": "The associations of the Application Gateway for Containers."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('associations'))), array(parameters('associations')), createArray()))]",
+        "count": "[length(coalesce(parameters('associations'), createArray()))]",
         "input": {
           "name": "[reference(format('trafficController_associations[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('trafficController_associations[{0}]', copyIndex())).outputs.resourceId.value]",
@@ -914,11 +960,28 @@
     },
     "securityPolicies": {
       "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "The name of the security policy."
+            }
+          },
+          "resourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "The resource ID of the security policy."
+            }
+          }
+        }
+      },
       "metadata": {
         "description": "The security policies of the Application Gateway for Containers."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('securityPolicies'))), array(parameters('securityPolicies')), createArray()))]",
+        "count": "[length(coalesce(parameters('securityPolicies'), createArray()))]",
         "input": {
           "name": "[reference(format('trafficController_securityPolicies[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('trafficController_securityPolicies[{0}]', copyIndex())).outputs.resourceId.value]"
