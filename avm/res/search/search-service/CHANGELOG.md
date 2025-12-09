@@ -16,6 +16,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Breaking Changes
 
 - The `hostingMode` parameter now uses PascalCase values ('Default', 'HighDensity') instead of lowercase ('default', 'highDensity').
+- Replaced user-defined types `authOptionsType` and `networkRuleSetType` with resource input types from the search service API version `2025-05-01`.
 
 ## 0.11.1
 

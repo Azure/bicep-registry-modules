@@ -113,7 +113,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       networkRuleSet: {
-        bypass: 'AzurePortal'
+        bypass: 'AzureServices'
         ipRules: [
           {
             value: '40.74.28.0/23'

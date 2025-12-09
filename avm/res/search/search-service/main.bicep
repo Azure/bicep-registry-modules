@@ -9,7 +9,7 @@ metadata description = 'This module deploys a Search Service.'
 param name string
 
 @description('Optional. Defines the options for how the data plane API of a Search service authenticates requests. Must remain an empty object {} if \'disableLocalAuth\' is set to true.')
-param authOptions authOptionsType?
+param authOptions resourceInput<'Microsoft.Search/searchServices@2025-05-01'>.properties.authOptions?
 
 @description('Optional. When set to true, calls to the search service will not be permitted to utilize API keys for authentication. This cannot be set to true if \'authOptions\' are defined.')
 param disableLocalAuth bool = true
@@ -53,7 +53,7 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 param lock lockType?
 
 @description('Optional. Network specific rules that determine how the Azure Cognitive Search service may be reached.')
-param networkRuleSet networkRuleSetType?
+param networkRuleSet resourceInput<'Microsoft.Search/searchServices@2025-05-01'>.properties.networkRuleSet?
 
 @description('Optional. The number of partitions in the search service; if specified, it can be 1, 2, 3, 4, 6, or 12. Values greater than 1 are only valid for standard SKUs. For \'standard3\' services with hostingMode set to \'highDensity\', the allowed values are between 1 and 3.')
 @minValue(1)
@@ -470,29 +470,4 @@ import { secretSetType } from 'modules/keyVaultExport.bicep'
 type secretsOutputType = {
   @description('An exported secret\'s references.')
   *: secretSetType
-}
-
-@export()
-type authOptionsType = {
-  @description('Optional. Indicates that either the API key or an access token from a Microsoft Entra ID tenant can be used for authentication.')
-  aadOrApiKey: {
-    @description('Optional. Describes what response the data plane API of a search service would send for requests that failed authentication.')
-    aadAuthFailureMode: ('http401WithBearerChallenge' | 'http403')?
-  }?
-  @description('Optional. Indicates that only the API key can be used for authentication.')
-  apiKeyOnly: object?
-}
-
-@export()
-type networkRuleSetType = {
-  @description('Optional. Network specific rules that determine how the Azure AI Search service may be reached.')
-  bypass: ('AzurePortal' | 'AzureServices' | 'None')?
-  @description('Optional. A list of IP restriction rules that defines the inbound network(s) with allowing access to the search service endpoint. At the meantime, all other public IP networks are blocked by the firewall. These restriction rules are applied only when the \'publicNetworkAccess\' of the search service is \'enabled\'; otherwise, traffic over public interface is not allowed even with any public IP rules, and private endpoint connections would be the exclusive access method.')
-  ipRules: ipRuleType[]?
-}
-
-@export()
-type ipRuleType = {
-  @description('Required. Value corresponding to a single IPv4 address (eg., 123.1.2.3) or an IP range in CIDR format (eg., 123.1.2.3/24) to be allowed.')
-  value: string
 }
