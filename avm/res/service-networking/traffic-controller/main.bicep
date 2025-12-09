@@ -209,8 +209,15 @@ output location string = trafficController.location
 output configurationEndpoints string[] = trafficController.properties.configurationEndpoints
 
 @description('The frontends of the Application Gateway for Containers.')
-output frontends array = [
-  for (frontend, i) in (!empty(frontends) ? array(frontends) : []): {
+output frontends {
+  @description('The name of the frontend.')
+  name: string
+  @description('The resource ID of the frontend.')
+  resourceId: string
+  @description('The FQDN of the frontend.')
+  fqdn: string
+}[] = [
+  for (frontend, i) in (frontends ?? []): {
     name: trafficController_frontends[i].outputs.name
     resourceId: trafficController_frontends[i].outputs.resourceId
     fqdn: trafficController_frontends[i].outputs.fqdn
@@ -218,8 +225,15 @@ output frontends array = [
 ]
 
 @description('The associations of the Application Gateway for Containers.')
-output associations array = [
-  for (association, i) in (!empty(associations) ? array(associations) : []): {
+output associations {
+  @description('The name of the association.')
+  name: string
+  @description('The resource ID of the association.')
+  resourceId: string
+  @description('The subnet resource ID associated with the association.')
+  subnetResourceId: string
+}[] = [
+  for (association, i) in (associations ?? []): {
     name: trafficController_associations[i].outputs.name
     resourceId: trafficController_associations[i].outputs.resourceId
     subnetResourceId: trafficController_associations[i].outputs.subnetResourceId
@@ -232,7 +246,7 @@ output securityPolicies {
   name: string
   @description('The resource ID of the security policy.')
   resourceId: string
-} = [
+}[] = [
   for (securityPolicy, i) in (securityPolicies ?? []): {
     name: trafficController_securityPolicies[i].outputs.name
     resourceId: trafficController_securityPolicies[i].outputs.resourceId
