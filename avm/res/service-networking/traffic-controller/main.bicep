@@ -32,6 +32,9 @@ param frontends frontendType[]?
 @description('Optional. List of Application Gateway for Containers associations. At this time, the number of associations is limited to 1.')
 param associations associationType[]?
 
+@description('Optional. List of Application Gateway for Containers security policies.')
+param securityPolicies securityPolicyType[]?
+
 @description('Optional. Security policy configurations for the Application Gateway for Containers.')
 param securityPolicyConfigurations resourceInput<'Microsoft.ServiceNetworking/trafficControllers@2025-01-01'>.properties.securityPolicyConfigurations?
 
@@ -175,6 +178,18 @@ module trafficController_associations 'association/main.bicep' = [
   }
 ]
 
+module trafficController_securityPolicies 'security-policy/main.bicep' = [
+  for (securityPolicy, index) in (securityPolicies ?? []): {
+    name: '${uniqueString(deployment().name, location)}-TrafficController-SecurityPolicy-${index}'
+    params: {
+      trafficControllerName: trafficController.name
+      name: securityPolicy.name
+      location: location
+      wafPolicyResourceId: securityPolicy.wafPolicyResourceId
+    }
+  }
+]
+
 // ============ //
 // Outputs      //
 // ============ //
@@ -212,21 +227,41 @@ output associations array = [
   }
 ]
 
+@description('The security policies of the Application Gateway for Containers.')
+output securityPolicies array = [
+  for (securityPolicy, i) in (!empty(securityPolicies) ? array(securityPolicies) : []): {
+    name: trafficController_securityPolicies[i].outputs.name
+    resourceId: trafficController_securityPolicies[i].outputs.resourceId
+  }
+]
+
 // ================ //
 // Definitions      //
 // ================ //
 
 @export()
+@description('Type definition for Application Gateway for Containers frontend.')
 type frontendType = {
   @description('Required. The name of the Application Gateway for Containers frontend.')
   name: string
 }
 
 @export()
+@description('Type definition for Application Gateway for Containers association.')
 type associationType = {
   @description('Required. The name of the Application Gateway for Containers association.')
   name: string
 
   @description('Required. The resource ID of the subnet to associate with the Application Gateway for Containers.')
   subnetResourceId: string
+}
+
+@export()
+@description('Type definition for Application Gateway for Containers security policy.')
+type securityPolicyType = {
+  @description('Required. The name of the Application Gateway for Containers security policy.')
+  name: string
+
+  @description('Required. The resource ID of the WAF Policy to associate with the security policy.')
+  wafPolicyResourceId: string
 }
