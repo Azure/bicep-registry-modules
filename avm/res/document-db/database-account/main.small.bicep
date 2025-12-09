@@ -76,21 +76,6 @@ param maxIntervalInSeconds int = 300
 ])
 param serverVersion string = '4.2'
 
-@description('Optional. Configuration for databases when using Azure Cosmos DB for NoSQL.')
-param sqlDatabases sqlDatabaseType[]?
-
-@description('Optional. Configuration for databases when using Azure Cosmos DB for MongoDB RU.')
-param mongodbDatabases mongoDbType[]?
-
-@description('Optional. Configuration for databases when using Azure Cosmos DB for Apache Gremlin.')
-param gremlinDatabases gremlinDatabaseType[]?
-
-@description('Optional. Configuration for databases when using Azure Cosmos DB for Table.')
-param tables tableType[]?
-
-@description('Optional. Configuration for keyspaces when using Azure Cosmos DB for Apache Cassandra.')
-param cassandraKeyspaces cassandraKeyspaceType[]?
-
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -416,31 +401,6 @@ type customerManagedKeyType = {
 }
 
 @export()
-@description('The type for the private endpoint output.')
-type privateEndpointOutputType = {
-  @description('The name of the private endpoint.')
-  name: string
-
-  @description('The resource ID of the private endpoint.')
-  resourceId: string
-
-  @description('The group ID for the private endpoint group.')
-  groupId: string?
-
-  @description('The custom DNS configurations of the private endpoint.')
-  customDnsConfigs: {
-    @description('fully-qualified domain name (FQDN) that resolves to private endpoint IP address.')
-    fqdn: string?
-
-    @description('A list of private IP addresses for the private endpoint.')
-    ipAddresses: string[]
-  }[]
-
-  @description('The IDs of the network interfaces associated with the private endpoint.')
-  networkInterfaceResourceIds: string[]
-}
-
-@export()
 @description('The type for the failover location.')
 type failoverLocationType = {
   @description('Required. The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists.')
@@ -451,45 +411,6 @@ type failoverLocationType = {
 
   @description('Required. The name of the region.')
   locationName: string
-}
-
-@export()
-@description('The type for an Azure Cosmos DB for NoSQL native role-based access control assignment.')
-type sqlRoleAssignmentType = {
-  @description('Optional. The unique name of the role assignment.')
-  name: string?
-
-  @description('Required. The unique identifier of the Azure Cosmos DB for NoSQL native role-based access control definition.')
-  roleDefinitionId: string
-
-  @description('Required. The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription.')
-  principalId: string
-
-  @description('Optional. The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level.')
-  scope: string?
-}
-
-import { sqlRoleAssignmentType as nestedSqlRoleAssignmentType } from 'sql-role-definition/main.bicep'
-import { tableType as cassandraTableType, viewType as cassandraViewType } from 'cassandra-keyspace/main.bicep'
-
-@export()
-@description('The type for an Azure Cosmos DB for NoSQL or Table native role-based access control definition.')
-type sqlRoleDefinitionType = {
-  @description('Optional. The unique identifier of the role-based access control definition.')
-  name: string?
-
-  @description('Required. A user-friendly name for the role-based access control definition. This must be unique within the database account.')
-  roleName: string
-
-  @description('Required. An array of data actions that are allowed.')
-  @minLength(1)
-  dataActions: string[]
-
-  @description('Optional. A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope.')
-  assignableScopes: string[]?
-
-  @description('Optional. An array of role-based access control assignments to be created for the definition.')
-  assignments: nestedSqlRoleAssignmentType[]?
 }
 
 @export()
@@ -512,143 +433,6 @@ type networkRestrictionType = {
 
   @description('Optional. An array that contains the Resource Ids for Network Acl Bypass for the Cosmos DB account.')
   networkAclBypassResourceIds: string[]?
-}
-
-import { graphType } from 'gremlin-database/main.bicep'
-@export()
-@description('The type for a gremlin databae.')
-type gremlinDatabaseType = {
-  @description('Required. Name of the Gremlin database.')
-  name: string
-
-  @description('Optional. Tags of the Gremlin database resource.')
-  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases@2024-11-15'>.tags?
-
-  @description('Optional. Array of graphs to deploy in the Gremlin database.')
-  graphs: graphType[]?
-
-  @description('Optional. Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored. Setting throughput at the database level is only recommended for development/test or when workload across all graphs in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the graph level and not at the database level.')
-  maxThroughput: int?
-
-  @description('Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`. Setting throughput at the database level is only recommended for development/test or when workload across all graphs in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the graph level and not at the database level.')
-  throughput: int?
-}
-
-import { collectionType } from 'mongodb-database/main.bicep'
-@export()
-@description('The type for a mongo databae.')
-type mongoDbType = {
-  @description('Required. Name of the mongodb database.')
-  name: string
-
-  @description('Optional. Request Units per second. Setting throughput at the database level is only recommended for development/test or when workload across all collections in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level.')
-  throughput: int?
-
-  @description('Optional. Collections in the mongodb database.')
-  collections: collectionType[]?
-
-  @description('Optional. Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both.')
-  autoscaleSettings: resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15'>.properties.options.autoscaleSettings?
-
-  @description('Optional. Tags of the resource.')
-  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15'>.tags?
-}
-
-import { containerType } from 'sql-database/main.bicep'
-@export()
-@description('The type for a sql database.')
-type sqlDatabaseType = {
-  @description('Required. Name of the SQL database .')
-  name: string
-
-  @description('Optional. Array of containers to deploy in the SQL database.')
-  containers: containerType[]?
-
-  @description('Optional. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.')
-  throughput: int?
-
-  @description('Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.')
-  autoscaleSettingsMaxThroughput: int?
-
-  @description('Optional. Tags of the SQL database resource.')
-  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2025-04-15'>.tags?
-}
-
-@export()
-@description('The type for a table.')
-type tableType = {
-  @description('Required. Name of the table.')
-  name: string
-
-  @description('Optional. Tags for the table.')
-  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/tables@2025-04-15'>.tags?
-
-  @description('Optional. Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored.')
-  maxThroughput: int?
-
-  @description('Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`.')
-  throughput: int?
-}
-
-import { cassandraRoleAssignmentType } from 'cassandra-role-definition/main.bicep'
-@export()
-@description('The type for an Azure Cosmos DB for Apache Cassandra native role-based access control assignment.')
-type cassandraStandaloneRoleAssignmentType = {
-  @description('Optional. The unique name of the role assignment.')
-  name: string?
-
-  @description('Required. The unique identifier of the Azure Cosmos DB for Apache Cassandra native role-based access control definition.')
-  roleDefinitionId: string
-
-  @description('Required. The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription.')
-  principalId: string
-
-  @description('Optional. The data plane resource path for which access is being granted through this role-based access control assignment. Defaults to the current account.')
-  scope: string?
-}
-
-@export()
-@description('The type for an Azure Cosmos DB for Apache Cassandra native role-based access control definition.')
-type cassandraRoleDefinitionType = {
-  @description('Optional. The unique identifier of the role-based access control definition.')
-  name: string?
-
-  @description('Required. A user-friendly name for the role-based access control definition. Must be unique for the database account.')
-  roleName: string
-
-  @description('Optional. An array of data actions that are allowed. Note: Valid data action strings are currently undocumented (API version 2025-05-01-preview). Expected to follow format similar to SQL RBAC once documented by Microsoft.')
-  dataActions: string[]?
-
-  @description('Optional. An array of data actions that are denied. Note: Unlike SQL RBAC, Cassandra supports deny rules for granular access control. Valid data action strings are currently undocumented (API version 2025-05-01-preview).')
-  notDataActions: string[]?
-
-  @description('Optional. A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition.')
-  assignableScopes: string[]?
-
-  @description('Optional. An array of role-based access control assignments to be created for the definition.')
-  assignments: cassandraRoleAssignmentType[]?
-}
-
-@export()
-@description('The type for an Azure Cosmos DB Cassandra keyspace.')
-type cassandraKeyspaceType = {
-  @description('Required. Name of the Cassandra keyspace.')
-  name: string
-
-  @description('Optional. Array of Cassandra tables to deploy in the keyspace.')
-  tables: cassandraTableType[]?
-
-  @description('Optional. Array of Cassandra views (materialized views) to deploy in the keyspace.')
-  views: cassandraViewType[]?
-
-  @description('Optional. Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level and not at the keyspace level.')
-  autoscaleSettingsMaxThroughput: int?
-
-  @description('Optional. Request Units per second (for example 10000). Cannot be set together with `autoscaleSettingsMaxThroughput`. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level and not at the keyspace level.')
-  throughput: int?
-
-  @description('Optional. Tags of the Cassandra keyspace resource.')
-  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces@2024-11-15'>.tags?
 }
 
 @export()
