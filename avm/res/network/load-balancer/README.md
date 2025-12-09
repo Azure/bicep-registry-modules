@@ -2,6 +2,14 @@
 
 This module deploys a Load Balancer.
 
+You can reference the module as follows:
+```bicep
+module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -46,6 +54,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -53,7 +63,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
-  name: 'loadBalancerDeployment'
   params: {
     // Required parameters
     frontendIPConfigurations: [
@@ -130,6 +139,8 @@ param location = '<location>'
 
 This instance deploys the module with the minimum set of required parameters and creates an external public IP for the frontend.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/external-pip-creation]
+
 
 <details>
 
@@ -137,7 +148,6 @@ This instance deploys the module with the minimum set of required parameters and
 
 ```bicep
 module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
-  name: 'loadBalancerDeployment'
   params: {
     // Required parameters
     frontendIPConfigurations: [
@@ -248,6 +258,8 @@ param name = 'nlbpip001'
 
 This instance deploys the module with the minimum set of required parameters and creates an external public IP prefix for the frontend.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/external-pipprefix-creation]
+
 
 <details>
 
@@ -255,7 +267,6 @@ This instance deploys the module with the minimum set of required parameters and
 
 ```bicep
 module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
-  name: 'loadBalancerDeployment'
   params: {
     // Required parameters
     frontendIPConfigurations: [
@@ -339,6 +350,8 @@ param name = 'nlbpipfix001'
 
 This instance deploys the module with an externally facing load balancer with a public IP address and VNet backend address pool.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/external-vnet]
+
 
 <details>
 
@@ -346,7 +359,6 @@ This instance deploys the module with an externally facing load balancer with a 
 
 ```bicep
 module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
-  name: 'loadBalancerDeployment'
   params: {
     // Required parameters
     frontendIPConfigurations: [
@@ -829,6 +841,8 @@ param tags = {
 
 This instance deploys the module with an externally facing load balancer with a public IP address and NIC backend address pool.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/external]
+
 
 <details>
 
@@ -836,7 +850,6 @@ This instance deploys the module with an externally facing load balancer with a 
 
 ```bicep
 module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
-  name: 'loadBalancerDeployment'
   params: {
     // Required parameters
     frontendIPConfigurations: [
@@ -1282,6 +1295,8 @@ param tags = {
 
 This instance deploys the module with the minimum set of required parameters to deploy an internal load balancer with a private IP address and empty backend address pool.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/internal]
+
 
 <details>
 
@@ -1289,7 +1304,6 @@ This instance deploys the module with the minimum set of required parameters to 
 
 ```bicep
 module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
-  name: 'loadBalancerDeployment'
   params: {
     // Required parameters
     frontendIPConfigurations: [
@@ -1596,6 +1610,8 @@ param tags = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -1603,7 +1619,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
-  name: 'loadBalancerDeployment'
   params: {
     // Required parameters
     frontendIPConfigurations: [
@@ -2061,6 +2076,8 @@ param tags = {
 
 This instance deploys the module with the minimum set of required parameters to deploy a WAF-aligned internal load balancer.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -2068,7 +2085,6 @@ This instance deploys the module with the minimum set of required parameters to 
 
 ```bicep
 module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
-  name: 'loadBalancerDeployment'
   params: {
     // Required parameters
     frontendIPConfigurations: [

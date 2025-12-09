@@ -2,6 +2,14 @@
 
 This module deploys a Role Assignment for a specific resource.
 
+You can reference the module as follows:
+```bicep
+module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -29,6 +37,8 @@ The following section provides usage examples for the module, which were used to
 
 This module deploys a Resource Role Assignment using all parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/all]
+
 
 <details>
 
@@ -36,7 +46,6 @@ This module deploys a Resource Role Assignment using all parameters.
 
 ```bicep
 module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:<version>' = {
-  name: 'resourceRoleAssignmentDeployment'
   params: {
     // Required parameters
     principalId: '<principalId>'
@@ -113,6 +122,8 @@ param roleName = 'Storage Blob Data Reader'
 
 This module deploys a Resource Role Assignment using minimal parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -120,7 +131,6 @@ This module deploys a Resource Role Assignment using minimal parameters.
 
 ```bicep
 module resourceRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:<version>' = {
-  name: 'resourceRoleAssignmentDeployment'
   params: {
     // Required parameters
     principalId: '<principalId>'

@@ -2,6 +2,14 @@
 
 This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).
 
+You can reference the module as follows:
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -77,17 +85,20 @@ The following section provides usage examples for the module, which were used to
 - [Deploy subscription with Bastion.](#example-2-deploy-subscription-with-bastion)
 - [Using only defaults.](#example-3-using-only-defaults)
 - [Hub and spoke topology.](#example-4-hub-and-spoke-topology)
-- [Hub and spoke topology with NAT gateway.](#example-5-hub-and-spoke-topology-with-nat-gateway)
-- [Using PIM Active Role assignments.](#example-6-using-pim-active-role-assignments)
-- [Using PIM Eligible Role assignments.](#example-7-using-pim-eligible-role-assignments)
-- [Using RBAC conditions.](#example-8-using-rbac-conditions)
-- [Using standalone NSG deployment.](#example-9-using-standalone-nsg-deployment)
-- [Using user-assigned managed identities.](#example-10-using-user-assigned-managed-identities)
-- [Vwan topology.](#example-11-vwan-topology)
+- [Using IPAM pool for address allocation.](#example-5-using-ipam-pool-for-address-allocation)
+- [Hub and spoke topology with NAT gateway.](#example-6-hub-and-spoke-topology-with-nat-gateway)
+- [Using PIM Active Role assignments.](#example-7-using-pim-active-role-assignments)
+- [Using PIM Eligible Role assignments.](#example-8-using-pim-eligible-role-assignments)
+- [Using RBAC conditions.](#example-9-using-rbac-conditions)
+- [Using standalone NSG deployment.](#example-10-using-standalone-nsg-deployment)
+- [Using user-assigned managed identities.](#example-11-using-user-assigned-managed-identities)
+- [Vwan topology.](#example-12-vwan-topology)
 
 ### Example 1: _Multiple virtual networks._
 
 This instance deploys a subscription with a multiple virtual networks.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/additional-vnets]
 
 
 <details>
@@ -96,7 +107,6 @@ This instance deploys a subscription with a multiple virtual networks.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     additionalVirtualNetworks: [
       {
@@ -486,6 +496,8 @@ param virtualNetworkSubnets = [
 
 This instance deploys a subscription with a bastion host.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/bastion]
+
 
 <details>
 
@@ -493,7 +505,6 @@ This instance deploys a subscription with a bastion host.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     resourceProviders: {}
     subscriptionAliasEnabled: true
@@ -675,6 +686,8 @@ param virtualNetworkSubnets = [
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -682,7 +695,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     resourceProviders: {}
     subscriptionAliasEnabled: true
@@ -777,6 +789,8 @@ param subscriptionWorkload = 'Production'
 
 This instance deploys a subscription with a hub-spoke network topology.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/hub-spoke]
+
 
 <details>
 
@@ -784,7 +798,6 @@ This instance deploys a subscription with a hub-spoke network topology.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     deploymentScriptLocation: '<deploymentScriptLocation>'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
@@ -1099,9 +1112,11 @@ param virtualNetworkUseRemoteGateways = false
 </details>
 <p>
 
-### Example 5: _Hub and spoke topology with NAT gateway._
+### Example 5: _Using IPAM pool for address allocation._
 
-This instance deploys a subscription with a hub-spoke network topology with NAT gateway.
+This instance deploys the module with a virtual network that uses Azure Virtual Network Manager IPAM for automatic IP address allocation.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ipam]
 
 
 <details>
@@ -1110,7 +1125,265 @@ This instance deploys a subscription with a hub-spoke network topology with NAT 
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
+  params: {
+    deploymentScriptLocation: '<deploymentScriptLocation>'
+    deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
+    deploymentScriptName: 'ds-ssaipam'
+    deploymentScriptNetworkSecurityGroupName: '<deploymentScriptNetworkSecurityGroupName>'
+    deploymentScriptResourceGroupName: '<deploymentScriptResourceGroupName>'
+    deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
+    deploymentScriptVirtualNetworkName: '<deploymentScriptVirtualNetworkName>'
+    resourceProviders: {
+      'Microsoft.Network': []
+    }
+    subscriptionAliasEnabled: true
+    subscriptionAliasName: '<subscriptionAliasName>'
+    subscriptionBillingScope: '<subscriptionBillingScope>'
+    subscriptionDisplayName: '<subscriptionDisplayName>'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionTags: {
+      namePrefix: '<namePrefix>'
+      serviceShort: '<serviceShort>'
+    }
+    subscriptionWorkload: 'Production'
+    virtualNetworkAddressSpace: [
+      '<ipamPoolResourceId>'
+    ]
+    virtualNetworkEnabled: true
+    virtualNetworkIpamPoolNumberOfIpAddresses: '256'
+    virtualNetworkLocation: '<virtualNetworkLocation>'
+    virtualNetworkName: '<virtualNetworkName>'
+    virtualNetworkResourceGroupLockEnabled: false
+    virtualNetworkResourceGroupName: '<virtualNetworkResourceGroupName>'
+    virtualNetworkSubnets: [
+      {
+        ipamPoolPrefixAllocations: [
+          {
+            numberOfIpAddresses: '64'
+            pool: {
+              id: '<id>'
+            }
+          }
+        ]
+        name: 'Subnet1'
+      }
+      {
+        ipamPoolPrefixAllocations: [
+          {
+            numberOfIpAddresses: '32'
+            pool: {
+              id: '<id>'
+            }
+          }
+        ]
+        name: 'Subnet2'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentScriptLocation": {
+      "value": "<deploymentScriptLocation>"
+    },
+    "deploymentScriptManagedIdentityName": {
+      "value": "<deploymentScriptManagedIdentityName>"
+    },
+    "deploymentScriptName": {
+      "value": "ds-ssaipam"
+    },
+    "deploymentScriptNetworkSecurityGroupName": {
+      "value": "<deploymentScriptNetworkSecurityGroupName>"
+    },
+    "deploymentScriptResourceGroupName": {
+      "value": "<deploymentScriptResourceGroupName>"
+    },
+    "deploymentScriptStorageAccountName": {
+      "value": "<deploymentScriptStorageAccountName>"
+    },
+    "deploymentScriptVirtualNetworkName": {
+      "value": "<deploymentScriptVirtualNetworkName>"
+    },
+    "resourceProviders": {
+      "value": {
+        "Microsoft.Network": []
+      }
+    },
+    "subscriptionAliasEnabled": {
+      "value": true
+    },
+    "subscriptionAliasName": {
+      "value": "<subscriptionAliasName>"
+    },
+    "subscriptionBillingScope": {
+      "value": "<subscriptionBillingScope>"
+    },
+    "subscriptionDisplayName": {
+      "value": "<subscriptionDisplayName>"
+    },
+    "subscriptionManagementGroupAssociationEnabled": {
+      "value": true
+    },
+    "subscriptionManagementGroupId": {
+      "value": "bicep-lz-vending-automation-child"
+    },
+    "subscriptionTags": {
+      "value": {
+        "namePrefix": "<namePrefix>",
+        "serviceShort": "<serviceShort>"
+      }
+    },
+    "subscriptionWorkload": {
+      "value": "Production"
+    },
+    "virtualNetworkAddressSpace": {
+      "value": [
+        "<ipamPoolResourceId>"
+      ]
+    },
+    "virtualNetworkEnabled": {
+      "value": true
+    },
+    "virtualNetworkIpamPoolNumberOfIpAddresses": {
+      "value": "256"
+    },
+    "virtualNetworkLocation": {
+      "value": "<virtualNetworkLocation>"
+    },
+    "virtualNetworkName": {
+      "value": "<virtualNetworkName>"
+    },
+    "virtualNetworkResourceGroupLockEnabled": {
+      "value": false
+    },
+    "virtualNetworkResourceGroupName": {
+      "value": "<virtualNetworkResourceGroupName>"
+    },
+    "virtualNetworkSubnets": {
+      "value": [
+        {
+          "ipamPoolPrefixAllocations": [
+            {
+              "numberOfIpAddresses": "64",
+              "pool": {
+                "id": "<id>"
+              }
+            }
+          ],
+          "name": "Subnet1"
+        },
+        {
+          "ipamPoolPrefixAllocations": [
+            {
+              "numberOfIpAddresses": "32",
+              "pool": {
+                "id": "<id>"
+              }
+            }
+          ],
+          "name": "Subnet2"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/lz/sub-vending:<version>'
+
+param deploymentScriptLocation = '<deploymentScriptLocation>'
+param deploymentScriptManagedIdentityName = '<deploymentScriptManagedIdentityName>'
+param deploymentScriptName = 'ds-ssaipam'
+param deploymentScriptNetworkSecurityGroupName = '<deploymentScriptNetworkSecurityGroupName>'
+param deploymentScriptResourceGroupName = '<deploymentScriptResourceGroupName>'
+param deploymentScriptStorageAccountName = '<deploymentScriptStorageAccountName>'
+param deploymentScriptVirtualNetworkName = '<deploymentScriptVirtualNetworkName>'
+param resourceProviders = {
+  'Microsoft.Network': []
+}
+param subscriptionAliasEnabled = true
+param subscriptionAliasName = '<subscriptionAliasName>'
+param subscriptionBillingScope = '<subscriptionBillingScope>'
+param subscriptionDisplayName = '<subscriptionDisplayName>'
+param subscriptionManagementGroupAssociationEnabled = true
+param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionTags = {
+  namePrefix: '<namePrefix>'
+  serviceShort: '<serviceShort>'
+}
+param subscriptionWorkload = 'Production'
+param virtualNetworkAddressSpace = [
+  '<ipamPoolResourceId>'
+]
+param virtualNetworkEnabled = true
+param virtualNetworkIpamPoolNumberOfIpAddresses = '256'
+param virtualNetworkLocation = '<virtualNetworkLocation>'
+param virtualNetworkName = '<virtualNetworkName>'
+param virtualNetworkResourceGroupLockEnabled = false
+param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
+param virtualNetworkSubnets = [
+  {
+    ipamPoolPrefixAllocations: [
+      {
+        numberOfIpAddresses: '64'
+        pool: {
+          id: '<id>'
+        }
+      }
+    ]
+    name: 'Subnet1'
+  }
+  {
+    ipamPoolPrefixAllocations: [
+      {
+        numberOfIpAddresses: '32'
+        pool: {
+          id: '<id>'
+        }
+      }
+    ]
+    name: 'Subnet2'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 6: _Hub and spoke topology with NAT gateway._
+
+This instance deploys a subscription with a hub-spoke network topology with NAT gateway.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/nat-gateway]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   params: {
     resourceProviders: {
       'Microsoft.Network': []
@@ -1343,9 +1616,11 @@ param virtualNetworkSubnets = [
 </details>
 <p>
 
-### Example 6: _Using PIM Active Role assignments._
+### Example 7: _Using PIM Active Role assignments._
 
 This instance deploys the module with PIM Active Role assignments.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/pim-active-role-assignments]
 
 
 <details>
@@ -1354,7 +1629,6 @@ This instance deploys the module with PIM Active Role assignments.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     pimRoleAssignments: [
       {
@@ -1539,9 +1813,11 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 7: _Using PIM Eligible Role assignments._
+### Example 8: _Using PIM Eligible Role assignments._
 
 This instance deploys the module with PIM Eligible Role assignments.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/pim-eligible-role-assignments]
 
 
 <details>
@@ -1550,7 +1826,6 @@ This instance deploys the module with PIM Eligible Role assignments.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     pimRoleAssignments: [
       {
@@ -1713,9 +1988,11 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 8: _Using RBAC conditions._
+### Example 9: _Using RBAC conditions._
 
 This instance deploys the module with RBAC conditions for the role assignments.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rbac-condition]
 
 
 <details>
@@ -1724,7 +2001,6 @@ This instance deploys the module with RBAC conditions for the role assignments.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     resourceProviders: {}
     roleAssignmentEnabled: true
@@ -1882,9 +2158,11 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 9: _Using standalone NSG deployment._
+### Example 10: _Using standalone NSG deployment._
 
 This instance deploys the module to test standalone NSG deployments.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/standalone-nsg]
 
 
 <details>
@@ -1893,7 +2171,6 @@ This instance deploys the module to test standalone NSG deployments.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     networkSecurityGroupResourceGroupName: '<networkSecurityGroupResourceGroupName>'
     networkSecurityGroups: [
@@ -2093,9 +2370,11 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 10: _Using user-assigned managed identities._
+### Example 11: _Using user-assigned managed identities._
 
 This instance deploys the module with user-assigned managed identities.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/user-assigned-identities]
 
 
 <details>
@@ -2104,7 +2383,6 @@ This instance deploys the module with user-assigned managed identities.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     resourceProviders: {}
     roleAssignmentEnabled: true
@@ -2332,9 +2610,11 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 11: _Vwan topology._
+### Example 12: _Vwan topology._
 
 This instance deploys a subscription with a vwan network topology.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/vwan-spoke]
 
 
 <details>
@@ -2343,7 +2623,6 @@ This instance deploys a subscription with a vwan network topology.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     deploymentScriptLocation: '<deploymentScriptLocation>'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
@@ -2568,7 +2847,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | [`networkSecurityGroups`](#parameter-networksecuritygroups) | array | The list of network security groups to create that are standalone from the NSGs that can be created as part of the `virtualNetworkSubnets` parameter input. |
 | [`peerAllVirtualNetworks`](#parameter-peerallvirtualnetworks) | bool | Flag to do mesh peering of all virtual networks deployed into the new subscription. |
 | [`pimRoleAssignments`](#parameter-pimroleassignments) | array | Supply an array of objects containing the details of the PIM role assignments to create.<p><p>Each object must contain the following `keys`:<li>`principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.<li>`definition` = The Resource ID of a Built-in or custom RBAC Role Definition as follows:<p>  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition<p>    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`<li>`relativeScope` = 2 options can be provided for input value:<p>    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope<p>    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.<p> |
-| [`resourceProviders`](#parameter-resourceproviders) | object | An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.<p> |
+| [`resourceProviders`](#parameter-resourceproviders) | object | An object of resource providers and resource providers features to register. If not specified, a default list of common resource providers will be registered. To disable resource provider registration entirely, provide an empty object `{}`.<p> |
 | [`roleAssignmentEnabled`](#parameter-roleassignmentenabled) | bool | Whether to create role assignments or not. If true, supply the array of role assignment objects in the parameter called `roleAssignments`.<p> |
 | [`roleAssignments`](#parameter-roleassignments) | array | Supply an array of objects containing the details of the role assignments to create.<p><p>Each object must contain the following `keys`:<li>`principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.<li>`definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:<p>  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Role Based Access Control Administrator, and User Access Administrator). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.<p>  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition<p>    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`<li>`relativeScope` = 2 options can be provided for input value:<p>    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope<p>    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.<p> |
 | [`routeTables`](#parameter-routetables) | array | The list of route tables to create. |
@@ -2587,7 +2866,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | [`userAssignedIdentityResourceGroupName`](#parameter-userassignedidentityresourcegroupname) | string | The name of the resource group to create the user-assigned managed identities in. |
 | [`userAssignedManagedIdentities`](#parameter-userassignedmanagedidentities) | array | The list of user-assigned managed identities. |
 | [`vHubRoutingIntentEnabled`](#parameter-vhubroutingintentenabled) | bool | Indicates whether routing intent is enabled on the Virtual Hub within the Virtual WAN.<p> |
-| [`virtualNetworkAddressSpace`](#parameter-virtualnetworkaddressspace) | array | The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `["10.0.0.0/16","172.16.0.0/12"]`. |
+| [`virtualNetworkAddressSpace`](#parameter-virtualnetworkaddressspace) | array | An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `["10.0.0.0/16","172.16.0.0/12"]`) OR a single IPAM pool resource ID to allocate IP addresses from. When specifying an IPAM pool resource ID, you must also set a value for the `virtualNetworkIpamPoolNumberOfIpAddresses` parameter.<p> |
 | [`virtualNetworkBastionConfiguration`](#parameter-virtualnetworkbastionconfiguration) | object | The configuration object for the Bastion host. Do not provide this object or keep it empty if you do not want to deploy a Bastion host. |
 | [`virtualNetworkDdosPlanResourceId`](#parameter-virtualnetworkddosplanresourceid) | string | The resource ID of an existing DDoS Network Protection Plan that you wish to link to this Virtual Network.<p> |
 | [`virtualNetworkDeployBastion`](#parameter-virtualnetworkdeploybastion) | bool | Whether to deploy a Bastion host to the created virtual network. |
@@ -2595,6 +2874,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | [`virtualNetworkDeployNatGateway`](#parameter-virtualnetworkdeploynatgateway) | bool | Whether to deploy a NAT gateway to the created virtual network. |
 | [`virtualNetworkDnsServers`](#parameter-virtualnetworkdnsservers) | array | The custom DNS servers to use on the Virtual Network, e.g. `["10.4.1.4", "10.2.1.5"]`. If left empty (default) then Azure DNS will be used for the Virtual Network.<p> |
 | [`virtualNetworkEnabled`](#parameter-virtualnetworkenabled) | bool | Whether to create a Virtual Network or not.<p><p>If set to `true` ensure you also provide values for the following parameters at a minimum:<p><li>`virtualNetworkResourceGroupName`<li>`virtualNetworkResourceGroupLockEnabled`<li>`virtualNetworkLocation`<li>`virtualNetworkName`<li>`virtualNetworkAddressSpace`<p><p>> Other parameters may need to be set based on other parameters that you enable that are listed above. Check each parameters documentation for further information.<p> |
+| [`virtualNetworkIpamPoolNumberOfIpAddresses`](#parameter-virtualnetworkipampoolnumberofipaddresses) | string | The number of IP addresses to allocate from the IPAM pool. Required when `virtualNetworkAddressSpace` contains an IPAM pool resource ID. Example: `'256'` for a /24 network.<p> |
 | [`virtualNetworkLocation`](#parameter-virtualnetworklocation) | string | The location of the virtual network. Use region shortnames e.g. `uksouth`, `eastus`, etc. Defaults to the region where the ARM/Bicep deployment is targeted to unless overridden.<p> |
 | [`virtualNetworkName`](#parameter-virtualnetworkname) | string | The name of the virtual network. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length.<p> |
 | [`virtualNetworkNatGatewayConfiguration`](#parameter-virtualnetworknatgatewayconfiguration) | object | The NAT Gateway configuration object. Do not provide this object or keep it empty if you do not want to deploy a NAT Gateway. |
@@ -2622,7 +2902,7 @@ A list of additional virtual networks to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefixes`](#parameter-additionalvirtualnetworksaddressprefixes) | array | The address prefixes for the virtual network. |
+| [`addressPrefixes`](#parameter-additionalvirtualnetworksaddressprefixes) | array | An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `["10.0.0.0/16"]`) OR a single IPAM pool resource ID. When specifying an IPAM pool resource ID, you must also set ipamPoolNumberOfIpAddresses. |
 | [`location`](#parameter-additionalvirtualnetworkslocation) | string | The location of the virtual network. |
 | [`name`](#parameter-additionalvirtualnetworksname) | string | The name of the virtual network resource. |
 | [`resourceGroupName`](#parameter-additionalvirtualnetworksresourcegroupname) | string | The name of the virtual network resource group. |
@@ -2637,6 +2917,7 @@ A list of additional virtual networks to create.
 | [`deployBastion`](#parameter-additionalvirtualnetworksdeploybastion) | bool | The option to deploy Azure Bastion in the virtual network. |
 | [`deployNatGateway`](#parameter-additionalvirtualnetworksdeploynatgateway) | bool | Flag to deploy a NAT gateway. |
 | [`dnsServers`](#parameter-additionalvirtualnetworksdnsservers) | array | The list of DNS servers for the virtual network. |
+| [`ipamPoolNumberOfIpAddresses`](#parameter-additionalvirtualnetworksipampoolnumberofipaddresses) | string | The number of IP addresses to allocate from the IPAM pool. Required when addressPrefixes contains an IPAM pool resource ID. |
 | [`natGatewayConfiguration`](#parameter-additionalvirtualnetworksnatgatewayconfiguration) | object | The configuration for deploying a NAT gateway. |
 | [`peerToHubNetwork`](#parameter-additionalvirtualnetworkspeertohubnetwork) | bool | The option to peer the virtual network to the hub network. |
 | [`resourceGroupLockEnabled`](#parameter-additionalvirtualnetworksresourcegrouplockenabled) | bool | Enables the deployment of a `CanNotDelete` resource locks to the virtual networks resource group. |
@@ -2646,7 +2927,7 @@ A list of additional virtual networks to create.
 
 ### Parameter: `additionalVirtualNetworks.addressPrefixes`
 
-The address prefixes for the virtual network.
+An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `["10.0.0.0/16"]`) OR a single IPAM pool resource ID. When specifying an IPAM pool resource ID, you must also set ipamPoolNumberOfIpAddresses.
 
 - Required: Yes
 - Type: array
@@ -2713,6 +2994,13 @@ The list of DNS servers for the virtual network.
 
 - Required: No
 - Type: array
+
+### Parameter: `additionalVirtualNetworks.ipamPoolNumberOfIpAddresses`
+
+The number of IP addresses to allocate from the IPAM pool. Required when addressPrefixes contains an IPAM pool resource ID.
+
+- Required: No
+- Type: string
 
 ### Parameter: `additionalVirtualNetworks.natGatewayConfiguration`
 
@@ -2858,6 +3146,7 @@ The subnets for the virtual network.
 | [`associateWithNatGateway`](#parameter-additionalvirtualnetworkssubnetsassociatewithnatgateway) | bool | Option to associate the subnet with the NAT gatway deployed by this module. |
 | [`defaultOutboundAccess`](#parameter-additionalvirtualnetworkssubnetsdefaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
 | [`delegation`](#parameter-additionalvirtualnetworkssubnetsdelegation) | string | The delegation to enable on the subnet. |
+| [`ipamPoolPrefixAllocations`](#parameter-additionalvirtualnetworkssubnetsipampoolprefixallocations) | array | Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate. |
 | [`natGatewayResourceId`](#parameter-additionalvirtualnetworkssubnetsnatgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
 | [`networkSecurityGroup`](#parameter-additionalvirtualnetworkssubnetsnetworksecuritygroup) | object | The network security group to be associated with this subnet. |
 | [`privateEndpointNetworkPolicies`](#parameter-additionalvirtualnetworkssubnetsprivateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
@@ -2915,6 +3204,13 @@ The delegation to enable on the subnet.
 
 - Required: No
 - Type: string
+
+### Parameter: `additionalVirtualNetworks.subnets.ipamPoolPrefixAllocations`
+
+Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate.
+
+- Required: No
+- Type: array
 
 ### Parameter: `additionalVirtualNetworks.subnets.natGatewayResourceId`
 
@@ -4012,7 +4308,7 @@ The ticket system name for the role eligibility assignment.
 
 ### Parameter: `resourceProviders`
 
-An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.<p>
+An object of resource providers and resource providers features to register. If not specified, a default list of common resource providers will be registered. To disable resource provider registration entirely, provide an empty object `{}`.<p>
 
 - Required: No
 - Type: object
@@ -4960,7 +5256,7 @@ Indicates whether routing intent is enabled on the Virtual Hub within the Virtua
 
 ### Parameter: `virtualNetworkAddressSpace`
 
-The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `["10.0.0.0/16","172.16.0.0/12"]`.
+An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `["10.0.0.0/16","172.16.0.0/12"]`) OR a single IPAM pool resource ID to allocate IP addresses from. When specifying an IPAM pool resource ID, you must also set a value for the `virtualNetworkIpamPoolNumberOfIpAddresses` parameter.<p>
 
 - Required: No
 - Type: array
@@ -5097,6 +5393,13 @@ Whether to create a Virtual Network or not.<p><p>If set to `true` ensure you als
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `virtualNetworkIpamPoolNumberOfIpAddresses`
+
+The number of IP addresses to allocate from the IPAM pool. Required when `virtualNetworkAddressSpace` contains an IPAM pool resource ID. Example: `'256'` for a /24 network.<p>
+
+- Required: No
+- Type: string
 
 ### Parameter: `virtualNetworkLocation`
 
@@ -5275,6 +5578,7 @@ The subnets of the Virtual Network that will be created by this module.
 | [`associateWithNatGateway`](#parameter-virtualnetworksubnetsassociatewithnatgateway) | bool | Option to associate the subnet with the NAT gatway deployed by this module. |
 | [`defaultOutboundAccess`](#parameter-virtualnetworksubnetsdefaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
 | [`delegation`](#parameter-virtualnetworksubnetsdelegation) | string | The delegation to enable on the subnet. |
+| [`ipamPoolPrefixAllocations`](#parameter-virtualnetworksubnetsipampoolprefixallocations) | array | Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate. |
 | [`natGatewayResourceId`](#parameter-virtualnetworksubnetsnatgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
 | [`networkSecurityGroup`](#parameter-virtualnetworksubnetsnetworksecuritygroup) | object | The network security group to be associated with this subnet. |
 | [`privateEndpointNetworkPolicies`](#parameter-virtualnetworksubnetsprivateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
@@ -5332,6 +5636,13 @@ The delegation to enable on the subnet.
 
 - Required: No
 - Type: string
+
+### Parameter: `virtualNetworkSubnets.ipamPoolPrefixAllocations`
+
+Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate.
+
+- Required: No
+- Type: array
 
 ### Parameter: `virtualNetworkSubnets.natGatewayResourceId`
 

@@ -1,11 +1,19 @@
 # Azure Stack HCI Cluster `[Microsoft.AzureStackHCI/clusters]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
+>
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
 This module deploys an Azure Stack HCI Cluster on the provided Arc Machines.
+
+You can reference the module as follows:
+```bicep
+module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
@@ -42,6 +50,8 @@ The following section provides usage examples for the module, which were used to
 
 This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster, validates the cluster configuration, and then deploys the cluster.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -49,7 +59,6 @@ This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster,
 
 ```bicep
 module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
-  name: 'clusterDeployment'
   params: {
     // Required parameters
     deploymentSettings: {
@@ -399,6 +408,8 @@ param servicePrincipalSecret = '<servicePrincipalSecret>'
 
 This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster, validates the cluster configuration, and then deploys the cluster WAF aligned.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -406,7 +417,6 @@ This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster,
 
 ```bicep
 module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
-  name: 'clusterDeployment'
   params: {
     // Required parameters
     deploymentSettings: {

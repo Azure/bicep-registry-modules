@@ -2,6 +2,14 @@
 
 Creates an AI Foundry account and project with Standard Agent Services.
 
+You can reference the module as follows:
+```bicep
+module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -83,6 +91,8 @@ The following section provides usage examples for the module, which were used to
 
 Creates an AI Foundry account and project with Basic services.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -90,7 +100,6 @@ Creates an AI Foundry account and project with Basic services.
 
 ```bicep
 module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
-  name: 'aiFoundryDeployment'
   params: {
     // Required parameters
     baseName: '<baseName>'
@@ -186,6 +195,8 @@ param aiModelDeployments = [
 
 Creates an AI Foundry account and project with Standard Agent Services.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ex.associated-resources]
+
 
 <details>
 
@@ -193,7 +204,6 @@ Creates an AI Foundry account and project with Standard Agent Services.
 
 ```bicep
 module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
-  name: 'aiFoundryDeployment'
   params: {
     // Required parameters
     baseName: '<baseName>'
@@ -305,6 +315,8 @@ param includeAssociatedResources = true
 
 Creates an AI Foundry account and project and provides option to bring your own resources created elsewhere.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ex.bring-your-own]
+
 
 <details>
 
@@ -312,7 +324,6 @@ Creates an AI Foundry account and project and provides option to bring your own 
 
 ```bicep
 module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
-  name: 'aiFoundryDeployment'
   params: {
     // Required parameters
     baseName: '<baseName>'
@@ -468,6 +479,8 @@ param storageAccountConfiguration = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -475,7 +488,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
-  name: 'aiFoundryDeployment'
   params: {
     // Required parameters
     baseName: '<baseName>'
@@ -842,6 +854,8 @@ param tags = {
 
 Creates an AI Foundry account and project with Standard Agent Services with private networking.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -849,7 +863,6 @@ Creates an AI Foundry account and project with Standard Agent Services with priv
 
 ```bicep
 module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
-  name: 'aiFoundryDeployment'
   params: {
     // Required parameters
     baseName: '<baseName>'
