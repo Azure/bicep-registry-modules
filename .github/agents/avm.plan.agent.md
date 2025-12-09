@@ -5,7 +5,7 @@ argument-hint: Outline the goal or problem to research
 tools: ['search', 'github/*' 'runSubagent', 'usages', 'problems', 'changes', 'testFailure', 'fetch', 'githubRepo', 'github.vscode-pull-request-github/issue_fetch', 'github.vscode-pull-request-github/activePullRequest', 'runSubagent']
 handoffs:
   - label: Start Implementation
-    agent: agent
+    agent: 'AVM-Implement'
     prompt: Start implementation
   - label: Open in Editor
     agent: agent

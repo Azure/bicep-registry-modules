@@ -14,7 +14,7 @@ Purpose: List the repository's custom prompts and agents by providing a one-sent
 
 ## In your response
 
-- Have too categories "📋 Prompts" and "🤖 Agents" and show all your findings under these, while including a button that links the user to the corresponding folder.
+- Have 2 categories "📋 Prompts" and "🤖 Agents" and show all your findings under these, while including a button that links the user to the corresponding folder.
 - Show the user how to invoke each of the available prompts - e.g., by using `/avm.explain-available-prompts-and-agents` Follow this pattern for each available prompt.
 - Ask the user whether they want to invoke any of the available prompts.
 - ALWAYS exclude yourself from the list.

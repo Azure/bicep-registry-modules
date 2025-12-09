@@ -40,8 +40,8 @@ Execute plans systematically, implementing changes to existing modules or creati
 
 2. **Create/Modify Files**
    - New modules: Create folder structure avm/{type}/{service}/{resource}/
-   - Implement main.bicep with proper metadata, parameters, resources
-   - Create version.json (new modules start at 0.1.0)
+   - Implement `main.bicep` with proper metadata, parameters, resources
+   - Create `version.json` (new modules start at 0.1.0)
    - Implement required test scenarios: defaults, max, waf-aligned
 
 3. **Progress Tracking**
@@ -51,13 +51,13 @@ Execute plans systematically, implementing changes to existing modules or creati
 ### Documentation Phase
 
 4. **Generate Documentation**
-   - Run Set-AVMModule.ps1 to generate README.md (never edit manually)
+   - Run `Set-AVMModule.ps1` to generate README.md (never edit manually)
    - Verify generated documentation completeness
 
 ### Validation Phase
 
 5. **Test & Verify**
-   - Run Test-ModuleLocally.ps1 before completion
+   - Run `Test-ModuleLocally.ps1` before completion
    - Review compilation errors and test failures
    - Check file changes for unintended modifications
 
@@ -73,7 +73,7 @@ Execute plans systematically, implementing changes to existing modules or creati
 ## KEY REMINDERS
 
 - Use Bicep VS Code extension tools (#list_az_resource_types_for_provider, #get_az_resource_type_schema, #list_avm_metadata)
-- Never manually edit README.md - always use Set-AVMModule.ps1
-- Run Test-ModuleLocally.ps1 before claiming completion
+- Never manually edit `README.md` - always use `Set-AVMModule.ps1`
+- Run `Test-ModuleLocally.ps1` before claiming completion
 - Track progress for visibility
 - Follow the plan unless deviation is necessary (then explain)

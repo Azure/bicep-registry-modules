@@ -1,5 +1,5 @@
 ---
-mode: 'agent'
+agent: agent
 description: 'Analyze Azure Verified Module (AVM) Bicep files and examples for technical debt, inconsistencies, documentation gaps, and quality issues.'
 tools: ['search', 'runCommands', 'runTasks', 'usages', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos', 'runTests', 'Azure MCP/documentation', 'search']
 ---
@@ -79,7 +79,7 @@ Here is a ReAct-style Thought–Action–Observation execution flow that you MUS
 
 | Category | File | Issue Type | Severity | Description | Line/Section |
 |----------|------|------------|----------|-------------|--------------|
-| Documentation | `README.md` | Spelling Error | Low | "paramter" should be "parameter" | Line 45 |
+| Documentation | `README.md` | Spelling Error | Low | "parameter" should be "parameter" | Line 45 |
 | Examples | `tests/e2e/defaults/main.test.bicep` | Inconsistency | Medium | Parameter value differs from documentation example | Line 12 |
 | Code Quality | `main.bicep` | Missing Description | High | Parameter lacks @description decorator | Line 23 |
 

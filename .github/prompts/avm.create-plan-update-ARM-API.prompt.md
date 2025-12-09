@@ -1,5 +1,5 @@
 ---
-mode: 'agent'
+agent: agent
 description: 'Analyze Azure Verified Module (AVM) Bicep files for ARM API version updates and create implementation plans.'
 tools: ['search', 'runCommands', 'runTasks', 'usages', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos', 'runTests', 'Azure MCP/documentation', 'search']
 ---
