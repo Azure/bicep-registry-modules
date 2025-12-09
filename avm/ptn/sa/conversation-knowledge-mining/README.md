@@ -219,6 +219,8 @@ param solutionName = '<solutionName>'
 
 This instance deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for WAF-aligned environments.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -226,7 +228,6 @@ This instance deploys the [Conversation Knowledge Mining Solution Accelerator](h
 
 ```bicep
 module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>' = {
-  name: 'conversationKnowledgeMiningDeployment'
   params: {
     // Required parameters
     aiServiceLocation: '<aiServiceLocation>'

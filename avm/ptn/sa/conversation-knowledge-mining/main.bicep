@@ -1344,7 +1344,7 @@ module uploadFiles 'br/public:avm/res/resources/deployment-script:0.5.2' = {
     retentionInterval: 'P1D'
     runOnce: true
     primaryScriptUri: '${baseUrl}infra/scripts/copy_kb_files.sh'
-    arguments: '${storageAccount.outputs.name} data ${baseUrl} ${userAssignedIdentity.outputs.clientId}'
+    arguments: '${storageAccount.outputs.name} ${baseUrl} ${userAssignedIdentity.outputs.clientId}'
     storageAccountResourceId: storageAccount.outputs.resourceId
     subnetResourceIds: enablePrivateNetworking
       ? [
