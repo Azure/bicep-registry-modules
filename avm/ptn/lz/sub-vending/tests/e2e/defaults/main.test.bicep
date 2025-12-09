@@ -34,6 +34,16 @@ module testDeployment '../../../main.bicep' = {
     subscriptionWorkload: 'Production'
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    // Test location normalization with location containing spaces and capitals
+    virtualNetworkEnabled: true
+    virtualNetworkLocation: 'UK South' // Will be normalized to 'uksouth'
+    virtualNetworkResourceGroupName: 'rsg-UK South-vnets' // Will have spaces removed
+    virtualNetworkName: 'vnet-${namePrefix}-${serviceShort}'
+    virtualNetworkAddressSpace: ['10.200.0.0/24']
+    virtualNetworkResourceGroupLockEnabled: false
+    // Test deployment script resource group name normalization
+    deploymentScriptResourceGroupName: 'rsg-UK South-scripts' // Will have spaces removed
+    deploymentScriptManagedIdentityName: 'id-${namePrefix}-${serviceShort}'
     resourceProviders: {}
   }
 }

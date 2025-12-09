@@ -361,8 +361,6 @@ param resourceProviders object = {
   'Microsoft.Management': []
   'Microsoft.Maps': []
   'Microsoft.MarketplaceOrdering': []
-  'Microsoft.Media': []
-  'Microsoft.MixedReality': []
   'Microsoft.Network': []
   'Microsoft.NotificationHubs': []
   'Microsoft.OperationalInsights': []
@@ -428,69 +426,70 @@ var deploymentNames = {
 }
 
 var azureRegionShortNameDisplayNameAsKey = {
-  'australia southeast': 'australiasoutheast'
-  'west central us': 'westcentralus'
-  'chile central': 'chilecentral'
-  'east us 2 euap': 'eastus2euap'
-  'japan west': 'japanwest'
-  'west us 2': 'westus2'
-  'uae central': 'uaecentral'
-  'france central': 'francecentral'
-  'east us 2': 'eastus2'
-  'malaysia west': 'malaysiawest'
-  'korea south': 'koreasouth'
-  'switzerland west': 'switzerlandwest'
-  'west us': 'westus'
+  'australia central': 'australiacentral'
   'australia central 2': 'australiacentral2'
-  'north europe': 'northeurope'
-  'switzerland north': 'switzerlandnorth'
-  'uae north': 'uaenorth'
   'australia east': 'australiaeast'
-  'new zealand north': 'newzealandnorth'
-  'japan east': 'japaneast'
-  'norway east': 'norwayeast'
-  'south india': 'southindia'
-  'korea central': 'koreacentral'
-  'malaysia south': 'malaysiasouth'
-  'uk south': 'uksouth'
-  'qatar central': 'qatarcentral'
-  'canada east': 'canadaeast'
-  'north central us': 'northcentralus'
-  'east asia': 'eastasia'
-  'uk west': 'ukwest'
+  'australia southeast': 'australiasoutheast'
+  'belgium central': 'belgiumcentral'
+  'brazil south': 'brazilsouth'
   'brazil southeast': 'brazilsoutheast'
   'canada central': 'canadacentral'
-  'germany north': 'germanynorth'
-  'west india': 'westindia'
-  'italy north': 'italynorth'
-  'israel central': 'israelcentral'
-  'brazil south': 'brazilsouth'
-  'central us euap': 'centraluseuap'
-  'germany west central': 'germanywestcentral'
-  'south africa north': 'southafricanorth'
-  'sweden south': 'swedensouth'
-  'poland central': 'polandcentral'
-  'spain central': 'spaincentral'
-  'south central us': 'southcentralus'
-  'east us': 'eastus'
-  'southeast asia': 'southeastasia'
-  'france south': 'francesouth'
-  'australia central': 'australiacentral'
-  'central us': 'centralus'
+  'canada east': 'canadaeast'
   'central india': 'centralindia'
-  'norway west': 'norwaywest'
-  'mexico central': 'mexicocentral'
-  'west europe': 'westeurope'
-  'south africa west': 'southafricawest'
-  'west us 3': 'westus3'
-  'taiwan north': 'taiwannorth'
-  'sweden central': 'swedencentral'
-  'usgov virginia': 'usgovvirginia'
-  'usgov texas': 'usgovtexas'
-  'usgov arizona': 'usgovarizona'
-  'usdod east': 'usdodeast'
-  'usdod central': 'usdodcentral'
+  'central us': 'centralus'
+  'central us euap': 'centraluseuap'
+  'chile central': 'chilecentral'
+  'east asia': 'eastasia'
+  'east us': 'eastus'
+  'east us 2': 'eastus2'
+  'east us 2 euap': 'eastus2euap'
+  'france central': 'francecentral'
+  'france south': 'francesouth'
+  'germany north': 'germanynorth'
+  'germany west central': 'germanywestcentral'
   'indonesia central': 'indonesiacentral'
+  'israel central': 'israelcentral'
+  'italy north': 'italynorth'
+  'japan east': 'japaneast'
+  'japan west': 'japanwest'
+  'korea central': 'koreacentral'
+  'korea south': 'koreasouth'
+  'malaysia south': 'malaysiasouth'
+  'malaysia west': 'malaysiawest'
+  'mexico central': 'mexicocentral'
+  'new zealand north': 'newzealandnorth'
+  'north central us': 'northcentralus'
+  'north europe': 'northeurope'
+  'norway east': 'norwayeast'
+  'norway west': 'norwaywest'
+  'poland central': 'polandcentral'
+  'qatar central': 'qatarcentral'
+  'south africa north': 'southafricanorth'
+  'south africa west': 'southafricawest'
+  'south central us': 'southcentralus'
+  'south india': 'southindia'
+  'southeast asia': 'southeastasia'
+  'spain central': 'spaincentral'
+  'sweden central': 'swedencentral'
+  'sweden south': 'swedensouth'
+  'switzerland north': 'switzerlandnorth'
+  'switzerland west': 'switzerlandwest'
+  'taiwan north': 'taiwannorth'
+  'uae central': 'uaecentral'
+  'uae north': 'uaenorth'
+  'uk south': 'uksouth'
+  'uk west': 'ukwest'
+  'usdod central': 'usdodcentral'
+  'usdod east': 'usdodeast'
+  'usgov arizona': 'usgovarizona'
+  'usgov texas': 'usgovtexas'
+  'usgov virginia': 'usgovvirginia'
+  'west central us': 'westcentralus'
+  'west europe': 'westeurope'
+  'west india': 'westindia'
+  'west us': 'westus'
+  'west us 2': 'westus2'
+  'west us 3': 'westus3'
 }
 
 var locationLowered = toLower(deployment().location)
@@ -499,37 +498,37 @@ var locationLoweredAndSpacesRemoved = contains(locationLowered, ' ')
   : locationLowered
 
 // Normalized resource names - replaces deployment().location in default values to remove spaces and capitals
-var userAssignedIdentityResourceGroupNameNormalized = userAssignedIdentityResourceGroupName == 'rsg-${deployment().location}-identities'
+var userAssignedIdentityResourceGroupNameNormalized = toLower(userAssignedIdentityResourceGroupName) == toLower('rsg-${deployment().location}-identities')
   ? 'rsg-${locationLoweredAndSpacesRemoved}-identities'
-  : userAssignedIdentityResourceGroupName
+  : replace(userAssignedIdentityResourceGroupName, ' ', '')
 
-var virtualNetworkLocationNormalized = virtualNetworkLocation == deployment().location
-  ? locationLoweredAndSpacesRemoved
-  : virtualNetworkLocation
+var virtualNetworkLocationNormalized = contains(toLower(virtualNetworkLocation), ' ')
+  ? azureRegionShortNameDisplayNameAsKey[toLower(virtualNetworkLocation)]
+  : toLower(virtualNetworkLocation)
 
-var deploymentScriptResourceGroupNameNormalized = deploymentScriptResourceGroupName == 'rsg-${deployment().location}-ds'
+var deploymentScriptResourceGroupNameNormalized = toLower(deploymentScriptResourceGroupName) == toLower('rsg-${deployment().location}-ds')
   ? 'rsg-${locationLoweredAndSpacesRemoved}-ds'
-  : deploymentScriptResourceGroupName
+  : replace(deploymentScriptResourceGroupName, ' ', '')
 
-var deploymentScriptNameNormalized = deploymentScriptName == 'ds-${deployment().location}'
+var deploymentScriptNameNormalized = toLower(deploymentScriptName) == toLower('ds-${deployment().location}')
   ? 'ds-${locationLoweredAndSpacesRemoved}'
-  : deploymentScriptName
+  : replace(deploymentScriptName, ' ', '')
 
-var deploymentScriptManagedIdentityNameNormalized = deploymentScriptManagedIdentityName == 'id-${deployment().location}'
+var deploymentScriptManagedIdentityNameNormalized = toLower(deploymentScriptManagedIdentityName) == toLower('id-${deployment().location}')
   ? 'id-${locationLoweredAndSpacesRemoved}'
-  : deploymentScriptManagedIdentityName
+  : replace(deploymentScriptManagedIdentityName, ' ', '')
 
-var deploymentScriptVirtualNetworkNameNormalized = deploymentScriptVirtualNetworkName == 'vnet-ds-${deployment().location}'
+var deploymentScriptVirtualNetworkNameNormalized = toLower(deploymentScriptVirtualNetworkName) == toLower('vnet-ds-${deployment().location}')
   ? 'vnet-ds-${locationLoweredAndSpacesRemoved}'
-  : deploymentScriptVirtualNetworkName
+  : replace(deploymentScriptVirtualNetworkName, ' ', '')
 
-var deploymentScriptNetworkSecurityGroupNameNormalized = deploymentScriptNetworkSecurityGroupName == 'nsg-ds-${deployment().location}'
+var deploymentScriptNetworkSecurityGroupNameNormalized = toLower(deploymentScriptNetworkSecurityGroupName) == toLower('nsg-ds-${deployment().location}')
   ? 'nsg-ds-${locationLoweredAndSpacesRemoved}'
-  : deploymentScriptNetworkSecurityGroupName
+  : replace(deploymentScriptNetworkSecurityGroupName, ' ', '')
 
-var deploymentScriptLocationNormalized = deploymentScriptLocation == deployment().location
-  ? locationLoweredAndSpacesRemoved
-  : deploymentScriptLocation
+var deploymentScriptLocationNormalized = contains(toLower(deploymentScriptLocation), ' ')
+  ? azureRegionShortNameDisplayNameAsKey[toLower(deploymentScriptLocation)]
+  : toLower(deploymentScriptLocation)
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
