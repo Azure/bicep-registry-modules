@@ -17,6 +17,13 @@ param disableLocalAuth bool = true
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. The compute type of the search service.')
+@allowed([
+  'Confidential'
+  'Default'
+])
+param computeType string = 'Default'
+
 @description('Optional. Describes a policy that determines how resources within the search service are to be encrypted with Customer Managed Keys.')
 @allowed([
   'Disabled'
@@ -25,17 +32,23 @@ param enableTelemetry bool = true
 ])
 param cmkEnforcement string = 'Unspecified'
 
+@description('Optional. A list of data exfiltration scenarios that are explicitly disallowed for the search service. Currently, the only supported value is \'All\' to disable all possible data export scenarios with more fine grained controls planned for the future.')
+@allowed([
+  'All'
+])
+param dataExfiltrationProtections string[]?
+
 @description('Optional. Applicable only for the standard3 SKU. You can set this property to enable up to 3 high density partitions that allow up to 1000 indexes, which is much higher than the maximum indexes allowed for any other SKU. For the standard3 SKU, the value is either \'default\' or \'highDensity\'. For all other SKUs, this value must be \'default\'.')
 @allowed([
-  'default'
-  'highDensity'
+  'Default'
+  'HighDensity'
 ])
-param hostingMode string = 'default'
+param hostingMode string = 'Default'
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings for all Resources in the solution.')
 param lock lockType?
 
@@ -69,7 +82,7 @@ param secretsExportConfiguration secretsExportConfigurationType?
 @maxValue(12)
 param replicaCount int = 3
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -93,16 +106,16 @@ param semanticSearch string?
 ])
 param sku string = 'standard'
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Tags to help categorize the resource in the Azure portal.')
-param tags resourceInput<'Microsoft.Search/searchServices@2025-02-01-preview'>.tags?
+param tags resourceInput<'Microsoft.Search/searchServices@2025-05-01'>.tags?
 
 // ============= //
 //   Variables   //
@@ -184,7 +197,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource searchService 'Microsoft.Search/searchServices@2025-02-01-preview' = {
+resource searchService 'Microsoft.Search/searchServices@2025-05-01' = {
   location: location
   name: name
   sku: {
@@ -204,6 +217,8 @@ resource searchService 'Microsoft.Search/searchServices@2025-02-01-preview' = {
     replicaCount: replicaCount
     publicNetworkAccess: toLower(publicNetworkAccess)
     semanticSearch: semanticSearch
+    computeType: computeType
+    dataExfiltrationProtections: dataExfiltrationProtections
   }
 }
 
@@ -263,7 +278,7 @@ resource searchService_roleAssignments 'Microsoft.Authorization/roleAssignments@
   }
 ]
 
-module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-searchService-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -401,7 +416,7 @@ output privateEndpoints privateEndpointOutputType[] = [
 
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
-  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  ? toObject(secretsExport!.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
   : {}
 
 @secure()
