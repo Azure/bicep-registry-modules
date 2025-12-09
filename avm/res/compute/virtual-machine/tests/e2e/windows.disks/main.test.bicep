@@ -87,7 +87,7 @@ module testDeployment '../../../main.bicep' = [
           createOption: 'Empty'
           caching: 'None'
           managedDisk: {
-            storageAccountType: 'PremiumV2_LRS'
+            storageAccountType: 'Premium_LRS'
             diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
           }
           diskIOPSReadWrite: 3000
