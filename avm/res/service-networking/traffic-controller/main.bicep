@@ -227,7 +227,12 @@ output associations array = [
 ]
 
 @description('The security policies of the Application Gateway for Containers.')
-output securityPolicies array = [
+output securityPolicies {
+  @description('The name of the security policy.')
+  name: string
+  @description('The resource ID of the security policy.')
+  resourceId: string
+} = [
   for (securityPolicy, i) in (securityPolicies ?? []): {
     name: trafficController_securityPolicies[i].outputs.name
     resourceId: trafficController_securityPolicies[i].outputs.resourceId
