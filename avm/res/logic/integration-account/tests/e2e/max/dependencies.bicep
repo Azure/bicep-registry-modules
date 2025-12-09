@@ -10,6 +10,9 @@ param keyVaultName string
 @description('Required. The name of the certificate to create.')
 param certificateName string
 
+@description('Required. The name of the Deployment Script to create for the Certificate generation.')
+param certDeploymentScriptName string
+
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
@@ -45,46 +48,22 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-resource certificate 'Microsoft.KeyVault/vaults/certificates@2024-11-01' = {
-  name: certificateName
-  parent: keyVault
-  properties: {
-    certificatePolicy: {
-      issuerParameters: {
-        name: 'Self'
-      }
-      keyProperties: {
-        exportable: true
-        keySize: 2048
-        keyType: 'RSA'
-        reuseKey: false
-      }
-      secretProperties: {
-        contentType: 'application/x-pkcs12'
-      }
-      x509CertificateProperties: {
-        subject: 'CN=${certificateName}'
-        validityInMonths: 12
-        keyUsage: [
-          'digitalSignature'
-          'keyEncipherment'
-        ]
-        ekus: [
-          '1.3.6.1.5.5.7.3.1' // Server Authentication
-          '1.3.6.1.5.5.7.3.2' // Client Authentication
-        ]
-      }
-      lifetimeActions: [
-        {
-          action: {
-            actionType: 'AutoRenew'
-          }
-          trigger: {
-            daysBeforeExpiry: 30
-          }
-        }
-      ]
+resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  name: certDeploymentScriptName
+  location: location
+  kind: 'AzurePowerShell'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
     }
+  }
+  properties: {
+    azPowerShellVersion: '11.0'
+    retentionInterval: 'P1D'
+    arguments: '-KeyVaultName "${keyVault.name}" -CertName "${certificateName}"'
+    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-CertificateInKeyVault.ps1')
+    cleanupPreference: 'OnSuccess'
   }
 }
 
