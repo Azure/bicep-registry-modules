@@ -35,9 +35,6 @@ param associations associationType[]?
 @description('Optional. List of Application Gateway for Containers security policies.')
 param securityPolicies securityPolicyType[]?
 
-@description('Optional. Security policy configurations for the Application Gateway for Containers.')
-param securityPolicyConfigurations resourceInput<'Microsoft.ServiceNetworking/trafficControllers@2025-01-01'>.properties.securityPolicyConfigurations?
-
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -90,9 +87,7 @@ resource trafficController 'Microsoft.ServiceNetworking/trafficControllers@2025-
   name: name
   location: location
   tags: tags
-  properties: {
-    securityPolicyConfigurations: securityPolicyConfigurations
-  }
+  properties: {}
 }
 
 resource trafficController_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
