@@ -40,13 +40,79 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/search/search-service:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Deploying with a key vault reference to save secrets](#example-2-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [Private endpoint-enabled deployment](#example-4-private-endpoint-enabled-deployment)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Deploying with a confidential compute type](#example-1-deploying-with-a-confidential-compute-type)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Deploying with a key vault reference to save secrets](#example-3-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Private endpoint-enabled deployment](#example-5-private-endpoint-enabled-deployment)
+- [WAF-aligned](#example-6-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Deploying with a confidential compute type_
+
+This instance deploys the module with a confidential compute type.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/confidential]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module searchService 'br/public:avm/res/search/search-service:<version>' = {
+  params: {
+    // Required parameters
+    name: 'sssconf001'
+    // Non-required parameters
+    computeType: 'Confidential'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sssconf001"
+    },
+    // Non-required parameters
+    "computeType": {
+      "value": "Confidential"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/search/search-service:<version>'
+
+// Required parameters
+param name = 'sssconf001'
+// Non-required parameters
+param computeType = 'Confidential'
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -100,7 +166,7 @@ param name = 'sssmin002'
 </details>
 <p>
 
-### Example 2: _Deploying with a key vault reference to save secrets_
+### Example 3: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving admin key secrets in a key vault.
 
@@ -199,7 +265,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -222,7 +288,6 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
       }
     }
     cmkEnforcement: 'Enabled'
-    computeType: 'Confidential'
     dataExfiltrationProtections: [
       'All'
     ]
@@ -254,7 +319,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
       ]
     }
     networkRuleSet: {
-      bypass: 'AzurePortal'
+      bypass: 'AzureServices'
       ipRules: [
         {
           value: '40.74.28.0/23'
@@ -323,9 +388,6 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     "cmkEnforcement": {
       "value": "Enabled"
     },
-    "computeType": {
-      "value": "Confidential"
-    },
     "dataExfiltrationProtections": {
       "value": [
         "All"
@@ -372,7 +434,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     },
     "networkRuleSet": {
       "value": {
-        "bypass": "AzurePortal",
+        "bypass": "AzureServices",
         "ipRules": [
           {
             "value": "40.74.28.0/23"
@@ -446,7 +508,6 @@ param authOptions = {
   }
 }
 param cmkEnforcement = 'Enabled'
-param computeType = 'Confidential'
 param dataExfiltrationProtections = [
   'All'
 ]
@@ -478,7 +539,7 @@ param managedIdentities = {
   ]
 }
 param networkRuleSet = {
-  bypass: 'AzurePortal'
+  bypass: 'AzureServices'
   ipRules: [
     {
       value: '40.74.28.0/23'
@@ -521,7 +582,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _Private endpoint-enabled deployment_
+### Example 5: _Private endpoint-enabled deployment_
 
 This instance deploys the module with private endpoints.
 
@@ -733,7 +794,7 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -992,47 +1053,6 @@ The name of the Azure Cognitive Search service to create or update. Search servi
 ### Parameter: `authOptions`
 
 Defines the options for how the data plane API of a Search service authenticates requests. Must remain an empty object {} if 'disableLocalAuth' is set to true.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`aadOrApiKey`](#parameter-authoptionsaadorapikey) | object | Indicates that either the API key or an access token from a Microsoft Entra ID tenant can be used for authentication. |
-| [`apiKeyOnly`](#parameter-authoptionsapikeyonly) | object | Indicates that only the API key can be used for authentication. |
-
-### Parameter: `authOptions.aadOrApiKey`
-
-Indicates that either the API key or an access token from a Microsoft Entra ID tenant can be used for authentication.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`aadAuthFailureMode`](#parameter-authoptionsaadorapikeyaadauthfailuremode) | string | Describes what response the data plane API of a search service would send for requests that failed authentication. |
-
-### Parameter: `authOptions.aadOrApiKey.aadAuthFailureMode`
-
-Describes what response the data plane API of a search service would send for requests that failed authentication.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'http401WithBearerChallenge'
-    'http403'
-  ]
-  ```
-
-### Parameter: `authOptions.apiKeyOnly`
-
-Indicates that only the API key can be used for authentication.
 
 - Required: No
 - Type: object
@@ -1344,48 +1364,6 @@ Network specific rules that determine how the Azure Cognitive Search service may
 
 - Required: No
 - Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`bypass`](#parameter-networkrulesetbypass) | string | Network specific rules that determine how the Azure AI Search service may be reached. |
-| [`ipRules`](#parameter-networkrulesetiprules) | array | A list of IP restriction rules that defines the inbound network(s) with allowing access to the search service endpoint. At the meantime, all other public IP networks are blocked by the firewall. These restriction rules are applied only when the 'publicNetworkAccess' of the search service is 'enabled'; otherwise, traffic over public interface is not allowed even with any public IP rules, and private endpoint connections would be the exclusive access method. |
-
-### Parameter: `networkRuleSet.bypass`
-
-Network specific rules that determine how the Azure AI Search service may be reached.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AzurePortal'
-    'AzureServices'
-    'None'
-  ]
-  ```
-
-### Parameter: `networkRuleSet.ipRules`
-
-A list of IP restriction rules that defines the inbound network(s) with allowing access to the search service endpoint. At the meantime, all other public IP networks are blocked by the firewall. These restriction rules are applied only when the 'publicNetworkAccess' of the search service is 'enabled'; otherwise, traffic over public interface is not allowed even with any public IP rules, and private endpoint connections would be the exclusive access method.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`value`](#parameter-networkrulesetiprulesvalue) | string | Value corresponding to a single IPv4 address (eg., 123.1.2.3) or an IP range in CIDR format (eg., 123.1.2.3/24) to be allowed. |
-
-### Parameter: `networkRuleSet.ipRules.value`
-
-Value corresponding to a single IPv4 address (eg., 123.1.2.3) or an IP range in CIDR format (eg., 123.1.2.3/24) to be allowed.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `partitionCount`
 

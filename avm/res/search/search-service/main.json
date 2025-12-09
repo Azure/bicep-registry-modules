@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "7759781931873335924"
+      "templateHash": "12197053486618067794"
     },
     "name": "Search Services",
     "description": "This module deploys a Search Service."
@@ -108,85 +108,6 @@
         "metadata": {
           "description": "An exported secret's references."
         }
-      }
-    },
-    "authOptionsType": {
-      "type": "object",
-      "properties": {
-        "aadOrApiKey": {
-          "type": "object",
-          "properties": {
-            "aadAuthFailureMode": {
-              "type": "string",
-              "allowedValues": [
-                "http401WithBearerChallenge",
-                "http403"
-              ],
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Describes what response the data plane API of a search service would send for requests that failed authentication."
-              }
-            }
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Indicates that either the API key or an access token from a Microsoft Entra ID tenant can be used for authentication."
-          }
-        },
-        "apiKeyOnly": {
-          "type": "object",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Indicates that only the API key can be used for authentication."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true
-      }
-    },
-    "networkRuleSetType": {
-      "type": "object",
-      "properties": {
-        "bypass": {
-          "type": "string",
-          "allowedValues": [
-            "AzurePortal",
-            "AzureServices",
-            "None"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Network specific rules that determine how the Azure AI Search service may be reached."
-          }
-        },
-        "ipRules": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ipRuleType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. A list of IP restriction rules that defines the inbound network(s) with allowing access to the search service endpoint. At the meantime, all other public IP networks are blocked by the firewall. These restriction rules are applied only when the 'publicNetworkAccess' of the search service is 'enabled'; otherwise, traffic over public interface is not allowed even with any public IP rules, and private endpoint connections would be the exclusive access method."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true
-      }
-    },
-    "ipRuleType": {
-      "type": "object",
-      "properties": {
-        "value": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Value corresponding to a single IPv4 address (eg., 123.1.2.3) or an IP range in CIDR format (eg., 123.1.2.3/24) to be allowed."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -736,11 +657,14 @@
       }
     },
     "authOptions": {
-      "$ref": "#/definitions/authOptionsType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Search/searchServices@2025-05-01#properties/properties/properties/authOptions"
+        },
         "description": "Optional. Defines the options for how the data plane API of a Search service authenticates requests. Must remain an empty object {} if 'disableLocalAuth' is set to true."
-      }
+      },
+      "nullable": true
     },
     "disableLocalAuth": {
       "type": "bool",
@@ -818,11 +742,14 @@
       }
     },
     "networkRuleSet": {
-      "$ref": "#/definitions/networkRuleSetType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Search/searchServices@2025-05-01#properties/properties/properties/networkRuleSet"
+        },
         "description": "Optional. Network specific rules that determine how the Azure Cognitive Search service may be reached."
-      }
+      },
+      "nullable": true
     },
     "partitionCount": {
       "type": "int",
