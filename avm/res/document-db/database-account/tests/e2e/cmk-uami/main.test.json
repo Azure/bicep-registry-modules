@@ -29,7 +29,7 @@
     },
     "namePrefix": {
       "type": "string",
-      "defaultValue": "#_namePrefix_#",
+      "defaultValue": "deep",
       "metadata": {
         "description": "Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI."
       }
@@ -43,7 +43,7 @@
     }
   },
   "variables": {
-    "enforcedLocation": "eastus2"
+    "enforcedLocation": "southindia"
   },
   "resources": {
     "resourceGroup": {
@@ -64,7 +64,7 @@
         "mode": "Incremental",
         "parameters": {
           "keyVaultName": {
-            "value": "dep-avmx-kv-dddaenc-jip"
+            "value": "dep-deep-kv-dddaenc-jip"
           },
           "managedIdentityName": {
             "value": "[format('dep-{0}-msi-{1}', parameters('namePrefix'), parameters('serviceShort'))]"
