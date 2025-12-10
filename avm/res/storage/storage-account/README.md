@@ -749,7 +749,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   params: {
     // Required parameters
-    name: 'ssamin001'
+    name: 'stamin001'
     // Non-required parameters
     allowBlobPublicAccess: false
     networkAcls: {
@@ -774,7 +774,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssamin001"
+      "value": "stamin001"
     },
     // Non-required parameters
     "allowBlobPublicAccess": {
@@ -801,7 +801,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'ssamin001'
+param name = 'stamin001'
 // Non-required parameters
 param allowBlobPublicAccess = false
 param networkAcls = {
@@ -6195,6 +6195,7 @@ Whether or not public network access is allowed for this resource. For security 
   [
     'Disabled'
     'Enabled'
+    'SecuredByPerimeter'
   ]
   ```
 

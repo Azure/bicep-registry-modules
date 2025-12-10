@@ -32,7 +32,7 @@ param hubRoutingPreference resourceInput<'Microsoft.Network/virtualHubs@2025-01-
 @description('Optional. The preferred routing gateway types.')
 param preferredRoutingGateway resourceInput<'Microsoft.Network/virtualHubs@2025-01-01'>.properties.preferredRoutingGateway?
 
-@description('Optional. VirtualHub route tables.')
+@description('Optional. The VirtualHub route tables.')
 param routeTableRoutes array?
 
 @description('Optional. ID of the Security Partner Provider to link to.')
@@ -172,7 +172,7 @@ resource virtualHub_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty
 }
 
 module virtualHub_routingIntent 'routing-intent/main.bicep' = if (!empty(azureFirewallResourceId) && !empty(routingIntent)) {
-  name: '${uniqueString(deployment().name, location)}-routingIntent'
+  name: '${uniqueString(subscription().id, resourceGroup().id, location)}-routingIntent'
   params: {
     virtualHubName: virtualHub.name
     azureFirewallResourceId: azureFirewallResourceId!
@@ -184,7 +184,7 @@ module virtualHub_routingIntent 'routing-intent/main.bicep' = if (!empty(azureFi
 // Initially create the route tables without routes
 module virtualHub_routeTables 'hub-route-table/main.bicep' = [
   for (routeTable, index) in (hubRouteTables ?? []): {
-    name: '${uniqueString(deployment().name, location)}-routeTable-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-routeTable-${index}'
     params: {
       virtualHubName: virtualHub.name
       name: routeTable.name
@@ -196,7 +196,7 @@ module virtualHub_routeTables 'hub-route-table/main.bicep' = [
 
 module virtualHub_hubVirtualNetworkConnections 'hub-virtual-network-connection/main.bicep' = [
   for (virtualNetworkConnection, index) in (hubVirtualNetworkConnections ?? []): {
-    name: '${uniqueString(deployment().name, location)}-connection-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-connection-${index}'
     params: {
       virtualHubName: virtualHub.name
       name: virtualNetworkConnection.name

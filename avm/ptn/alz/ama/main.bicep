@@ -37,8 +37,8 @@ param enableTelemetry bool = true
 // Resources      //
 // ============== //
 
-module userAssignedManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
-  name: 'userAssignedIdentityDeployment'
+module userAssignedManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.3' = {
+  name: '${uniqueString(subscription().id, resourceGroup().id, location)}-UserAssignedIdentity'
   params: {
     name: userAssignedIdentityName
     location: location

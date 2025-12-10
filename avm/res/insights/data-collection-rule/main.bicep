@@ -79,13 +79,13 @@ var dataCollectionRulePropertiesUnion = union(
   {
     description: dataCollectionRuleProperties.?description
   },
-  contains(['Linux', 'Windows', 'All', 'PlatformTelemetry'], dataCollectionRuleProperties.kind)
+  contains(['Linux', 'Windows', 'All', 'PlatformTelemetry', 'AgentDirectToStore'], dataCollectionRuleProperties.kind)
     ? {
         dataSources: dataCollectionRuleProperties.dataSources
       }
     : {},
   contains(
-      ['Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms', 'PlatformTelemetry'],
+      ['Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms', 'PlatformTelemetry', 'AgentDirectToStore'],
       dataCollectionRuleProperties.kind
     )
     ? {
@@ -109,7 +109,7 @@ var dataCollectionRulePropertiesUnion = union(
 var enableReferencedModulesTelemetry = false
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.insights-datacollectionrule.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -210,13 +210,14 @@ output immutableId string? = dataCollectionRuleProperties.kind == 'All'
 
 @export()
 @discriminator('kind')
-@description('The type for data collection rule properties. Depending on the kind, the properties will be different.')
+@description('Required. The type for data collection rule properties. Depending on the kind, the properties will be different.')
 type dataCollectionRulePropertiesType =
   | linuxDcrPropertiesType
   | windowsDcrPropertiesType
   | allPlatformsDcrPropertiesType
   | agentSettingsDcrPropertiesType
   | directDcrPropertiesType
+  | agentDirectToStoreType
   | workspaceTransformsDcrPropertiesType
   | platformTelemetryDcrPropertiesType
 
@@ -335,6 +336,24 @@ type directDcrPropertiesType = {
 
   @description('Required. Declaration of custom streams used in this rule.')
   streamDeclarations: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.streamDeclarations
+
+  @description('Optional. Description of the data collection rule.')
+  description: string?
+}
+
+@description('The type for the properties of the \'AgentDirectToStore\' data collection rule.')
+type agentDirectToStoreType = {
+  @description('Required. The platform type specifies the type of resources this rule can apply to.')
+  kind: 'AgentDirectToStore'
+
+  @description('Required. Specification of data sources that will be collected.')
+  dataSources: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataSources
+
+  @description('Required. The specification of data flows.')
+  dataFlows: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataFlows
+
+  @description('Required. Specification of destinations that can be used in data flows.')
+  destinations: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.destinations
 
   @description('Optional. Description of the data collection rule.')
   description: string?
