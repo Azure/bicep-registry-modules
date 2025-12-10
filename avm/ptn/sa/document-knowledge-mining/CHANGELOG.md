@@ -6,6 +6,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
+NOTE: This is the last published version and the module has since been deprecated.
+
 - Consolidated network modules into single `modules/virtualNetwork.bicep`
 - Simplified subnet configurations with inline defaults
 - Added CIDR sizing reference and VM accelerated networking documentation
