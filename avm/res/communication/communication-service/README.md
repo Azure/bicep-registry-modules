@@ -747,6 +747,7 @@ Array of role assignments to create.
   - `'Reader'`
   - `'Role Based Access Control Administrator'`
   - `'User Access Administrator'`
+  - `'Communication and Email Service Owner'`
 
 **Required parameters**
 
