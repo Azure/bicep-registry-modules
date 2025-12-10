@@ -290,7 +290,7 @@ module workspace_cmk_rbac 'modules/nested_cmkRbac.bicep' = if (encryptionActivat
 
 // - Workspace encryption - Activate Workspace
 module workspace_key 'key/main.bicep' = if (encryptionActivateWorkspace) {
-  name: '${workspace.name}-cmk-activation'
+  name: take('${workspace.name}-cmk-activation', 64)
   params: {
     name: customerManagedKey!.keyName
     isActiveCMK: true
@@ -303,7 +303,7 @@ module workspace_key 'key/main.bicep' = if (encryptionActivateWorkspace) {
 }
 
 // - Workspace Entra ID Administrator
-module workspace_administrator 'administrators/main.bicep' = if (!empty(administrator)) {
+module workspace_administrator 'administrator/main.bicep' = if (!empty(administrator)) {
   name: '${workspace.name}-administrator'
   params: {
     workspaceName: workspace.name

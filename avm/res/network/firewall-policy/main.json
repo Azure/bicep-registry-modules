@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.5.1644",
-      "templateHash": "12625537687605288449"
+      "version": "0.39.26.7824",
+      "templateHash": "12054588917000822333"
     },
     "name": "Firewall Policies",
     "description": "This module deploys a Firewall Policy."
@@ -571,14 +571,14 @@
     },
     "firewallPolicy": {
       "type": "Microsoft.Network/firewallPolicies",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2024-10-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
         "basePolicy": "[if(not(empty(parameters('basePolicyResourceId'))), createObject('id', parameters('basePolicyResourceId')), null())]",
-        "dnsSettings": "[if(parameters('enableProxy'), createObject('enableProxy', parameters('enableProxy'), 'servers', coalesce(parameters('servers'), createArray())), null())]",
+        "dnsSettings": "[if(or(parameters('enableProxy'), not(equals(parameters('servers'), null()))), createObject('enableProxy', parameters('enableProxy'), 'servers', coalesce(parameters('servers'), createArray())), null())]",
         "insights": "[if(parameters('insightsIsEnabled'), createObject('isEnabled', parameters('insightsIsEnabled'), 'logAnalyticsResources', createObject('defaultWorkspaceId', createObject('id', parameters('defaultWorkspaceResourceId')), 'workspaces', parameters('workspaces')), 'retentionDays', parameters('retentionDays')), null())]",
         "intrusionDetection": "[parameters('intrusionDetection')]",
         "sku": {
@@ -641,7 +641,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-firewallPolicy_ruleCollectionGroups-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-firewallPolicy_ruleCollectionGroups-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -668,8 +668,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "953429192279816820"
+              "version": "0.39.26.7824",
+              "templateHash": "9817822208885453465"
             },
             "name": "Firewall Policy Rule Collection Groups",
             "description": "This module deploys a Firewall Policy Rule Collection Group."
@@ -705,12 +705,12 @@
             "firewallPolicy": {
               "existing": true,
               "type": "Microsoft.Network/firewallPolicies",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2024-10-01",
               "name": "[parameters('firewallPolicyName')]"
             },
             "ruleCollectionGroup": {
               "type": "Microsoft.Network/firewallPolicies/ruleCollectionGroups",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2024-10-01",
               "name": "[format('{0}/{1}', parameters('firewallPolicyName'), parameters('name'))]",
               "properties": {
                 "priority": "[parameters('priority')]",
@@ -775,7 +775,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('firewallPolicy', '2024-05-01', 'full').location]"
+      "value": "[reference('firewallPolicy', '2024-10-01', 'full').location]"
     }
   }
 }

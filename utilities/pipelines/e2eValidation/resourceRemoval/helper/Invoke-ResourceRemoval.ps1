@@ -61,6 +61,26 @@ function Invoke-ResourceRemoval {
             Write-Verbose ('[/] Skipping resource [{0}] of type [{1}]. Reason: It is handled by different logic.' -f $resourceName, $Type) -Verbose
             break
         }
+        'Microsoft.KeyVault/managedHSMs/keys' {
+            $parentName = $ResourceId.Split('/')[8]
+            $resourceName = Split-Path $ResourceId -Leaf
+            $hSMKeyUri = 'https://{0}.managedhsm.azure.net/keys/{1}' -f $parentName, $resourceName
+
+            # Remove resource
+            if ($PSCmdlet.ShouldProcess("Managed HSM key [$hSMKeyUri]", 'Remove')) {
+                $hSMKeyApiUri = '{0}?api-version=2025-05-01' -f $hSMKeyUri
+                $removeRequestInputObject = @{
+                    Method = 'DELETE'
+                    Uri    = $hSMKeyApiUri
+                }
+                $hSMKeyState = Invoke-AzRestMethod @removeRequestInputObject
+                $hSMKeyStateContent = $hSMKeyState.Content | ConvertFrom-Json
+                if ($hSMKeyState.StatusCode -notlike '2*') {
+                    throw ('{0} : {1}' -f $hSMKeyStateContent.error.code, $hSMKeyStateContent.error.message)
+                }
+            }
+            break
+        }
         'Microsoft.ServiceBus/namespaces/authorizationRules' {
             if ((Split-Path $ResourceId '/')[-1] -eq 'RootManageSharedAccessKey') {
                 Write-Verbose ('[/] Skipping resource [RootManageSharedAccessKey] of type [{0}]. Reason: The Service Bus''s default authorization key cannot be removed' -f $Type) -Verbose
@@ -348,6 +368,7 @@ function Invoke-ResourceRemoval {
                             $retryCount++
                         }
                     } while (($workspaceStateContent.properties.replication.enabled -or $workspaceStateContent.properties.replication.provisioningState -ne 'Succeeded') -and $retryCount -lt $retryLimit)
+                    Start-Sleep -Seconds 30  # Additional wait to ensure replication is fully disabled and avoid leftovers in the Entra ID
 
                     if ($retryCount -ge $retryLimit) {
                         Write-Warning ('    [!] Workspace replication was not disabled after {0} seconds. Continuing with resource removal.' -f ($retryCount * $retryInterval))
@@ -491,7 +512,7 @@ function Invoke-ResourceRemoval {
             break
         }
         ### CODE LOCATION: Add custom removal action here
-        Default {
+        default {
             if ($PSCmdlet.ShouldProcess("Resource with ID [$ResourceId]", 'Remove')) {
                 $null = Remove-AzResource -ResourceId $ResourceId -Force -ErrorAction 'Stop'
             }

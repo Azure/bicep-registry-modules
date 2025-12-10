@@ -2,6 +2,14 @@
 
 This module deploys an Email Service
 
+You can reference the module as follows:
+```bicep
+module emailService 'br/public:avm/res/communication/email-service:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -37,6 +45,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -44,7 +54,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module emailService 'br/public:avm/res/communication/email-service:<version>' = {
-  name: 'emailServiceDeployment'
   params: {
     // Required parameters
     dataLocation: 'Europe'
@@ -98,6 +107,8 @@ param name = 'cesmin001'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -105,7 +116,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module emailService 'br/public:avm/res/communication/email-service:<version>' = {
-  name: 'emailServiceDeployment'
   params: {
     // Required parameters
     dataLocation: 'United States'
@@ -177,6 +187,11 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Communication and Email Service Owner'
       }
     ]
     tags: {
@@ -281,6 +296,11 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Communication and Email Service Owner"
         }
       ]
     },
@@ -376,6 +396,11 @@ param roleAssignments = [
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Communication and Email Service Owner'
+  }
 ]
 param tags = {
   Environment: 'Non-Prod'
@@ -391,6 +416,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -398,7 +425,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module emailService 'br/public:avm/res/communication/email-service:<version>' = {
-  name: 'emailServiceDeployment'
   params: {
     // Required parameters
     dataLocation: 'Germany'
@@ -837,6 +863,7 @@ Array of role assignments to create.
   - `'Reader'`
   - `'Role Based Access Control Administrator'`
   - `'User Access Administrator'`
+  - `'Communication and Email Service Owner'`
 
 **Required parameters**
 
@@ -939,8 +966,11 @@ Endpoint tags.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `domainFromSenderDomains` | array | The list of from sender domains for each domain. |
+| `domainMailFromSenderDomains` | array | The list of mail from sender domains for each domain. |
 | `domainNames` | array | The list of the email domain names. |
 | `domainResourceIds` | array | The list of the email domain resource ids. |
+| `domainVerificationRecords` | array | The list of verification records for each domain. |
 | `location` | string | The location the email service was deployed into. |
 | `name` | string | The name of the email service. |
 | `resourceGroupName` | string | The resource group the email service was deployed into. |
@@ -952,8 +982,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

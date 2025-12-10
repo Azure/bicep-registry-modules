@@ -14,20 +14,20 @@ param name string
 param throughput int = 400
 
 @description('Required. Indexes for the collection.')
-param indexes array
+param indexes resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2025-04-15'>.properties.resource.indexes
 
 @description('Required. ShardKey for the collection.')
-param shardKey object
+param shardKey resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2025-04-15'>.properties.resource.shardKey
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {
   name: databaseAccountName
 
-  resource mongodbDatabase 'mongodbDatabases@2024-11-15' existing = {
+  resource mongodbDatabase 'mongodbDatabases@2025-04-15' existing = {
     name: mongodbDatabaseName
   }
 }
 
-resource collection 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2024-11-15' = {
+resource collection 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2025-04-15' = {
   name: name
   parent: databaseAccount::mongodbDatabase
   properties: {
