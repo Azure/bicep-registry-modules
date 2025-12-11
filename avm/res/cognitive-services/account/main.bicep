@@ -594,6 +594,14 @@ output privateEndpoints privateEndpointOutputType[] = [
   }
 ]
 
+@secure()
+@description('The primary access key.')
+output primaryKey string? = !disableLocalAuth ? cognitiveService.listKeys().key1 : null
+
+@secure()
+@description('The secondary access key.')
+output secondaryKey string? = !disableLocalAuth ? cognitiveService.listKeys().key2 : null
+
 // ================ //
 // Definitions      //
 // ================ //
