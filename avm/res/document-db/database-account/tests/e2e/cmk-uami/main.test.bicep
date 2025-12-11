@@ -49,7 +49,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 module initDeployment '../../../main.small.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-base'
   params: {
     name: '${namePrefix}${serviceShort}001'
     zoneRedundant: false
@@ -69,7 +69,7 @@ module initDeployment '../../../main.small.bicep' = {
 
 module testDeployment '../../../main.small.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-cmk'
   params: {
     name: '${namePrefix}${serviceShort}001'
     zoneRedundant: false
