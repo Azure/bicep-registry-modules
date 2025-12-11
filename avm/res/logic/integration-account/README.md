@@ -137,7 +137,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     certificates: [
       {
         key: {
-          keyName: '<keyName>'
+          keyName: 'dep-cert-iamax'
           keyVault: {
             id: '<id>'
           }
@@ -146,7 +146,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           key1: 'value1'
           key2: 'value2'
         }
-        name: '<name>'
+        name: 'dep-cert-iamax'
         tags: {
           tag1: 'value1'
           tag2: 'value2'
@@ -308,7 +308,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
       "value": [
         {
           "key": {
-            "keyName": "<keyName>",
+            "keyName": "dep-cert-iamax",
             "keyVault": {
               "id": "<id>"
             }
@@ -317,7 +317,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
             "key1": "value1",
             "key2": "value2"
           },
-          "name": "<name>",
+          "name": "dep-cert-iamax",
           "tags": {
             "tag1": "value1",
             "tag2": "value2"
@@ -489,7 +489,7 @@ param assemblies = [
 param certificates = [
   {
     key: {
-      keyName: '<keyName>'
+      keyName: 'dep-cert-iamax'
       keyVault: {
         id: '<id>'
       }
@@ -498,7 +498,7 @@ param certificates = [
       key1: 'value1'
       key2: 'value2'
     }
-    name: '<name>'
+    name: 'dep-cert-iamax'
     tags: {
       tag1: 'value1'
       tag2: 'value2'

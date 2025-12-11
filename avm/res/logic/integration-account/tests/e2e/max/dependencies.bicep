@@ -7,8 +7,9 @@ param managedIdentityName string
 @description('Required. The name of the Key Vault to create.')
 param keyVaultName string
 
-@description('Required. The name of the certificate to create.')
-param certificateName string
+@secure()
+@description('Required. The name for the SSL certificate.')
+param certname string
 
 @description('Required. The name of the Deployment Script to create for the Certificate generation.')
 param certDeploymentScriptName string
@@ -61,7 +62,7 @@ resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01'
   properties: {
     azPowerShellVersion: '11.0'
     retentionInterval: 'P1D'
-    arguments: '-KeyVaultName "${keyVault.name}" -CertName "${certificateName}"'
+    arguments: '-KeyVaultName "${keyVault.name}" -CertName "${certname}" -CertSubjectName "CN=*.contoso.com"'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-CertificateInKeyVault.ps1')
   }
 }
