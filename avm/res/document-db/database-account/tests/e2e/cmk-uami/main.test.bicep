@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-documentdb.databaseaccounts-
 param serviceShort string = 'dddaenc'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = 'uniq'
+param namePrefix string = '#_namePrefix_#'
 
 // The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
 #disable-next-line no-hardcoded-location
