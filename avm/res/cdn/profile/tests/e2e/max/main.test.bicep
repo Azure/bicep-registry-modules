@@ -315,4 +315,5 @@ output afdEndpointNames array = testDeployment[0].outputs.frontDoorEndpointHostN
 output resourceGroupName string = resourceGroup.name
 
 @description('The system-assigned managed identity principal ID.')
-output systemAssignedMIPrincipalId string = testDeployment[0].outputs.?systemAssignedMIPrincipalId ?? ''
+// Do not try to fix this warning as the test then fails
+output systemAssignedMIPrincipalId string = testDeployment[0].outputs.?systemAssignedMIPrincipalId
