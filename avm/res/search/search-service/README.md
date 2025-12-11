@@ -40,79 +40,13 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/search/search-service:<version>`.
 
-- [Deploying with a confidential compute type](#example-1-deploying-with-a-confidential-compute-type)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Deploying with a key vault reference to save secrets](#example-3-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [Private endpoint-enabled deployment](#example-5-private-endpoint-enabled-deployment)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Deploying with a key vault reference to save secrets](#example-2-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Private endpoint-enabled deployment](#example-4-private-endpoint-enabled-deployment)
+- [WAF-aligned](#example-5-waf-aligned)
 
-### Example 1: _Deploying with a confidential compute type_
-
-This instance deploys the module with a confidential compute type.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/confidential]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module searchService 'br/public:avm/res/search/search-service:<version>' = {
-  params: {
-    // Required parameters
-    name: 'sssconf001'
-    // Non-required parameters
-    computeType: 'Confidential'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "sssconf001"
-    },
-    // Non-required parameters
-    "computeType": {
-      "value": "Confidential"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/search/search-service:<version>'
-
-// Required parameters
-param name = 'sssconf001'
-// Non-required parameters
-param computeType = 'Confidential'
-```
-
-</details>
-<p>
-
-### Example 2: _Using only defaults_
+### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -166,7 +100,7 @@ param name = 'sssmin002'
 </details>
 <p>
 
-### Example 3: _Deploying with a key vault reference to save secrets_
+### Example 2: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving admin key secrets in a key vault.
 
@@ -265,7 +199,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -288,6 +222,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
       }
     }
     cmkEnforcement: 'Enabled'
+    computeType: 'Default'
     dataExfiltrationProtections: [
       'All'
     ]
@@ -387,6 +322,9 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     },
     "cmkEnforcement": {
       "value": "Enabled"
+    },
+    "computeType": {
+      "value": "Default"
     },
     "dataExfiltrationProtections": {
       "value": [
@@ -508,6 +446,7 @@ param authOptions = {
   }
 }
 param cmkEnforcement = 'Enabled'
+param computeType = 'Default'
 param dataExfiltrationProtections = [
   'All'
 ]
@@ -582,7 +521,7 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _Private endpoint-enabled deployment_
+### Example 4: _Private endpoint-enabled deployment_
 
 This instance deploys the module with private endpoints.
 
@@ -794,7 +733,7 @@ param tags = {
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 

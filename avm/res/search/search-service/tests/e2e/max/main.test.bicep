@@ -73,6 +73,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       hostingMode: 'HighDensity'
+      computeType: 'Default'
       dataExfiltrationProtections: [
         'All'
       ]
