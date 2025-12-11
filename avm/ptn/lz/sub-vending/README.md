@@ -696,8 +696,6 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   params: {
-    deploymentScriptManagedIdentityName: 'id-svamin'
-    deploymentScriptResourceGroupName: 'rsg-UK South-scripts'
     resourceProviders: {}
     subscriptionAliasEnabled: true
     subscriptionAliasName: '<subscriptionAliasName>'
@@ -710,14 +708,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       serviceShort: '<serviceShort>'
     }
     subscriptionWorkload: 'Production'
-    virtualNetworkAddressSpace: [
-      '10.200.0.0/24'
-    ]
-    virtualNetworkEnabled: true
-    virtualNetworkLocation: 'UK South'
-    virtualNetworkName: 'vnet-svamin'
-    virtualNetworkResourceGroupLockEnabled: false
-    virtualNetworkResourceGroupName: 'rsg-UK South-vnets'
   }
 }
 ```
@@ -734,12 +724,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "deploymentScriptManagedIdentityName": {
-      "value": "id-svamin"
-    },
-    "deploymentScriptResourceGroupName": {
-      "value": "rsg-UK South-scripts"
-    },
     "resourceProviders": {
       "value": {}
     },
@@ -769,26 +753,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     },
     "subscriptionWorkload": {
       "value": "Production"
-    },
-    "virtualNetworkAddressSpace": {
-      "value": [
-        "10.200.0.0/24"
-      ]
-    },
-    "virtualNetworkEnabled": {
-      "value": true
-    },
-    "virtualNetworkLocation": {
-      "value": "UK South"
-    },
-    "virtualNetworkName": {
-      "value": "vnet-svamin"
-    },
-    "virtualNetworkResourceGroupLockEnabled": {
-      "value": false
-    },
-    "virtualNetworkResourceGroupName": {
-      "value": "rsg-UK South-vnets"
     }
   }
 }
@@ -804,8 +768,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/lz/sub-vending:<version>'
 
-param deploymentScriptManagedIdentityName = 'id-svamin'
-param deploymentScriptResourceGroupName = 'rsg-UK South-scripts'
 param resourceProviders = {}
 param subscriptionAliasEnabled = true
 param subscriptionAliasName = '<subscriptionAliasName>'
@@ -818,14 +780,6 @@ param subscriptionTags = {
   serviceShort: '<serviceShort>'
 }
 param subscriptionWorkload = 'Production'
-param virtualNetworkAddressSpace = [
-  '10.200.0.0/24'
-]
-param virtualNetworkEnabled = true
-param virtualNetworkLocation = 'UK South'
-param virtualNetworkName = 'vnet-svamin'
-param virtualNetworkResourceGroupLockEnabled = false
-param virtualNetworkResourceGroupName = 'rsg-UK South-vnets'
 ```
 
 </details>
