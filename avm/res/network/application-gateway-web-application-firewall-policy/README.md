@@ -59,7 +59,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
         }
       ]
     }
-    name: 'nagwafpmin001'
+    name: 'nagwafpmintst001'
     // Non-required parameters
     location: '<location>'
   }
@@ -90,7 +90,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
       }
     },
     "name": {
-      "value": "nagwafpmin001"
+      "value": "nagwafpmintst001"
     },
     // Non-required parameters
     "location": {
@@ -119,7 +119,7 @@ param managedRules = {
     }
   ]
 }
-param name = 'nagwafpmin001'
+param name = 'nagwafpmintst001'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -156,7 +156,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
         }
       ]
     }
-    name: 'nagwafpmax001'
+    name: 'nagwafpmaxtst001'
     // Non-required parameters
     location: '<location>'
     policySettings: {
@@ -206,7 +206,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
       }
     },
     "name": {
-      "value": "nagwafpmax001"
+      "value": "nagwafpmaxtst001"
     },
     // Non-required parameters
     "location": {
@@ -258,7 +258,7 @@ param managedRules = {
     }
   ]
 }
-param name = 'nagwafpmax001'
+param name = 'nagwafpmaxtst001'
 // Non-required parameters
 param location = '<location>'
 param policySettings = {
@@ -307,7 +307,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
         }
       ]
     }
-    name: 'nagwafpwaf001'
+    name: 'nagwafpwafa001'
     // Non-required parameters
     location: '<location>'
     policySettings: {
@@ -354,7 +354,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
       }
     },
     "name": {
-      "value": "nagwafpwaf001"
+      "value": "nagwafpwafa001"
     },
     // Non-required parameters
     "location": {
@@ -403,7 +403,7 @@ param managedRules = {
     }
   ]
 }
-param name = 'nagwafpwaf001'
+param name = 'nagwafpwafa001'
 // Non-required parameters
 param location = '<location>'
 param policySettings = {
