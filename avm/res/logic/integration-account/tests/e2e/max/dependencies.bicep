@@ -63,7 +63,6 @@ resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01'
     retentionInterval: 'P1D'
     arguments: '-KeyVaultName "${keyVault.name}" -CertName "${certificateName}"'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-CertificateInKeyVault.ps1')
-    cleanupPreference: 'OnSuccess'
   }
 }
 
