@@ -37,14 +37,14 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
 }
 
 resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${managedIdentity.name}-${keyVault.name}-KeyVault-Admin-RoleAssignment')
+  name: guid('msi-${managedIdentity.name}-${keyVault.name}-KeyVault-Crypto-User-RoleAssignment')
   scope: keyVault
   properties: {
     principalId: managedIdentity.properties.principalId
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
-      '00482a5a-887f-4fb3-b363-3b7fe8e74483'
-    ) // Key Vault Administrator
+      '14b46e9e-c2b7-41b4-b07b-48a6ebf60603'
+    ) // Key Vault Crypto User
     principalType: 'ServicePrincipal'
   }
 }
