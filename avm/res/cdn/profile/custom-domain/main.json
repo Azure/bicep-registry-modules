@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "7210601349095147888"
+      "version": "0.39.26.7824",
+      "templateHash": "7912636093958858348"
     },
     "name": "CDN Profiles Custom Domains",
     "description": "This module deploys a CDN Profile Custom Domains."

@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cdn/profile/CHANGELOG.md).
 
+## 0.17
+
+### Changes
+
+- Added a dependency on the profile_originGroups module for ruleSets to ensure proper deployment order.
+- Updated output for systemAssignedMIPrincipalId to handle null values gracefully in the test module.
+
+### Breaking Changes
+
+- None
+
 ## 0.16.1
 
 ### Changes

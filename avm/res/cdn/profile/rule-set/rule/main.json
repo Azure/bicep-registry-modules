@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "6984936093254190035"
+      "version": "0.39.26.7824",
+      "templateHash": "15746008404835349617"
     },
     "name": "CDN Profiles Rules",
     "description": "This module deploys a CDN Profile rule."
