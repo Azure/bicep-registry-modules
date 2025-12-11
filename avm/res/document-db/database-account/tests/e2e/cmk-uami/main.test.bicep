@@ -15,14 +15,12 @@ param resourceGroupName string = 'dep-${namePrefix}-documentdb.databaseaccounts-
 param serviceShort string = 'dddaenc'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
-
-@description('Generated. Used as a basis for unique resource names.')
-param baseTime string = utcNow('u')
+param namePrefix string = 'uniq'
 
 // The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'eastus2'
+var keyVaultName = 'dep-${namePrefix}-kv-${serviceShort}'
 
 // ============ //
 // Dependencies //
@@ -40,8 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
-    // keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
-    keyVaultName: 'dep-avmx-kv-dddaenc-jip'
+    keyVaultName: keyVaultName
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
@@ -50,33 +47,50 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-@batchSize(1)
-module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    scope: resourceGroup
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
-    params: {
-      name: '${namePrefix}${serviceShort}001'
-      zoneRedundant: false
-      customerManagedKey: {
-        keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-      }
-      defaultIdentity: {
-        name: 'UserAssignedIdentity'
-        resourceId: nestedDependencies.outputs.managedIdentityResourceId
-      }
-      managedIdentities: {
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
-      }
-      // Explicit 1
-      networkRestrictions: {
-        publicNetworkAccess: 'Enabled'
-      }
-      // Explicit 2
-      disableKeyBasedMetadataWriteAccess: false
+module initDeployment '../../../main.small.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
+  params: {
+    name: '${namePrefix}${serviceShort}001'
+    zoneRedundant: false
+    managedIdentities: {
+      userAssignedResourceIds: [
+        nestedDependencies.outputs.managedIdentityResourceId
+      ]
     }
+    // Explicit 1
+    networkRestrictions: {
+      publicNetworkAccess: 'Enabled'
+    }
+    // Explicit 2
+    disableKeyBasedMetadataWriteAccess: false
   }
-]
+}
+
+module testDeployment '../../../main.small.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
+  params: {
+    name: '${namePrefix}${serviceShort}001'
+    zoneRedundant: false
+    customerManagedKey: {
+      keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
+      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+    }
+    defaultIdentity: {
+      name: 'UserAssignedIdentity'
+      resourceId: nestedDependencies.outputs.managedIdentityResourceId
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        nestedDependencies.outputs.managedIdentityResourceId
+      ]
+    }
+    // Explicit 1
+    networkRestrictions: {
+      publicNetworkAccess: 'Enabled'
+    }
+    // Explicit 2
+    disableKeyBasedMetadataWriteAccess: false
+  }
+}

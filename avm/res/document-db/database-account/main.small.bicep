@@ -25,56 +25,8 @@ param failoverLocations failoverLocationType[]?
 
 @description('Optional. Indicates whether the single-region account is zone redundant. Defaults to true. This property is ignored for multi-region accounts.')
 param zoneRedundant bool = true
-
-@allowed([
-  'Eventual'
-  'ConsistentPrefix'
-  'Session'
-  'BoundedStaleness'
-  'Strong'
-])
-@description('Optional. The default consistency level of the account. Defaults to "Session".')
-param defaultConsistencyLevel string = 'Session'
-
-@description('Optional. Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true.')
-param disableLocalAuthentication bool = true
-
-@description('Optional. Flag to indicate whether to enable storage analytics. Defaults to false.')
-param enableAnalyticalStorage bool = false
-
-@description('Optional. Enable automatic failover for regions. Defaults to true.')
-param enableAutomaticFailover bool = true
-
-@description('Optional. Flag to indicate whether "Free Tier" is enabled. Defaults to false.')
-param enableFreeTier bool = false
-
-@description('Optional. Enables the account to write in multiple locations. Periodic backup must be used if enabled. Defaults to false.')
-param enableMultipleWriteLocations bool = false
-
 @description('Optional. Disable write operations on metadata resources (databases, containers, throughput) via account keys. Defaults to true.')
 param disableKeyBasedMetadataWriteAccess bool = true
-
-@minValue(1)
-@maxValue(2147483647)
-@description('Optional. The maximum stale requests. Required for "BoundedStaleness" consistency level. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000. Defaults to 100000.')
-param maxStalenessPrefix int = 100000
-
-@minValue(5)
-@maxValue(86400)
-@description('Optional. The maximum lag time in minutes. Required for "BoundedStaleness" consistency level. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400. Defaults to 300.')
-param maxIntervalInSeconds int = 300
-
-@description('Optional. Specifies the MongoDB server version to use if using Azure Cosmos DB for MongoDB RU. Defaults to "4.2".')
-@allowed([
-  '3.2'
-  '3.6'
-  '4.0'
-  '4.2'
-  '5.0'
-  '6.0'
-  '7.0'
-])
-param serverVersion string = '4.2'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -220,7 +172,7 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
   location: location
   tags: tags
   identity: identity
-  kind: !empty(mongodbDatabases) ? 'MongoDB' : 'GlobalDocumentDB'
+  kind: 'GlobalDocumentDB'
   properties: {
     enableBurstCapacity: !contains((capabilitiesToAdd ?? []), 'EnableServerless') ? enableBurstCapacity : false
     databaseAccountOfferType: databaseAccountOfferType
@@ -273,66 +225,20 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
       totalThroughputLimit: totalThroughputLimit
     }
     publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Disabled'
-    ...((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables) || !empty(cassandraKeyspaces))
-      ? {
-          // NoSQL, MongoDB RU, Table, Apache Gremlin, and Apache Cassandra common properties
-          consistencyPolicy: {
-            defaultConsistencyLevel: defaultConsistencyLevel
-            ...(defaultConsistencyLevel == 'BoundedStaleness'
-              ? {
-                  maxStalenessPrefix: maxStalenessPrefix
-                  maxIntervalInSeconds: maxIntervalInSeconds
-                }
-              : {})
-          }
-          enableMultipleWriteLocations: enableMultipleWriteLocations
-          locations: !empty(failoverLocations)
-            ? map(failoverLocations!, failoverLocation => {
-                failoverPriority: failoverLocation.failoverPriority
-                locationName: failoverLocation.locationName
-                isZoneRedundant: failoverLocation.?isZoneRedundant ?? true
-              })
-            : [
-                {
-                  failoverPriority: 0
-                  locationName: location
-                  isZoneRedundant: zoneRedundant
-                }
-              ]
-          ipRules: map(networkRestrictions.?ipRules ?? [], ipRule => {
-            ipAddressOrRange: ipRule
-          })
-          virtualNetworkRules: map(networkRestrictions.?virtualNetworkRules ?? [], rule => {
-            id: rule.subnetResourceId
-            ignoreMissingVNetServiceEndpoint: false
-          })
-          networkAclBypass: networkRestrictions.?networkAclBypass ?? 'None'
-          networkAclBypassResourceIds: networkRestrictions.?networkAclBypassResourceIds
-          isVirtualNetworkFilterEnabled: !empty(networkRestrictions.?ipRules) || !empty(networkRestrictions.?virtualNetworkRules)
-          enableFreeTier: enableFreeTier
-          enableAutomaticFailover: enableAutomaticFailover
-          enableAnalyticalStorage: enableAnalyticalStorage
-        }
-      : {})
-    ...((!empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(cassandraKeyspaces))
-      ? {
-          // Key-based authentication is the only allowed authentication method with Azure Cosmos DB for MongoDB RU, Apache Gremlin, and Apache Cassandra.
-          disableLocalAuth: false
-          disableKeyBasedMetadataWriteAccess: false
-        }
-      : {
-          // Microsoft Entra authentication is supported for Azure Cosmos DB for NoSQL and Table. Disable key-based authentication by default.
-          disableLocalAuth: disableLocalAuthentication
-          disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
+    disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
+    locations: !empty(failoverLocations)
+      ? map(failoverLocations!, failoverLocation => {
+          failoverPriority: failoverLocation.failoverPriority
+          locationName: failoverLocation.locationName
+          isZoneRedundant: failoverLocation.?isZoneRedundant ?? true
         })
-    ...(!empty(mongodbDatabases)
-      ? {
-          // MongoDB RU properties
-          apiProperties: {
-            serverVersion: serverVersion
+      : [
+          {
+            failoverPriority: 0
+            locationName: location
+            isZoneRedundant: zoneRedundant
           }
-        }
-      : {})
+        ]
   }
 }
 
