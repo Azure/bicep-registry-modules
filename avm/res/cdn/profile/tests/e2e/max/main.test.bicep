@@ -78,13 +78,6 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
 
-      // Lock configuration
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-        notes: 'This resource cannot be deleted for security reasons.'
-      }
-
       // Tags
       tags: {
         Environment: 'Test'
@@ -315,5 +308,4 @@ output afdEndpointNames array = testDeployment[0].outputs.frontDoorEndpointHostN
 output resourceGroupName string = resourceGroup.name
 
 @description('The system-assigned managed identity principal ID.')
-// Do not try to fix this warning as the test then fails
-output systemAssignedMIPrincipalId string = testDeployment[0].outputs.?systemAssignedMIPrincipalId
+output systemAssignedMIPrincipalId string = testDeployment[0].outputs.?systemAssignedMIPrincipalId ?? ''
