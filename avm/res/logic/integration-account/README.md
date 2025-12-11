@@ -42,7 +42,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/logic/integration-account:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Max](#example-2-max)
+- [Using large parameter set](#example-2-using-large-parameter-set)
 - [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
@@ -110,7 +110,10 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Max_
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
 
