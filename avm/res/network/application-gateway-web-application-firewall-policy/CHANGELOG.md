@@ -6,6 +6,10 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Added resourceInput types for tags, managedRules, customRules, and policySettings parameters to align with updated API version.
 
+### Breaking Changes
+
+- None
+
 ## 0.2.0
 
 ### Changes
