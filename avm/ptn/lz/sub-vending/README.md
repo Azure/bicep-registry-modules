@@ -4359,8 +4359,6 @@ An object of resource providers and resource providers features to register. If 
       'Microsoft.Management': []
       'Microsoft.Maps': []
       'Microsoft.MarketplaceOrdering': []
-      'Microsoft.Media': []
-      'Microsoft.MixedReality': []
       'Microsoft.Network': []
       'Microsoft.NotificationHubs': []
       'Microsoft.OperationalInsights': []

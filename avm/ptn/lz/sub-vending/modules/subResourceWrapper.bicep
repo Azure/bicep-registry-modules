@@ -189,8 +189,6 @@ param resourceProviders object = {
   'Microsoft.Management': []
   'Microsoft.Maps': []
   'Microsoft.MarketplaceOrdering': []
-  'Microsoft.Media': []
-  'Microsoft.MixedReality': []
   'Microsoft.Network': []
   'Microsoft.NotificationHubs': []
   'Microsoft.OperationalInsights': []

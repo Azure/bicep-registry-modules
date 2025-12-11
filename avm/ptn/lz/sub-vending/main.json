@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "2827890037228340123"
+      "templateHash": "12718777635738323794"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1768,8 +1768,6 @@
         "Microsoft.Management": [],
         "Microsoft.Maps": [],
         "Microsoft.MarketplaceOrdering": [],
-        "Microsoft.Media": [],
-        "Microsoft.MixedReality": [],
         "Microsoft.Network": [],
         "Microsoft.NotificationHubs": [],
         "Microsoft.OperationalInsights": [],
@@ -1864,7 +1862,83 @@
     "deploymentNames": {
       "createSubscription": "[take(format('lz-vend-sub-create-{0}-{1}', parameters('subscriptionAliasName'), uniqueString(parameters('subscriptionAliasName'), parameters('subscriptionDisplayName'), parameters('subscriptionBillingScope'), parameters('subscriptionWorkload'), deployment().name)), 64)]",
       "createSubscriptionResources": "[take(format('lz-vend-sub-res-create-{0}-{1}', parameters('subscriptionAliasName'), uniqueString(parameters('subscriptionAliasName'), parameters('subscriptionDisplayName'), parameters('subscriptionBillingScope'), parameters('subscriptionWorkload'), parameters('existingSubscriptionId'), deployment().name)), 64)]"
-    }
+    },
+    "azureRegionShortNameDisplayNameAsKey": {
+      "australia central": "australiacentral",
+      "australia central 2": "australiacentral2",
+      "australia east": "australiaeast",
+      "australia southeast": "australiasoutheast",
+      "belgium central": "belgiumcentral",
+      "brazil south": "brazilsouth",
+      "brazil southeast": "brazilsoutheast",
+      "canada central": "canadacentral",
+      "canada east": "canadaeast",
+      "central india": "centralindia",
+      "central us": "centralus",
+      "central us euap": "centraluseuap",
+      "chile central": "chilecentral",
+      "east asia": "eastasia",
+      "east us": "eastus",
+      "east us 2": "eastus2",
+      "east us 2 euap": "eastus2euap",
+      "france central": "francecentral",
+      "france south": "francesouth",
+      "germany north": "germanynorth",
+      "germany west central": "germanywestcentral",
+      "indonesia central": "indonesiacentral",
+      "israel central": "israelcentral",
+      "italy north": "italynorth",
+      "japan east": "japaneast",
+      "japan west": "japanwest",
+      "korea central": "koreacentral",
+      "korea south": "koreasouth",
+      "malaysia south": "malaysiasouth",
+      "malaysia west": "malaysiawest",
+      "mexico central": "mexicocentral",
+      "new zealand north": "newzealandnorth",
+      "north central us": "northcentralus",
+      "north europe": "northeurope",
+      "norway east": "norwayeast",
+      "norway west": "norwaywest",
+      "poland central": "polandcentral",
+      "qatar central": "qatarcentral",
+      "south africa north": "southafricanorth",
+      "south africa west": "southafricawest",
+      "south central us": "southcentralus",
+      "south india": "southindia",
+      "southeast asia": "southeastasia",
+      "spain central": "spaincentral",
+      "sweden central": "swedencentral",
+      "sweden south": "swedensouth",
+      "switzerland north": "switzerlandnorth",
+      "switzerland west": "switzerlandwest",
+      "taiwan north": "taiwannorth",
+      "uae central": "uaecentral",
+      "uae north": "uaenorth",
+      "uk south": "uksouth",
+      "uk west": "ukwest",
+      "usdod central": "usdodcentral",
+      "usdod east": "usdodeast",
+      "usgov arizona": "usgovarizona",
+      "usgov texas": "usgovtexas",
+      "usgov virginia": "usgovvirginia",
+      "west central us": "westcentralus",
+      "west europe": "westeurope",
+      "west india": "westindia",
+      "west us": "westus",
+      "west us 2": "westus2",
+      "west us 3": "westus3"
+    },
+    "locationLowered": "[toLower(deployment().location)]",
+    "locationLoweredAndSpacesRemoved": "[if(contains(variables('locationLowered'), ' '), variables('azureRegionShortNameDisplayNameAsKey')[variables('locationLowered')], variables('locationLowered'))]",
+    "userAssignedIdentityResourceGroupNameNormalized": "[if(equals(toLower(parameters('userAssignedIdentityResourceGroupName')), toLower(format('rsg-{0}-identities', deployment().location))), format('rsg-{0}-identities', variables('locationLoweredAndSpacesRemoved')), replace(parameters('userAssignedIdentityResourceGroupName'), ' ', ''))]",
+    "virtualNetworkLocationNormalized": "[if(contains(toLower(parameters('virtualNetworkLocation')), ' '), variables('azureRegionShortNameDisplayNameAsKey')[toLower(parameters('virtualNetworkLocation'))], toLower(parameters('virtualNetworkLocation')))]",
+    "deploymentScriptResourceGroupNameNormalized": "[if(equals(toLower(parameters('deploymentScriptResourceGroupName')), toLower(format('rsg-{0}-ds', deployment().location))), format('rsg-{0}-ds', variables('locationLoweredAndSpacesRemoved')), replace(parameters('deploymentScriptResourceGroupName'), ' ', ''))]",
+    "deploymentScriptNameNormalized": "[if(equals(toLower(parameters('deploymentScriptName')), toLower(format('ds-{0}', deployment().location))), format('ds-{0}', variables('locationLoweredAndSpacesRemoved')), replace(parameters('deploymentScriptName'), ' ', ''))]",
+    "deploymentScriptManagedIdentityNameNormalized": "[if(equals(toLower(parameters('deploymentScriptManagedIdentityName')), toLower(format('id-{0}', deployment().location))), format('id-{0}', variables('locationLoweredAndSpacesRemoved')), replace(parameters('deploymentScriptManagedIdentityName'), ' ', ''))]",
+    "deploymentScriptVirtualNetworkNameNormalized": "[if(equals(toLower(parameters('deploymentScriptVirtualNetworkName')), toLower(format('vnet-ds-{0}', deployment().location))), format('vnet-ds-{0}', variables('locationLoweredAndSpacesRemoved')), replace(parameters('deploymentScriptVirtualNetworkName'), ' ', ''))]",
+    "deploymentScriptNetworkSecurityGroupNameNormalized": "[if(equals(toLower(parameters('deploymentScriptNetworkSecurityGroupName')), toLower(format('nsg-ds-{0}', deployment().location))), format('nsg-ds-{0}', variables('locationLoweredAndSpacesRemoved')), replace(parameters('deploymentScriptNetworkSecurityGroupName'), ' ', ''))]",
+    "deploymentScriptLocationNormalized": "[if(contains(toLower(parameters('deploymentScriptLocation')), ' '), variables('azureRegionShortNameDisplayNameAsKey')[toLower(parameters('deploymentScriptLocation'))], toLower(parameters('deploymentScriptLocation')))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -2051,7 +2125,7 @@
             "value": "[parameters('virtualNetworkResourceGroupLockEnabled')]"
           },
           "virtualNetworkLocation": {
-            "value": "[parameters('virtualNetworkLocation')]"
+            "value": "[variables('virtualNetworkLocationNormalized')]"
           },
           "virtualNetworkName": {
             "value": "[parameters('virtualNetworkName')]"
@@ -2111,25 +2185,25 @@
             "value": "[parameters('pimRoleAssignments')]"
           },
           "deploymentScriptResourceGroupName": {
-            "value": "[parameters('deploymentScriptResourceGroupName')]"
+            "value": "[variables('deploymentScriptResourceGroupNameNormalized')]"
           },
           "deploymentScriptName": {
-            "value": "[parameters('deploymentScriptName')]"
+            "value": "[variables('deploymentScriptNameNormalized')]"
           },
           "deploymentScriptManagedIdentityName": {
-            "value": "[parameters('deploymentScriptManagedIdentityName')]"
+            "value": "[variables('deploymentScriptManagedIdentityNameNormalized')]"
           },
           "resourceProviders": {
             "value": "[parameters('resourceProviders')]"
           },
           "deploymentScriptVirtualNetworkName": {
-            "value": "[parameters('deploymentScriptVirtualNetworkName')]"
+            "value": "[variables('deploymentScriptVirtualNetworkNameNormalized')]"
           },
           "deploymentScriptLocation": {
-            "value": "[parameters('deploymentScriptLocation')]"
+            "value": "[variables('deploymentScriptLocationNormalized')]"
           },
           "deploymentScriptNetworkSecurityGroupName": {
-            "value": "[parameters('deploymentScriptNetworkSecurityGroupName')]"
+            "value": "[variables('deploymentScriptNetworkSecurityGroupNameNormalized')]"
           },
           "virtualNetworkDeploymentScriptAddressPrefix": {
             "value": "[parameters('virtualNetworkDeploymentScriptAddressPrefix')]"
@@ -2150,7 +2224,7 @@
             "value": "[parameters('virtualNetworkDeployBastion')]"
           },
           "userAssignedIdentityResourceGroupName": {
-            "value": "[parameters('userAssignedIdentityResourceGroupName')]"
+            "value": "[variables('userAssignedIdentityResourceGroupNameNormalized')]"
           },
           "userAssignedManagedIdentities": {
             "value": "[parameters('userAssignedManagedIdentities')]"
@@ -2185,7 +2259,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "4395253011660210539"
+              "templateHash": "17151791829267707466"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -3903,8 +3977,6 @@
                 "Microsoft.Management": [],
                 "Microsoft.Maps": [],
                 "Microsoft.MarketplaceOrdering": [],
-                "Microsoft.Media": [],
-                "Microsoft.MixedReality": [],
                 "Microsoft.Network": [],
                 "Microsoft.NotificationHubs": [],
                 "Microsoft.OperationalInsights": [],
