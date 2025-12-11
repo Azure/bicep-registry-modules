@@ -47,7 +47,7 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-module initDeployment '../../../main.small.bicep' = {
+module initDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-base'
   params: {
@@ -67,7 +67,7 @@ module initDeployment '../../../main.small.bicep' = {
   }
 }
 
-module testDeployment '../../../main.small.bicep' = {
+module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-cmk'
   params: {
@@ -93,4 +93,7 @@ module testDeployment '../../../main.small.bicep' = {
     // Explicit 2
     disableKeyBasedMetadataWriteAccess: false
   }
+  dependsOn: [
+    initDeployment
+  ]
 }
