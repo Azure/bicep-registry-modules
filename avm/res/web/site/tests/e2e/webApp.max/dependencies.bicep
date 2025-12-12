@@ -27,7 +27,7 @@ param applicationInsightsName string
 
 var addressPrefix = '10.0.0.0/16'
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-01-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -51,14 +51,15 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: applicationInsightsName
   location: location
   kind: ''
+  #disable-next-line BCP035 // works with empty properties block
   properties: {}
 }
 
-resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+resource privateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: 'privatelink.azurewebsites.net'
   location: 'global'
 
-  resource virtualNetworkLinks 'virtualNetworkLinks@2020-06-01' = {
+  resource virtualNetworkLinks 'virtualNetworkLinks@2024-06-01' = {
     name: '${virtualNetwork.name}-vnetlink'
     location: 'global'
     properties: {
@@ -70,12 +71,12 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource serverFarm 'Microsoft.Web/serverfarms@2022-03-01' = {
+resource serverFarm 'Microsoft.Web/serverfarms@2025-03-01' = {
   name: serverFarmName
   location: location
   sku: {
@@ -88,7 +89,7 @@ resource serverFarm 'Microsoft.Web/serverfarms@2022-03-01' = {
   properties: {}
 }
 
-resource relayNamespace 'Microsoft.Relay/namespaces@2021-11-01' = {
+resource relayNamespace 'Microsoft.Relay/namespaces@2024-01-01' = {
   name: relayNamespaceName
   location: location
   sku: {
@@ -97,7 +98,7 @@ resource relayNamespace 'Microsoft.Relay/namespaces@2021-11-01' = {
   properties: {}
 }
 
-resource hybridConnection 'Microsoft.Relay/namespaces/hybridConnections@2021-11-01' = {
+resource hybridConnection 'Microsoft.Relay/namespaces/hybridConnections@2024-01-01' = {
   name: hybridConnectionName
   parent: relayNamespace
   properties: {
@@ -106,7 +107,7 @@ resource hybridConnection 'Microsoft.Relay/namespaces/hybridConnections@2021-11-
   }
 }
 
-resource authorizationRule 'Microsoft.Relay/namespaces/hybridConnections/authorizationRules@2021-11-01' = {
+resource authorizationRule 'Microsoft.Relay/namespaces/hybridConnections/authorizationRules@2024-01-01' = {
   name: 'defaultSender'
   parent: hybridConnection
   properties: {
@@ -116,7 +117,7 @@ resource authorizationRule 'Microsoft.Relay/namespaces/hybridConnections/authori
   }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' = {
   name: storageAccountName
   location: location
   sku: {
@@ -128,7 +129,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   }
 }
 
-resource apiManagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
+resource apiManagement 'Microsoft.ApiManagement/service@2024-10-01-preview' = {
   name: apiManagementName
   location: location
   sku: {

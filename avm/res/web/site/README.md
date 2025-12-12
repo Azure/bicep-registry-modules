@@ -27,8 +27,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Web/sites` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-11-01/sites)</li></ul> |
 | `Microsoft.Web/sites/basicPublishingCredentialsPolicies` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_basicpublishingcredentialspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/basicPublishingCredentialsPolicies)</li></ul> |
 | `Microsoft.Web/sites/config` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_config.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/config)</li></ul> |
@@ -317,6 +317,101 @@ module site 'br/public:avm/res/web/site:<version>' = {
       alwaysOn: true
       use32BitWorkerProcess: false
     }
+    slots: [
+      {
+        basicPublishingCredentialsPolicies: [
+          {
+            allow: false
+            name: 'ftp'
+          }
+          {
+            allow: false
+            name: 'scm'
+          }
+        ]
+        configs: [
+          {
+            applicationInsightResourceId: '<applicationInsightResourceId>'
+            name: 'appsettings'
+            properties: {
+              ApplicationInsightsAgent_EXTENSION_VERSION: '~3'
+            }
+            storageAccountResourceId: '<storageAccountResourceId>'
+            storageAccountUseIdentityAuthentication: true
+          }
+        ]
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        dnsConfiguration: {
+          dnsMaxCacheTimeout: 45
+          dnsRetryAttemptCount: 3
+          dnsRetryAttemptTimeout: 5
+          dnsServers: [
+            '168.63.129.20'
+          ]
+        }
+        hybridConnectionRelays: [
+          {
+            hybridConnectionResourceId: '<hybridConnectionResourceId>'
+            sendKeyName: 'defaultSender'
+          }
+        ]
+        name: 'slot1'
+        privateEndpoints: [
+          {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+                }
+              ]
+            }
+            service: 'sites-slot1'
+            subnetResourceId: '<subnetResourceId>'
+            tags: {
+              Environment: 'Non-Prod'
+              'hidden-title': 'This is visible in the resource name'
+              Role: 'DeploymentValidation'
+            }
+          }
+        ]
+        roleAssignments: [
+          {
+            name: '845ed19c-78e7-4422-aa3d-b78b67cd78a2'
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            name: '<name>'
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+        siteConfig: {
+          alwaysOn: true
+          metadata: [
+            {
+              name: 'CURRENT_STACK'
+              value: 'dotnetcore'
+            }
+          ]
+        }
+      }
+    ]
   }
 }
 ```
@@ -536,6 +631,103 @@ module site 'br/public:avm/res/web/site:<version>' = {
         "alwaysOn": true,
         "use32BitWorkerProcess": false
       }
+    },
+    "slots": {
+      "value": [
+        {
+          "basicPublishingCredentialsPolicies": [
+            {
+              "allow": false,
+              "name": "ftp"
+            },
+            {
+              "allow": false,
+              "name": "scm"
+            }
+          ],
+          "configs": [
+            {
+              "applicationInsightResourceId": "<applicationInsightResourceId>",
+              "name": "appsettings",
+              "properties": {
+                "ApplicationInsightsAgent_EXTENSION_VERSION": "~3"
+              },
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "storageAccountUseIdentityAuthentication": true
+            }
+          ],
+          "diagnosticSettings": [
+            {
+              "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+              "eventHubName": "<eventHubName>",
+              "name": "customSetting",
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ],
+          "dnsConfiguration": {
+            "dnsMaxCacheTimeout": 45,
+            "dnsRetryAttemptCount": 3,
+            "dnsRetryAttemptTimeout": 5,
+            "dnsServers": [
+              "168.63.129.20"
+            ]
+          },
+          "hybridConnectionRelays": [
+            {
+              "hybridConnectionResourceId": "<hybridConnectionResourceId>",
+              "sendKeyName": "defaultSender"
+            }
+          ],
+          "name": "slot1",
+          "privateEndpoints": [
+            {
+              "privateDnsZoneGroup": {
+                "privateDnsZoneGroupConfigs": [
+                  {
+                    "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+                  }
+                ]
+              },
+              "service": "sites-slot1",
+              "subnetResourceId": "<subnetResourceId>",
+              "tags": {
+                "Environment": "Non-Prod",
+                "hidden-title": "This is visible in the resource name",
+                "Role": "DeploymentValidation"
+              }
+            }
+          ],
+          "roleAssignments": [
+            {
+              "name": "845ed19c-78e7-4422-aa3d-b78b67cd78a2",
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "name": "<name>",
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
+          "siteConfig": {
+            "alwaysOn": true,
+            "metadata": [
+              {
+                "name": "CURRENT_STACK",
+                "value": "dotnetcore"
+              }
+            ]
+          }
+        }
+      ]
     }
   }
 }
@@ -727,6 +919,101 @@ param siteConfig = {
   alwaysOn: true
   use32BitWorkerProcess: false
 }
+param slots = [
+  {
+    basicPublishingCredentialsPolicies: [
+      {
+        allow: false
+        name: 'ftp'
+      }
+      {
+        allow: false
+        name: 'scm'
+      }
+    ]
+    configs: [
+      {
+        applicationInsightResourceId: '<applicationInsightResourceId>'
+        name: 'appsettings'
+        properties: {
+          ApplicationInsightsAgent_EXTENSION_VERSION: '~3'
+        }
+        storageAccountResourceId: '<storageAccountResourceId>'
+        storageAccountUseIdentityAuthentication: true
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    dnsConfiguration: {
+      dnsMaxCacheTimeout: 45
+      dnsRetryAttemptCount: 3
+      dnsRetryAttemptTimeout: 5
+      dnsServers: [
+        '168.63.129.20'
+      ]
+    }
+    hybridConnectionRelays: [
+      {
+        hybridConnectionResourceId: '<hybridConnectionResourceId>'
+        sendKeyName: 'defaultSender'
+      }
+    ]
+    name: 'slot1'
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'sites-slot1'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
+    roleAssignments: [
+      {
+        name: '845ed19c-78e7-4422-aa3d-b78b67cd78a2'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    siteConfig: {
+      alwaysOn: true
+      metadata: [
+        {
+          name: 'CURRENT_STACK'
+          value: 'dotnetcore'
+        }
+      ]
+    }
+  }
+]
 ```
 
 </details>
@@ -1559,7 +1846,11 @@ module site 'br/public:avm/res/web/site:<version>' = {
     ]
     configs: [
       {
+        applicationInsightResourceId: '<applicationInsightResourceId>'
         name: 'appsettings'
+        properties: {
+          ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
+        }
         storageAccountResourceId: '<storageAccountResourceId>'
         storageAccountUseIdentityAuthentication: true
       }
@@ -1720,6 +2011,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
         ]
         configs: [
           {
+            applicationInsightResourceId: '<applicationInsightResourceId>'
             name: 'appsettings'
             storageAccountResourceId: '<storageAccountResourceId>'
             storageAccountUseIdentityAuthentication: true
@@ -1857,7 +2149,11 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "configs": {
       "value": [
         {
+          "applicationInsightResourceId": "<applicationInsightResourceId>",
           "name": "appsettings",
+          "properties": {
+            "ApplicationInsightsAgent_EXTENSION_VERSION": "~2"
+          },
           "storageAccountResourceId": "<storageAccountResourceId>",
           "storageAccountUseIdentityAuthentication": true
         },
@@ -2046,6 +2342,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
           ],
           "configs": [
             {
+              "applicationInsightResourceId": "<applicationInsightResourceId>",
               "name": "appsettings",
               "storageAccountResourceId": "<storageAccountResourceId>",
               "storageAccountUseIdentityAuthentication": true
@@ -2173,7 +2470,11 @@ param basicPublishingCredentialsPolicies = [
 ]
 param configs = [
   {
+    applicationInsightResourceId: '<applicationInsightResourceId>'
     name: 'appsettings'
+    properties: {
+      ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
+    }
     storageAccountResourceId: '<storageAccountResourceId>'
     storageAccountUseIdentityAuthentication: true
   }
@@ -2334,6 +2635,7 @@ param slots = [
     ]
     configs: [
       {
+        applicationInsightResourceId: '<applicationInsightResourceId>'
         name: 'appsettings'
         storageAccountResourceId: '<storageAccountResourceId>'
         storageAccountUseIdentityAuthentication: true
@@ -14422,7 +14724,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
