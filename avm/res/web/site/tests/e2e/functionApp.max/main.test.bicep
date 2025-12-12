@@ -239,7 +239,7 @@ module testDeployment '../../../main.bicep' = [
               storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
               applicationInsightResourceId: nestedDependencies.outputs.applicationInsightsResourceId
               properties: {
-                ApplicationInsightsAgent_EXTENSION_VERSION: '~3'
+                ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
               }
               storageAccountUseIdentityAuthentication: true
             }
