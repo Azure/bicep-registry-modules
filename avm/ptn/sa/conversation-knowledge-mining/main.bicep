@@ -870,7 +870,7 @@ module avmFunctionsManagedEnvironment 'br/public:avm/res/app/managed-environment
 //   }
 // }
 
-resource functionCharts 'Microsoft.Web/sites@2023-12-01' = {
+resource functionCharts 'Microsoft.Web/sites@2025-03-01' = {
   name: functionChartsResourceName
   tags: tags
   location: functionChartsLocation

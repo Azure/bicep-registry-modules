@@ -204,13 +204,13 @@ module testDeployment '../../../main.bicep' = [
           ]
           roleAssignments: [
             {
-              name: '845ed19c-78e7-4422-aa3d-b78b67cd78a2'
+              name: '845ed19c-78e7-4422-aa3d-b78b67cd1234'
               roleDefinitionIdOrName: 'Owner'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
             }
             {
-              name: guid('Custom seed ${namePrefix}${serviceShort}')
+              name: guid('A custom seed ${namePrefix}${serviceShort}')
               roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
@@ -218,7 +218,7 @@ module testDeployment '../../../main.bicep' = [
             {
               roleDefinitionIdOrName: subscriptionResourceId(
                 'Microsoft.Authorization/roleDefinitions',
-                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+                'de139f84-1756-47ae-9be6-808fbbe84772'
               )
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'

@@ -98,7 +98,7 @@ resource app 'Microsoft.Web/sites@2025-03-01' existing = {
   }
 }
 
-resource config 'Microsoft.Web/sites/slots/config@2024-04-01' = {
+resource config 'Microsoft.Web/sites/slots/config@2025-03-01' = {
   parent: app::slot
   #disable-next-line BCP225
   name: name
