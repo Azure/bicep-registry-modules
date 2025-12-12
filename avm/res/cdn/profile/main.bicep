@@ -277,6 +277,9 @@ module profile_originGroups 'origin-group/main.bicep' = [
 module profile_ruleSets 'rule-set/main.bicep' = [
   for (ruleSet, index) in (ruleSets ?? []): {
     name: '${uniqueString(deployment().name)}-Profile-RuleSet-${index}'
+    dependsOn: [
+      profile_originGroups
+    ]
     params: {
       name: ruleSet.name
       profileName: profile.name
