@@ -81,10 +81,6 @@ resource getServicePrincipalScript 'Microsoft.Resources/deploymentScripts@2023-0
         objectId = $sp.Id
       }
     '''
-    cleanupPreference: 'OnSuccess'
-    containerSettings: {
-      containerGroupName: '${certDeploymentScriptName}-lookup-cg'
-    }
   }
   dependsOn: [
     readerRoleAssignment
