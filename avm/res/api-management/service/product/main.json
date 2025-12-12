@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "4559399698425164626"
+      "version": "0.39.26.7824",
+      "templateHash": "8020294667984001028"
     },
     "name": "API Management Service Products",
     "description": "This module deploys an API Management Service Product."
@@ -108,7 +108,7 @@
         "count": "[length(parameters('apis'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Api-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -132,8 +132,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "1820392748388153129"
+              "version": "0.39.26.7824",
+              "templateHash": "9744632945491175980"
             },
             "name": "API Management Service Products APIs",
             "description": "This module deploys an API Management Service Product API."
@@ -197,7 +197,7 @@
         "count": "[length(parameters('groups'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Group-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -221,8 +221,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13354622082484874271"
+              "version": "0.39.26.7824",
+              "templateHash": "8127442249695214472"
             },
             "name": "API Management Service Products Groups",
             "description": "This module deploys an API Management Service Product Group."
@@ -310,7 +310,7 @@
       },
       "copy": {
         "count": "[length(range(0, length(parameters('apis'))))]",
-        "input": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-Api-{1}', deployment().name, range(0, length(parameters('apis')))[copyIndex()])), '2022-09-01').outputs.resourceId.value]"
+        "input": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-Api-{1}', deployment().name, range(0, length(parameters('apis')))[copyIndex()])), '2025-04-01').outputs.resourceId.value]"
       }
     },
     "groupResourceIds": {
@@ -320,7 +320,7 @@
       },
       "copy": {
         "count": "[length(range(0, length(parameters('groups'))))]",
-        "input": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-Group-{1}', deployment().name, range(0, length(parameters('groups')))[copyIndex()])), '2022-09-01').outputs.resourceId.value]"
+        "input": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-Group-{1}', deployment().name, range(0, length(parameters('groups')))[copyIndex()])), '2025-04-01').outputs.resourceId.value]"
       }
     }
   }
