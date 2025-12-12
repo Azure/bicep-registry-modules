@@ -14,6 +14,9 @@ param certname string
 @description('Required. The name of the Deployment Script to create for the Certificate generation.')
 param certDeploymentScriptName string
 
+@description('Required. The name of the Logic App to create.')
+param logicAppName string
+
 // Enterprise Integration service principal application ID (consistent across tenants)
 var enterpriseIntegrationAppId = '205478c0-bd83-4e1b-a9d6-db63a3e1e1c8'
 
@@ -36,6 +39,42 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
     enabledForDeployment: true
     enableRbacAuthorization: true
     accessPolicies: []
+  }
+}
+
+resource logicApp 'Microsoft.Logic/workflows@2019-05-01' = {
+  name: logicAppName
+  location: location
+  properties: {
+    state: 'Enabled'
+    definition: {
+      '$schema': 'https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#'
+      contentVersion: '1.0.0.0'
+      parameters: {}
+      triggers: {
+        manual: {
+          type: 'Request'
+          kind: 'Http'
+          inputs: {
+            schema: {}
+          }
+        }
+      }
+      actions: {
+        Response: {
+          type: 'Response'
+          kind: 'Http'
+          inputs: {
+            statusCode: 200
+            body: {
+              message: 'Hello from Logic App'
+            }
+          }
+          runAfter: {}
+        }
+      }
+      outputs: {}
+    }
   }
 }
 
@@ -86,6 +125,7 @@ resource getServicePrincipalScript 'Microsoft.Resources/deploymentScripts@2023-0
   }
   dependsOn: [
     readerRoleAssignment
+    logicApp
   ]
 }
 
@@ -159,3 +199,9 @@ output managedIdentityResourceId string = managedIdentity.id
 
 @description('The resource ID of the created Key Vault.')
 output keyVaultResourceId string = keyVault.id
+
+@description('The resource ID of the created Logic App.')
+output logicAppResourceId string = logicApp.id
+
+@description('The name of the created Logic App.')
+output logicAppName string = logicApp.name
