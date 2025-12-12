@@ -154,6 +154,104 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      slots: [
+        {
+          name: 'slot1'
+          diagnosticSettings: [
+            {
+              name: 'customSetting'
+              eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+              eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+              storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+              workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            }
+          ]
+          privateEndpoints: [
+            {
+              subnetResourceId: nestedDependencies.outputs.subnetResourceId
+              privateDnsZoneGroup: {
+                privateDnsZoneGroupConfigs: [
+                  {
+                    privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+                  }
+                ]
+              }
+              tags: {
+                'hidden-title': 'This is visible in the resource name'
+                Environment: 'Non-Prod'
+                Role: 'DeploymentValidation'
+              }
+              service: 'sites-slot1'
+            }
+          ]
+          dnsConfiguration: {
+            dnsMaxCacheTimeout: 45
+            dnsRetryAttemptCount: 3
+            dnsRetryAttemptTimeout: 5
+            dnsServers: [
+              '168.63.129.20'
+            ]
+          }
+          basicPublishingCredentialsPolicies: [
+            {
+              name: 'ftp'
+              allow: false
+            }
+            {
+              name: 'scm'
+              allow: false
+            }
+          ]
+          roleAssignments: [
+            {
+              name: '845ed19c-78e7-4422-aa3d-b78b67cd78a2'
+              roleDefinitionIdOrName: 'Owner'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              name: guid('Custom seed ${namePrefix}${serviceShort}')
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: subscriptionResourceId(
+                'Microsoft.Authorization/roleDefinitions',
+                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+              )
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
+          siteConfig: {
+            alwaysOn: true
+            metadata: [
+              {
+                name: 'CURRENT_STACK'
+                value: 'dotnetcore'
+              }
+            ]
+          }
+          configs: [
+            {
+              name: 'appsettings'
+              storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+              applicationInsightResourceId: nestedDependencies.outputs.applicationInsightsResourceId
+              properties: {
+                ApplicationInsightsAgent_EXTENSION_VERSION: '~3'
+              }
+              storageAccountUseIdentityAuthentication: true
+            }
+          ]
+          hybridConnectionRelays: [
+            {
+              hybridConnectionResourceId: nestedDependencies.outputs.hybridConnectionResourceId
+              sendKeyName: 'defaultSender'
+            }
+          ]
+        }
+      ]
       basicPublishingCredentialsPolicies: [
         {
           name: 'ftp'
