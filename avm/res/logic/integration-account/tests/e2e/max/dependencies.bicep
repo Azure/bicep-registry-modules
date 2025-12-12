@@ -77,9 +77,11 @@ resource getServicePrincipalScript 'Microsoft.Resources/deploymentScripts@2023-0
         exit 1
       }
 
-      $DeploymentScriptOutputs = @{
-        objectId = $sp.Id
-      }
+      # Output must be a string
+      $objectId = $sp.Id.ToString()
+
+      $DeploymentScriptOutputs = @{}
+      $DeploymentScriptOutputs['objectId'] = $objectId
     '''
   }
   dependsOn: [
