@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/lz/sub-vending/CHANGELOG.md).
 
+## 0.5.2
+
+### Changes
+
+- Updated `avm/ptn/authorization/role-assignment` module reference from version `0.2.2` to `0.2.4` to include fix for management group scoped role definitions
+- Updated `avm/ptn/authorization/pim-role-assignment` module reference from version `0.1.1` to `0.1.2` to include fix for management group scoped role definitions
+
+### Breaking Changes
+
+- None
+
 ## 0.5.1
 
 ### Changes
