@@ -22,6 +22,9 @@ param hybridConnectionName string
 @description('Required. The name of the api management instance to create.')
 param apiManagementName string
 
+@description('Required. The name of the Application Insights instance to create.')
+param applicationInsightsName string
+
 var addressPrefix = '10.0.0.0/16'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
@@ -42,6 +45,13 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
       }
     ]
   }
+}
+
+resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: applicationInsightsName
+  location: location
+  kind: ''
+  properties: {}
 }
 
 resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
@@ -165,3 +175,6 @@ output storageAccountResourceId string = storageAccount.id
 
 @description('The resource ID of the created api management.')
 output apiManagementResourceId string = apiManagement.id
+
+@description('The resource ID of the created Application Insights instance.')
+output applicationInsightsResourceId string = applicationInsights.id

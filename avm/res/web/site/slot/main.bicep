@@ -328,6 +328,7 @@ module slot_config 'config/main.bicep' = [
       name: config.name
       slotName: slot.name
       applicationInsightResourceId: config.?applicationInsightResourceId
+      applicationInsightsExtensionVersion: config.?applicationInsightsExtensionVersion
       properties: config.?properties
       currentAppSettings: config.?retainCurrentAppSettings ?? true && config.name == 'appsettings'
         ? list('${slot.id}/config/appsettings', '2023-12-01').properties
@@ -544,6 +545,9 @@ type appSettingsConfigType = {
 
   @description('Optional. Resource ID of the application insight to leverage for this resource.')
   applicationInsightResourceId: string?
+
+  @description('Optional. Version of the application insight extension to leverage for this resource. E.g., `~2` (for Windows) or `~3` (for Linux).')
+  applicationInsightsExtensionVersion: string?
 
   @description('Optional. The retain the current app settings. Defaults to true.')
   retainCurrentAppSettings: bool?
