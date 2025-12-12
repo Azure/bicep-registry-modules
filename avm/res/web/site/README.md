@@ -334,7 +334,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
             applicationInsightResourceId: '<applicationInsightResourceId>'
             name: 'appsettings'
             properties: {
-              ApplicationInsightsAgent_EXTENSION_VERSION: '~3'
+              ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
             }
             storageAccountResourceId: '<storageAccountResourceId>'
             storageAccountUseIdentityAuthentication: true
@@ -384,7 +384,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
         ]
         roleAssignments: [
           {
-            name: '845ed19c-78e7-4422-aa3d-b78b67cd78a2'
+            name: '845ed19c-78e7-4422-aa3d-b78b67cd1234'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Owner'
@@ -650,7 +650,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
               "applicationInsightResourceId": "<applicationInsightResourceId>",
               "name": "appsettings",
               "properties": {
-                "ApplicationInsightsAgent_EXTENSION_VERSION": "~3"
+                "ApplicationInsightsAgent_EXTENSION_VERSION": "~2"
               },
               "storageAccountResourceId": "<storageAccountResourceId>",
               "storageAccountUseIdentityAuthentication": true
@@ -700,7 +700,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
           ],
           "roleAssignments": [
             {
-              "name": "845ed19c-78e7-4422-aa3d-b78b67cd78a2",
+              "name": "845ed19c-78e7-4422-aa3d-b78b67cd1234",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "Owner"
@@ -936,7 +936,7 @@ param slots = [
         applicationInsightResourceId: '<applicationInsightResourceId>'
         name: 'appsettings'
         properties: {
-          ApplicationInsightsAgent_EXTENSION_VERSION: '~3'
+          ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
         }
         storageAccountResourceId: '<storageAccountResourceId>'
         storageAccountUseIdentityAuthentication: true
@@ -986,7 +986,7 @@ param slots = [
     ]
     roleAssignments: [
       {
-        name: '845ed19c-78e7-4422-aa3d-b78b67cd78a2'
+        name: '845ed19c-78e7-4422-aa3d-b78b67cd1234'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -2834,7 +2834,11 @@ module site 'br/public:avm/res/web/site:<version>' = {
     ]
     configs: [
       {
+        applicationInsightResourceId: '<applicationInsightResourceId>'
         name: 'appsettings'
+        properties: {
+          ApplicationInsightsAgent_EXTENSION_VERSION: '~3'
+        }
         storageAccountResourceId: '<storageAccountResourceId>'
         storageAccountUseIdentityAuthentication: true
       }
@@ -2945,6 +2949,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
         ]
         configs: [
           {
+            applicationInsightResourceId: '<applicationInsightResourceId>'
             name: 'appsettings'
             storageAccountResourceId: '<storageAccountResourceId>'
             storageAccountUseIdentityAuthentication: true
@@ -3072,7 +3077,11 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "configs": {
       "value": [
         {
+          "applicationInsightResourceId": "<applicationInsightResourceId>",
           "name": "appsettings",
+          "properties": {
+            "ApplicationInsightsAgent_EXTENSION_VERSION": "~3"
+          },
           "storageAccountResourceId": "<storageAccountResourceId>",
           "storageAccountUseIdentityAuthentication": true
         }
@@ -3209,6 +3218,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
           ],
           "configs": [
             {
+              "applicationInsightResourceId": "<applicationInsightResourceId>",
               "name": "appsettings",
               "storageAccountResourceId": "<storageAccountResourceId>",
               "storageAccountUseIdentityAuthentication": true
@@ -3326,7 +3336,11 @@ param basicPublishingCredentialsPolicies = [
 ]
 param configs = [
   {
+    applicationInsightResourceId: '<applicationInsightResourceId>'
     name: 'appsettings'
+    properties: {
+      ApplicationInsightsAgent_EXTENSION_VERSION: '~3'
+    }
     storageAccountResourceId: '<storageAccountResourceId>'
     storageAccountUseIdentityAuthentication: true
   }
@@ -3437,6 +3451,7 @@ param slots = [
     ]
     configs: [
       {
+        applicationInsightResourceId: '<applicationInsightResourceId>'
         name: 'appsettings'
         storageAccountResourceId: '<storageAccountResourceId>'
         storageAccountUseIdentityAuthentication: true
