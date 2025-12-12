@@ -311,7 +311,6 @@ module app_config 'config/main.bicep' = [
       appName: app.name
       name: config.name
       applicationInsightResourceId: config.?applicationInsightResourceId
-      applicationInsightsExtensionVersion: config.?applicationInsightsExtensionVersion
       storageAccountResourceId: config.?storageAccountResourceId
       storageAccountUseIdentityAuthentication: config.?storageAccountUseIdentityAuthentication
       properties: config.?properties

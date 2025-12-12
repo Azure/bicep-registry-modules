@@ -33,9 +33,6 @@ param storageAccountResourceId string?
 @description('Optional. Resource ID of the application insight to leverage for this resource.')
 param applicationInsightResourceId string?
 
-@description('Optional. Version of the application insight extension to leverage for this resource. E.g., `~2` (for Windows) or `~3` (for Linux).')
-param applicationInsightsExtensionVersion string?
-
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -61,20 +58,24 @@ var azureWebJobsValues = !empty(storageAccountResourceId) && !storageAccountUseI
 var appInsightsValues = !empty(applicationInsightResourceId)
   ? {
       APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights!.properties.ConnectionString
-      ApplicationInsightsAgent_EXTENSION_VERSION: applicationInsightsExtensionVersion ?? (contains(
-          [
-            'functionapp,linux' // function app linux os
-            'functionapp,workflowapp,linux' // logic app docker container
-            'functionapp,linux,container' // function app linux container
-            'functionapp,linux,container,azurecontainerapps' // function app linux container azure container apps
-            'app,linux' // linux web app
-            'linux,api' // linux api app
-            'app,linux,container' // linux container app
-          ],
-          app.kind
-        )
-        ? '~3'
-        : '~2')
+      ...(!contains(properties, 'ApplicationInsightsAgent_EXTENSION_VERSION')
+        ? {
+            ApplicationInsightsAgent_EXTENSION_VERSION: contains(
+                [
+                  'functionapp,linux' // function app linux os
+                  'functionapp,workflowapp,linux' // logic app docker container
+                  'functionapp,linux,container' // function app linux container
+                  'functionapp,linux,container,azurecontainerapps' // function app linux container azure container apps
+                  'app,linux' // linux web app
+                  'linux,api' // linux api app
+                  'app,linux,container' // linux container app
+                ],
+                app.kind
+              )
+              ? '~3'
+              : '~2'
+          }
+        : {})
     }
   : {}
 
