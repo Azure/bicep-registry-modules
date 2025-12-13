@@ -6,32 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "5191251408767062787"
+      "templateHash": "10777822680978117143"
     },
     "name": "API Management Service Authorization Servers",
     "description": "This module deploys an API Management Service Authorization Server."
-  },
-  "definitions": {
-    "tokenBodyParameterType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Body parameter name."
-          }
-        },
-        "value": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Body parameter value."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true
-      }
-    }
   },
   "parameters": {
     "name": {

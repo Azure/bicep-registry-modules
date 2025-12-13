@@ -6,31 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "9030452512127708426"
+      "templateHash": "9599477903696824761"
     },
     "name": "API Management Service Named Values",
     "description": "This module deploys an API Management Service Named Value."
-  },
-  "definitions": {
-    "keyVaultContractType": {
-      "type": "object",
-      "properties": {
-        "secretIdentifier": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Key vault secret identifier for fetching secret. Providing a versioned secret will prevent auto-refresh. This requires API Management service to be configured with aka.ms/apimmsi."
-          }
-        },
-        "identityClientId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Null for SystemAssignedIdentity or Client Id for UserAssignedIdentity , which will be used to access key vault secret."
-          }
-        }
-      }
-    }
   },
   "parameters": {
     "apiManagementServiceName": {

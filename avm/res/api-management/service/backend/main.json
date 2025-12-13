@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "15593761885076570454"
+      "templateHash": "3787333618992526414"
     },
     "name": "API Management Service Backends",
     "description": "This module deploys an API Management Service Backend."
@@ -173,19 +173,19 @@
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "circuitBreaker": "[parameters('circuitBreaker')]",
-        "credentials": "[parameters('credentials')]",
         "description": "[parameters('description')]",
+        "resourceId": "[parameters('resourceId')]",
         "pool": "[parameters('pool')]",
         "properties": {
           "serviceFabricCluster": "[parameters('serviceFabricCluster')]"
         },
-        "protocol": "[parameters('protocol')]",
+        "credentials": "[parameters('credentials')]",
         "proxy": "[parameters('proxy')]",
-        "resourceId": "[parameters('resourceId')]",
         "title": "[parameters('title')]",
         "tls": "[parameters('tls')]",
         "type": "[parameters('type')]",
-        "url": "[parameters('url')]"
+        "url": "[parameters('url')]",
+        "protocol": "[parameters('protocol')]"
       }
     }
   },
