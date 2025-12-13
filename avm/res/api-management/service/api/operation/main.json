@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "17233864803492403441"
+      "version": "0.37.4.10188",
+      "templateHash": "2321178038283517825"
     },
     "name": "API Management Service APIs Operations",
     "description": "This module deploys an API Management Service API Operation."
@@ -164,7 +164,7 @@
         "count": "[length(coalesce(parameters('policies'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-Policy-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -197,8 +197,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "6946864695140214262"
+              "version": "0.37.4.10188",
+              "templateHash": "17700550507187528779"
             },
             "name": "API Management Service API Operation Policies",
             "description": "This module deploys an API Management Service API Operation Policy."
