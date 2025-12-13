@@ -70,14 +70,3 @@ output name string = namedValue.name
 
 @description('The resource group the named value was deployed into.')
 output resourceGroupName string = resourceGroup().name
-
-// ================ //
-// Definitions      //
-// ================ //
-
-type keyVaultContractType = {
-  @description('Optional. Key vault secret identifier for fetching secret. Providing a versioned secret will prevent auto-refresh. This requires API Management service to be configured with aka.ms/apimmsi.')
-  secretIdentifier: string?
-  @description('Optional. Null for SystemAssignedIdentity or Client Id for UserAssignedIdentity , which will be used to access key vault secret.')
-  identityClientId: string?
-}

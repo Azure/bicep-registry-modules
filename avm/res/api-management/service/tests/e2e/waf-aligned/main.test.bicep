@@ -7,10 +7,6 @@ metadata description = 'This instance deploys the module in alignment with the b
 // Parameters //
 // ========== //
 
-@description('Optional. The secret to leverage for authorization server authentication.')
-@secure()
-param customSecret string = newGuid()
-
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serviceShort}-rg'
@@ -18,15 +14,19 @@ param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serv
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'apiswaf'
 
+@description('Optional. A token to inject into the name of each resource.')
+param namePrefix string = '#_namePrefix_#'
+
+@description('Optional. The secret to leverage for authorization server authentication.')
+@secure()
+param customSecret string = newGuid()
+
 // Enforcing locations to not have conflicting availability zones
 @description('Optional. The primary location to deploy resources to.')
 var enforcedLocation = 'ukSouth'
 
 @description('Optional. The secondary location to deploy resources to.')
 var secondaryEnforcedLocation = 'northeurope'
-
-@description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -43,10 +43,10 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    applicationInsightsName: 'dep-${namePrefix}-appi-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-s-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    applicationInsightsName: 'dep-${namePrefix}-appi-${serviceShort}'
     lawReplicationRegion: secondaryEnforcedLocation
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'

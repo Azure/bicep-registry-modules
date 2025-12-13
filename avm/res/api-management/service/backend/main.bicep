@@ -78,19 +78,19 @@ resource backend 'Microsoft.ApiManagement/service/backends@2024-05-01' = {
   parent: service
   properties: {
     circuitBreaker: circuitBreaker
-    credentials: credentials
     description: description
+    resourceId: resourceId
     pool: pool
     properties: {
       serviceFabricCluster: serviceFabricCluster
     }
-    protocol: protocol
+    credentials: credentials
     proxy: proxy
-    resourceId: resourceId
     title: title
     tls: tls
     type: type
     url: url
+    protocol: protocol
   }
 }
 

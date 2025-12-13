@@ -43,7 +43,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`allowedTenants`](#parameter-allowedtenants) | array | List of Allowed Tenants when configuring Azure Active Directory login. |
+| [`allowedTenants`](#parameter-allowedtenants) | array | List of Allowed Tenants when configuring Azure Active Directory login. - string. |
 | [`authority`](#parameter-authority) | string | OpenID Connect discovery endpoint hostname for AAD or AAD B2C. |
 | [`clientLibrary`](#parameter-clientlibrary) | string | The client library to be used in the developer portal. Only applies to AAD and AAD B2C Identity Provider. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -86,7 +86,7 @@ Client secret of the Application in external Identity Provider, used to authenti
 
 ### Parameter: `allowedTenants`
 
-List of Allowed Tenants when configuring Azure Active Directory login.
+List of Allowed Tenants when configuring Azure Active Directory login. - string.
 
 - Required: No
 - Type: array

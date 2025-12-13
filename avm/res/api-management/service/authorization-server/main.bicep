@@ -133,16 +133,3 @@ output resourceId string = authorizationServer.id
 
 @description('The resource group the API management service authorization server was deployed into.')
 output resourceGroupName string = resourceGroup().name
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-@export()
-type tokenBodyParameterType = {
-  @description('Required. Body parameter name.')
-  name: string
-
-  @description('Required. Body parameter value.')
-  value: string
-}
