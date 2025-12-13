@@ -1,34 +1,75 @@
-@description('Optional. Name of the Application Insights resource.')
-param applicationInsightsName string = 'applicationInsights'
-
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
 @description('Required. The location to deploy resources to.')
 param lawReplicationRegion string
 
-@description('Optional. Name of the Log Analytics Workspace.')
-param logAnalyticsWorkspaceName string = 'logAnalyticsWorkspace'
-
 @description('Required. The name of the managed identity to create.')
 param managedIdentityName string
 
-@description('Optional. Name of the Route Table.')
-param routeTableName string = 'apimRouteTableTest'
+@description('Required. The name of the managed identity to create.')
+param logAnalyticsWorkspaceName string
 
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
+
+@description('Required. The name of the Application insights instance to create.')
+param applicationInsightsName string
+
+@description('Required. Name of the Route Table to create.')
+param routeTableName string
 
 @description('Required. The name of the NSG to create.')
 param networkSecurityGroupName string
 
 var addressPrefix = '10.0.0.0/16'
 
+#disable-next-line use-recent-api-versions
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
+  name: virtualNetworkName
+  location: location
+  properties: {
+    addressSpace: {
+      addressPrefixes: [
+        addressPrefix
+      ]
+    }
+    subnets: [
+      {
+        name: 'defaultSubnet'
+        properties: {
+          addressPrefix: cidrSubnet(addressPrefix, 16, 0)
+        }
+      }
+    ]
+  }
+}
+
+#disable-next-line use-recent-api-versions
+resource privateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
+  name: 'privatelink.azure-api.net'
+  location: 'global'
+
+  #disable-next-line use-recent-api-versions
+  resource virtualNetworkLinks 'virtualNetworkLinks@2024-06-01' = {
+    name: '${virtualNetwork.name}-vnetlink'
+    location: 'global'
+    properties: {
+      virtualNetwork: {
+        id: virtualNetwork.id
+      }
+      registrationEnabled: false
+    }
+  }
+}
+
+#disable-next-line use-recent-api-versions
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
+#disable-next-line use-recent-api-versions
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
   name: logAnalyticsWorkspaceName
   location: location
@@ -237,22 +278,6 @@ resource routeTable 'Microsoft.Network/routeTables@2023-11-01' = {
   }
 }
 
-resource privateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
-  name: 'privatelink.azure-api.net'
-  location: 'global'
-
-  resource virtualNetworkLinks 'virtualNetworkLinks@2024-06-01' = {
-    name: '${vnetRegion1.name}-vnetlink'
-    location: 'global'
-    properties: {
-      virtualNetwork: {
-        id: vnetRegion1.id
-      }
-      registrationEnabled: false
-    }
-  }
-}
-
 @description('The principal ID of the created managed identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 
@@ -265,8 +290,8 @@ output appInsightsInstrumentationKey string = applicationInsights.properties.Ins
 @description('The Application Insights ResourceId')
 output appInsightsResourceId string = applicationInsights.id
 
-@description('The resource ID of the created virtual network subnet for a Private Endpoint.')
-output privateEndpointSubnetResourceId string = vnetRegion1.properties.subnets[0].id
+@description('The resource ID of the created Virtual Network Subnet.')
+output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
 @description('The resource ID of the created Private DNS Zone.')
 output privateDNSZoneResourceId string = privateDNSZone.id

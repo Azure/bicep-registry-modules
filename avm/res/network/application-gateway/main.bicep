@@ -13,7 +13,7 @@ import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm
 param managedIdentities managedIdentityOnlyUserAssignedType?
 
 @description('Optional. Authentication certificates of the application gateway resource.')
-param authenticationCertificates array = []
+param authenticationCertificates resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.authenticationCertificates = []
 
 @description('Optional. Upper bound on number of Application Gateway capacity.')
 param autoscaleMaxCapacity int = -1
@@ -22,13 +22,13 @@ param autoscaleMaxCapacity int = -1
 param autoscaleMinCapacity int = -1
 
 @description('Optional. Backend address pool of the application gateway resource.')
-param backendAddressPools array = []
+param backendAddressPools resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.backendAddressPools = []
 
 @description('Optional. Backend http settings of the application gateway resource.')
-param backendHttpSettingsCollection array = []
+param backendHttpSettingsCollection resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.backendHttpSettingsCollection = []
 
 @description('Optional. Custom error configurations of the application gateway resource.')
-param customErrorConfigurations array = []
+param customErrorConfigurations resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.customErrorConfigurations = []
 
 @description('Optional. Whether FIPS is enabled on the application gateway resource.')
 param enableFips bool = false
@@ -40,13 +40,13 @@ param enableHttp2 bool = false
 param firewallPolicyResourceId string?
 
 @description('Optional. Frontend IP addresses of the application gateway resource.')
-param frontendIPConfigurations array = []
+param frontendIPConfigurations resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.frontendIPConfigurations = []
 
 @description('Optional. Frontend ports of the application gateway resource.')
-param frontendPorts array = []
+param frontendPorts resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.frontendPorts = []
 
 @description('Optional. Subnets of the application gateway resource.')
-param gatewayIPConfigurations array = []
+param gatewayIPConfigurations resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.gatewayIPConfigurations = []
 
 @description('Optional. Enable request buffering.')
 param enableRequestBuffering bool = false
@@ -55,29 +55,29 @@ param enableRequestBuffering bool = false
 param enableResponseBuffering bool = false
 
 @description('Optional. Http listeners of the application gateway resource.')
-param httpListeners array = []
+param httpListeners resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.httpListeners = []
 
 @description('Optional. Load distribution policies of the application gateway resource.')
-param loadDistributionPolicies array = []
+param loadDistributionPolicies resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.loadDistributionPolicies = []
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
 @description('Optional. PrivateLink configurations on application gateway.')
-param privateLinkConfigurations array = []
+param privateLinkConfigurations resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.privateLinkConfigurations = []
 
 @description('Optional. Probes of the application gateway resource.')
-param probes array = []
+param probes resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.probes = []
 
 @description('Optional. Redirect configurations of the application gateway resource.')
-param redirectConfigurations array = []
+param redirectConfigurations resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.redirectConfigurations = []
 
 @description('Optional. Request routing rules of the application gateway resource.')
-param requestRoutingRules array = []
+param requestRoutingRules resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.requestRoutingRules = []
 
 @description('Optional. Rewrite rules for the application gateway resource.')
-param rewriteRuleSets array = []
+param rewriteRuleSets resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.rewriteRuleSets = []
 
 @description('Optional. The name of the SKU for the Application Gateway.')
 @allowed([
@@ -93,40 +93,10 @@ param sku string = 'WAF_v2'
 param capacity int = 2
 
 @description('Optional. SSL certificates of the application gateway resource.')
-param sslCertificates array = []
+param sslCertificates resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.sslCertificates = []
 
 @description('Optional. Ssl cipher suites to be enabled in the specified order to application gateway.')
-@allowed([
-  'TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA'
-  'TLS_DHE_DSS_WITH_AES_128_CBC_SHA'
-  'TLS_DHE_DSS_WITH_AES_128_CBC_SHA256'
-  'TLS_DHE_DSS_WITH_AES_256_CBC_SHA'
-  'TLS_DHE_DSS_WITH_AES_256_CBC_SHA256'
-  'TLS_DHE_RSA_WITH_AES_128_CBC_SHA'
-  'TLS_DHE_RSA_WITH_AES_128_GCM_SHA256'
-  'TLS_DHE_RSA_WITH_AES_256_CBC_SHA'
-  'TLS_DHE_RSA_WITH_AES_256_GCM_SHA384'
-  'TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA'
-  'TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256'
-  'TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256'
-  'TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA'
-  'TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384'
-  'TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384'
-  'TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA'
-  'TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256'
-  'TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256'
-  'TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA'
-  'TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384'
-  'TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384'
-  'TLS_RSA_WITH_3DES_EDE_CBC_SHA'
-  'TLS_RSA_WITH_AES_128_CBC_SHA'
-  'TLS_RSA_WITH_AES_128_CBC_SHA256'
-  'TLS_RSA_WITH_AES_128_GCM_SHA256'
-  'TLS_RSA_WITH_AES_256_CBC_SHA'
-  'TLS_RSA_WITH_AES_256_CBC_SHA256'
-  'TLS_RSA_WITH_AES_256_GCM_SHA384'
-])
-param sslPolicyCipherSuites array = [
+param sslPolicyCipherSuites resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.sslPolicy.cipherSuites = [
   'TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384'
   'TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256'
 ]
@@ -160,16 +130,16 @@ param sslPolicyName string = ''
 param sslPolicyType string = 'Custom'
 
 @description('Optional. SSL profiles of the application gateway resource.')
-param sslProfiles array = []
+param sslProfiles resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.sslProfiles = []
 
 @description('Optional. Trusted client certificates of the application gateway resource.')
-param trustedClientCertificates array = []
+param trustedClientCertificates resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.trustedClientCertificates = []
 
 @description('Optional. Trusted Root certificates of the application gateway resource.')
-param trustedRootCertificates array = []
+param trustedRootCertificates resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.trustedRootCertificates = []
 
 @description('Optional. URL path map of the application gateway resource.')
-param urlPathMaps array = []
+param urlPathMaps resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.urlPathMaps = []
 
 @description('Optional. The list of Availability zones to use for the zone-redundant resources.')
 @allowed([
@@ -191,8 +161,8 @@ var formattedUserAssignedIdentities = reduce(
 
 var identity = !empty(managedIdentities)
   ? {
-      type: !empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null
-      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+      type: !empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None'
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : any(null)
     }
   : null
 
@@ -205,16 +175,16 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Resource tags.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.tags?
 
 @description('Optional. Backend settings of the application gateway resource. For default limits, see [Application Gateway limits](https://learn.microsoft.com/en-us/azure/azure-subscription-service-limits#application-gateway-limits).')
-param backendSettingsCollection array = []
+param backendSettingsCollection resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.backendSettingsCollection = []
 
 @description('Optional. Listeners of the application gateway resource. For default limits, see [Application Gateway limits](https://learn.microsoft.com/en-us/azure/azure-subscription-service-limits#application-gateway-limits).')
-param listeners array = []
+param listeners resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.listeners = []
 
 @description('Optional. Routing rules of the application gateway resource.')
-param routingRules array = []
+param routingRules resourceInput<'Microsoft.Network/applicationGateways@2024-07-01'>.properties.routingRules = []
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -265,7 +235,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource applicationGateway 'Microsoft.Network/applicationGateways@2024-05-01' = {
+resource applicationGateway 'Microsoft.Network/applicationGateways@2024-10-01' = {
   name: name
   location: location
   tags: tags

@@ -19,7 +19,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -96,7 +96,7 @@ resource userAssignedIdentity_lock 'Microsoft.Authorization/locks@2020-05-01' = 
 @batchSize(1)
 module userAssignedIdentity_federatedIdentityCredentials 'federated-identity-credential/main.bicep' = [
   for (federatedIdentityCredential, index) in (federatedIdentityCredentials ?? []): {
-    name: '${uniqueString(deployment().name, location)}-UserMSI-FederatedIdentityCred-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-UserMSI-FederatedIdentityCred-${index}'
     params: {
       name: federatedIdentityCredential.name
       userAssignedIdentityName: userAssignedIdentity.name

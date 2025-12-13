@@ -2,6 +2,14 @@
 
 This module deploys a Network Application Gateway.
 
+You can reference the module as follows:
+```bicep
+module applicationGateway 'br/public:avm/res/network/application-gateway:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -18,7 +26,7 @@ This module deploys a Network Application Gateway.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/applicationGateways` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_applicationgateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/applicationGateways)</li></ul> |
+| `Microsoft.Network/applicationGateways` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_applicationgateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/applicationGateways)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
@@ -40,6 +48,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/basic]
+
 
 <details>
 
@@ -47,7 +57,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module applicationGateway 'br/public:avm/res/network/application-gateway:<version>' = {
-  name: 'applicationGatewayDeployment'
   params: {
     // Required parameters
     name: '<name>'
@@ -351,6 +360,8 @@ param sku = 'Basic'
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -358,7 +369,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module applicationGateway 'br/public:avm/res/network/application-gateway:<version>' = {
-  name: 'applicationGatewayDeployment'
   params: {
     // Required parameters
     name: '<name>'
@@ -662,6 +672,8 @@ param requestRoutingRules = [
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -669,7 +681,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module applicationGateway 'br/public:avm/res/network/application-gateway:<version>' = {
-  name: 'applicationGatewayDeployment'
   params: {
     // Required parameters
     name: '<name>'
@@ -2026,6 +2037,8 @@ param tags = {
 
 This instance deploys the module using the Standard_v2 sku.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/standard]
+
 
 <details>
 
@@ -2033,7 +2046,6 @@ This instance deploys the module using the Standard_v2 sku.
 
 ```bicep
 module applicationGateway 'br/public:avm/res/network/application-gateway:<version>' = {
-  name: 'applicationGatewayDeployment'
   params: {
     // Required parameters
     name: '<name>'
@@ -2687,6 +2699,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -2694,7 +2708,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module applicationGateway 'br/public:avm/res/network/application-gateway:<version>' = {
-  name: 'applicationGatewayDeployment'
   params: {
     // Required parameters
     name: '<name>'
@@ -4614,6 +4627,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -4633,6 +4647,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -5027,39 +5048,6 @@ Ssl cipher suites to be enabled in the specified order to application gateway.
     'TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384'
   ]
   ```
-- Allowed:
-  ```Bicep
-  [
-    'TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA'
-    'TLS_DHE_DSS_WITH_AES_128_CBC_SHA'
-    'TLS_DHE_DSS_WITH_AES_128_CBC_SHA256'
-    'TLS_DHE_DSS_WITH_AES_256_CBC_SHA'
-    'TLS_DHE_DSS_WITH_AES_256_CBC_SHA256'
-    'TLS_DHE_RSA_WITH_AES_128_CBC_SHA'
-    'TLS_DHE_RSA_WITH_AES_128_GCM_SHA256'
-    'TLS_DHE_RSA_WITH_AES_256_CBC_SHA'
-    'TLS_DHE_RSA_WITH_AES_256_GCM_SHA384'
-    'TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA'
-    'TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256'
-    'TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256'
-    'TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA'
-    'TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384'
-    'TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384'
-    'TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA'
-    'TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256'
-    'TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256'
-    'TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA'
-    'TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384'
-    'TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384'
-    'TLS_RSA_WITH_3DES_EDE_CBC_SHA'
-    'TLS_RSA_WITH_AES_128_CBC_SHA'
-    'TLS_RSA_WITH_AES_128_CBC_SHA256'
-    'TLS_RSA_WITH_AES_128_GCM_SHA256'
-    'TLS_RSA_WITH_AES_256_CBC_SHA'
-    'TLS_RSA_WITH_AES_256_CBC_SHA256'
-    'TLS_RSA_WITH_AES_256_GCM_SHA384'
-  ]
-  ```
 
 ### Parameter: `sslPolicyMinProtocolVersion`
 
@@ -5171,7 +5159,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

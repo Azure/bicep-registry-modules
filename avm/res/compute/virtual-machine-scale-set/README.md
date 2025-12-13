@@ -2,6 +2,14 @@
 
 This module deploys a Virtual Machine Scale Set.
 
+You can reference the module as follows:
+```bicep
+module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -17,8 +25,8 @@ This module deploys a Virtual Machine Scale Set.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.Compute/virtualMachineScaleSets` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachinescalesets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachineScaleSets)</li></ul> |
-| `Microsoft.Compute/virtualMachineScaleSets/extensions` | 2023-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachinescalesets_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-09-01/virtualMachineScaleSets/extensions)</li></ul> |
+| `Microsoft.Compute/virtualMachineScaleSets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachinescalesets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-11-01/virtualMachineScaleSets)</li></ul> |
+| `Microsoft.Compute/virtualMachineScaleSets/extensions` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachinescalesets_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-11-01/virtualMachineScaleSets/extensions)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 
 ## Usage examples
@@ -42,6 +50,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/linux.defaults]
+
 
 <details>
 
@@ -49,7 +59,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
     adminPassword: '<adminPassword>'
@@ -81,7 +90,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     ]
     osDisk: {
       createOption: 'fromImage'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -90,7 +99,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     skuName: 'Standard_B12ms'
     // Non-required parameters
     disablePasswordAuthentication: true
-    location: '<location>'
     publicKeys: [
       {
         keyData: '<keyData>'
@@ -154,7 +162,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "osDisk": {
       "value": {
         "createOption": "fromImage",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -169,9 +177,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     // Non-required parameters
     "disablePasswordAuthentication": {
       "value": true
-    },
-    "location": {
-      "value": "<location>"
     },
     "publicKeys": {
       "value": [
@@ -225,7 +230,7 @@ param nicConfigurations = [
 ]
 param osDisk = {
   createOption: 'fromImage'
-  diskSizeGB: '128'
+  diskSizeGB: 128
   managedDisk: {
     storageAccountType: 'Premium_LRS'
   }
@@ -234,7 +239,6 @@ param osType = 'Linux'
 param skuName = 'Standard_B12ms'
 // Non-required parameters
 param disablePasswordAuthentication = true
-param location = '<location>'
 param publicKeys = [
   {
     keyData: '<keyData>'
@@ -250,6 +254,8 @@ param publicKeys = [
 
 This instance deploys the module with as Linux VMSS with health extension.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/linux.health]
+
 
 <details>
 
@@ -257,7 +263,6 @@ This instance deploys the module with as Linux VMSS with health extension.
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
     adminPassword: '<adminPassword>'
@@ -289,7 +294,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     ]
     osDisk: {
       createOption: 'fromImage'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -303,7 +308,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       port: 22
       protocol: 'tcp'
     }
-    location: '<location>'
     publicKeys: [
       {
         keyData: '<keyData>'
@@ -367,7 +371,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "osDisk": {
       "value": {
         "createOption": "fromImage",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -389,9 +393,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         "port": 22,
         "protocol": "tcp"
       }
-    },
-    "location": {
-      "value": "<location>"
     },
     "publicKeys": {
       "value": [
@@ -445,7 +446,7 @@ param nicConfigurations = [
 ]
 param osDisk = {
   createOption: 'fromImage'
-  diskSizeGB: '128'
+  diskSizeGB: 128
   managedDisk: {
     storageAccountType: 'Premium_LRS'
   }
@@ -459,7 +460,6 @@ param extensionHealthConfig = {
   port: 22
   protocol: 'tcp'
 }
-param location = '<location>'
 param publicKeys = [
   {
     keyData: '<keyData>'
@@ -475,6 +475,8 @@ param publicKeys = [
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/linux.max]
+
 
 <details>
 
@@ -482,7 +484,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
     adminPassword: '<adminPassword>'
@@ -514,7 +515,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     ]
     osDisk: {
       createOption: 'fromImage'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -531,7 +532,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       {
         caching: 'ReadOnly'
         createOption: 'Empty'
-        diskSizeGB: '256'
+        diskSizeGB: 256
+        lun: 1
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
@@ -539,7 +541,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       {
         caching: 'ReadOnly'
         createOption: 'Empty'
-        diskSizeGB: '128'
+        diskSizeGB: 128
+        lun: 2
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
@@ -575,15 +578,14 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     }
     extensionCustomScriptConfig: {
-      enabled: true
-      fileData: [
-        {
-          storageAccountId: '<storageAccountId>'
-          uri: '<uri>'
-        }
-      ]
       protectedSettings: {
-        commandToExecute: 'sudo apt-get update'
+        managedIdentityResourceId: '<managedIdentityResourceId>'
+      }
+      settings: {
+        commandToExecute: '<commandToExecute>'
+        fileUris: [
+          '<storageAccountCSEFileUrl>'
+        ]
       }
     }
     extensionDependencyAgentConfig: {
@@ -699,7 +701,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "osDisk": {
       "value": {
         "createOption": "fromImage",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -728,7 +730,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         {
           "caching": "ReadOnly",
           "createOption": "Empty",
-          "diskSizeGB": "256",
+          "diskSizeGB": 256,
+          "lun": 1,
           "managedDisk": {
             "storageAccountType": "Premium_LRS"
           }
@@ -736,7 +739,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         {
           "caching": "ReadOnly",
           "createOption": "Empty",
-          "diskSizeGB": "128",
+          "diskSizeGB": 128,
+          "lun": 2,
           "managedDisk": {
             "storageAccountType": "Premium_LRS"
           }
@@ -782,15 +786,14 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "extensionCustomScriptConfig": {
       "value": {
-        "enabled": true,
-        "fileData": [
-          {
-            "storageAccountId": "<storageAccountId>",
-            "uri": "<uri>"
-          }
-        ],
         "protectedSettings": {
-          "commandToExecute": "sudo apt-get update"
+          "managedIdentityResourceId": "<managedIdentityResourceId>"
+        },
+        "settings": {
+          "commandToExecute": "<commandToExecute>",
+          "fileUris": [
+            "<storageAccountCSEFileUrl>"
+          ]
         }
       }
     },
@@ -922,7 +925,7 @@ param nicConfigurations = [
 ]
 param osDisk = {
   createOption: 'fromImage'
-  diskSizeGB: '128'
+  diskSizeGB: 128
   managedDisk: {
     storageAccountType: 'Premium_LRS'
   }
@@ -939,7 +942,8 @@ param dataDisks = [
   {
     caching: 'ReadOnly'
     createOption: 'Empty'
-    diskSizeGB: '256'
+    diskSizeGB: 256
+    lun: 1
     managedDisk: {
       storageAccountType: 'Premium_LRS'
     }
@@ -947,7 +951,8 @@ param dataDisks = [
   {
     caching: 'ReadOnly'
     createOption: 'Empty'
-    diskSizeGB: '128'
+    diskSizeGB: 128
+    lun: 2
     managedDisk: {
       storageAccountType: 'Premium_LRS'
     }
@@ -983,15 +988,14 @@ param extensionAzureDiskEncryptionConfig = {
   }
 }
 param extensionCustomScriptConfig = {
-  enabled: true
-  fileData: [
-    {
-      storageAccountId: '<storageAccountId>'
-      uri: '<uri>'
-    }
-  ]
   protectedSettings: {
-    commandToExecute: 'sudo apt-get update'
+    managedIdentityResourceId: '<managedIdentityResourceId>'
+  }
+  settings: {
+    commandToExecute: '<commandToExecute>'
+    fileUris: [
+      '<storageAccountCSEFileUrl>'
+    ]
   }
 }
 param extensionDependencyAgentConfig = {
@@ -1059,6 +1063,8 @@ param vmPriority = 'Regular'
 
 This instance deploys the module with disk enryption set.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/linux.ssecmk]
+
 
 <details>
 
@@ -1066,7 +1072,6 @@ This instance deploys the module with disk enryption set.
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
     adminPassword: '<adminPassword>'
@@ -1098,7 +1103,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     ]
     osDisk: {
       createOption: 'fromImage'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         diskEncryptionSet: {
           id: '<id>'
@@ -1113,7 +1118,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       {
         caching: 'ReadOnly'
         createOption: 'Empty'
-        diskSizeGB: '128'
+        diskSizeGB: 128
+        lun: 1
         managedDisk: {
           diskEncryptionSet: {
             id: '<id>'
@@ -1127,7 +1133,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       autoUpgradeMinorVersion: true
       enabled: true
     }
-    location: '<location>'
     publicKeys: [
       {
         keyData: '<keyData>'
@@ -1191,7 +1196,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "osDisk": {
       "value": {
         "createOption": "fromImage",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "diskEncryptionSet": {
             "id": "<id>"
@@ -1212,7 +1217,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         {
           "caching": "ReadOnly",
           "createOption": "Empty",
-          "diskSizeGB": "128",
+          "diskSizeGB": 128,
+          "lun": 1,
           "managedDisk": {
             "diskEncryptionSet": {
               "id": "<id>"
@@ -1230,9 +1236,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         "autoUpgradeMinorVersion": true,
         "enabled": true
       }
-    },
-    "location": {
-      "value": "<location>"
     },
     "publicKeys": {
       "value": [
@@ -1286,7 +1289,7 @@ param nicConfigurations = [
 ]
 param osDisk = {
   createOption: 'fromImage'
-  diskSizeGB: '128'
+  diskSizeGB: 128
   managedDisk: {
     diskEncryptionSet: {
       id: '<id>'
@@ -1301,7 +1304,8 @@ param dataDisks = [
   {
     caching: 'ReadOnly'
     createOption: 'Empty'
-    diskSizeGB: '128'
+    diskSizeGB: 128
+    lun: 1
     managedDisk: {
       diskEncryptionSet: {
         id: '<id>'
@@ -1315,7 +1319,6 @@ param extensionMonitoringAgentConfig = {
   autoUpgradeMinorVersion: true
   enabled: true
 }
-param location = '<location>'
 param publicKeys = [
   {
     keyData: '<keyData>'
@@ -1331,6 +1334,8 @@ param publicKeys = [
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows.defaults]
+
 
 <details>
 
@@ -1338,7 +1343,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
     adminPassword: '<adminPassword>'
@@ -1370,7 +1374,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     ]
     osDisk: {
       createOption: 'fromImage'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -1436,7 +1440,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "osDisk": {
       "value": {
         "createOption": "fromImage",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -1496,7 +1500,7 @@ param nicConfigurations = [
 ]
 param osDisk = {
   createOption: 'fromImage'
-  diskSizeGB: '128'
+  diskSizeGB: 128
   managedDisk: {
     storageAccountType: 'Premium_LRS'
   }
@@ -1514,6 +1518,8 @@ param location = '<location>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows.max]
+
 
 <details>
 
@@ -1521,7 +1527,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
     adminPassword: '<adminPassword>'
@@ -1553,7 +1558,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     ]
     osDisk: {
       createOption: 'fromImage'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -1608,15 +1613,14 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     }
     extensionCustomScriptConfig: {
-      enabled: true
-      fileData: [
-        {
-          storageAccountId: '<storageAccountId>'
-          uri: '<uri>'
-        }
-      ]
       protectedSettings: {
+        managedIdentityResourceId: '<managedIdentityResourceId>'
+      }
+      settings: {
         commandToExecute: '<commandToExecute>'
+        fileUris: [
+          '<storageAccountCSEFileUrl>'
+        ]
       }
     }
     extensionDependencyAgentConfig: {
@@ -1627,11 +1631,9 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     }
     extensionHealthConfig: {
       enabled: true
-      settings: {
-        port: 80
-        protocol: 'http'
-        requestPath: '/'
-      }
+      port: 80
+      protocol: 'http'
+      requestPath: '/'
     }
     extensionMonitoringAgentConfig: {
       autoUpgradeMinorVersion: true
@@ -1736,7 +1738,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "osDisk": {
       "value": {
         "createOption": "fromImage",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -1805,15 +1807,14 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "extensionCustomScriptConfig": {
       "value": {
-        "enabled": true,
-        "fileData": [
-          {
-            "storageAccountId": "<storageAccountId>",
-            "uri": "<uri>"
-          }
-        ],
         "protectedSettings": {
-          "commandToExecute": "<commandToExecute>"
+          "managedIdentityResourceId": "<managedIdentityResourceId>"
+        },
+        "settings": {
+          "commandToExecute": "<commandToExecute>",
+          "fileUris": [
+            "<storageAccountCSEFileUrl>"
+          ]
         }
       }
     },
@@ -1830,11 +1831,9 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "extensionHealthConfig": {
       "value": {
         "enabled": true,
-        "settings": {
-          "port": 80,
-          "protocol": "http",
-          "requestPath": "/"
-        }
+        "port": 80,
+        "protocol": "http",
+        "requestPath": "/"
       }
     },
     "extensionMonitoringAgentConfig": {
@@ -1949,7 +1948,7 @@ param nicConfigurations = [
 ]
 param osDisk = {
   createOption: 'fromImage'
-  diskSizeGB: '128'
+  diskSizeGB: 128
   managedDisk: {
     storageAccountType: 'Premium_LRS'
   }
@@ -2004,15 +2003,14 @@ param extensionAzureDiskEncryptionConfig = {
   }
 }
 param extensionCustomScriptConfig = {
-  enabled: true
-  fileData: [
-    {
-      storageAccountId: '<storageAccountId>'
-      uri: '<uri>'
-    }
-  ]
   protectedSettings: {
+    managedIdentityResourceId: '<managedIdentityResourceId>'
+  }
+  settings: {
     commandToExecute: '<commandToExecute>'
+    fileUris: [
+      '<storageAccountCSEFileUrl>'
+    ]
   }
 }
 param extensionDependencyAgentConfig = {
@@ -2023,11 +2021,9 @@ param extensionDSCConfig = {
 }
 param extensionHealthConfig = {
   enabled: true
-  settings: {
-    port: 80
-    protocol: 'http'
-    requestPath: '/'
-  }
+  port: 80
+  protocol: 'http'
+  requestPath: '/'
 }
 param extensionMonitoringAgentConfig = {
   autoUpgradeMinorVersion: true
@@ -2084,6 +2080,8 @@ param vmPriority = 'Regular'
 
 This instance deploys the module with the minimum set of required parameters in uniform orchestration mode.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows.uniform]
+
 
 <details>
 
@@ -2091,7 +2089,6 @@ This instance deploys the module with the minimum set of required parameters in 
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
     adminPassword: '<adminPassword>'
@@ -2123,7 +2120,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     ]
     osDisk: {
       createOption: 'fromImage'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -2131,7 +2128,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     osType: 'Windows'
     skuName: 'Standard_B12ms'
     // Non-required parameters
-    location: '<location>'
     orchestrationMode: 'Uniform'
     patchMode: 'AutomaticByOS'
   }
@@ -2191,7 +2187,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "osDisk": {
       "value": {
         "createOption": "fromImage",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -2204,9 +2200,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       "value": "Standard_B12ms"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "orchestrationMode": {
       "value": "Uniform"
     },
@@ -2257,7 +2250,7 @@ param nicConfigurations = [
 ]
 param osDisk = {
   createOption: 'fromImage'
-  diskSizeGB: '128'
+  diskSizeGB: 128
   managedDisk: {
     storageAccountType: 'Premium_LRS'
   }
@@ -2265,7 +2258,6 @@ param osDisk = {
 param osType = 'Windows'
 param skuName = 'Standard_B12ms'
 // Non-required parameters
-param location = '<location>'
 param orchestrationMode = 'Uniform'
 param patchMode = 'AutomaticByOS'
 ```
@@ -2277,6 +2269,8 @@ param patchMode = 'AutomaticByOS'
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework for Windows.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows.waf-aligned]
+
 
 <details>
 
@@ -2284,7 +2278,6 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: 'virtualMachineScaleSetDeployment'
   params: {
     // Required parameters
     adminPassword: '<adminPassword>'
@@ -2316,7 +2309,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     ]
     osDisk: {
       createOption: 'fromImage'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -2371,15 +2364,14 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     }
     extensionCustomScriptConfig: {
-      enabled: true
-      fileData: [
-        {
-          storageAccountId: '<storageAccountId>'
-          uri: '<uri>'
-        }
-      ]
       protectedSettings: {
+        managedIdentityResourceId: '<managedIdentityResourceId>'
+      }
+      settings: {
         commandToExecute: '<commandToExecute>'
+        fileUris: [
+          '<storageAccountCSEFileUrl>'
+        ]
       }
     }
     extensionDependencyAgentConfig: {
@@ -2468,7 +2460,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "osDisk": {
       "value": {
         "createOption": "fromImage",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -2537,15 +2529,14 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "extensionCustomScriptConfig": {
       "value": {
-        "enabled": true,
-        "fileData": [
-          {
-            "storageAccountId": "<storageAccountId>",
-            "uri": "<uri>"
-          }
-        ],
         "protectedSettings": {
-          "commandToExecute": "<commandToExecute>"
+          "managedIdentityResourceId": "<managedIdentityResourceId>"
+        },
+        "settings": {
+          "commandToExecute": "<commandToExecute>",
+          "fileUris": [
+            "<storageAccountCSEFileUrl>"
+          ]
         }
       }
     },
@@ -2644,7 +2635,7 @@ param nicConfigurations = [
 ]
 param osDisk = {
   createOption: 'fromImage'
-  diskSizeGB: '128'
+  diskSizeGB: 128
   managedDisk: {
     storageAccountType: 'Premium_LRS'
   }
@@ -2699,15 +2690,14 @@ param extensionAzureDiskEncryptionConfig = {
   }
 }
 param extensionCustomScriptConfig = {
-  enabled: true
-  fileData: [
-    {
-      storageAccountId: '<storageAccountId>'
-      uri: '<uri>'
-    }
-  ]
   protectedSettings: {
+    managedIdentityResourceId: '<managedIdentityResourceId>'
+  }
+  settings: {
     commandToExecute: '<commandToExecute>'
+    fileUris: [
+      '<storageAccountCSEFileUrl>'
+    ]
   }
 }
 param extensionDependencyAgentConfig = {
@@ -2754,7 +2744,7 @@ param vmPriority = 'Regular'
 | [`adminUsername`](#parameter-adminusername) | securestring | Administrator username. |
 | [`imageReference`](#parameter-imagereference) | object | OS image reference. In case of marketplace images, it's the combination of the publisher, offer, sku, version attributes. In case of custom images it's the resource ID of the custom image. |
 | [`name`](#parameter-name) | string | Name of the VMSS. |
-| [`nicConfigurations`](#parameter-nicconfigurations) | array | Configures NICs and PIPs. |
+| [`nicConfigurations`](#parameter-nicconfigurations) | array | Configures NICs and PIPs. The first item in the list is considered the `primary` configuration. |
 | [`osDisk`](#parameter-osdisk) | object | Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VM Scale sets. |
 | [`osType`](#parameter-ostype) | string | The chosen OS type. |
 | [`skuName`](#parameter-skuname) | string | The SKU size of the VMs. |
@@ -2784,7 +2774,7 @@ param vmPriority = 'Regular'
 | [`encryptionAtHost`](#parameter-encryptionathost) | bool | This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your virtual machine scale sets. |
 | [`extensionAntiMalwareConfig`](#parameter-extensionantimalwareconfig) | object | The configuration for the [Anti Malware] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionAzureDiskEncryptionConfig`](#parameter-extensionazurediskencryptionconfig) | object | The configuration for the [Azure Disk Encryption] extension. Must at least contain the ["enabled": true] property to be executed. Restrictions: Cannot be enabled on disks that have encryption at host enabled. Managed disks encrypted using Azure Disk Encryption cannot be encrypted using customer-managed keys. |
-| [`extensionCustomScriptConfig`](#parameter-extensioncustomscriptconfig) | object | The configuration for the [Custom Script] extension. Must at least contain the ["enabled": true] property to be executed. |
+| [`extensionCustomScriptConfig`](#parameter-extensioncustomscriptconfig) | object | The configuration for the [Custom Script] extension. |
 | [`extensionDependencyAgentConfig`](#parameter-extensiondependencyagentconfig) | object | The configuration for the [Dependency Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionDomainJoinConfig`](#parameter-extensiondomainjoinconfig) | secureObject | The configuration for the [Domain Join] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionDomainJoinPassword`](#parameter-extensiondomainjoinpassword) | securestring | Required if name is specified. Password of the user specified in user parameter. |
@@ -2816,7 +2806,6 @@ param vmPriority = 'Regular'
 | [`rebootSetting`](#parameter-rebootsetting) | string | Specifies the reboot setting for all AutomaticByPlatform patch installation operations. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`rollbackFailedInstancesOnPolicyBreach`](#parameter-rollbackfailedinstancesonpolicybreach) | bool | Rollback failed instances to previous model if the Rolling Upgrade policy is violated. |
-| [`sasTokenValidityLength`](#parameter-sastokenvaliditylength) | string | SAS token validity length to use to download files from storage accounts. Usage: 'PT8H' - valid for 8 hours; 'P5D' - valid for 5 days; 'P1Y' - valid for 1 year. When not provided, the SAS token will be valid for 8 hours. |
 | [`scaleInPolicy`](#parameter-scaleinpolicy) | object | Specifies the scale-in policy that decides which virtual machines are chosen for removal when a Virtual Machine Scale Set is scaled-in. |
 | [`scaleSetFaultDomain`](#parameter-scalesetfaultdomain) | int | Fault Domain count for each placement group. |
 | [`scheduledEventsProfile`](#parameter-scheduledeventsprofile) | object | Specifies Scheduled Event related configurations. |
@@ -2834,12 +2823,6 @@ param vmPriority = 'Regular'
 | [`vTpmEnabled`](#parameter-vtpmenabled) | bool | Specifies whether vTPM should be enabled on the virtual machine scale set. This parameter is part of the UefiSettings.  SecurityType should be set to TrustedLaunch to enable UefiSettings. |
 | [`winRM`](#parameter-winrm) | object | Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. - WinRMConfiguration object. |
 | [`zoneBalance`](#parameter-zonebalance) | bool | Whether to force strictly even Virtual Machine distribution cross x-zones in case there is zone outage. |
-
-**Generated parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`baseTime`](#parameter-basetime) | string | Do not provide a value! This date value is used to generate a registration token. |
 
 ### Parameter: `adminPassword`
 
@@ -2871,10 +2854,60 @@ Name of the VMSS.
 
 ### Parameter: `nicConfigurations`
 
-Configures NICs and PIPs.
+Configures NICs and PIPs. The first item in the list is considered the `primary` configuration.
 
 - Required: Yes
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipConfigurations`](#parameter-nicconfigurationsipconfigurations) | array | Specifies the IP configurations of the network interface. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enableAcceleratedNetworking`](#parameter-nicconfigurationsenableacceleratednetworking) | bool | Specifies whether the network interface is accelerated networking-enabled. Defaults to `true`. |
+| [`name`](#parameter-nicconfigurationsname) | string | The name of the NIC configuration. If not provided, a name is generated using the `nicSuffic` and an incremental counter. |
+| [`networkSecurityGroupResourceId`](#parameter-nicconfigurationsnetworksecuritygroupresourceid) | string | The resource ID of a network security group to associate with the NIC. |
+| [`nicSuffix`](#parameter-nicconfigurationsnicsuffix) | string | The suffix to add to each NIC configuration name if no `name` was provided. |
+
+### Parameter: `nicConfigurations.ipConfigurations`
+
+Specifies the IP configurations of the network interface.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `nicConfigurations.enableAcceleratedNetworking`
+
+Specifies whether the network interface is accelerated networking-enabled. Defaults to `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `nicConfigurations.name`
+
+The name of the NIC configuration. If not provided, a name is generated using the `nicSuffic` and an incremental counter.
+
+- Required: No
+- Type: string
+
+### Parameter: `nicConfigurations.networkSecurityGroupResourceId`
+
+The resource ID of a network security group to associate with the NIC.
+
+- Required: No
+- Type: string
+
+### Parameter: `nicConfigurations.nicSuffix`
+
+The suffix to add to each NIC configuration name if no `name` was provided.
+
+- Required: No
+- Type: string
 
 ### Parameter: `osDisk`
 
@@ -2910,7 +2943,6 @@ Specifies additional base-64 encoded XML formatted information that can be inclu
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `automaticRepairsPolicyEnabled`
 
@@ -2957,7 +2989,6 @@ The name of the boot diagnostic storage account. Provide this if you want to use
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `bootDiagnosticStorageAccountUri`
 
@@ -3200,17 +3231,129 @@ The configuration for the [Azure Disk Encryption] extension. Must at least conta
 
 ### Parameter: `extensionCustomScriptConfig`
 
-The configuration for the [Custom Script] extension. Must at least contain the ["enabled": true] property to be executed.
+The configuration for the [Custom Script] extension.
 
 - Required: No
 - Type: object
-- Default:
-  ```Bicep
-  {
-      enabled: false
-      fileData: []
-  }
-  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoUpgradeMinorVersion`](#parameter-extensioncustomscriptconfigautoupgrademinorversion) | bool | Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true. Defaults to `true`. |
+| [`enableAutomaticUpgrade`](#parameter-extensioncustomscriptconfigenableautomaticupgrade) | bool | Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `false`. |
+| [`forceUpdateTag`](#parameter-extensioncustomscriptconfigforceupdatetag) | string | How the extension handler should be forced to update even if the extension configuration has not changed. |
+| [`name`](#parameter-extensioncustomscriptconfigname) | string | The name of the virtual machine extension. Defaults to `CustomScriptExtension`. |
+| [`protectedSettings`](#parameter-extensioncustomscriptconfigprotectedsettings) | secureObject | The configuration of the custom script extension. Note: You can provide any property either in the `settings` or `protectedSettings` but not both. If your property contains secrets, use `protectedSettings`. |
+| [`protectedSettingsFromKeyVault`](#parameter-extensioncustomscriptconfigprotectedsettingsfromkeyvault) | object | The extensions protected settings that are passed by reference, and consumed from key vault. |
+| [`provisionAfterExtensions`](#parameter-extensioncustomscriptconfigprovisionafterextensions) | array | Collection of extension names after which this extension needs to be provisioned. |
+| [`settings`](#parameter-extensioncustomscriptconfigsettings) | object | The configuration of the custom script extension. Note: You can provide any property either in the `settings` or `protectedSettings` but not both. If your property contains secrets, use `protectedSettings`. |
+| [`supressFailures`](#parameter-extensioncustomscriptconfigsupressfailures) | bool | Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). Defaults to `false`. |
+| [`tags`](#parameter-extensioncustomscriptconfigtags) | object | Tags of the resource. |
+| [`typeHandlerVersion`](#parameter-extensioncustomscriptconfigtypehandlerversion) | string | Specifies the version of the script handler. Defaults to `1.10` for Windows and `2.1` for Linux. |
+
+### Parameter: `extensionCustomScriptConfig.autoUpgradeMinorVersion`
+
+Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true. Defaults to `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `extensionCustomScriptConfig.enableAutomaticUpgrade`
+
+Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `false`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `extensionCustomScriptConfig.forceUpdateTag`
+
+How the extension handler should be forced to update even if the extension configuration has not changed.
+
+- Required: No
+- Type: string
+
+### Parameter: `extensionCustomScriptConfig.name`
+
+The name of the virtual machine extension. Defaults to `CustomScriptExtension`.
+
+- Required: No
+- Type: string
+
+### Parameter: `extensionCustomScriptConfig.protectedSettings`
+
+The configuration of the custom script extension. Note: You can provide any property either in the `settings` or `protectedSettings` but not both. If your property contains secrets, use `protectedSettings`.
+
+- Required: No
+- Type: secureObject
+
+### Parameter: `extensionCustomScriptConfig.protectedSettingsFromKeyVault`
+
+The extensions protected settings that are passed by reference, and consumed from key vault.
+
+- Required: No
+- Type: object
+
+### Parameter: `extensionCustomScriptConfig.provisionAfterExtensions`
+
+Collection of extension names after which this extension needs to be provisioned.
+
+- Required: No
+- Type: array
+
+### Parameter: `extensionCustomScriptConfig.settings`
+
+The configuration of the custom script extension. Note: You can provide any property either in the `settings` or `protectedSettings` but not both. If your property contains secrets, use `protectedSettings`.
+
+- Required: No
+- Type: object
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`commandToExecute`](#parameter-extensioncustomscriptconfigsettingscommandtoexecute) | string | The entry point script to run. If the command contains any credentials, use the same property of the `protectedSettings` instead. Required if `protectedSettings.commandToExecute` is not provided. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fileUris`](#parameter-extensioncustomscriptconfigsettingsfileuris) | array | URLs for files to be downloaded. If URLs are sensitive, for example, if they contain keys, this field should be specified in `protectedSettings`. |
+
+### Parameter: `extensionCustomScriptConfig.settings.commandToExecute`
+
+The entry point script to run. If the command contains any credentials, use the same property of the `protectedSettings` instead. Required if `protectedSettings.commandToExecute` is not provided.
+
+- Required: No
+- Type: string
+
+### Parameter: `extensionCustomScriptConfig.settings.fileUris`
+
+URLs for files to be downloaded. If URLs are sensitive, for example, if they contain keys, this field should be specified in `protectedSettings`.
+
+- Required: No
+- Type: array
+
+### Parameter: `extensionCustomScriptConfig.supressFailures`
+
+Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). Defaults to `false`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `extensionCustomScriptConfig.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `extensionCustomScriptConfig.typeHandlerVersion`
+
+Specifies the version of the script handler. Defaults to `1.10` for Windows and `2.1` for Linux.
+
+- Required: No
+- Type: string
 
 ### Parameter: `extensionDependencyAgentConfig`
 
@@ -3269,13 +3412,127 @@ Turned on by default. The configuration for the [Application Health Monitoring] 
   ```Bicep
   {
       enabled: true
-      settings: {
-        port: 80
-        protocol: 'http'
-        requestPath: '/'
-      }
+      port: 80
+      protocol: 'http'
+      requestPath: '/'
   }
   ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-extensionhealthconfigenabled) | bool | Enable or disable the Health Config extension. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`port`](#parameter-extensionhealthconfigport) | int | The port to connect to. Defaults to `80`. Required if `protocol` is `tcp`. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoUpgradeMinorVersion`](#parameter-extensionhealthconfigautoupgrademinorversion) | bool | Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true. Defaults to `false`. |
+| [`enableAutomaticUpgrade`](#parameter-extensionhealthconfigenableautomaticupgrade) | bool | Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `true`. |
+| [`gracePeriod`](#parameter-extensionhealthconfiggraceperiod) | int | The grace period for newly created instances. Defaults to `intervalInSeconds` x `numberOfProbes`. |
+| [`intervalInSeconds`](#parameter-extensionhealthconfigintervalinseconds) | int | This is the interval between each health probe. For example, if intervalInSeconds == 5, a probe will be sent to the local application endpoint once every 5 seconds. Defaults to `5`. |
+| [`numberOfProbes`](#parameter-extensionhealthconfignumberofprobes) | int | This is the number of consecutive probes required for the health status to change. For example, if numberOfProbles == 3, you will need 3 consecutive "Healthy" signals to change the health status from "Unhealthy" into "Healthy" state. The same requirement applies to change health status into "Unhealthy" state. Defaults to `1`. |
+| [`protocol`](#parameter-extensionhealthconfigprotocol) | string | The protocol to connect with. Defaults to `http`. |
+| [`provisionAfterExtensions`](#parameter-extensionhealthconfigprovisionafterextensions) | array | Collection of extension names after which this extension needs to be provisioned. |
+| [`requestPath`](#parameter-extensionhealthconfigrequestpath) | string | The path of the request. Not allowed if `protocol` is `tcp`. |
+| [`typeHandlerVersion`](#parameter-extensionhealthconfigtypehandlerversion) | string | Specifies the version of the script handler. Defaults to `2.0`. |
+
+### Parameter: `extensionHealthConfig.enabled`
+
+Enable or disable the Health Config extension.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `extensionHealthConfig.port`
+
+The port to connect to. Defaults to `80`. Required if `protocol` is `tcp`.
+
+- Required: No
+- Type: int
+
+### Parameter: `extensionHealthConfig.autoUpgradeMinorVersion`
+
+Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true. Defaults to `false`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `extensionHealthConfig.enableAutomaticUpgrade`
+
+Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `extensionHealthConfig.gracePeriod`
+
+The grace period for newly created instances. Defaults to `intervalInSeconds` x `numberOfProbes`.
+
+- Required: No
+- Type: int
+- MaxValue: 14400
+
+### Parameter: `extensionHealthConfig.intervalInSeconds`
+
+This is the interval between each health probe. For example, if intervalInSeconds == 5, a probe will be sent to the local application endpoint once every 5 seconds. Defaults to `5`.
+
+- Required: No
+- Type: int
+- MinValue: 5
+- MaxValue: 60
+
+### Parameter: `extensionHealthConfig.numberOfProbes`
+
+This is the number of consecutive probes required for the health status to change. For example, if numberOfProbles == 3, you will need 3 consecutive "Healthy" signals to change the health status from "Unhealthy" into "Healthy" state. The same requirement applies to change health status into "Unhealthy" state. Defaults to `1`.
+
+- Required: No
+- Type: int
+- MinValue: 1
+- MaxValue: 24
+
+### Parameter: `extensionHealthConfig.protocol`
+
+The protocol to connect with. Defaults to `http`.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'http'
+    'https'
+    'tcp'
+  ]
+  ```
+
+### Parameter: `extensionHealthConfig.provisionAfterExtensions`
+
+Collection of extension names after which this extension needs to be provisioned.
+
+- Required: No
+- Type: array
+
+### Parameter: `extensionHealthConfig.requestPath`
+
+The path of the request. Not allowed if `protocol` is `tcp`.
+
+- Required: No
+- Type: string
+
+### Parameter: `extensionHealthConfig.typeHandlerVersion`
+
+Specifies the version of the script handler. Defaults to `2.0`.
+
+- Required: No
+- Type: string
 
 ### Parameter: `extensionMonitoringAgentConfig`
 
@@ -3318,11 +3575,9 @@ Specifies that the image or disk that is being used was licensed on-premises. Th
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Windows_Client'
     'Windows_Server'
   ]
@@ -3525,7 +3780,6 @@ Specifies information about the marketplace image used to create the virtual mac
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `prioritizeUnhealthyInstances`
 
@@ -3549,7 +3803,6 @@ Resource ID of a proximity placement group.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `publicKeys`
 
@@ -3557,7 +3810,6 @@ The list of SSH public keys used to authenticate with linux based VMs.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `rebootSetting`
 
@@ -3700,14 +3952,6 @@ Rollback failed instances to previous model if the Rolling Upgrade policy is vio
 - Type: bool
 - Default: `False`
 
-### Parameter: `sasTokenValidityLength`
-
-SAS token validity length to use to download files from storage accounts. Usage: 'PT8H' - valid for 8 hours; 'P5D' - valid for 5 days; 'P1Y' - valid for 1 year. When not provided, the SAS token will be valid for 8 hours.
-
-- Required: No
-- Type: string
-- Default: `'PT8H'`
-
 ### Parameter: `scaleInPolicy`
 
 Specifies the scale-in policy that decides which virtual machines are chosen for removal when a Virtual Machine Scale Set is scaled-in.
@@ -3792,7 +4036,6 @@ Specifies the time zone of the virtual machine. e.g. 'Pacific Standard Time'. Po
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `ultraSSDEnabled`
 
@@ -3856,7 +4099,6 @@ Specifies the Windows Remote Management listeners. This enables remote Windows P
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `zoneBalance`
 
@@ -3865,14 +4107,6 @@ Whether to force strictly even Virtual Machine distribution cross x-zones in cas
 - Required: No
 - Type: bool
 - Default: `False`
-
-### Parameter: `baseTime`
-
-Do not provide a value! This date value is used to generate a registration token.
-
-- Required: No
-- Type: string
-- Default: `[utcNow('u')]`
 
 ## Outputs
 
@@ -3890,10 +4124,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

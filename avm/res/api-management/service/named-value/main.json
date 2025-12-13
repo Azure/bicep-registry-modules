@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "9690211017065969329"
+      "templateHash": "9030452512127708426"
     },
     "name": "API Management Service Named Values",
     "description": "This module deploys an API Management Service Named Value."
@@ -46,11 +46,14 @@
       }
     },
     "keyVault": {
-      "$ref": "#/definitions/keyVaultContractType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/namedValues@2024-05-01#properties/properties/properties/keyVault"
+        },
         "description": "Optional. KeyVault location details of the namedValue."
-      }
+      },
+      "nullable": true
     },
     "name": {
       "type": "string",
@@ -60,10 +63,13 @@
     },
     "tags": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/namedValues@2024-05-01#properties/properties/properties/tags"
+        },
         "description": "Optional. Tags that when provided can be used to filter the NamedValue list. - string."
-      }
+      },
+      "nullable": true
     },
     "secret": {
       "type": "bool",
@@ -73,15 +79,19 @@
       }
     },
     "value": {
-      "type": "string",
+      "type": "securestring",
       "defaultValue": "[newGuid()]",
       "metadata": {
         "description": "Optional. Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
-  },
-  "variables": {
-    "keyVaultEmpty": "[empty(parameters('keyVault'))]"
   },
   "resources": {
     "service": {
@@ -89,6 +99,26 @@
       "type": "Microsoft.ApiManagement/service",
       "apiVersion": "2024-05-01",
       "name": "[parameters('apiManagementServiceName')]"
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.apimgmt-namedvalue.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
     },
     "namedValue": {
       "type": "Microsoft.ApiManagement/service/namedValues",
@@ -98,8 +128,8 @@
         "tags": "[parameters('tags')]",
         "secret": "[parameters('secret')]",
         "displayName": "[parameters('displayName')]",
-        "value": "[if(variables('keyVaultEmpty'), parameters('value'), null())]",
-        "keyVault": "[if(not(variables('keyVaultEmpty')), parameters('keyVault'), null())]"
+        "value": "[if(empty(parameters('keyVault')), parameters('value'), null())]",
+        "keyVault": "[parameters('keyVault')]"
       }
     }
   },

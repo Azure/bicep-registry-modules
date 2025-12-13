@@ -2,6 +2,14 @@
 
 This module deploys an App Configuration Store.
 
+You can reference the module as follows:
+```bicep
+module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -15,9 +23,9 @@ This module deploys an App Configuration Store.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.AppConfiguration/configurationStores` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.appconfiguration_configurationstores.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AppConfiguration/2024-05-01/configurationStores)</li></ul> |
-| `Microsoft.AppConfiguration/configurationStores/keyValues` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.appconfiguration_configurationstores_keyvalues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AppConfiguration/2024-05-01/configurationStores/keyValues)</li></ul> |
-| `Microsoft.AppConfiguration/configurationStores/replicas` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.appconfiguration_configurationstores_replicas.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AppConfiguration/2024-05-01/configurationStores/replicas)</li></ul> |
+| `Microsoft.AppConfiguration/configurationStores` | 2025-02-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.appconfiguration_configurationstores.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AppConfiguration/2025-02-01-preview/configurationStores)</li></ul> |
+| `Microsoft.AppConfiguration/configurationStores/keyValues` | 2025-02-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.appconfiguration_configurationstores_keyvalues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AppConfiguration/2025-02-01-preview/configurationStores/keyValues)</li></ul> |
+| `Microsoft.AppConfiguration/configurationStores/replicas` | 2025-02-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.appconfiguration_configurationstores_replicas.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AppConfiguration/2025-02-01-preview/configurationStores/replicas)</li></ul> |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
@@ -42,6 +50,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -49,7 +59,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
-  name: 'configurationStoreDeployment'
   params: {
     // Required parameters
     name: 'accmin001'
@@ -106,6 +115,8 @@ param enablePurgeProtection = false
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/encr]
+
 
 <details>
 
@@ -113,7 +124,6 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
-  name: 'configurationStoreDeployment'
   params: {
     // Required parameters
     name: 'accencr001'
@@ -263,6 +273,8 @@ param softDeleteRetentionInDays = 1
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -270,7 +282,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
-  name: 'configurationStoreDeployment'
   params: {
     // Required parameters
     name: 'accmax001'
@@ -333,8 +344,13 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       ]
     }
     replicaLocations: [
-      'centralus'
-      'westus'
+      {
+        name: 'mycentralusreplica'
+        replicaLocation: 'centralus'
+      }
+      {
+        replicaLocation: 'westus'
+      }
     ]
     roleAssignments: [
       {
@@ -457,8 +473,13 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     },
     "replicaLocations": {
       "value": [
-        "centralus",
-        "westus"
+        {
+          "name": "mycentralusreplica",
+          "replicaLocation": "centralus"
+        },
+        {
+          "replicaLocation": "westus"
+        }
       ]
     },
     "roleAssignments": {
@@ -567,8 +588,13 @@ param managedIdentities = {
   ]
 }
 param replicaLocations = [
-  'centralus'
-  'westus'
+  {
+    name: 'mycentralusreplica'
+    replicaLocation: 'centralus'
+  }
+  {
+    replicaLocation: 'westus'
+  }
 ]
 param roleAssignments = [
   {
@@ -604,6 +630,8 @@ param tags = {
 
 This instance deploys the module with private endpoints.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/pe]
+
 
 <details>
 
@@ -611,14 +639,12 @@ This instance deploys the module with private endpoints.
 
 ```bicep
 module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
-  name: 'configurationStoreDeployment'
   params: {
     // Required parameters
     name: 'accpe001'
     // Non-required parameters
     createMode: 'Default'
     enablePurgeProtection: false
-    location: '<location>'
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -674,9 +700,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     "enablePurgeProtection": {
       "value": false
     },
-    "location": {
-      "value": "<location>"
-    },
     "privateEndpoints": {
       "value": [
         {
@@ -728,7 +751,6 @@ param name = 'accpe001'
 // Non-required parameters
 param createMode = 'Default'
 param enablePurgeProtection = false
-param location = '<location>'
 param privateEndpoints = [
   {
     privateDnsZoneGroup: {
@@ -766,6 +788,8 @@ param softDeleteRetentionInDays = 1
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -773,7 +797,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
-  name: 'configurationStoreDeployment'
   params: {
     // Required parameters
     name: 'accwaf001'
@@ -797,8 +820,12 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       }
     ]
     replicaLocations: [
-      'centralus'
-      'westus'
+      {
+        replicaLocation: 'centralus'
+      }
+      {
+        replicaLocation: 'westus'
+      }
     ]
     softDeleteRetentionInDays: 1
     tags: {
@@ -857,8 +884,12 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     },
     "replicaLocations": {
       "value": [
-        "centralus",
-        "westus"
+        {
+          "replicaLocation": "centralus"
+        },
+        {
+          "replicaLocation": "westus"
+        }
       ]
     },
     "softDeleteRetentionInDays": {
@@ -907,8 +938,12 @@ param keyValues = [
   }
 ]
 param replicaLocations = [
-  'centralus'
-  'westus'
+  {
+    replicaLocation: 'centralus'
+  }
+  {
+    replicaLocation: 'westus'
+  }
 ]
 param softDeleteRetentionInDays = 1
 param tags = {
@@ -1514,6 +1549,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -1533,6 +1569,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -1767,6 +1810,32 @@ All Replicas to create.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`replicaLocation`](#parameter-replicalocationsreplicalocation) | string | Location of the replica. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-replicalocationsname) | string | Name of the replica. |
+
+### Parameter: `replicaLocations.replicaLocation`
+
+Location of the replica.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `replicaLocations.name`
+
+Name of the replica.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
@@ -1778,6 +1847,8 @@ Array of role assignments to create.
   - `'App Compliance Automation Reader'`
   - `'App Configuration Data Owner'`
   - `'App Configuration Data Reader'`
+  - `'App Configuration Reader'`
+  - `'App Configuration Contributor'`
   - `'Contributor'`
   - `'Owner'`
   - `'Reader'`
@@ -1884,7 +1955,9 @@ Pricing tier of App Configuration.
 - Allowed:
   ```Bicep
   [
+    'Developer'
     'Free'
+    'Premium'
     'Standard'
   ]
   ```
@@ -1927,7 +2000,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

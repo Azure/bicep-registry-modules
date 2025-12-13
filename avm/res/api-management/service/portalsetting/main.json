@@ -1,94 +1,14 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "2204656787659825014"
+      "templateHash": "15524333647731462763"
     },
     "name": "API Management Service Portal Settings",
     "description": "This module deploys an API Management Service Portal Setting."
-  },
-  "definitions": {
-    "portalSettingPropertiesType": {
-      "type": "object",
-      "properties": {
-        "enabled": {
-          "type": "bool",
-          "metadata": {
-            "description": "Required. 'signin': Redirect Anonymous users to the Sign-In page. 'signup': Allow users to sign up on a developer portal."
-          }
-        },
-        "termsOfService": {
-          "type": "object",
-          "properties": {
-            "consentRequired": {
-              "type": "bool",
-              "metadata": {
-                "description": "Required. Ask user for consent to the terms of service."
-              }
-            },
-            "enabled": {
-              "type": "bool",
-              "metadata": {
-                "description": "Required. Display terms of service during a sign-up process."
-              }
-            },
-            "text": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. A terms of service text."
-              }
-            }
-          },
-          "metadata": {
-            "description": "Required. Terms of service contract properties."
-          }
-        },
-        "subscriptions": {
-          "type": "object",
-          "properties": {
-            "enabled": {
-              "type": "bool",
-              "metadata": {
-                "description": "Required. Enable or disable delegation for subscriptions."
-              }
-            }
-          },
-          "metadata": {
-            "description": "Required. Subscriptions delegation settings."
-          }
-        },
-        "url": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. A delegation Url."
-          }
-        },
-        "userRegistration": {
-          "type": "object",
-          "properties": {
-            "enabled": {
-              "type": "bool",
-              "metadata": {
-                "description": "Required. Enable or disable delegation for user registration."
-              }
-            }
-          },
-          "metadata": {
-            "description": "Required. User registration delegation settings."
-          }
-        },
-        "validationKey": {
-          "type": "securestring",
-          "metadata": {
-            "description": "Required. A base64-encoded validation key to validate, that a request is coming from Azure API Management."
-          }
-        }
-      }
-    }
   },
   "parameters": {
     "apiManagementServiceName": {
@@ -109,26 +29,50 @@
       }
     },
     "properties": {
-      "$ref": "#/definitions/portalSettingPropertiesType",
+      "type": "object",
       "metadata": {
-        "description": "Required. Portal setting properties. Strings may be left empty, but must not be omitted."
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/portalsettings@2024-05-01#properties/properties"
+        },
+        "description": "Required. Portal setting properties."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     }
   },
-  "resources": {
-    "service": {
-      "existing": true,
-      "type": "Microsoft.ApiManagement/service",
-      "apiVersion": "2024-05-01",
-      "name": "[parameters('apiManagementServiceName')]"
+  "resources": [
+    {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.apimgmt-portalsetting.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
     },
-    "portalSetting": {
+    {
       "type": "Microsoft.ApiManagement/service/portalsettings",
       "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": "[parameters('properties')]"
     }
-  },
+  ],
   "outputs": {
     "resourceId": {
       "type": "string",

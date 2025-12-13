@@ -10,8 +10,9 @@ param name string?
 @description('Required. A user-friendly name for the Role Definition. Must be unique for the database account.')
 param roleName string
 
-@description('Optional. An array of data actions that are allowed.')
-param dataActions string[] = []
+@description('Required. An array of data actions that are allowed.')
+@minLength(1)
+param dataActions string[]
 
 @description('Optional. A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Collection. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account.')
 param assignableScopes string[]?
@@ -19,13 +20,41 @@ param assignableScopes string[]?
 @description('Optional. An array of SQL Role Assignments to be created for the SQL Role Definition.')
 param sqlRoleAssignments sqlRoleAssignmentType[]?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+var enableReferencedModulesTelemetry = false
+
+// ============== //
+// Resources      //
+// ============== //
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.doctdb-dbacct-sqlroledefinition.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
 resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
   name: databaseAccountName
 }
 
 resource sqlRoleDefinition 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions@2024-11-15' = {
   parent: databaseAccount
-  name: name ?? guid(databaseAccount.id, databaseAccountName, 'sql-role')
+  name: name ?? guid(databaseAccount.id, databaseAccountName, roleName)
   properties: {
     assignableScopes: assignableScopes ?? [
       databaseAccount.id
@@ -45,9 +74,10 @@ module databaseAccount_sqlRoleAssignments '../sql-role-assignment/main.bicep' = 
     name: '${uniqueString(deployment().name)}-sqlra-${index}'
     params: {
       databaseAccountName: databaseAccount.name
-      roleDefinitionId: sqlRoleDefinition.id
+      roleDefinitionIdOrName: sqlRoleDefinition.id
       principalId: sqlRoleAssignment.principalId
       name: sqlRoleAssignment.?name
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -76,4 +106,7 @@ type sqlRoleAssignmentType = {
 
   @description('Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.')
   principalId: string
+
+  @description('Optional. The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level.')
+  scope: string?
 }

@@ -30,20 +30,23 @@ var workloadName = take(padLeft('${namePrefix}${serviceShort}', 12), 12)
 // Dependencies //
 // ============ //
 
-module dependencies 'dependencies.bicep' = {
-  name: take('module.dependencies.${workloadName}', 64)
-  scope: resourceGroup
-  params: {
-    workloadName: workloadName
-    location: enforcedLocation
-  }
-}
-
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
+  tags: {
+    SecurityControl: 'Ignore' // ignore security policies imposed on testing subscriptions
+  }
+}
+
+module dependencies 'dependencies.bicep' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  scope: resourceGroup
+  params: {
+    workloadName: workloadName
+    location: enforcedLocation
+  }
 }
 
 // ============== //
@@ -60,21 +63,24 @@ module testDeployment '../../../main.bicep' = [
       baseUniqueName: substring(uniqueString(subscription().id, resourceGroup.name, serviceShort), 0, 5)
       location: enforcedLocation
       includeAssociatedResources: true
-      privateEndpointSubnetId: dependencies.outputs.subnetPrivateEndpointsResourceId
-      sku: 'S0'
+      privateEndpointSubnetResourceId: dependencies.outputs.subnetPrivateEndpointsResourceId
       aiFoundryConfiguration: {
         accountName: 'aifcustom${workloadName}'
         location: enforcedLocation
+        sku: 'S0'
+        createCapabilityHosts: true
         project: {
           name: 'projcustom${workloadName}'
           displayName: 'Custom Project for ${workloadName}'
           desc: 'This is a custom project for testing.'
         }
         allowProjectManagement: true
+        disableLocalAuth: true
         networking: {
-          aiServicesPrivateDnsZoneId: dependencies.outputs.servicesAiDnsZoneResourceId
-          openAiPrivateDnsZoneId: dependencies.outputs.openaiDnsZoneResourceId
-          cognitiveServicesPrivateDnsZoneId: dependencies.outputs.cognitiveServicesDnsZoneResourceId
+          agentServiceSubnetResourceId: dependencies.outputs.subnetAgentResourceId
+          aiServicesPrivateDnsZoneResourceId: dependencies.outputs.servicesAiDnsZoneResourceId
+          openAiPrivateDnsZoneResourceId: dependencies.outputs.openaiDnsZoneResourceId
+          cognitiveServicesPrivateDnsZoneResourceId: dependencies.outputs.cognitiveServicesDnsZoneResourceId
         }
         roleAssignments: [
           {
@@ -86,7 +92,7 @@ module testDeployment '../../../main.bicep' = [
       }
       keyVaultConfiguration: {
         name: 'kvcustom${workloadName}'
-        privateDnsZoneId: dependencies.outputs.keyVaultDnsZoneResourceId
+        privateDnsZoneResourceId: dependencies.outputs.keyVaultDnsZoneResourceId
         roleAssignments: [
           {
             principalId: dependencies.outputs.managedIdentityPrincipalId
@@ -97,8 +103,7 @@ module testDeployment '../../../main.bicep' = [
       }
       storageAccountConfiguration: {
         name: 'stcustom${workloadName}'
-        containerName: 'my-foundry-proj-data'
-        blobPrivateDnsZoneId: dependencies.outputs.blobDnsZoneResourceId
+        blobPrivateDnsZoneResourceId: dependencies.outputs.blobDnsZoneResourceId
         roleAssignments: [
           {
             principalId: dependencies.outputs.managedIdentityPrincipalId
@@ -109,7 +114,7 @@ module testDeployment '../../../main.bicep' = [
       }
       cosmosDbConfiguration: {
         name: 'cosmoscustom${workloadName}'
-        privateDnsZoneId: dependencies.outputs.documentsDnsZoneResourceId
+        privateDnsZoneResourceId: dependencies.outputs.documentsDnsZoneResourceId
         roleAssignments: [
           {
             principalId: dependencies.outputs.managedIdentityPrincipalId
@@ -120,7 +125,7 @@ module testDeployment '../../../main.bicep' = [
       }
       aiSearchConfiguration: {
         name: 'srchcustom${workloadName}'
-        privateDnsZoneId: dependencies.outputs.searchDnsZoneResourceId
+        privateDnsZoneResourceId: dependencies.outputs.searchDnsZoneResourceId
         roleAssignments: [
           {
             principalId: dependencies.outputs.managedIdentityPrincipalId
@@ -131,14 +136,14 @@ module testDeployment '../../../main.bicep' = [
       }
       aiModelDeployments: [
         {
-          name: 'gpt-4.1'
+          name: 'gpt-4o'
           model: {
-            name: 'gpt-4.1'
             format: 'OpenAI'
-            version: '2025-04-14'
+            name: 'gpt-4o'
+            version: '2024-11-20'
           }
           sku: {
-            name: 'GlobalStandard'
+            name: 'Standard'
             capacity: 1
           }
         }

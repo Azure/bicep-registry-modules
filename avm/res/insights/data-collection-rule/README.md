@@ -2,6 +2,14 @@
 
 This module deploys a Data Collection Rule.
 
+You can reference the module as follows:
+```bicep
+module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -16,8 +24,7 @@ This module deploys a Data Collection Rule.
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
-| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.Insights/dataCollectionRules` | 2023-03-11 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_datacollectionrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionRules)</li></ul> |
+| `Microsoft.Insights/dataCollectionRules` | 2024-03-11 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_datacollectionrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2024-03-11/dataCollectionRules)</li></ul> |
 
 ## Usage examples
 
@@ -27,20 +34,25 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/insights/data-collection-rule:<version>`.
 
-- [Agent Settings](#example-1-agent-settings)
-- [Collecting custom text logs with ingestion-time transformation](#example-2-collecting-custom-text-logs-with-ingestion-time-transformation)
-- [Collecting custom text logs](#example-3-collecting-custom-text-logs)
-- [Collecting IIS logs](#example-4-collecting-iis-logs)
-- [Using only defaults](#example-5-using-only-defaults)
-- [Send data to Azure Monitor Logs with Logs ingestion API](#example-6-send-data-to-azure-monitor-logs-with-logs-ingestion-api)
-- [Collecting Linux-specific information](#example-7-collecting-linux-specific-information)
-- [Using large parameter set](#example-8-using-large-parameter-set)
-- [WAF-aligned](#example-9-waf-aligned)
-- [Collecting Windows-specific information](#example-10-collecting-windows-specific-information)
+- [Send data to Azure Storage or Event Hub (Preview)](#example-1-send-data-to-azure-storage-or-event-hub-preview)
+- [Agent Settings](#example-2-agent-settings)
+- [Collecting custom text logs with ingestion-time transformation](#example-3-collecting-custom-text-logs-with-ingestion-time-transformation)
+- [Collecting custom text logs](#example-4-collecting-custom-text-logs)
+- [Collecting IIS logs](#example-5-collecting-iis-logs)
+- [Using only defaults](#example-6-using-only-defaults)
+- [Send data to Azure Monitor Logs with Logs ingestion API](#example-7-send-data-to-azure-monitor-logs-with-logs-ingestion-api)
+- [Collecting Linux-specific information](#example-8-collecting-linux-specific-information)
+- [Using large parameter set](#example-9-using-large-parameter-set)
+- [Collecting metrics from Azure resources using Platform Telemetry DCR](#example-10-collecting-metrics-from-azure-resources-using-platform-telemetry-dcr)
+- [WAF-aligned](#example-11-waf-aligned)
+- [Collecting Windows-specific information](#example-12-collecting-windows-specific-information)
+- [Collecting custom text logs with ingestion-time transformation](#example-13-collecting-custom-text-logs-with-ingestion-time-transformation)
 
-### Example 1: _Agent Settings_
+### Example 1: _Send data to Azure Storage or Event Hub (Preview)_
 
-This instance deploys the module AMA (Azure Monitor Agent) Settings DCR.
+This instance deploys the module to setup sending data to Azure Storage or Event Hub with Logs ingestion API using the AgentDirectToStore kind
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/agent-direct]
 
 
 <details>
@@ -49,7 +61,260 @@ This instance deploys the module AMA (Azure Monitor Agent) Settings DCR.
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
+  params: {
+    // Required parameters
+    dataCollectionRuleProperties: {
+      dataFlows: [
+        {
+          destinations: [
+            'blobNamedPerf'
+            'myEh1'
+            'tableNamedPerf'
+          ]
+          streams: [
+            'Microsoft-Perf'
+          ]
+        }
+        {
+          destinations: [
+            'blobNamedPerf'
+            'myEh1'
+            'tableNamedPerf'
+          ]
+          streams: [
+            'Microsoft-Event'
+          ]
+        }
+      ]
+      dataSources: {
+        performanceCounters: [
+          {
+            counterSpecifiers: [
+              '\\LogicalDisk(_Total)\\% Free Space'
+              '\\Memory\\% Committed Bytes In Use'
+              '\\Network Interface(*)\\Bytes Total/sec'
+              '\\Process(_Total)\\Working Set - Private'
+            ]
+            name: 'perfCounterDataSource10'
+            samplingFrequencyInSeconds: 10
+            streams: [
+              'Microsoft-Perf'
+            ]
+          }
+        ]
+      }
+      description: 'Send data to Agent Direct Storage. Based on the example at https://learn.microsoft.com/en-us/azure/azure-monitor/vm/send-event-hubs-storage'
+      destinations: {
+        eventHubsDirect: [
+          {
+            eventHubResourceId: '<eventHubResourceId>'
+            name: 'myEh1'
+          }
+        ]
+        storageBlobsDirect: [
+          {
+            containerName: '<containerName>'
+            name: 'blobNamedPerf'
+            storageAccountResourceId: '<storageAccountResourceId>'
+          }
+        ]
+        storageTablesDirect: [
+          {
+            name: 'tableNamedPerf'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            tableName: '<tableName>'
+          }
+        ]
+      }
+      kind: 'AgentDirectToStore'
+    }
+    name: 'idcrad001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "dataCollectionRuleProperties": {
+      "value": {
+        "dataFlows": [
+          {
+            "destinations": [
+              "blobNamedPerf",
+              "myEh1",
+              "tableNamedPerf"
+            ],
+            "streams": [
+              "Microsoft-Perf"
+            ]
+          },
+          {
+            "destinations": [
+              "blobNamedPerf",
+              "myEh1",
+              "tableNamedPerf"
+            ],
+            "streams": [
+              "Microsoft-Event"
+            ]
+          }
+        ],
+        "dataSources": {
+          "performanceCounters": [
+            {
+              "counterSpecifiers": [
+                "\\LogicalDisk(_Total)\\% Free Space",
+                "\\Memory\\% Committed Bytes In Use",
+                "\\Network Interface(*)\\Bytes Total/sec",
+                "\\Process(_Total)\\Working Set - Private"
+              ],
+              "name": "perfCounterDataSource10",
+              "samplingFrequencyInSeconds": 10,
+              "streams": [
+                "Microsoft-Perf"
+              ]
+            }
+          ]
+        },
+        "description": "Send data to Agent Direct Storage. Based on the example at https://learn.microsoft.com/en-us/azure/azure-monitor/vm/send-event-hubs-storage",
+        "destinations": {
+          "eventHubsDirect": [
+            {
+              "eventHubResourceId": "<eventHubResourceId>",
+              "name": "myEh1"
+            }
+          ],
+          "storageBlobsDirect": [
+            {
+              "containerName": "<containerName>",
+              "name": "blobNamedPerf",
+              "storageAccountResourceId": "<storageAccountResourceId>"
+            }
+          ],
+          "storageTablesDirect": [
+            {
+              "name": "tableNamedPerf",
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "tableName": "<tableName>"
+            }
+          ]
+        },
+        "kind": "AgentDirectToStore"
+      }
+    },
+    "name": {
+      "value": "idcrad001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/data-collection-rule:<version>'
+
+// Required parameters
+param dataCollectionRuleProperties = {
+  dataFlows: [
+    {
+      destinations: [
+        'blobNamedPerf'
+        'myEh1'
+        'tableNamedPerf'
+      ]
+      streams: [
+        'Microsoft-Perf'
+      ]
+    }
+    {
+      destinations: [
+        'blobNamedPerf'
+        'myEh1'
+        'tableNamedPerf'
+      ]
+      streams: [
+        'Microsoft-Event'
+      ]
+    }
+  ]
+  dataSources: {
+    performanceCounters: [
+      {
+        counterSpecifiers: [
+          '\\LogicalDisk(_Total)\\% Free Space'
+          '\\Memory\\% Committed Bytes In Use'
+          '\\Network Interface(*)\\Bytes Total/sec'
+          '\\Process(_Total)\\Working Set - Private'
+        ]
+        name: 'perfCounterDataSource10'
+        samplingFrequencyInSeconds: 10
+        streams: [
+          'Microsoft-Perf'
+        ]
+      }
+    ]
+  }
+  description: 'Send data to Agent Direct Storage. Based on the example at https://learn.microsoft.com/en-us/azure/azure-monitor/vm/send-event-hubs-storage'
+  destinations: {
+    eventHubsDirect: [
+      {
+        eventHubResourceId: '<eventHubResourceId>'
+        name: 'myEh1'
+      }
+    ]
+    storageBlobsDirect: [
+      {
+        containerName: '<containerName>'
+        name: 'blobNamedPerf'
+        storageAccountResourceId: '<storageAccountResourceId>'
+      }
+    ]
+    storageTablesDirect: [
+      {
+        name: 'tableNamedPerf'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        tableName: '<tableName>'
+      }
+    ]
+  }
+  kind: 'AgentDirectToStore'
+}
+param name = 'idcrad001'
+```
+
+</details>
+<p>
+
+### Example 2: _Agent Settings_
+
+This instance deploys the module AMA (Azure Monitor Agent) Settings DCR.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/agent-settings]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -140,9 +405,11 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Collecting custom text logs with ingestion-time transformation_
+### Example 3: _Collecting custom text logs with ingestion-time transformation_
 
 This instance deploys the module to setup collection of custom logs and ingestion-time transformation.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/customadv]
 
 
 <details>
@@ -151,7 +418,6 @@ This instance deploys the module to setup collection of custom logs and ingestio
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -459,9 +725,11 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _Collecting custom text logs_
+### Example 4: _Collecting custom text logs_
 
 This instance deploys the module to setup collection of custom logs.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/custombasic]
 
 
 <details>
@@ -470,7 +738,6 @@ This instance deploys the module to setup collection of custom logs.
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -719,9 +986,11 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _Collecting IIS logs_
+### Example 5: _Collecting IIS logs_
 
 This instance deploys the module to setup the collection of IIS logs.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/customiis]
 
 
 <details>
@@ -730,7 +999,6 @@ This instance deploys the module to setup the collection of IIS logs.
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -916,9 +1184,11 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _Using only defaults_
+### Example 6: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
 
 <details>
@@ -927,7 +1197,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -1105,9 +1374,11 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 6: _Send data to Azure Monitor Logs with Logs ingestion API_
+### Example 7: _Send data to Azure Monitor Logs with Logs ingestion API_
 
 This instance deploys the module to setup sending data to Azure Monitor Logs with Logs ingestion API.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/direct]
 
 
 <details>
@@ -1116,7 +1387,6 @@ This instance deploys the module to setup sending data to Azure Monitor Logs wit
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -1317,9 +1587,11 @@ param tags = {
 </details>
 <p>
 
-### Example 7: _Collecting Linux-specific information_
+### Example 8: _Collecting Linux-specific information_
 
 This instance deploys the module to setup the collection of Linux-specific performance counters and Linux Syslog.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/linux]
 
 
 <details>
@@ -1328,7 +1600,6 @@ This instance deploys the module to setup the collection of Linux-specific perfo
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -1853,9 +2124,11 @@ param tags = {
 </details>
 <p>
 
-### Example 8: _Using large parameter set_
+### Example 9: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
 
 <details>
@@ -1864,7 +2137,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -2206,9 +2478,11 @@ param tags = {
 </details>
 <p>
 
-### Example 9: _WAF-aligned_
+### Example 10: _Collecting metrics from Azure resources using Platform Telemetry DCR_
 
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+This instance collects metrics from Azure resources using Platform Telemetry and sends them to a Log Analytics workspace.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/plat-tele]
 
 
 <details>
@@ -2217,7 +2491,175 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
+  params: {
+    // Required parameters
+    dataCollectionRuleProperties: {
+      dataFlows: [
+        {
+          destinations: [
+            '<logAnalyticsWorkspaceName>'
+          ]
+          streams: [
+            'Microsoft.Compute/virtualMachines:Metrics-Percentage CPU'
+            'Microsoft.KeyVault/vaults:Metrics-Group-All'
+          ]
+        }
+      ]
+      dataSources: {
+        platformTelemetry: [
+          {
+            name: 'myPlatformTelemetryDataSource'
+            streams: [
+              'Microsoft.Compute/virtualMachines:Metrics-Percentage CPU'
+              'Microsoft.KeyVault/vaults:Metrics-Group-All'
+            ]
+          }
+        ]
+      }
+      description: 'Data Collection Rule to collect monitoring data from your Azure resources'
+      destinations: {
+        logAnalytics: [
+          {
+            name: '<name>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+      }
+      kind: 'PlatformTelemetry'
+    }
+    name: 'idcrpltele001'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "dataCollectionRuleProperties": {
+      "value": {
+        "dataFlows": [
+          {
+            "destinations": [
+              "<logAnalyticsWorkspaceName>"
+            ],
+            "streams": [
+              "Microsoft.Compute/virtualMachines:Metrics-Percentage CPU",
+              "Microsoft.KeyVault/vaults:Metrics-Group-All"
+            ]
+          }
+        ],
+        "dataSources": {
+          "platformTelemetry": [
+            {
+              "name": "myPlatformTelemetryDataSource",
+              "streams": [
+                "Microsoft.Compute/virtualMachines:Metrics-Percentage CPU",
+                "Microsoft.KeyVault/vaults:Metrics-Group-All"
+              ]
+            }
+          ]
+        },
+        "description": "Data Collection Rule to collect monitoring data from your Azure resources",
+        "destinations": {
+          "logAnalytics": [
+            {
+              "name": "<name>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ]
+        },
+        "kind": "PlatformTelemetry"
+      }
+    },
+    "name": {
+      "value": "idcrpltele001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/data-collection-rule:<version>'
+
+// Required parameters
+param dataCollectionRuleProperties = {
+  dataFlows: [
+    {
+      destinations: [
+        '<logAnalyticsWorkspaceName>'
+      ]
+      streams: [
+        'Microsoft.Compute/virtualMachines:Metrics-Percentage CPU'
+        'Microsoft.KeyVault/vaults:Metrics-Group-All'
+      ]
+    }
+  ]
+  dataSources: {
+    platformTelemetry: [
+      {
+        name: 'myPlatformTelemetryDataSource'
+        streams: [
+          'Microsoft.Compute/virtualMachines:Metrics-Percentage CPU'
+          'Microsoft.KeyVault/vaults:Metrics-Group-All'
+        ]
+      }
+    ]
+  }
+  description: 'Data Collection Rule to collect monitoring data from your Azure resources'
+  destinations: {
+    logAnalytics: [
+      {
+        name: '<name>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+  }
+  kind: 'PlatformTelemetry'
+}
+param name = 'idcrpltele001'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 11: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -2604,9 +3046,11 @@ param tags = {
 </details>
 <p>
 
-### Example 10: _Collecting Windows-specific information_
+### Example 12: _Collecting Windows-specific information_
 
 This instance deploys the module to setup the connection of Windows-specific performance counters and Windows Event Logs.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows]
 
 
 <details>
@@ -2615,7 +3059,6 @@ This instance deploys the module to setup the connection of Windows-specific per
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -3002,6 +3445,169 @@ param tags = {
 </details>
 <p>
 
+### Example 13: _Collecting custom text logs with ingestion-time transformation_
+
+This instance deploys the module to setup collection of custom logs and ingestion-time transformation.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/wksp-trans]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
+  params: {
+    // Required parameters
+    dataCollectionRuleProperties: {
+      dataFlows: [
+        {
+          destinations: [
+            '<logAnalyticsWorkspaceName>'
+          ]
+          streams: [
+            'Microsoft-Table-LAQueryLogs'
+          ]
+          transformKql: 'source | where QueryText !contains \'LAQueryLogs\''
+        }
+        {
+          destinations: [
+            '<logAnalyticsWorkspaceName>'
+          ]
+          streams: [
+            'Microsoft-Table-Event'
+          ]
+          transformKql: 'source | project-away ParameterXml'
+        }
+      ]
+      description: 'Data Collection Rule with ingestion-time transformation'
+      destinations: {
+        logAnalytics: [
+          {
+            name: '<name>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+      }
+      kind: 'WorkspaceTransforms'
+    }
+    name: 'idcrwktrns001'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "dataCollectionRuleProperties": {
+      "value": {
+        "dataFlows": [
+          {
+            "destinations": [
+              "<logAnalyticsWorkspaceName>"
+            ],
+            "streams": [
+              "Microsoft-Table-LAQueryLogs"
+            ],
+            "transformKql": "source | where QueryText !contains \"LAQueryLogs\""
+          },
+          {
+            "destinations": [
+              "<logAnalyticsWorkspaceName>"
+            ],
+            "streams": [
+              "Microsoft-Table-Event"
+            ],
+            "transformKql": "source | project-away ParameterXml"
+          }
+        ],
+        "description": "Data Collection Rule with ingestion-time transformation",
+        "destinations": {
+          "logAnalytics": [
+            {
+              "name": "<name>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ]
+        },
+        "kind": "WorkspaceTransforms"
+      }
+    },
+    "name": {
+      "value": "idcrwktrns001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/data-collection-rule:<version>'
+
+// Required parameters
+param dataCollectionRuleProperties = {
+  dataFlows: [
+    {
+      destinations: [
+        '<logAnalyticsWorkspaceName>'
+      ]
+      streams: [
+        'Microsoft-Table-LAQueryLogs'
+      ]
+      transformKql: 'source | where QueryText !contains \'LAQueryLogs\''
+    }
+    {
+      destinations: [
+        '<logAnalyticsWorkspaceName>'
+      ]
+      streams: [
+        'Microsoft-Table-Event'
+      ]
+      transformKql: 'source | project-away ParameterXml'
+    }
+  ]
+  description: 'Data Collection Rule with ingestion-time transformation'
+  destinations: {
+    logAnalytics: [
+      {
+        name: '<name>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+  }
+  kind: 'WorkspaceTransforms'
+}
+param name = 'idcrwktrns001'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -3039,6 +3645,9 @@ The kind of data collection rule.
 | [`All`](#variant-datacollectionrulepropertieskind-all) | The type for the properties of the data collection rule of the kind 'All'. |
 | [`AgentSettings`](#variant-datacollectionrulepropertieskind-agentsettings) | The type for the properties of the 'AgentSettings' data collection rule. |
 | [`Direct`](#variant-datacollectionrulepropertieskind-direct) | The type for the properties of the 'Direct' data collection rule. |
+| [`AgentDirectToStore`](#variant-datacollectionrulepropertieskind-agentdirecttostore) | The type for the properties of the 'AgentDirectToStore' data collection rule. |
+| [`WorkspaceTransforms`](#variant-datacollectionrulepropertieskind-workspacetransforms) | The type for the properties of the 'WorkspaceTransforms' data collection rule. |
+| [`PlatformTelemetry`](#variant-datacollectionrulepropertieskind-platformtelemetry) | The type for the properties of the 'PlatformTelemetry' data collection rule. |
 
 ### Variant: `dataCollectionRuleProperties.kind-Linux`
 The type for the properties of the 'Linux' data collection rule.
@@ -3052,7 +3661,7 @@ To use this variant, set the property `kind` to `Linux`.
 | [`dataFlows`](#parameter-datacollectionrulepropertieskind-linuxdataflows) | array | The specification of data flows. |
 | [`dataSources`](#parameter-datacollectionrulepropertieskind-linuxdatasources) | object | Specification of data sources that will be collected. |
 | [`destinations`](#parameter-datacollectionrulepropertieskind-linuxdestinations) | object | Specification of destinations that can be used in data flows. |
-| [`kind`](#parameter-datacollectionrulepropertieskind-linuxkind) | string | The platform type specifies the type of resources this rule can apply to. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-linuxkind) | string | The kind of the resource. |
 
 **Optional parameters**
 
@@ -3085,7 +3694,7 @@ Specification of destinations that can be used in data flows.
 
 ### Parameter: `dataCollectionRuleProperties.kind-Linux.kind`
 
-The platform type specifies the type of resources this rule can apply to.
+The kind of the resource.
 
 - Required: Yes
 - Type: string
@@ -3129,7 +3738,7 @@ To use this variant, set the property `kind` to `Windows`.
 | [`dataFlows`](#parameter-datacollectionrulepropertieskind-windowsdataflows) | array | The specification of data flows. |
 | [`dataSources`](#parameter-datacollectionrulepropertieskind-windowsdatasources) | object | Specification of data sources that will be collected. |
 | [`destinations`](#parameter-datacollectionrulepropertieskind-windowsdestinations) | object | Specification of destinations that can be used in data flows. |
-| [`kind`](#parameter-datacollectionrulepropertieskind-windowskind) | string | The platform type specifies the type of resources this rule can apply to. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-windowskind) | string | The kind of the resource. |
 
 **Optional parameters**
 
@@ -3162,7 +3771,7 @@ Specification of destinations that can be used in data flows.
 
 ### Parameter: `dataCollectionRuleProperties.kind-Windows.kind`
 
-The platform type specifies the type of resources this rule can apply to.
+The kind of the resource.
 
 - Required: Yes
 - Type: string
@@ -3206,7 +3815,7 @@ To use this variant, set the property `kind` to `All`.
 | [`dataFlows`](#parameter-datacollectionrulepropertieskind-alldataflows) | array | The specification of data flows. |
 | [`dataSources`](#parameter-datacollectionrulepropertieskind-alldatasources) | object | Specification of data sources that will be collected. |
 | [`destinations`](#parameter-datacollectionrulepropertieskind-alldestinations) | object | Specification of destinations that can be used in data flows. |
-| [`kind`](#parameter-datacollectionrulepropertieskind-allkind) | string | The platform type specifies the type of resources this rule can apply to. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-allkind) | string | The kind of the resource. |
 
 **Optional parameters**
 
@@ -3239,7 +3848,7 @@ Specification of destinations that can be used in data flows.
 
 ### Parameter: `dataCollectionRuleProperties.kind-All.kind`
 
-The platform type specifies the type of resources this rule can apply to.
+The kind of the resource.
 
 - Required: Yes
 - Type: string
@@ -3281,7 +3890,7 @@ To use this variant, set the property `kind` to `AgentSettings`.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`agentSettings`](#parameter-datacollectionrulepropertieskind-agentsettingsagentsettings) | object | Agent settings used to modify agent behavior on a given host. |
-| [`kind`](#parameter-datacollectionrulepropertieskind-agentsettingskind) | string | The platform type specifies the type of resources this rule can apply to. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-agentsettingskind) | string | The kind of the resource. |
 
 **Optional parameters**
 
@@ -3339,7 +3948,7 @@ The value of the agent setting.
 
 ### Parameter: `dataCollectionRuleProperties.kind-AgentSettings.kind`
 
-The platform type specifies the type of resources this rule can apply to.
+The kind of the resource.
 
 - Required: Yes
 - Type: string
@@ -3368,7 +3977,7 @@ To use this variant, set the property `kind` to `Direct`.
 | :-- | :-- | :-- |
 | [`dataFlows`](#parameter-datacollectionrulepropertieskind-directdataflows) | array | The specification of data flows. |
 | [`destinations`](#parameter-datacollectionrulepropertieskind-directdestinations) | object | Specification of destinations that can be used in data flows. |
-| [`kind`](#parameter-datacollectionrulepropertieskind-directkind) | string | The platform type specifies the type of resources this rule can apply to. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-directkind) | string | The kind of the resource. |
 | [`streamDeclarations`](#parameter-datacollectionrulepropertieskind-directstreamdeclarations) | object | Declaration of custom streams used in this rule. |
 
 **Optional parameters**
@@ -3394,7 +4003,7 @@ Specification of destinations that can be used in data flows.
 
 ### Parameter: `dataCollectionRuleProperties.kind-Direct.kind`
 
-The platform type specifies the type of resources this rule can apply to.
+The kind of the resource.
 
 - Required: Yes
 - Type: string
@@ -3420,6 +4029,223 @@ The resource ID of the data collection endpoint that this rule can be used with.
 - Type: string
 
 ### Parameter: `dataCollectionRuleProperties.kind-Direct.description`
+
+Description of the data collection rule.
+
+- Required: No
+- Type: string
+
+### Variant: `dataCollectionRuleProperties.kind-AgentDirectToStore`
+The type for the properties of the 'AgentDirectToStore' data collection rule.
+
+To use this variant, set the property `kind` to `AgentDirectToStore`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataFlows`](#parameter-datacollectionrulepropertieskind-agentdirecttostoredataflows) | array | The specification of data flows. |
+| [`dataSources`](#parameter-datacollectionrulepropertieskind-agentdirecttostoredatasources) | object | Specification of data sources that will be collected. |
+| [`destinations`](#parameter-datacollectionrulepropertieskind-agentdirecttostoredestinations) | object | Specification of destinations that can be used in data flows. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-agentdirecttostorekind) | string | The platform type specifies the type of resources this rule can apply to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-datacollectionrulepropertieskind-agentdirecttostoredescription) | string | Description of the data collection rule. |
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.dataFlows`
+
+The specification of data flows.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.dataSources`
+
+Specification of data sources that will be collected.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.destinations`
+
+Specification of destinations that can be used in data flows.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.kind`
+
+The platform type specifies the type of resources this rule can apply to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AgentDirectToStore'
+  ]
+  ```
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.description`
+
+Description of the data collection rule.
+
+- Required: No
+- Type: string
+
+### Variant: `dataCollectionRuleProperties.kind-WorkspaceTransforms`
+The type for the properties of the 'WorkspaceTransforms' data collection rule.
+
+To use this variant, set the property `kind` to `WorkspaceTransforms`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataFlows`](#parameter-datacollectionrulepropertieskind-workspacetransformsdataflows) | array | The specification of data flows. Should include a separate dataflow for each table that will have a transformation. Use a where clause in the query if only certain records should be transformed. |
+| [`destinations`](#parameter-datacollectionrulepropertieskind-workspacetransformsdestinations) | object | Specification of destinations that can be used in data flows. For WorkspaceTransforms, only one Log Analytics workspace destination is supported. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-workspacetransformskind) | string | The kind of the resource. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-datacollectionrulepropertieskind-workspacetransformsdescription) | string | Description of the data collection rule. |
+
+### Parameter: `dataCollectionRuleProperties.kind-WorkspaceTransforms.dataFlows`
+
+The specification of data flows. Should include a separate dataflow for each table that will have a transformation. Use a where clause in the query if only certain records should be transformed.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-WorkspaceTransforms.destinations`
+
+Specification of destinations that can be used in data flows. For WorkspaceTransforms, only one Log Analytics workspace destination is supported.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties.kind-WorkspaceTransforms.kind`
+
+The kind of the resource.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'WorkspaceTransforms'
+  ]
+  ```
+
+### Parameter: `dataCollectionRuleProperties.kind-WorkspaceTransforms.description`
+
+Description of the data collection rule.
+
+- Required: No
+- Type: string
+
+### Variant: `dataCollectionRuleProperties.kind-PlatformTelemetry`
+The type for the properties of the 'PlatformTelemetry' data collection rule.
+
+To use this variant, set the property `kind` to `PlatformTelemetry`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataFlows`](#parameter-datacollectionrulepropertieskind-platformtelemetrydataflows) | array | The specification of data flows. |
+| [`dataSources`](#parameter-datacollectionrulepropertieskind-platformtelemetrydatasources) | object | Specification of data sources that will be collected. |
+| [`destinations`](#parameter-datacollectionrulepropertieskind-platformtelemetrydestinations) | object | Specification of destinations. Choose a single destination type of either logAnalytics, storageAccounts, or eventHubs. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-platformtelemetrykind) | string | The kind of the resource. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-datacollectionrulepropertieskind-platformtelemetrydescription) | string | Description of the data collection rule. |
+
+### Parameter: `dataCollectionRuleProperties.kind-PlatformTelemetry.dataFlows`
+
+The specification of data flows.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-PlatformTelemetry.dataSources`
+
+Specification of data sources that will be collected.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`platformTelemetry`](#parameter-datacollectionrulepropertieskind-platformtelemetrydatasourcesplatformtelemetry) | array | The list of platform telemetry configurations. |
+
+### Parameter: `dataCollectionRuleProperties.kind-PlatformTelemetry.dataSources.platformTelemetry`
+
+The list of platform telemetry configurations.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-PlatformTelemetry.destinations`
+
+Specification of destinations. Choose a single destination type of either logAnalytics, storageAccounts, or eventHubs.
+
+- Required: Yes
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubs`](#parameter-datacollectionrulepropertieskind-platformtelemetrydestinationseventhubs) | array | The list of Event Hub destinations. |
+| [`logAnalytics`](#parameter-datacollectionrulepropertieskind-platformtelemetrydestinationsloganalytics) | array | The list of Log Analytics destinations. |
+| [`storageAccounts`](#parameter-datacollectionrulepropertieskind-platformtelemetrydestinationsstorageaccounts) | array | The list of Storage Account destinations. |
+
+### Parameter: `dataCollectionRuleProperties.kind-PlatformTelemetry.destinations.eventHubs`
+
+The list of Event Hub destinations.
+
+- Required: No
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-PlatformTelemetry.destinations.logAnalytics`
+
+The list of Log Analytics destinations.
+
+- Required: No
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-PlatformTelemetry.destinations.storageAccounts`
+
+The list of Storage Account destinations.
+
+- Required: No
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-PlatformTelemetry.kind`
+
+The kind of the resource.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'PlatformTelemetry'
+  ]
+  ```
+
+### Parameter: `dataCollectionRuleProperties.kind-PlatformTelemetry.description`
 
 Description of the data collection rule.
 
@@ -3635,6 +4461,8 @@ Resource tags.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `endpoints` | object | The endpoints of the dataCollectionRule, if created. |
+| `immutableId` | string | The ImmutableId of the dataCollectionRule. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the dataCollectionRule. |
 | `resourceGroupName` | string | The name of the resource group the dataCollectionRule was created in. |
@@ -3647,9 +4475,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

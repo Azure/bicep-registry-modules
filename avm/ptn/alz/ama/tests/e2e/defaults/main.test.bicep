@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
       dataCollectionRuleMDFCSQLName: 'alz-ama-dcr-mdfc-sql-${namePrefix}${serviceShort}'
       dataCollectionRuleVMInsightsName: 'alz-ama-dcr-vm-insights-${namePrefix}${serviceShort}'
       userAssignedIdentityName: 'alz-ama-identity-${namePrefix}${serviceShort}'
-      logAnalyticsWorkspaceId: dependencies.outputs.logAnalyticsResourceId
+      logAnalyticsWorkspaceResourceId: dependencies.outputs.logAnalyticsResourceId
     }
   }
 ]

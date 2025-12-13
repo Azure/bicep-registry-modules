@@ -7,18 +7,18 @@ param location string = resourceGroup().location
 @description('Required. The name of the Redis cache resource.')
 param name string
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Cache/redis@2024-11-01'>.tags?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -38,14 +38,13 @@ param minimumTlsVersion string = '1.2'
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
 @allowed([
-  ''
   'Enabled'
   'Disabled'
 ])
-param publicNetworkAccess string = ''
+param publicNetworkAccess string?
 
 @description('Optional. All Redis Settings. Few possible keys: rdb-backup-enabled,rdb-storage-connection-string,rdb-backup-frequency,maxmemory-delta,maxmemory-policy,notify-keyspace-events,maxmemory-samples,slowlog-log-slower-than,slowlog-max-len,list-max-ziplist-entries,list-max-ziplist-value,hash-max-ziplist-entries,hash-max-ziplist-value,set-max-intset-entries,zset-max-ziplist-entries,zset-max-ziplist-value etc.')
-param redisConfiguration object = {}
+param redisConfiguration resourceInput<'Microsoft.Cache/redis@2024-11-01'>.properties.redisConfiguration?
 
 @allowed([
   '4'
@@ -87,13 +86,13 @@ param capacity int = 1
 param skuName string = 'Premium'
 
 @description('Optional. Static IP address. Optionally, may be specified when deploying a Redis cache inside an existing Azure Virtual Network; auto assigned by default.')
-param staticIP string = ''
+param staticIP string?
 
 @description('Optional. The full resource ID of a subnet in a virtual network to deploy the Redis cache in.')
-param subnetResourceId string = ''
+param subnetResourceId string?
 
 @description('Optional. A dictionary of tenant settings.')
-param tenantSettings object = {}
+param tenantSettings resourceInput<'Microsoft.Cache/redis@2024-11-01'>.properties.tenantSettings = {}
 
 @description('Optional. When true, replicas will be provisioned in availability zones specified in the zones parameter.')
 param zoneRedundant bool = true
@@ -110,12 +109,12 @@ param availabilityZones int[] = [1, 2, 3]
 ])
 param zonalAllocationPolicy string?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. The geo-replication settings of the service. Requires a Premium SKU. Geo-replication is not supported on a cache with multiple replicas per primary. Secondary cache VM Size must be same or higher as compared to the primary cache VM Size. Geo-replication between a vnet and non vnet cache (and vice-a-versa) not supported.')
-param geoReplicationObject object = {}
+param geoReplicationObject geoReplicationType?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
@@ -125,13 +124,13 @@ param diagnosticSettings diagnosticSettingFullType[]?
 param enableTelemetry bool = true
 
 @description('Optional. Array of access policies to create.')
-param accessPolicies accessPolicyType[] = []
+param accessPolicies accessPolicyType[]?
 
 @description('Optional. Array of access policy assignments.')
-param accessPolicyAssignments accessPolicyAssignmentType[] = []
+param accessPolicyAssignments accessPolicyAssignmentType[]?
 
-@description('Optional. The firewall rules to create in the PostgreSQL flexible server.')
-param firewallRules array = []
+@description('Optional. The firewall rules of the Redis Cache.')
+param firewallRules firewallRuleType[]?
 
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
@@ -219,7 +218,7 @@ resource redis 'Microsoft.Cache/redis@2024-11-01' = {
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? any(publicNetworkAccess)
       : (!empty(privateEndpoints) ? 'Disabled' : null)
-    redisConfiguration: !empty(redisConfiguration) ? redisConfiguration : null
+    redisConfiguration: redisConfiguration
     redisVersion: redisVersion
     replicasPerMaster: skuName == 'Premium' ? replicasPerMaster : null
     replicasPerPrimary: skuName == 'Premium' ? replicasPerPrimary : null
@@ -229,8 +228,8 @@ resource redis 'Microsoft.Cache/redis@2024-11-01' = {
       family: skuName == 'Premium' ? 'P' : 'C'
       name: skuName
     }
-    staticIP: !empty(staticIP) ? staticIP : null
-    subnetId: !empty(subnetResourceId) ? subnetResourceId : null
+    staticIP: staticIP
+    subnetId: subnetResourceId
     tenantSettings: tenantSettings
     zonalAllocationPolicy: skuName == 'Premium' && zoneRedundant ? zonalAllocationPolicy : null
   }
@@ -239,7 +238,7 @@ resource redis 'Microsoft.Cache/redis@2024-11-01' = {
 
 // Deploy access policies
 module redis_accessPolicies 'access-policy/main.bicep' = [
-  for (policy, index) in accessPolicies: {
+  for (policy, index) in (accessPolicies ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-AccessPolicy-${index}'
     params: {
       redisCacheName: redis.name
@@ -251,7 +250,7 @@ module redis_accessPolicies 'access-policy/main.bicep' = [
 
 // Deploy access policy assignments
 module redis_policyAssignments 'access-policy-assignment/main.bicep' = [
-  for (assignment, index) in accessPolicyAssignments: {
+  for (assignment, index) in (accessPolicyAssignments ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-PolicyAssignment-${index}'
     params: {
       redisCacheName: redis.name
@@ -378,7 +377,7 @@ module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0
 ]
 
 module redis_firewallRules 'firewall-rule/main.bicep' = [
-  for (firewallRule, index) in firewallRules: {
+  for (firewallRule, index) in (firewallRules ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-FirewallRules-${index}'
     params: {
       name: firewallRule.name
@@ -393,9 +392,9 @@ module redis_geoReplication 'linked-servers/main.bicep' = if (!empty(geoReplicat
   name: '${uniqueString(deployment().name, location)}-redis-LinkedServer'
   params: {
     redisCacheName: redis.name
-    name: geoReplicationObject.name
-    linkedRedisCacheResourceId: geoReplicationObject.linkedRedisCacheResourceId
-    linkedRedisCacheLocation: geoReplicationObject.?linkedRedisCacheLocation
+    name: geoReplicationObject!.?name
+    linkedRedisCacheResourceId: geoReplicationObject!.linkedRedisCacheResourceId
+    linkedRedisCacheLocation: geoReplicationObject!.?linkedRedisCacheLocation
   }
   dependsOn: redis_privateEndpoints
 }
@@ -500,7 +499,7 @@ output privateEndpoints privateEndpointOutputType[] = [
 import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
-  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  ? toObject(secretsExport!.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
   : {}
 
 // =============== //
@@ -571,4 +570,30 @@ type secretsExportConfigurationType = {
 
   @description('Optional. The secondaryStackExchangeRedisConnectionString secret name to create.')
   secondaryStackExchangeRedisConnectionStringName: string?
+}
+
+@export()
+@description('The type of a firewall rule.')
+type firewallRuleType = {
+  @description('Required. The name of the Redis Cache Firewall Rule.')
+  name: string
+
+  @description('Required. The start IP address of the firewall rule. Must be IPv4 format. Use value \'0.0.0.0\' for all Azure-internal IP addresses.')
+  startIP: string
+
+  @description('Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value \'0.0.0.0\' for all Azure-internal IP addresses.')
+  endIP: string
+}
+
+@export()
+@description('The type of a linked server for geo-replication.')
+type geoReplicationType = {
+  @description('Optional. The name of the secondary Redis cache. If not provided, the primary Redis cache name is used.')
+  name: string?
+
+  @description('Required. The resource ID of the linked server.')
+  linkedRedisCacheResourceId: string
+
+  @description('Optional. The location of the linked server. If not provided, the location of the primary Redis cache is used.')
+  linkedRedisCacheLocation: string?
 }

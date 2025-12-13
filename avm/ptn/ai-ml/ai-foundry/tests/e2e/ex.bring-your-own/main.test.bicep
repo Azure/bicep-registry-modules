@@ -33,6 +33,9 @@ var workloadName = take(padLeft('${namePrefix}${serviceShort}', 12), 12)
 resource dependenciesResourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: 'dep-${namePrefix}-bicep-${serviceShort}-dependencies-rg'
   location: enforcedLocation
+  tags: {
+    SecurityControl: 'Ignore' // ignore security policies imposed on testing subscriptions
+  }
 }
 
 module dependencies 'dependencies.bicep' = {
@@ -49,6 +52,9 @@ module dependencies 'dependencies.bicep' = {
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: enforcedLocation
+  tags: {
+    SecurityControl: 'Ignore' // ignore security policies imposed on testing subscriptions
+  }
 }
 
 // ============== //
@@ -63,6 +69,9 @@ module testDeployment '../../../main.bicep' = [
     params: {
       baseName: workloadName
       includeAssociatedResources: true
+      aiFoundryConfiguration: {
+        createCapabilityHosts: true
+      }
       keyVaultConfiguration: {
         existingResourceId: dependencies.outputs.keyVaultResourceId
       }
@@ -77,14 +86,14 @@ module testDeployment '../../../main.bicep' = [
       }
       aiModelDeployments: [
         {
-          name: 'gpt-4.1'
+          name: 'gpt-4o'
           model: {
-            name: 'gpt-4.1'
             format: 'OpenAI'
-            version: '2025-04-14'
+            name: 'gpt-4o'
+            version: '2024-11-20'
           }
           sku: {
-            name: 'GlobalStandard'
+            name: 'Standard'
             capacity: 1
           }
         }

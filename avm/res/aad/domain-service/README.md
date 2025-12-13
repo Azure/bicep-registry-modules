@@ -2,6 +2,14 @@
 
 This module deploys an Microsoft Entra Domain Services (Azure AD DS) instance.
 
+You can reference the module as follows:
+```bicep
+module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -35,6 +43,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -42,7 +52,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
-  name: 'domainServiceDeployment'
   params: {
     // Required parameters
     domainName: 'onmicrosoft.com'
@@ -75,6 +84,7 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
     lock: {
       kind: 'None'
       name: 'myCustomLockName'
+      notes: 'This is a custom lock for the deployment'
     }
     name: 'aaddswaf001'
     pfxCertificate: '<pfxCertificate>'
@@ -153,7 +163,8 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
     "lock": {
       "value": {
         "kind": "None",
-        "name": "myCustomLockName"
+        "name": "myCustomLockName",
+        "notes": "This is a custom lock for the deployment"
       }
     },
     "name": {
@@ -229,6 +240,7 @@ param location = '<location>'
 param lock = {
   kind: 'None'
   name: 'myCustomLockName'
+  notes: 'This is a custom lock for the deployment'
 }
 param name = 'aaddswaf001'
 param pfxCertificate = '<pfxCertificate>'
@@ -294,7 +306,7 @@ param tags = {
 | [`syncOnPremPasswords`](#parameter-synconprempasswords) | string | The value is to enable on-premises users to authenticate against managed domain. |
 | [`syncScope`](#parameter-syncscope) | string | All users in AAD are synced to AAD DS domain or only users actively syncing in the cloud. Defaults to All. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`tlsV1`](#parameter-tlsv1) | string | The value is to enable clients making request using TLSv1. |
+| [`tlsV1`](#parameter-tlsv1) | string | TLS 1.0 / 1.1 for Azure Domain Services has been deprecated on August 31, 2025. |
 
 ### Parameter: `domainName`
 
@@ -314,7 +326,6 @@ The certificate required to configure Secure LDAP. Should be a base64encoded rep
 
 - Required: No
 - Type: securestring
-- Default: `''`
 
 ### Parameter: `pfxCertificatePassword`
 
@@ -322,7 +333,6 @@ The password to decrypt the provided Secure LDAP certificate PFX file. Required 
 
 - Required: No
 - Type: securestring
-- Default: `''`
 
 ### Parameter: `additionalRecipients`
 
@@ -895,7 +905,7 @@ Tags of the resource.
 
 ### Parameter: `tlsV1`
 
-The value is to enable clients making request using TLSv1.
+TLS 1.0 / 1.1 for Azure Domain Services has been deprecated on August 31, 2025.
 
 - Required: No
 - Type: string
@@ -904,7 +914,6 @@ The value is to enable clients making request using TLSv1.
   ```Bicep
   [
     'Disabled'
-    'Enabled'
   ]
   ```
 
@@ -923,8 +932,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Notes
 
@@ -1025,4 +1033,4 @@ $pfxCertificate = [System.Convert]::ToBase64String($rawCertByteStream)
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

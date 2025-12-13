@@ -2,6 +2,14 @@
 
 This module deploys a Kubernetes Configuration Extension.
 
+You can reference the module as follows:
+```bicep
+module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -16,8 +24,8 @@ This module deploys a Kubernetes Configuration Extension.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.KubernetesConfiguration/extensions` | 2022-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kubernetesconfiguration_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2022-03-01/extensions)</li></ul> |
-| `Microsoft.KubernetesConfiguration/fluxConfigurations` | 2023-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kubernetesconfiguration_fluxconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2023-05-01/fluxConfigurations)</li></ul> |
+| `Microsoft.KubernetesConfiguration/extensions` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kubernetesconfiguration_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2024-11-01/extensions)</li></ul> |
+| `Microsoft.KubernetesConfiguration/fluxConfigurations` | 2025-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kubernetesconfiguration_fluxconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2025-04-01/fluxConfigurations)</li></ul> |
 
 ## Usage examples
 
@@ -28,12 +36,15 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/kubernetes-configuration/extension:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with connected cluster.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/connected-cluster]
 
 
 <details>
@@ -42,14 +53,162 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
-  name: 'extensionDeployment'
+  params: {
+    // Required parameters
+    clusterName: '<clusterName>'
+    extensionType: 'microsoft.flux'
+    name: 'kcecc001'
+    // Non-required parameters
+    clusterType: 'connectedCluster'
+    fluxConfigurations: [
+      {
+        gitRepository: {
+          repositoryRef: {
+            branch: 'main'
+          }
+          sshKnownHosts: ''
+          syncIntervalInSeconds: 300
+          timeoutInSeconds: 180
+          url: 'https://github.com/mspnp/aks-baseline'
+        }
+        kustomizations: {
+          unified: {
+            path: './cluster-manifests'
+          }
+        }
+        namespace: 'flux-system'
+        scope: 'cluster'
+        suspend: false
+      }
+    ]
+    releaseNamespace: 'flux-system'
+    releaseTrain: 'Stable'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "clusterName": {
+      "value": "<clusterName>"
+    },
+    "extensionType": {
+      "value": "microsoft.flux"
+    },
+    "name": {
+      "value": "kcecc001"
+    },
+    // Non-required parameters
+    "clusterType": {
+      "value": "connectedCluster"
+    },
+    "fluxConfigurations": {
+      "value": [
+        {
+          "gitRepository": {
+            "repositoryRef": {
+              "branch": "main"
+            },
+            "sshKnownHosts": "",
+            "syncIntervalInSeconds": 300,
+            "timeoutInSeconds": 180,
+            "url": "https://github.com/mspnp/aks-baseline"
+          },
+          "kustomizations": {
+            "unified": {
+              "path": "./cluster-manifests"
+            }
+          },
+          "namespace": "flux-system",
+          "scope": "cluster",
+          "suspend": false
+        }
+      ]
+    },
+    "releaseNamespace": {
+      "value": "flux-system"
+    },
+    "releaseTrain": {
+      "value": "Stable"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kubernetes-configuration/extension:<version>'
+
+// Required parameters
+param clusterName = '<clusterName>'
+param extensionType = 'microsoft.flux'
+param name = 'kcecc001'
+// Non-required parameters
+param clusterType = 'connectedCluster'
+param fluxConfigurations = [
+  {
+    gitRepository: {
+      repositoryRef: {
+        branch: 'main'
+      }
+      sshKnownHosts: ''
+      syncIntervalInSeconds: 300
+      timeoutInSeconds: 180
+      url: 'https://github.com/mspnp/aks-baseline'
+    }
+    kustomizations: {
+      unified: {
+        path: './cluster-manifests'
+      }
+    }
+    namespace: 'flux-system'
+    scope: 'cluster'
+    suspend: false
+  }
+]
+param releaseNamespace = 'flux-system'
+param releaseTrain = 'Stable'
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
   params: {
     // Required parameters
     clusterName: '<clusterName>'
     extensionType: 'microsoft.flux'
     name: 'kcemin001'
     // Non-required parameters
-    location: '<location>'
     releaseNamespace: 'flux-system'
     releaseTrain: 'Stable'
   }
@@ -79,9 +238,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
       "value": "kcemin001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "releaseNamespace": {
       "value": "flux-system"
     },
@@ -107,7 +263,6 @@ param clusterName = '<clusterName>'
 param extensionType = 'microsoft.flux'
 param name = 'kcemin001'
 // Non-required parameters
-param location = '<location>'
 param releaseNamespace = 'flux-system'
 param releaseTrain = 'Stable'
 ```
@@ -115,9 +270,11 @@ param releaseTrain = 'Stable'
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
 
 <details>
@@ -126,7 +283,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
-  name: 'extensionDeployment'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
@@ -292,9 +448,11 @@ param version = '0.5.2'
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
 
 <details>
@@ -303,7 +461,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
-  name: 'extensionDeployment'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
@@ -338,7 +495,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
         suspend: false
       }
     ]
-    location: '<location>'
     releaseNamespace: 'flux-system'
     releaseTrain: 'Stable'
     version: '0.5.2'
@@ -401,9 +557,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "releaseNamespace": {
       "value": "flux-system"
     },
@@ -460,7 +613,6 @@ param fluxConfigurations = [
     suspend: false
   }
 ]
-param location = '<location>'
 param releaseNamespace = 'flux-system'
 param releaseTrain = 'Stable'
 param version = '0.5.2'
@@ -483,6 +635,7 @@ param version = '0.5.2'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`clusterType`](#parameter-clustertype) | string | The type of cluster to configure. Choose between AKS managed cluster or Arc-enabled connected cluster. |
 | [`configurationProtectedSettings`](#parameter-configurationprotectedsettings) | secureObject | Configuration settings that are sensitive, as name-value pairs for configuring this extension. |
 | [`configurationSettings`](#parameter-configurationsettings) | object | Configuration settings, as name-value pairs for configuring this extension. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -513,6 +666,21 @@ The name of the Flux Configuration.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `clusterType`
+
+The type of cluster to configure. Choose between AKS managed cluster or Arc-enabled connected cluster.
+
+- Required: No
+- Type: string
+- Default: `'managedCluster'`
+- Allowed:
+  ```Bicep
+  [
+    'connectedCluster'
+    'managedCluster'
+  ]
+  ```
 
 ### Parameter: `configurationProtectedSettings`
 
@@ -593,7 +761,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/kubernetes-configuration/flux-configuration:0.3.1` | Remote reference |
+| `br/public:avm/res/kubernetes-configuration/flux-configuration:0.3.8` | Remote reference |
 
 ## Notes
 
@@ -615,4 +783,4 @@ For more details see [Prerequisites](https://learn.microsoft.com/en-us/azure/azu
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

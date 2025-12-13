@@ -45,6 +45,9 @@ param jobSchedules array = []
 @description('Optional. List of variables to be created in the automation account.')
 param variables array = []
 
+@description('Optional. List of webhooks to be created in the automation account.')
+param webhooks array = []
+
 @description('Optional. ID of the log analytics workspace to be linked to the deployed automation account.')
 param linkedWorkspaceResourceId string = ''
 
@@ -62,7 +65,7 @@ param publicNetworkAccess string = ''
 @description('Optional. Disable local authentication profile used within the resource.')
 param disableLocalAuth bool = true
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
@@ -83,10 +86,13 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the Automation Account resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Automation/automationAccounts@2024-10-23'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+@description('Optional. The source control configurations.')
+param sourceControlConfigurations sourceControlConfigurationType[]?
 
 var enableReferencedModulesTelemetry = false
 
@@ -165,19 +171,19 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName!
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
@@ -185,7 +191,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' = {
+resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' = {
   name: name
   location: location
   tags: tags
@@ -204,10 +210,10 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' 
             : null
           keyVaultProperties: {
             keyName: customerManagedKey!.keyName
-            keyvaultUri: cMKKeyVault.properties.vaultUri
+            keyvaultUri: cMKKeyVault!.properties.vaultUri
             keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
               ? customerManagedKey!.?keyVersion!
-              : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+              : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
           }
         }
       : null
@@ -220,7 +226,7 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' 
 
 module automationAccount_credentials 'credential/main.bicep' = [
   for (credential, index) in (credentials ?? []): {
-    name: '${uniqueString(deployment().name, location)}-AutomationAccount-Credential-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutomationAccount-Credential-${index}'
     params: {
       automationAccountName: automationAccount.name
       name: credential.name
@@ -233,7 +239,7 @@ module automationAccount_credentials 'credential/main.bicep' = [
 
 module automationAccount_modules 'module/main.bicep' = [
   for (module, index) in modules: {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Module-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Module-${index}'
     params: {
       name: module.name
       automationAccountName: automationAccount.name
@@ -247,7 +253,7 @@ module automationAccount_modules 'module/main.bicep' = [
 
 module automationAccount_powershell72modules 'powershell72-modules/main.bicep' = [
   for (pwsh72module, index) in (powershell72Modules ?? []): {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Pwsh72Module-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Pwsh72Module-${index}'
     params: {
       name: pwsh72module.name
       automationAccountName: automationAccount.name
@@ -261,7 +267,7 @@ module automationAccount_powershell72modules 'powershell72-modules/main.bicep' =
 
 module automationAccount_python3packages 'python3-packages/main.bicep' = [
   for (python3package, index) in (python3Packages ?? []): {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Python3Package-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Python3Package-${index}'
     params: {
       name: python3package.name
       automationAccountName: automationAccount.name
@@ -274,7 +280,7 @@ module automationAccount_python3packages 'python3-packages/main.bicep' = [
 
 module automationAccount_python2packages 'python2-packages/main.bicep' = [
   for (python2package, index) in (python2Packages ?? []): {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Python2Package-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Python2Package-${index}'
     params: {
       name: python2package.name
       automationAccountName: automationAccount.name
@@ -287,7 +293,7 @@ module automationAccount_python2packages 'python2-packages/main.bicep' = [
 
 module automationAccount_schedules 'schedule/main.bicep' = [
   for (schedule, index) in schedules: {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Schedule-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Schedule-${index}'
     params: {
       name: schedule.name
       automationAccountName: automationAccount.name
@@ -304,7 +310,7 @@ module automationAccount_schedules 'schedule/main.bicep' = [
 
 module automationAccount_runbooks 'runbook/main.bicep' = [
   for (runbook, index) in runbooks: {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Runbook-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Runbook-${index}'
     params: {
       name: runbook.name
       automationAccountName: automationAccount.name
@@ -322,7 +328,7 @@ module automationAccount_runbooks 'runbook/main.bicep' = [
 
 module automationAccount_jobSchedules 'job-schedule/main.bicep' = [
   for (jobSchedule, index) in jobSchedules: {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-JobSchedule-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-JobSchedule-${index}'
     params: {
       automationAccountName: automationAccount.name
       runbookName: jobSchedule.runbookName
@@ -339,7 +345,7 @@ module automationAccount_jobSchedules 'job-schedule/main.bicep' = [
 
 module automationAccount_variables 'variable/main.bicep' = [
   for (variable, index) in variables: {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Variable-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Variable-${index}'
     params: {
       automationAccountName: automationAccount.name
       name: variable.name
@@ -350,8 +356,40 @@ module automationAccount_variables 'variable/main.bicep' = [
   }
 ]
 
+module automationAccount_webhook 'webhook/main.bicep' = [
+  for (webhook, index) in webhooks: {
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Webhook-${index}'
+    params: {
+      automationAccountName: automationAccount.name
+      name: webhook.name
+      runbookName: webhook.runbookName
+      runOn: webhook.?runOn
+      expiryTime: webhook.?expiryTime
+      parameters: webhook.?parameters
+    }
+  }
+]
+
+module automationAccount_sourceControlConfigurations 'source-control/main.bicep' = [
+  for (configuration, index) in (sourceControlConfigurations ?? []): {
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Variable-${index}'
+    params: {
+      automationAccountName: automationAccount.name
+      branch: configuration.branch
+      description: configuration.description
+      folderPath: configuration.folderPath
+      name: configuration.name
+      repoUrl: configuration.repoUrl
+      sourceType: configuration.sourceType
+      securityToken: configuration.?securityToken
+      autoSync: configuration.?autoSync
+      publishRunbook: configuration.?publishRunbook
+    }
+  }
+]
+
 module automationAccount_linkedService 'modules/linked-service.bicep' = if (!empty(linkedWorkspaceResourceId)) {
-  name: '${uniqueString(deployment().name, location)}-AutoAccount-LinkedService'
+  name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-LinkedService'
   params: {
     name: 'automation'
     logAnalyticsWorkspaceName: last(split(linkedWorkspaceResourceId, '/'))!
@@ -372,7 +410,7 @@ module automationAccount_linkedService 'modules/linked-service.bicep' = if (!emp
 
 module automationAccount_solutions 'br/public:avm/res/operations-management/solution:0.3.1' = [
   for (gallerySolution, index) in gallerySolutions ?? []: if (!empty(linkedWorkspaceResourceId)) {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Solution-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Solution-${index}'
     params: {
       name: gallerySolution.name
       location: location
@@ -436,9 +474,9 @@ resource automationAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSett
   }
 ]
 
-module automationAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module automationAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-automationAccount-pe-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-automationAccount-pe-${index}'
     scope: resourceGroup(
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
@@ -566,17 +604,17 @@ type privateEndpointOutputType = {
 
 @export()
 type credentialType = {
-  @sys.description('Required. Name of the Automation Account credential.')
+  @description('Required. Name of the Automation Account credential.')
   name: string
 
-  @sys.description('Required. The user name associated to the credential.')
+  @description('Required. The user name associated to the credential.')
   userName: string
 
-  @sys.description('Required. Password of the credential.')
+  @description('Required. Password of the credential.')
   @secure()
   password: string
 
-  @sys.description('Optional. Description of the credential.')
+  @description('Optional. Description of the credential.')
   description: string?
 }
 
@@ -627,4 +665,36 @@ type python23PackageType = {
 
   @description('Optional. Module version or specify latest to get the latest version.')
   version: string?
+}
+
+@export()
+@description('The type of a source control configuration.')
+type sourceControlConfigurationType = {
+  @description('Required. Type of source control mechanism.')
+  sourceType: ('GitHub' | 'VsoGit' | 'VsoTfvc')
+
+  @description('Optional. Setting that turns on or off automatic synchronization when a commit is made in the source control repository or GitHub repo. Defaults to `false`.')
+  autoSync: bool?
+
+  @description('Required. The repo url of the source control.')
+  @maxLength(2000)
+  repoUrl: string
+
+  @description('Required. The repo branch of the source control. Include branch as empty string for VsoTfvc.')
+  @maxLength(255)
+  branch: string
+
+  @description('Required. The folder path of the source control. Path must be relative.')
+  @maxLength(255)
+  folderPath: string
+
+  @description('Optional. The auto publish of the source control. Defaults to `true`.')
+  publishRunbook: bool?
+
+  @description('Required. The user description of the source control.')
+  @maxLength(512)
+  description: string
+
+  @description('Optional. The authorization token for the repo of the source control.')
+  securityToken: resourceInput<'Microsoft.Automation/automationAccounts/sourceControls@2024-10-23'>.properties.securityToken?
 }

@@ -42,14 +42,16 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    applicationInsightsName: 'dep-${namePrefix}-ai-${serviceShort}'
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     locationRegion1: resourceLocation
     locationRegion2: locationRegion2
-    logAnalyticsWorkspaceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-    routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
-    networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    publicIPNamePrefix: 'dep-${namePrefix}-pip-${serviceShort}'
+    publicIpDnsLabelPrefix: 'dep-${namePrefix}-dnsprefix-${uniqueString(deployment().name, resourceLocation)}'
+    networkSecurityGroupNamePrefix: 'dep-${namePrefix}-nsg-${serviceShort}'
+    virtualNetworkNamePrefix: 'dep-${namePrefix}-vnet-${serviceShort}'
+    routeTableNamePrefix: 'dep-${namePrefix}-rt-${serviceShort}'
+    applicationInsightsName: 'dep-${namePrefix}-ai-${serviceShort}'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-s-${serviceShort}'
   }
 }
 
@@ -96,6 +98,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       virtualNetworkType: 'External'
       subnetResourceId: nestedDependencies.outputs.subnetResourceIdRegion1
+      publicNetworkAccess: 'Enabled'
       apis: [
         {
           displayName: 'Echo API'
@@ -177,7 +180,7 @@ module testDeployment '../../../main.bicep' = [
           clientLibrary: 'MSAL-2'
           clientSecret: 'apimSlientSecret'
           authority: split(environment().authentication.loginEndpoint, '/')[2]
-          signinTenant: 'mytenant.onmicrosoft.com'
+          signInTenant: 'mytenant.onmicrosoft.com'
           allowedTenants: [
             'mytenant.onmicrosoft.com'
           ]
@@ -186,13 +189,13 @@ module testDeployment '../../../main.bicep' = [
       loggers: [
         {
           name: 'logger'
-          loggerType: 'applicationInsights'
+          type: 'applicationInsights'
           isBuffered: false
           description: 'Logger to Azure Application Insights'
           credentials: {
             instrumentationKey: nestedDependencies.outputs.appInsightsInstrumentationKey
           }
-          resourceId: nestedDependencies.outputs.appInsightsResourceId
+          targetResourceId: nestedDependencies.outputs.appInsightsResourceId
         }
       ]
       lock: {
@@ -251,27 +254,27 @@ module testDeployment '../../../main.bicep' = [
             validationKey: ''
           }
         }
-      // TODO: Uncomment when delegation is working properly
-      //   {
-      //     name: 'delegation'
-      //     properties: {
-      //       enabled: false
-      //       termsOfService: {
-      //         consentRequired: false
-      //         enabled: false
-      //         text: 'Terms of service text'
-      //       }
-      //       subscriptions: {
-      //         enabled: false
-      //       }
-      //       url: 'https://test.com'
-      //       userRegistration: {
-      //         enabled: false
-      //       }
-      //       validationKey: 'dGVzdGtleQ==' // base64 encoded 'testkey'
-      //       validationSecondaryKey: 'dGVzdGtleTI=' // base64 encoded 'testkey2'
-      //     }
-      //   }
+        // TODO: Uncomment when delegation is working properly
+        //   {
+        //     name: 'delegation'
+        //     properties: {
+        //       enabled: false
+        //       termsOfService: {
+        //         consentRequired: false
+        //         enabled: false
+        //         text: 'Terms of service text'
+        //       }
+        //       subscriptions: {
+        //         enabled: false
+        //       }
+        //       url: 'https://test.com'
+        //       userRegistration: {
+        //         enabled: false
+        //       }
+        //       validationKey: 'dGVzdGtleQ==' // base64 encoded 'testkey'
+        //       validationSecondaryKey: 'dGVzdGtleTI=' // base64 encoded 'testkey2'
+        //     }
+        //   }
       ]
       // TODO: Uncomment when PEs are working properly
       // privateEndpoints: [
@@ -304,15 +307,11 @@ module testDeployment '../../../main.bicep' = [
       products: [
         {
           apis: [
-            {
-              name: 'echo-api'
-            }
+            'echo-api'
           ]
           approvalRequired: false
           groups: [
-            {
-              name: 'developers'
-            }
+            'developers'
           ]
           name: 'Starter'
           displayName: 'Starter'

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "17292900554439545318"
+      "templateHash": "1375129081956082317"
     },
     "name": "Container App Jobs",
     "description": "This module deploys a Container App Job."
@@ -872,11 +872,14 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/jobs@2025-02-02-preview#properties/tags"
+        },
         "example": "  {\n      key1: 'value1'\n      key2: 'value2'\n  }\n  ",
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "registries": {
       "type": "array",

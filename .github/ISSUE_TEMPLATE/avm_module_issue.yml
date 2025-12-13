@@ -35,7 +35,10 @@ body:
     id: module-name-dropdown
     attributes:
       label: Module Name
-      description: Which existing AVM module is this issue related to?
+      description: |
+        Which existing AVM module is this issue related to?
+
+        > **NOTE**: Issues related to child modules and multi-scope modules must be submitted under the corresponding parent module.
       options:
         - ""
         - "avm/ptn/aca-lza/hosting-environment"
@@ -46,6 +49,7 @@ body:
         - "avm/ptn/app-service-lza/hosting-environment"
         - "avm/ptn/app/container-job-toolkit"
         - "avm/ptn/app/iaas-vm-cosmosdb-tier4"
+        - "avm/ptn/app/paas-ase-cosmosdb-tier4"
         - "avm/ptn/authorization/pim-role-assignment"
         - "avm/ptn/authorization/policy-assignment"
         - "avm/ptn/authorization/policy-exemption"
@@ -73,8 +77,10 @@ body:
         - "avm/ptn/network/hub-networking"
         - "avm/ptn/network/private-link-private-dns-zones"
         - "avm/ptn/policy-insights/remediation"
+        - "avm/ptn/sa/chat-with-your-data"
         - "avm/ptn/sa/content-processing"
         - "avm/ptn/sa/conversation-knowledge-mining"
+        - "avm/ptn/sa/document-knowledge-mining"
         - "avm/ptn/sa/modernize-your-code"
         - "avm/ptn/sa/multi-agent-custom-automation-engine"
         - "avm/ptn/security/security-center"
@@ -89,6 +95,7 @@ body:
         - "avm/res/app/job"
         - "avm/res/app/managed-environment"
         - "avm/res/app/session-pool"
+        - "avm/res/authorization/policy-assignment"
         - "avm/res/authorization/role-assignment"
         - "avm/res/automation/automation-account"
         - "avm/res/azure-stack-hci/cluster"
@@ -161,6 +168,7 @@ body:
         - "avm/res/key-vault/vault"
         - "avm/res/kubernetes-configuration/extension"
         - "avm/res/kubernetes-configuration/flux-configuration"
+        - "avm/res/kubernetes-runtime/load-balancer"
         - "avm/res/kubernetes/connected-cluster"
         - "avm/res/kusto/cluster"
         - "avm/res/load-test-service/load-test"
@@ -172,6 +180,7 @@ body:
         - "avm/res/managed-identity/user-assigned-identity"
         - "avm/res/managed-services/registration-definition"
         - "avm/res/management/management-group"
+        - "avm/res/management/service-group"
         - "avm/res/maps/account"
         - "avm/res/net-app/net-app-account"
         - "avm/res/network/application-gateway"
@@ -214,6 +223,7 @@ body:
         - "avm/res/network/vpn-gateway"
         - "avm/res/network/vpn-server-configuration"
         - "avm/res/network/vpn-site"
+        - "avm/res/operational-insights/cluster"
         - "avm/res/operational-insights/workspace"
         - "avm/res/operations-management/solution"
         - "avm/res/portal/dashboard"

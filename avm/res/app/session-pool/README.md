@@ -2,6 +2,14 @@
 
 This module deploys a Container App Session Pool.
 
+You can reference the module as follows:
+```bicep
+module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -35,6 +43,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -42,7 +52,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
-  name: 'sessionPoolDeployment'
   params: {
     // Required parameters
     containerType: 'PythonLTS'
@@ -104,6 +113,8 @@ param location = '<location>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -111,7 +122,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
-  name: 'sessionPoolDeployment'
   params: {
     // Required parameters
     containerType: 'PythonLTS'
@@ -266,6 +276,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -273,7 +285,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
-  name: 'sessionPoolDeployment'
   params: {
     // Required parameters
     containerType: 'PythonLTS'
@@ -363,7 +374,7 @@ param tags = {
 | [`containers`](#parameter-containers) | array | Custom container definitions. Only required if containerType is CustomContainer. |
 | [`cooldownPeriodInSeconds`](#parameter-cooldownperiodinseconds) | int | The cooldown period of a session in seconds. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`environmentId`](#parameter-environmentid) | string | Resource ID of the session pool's environment. |
+| [`environmentResourceId`](#parameter-environmentresourceid) | string | Resource ID of the session pool's environment. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -534,7 +545,7 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `environmentId`
+### Parameter: `environmentResourceId`
 
 Resource ID of the session pool's environment.
 
@@ -884,4 +895,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

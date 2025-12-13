@@ -29,20 +29,23 @@ var workloadName = take(padLeft('${namePrefix}${serviceShort}', 12), 12)
 // Dependencies //
 // ============ //
 
-module dependencies 'dependencies.bicep' = {
-  name: take('module.dependencies.${workloadName}', 64)
-  scope: resourceGroup
-  params: {
-    workloadName: workloadName
-    location: enforcedLocation
-  }
-}
-
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
+  tags: {
+    SecurityControl: 'Ignore' // ignore security policies imposed on testing subscriptions
+  }
+}
+
+module dependencies 'dependencies.bicep' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  scope: resourceGroup
+  params: {
+    workloadName: workloadName
+    location: enforcedLocation
+  }
 }
 
 // ============== //
@@ -57,36 +60,38 @@ module testDeployment '../../../main.bicep' = [
     params: {
       baseName: workloadName
       includeAssociatedResources: true
-      privateEndpointSubnetId: dependencies.outputs.subnetPrivateEndpointsResourceId
+      privateEndpointSubnetResourceId: dependencies.outputs.subnetPrivateEndpointsResourceId
       aiFoundryConfiguration: {
+        createCapabilityHosts: true
         networking: {
-          aiServicesPrivateDnsZoneId: dependencies.outputs.servicesAiDnsZoneResourceId
-          openAiPrivateDnsZoneId: dependencies.outputs.openaiDnsZoneResourceId
-          cognitiveServicesPrivateDnsZoneId: dependencies.outputs.cognitiveServicesDnsZoneResourceId
+          agentServiceSubnetResourceId: dependencies.outputs.subnetAgentResourceId
+          aiServicesPrivateDnsZoneResourceId: dependencies.outputs.servicesAiDnsZoneResourceId
+          openAiPrivateDnsZoneResourceId: dependencies.outputs.openaiDnsZoneResourceId
+          cognitiveServicesPrivateDnsZoneResourceId: dependencies.outputs.cognitiveServicesDnsZoneResourceId
         }
       }
       storageAccountConfiguration: {
-        blobPrivateDnsZoneId: dependencies.outputs.blobDnsZoneResourceId
+        blobPrivateDnsZoneResourceId: dependencies.outputs.blobDnsZoneResourceId
       }
       aiSearchConfiguration: {
-        privateDnsZoneId: dependencies.outputs.searchDnsZoneResourceId
+        privateDnsZoneResourceId: dependencies.outputs.searchDnsZoneResourceId
       }
       keyVaultConfiguration: {
-        privateDnsZoneId: dependencies.outputs.keyVaultDnsZoneResourceId
+        privateDnsZoneResourceId: dependencies.outputs.keyVaultDnsZoneResourceId
       }
       cosmosDbConfiguration: {
-        privateDnsZoneId: dependencies.outputs.documentsDnsZoneResourceId
+        privateDnsZoneResourceId: dependencies.outputs.documentsDnsZoneResourceId
       }
       aiModelDeployments: [
         {
-          name: 'gpt-4.1'
+          name: 'gpt-4o'
           model: {
-            name: 'gpt-4.1'
             format: 'OpenAI'
-            version: '2025-04-14'
+            name: 'gpt-4o'
+            version: '2024-11-20'
           }
           sku: {
-            name: 'GlobalStandard'
+            name: 'Standard'
             capacity: 1
           }
         }

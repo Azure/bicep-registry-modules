@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "14091618641789964723"
+      "templateHash": "17337433088192690119"
     },
     "name": "Container App Session Pool",
     "description": "This module deploys a Container App Session Pool."
@@ -441,7 +441,7 @@
         "description": "Optional. Settings for a Managed Identity that is assigned to the Session pool."
       }
     },
-    "environmentId": {
+    "environmentResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -450,10 +450,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/sessionPools@2024-10-02-preview#properties/tags"
+        },
         "description": "Optional. Tags of the Automation Account resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -513,7 +516,7 @@
       "identity": "[variables('identity')]",
       "properties": {
         "containerType": "[parameters('containerType')]",
-        "environmentId": "[parameters('environmentId')]",
+        "environmentId": "[parameters('environmentResourceId')]",
         "customContainerTemplate": "[if(equals(parameters('containerType'), 'CustomContainer'), createObject('containers', parameters('containers'), 'ingress', createObject('targetPort', parameters('targetIngressPort')), 'registryCredentials', parameters('registryCredentials')), null())]",
         "dynamicPoolConfiguration": {
           "cooldownPeriodInSeconds": "[parameters('cooldownPeriodInSeconds')]",

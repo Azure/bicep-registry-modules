@@ -5,7 +5,7 @@ metadata description = 'This module deploys an Azure Databricks Workspace.'
 param name string
 
 @description('Optional. The managed resource group ID. It is created by the module as per the to-be resource ID you provide.')
-param managedResourceGroupResourceId string = ''
+param managedResourceGroupResourceId string?
 
 @description('Optional. The pricing tier of workspace.')
 @allowed([
@@ -18,20 +18,20 @@ param skuName string = 'premium'
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Databricks/workspaces@2024-05-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -51,12 +51,13 @@ param customPublicSubnetName string = ''
 @description('Optional. Disable Public IP.')
 param disablePublicIp bool = false
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The customer managed key definition to use for the managed service.')
 param customerManagedKey customerManagedKeyType?
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Optional. The customer managed key definition to use for the managed disk.')
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+@description('''Optional. The customer managed key definition to use for the managed disk.
+Action Required: A role assignment needs to be added to the key that is used by the Disk Encryption Set created during workspace deployment. After your workspace is created, please follow the steps outlined in the documentation. If this action is not taken, cluster creation will fail ([learn more](https://learn.microsoft.com/azure/databricks/security/keys/cmk-managed-disks-azure?WT.mc_id=Portal-Microsoft_Azure_Databricks)).''')
 param customerManagedKeyManagedDisk customerManagedKeyWithAutoRotateType?
 
 @description('Optional. Name of the outbound Load Balancer Backend Pool for Secure Cluster Connectivity (No Public IP).')
@@ -108,7 +109,7 @@ param requiredNsgRules string = 'AllRules'
 ])
 param privateStorageAccount string = ''
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
@@ -194,29 +195,30 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
+var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+module cMKKeyVaultRef 'modules/cmkReferences.bicep' = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+  name: '${uniqueString(deployment().name)}-cmkKeyVault'
+  params: {
+    keyVaultResourceId: customerManagedKey!.keyVaultResourceId
+    keyName: customerManagedKey!.keyName
+  }
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
-
-  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
-  }
 }
 
-// Added condition if the key vault for the managed disk is the same as for the default encryption. Without the condition, the same key vault would be defined twice in the same template, which is not allowed
-resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && customerManagedKeyManagedDisk.?keyVaultResourceId != customerManagedKey.?keyVaultResourceId) {
-  name: last(split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/'))
+var isHSMManagedCMKDisk = split(customerManagedKeyManagedDisk.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+module cMKManagedKeyVaultDiskRef 'modules/cmkReferences.bicep' = if (!empty(customerManagedKeyManagedDisk) && !isHSMManagedCMKDisk) {
+  name: '${uniqueString(deployment().name)}-cmkDiskKeyVault'
+  params: {
+    keyVaultResourceId: customerManagedKeyManagedDisk!.keyVaultResourceId
+    keyName: customerManagedKeyManagedDisk!.keyName
+  }
   scope: resourceGroup(
     split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/')[2],
     split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/')[4]
   )
-
-  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && !empty(customerManagedKeyManagedDisk.?keyName)) {
-    name: customerManagedKeyManagedDisk.?keyName ?? 'dummyKey'
-  }
 }
 
 resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
@@ -228,7 +230,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
   }
   properties: {
     managedResourceGroupId: !empty(managedResourceGroupResourceId)
-      ? managedResourceGroupResourceId
+      ? managedResourceGroupResourceId!
       : '${subscription().id}/resourceGroups/rg-${name}-managed'
     parameters: {
       enableNoPublicIp: {
@@ -327,11 +329,15 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
               ? {
                   keySource: 'Microsoft.Keyvault'
                   keyVaultProperties: {
-                    keyVaultUri: cMKKeyVault!.properties.vaultUri
+                    keyVaultUri: !isHSMManagedCMK
+                      ? cMKKeyVaultRef!.outputs.vaultUri
+                      : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/'
                     keyName: customerManagedKey!.keyName
                     keyVersion: !empty(customerManagedKey.?keyVersion)
                       ? customerManagedKey!.?keyVersion!
-                      : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
+                      : !isHSMManagedCMK
+                          ? cMKKeyVaultRef!.outputs.keyVersion
+                          : fail('Managed HSM CMK encryption requires specifying the \'keyVersion\'.')
                   }
                 }
               : null
@@ -339,16 +345,15 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
               ? {
                   keySource: 'Microsoft.Keyvault'
                   keyVaultProperties: {
-                    keyVaultUri: (customerManagedKeyManagedDisk!.?keyVaultResourceId != customerManagedKey!.?keyVaultResourceId)
-                      ? cMKManagedDiskKeyVault!.properties.vaultUri
-                      : cMKKeyVault!.properties.vaultUri
+                    keyVaultUri: !isHSMManagedCMK
+                      ? cMKManagedKeyVaultDiskRef!.outputs.vaultUri
+                      : 'https://${last(split((customerManagedKeyManagedDisk.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/'
                     keyName: customerManagedKeyManagedDisk!.keyName
-                    keyVersion: last(split(
-                      (customerManagedKeyManagedDisk!.?keyVaultResourceId != customerManagedKey!.?keyVaultResourceId)
-                        ? cMKManagedDiskKeyVault::cMKKey!.properties.keyUriWithVersion
-                        : cMKKeyVault::cMKKey!.properties.keyUriWithVersion,
-                      '/'
-                    ))
+                    keyVersion: !empty(customerManagedKeyManagedDisk.?keyVersion)
+                      ? customerManagedKeyManagedDisk!.?keyVersion!
+                      : (!isHSMManagedCMK
+                          ? cMKManagedKeyVaultDiskRef!.outputs.keyVersion
+                          : fail('Managed HSM CMK encryption requires specifying the \'keyVersion\'.')) // Also if auto-rotation is enabled. An empty value / null is not allowed as a value for this property
                   }
                   rotationToLatestKeyVersionEnabled: (customerManagedKeyManagedDisk.?autoRotationEnabled ?? true) ?? false
                 }
@@ -447,7 +452,7 @@ resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
 ]
 
 @batchSize(1)
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -511,7 +516,7 @@ var _storageAccountId = resourceId(
 )
 
 @batchSize(1)
-module storageAccount_storageAccountPrivateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module storageAccount_storageAccountPrivateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (storageAccountPrivateEndpoints ?? []): if (privateStorageAccount == 'Enabled') {
     name: '${uniqueString(deployment().name, location)}-workspacestorage-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -595,6 +600,9 @@ output workspaceUrl string = workspace.properties.workspaceUrl
 
 @description('The unique identifier of the databricks workspace in databricks control plane.')
 output workspaceResourceId string = workspace.properties.workspaceId
+
+@description('The principal ID of the managed disk identity created by the workspace if CMK for managed disks is enabled.')
+output managedDiskIdentityPrincipalId string? = workspace.properties.?managedDiskIdentity.?principalId
 
 @description('The private endpoints of the Databricks Workspace.')
 output privateEndpoints privateEndpointOutputType[] = [

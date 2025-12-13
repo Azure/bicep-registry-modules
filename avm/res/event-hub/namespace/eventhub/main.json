@@ -5,13 +5,169 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "5240492241247082284"
+      "version": "0.38.33.27573",
+      "templateHash": "11753625464382465575"
     },
     "name": "Event Hub Namespace Event Hubs",
     "description": "This module deploys an Event Hub Namespace Event Hub."
   },
   "definitions": {
+    "eventHubAuthorizationRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Event Hub authorization rule."
+          }
+        },
+        "rights": {
+          "type": "array",
+          "allowedValues": [
+            "Listen",
+            "Manage",
+            "Send"
+          ],
+          "metadata": {
+            "description": "Required. The allowed rights for an Event Hub authorization rule."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for an Event Hub authorization rule."
+      }
+    },
+    "consumerGroupType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the consumer group."
+          }
+        },
+        "userMetadata": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. User Metadata is a placeholder to store user-defined string data with maximum length 1024. e.g. it can be used to store descriptive data, such as list of teams and their contact information also user-defined configuration settings can be stored."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for an Event Hub consumer group."
+      }
+    },
+    "captureDescriptionType": {
+      "type": "object",
+      "properties": {
+        "destination": {
+          "type": "object",
+          "properties": {
+            "identity": {
+              "$ref": "#/definitions/managedIdentityType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The identity used for the capture destination."
+              }
+            },
+            "name": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Name for capture destination."
+              }
+            },
+            "properties": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.EventHub/namespaces/eventhubs@2024-01-01#properties/properties/properties/captureDescription/properties/destination/properties/properties"
+                },
+                "description": "Optional. Properties describing the storage account, blob container and archive name format for capture destination."
+              },
+              "nullable": true
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Properties of Destination where capture will be stored. (Storage Account, Blob Names)."
+          }
+        },
+        "enabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A value that indicates whether capture description is enabled. Defaults to true if `captureDescription` is provided."
+          }
+        },
+        "encoding": {
+          "type": "string",
+          "allowedValues": [
+            "Avro",
+            "AvroDeflate"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enumerates the possible values for the encoding format of capture description. Note: \"AvroDeflate\" will be deprecated in New API Version."
+          }
+        },
+        "intervalInSeconds": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 60,
+          "maxValue": 900,
+          "metadata": {
+            "description": "Optional. The time window allows you to set the frequency with which the capture to Azure Blobs will happen."
+          }
+        },
+        "sizeLimitInBytes": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 10485760,
+          "maxValue": 524288000,
+          "metadata": {
+            "description": "Optional. The size window defines the amount of data built up in your Event Hub before an capture operation."
+          }
+        },
+        "skipEmptyArchives": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A value that indicates whether to Skip Empty Archives."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a capture description."
+      }
+    },
+    "managedIdentityType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource. Mutually exclusive with `userAssignedResourceId`."
+          }
+        },
+        "userAssignedResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID to assign to the resource. Mutually exclusive with `systemAssigned`."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "An AVM-aligned type for a managed identity configuration. Supports a muturally exclusive system- & user-assigned identity."
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -45,7 +201,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -120,7 +276,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -129,17 +285,20 @@
     "namespaceName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the parent event hub namespace. Required if the template is used in a standalone deployment."
+        "description": "Conditional. The name of the parent Event Hub namespace. Required if the template is used in a standalone deployment."
       }
     },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the event hub."
+        "description": "Required. The name of the Event Hub."
       }
     },
     "authorizationRules": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/eventHubAuthorizationRuleType"
+      },
       "defaultValue": [
         {
           "name": "RootManageSharedAccessKey",
@@ -151,7 +310,7 @@
         }
       ],
       "metadata": {
-        "description": "Optional. Authorization Rules for the event hub."
+        "description": "Optional. Authorization Rules for the Event Hub."
       }
     },
     "messageRetentionInDays": {
@@ -174,31 +333,26 @@
     },
     "status": {
       "type": "string",
-      "defaultValue": "Active",
-      "allowedValues": [
-        "Active",
-        "Creating",
-        "Deleting",
-        "Disabled",
-        "ReceiveDisabled",
-        "Renaming",
-        "Restoring",
-        "SendDisabled",
-        "Unknown"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventHub/namespaces/eventhubs@2024-01-01#properties/properties/properties/status"
+        },
         "description": "Optional. Enumerates the possible values for the status of the Event Hub."
-      }
+      },
+      "nullable": true
     },
     "consumergroups": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/consumerGroupType"
+      },
       "defaultValue": [
         {
           "name": "$Default"
         }
       ],
       "metadata": {
-        "description": "Optional. The consumer groups to create in this event hub instance."
+        "description": "Optional. The consumer groups to create in this Event Hub instance."
       }
     },
     "lock": {
@@ -218,75 +372,11 @@
         "description": "Optional. Array of role assignments to create."
       }
     },
-    "captureDescriptionDestinationName": {
-      "type": "string",
-      "defaultValue": "EventHubArchive.AzureBlockBlob",
+    "captureDescription": {
+      "$ref": "#/definitions/captureDescriptionType",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Name for capture destination."
-      }
-    },
-    "captureDescriptionDestinationArchiveNameFormat": {
-      "type": "string",
-      "defaultValue": "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}",
-      "metadata": {
-        "description": "Optional. Blob naming convention for archive, e.g. {Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}. Here all the parameters (Namespace,EventHub .. etc) are mandatory irrespective of order."
-      }
-    },
-    "captureDescriptionDestinationBlobContainer": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Blob container Name."
-      }
-    },
-    "captureDescriptionDestinationStorageAccountResourceId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Resource ID of the storage account to be used to create the blobs."
-      }
-    },
-    "captureDescriptionEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. A value that indicates whether capture description is enabled."
-      }
-    },
-    "captureDescriptionEncoding": {
-      "type": "string",
-      "defaultValue": "Avro",
-      "allowedValues": [
-        "Avro",
-        "AvroDeflate"
-      ],
-      "metadata": {
-        "description": "Optional. Enumerates the possible values for the encoding format of capture description. Note: \"AvroDeflate\" will be deprecated in New API Version."
-      }
-    },
-    "captureDescriptionIntervalInSeconds": {
-      "type": "int",
-      "defaultValue": 300,
-      "minValue": 60,
-      "maxValue": 900,
-      "metadata": {
-        "description": "Optional. The time window allows you to set the frequency with which the capture to Azure Blobs will happen."
-      }
-    },
-    "captureDescriptionSizeLimitInBytes": {
-      "type": "int",
-      "defaultValue": 314572800,
-      "minValue": 10485760,
-      "maxValue": 524288000,
-      "metadata": {
-        "description": "Optional. The size window defines the amount of data built up in your Event Hub before an capture operation."
-      }
-    },
-    "captureDescriptionSkipEmptyArchives": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. A value that indicates whether to Skip Empty Archives."
+        "description": "Optional. Properties of capture description. Note: The chose identity needs the required permissions on the target before the assignment can be executed. For example 'Storage Data Blob Contributor' for a container. Also, the identity must be configured on the namespace level."
       }
     },
     "retentionDescriptionEnabled": {
@@ -324,6 +414,13 @@
       "metadata": {
         "description": "Optional. Retention cleanup policy. Number of hours to retain the tombstone markers of a compacted Event Hub. This value is only used when cleanupPolicy is Compact. Consumer must complete reading the tombstone marker within this specified amount of time if consumer begins from starting offset to ensure they get a valid snapshot for the specific key described by the tombstone marker within the compacted Event Hub."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "variables": {
@@ -334,29 +431,6 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "eventHubProperties": {
-      "messageRetentionInDays": "[if(parameters('retentionDescriptionEnabled'), null(), parameters('messageRetentionInDays'))]",
-      "partitionCount": "[parameters('partitionCount')]",
-      "status": "[parameters('status')]",
-      "retentionDescription": "[if(parameters('retentionDescriptionEnabled'), createObject('cleanupPolicy', parameters('retentionDescriptionCleanupPolicy'), 'retentionTimeInHours', if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Delete'), parameters('retentionDescriptionRetentionTimeInHours'), null()), 'tombstoneRetentionTimeInHours', if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Compact'), parameters('retentionDescriptionTombstoneRetentionTimeInHours'), null())), null())]"
-    },
-    "eventHubPropertiesCapture": {
-      "captureDescription": {
-        "destination": {
-          "name": "[parameters('captureDescriptionDestinationName')]",
-          "properties": {
-            "archiveNameFormat": "[parameters('captureDescriptionDestinationArchiveNameFormat')]",
-            "blobContainer": "[parameters('captureDescriptionDestinationBlobContainer')]",
-            "storageAccountResourceId": "[parameters('captureDescriptionDestinationStorageAccountResourceId')]"
-          }
-        },
-        "enabled": "[parameters('captureDescriptionEnabled')]",
-        "encoding": "[parameters('captureDescriptionEncoding')]",
-        "intervalInSeconds": "[parameters('captureDescriptionIntervalInSeconds')]",
-        "sizeLimitInBytes": "[parameters('captureDescriptionSizeLimitInBytes')]",
-        "skipEmptyArchives": "[parameters('captureDescriptionSkipEmptyArchives')]"
-      }
-    },
     "builtInRoleNames": {
       "Azure Event Hubs Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f526a384-b230-433a-b45c-95f59c4a2dec')]",
       "Azure Event Hubs Data Receiver": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a638d3c7-ab3a-418d-83e6-5f17a39d4fde')]",
@@ -366,9 +440,30 @@
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "captureIdentity": "[if(not(empty(tryGet(tryGet(parameters('captureDescription'), 'destination'), 'identity'))), createObject('type', if(coalesce(tryGet(parameters('captureDescription').destination.identity, 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(tryGet(parameters('captureDescription').destination.identity, 'userAssignedResourceId'))), 'UserAssigned', null())), 'userAssignedIdentity', if(not(empty(tryGet(parameters('captureDescription').destination.identity, 'userAssignedResourceId'))), parameters('captureDescription').destination.identity.userAssignedResourceId, null())), null())]"
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.eventhub-nseventhub.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "namespace": {
       "existing": true,
       "type": "Microsoft.EventHub/namespaces",
@@ -379,7 +474,7 @@
       "type": "Microsoft.EventHub/namespaces/eventhubs",
       "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
-      "properties": "[if(parameters('captureDescriptionEnabled'), union(variables('eventHubProperties'), variables('eventHubPropertiesCapture')), variables('eventHubProperties'))]"
+      "properties": "[shallowMerge(createArray(createObject('messageRetentionInDays', if(parameters('retentionDescriptionEnabled'), null(), parameters('messageRetentionInDays')), 'partitionCount', parameters('partitionCount'), 'status', parameters('status'), 'retentionDescription', if(parameters('retentionDescriptionEnabled'), createObject('cleanupPolicy', parameters('retentionDescriptionCleanupPolicy'), 'retentionTimeInHours', if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Delete'), parameters('retentionDescriptionRetentionTimeInHours'), null()), 'tombstoneRetentionTimeInHours', if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Compact'), parameters('retentionDescriptionTombstoneRetentionTimeInHours'), null())), null())), if(and(not(empty(parameters('captureDescription'))), not(equals(tryGet(parameters('captureDescription'), 'enabled'), false()))), createObject('captureDescription', createObject('destination', createObject('name', tryGet(parameters('captureDescription').destination, 'name'), 'identity', variables('captureIdentity'), 'properties', tryGet(parameters('captureDescription').destination, 'properties')), 'enabled', coalesce(tryGet(parameters('captureDescription'), 'enabled'), true()), 'encoding', tryGet(parameters('captureDescription'), 'encoding'), 'intervalInSeconds', tryGet(parameters('captureDescription'), 'intervalInSeconds'), 'sizeLimitInBytes', tryGet(parameters('captureDescription'), 'sizeLimitInBytes'), 'skipEmptyArchives', tryGet(parameters('captureDescription'), 'skipEmptyArchives'))), createObject())))]"
     },
     "eventHub_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -423,7 +518,7 @@
         "count": "[length(parameters('consumergroups'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-ConsumerGroup-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -450,8 +545,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "2040336008826489483"
+              "version": "0.38.33.27573",
+              "templateHash": "1703588134773580957"
             },
             "name": "Event Hub Namespace Event Hub Consumer Groups",
             "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group."
@@ -478,6 +573,7 @@
             "userMetadata": {
               "type": "string",
               "defaultValue": "",
+              "maxLength": 1024,
               "metadata": {
                 "description": "Optional. User Metadata is a placeholder to store user-defined string data with maximum length 1024. e.g. it can be used to store descriptive data, such as list of teams and their contact information also user-defined configuration settings can be stored."
               }
@@ -528,7 +624,7 @@
         "count": "[length(parameters('authorizationRules'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-AuthRule-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -555,8 +651,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "71535215115158592"
+              "version": "0.38.33.27573",
+              "templateHash": "10412216932613982313"
             },
             "name": "Event Hub Namespace Event Hub Authorization Rules",
             "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule."
@@ -637,21 +733,21 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the event hub."
+        "description": "The name of the Event Hub."
       },
       "value": "[parameters('name')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the event hub."
+        "description": "The resource ID of the Event Hub."
       },
       "value": "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaceName'), parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group the event hub was deployed into."
+        "description": "The resource group the Event Hub was deployed into."
       },
       "value": "[resourceGroup().name]"
     }

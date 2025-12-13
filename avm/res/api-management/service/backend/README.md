@@ -2,12 +2,21 @@
 
 This module deploys an API Management Service Backend.
 
+You can reference the module as follows:
+```bicep
+module service 'br/public:avm/res/api-management/service/backend:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Notes](#Notes)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -37,9 +46,10 @@ This module deploys an API Management Service Backend.
 | [`circuitBreaker`](#parameter-circuitbreaker) | object | Backend Circuit Breaker Configuration. |
 | [`credentials`](#parameter-credentials) | object | Backend Credentials Contract Properties. |
 | [`description`](#parameter-description) | string | Backend Description. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`pool`](#parameter-pool) | object | Backend pool configuration for load balancing. |
 | [`protocol`](#parameter-protocol) | string | Backend communication protocol. - http or soap. |
-| [`proxy`](#parameter-proxy) | object | Backend gateway Contract Properties. |
+| [`proxy`](#parameter-proxy) | object | Backend Proxy Contract Properties. |
 | [`resourceId`](#parameter-resourceid) | string | Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. |
 | [`serviceFabricCluster`](#parameter-servicefabriccluster) | object | Backend Service Fabric Cluster Properties. |
 | [`title`](#parameter-title) | string | Backend Title. |
@@ -74,67 +84,9 @@ Backend Circuit Breaker Configuration.
 - Required: No
 - Type: object
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`rules`](#parameter-circuitbreakerrules) | array | The rules for tripping the backend. |
-
-### Parameter: `circuitBreaker.rules`
-
-The rules for tripping the backend.
-
-- Required: No
-- Type: array
-
 ### Parameter: `credentials`
 
 Backend Credentials Contract Properties.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`authorization`](#parameter-credentialsauthorization) | object | Authorization header authentication. |
-| [`certificate`](#parameter-credentialscertificate) | array | List of Client Certificate Thumbprints. Will be ignored if certificatesIds are provided. |
-| [`certificateIds`](#parameter-credentialscertificateids) | array | List of Client Certificate Ids. |
-| [`header`](#parameter-credentialsheader) | object | Header Parameter description. Each property within header is an array of strings in the following format:<p>    {customized property}: [<p>      'string'<p>    ]<p>. |
-| [`query`](#parameter-credentialsquery) | object | Query Parameter description. Each property within query is an array of strings in the following format:<p>    {customized property}: [<p>      'string'<p>    ]<p>. |
-
-### Parameter: `credentials.authorization`
-
-Authorization header authentication.
-
-- Required: No
-- Type: object
-
-### Parameter: `credentials.certificate`
-
-List of Client Certificate Thumbprints. Will be ignored if certificatesIds are provided.
-
-- Required: No
-- Type: array
-
-### Parameter: `credentials.certificateIds`
-
-List of Client Certificate Ids.
-
-- Required: No
-- Type: array
-
-### Parameter: `credentials.header`
-
-Header Parameter description. Each property within header is an array of strings in the following format:<p>    {customized property}: [<p>      'string'<p>    ]<p>.
-
-- Required: No
-- Type: object
-
-### Parameter: `credentials.query`
-
-Query Parameter description. Each property within query is an array of strings in the following format:<p>    {customized property}: [<p>      'string'<p>    ]<p>.
 
 - Required: No
 - Type: object
@@ -146,25 +98,20 @@ Backend Description.
 - Required: No
 - Type: string
 
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `pool`
 
 Backend pool configuration for load balancing.
 
 - Required: No
 - Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`services`](#parameter-poolservices) | array | The list of backend entities belonging to a pool. |
-
-### Parameter: `pool.services`
-
-The list of backend entities belonging to a pool.
-
-- Required: No
-- Type: array
 
 ### Parameter: `protocol`
 
@@ -176,44 +123,10 @@ Backend communication protocol. - http or soap.
 
 ### Parameter: `proxy`
 
-Backend gateway Contract Properties.
+Backend Proxy Contract Properties.
 
 - Required: No
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`url`](#parameter-proxyurl) | string | WebProxy Server AbsoluteUri property which includes the entire URI stored in the Uri instance, including all fragments and query strings. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`password`](#parameter-proxypassword) | securestring | Password to connect to the WebProxy Server. |
-| [`username`](#parameter-proxyusername) | string | Username to connect to the WebProxy server. |
-
-### Parameter: `proxy.url`
-
-WebProxy Server AbsoluteUri property which includes the entire URI stored in the Uri instance, including all fragments and query strings.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `proxy.password`
-
-Password to connect to the WebProxy Server.
-
-- Required: No
-- Type: securestring
-
-### Parameter: `proxy.username`
-
-Username to connect to the WebProxy server.
-
-- Required: No
-- Type: string
 
 ### Parameter: `resourceId`
 
@@ -228,64 +141,6 @@ Backend Service Fabric Cluster Properties.
 
 - Required: No
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`managementEndpoints`](#parameter-servicefabricclustermanagementendpoints) | array | The cluster management endpoint. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`clientCertificateId`](#parameter-servicefabricclusterclientcertificateid) | string | The client certificate id for the management endpoint. |
-| [`clientCertificatethumbprint`](#parameter-servicefabricclusterclientcertificatethumbprint) | string | The client certificate thumbprint for the management endpoint. Will be ignored if certificatesIds are provided. |
-| [`maxPartitionResolutionRetries`](#parameter-servicefabricclustermaxpartitionresolutionretries) | int | Maximum number of retries while attempting resolve the partition. |
-| [`serverCertificateThumbprints`](#parameter-servicefabricclusterservercertificatethumbprints) | array | Thumbprints of certificates cluster management service uses for tls communication. |
-| [`serverX509Names`](#parameter-servicefabricclusterserverx509names) | array | Server X509 Certificate Names Collection. |
-
-### Parameter: `serviceFabricCluster.managementEndpoints`
-
-The cluster management endpoint.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `serviceFabricCluster.clientCertificateId`
-
-The client certificate id for the management endpoint.
-
-- Required: No
-- Type: string
-
-### Parameter: `serviceFabricCluster.clientCertificatethumbprint`
-
-The client certificate thumbprint for the management endpoint. Will be ignored if certificatesIds are provided.
-
-- Required: No
-- Type: string
-
-### Parameter: `serviceFabricCluster.maxPartitionResolutionRetries`
-
-Maximum number of retries while attempting resolve the partition.
-
-- Required: No
-- Type: int
-
-### Parameter: `serviceFabricCluster.serverCertificateThumbprints`
-
-Thumbprints of certificates cluster management service uses for tls communication.
-
-- Required: No
-- Type: array
-
-### Parameter: `serviceFabricCluster.serverX509Names`
-
-Server X509 Certificate Names Collection.
-
-- Required: No
-- Type: array
 
 ### Parameter: `title`
 
@@ -307,27 +162,6 @@ Backend TLS Properties.
       validateCertificateName: false
   }
   ```
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`validateCertificateChain`](#parameter-tlsvalidatecertificatechain) | bool | Flag indicating whether SSL certificate chain validation should be done when using self-signed certificates for this backend host. |
-| [`validateCertificateName`](#parameter-tlsvalidatecertificatename) | bool | Flag indicating whether SSL certificate name validation should be done when using self-signed certificates for this backend host. |
-
-### Parameter: `tls.validateCertificateChain`
-
-Flag indicating whether SSL certificate chain validation should be done when using self-signed certificates for this backend host.
-
-- Required: No
-- Type: bool
-
-### Parameter: `tls.validateCertificateName`
-
-Flag indicating whether SSL certificate name validation should be done when using self-signed certificates for this backend host.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `type`
 
@@ -429,3 +263,7 @@ tls: {
 
 </details>
 <p>
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

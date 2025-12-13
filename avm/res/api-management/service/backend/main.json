@@ -6,192 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "10915903995245264389"
+      "templateHash": "15593761885076570454"
     },
     "name": "API Management Service Backends",
     "description": "This module deploys an API Management Service Backend."
-  },
-  "definitions": {
-    "backendCredentialsType": {
-      "type": "object",
-      "properties": {
-        "authorization": {
-          "type": "object",
-          "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/credentials/properties/authorization"
-            },
-            "description": "Optional. Authorization header authentication."
-          },
-          "nullable": true
-        },
-        "certificate": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. List of Client Certificate Thumbprints. Will be ignored if certificatesIds are provided."
-          }
-        },
-        "certificateIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. List of Client Certificate Ids."
-          }
-        },
-        "header": {
-          "type": "object",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Header Parameter description. Each property within header is an array of strings in the following format:\n    {customized property}: [\n      'string'\n    ]\n."
-          }
-        },
-        "query": {
-          "type": "object",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Query Parameter description. Each property within query is an array of strings in the following format:\n    {customized property}: [\n      'string'\n    ]\n."
-          }
-        }
-      }
-    },
-    "backendProxyType": {
-      "type": "object",
-      "properties": {
-        "password": {
-          "type": "securestring",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Password to connect to the WebProxy Server."
-          }
-        },
-        "url": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 2000,
-          "metadata": {
-            "description": "Required. WebProxy Server AbsoluteUri property which includes the entire URI stored in the Uri instance, including all fragments and query strings."
-          }
-        },
-        "username": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Username to connect to the WebProxy server."
-          }
-        }
-      }
-    },
-    "backendServiceFabricClusterType": {
-      "type": "object",
-      "properties": {
-        "clientCertificateId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The client certificate id for the management endpoint."
-          }
-        },
-        "clientCertificatethumbprint": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The client certificate thumbprint for the management endpoint. Will be ignored if certificatesIds are provided."
-          }
-        },
-        "managementEndpoints": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "metadata": {
-            "description": "Required. The cluster management endpoint."
-          }
-        },
-        "maxPartitionResolutionRetries": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Maximum number of retries while attempting resolve the partition."
-          }
-        },
-        "serverCertificateThumbprints": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Thumbprints of certificates cluster management service uses for tls communication."
-          }
-        },
-        "serverX509Names": {
-          "type": "array",
-          "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/properties/properties/serviceFabricCluster/properties/serverX509Names"
-            },
-            "description": "Optional. Server X509 Certificate Names Collection."
-          },
-          "nullable": true
-        }
-      }
-    },
-    "backendTlsType": {
-      "type": "object",
-      "properties": {
-        "validateCertificateChain": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Flag indicating whether SSL certificate chain validation should be done when using self-signed certificates for this backend host."
-          }
-        },
-        "validateCertificateName": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Flag indicating whether SSL certificate name validation should be done when using self-signed certificates for this backend host."
-          }
-        }
-      }
-    },
-    "backendCircuitBreakerType": {
-      "type": "object",
-      "properties": {
-        "rules": {
-          "type": "array",
-          "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/circuitBreaker/properties/rules"
-            },
-            "description": "Optional. The rules for tripping the backend."
-          },
-          "nullable": true
-        }
-      }
-    },
-    "backendPoolType": {
-      "type": "object",
-      "properties": {
-        "services": {
-          "type": "array",
-          "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/pool/properties/services"
-            },
-            "description": "Optional. The list of backend entities belonging to a pool."
-          },
-          "nullable": true
-        }
-      }
-    }
   },
   "parameters": {
     "apiManagementServiceName": {
@@ -207,11 +25,14 @@
       }
     },
     "credentials": {
-      "$ref": "#/definitions/backendCredentialsType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/credentials"
+        },
         "description": "Optional. Backend Credentials Contract Properties."
-      }
+      },
+      "nullable": true
     },
     "description": {
       "type": "string",
@@ -228,11 +49,14 @@
       }
     },
     "proxy": {
-      "$ref": "#/definitions/backendProxyType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
-        "description": "Optional. Backend gateway Contract Properties."
-      }
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/proxy"
+        },
+        "description": "Optional. Backend Proxy Contract Properties."
+      },
+      "nullable": true
     },
     "resourceId": {
       "type": "string",
@@ -242,11 +66,14 @@
       }
     },
     "serviceFabricCluster": {
-      "$ref": "#/definitions/backendServiceFabricClusterType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/properties/properties/serviceFabricCluster"
+        },
         "description": "Optional. Backend Service Fabric Cluster Properties."
-      }
+      },
+      "nullable": true
     },
     "title": {
       "type": "string",
@@ -256,13 +83,16 @@
       }
     },
     "tls": {
-      "$ref": "#/definitions/backendTlsType",
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/tls"
+        },
+        "description": "Optional. Backend TLS Properties."
+      },
       "defaultValue": {
         "validateCertificateChain": false,
         "validateCertificateName": false
-      },
-      "metadata": {
-        "description": "Optional. Backend TLS Properties."
       }
     },
     "url": {
@@ -272,18 +102,24 @@
       }
     },
     "circuitBreaker": {
-      "$ref": "#/definitions/backendCircuitBreakerType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/circuitBreaker"
+        },
         "description": "Optional. Backend Circuit Breaker Configuration."
-      }
+      },
+      "nullable": true
     },
     "pool": {
-      "$ref": "#/definitions/backendPoolType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/pool"
+        },
         "description": "Optional. Backend pool configuration for load balancing."
-      }
+      },
+      "nullable": true
     },
     "type": {
       "type": "string",
@@ -295,6 +131,13 @@
       "metadata": {
         "description": "Optional. Type of the backend. A backend can be either Single or Pool."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "resources": {
@@ -303,6 +146,26 @@
       "type": "Microsoft.ApiManagement/service",
       "apiVersion": "2024-05-01",
       "name": "[parameters('apiManagementServiceName')]"
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.apimgmt-backend.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
     },
     "backend": {
       "type": "Microsoft.ApiManagement/service/backends",

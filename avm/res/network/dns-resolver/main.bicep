@@ -8,16 +8,16 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/dnsResolvers@2025-05-01'>.tags?
 
 @description('Required. ResourceId of the virtual network to attach the DNS Private Resolver to.')
 param virtualNetworkResourceId string
@@ -95,7 +95,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource dnsResolver 'Microsoft.Network/dnsResolvers@2022-07-01' = {
+resource dnsResolver 'Microsoft.Network/dnsResolvers@2025-05-01' = {
   name: name
   location: location
   tags: tags
@@ -135,7 +135,7 @@ resource dnsResolver_roleAssignments 'Microsoft.Authorization/roleAssignments@20
 
 module dnsResolver_inboundEndpoints 'inbound-endpoint/main.bicep' = [
   for (inboundEndpoint, index) in (inboundEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-dnsResolver-inbound-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-dnsResolver-inbound-${index}'
     params: {
       name: inboundEndpoint.name
       tags: inboundEndpoint.?tags ?? tags
@@ -150,7 +150,7 @@ module dnsResolver_inboundEndpoints 'inbound-endpoint/main.bicep' = [
 
 module dnsResolver_outboundEndpoints 'outbound-endpoint/main.bicep' = [
   for (outboundEndpoint, index) in (outboundEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-dnsResolver-outbound-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-dnsResolver-outbound-${index}'
     params: {
       name: outboundEndpoint.name
       tags: outboundEndpoint.?tags ?? tags
@@ -203,7 +203,7 @@ type inboundEndpointType = {
   subnetResourceId: string
 
   @description('Optional. Tags for the resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Network/dnsResolvers/inboundEndpoints@2025-05-01'>.tags?
 
   @description('Optional. Location for all resources.')
   location: string?
@@ -225,7 +225,7 @@ type outboundEndpointType = {
   subnetResourceId: string
 
   @description('Optional. Tags of the resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Network/dnsResolvers/outboundEndpoints@2025-05-01'>.tags?
 
   @description('Optional. Location for all resources.')
   location: string?

@@ -2,6 +2,14 @@
 
 This module deploys a Cognitive Service.
 
+You can reference the module as follows:
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -21,9 +29,9 @@ This module deploys a Cognitive Service.
 | `Microsoft.CognitiveServices/accounts/commitmentPlans` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_commitmentplans.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/commitmentPlans)</li></ul> |
 | `Microsoft.CognitiveServices/accounts/deployments` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_deployments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/deployments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2025-05-01/vaults/secrets)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -36,18 +44,21 @@ The following section provides usage examples for the module, which were used to
 - [Using `AIServices` with `deployments` in parameter set, private endpoints, and network injection](#example-1-using-aiservices-with-deployments-in-parameter-set-private-endpoints-and-network-injection)
 - [Using `AIServices` with `deployments` in parameter set and private endpoints](#example-2-using-aiservices-with-deployments-in-parameter-set-and-private-endpoints)
 - [Using `AIServices` with `deployments` in parameter set](#example-3-using-aiservices-with-deployments-in-parameter-set)
-- [Storing keys of service in key vault](#example-4-storing-keys-of-service-in-key-vault)
-- [Using only defaults](#example-5-using-only-defaults)
-- [Using large parameter set](#example-6-using-large-parameter-set)
-- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-7-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
-- [As Speech Service](#example-8-as-speech-service)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-9-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-10-using-customer-managed-keys-with-user-assigned-identity)
-- [WAF-aligned](#example-11-waf-aligned)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-4-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-5-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-6-using-customer-managed-keys-with-user-assigned-identity)
+- [Storing keys of service in key vault](#example-7-storing-keys-of-service-in-key-vault)
+- [Using only defaults](#example-8-using-only-defaults)
+- [Using large parameter set](#example-9-using-large-parameter-set)
+- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-10-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
+- [As Speech Service](#example-11-as-speech-service)
+- [WAF-aligned](#example-12-waf-aligned)
 
 ### Example 1: _Using `AIServices` with `deployments` in parameter set, private endpoints, and network injection_
 
 This instance deploys the module with the AI model deployment feature, private endpoint, and network injection for agent service.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ai-model-deployment-private-agent]
 
 
 <details>
@@ -56,7 +67,6 @@ This instance deploys the module with the AI model deployment feature, private e
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'AIServices'
@@ -77,7 +87,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         }
       }
     ]
-    location: '<location>'
     networkInjections: {
       scenario: 'agent'
       subnetResourceId: '<subnetResourceId>'
@@ -142,9 +151,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "networkInjections": {
       "value": {
         "scenario": "agent",
@@ -205,7 +211,6 @@ param deployments = [
     }
   }
 ]
-param location = '<location>'
 param networkInjections = {
   scenario: 'agent'
   subnetResourceId: '<subnetResourceId>'
@@ -236,6 +241,8 @@ param publicNetworkAccess = 'Disabled'
 
 This instance deploys the module with the AI model deployment feature and private endpoint.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ai-model-deployment-private]
+
 
 <details>
 
@@ -243,7 +250,6 @@ This instance deploys the module with the AI model deployment feature and privat
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'AIServices'
@@ -264,7 +270,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         }
       }
     ]
-    location: '<location>'
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -324,9 +329,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "privateEndpoints": {
       "value": [
         {
@@ -380,7 +382,6 @@ param deployments = [
     }
   }
 ]
-param location = '<location>'
 param privateEndpoints = [
   {
     privateDnsZoneGroup: {
@@ -406,6 +407,8 @@ param publicNetworkAccess = 'Disabled'
 
 This instance deploys the module with the AI model deployment feature.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ai-model-deployment]
+
 
 <details>
 
@@ -413,7 +416,6 @@ This instance deploys the module with the AI model deployment feature.
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'AIServices'
@@ -434,7 +436,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         }
       }
     ]
-    location: '<location>'
   }
 }
 ```
@@ -477,9 +478,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
           }
         }
       ]
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -514,15 +512,137 @@ param deployments = [
     }
   }
 ]
-param location = '<location>'
 ```
 
 </details>
 <p>
 
-### Example 4: _Storing keys of service in key vault_
+### Example 4: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
 
-This instance deploys the module and stores its keys in a key vault.
+This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  params: {
+    // Required parameters
+    kind: 'SpeechServices'
+    name: 'csahsmu001'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    publicNetworkAccess: 'Enabled'
+    restrictOutboundNetworkAccess: false
+    sku: 'S0'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "SpeechServices"
+    },
+    "name": {
+      "value": "csahsmu001"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
+    "restrictOutboundNetworkAccess": {
+      "value": false
+    },
+    "sku": {
+      "value": "S0"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'SpeechServices'
+param name = 'csahsmu001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param publicNetworkAccess = 'Enabled'
+param restrictOutboundNetworkAccess = false
+param sku = 'S0'
+```
+
+</details>
+<p>
+
+### Example 5: _Using Customer-Managed-Keys with System-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-sami]
 
 
 <details>
@@ -531,14 +651,231 @@ This instance deploys the module and stores its keys in a key vault.
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
+  params: {
+    // Required parameters
+    kind: 'SpeechServices'
+    name: '<name>'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    managedIdentities: {
+      systemAssigned: true
+    }
+    publicNetworkAccess: 'Enabled'
+    restrictOutboundNetworkAccess: false
+    sku: 'S0'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "SpeechServices"
+    },
+    "name": {
+      "value": "<name>"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
+    "restrictOutboundNetworkAccess": {
+      "value": false
+    },
+    "sku": {
+      "value": "S0"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'SpeechServices'
+param name = '<name>'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+param publicNetworkAccess = 'Enabled'
+param restrictOutboundNetworkAccess = false
+param sku = 'S0'
+```
+
+</details>
+<p>
+
+### Example 6: _Using Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  params: {
+    // Required parameters
+    kind: 'SpeechServices'
+    name: 'csaencr001'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    publicNetworkAccess: 'Enabled'
+    restrictOutboundNetworkAccess: false
+    sku: 'S0'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "SpeechServices"
+    },
+    "name": {
+      "value": "csaencr001"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
+    "restrictOutboundNetworkAccess": {
+      "value": false
+    },
+    "sku": {
+      "value": "S0"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'SpeechServices'
+param name = 'csaencr001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param publicNetworkAccess = 'Enabled'
+param restrictOutboundNetworkAccess = false
+param sku = 'S0'
+```
+
+</details>
+<p>
+
+### Example 7: _Storing keys of service in key vault_
+
+This instance deploys the module and stores its keys in a key vault.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/default-with-key-vault]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   params: {
     // Required parameters
     kind: 'SpeechServices'
     name: 'csakv001'
     // Non-required parameters
     disableLocalAuth: false
-    location: '<location>'
     secretsExportConfiguration: {
       accessKey1Name: 'csakv001-accessKey1'
       accessKey2Name: 'csakv001-accessKey2'
@@ -571,9 +908,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     "disableLocalAuth": {
       "value": false
     },
-    "location": {
-      "value": "<location>"
-    },
     "secretsExportConfiguration": {
       "value": {
         "accessKey1Name": "csakv001-accessKey1",
@@ -600,7 +934,6 @@ param kind = 'SpeechServices'
 param name = 'csakv001'
 // Non-required parameters
 param disableLocalAuth = false
-param location = '<location>'
 param secretsExportConfiguration = {
   accessKey1Name: 'csakv001-accessKey1'
   accessKey2Name: 'csakv001-accessKey2'
@@ -611,9 +944,11 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 5: _Using only defaults_
+### Example 8: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
 
 <details>
@@ -622,13 +957,10 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'SpeechServices'
     name: 'csamin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -651,10 +983,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     },
     "name": {
       "value": "csamin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -673,16 +1001,16 @@ using 'br/public:avm/res/cognitive-services/account:<version>'
 // Required parameters
 param kind = 'SpeechServices'
 param name = 'csamin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
 <p>
 
-### Example 6: _Using large parameter set_
+### Example 9: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
 
 <details>
@@ -691,7 +1019,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'AIServices'
@@ -1175,9 +1502,11 @@ param tags = {
 </details>
 <p>
 
-### Example 7: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
+### Example 10: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
 
 This instance deploys the module with the AI model deployment feature and private endpoint.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/openai-private]
 
 
 <details>
@@ -1186,7 +1515,6 @@ This instance deploys the module with the AI model deployment feature and privat
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'OpenAI'
@@ -1207,7 +1535,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         }
       }
     ]
-    location: '<location>'
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -1264,9 +1591,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "privateEndpoints": {
       "value": [
         {
@@ -1317,7 +1641,6 @@ param deployments = [
     }
   }
 ]
-param location = '<location>'
 param privateEndpoints = [
   {
     privateDnsZoneGroup: {
@@ -1336,9 +1659,11 @@ param publicNetworkAccess = 'Disabled'
 </details>
 <p>
 
-### Example 8: _As Speech Service_
+### Example 11: _As Speech Service_
 
 This instance deploys the module as a Speech Service.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/speech]
 
 
 <details>
@@ -1347,7 +1672,6 @@ This instance deploys the module as a Speech Service.
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'SpeechServices'
@@ -1505,237 +1829,12 @@ param tags = {
 </details>
 <p>
 
-### Example 9: _Using Customer-Managed-Keys with System-Assigned identity_
-
-This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
-  params: {
-    // Required parameters
-    kind: 'SpeechServices'
-    name: '<name>'
-    // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-    }
-    location: '<location>'
-    managedIdentities: {
-      systemAssigned: true
-    }
-    publicNetworkAccess: 'Enabled'
-    restrictOutboundNetworkAccess: false
-    sku: 'S0'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "kind": {
-      "value": "SpeechServices"
-    },
-    "name": {
-      "value": "<name>"
-    },
-    // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>"
-      }
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
-    },
-    "publicNetworkAccess": {
-      "value": "Enabled"
-    },
-    "restrictOutboundNetworkAccess": {
-      "value": false
-    },
-    "sku": {
-      "value": "S0"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/cognitive-services/account:<version>'
-
-// Required parameters
-param kind = 'SpeechServices'
-param name = '<name>'
-// Non-required parameters
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-}
-param location = '<location>'
-param managedIdentities = {
-  systemAssigned: true
-}
-param publicNetworkAccess = 'Enabled'
-param restrictOutboundNetworkAccess = false
-param sku = 'S0'
-```
-
-</details>
-<p>
-
-### Example 10: _Using Customer-Managed-Keys with User-Assigned identity_
-
-This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
-  params: {
-    // Required parameters
-    kind: 'SpeechServices'
-    name: 'csaencr001'
-    // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
-    location: '<location>'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    publicNetworkAccess: 'Enabled'
-    restrictOutboundNetworkAccess: false
-    sku: 'S0'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "kind": {
-      "value": "SpeechServices"
-    },
-    "name": {
-      "value": "csaencr001"
-    },
-    // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
-      }
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "publicNetworkAccess": {
-      "value": "Enabled"
-    },
-    "restrictOutboundNetworkAccess": {
-      "value": false
-    },
-    "sku": {
-      "value": "S0"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/cognitive-services/account:<version>'
-
-// Required parameters
-param kind = 'SpeechServices'
-param name = 'csaencr001'
-// Non-required parameters
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-}
-param location = '<location>'
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
-param publicNetworkAccess = 'Enabled'
-param restrictOutboundNetworkAccess = false
-param sku = 'S0'
-```
-
-</details>
-<p>
-
-### Example 11: _WAF-aligned_
+### Example 12: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1743,7 +1842,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'Face'
@@ -1758,11 +1856,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     managedIdentities: {
       systemAssigned: true
     }
@@ -1826,15 +1919,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true
@@ -1896,11 +1980,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param managedIdentities = {
   systemAssigned: true
 }
@@ -3324,9 +3403,11 @@ The storage accounts for this resource.
 | `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the cognitive services account. |
+| `primaryKey` | securestring | The primary access key. |
 | `privateEndpoints` | array | The private endpoints of the congitive services account. |
 | `resourceGroupName` | string | The resource group the cognitive services account was deployed into. |
 | `resourceId` | string | The resource ID of the cognitive services account. |
+| `secondaryKey` | securestring | The secondary access key. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
@@ -3335,10 +3416,10 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

@@ -60,7 +60,7 @@ param vpnClientRootCertificates array = []
 param vpnProtocols array = []
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/vpnServerConfigurations@2023-11-01'>.tags?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')

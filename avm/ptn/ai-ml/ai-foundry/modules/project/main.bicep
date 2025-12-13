@@ -18,8 +18,11 @@ param location string = resourceGroup().location
 @description('Required. Name of the existing parent Foundry Account resource.')
 param accountName string
 
-@description('Required. Include the capability host for the Foundry project.')
-param includeCapabilityHost bool
+@description('Required. Whether to create the capability host for the Foundry account. Requires associated resource connections to be provided.')
+param createAccountCapabilityHost bool
+
+@description('Required. Whether to create the capability host for the Foundry project. Requires associated resource connections to be provided.')
+param createProjectCapabilityHost bool
 
 @description('Optional. Azure Cosmos DB connection for the project.')
 param cosmosDbConnection azureConnectionType?
@@ -28,9 +31,9 @@ param cosmosDbConnection azureConnectionType?
 param aiSearchConnection azureConnectionType?
 
 @description('Optional. Storage Account connection for the project.')
-param storageAccountConnection storageAccountConnectionType?
+param storageAccountConnection azureConnectionType?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -42,7 +45,7 @@ resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-06-01' existi
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = if (!empty(storageAccountConnection)) {
-  name: storageAccountConnection!.storageAccountName
+  name: storageAccountConnection!.resourceName
   scope: resourceGroup(storageAccountConnection!.subscriptionId, storageAccountConnection!.resourceGroupName)
 }
 
@@ -56,7 +59,11 @@ resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = 
   scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
 }
 
-resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
+// only create capability hosts if all the connection info is provided
+var createProjectCapabilityHostInternal = createProjectCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
+var createAccountCapabilityHostInternal = createAccountCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
+
+resource project 'Microsoft.CognitiveServices/accounts/projects@2025-07-01-preview' = {
   name: name
   parent: foundryAccount
   location: location
@@ -68,71 +75,122 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
     description: !empty(desc) ? desc : name
   }
   tags: tags
+}
 
-  resource storageConnection 'connections@2025-06-01' = if (!empty(storageAccountConnection)) {
-    name: storageAccount.name
-    properties: {
-      category: 'AzureBlob'
-      target: storageAccount!.properties.primaryEndpoints.blob
-      authType: 'AAD'
-      metadata: {
-        ApiType: 'Azure'
-        ResourceId: storageAccount.id
-        location: storageAccount!.location
-        AccountName: storageAccount!.name
-        ContainerName: storageAccountConnection!.containerName
-      }
-    }
+module cosmosDbRoleAssignments 'role-assignments/cosmosDb.bicep' = if (!empty(cosmosDbConnection)) {
+  name: take('module.project.role-assign.cosmosDb.${name}', 64)
+  scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
+  params: {
+    cosmosDbName: cosmosDb.name
+    projectIdentityPrincipalId: project.identity.principalId
   }
+}
 
-  resource searchConnection 'connections@2025-06-01' = if (!empty(aiSearchConnection)) {
-    name: aiSearch.name
-    properties: {
-      category: 'CognitiveSearch'
-      target: 'https://${aiSearch!.name}.search.windows.net/'
-      authType: 'AAD'
-      metadata: {
-        ApiType: 'Azure'
-        ResourceId: aiSearch!.id
-        location: aiSearch!.location
-      }
-    }
-  }
-
-  resource cosmosConnection 'connections@2025-06-01' = if (!empty(cosmosDbConnection)) {
-    name: cosmosDb.name
-    properties: {
-      category: 'CosmosDB'
-      target: cosmosDb!.properties.documentEndpoint
-      authType: 'AAD'
-      metadata: {
-        ApiType: 'Azure'
-        ResourceId: cosmosDb!.id
-        location: cosmosDb!.location
-      }
+resource cosmosDbConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-07-01-preview' = if (!empty(cosmosDbConnection)) {
+  name: cosmosDb.name
+  parent: project
+  dependsOn: [cosmosDbRoleAssignments]
+  properties: {
+    category: 'CosmosDB'
+    target: cosmosDb!.properties.documentEndpoint
+    authType: 'AAD'
+    metadata: {
+      ApiType: 'Azure'
+      ResourceId: cosmosDb!.id
+      location: cosmosDb!.location
     }
   }
 }
 
-var createCapabilityHost = includeCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
+module storageAccountRoleAssignments 'role-assignments/storageAccount.bicep' = if (!empty(storageAccountConnection)) {
+  name: take('module.project.role-assign.storageAccount.${name}', 64)
+  scope: resourceGroup(storageAccountConnection!.subscriptionId, storageAccountConnection!.resourceGroupName)
+  params: {
+    storageAccountName: storageAccount.name
+    projectIdentityPrincipalId: project.identity.principalId
+  }
+}
 
-resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-06-01' = if (createCapabilityHost) {
-  name: take('${accountName}-cap-host', 64)
+resource storageAccountConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-07-01-preview' = if (!empty(storageAccountConnection)) {
+  name: storageAccount.name
+  parent: project
+  dependsOn: [storageAccountRoleAssignments, cosmosDbConnectionResource]
+  properties: {
+    category: 'AzureStorageAccount' // NOTE: The category 'AzureStorageAccount' works with the capability host but 'AzureBlob' does not seem to be supported.
+    target: storageAccount!.properties.primaryEndpoints.blob
+    authType: 'AAD'
+    metadata: {
+      ApiType: 'Azure'
+      ResourceId: storageAccount.id
+      location: storageAccount!.location
+    }
+  }
+}
+
+module aiSearchRoleAssignments 'role-assignments/aiSearch.bicep' = if (!empty(aiSearchConnection)) {
+  name: take('module.project.role-assign.aiSearch.${name}', 64)
+  scope: resourceGroup(aiSearchConnection!.subscriptionId, aiSearchConnection!.resourceGroupName)
+  params: {
+    aiSearchName: aiSearch.name
+    projectIdentityPrincipalId: project.identity.principalId
+  }
+}
+
+resource aiSearchConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-07-01-preview' = if (!empty(aiSearchConnection)) {
+  name: aiSearch.name
+  parent: project
+  dependsOn: [
+    aiSearchRoleAssignments
+    storageAccountConnectionResource
+    cosmosDbConnectionResource
+  ]
+  properties: {
+    category: 'CognitiveSearch'
+    target: 'https://${aiSearch!.name}.search.windows.net/'
+    authType: 'AAD'
+    metadata: {
+      ApiType: 'Azure'
+      ResourceId: aiSearch!.id
+      location: aiSearch!.location
+    }
+  }
+}
+
+resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-07-01-preview' = if (createAccountCapabilityHostInternal) {
+  name: 'chagent${replace(accountName, '-', '')}' // NOTE: the removal of dashes here may not be necessary
   parent: foundryAccount
+  dependsOn: [
+    project
+    cosmosDbConnectionResource
+    storageAccountConnectionResource
+    aiSearchConnectionResource
+  ]
   properties: {
     capabilityHostKind: 'Agents'
     tags: tags
   }
 }
 
-resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-06-01' = if (createCapabilityHost) {
-  name: take('${name}-cap-host', 64)
+resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-07-01-preview' = if (createProjectCapabilityHostInternal) {
+  name: 'chagent${replace(name, '-', '')}' // NOTE: the removal of dashes here may not be necessary
   parent: project
+  // Using explicit dependsOn because of dynamic cap host creation
+  dependsOn: [
+    accountCapabilityHost
+    #disable-next-line no-unnecessary-dependson
+    project
+    #disable-next-line no-unnecessary-dependson
+    cosmosDbConnectionResource
+    #disable-next-line no-unnecessary-dependson
+    storageAccountConnectionResource
+    #disable-next-line no-unnecessary-dependson
+    aiSearchConnectionResource
+  ]
   properties: {
     capabilityHostKind: 'Agents'
-    vectorStoreConnections: ['${aiSearch.name}']
-    storageConnections: ['${storageAccount.name}']
-    threadStorageConnections: ['${cosmosDb.name}']
+    threadStorageConnections: ['${cosmosDbConnectionResource.name}']
+    vectorStoreConnections: ['${aiSearchConnectionResource.name}']
+    storageConnections: ['${storageAccountConnectionResource.name}']
     tags: tags
   }
 }
@@ -146,27 +204,10 @@ resource projectLock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(loc
       : 'Cannot delete or modify the resource or child resources.')
   }
   scope: project
+  dependsOn: [capabilityHost]
 }
 
-module storageAccountRoleAssignments 'role-assignments/storageAccount.bicep' = if (!empty(storageAccountConnection)) {
-  name: take('module.project.role-assign.storageAccount.${name}', 64)
-  scope: resourceGroup(storageAccountConnection!.subscriptionId, storageAccountConnection!.resourceGroupName)
-  params: {
-    storageAccountName: storageAccount.name
-    projectIdentityPrincipalId: project.identity.principalId
-    containerName: storageAccountConnection!.containerName
-  }
-}
-
-module aiSearchRoleAssignments 'role-assignments/aiSearch.bicep' = if (!empty(aiSearchConnection)) {
-  name: take('module.project.role-assign.aiSearch.${name}', 64)
-  scope: resourceGroup(aiSearchConnection!.subscriptionId, aiSearchConnection!.resourceGroupName)
-  params: {
-    aiSearchName: aiSearch.name
-    projectIdentityPrincipalId: project.identity.principalId
-  }
-}
-
+// recreate the project workspace ID to target auto-generated containers and databases after capability host creation
 #disable-next-line BCP053
 var internalId = project.properties.internalId
 var workspacePart1 = length(internalId) >= 8 ? substring(internalId, 0, 8) : ''
@@ -177,17 +218,27 @@ var workspacePart5 = length(internalId) >= 32 ? substring(internalId, 20, 12) : 
 
 var projectWorkspaceId = '${workspacePart1}-${workspacePart2}-${workspacePart3}-${workspacePart4}-${workspacePart5}'
 
-module cosmosDbRoleAssignments 'role-assignments/cosmosDb.bicep' = if (!empty(cosmosDbConnection)) {
-  name: take('module.project.role-assign.cosmosDb.${name}', 64)
+// assign data-plane role assignments for databases automatically created by the capability host (via the project workspace ID)
+module cosmosDbSqlRoleAssignments 'role-assignments/cosmosDbDataPlane.bicep' = if (!empty(cosmosDbConnection) && createProjectCapabilityHostInternal) {
+  name: take('module.project.role-assign.cosmosDbDataPlane.${name}', 64)
   scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
-  dependsOn: [
-    projectCapabilityHost
-  ]
+  dependsOn: [capabilityHost, cosmosDbRoleAssignments]
   params: {
     cosmosDbName: cosmosDb.name
     projectIdentityPrincipalId: project.identity.principalId
     projectWorkspaceId: projectWorkspaceId
-    createCapabilityHost: createCapabilityHost
+  }
+}
+
+// assign data-plane role assignments for containers automatically created by the capability host (via the project workspace ID)
+module storageAccountContainerRoleAssignments 'role-assignments/storageAccountDataPlane.bicep' = if (!empty(storageAccountConnection) && createProjectCapabilityHostInternal) {
+  name: take('module.project.role-assign.storageAccountDataPlane.${name}', 64)
+  scope: resourceGroup(storageAccountConnection!.subscriptionId, storageAccountConnection!.resourceGroupName)
+  dependsOn: [capabilityHost, storageAccountRoleAssignments, cosmosDbSqlRoleAssignments]
+  params: {
+    storageAccountName: storageAccount.name
+    projectIdentityPrincipalId: project.identity.principalId
+    projectWorkspaceId: projectWorkspaceId
   }
 }
 
@@ -219,24 +270,5 @@ type azureConnectionType = {
   subscriptionId: string
 
   @description('Required. The resource group name of the resource.')
-  resourceGroupName: string
-}
-
-@export()
-@description('Type representing values to create an Azure Storage Account connections to an AI Foundry project.')
-type storageAccountConnectionType = {
-  @description('Optional. The name of the project connection. Will default to "<account>-<container>" if not provided.')
-  name: string?
-
-  @description('Required. The name of the Storage Account for the connection.')
-  storageAccountName: string
-
-  @description('Required. Name of container in the Storage Account to use for the connections.')
-  containerName: string
-
-  @description('Required. The subscription ID of the Storage Account.')
-  subscriptionId: string
-
-  @description('Required. The resource group name of the Storage Account.')
   resourceGroupName: string
 }

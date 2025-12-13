@@ -12,7 +12,7 @@ This module deploys an Azure Automation Account Variable.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Automation/automationAccounts/variables` | 2022-08-08 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_variables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/variables)</li></ul> |
+| `Microsoft.Automation/automationAccounts/variables` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_variables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/variables)</li></ul> |
 
 ## Parameters
 

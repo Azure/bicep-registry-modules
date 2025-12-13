@@ -2,6 +2,56 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/alz/empty/CHANGELOG.md).
 
+## 0.3.5
+
+### Changes
+
+- Updated `avm/ptn/authorization/role-assignment` module reference from version `0.2.3` to `0.2.4` to include fix for management group scoped role definitions
+
+### Breaking Changes
+
+- None
+
+## 0.3.4
+
+### Changes
+
+- Updated deployment names to remove usage of `deployment().name` to avoid reduce the number of deployments and improve performance in redeploys and when used in a deployment stack. No functional changes to the module.
+
+### Breaking Changes
+
+- None
+
+## 0.3.3
+
+### Changes
+
+- Enhanced dependency graph and logic. No actual change to input/output or resource deployment order, just internal improvements to make the module faster, easier to read and to maintain.
+
+### Breaking Changes
+
+- None
+
+## 0.3.2
+
+### Changes
+
+- Updated policy assignment module reference to version `0.5.2` to include fix for management group RBAC assignments to include the management group scope of the policy assignment along with any additional management groups specified.
+
+### Breaking Changes
+
+- None
+
+## 0.3.1
+
+### Changes
+
+- Wrapped deployment names in `take()` to ensure they do not exceed the 64 character limit. This prevents deployment failures when using long management group names. Closing [#5895](https://github.com/Azure/bicep-registry-modules/issues/5895).
+
+### Breaking Changes
+
+- None
+
 ## 0.3.0
 
 ### Changes

@@ -20,18 +20,16 @@ param sku string
 
 @allowed([
   'EdgeZone'
-  ''
 ])
 @description('Optional. Specifies the Edge Zone within the Azure Region where this Managed Disk should exist. Changing this forces a new Managed Disk to be created.')
-param edgeZone string = ''
+param edgeZone string?
 
 @allowed([
   'x64'
   'Arm64'
-  ''
 ])
 @description('Optional. CPU architecture supported by an OS disk.')
-param architecture string = ''
+param architecture string?
 
 @description('Optional. Set to true to enable bursting beyond the provisioned performance target of the disk.')
 param burstingEnabled bool = false
@@ -53,6 +51,9 @@ param completionPercent int = 100
 ])
 @description('Optional. Sources of a disk creation.')
 param createOption string = 'Empty'
+
+@description('Optional. The resource ID of the disk encryption set to use for enabling encryption-at-rest.')
+param diskEncryptionSetResourceId string?
 
 @description('Optional. A relative uri containing either a Platform Image Repository or user image reference.')
 param imageReferenceId string = ''
@@ -108,10 +109,9 @@ param optimizedForFrequentAttach bool = false
 @allowed([
   'Windows'
   'Linux'
-  ''
 ])
 @description('Optional. Sources of a disk creation.')
-param osType string = ''
+param osType string?
 
 @allowed([
   'Disabled'
@@ -132,16 +132,16 @@ param acceleratedNetwork bool = false
 ])
 param availabilityZone int
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the availability set resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Compute/disks@2025-01-02'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -210,7 +210,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource disk 'Microsoft.Compute/disks@2023-10-02' = {
+resource disk 'Microsoft.Compute/disks@2025-01-02' = {
   name: name
   location: location
   tags: tags
@@ -243,16 +243,21 @@ resource disk 'Microsoft.Compute/disks@2023-10-02' = {
     diskIOPSReadWrite: contains(sku, 'Ultra') ? diskIOPSReadWrite : null
     diskMBpsReadWrite: contains(sku, 'Ultra') ? diskMBpsReadWrite : null
     diskSizeGB: createOption == 'Empty' ? diskSizeGB : null
+    encryption: !empty(diskEncryptionSetResourceId)
+      ? {
+          diskEncryptionSetId: diskEncryptionSetResourceId
+        }
+      : null
     hyperVGeneration: !empty(osType) ? hyperVGeneration : null
     maxShares: maxShares
     networkAccessPolicy: networkAccessPolicy
     optimizedForFrequentAttach: optimizedForFrequentAttach
-    osType: !empty(osType) ? osType : any(null)
+    osType: osType
     publicNetworkAccess: publicNetworkAccess
     supportedCapabilities: !empty(osType)
       ? {
           acceleratedNetwork: acceleratedNetwork
-          architecture: !empty(architecture) ? architecture : null
+          architecture: architecture
         }
       : {}
   }
@@ -279,7 +284,7 @@ resource disk_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-0
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
       condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condition is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
     scope: disk

@@ -7,22 +7,13 @@ metadata description = 'This instance deploys the module in alignment with the b
 // Parameters //
 // ========== //
 
-@description('Optional. Name of the Application Insights resource.')
-param applicationInsightsName string = 'applicationInsights'
-
 @description('Optional. The secret to leverage for authorization server authentication.')
 @secure()
 param customSecret string = newGuid()
 
-@description('Optional. Name of the Log Analytics Workspace.')
-param logAnalyticsWorkspaceName string = 'logAnalyticsWorkspace'
-
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serviceShort}-rg'
-
-@description('Optional. Name of the Route Table.')
-param routeTableName string = 'apimRouteTableTest'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'apiswaf'
@@ -52,14 +43,14 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    applicationInsightsName: 'dep-${namePrefix}-ai-${serviceShort}'
-    lawReplicationRegion: secondaryEnforcedLocation
-    location: enforcedLocation
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-waflaw-${serviceShort}'
-    networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
+    applicationInsightsName: 'dep-${namePrefix}-appi-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-s-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    lawReplicationRegion: secondaryEnforcedLocation
+    networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
+    routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
+    location: enforcedLocation
   }
 }
 
@@ -73,7 +64,6 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: enforcedLocation
   }
 }
 
@@ -87,7 +77,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: '${namePrefix}${serviceShort}002'
       publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
       publisherName: '${namePrefix}-az-amorg-x-001'
       additionalLocations: [
@@ -122,7 +112,6 @@ module testDeployment '../../../main.bicep' = [
         'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA': 'False'
         'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_GCM_SHA256': 'False'
       }
-      minApiVersion: '2022-08-01'
       apis: [
         {
           displayName: 'Echo API'
@@ -190,7 +179,7 @@ module testDeployment '../../../main.bicep' = [
           clientLibrary: 'MSAL-2'
           clientSecret: customSecret
           authority: split(environment().authentication.loginEndpoint, '/')[2]
-          signinTenant: 'mytenant.onmicrosoft.com'
+          signInTenant: 'mytenant.onmicrosoft.com'
           allowedTenants: [
             'mytenant.onmicrosoft.com'
           ]
@@ -199,13 +188,13 @@ module testDeployment '../../../main.bicep' = [
       loggers: [
         {
           name: 'logger'
-          loggerType: 'applicationInsights'
+          type: 'applicationInsights'
           isBuffered: false
           description: 'Logger to Azure Application Insights'
           credentials: {
             instrumentationKey: nestedDependencies.outputs.appInsightsInstrumentationKey
           }
-          resourceId: nestedDependencies.outputs.appInsightsResourceId
+          targetResourceId: nestedDependencies.outputs.appInsightsResourceId
         }
       ]
       managedIdentities: {
@@ -299,15 +288,11 @@ module testDeployment '../../../main.bicep' = [
       products: [
         {
           apis: [
-            {
-              name: 'echo-api'
-            }
+            'echo-api'
           ]
           approvalRequired: true
           groups: [
-            {
-              name: 'developers'
-            }
+            'developers'
           ]
           name: 'Starter'
           subscriptionRequired: true
@@ -329,6 +314,19 @@ module testDeployment '../../../main.bicep' = [
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
+      publicNetworkAccess: iteration == 'init' ? 'Enabled' : null // MUST be enabled on service creation
+      privateEndpoints: [
+        {
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        }
+      ]
     }
   }
 ]

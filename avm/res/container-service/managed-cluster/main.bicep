@@ -10,7 +10,7 @@ param location string = resourceGroup().location
 @description('Optional. Specifies the DNS prefix specified when creating the managed cluster.')
 param dnsPrefix string = name
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
 param managedIdentities managedIdentityAllType?
 
@@ -89,7 +89,7 @@ param backendPoolType string = 'NodeIPConfiguration'
 ])
 param outboundType string = 'loadBalancer'
 
-@description('Optional. Name of a managed cluster SKU. AUTOMATIC CLUSTER SKU IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION.')
+@description('Optional. Name of a managed cluster SKU.')
 @allowed([
   'Base'
   'Automatic'
@@ -250,6 +250,15 @@ param autoScalerProfileMaxGracefulTerminationSec int = 600
 @description('Optional. Specifies the balance of similar node groups for the auto-scaler of the AKS cluster.')
 param autoScalerProfileBalanceSimilarNodeGroups bool = false
 
+@description('Optional. Specifies whether to enable daemonset eviction for empty nodes for the auto-scaler of the AKS cluster.')
+param autoScalerProfileDaemonsetEvictionForEmptyNodes bool = false
+
+@description('Optional. Specifies whether to enable daemonset eviction for occupied nodes for the auto-scaler of the AKS cluster.')
+param autoScalerProfileDaemonsetEvictionForOccupiedNodes bool = false
+
+@description('Optional. Specifies whether to ignore daemonsets utilization for the auto-scaler of the AKS cluster.')
+param autoScalerProfileIgnoreDaemonsetsUtilization bool = false
+
 @allowed([
   'least-waste'
   'most-pods'
@@ -306,10 +315,10 @@ param podIdentityProfileAllowNetworkPluginKubenet bool = false
 param podIdentityProfileEnable bool = false
 
 @description('Optional. The pod identities to use in the cluster.')
-param podIdentityProfileUserAssignedIdentities array?
+param podIdentityProfileUserAssignedIdentities resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-02-preview'>.properties.podIdentityProfile.userAssignedIdentities?
 
 @description('Optional. The pod identity exceptions to allow.')
-param podIdentityProfileUserAssignedIdentityExceptions array?
+param podIdentityProfileUserAssignedIdentityExceptions resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-02-preview'>.properties.podIdentityProfile.userAssignedIdentityExceptions?
 
 @description('Optional. Whether the The OIDC issuer profile of the Managed Cluster is enabled.')
 param enableOidcIssuerProfile bool = false
@@ -320,15 +329,21 @@ param enableWorkloadIdentity bool = false
 @description('Optional. Whether to enable Azure Defender.')
 param enableAzureDefender bool = false
 
-@description('Optional. Whether to enable Image Cleaner for Kubernetes.')
+@description('Optional. Microsoft Defender settings for security gating, validates container images eligibility for deployment based on Defender for Containers security findings. Using Admission Controller, it either audits or prevents the deployment of images that do not meet security standards.')
+param securityGatingConfig resourceInput<'Microsoft.containerService/managedClusters@2025-05-02-preview'>.properties.securityProfile.defender.securityGating?
+
+@description('Optional. Whether to enable Image Cleaner.')
 param enableImageCleaner bool = false
+
+@description('Optional. Whether to enable Image Integrity. Image integrity is a feature that works with Azure Policy to verify image integrity by signature. This will not have any effect unless Azure Policy is applied to enforce image signatures. See https://aka.ms/aks/image-integrity for how to use this feature via policy.')
+param enableImageIntegrity bool = false
+
+@description('Optional. Whether to enable Node Restriction.')
+param enableNodeRestriction bool = false
 
 @description('Optional. The interval in hours Image Cleaner will run. The maximum value is three months.')
 @minValue(24)
 param imageCleanerIntervalHours int = 24
-
-@description('Optional. Whether to enable Kubernetes pod security policy. Requires enabling the pod security policy feature flag on the subscription.')
-param enablePodSecurityPolicy bool = false
 
 @description('Optional. Whether the AzureBlob CSI Driver for the storage profile is enabled.')
 param enableStorageProfileBlobCSIDriver bool = false
@@ -349,7 +364,7 @@ param enableStorageProfileSnapshotController bool = false
 @description('Optional. The support plan for the Managed Cluster.')
 param supportPlan string = 'KubernetesOfficial'
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -365,28 +380,28 @@ param monitoringWorkspaceResourceId string?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-02-preview'>.tags?
 
-@description('Optional. The resource ID of the disc encryption set to apply to the cluster. For security reasons, this value should be provided.')
+@description('Optional. The Resource ID of the disk encryption set to use for enabling encryption at rest. For security reasons, this value should be provided.')
 param diskEncryptionSetResourceId string?
 
 @description('Optional. Settings and configurations for the flux extension.')
 param fluxExtension extensionType?
 
 @description('Optional. Configurations for provisioning the cluster with HTTP proxy servers.')
-param httpProxyConfig object?
+param httpProxyConfig resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-02-preview'>.properties.httpProxyConfig?
 
 @description('Optional. Identities associated with the cluster.')
-param identityProfile object?
+param identityProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-02-preview'>.properties.identityProfile?
 
 @description('Optional. Enables Kubernetes Event-driven Autoscaling (KEDA).')
 param kedaAddon bool = false
@@ -396,6 +411,9 @@ param vpaAddon bool = false
 
 @description('Optional. Whether the metric state of the kubenetes cluster is enabled.')
 param enableAzureMonitorProfileMetrics bool = false
+
+@description('Optional. Application Monitoring Profile for Kubernetes Application Container. Collects application logs, metrics and traces through auto-instrumentation of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview.')
+param appMonitoring resourceInput<'Microsoft.ContainerService/managedClusters@2025-05-02-preview'>.properties.azureMonitorProfile.appMonitoring?
 
 @description('Optional. Indicates if Azure Monitor Container Insights Logs Addon is enabled.')
 param enableContainerInsights bool = false
@@ -559,7 +577,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 // Main Resources //
 // ============== //
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-preview' = {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-05-02-preview' = {
   name: name
   location: location
   tags: tags
@@ -728,7 +746,6 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
           mode: nodeProvisioningProfileMode
         }
       : null
-    enablePodSecurityPolicy: enablePodSecurityPolicy
     workloadAutoScalerProfile: {
       keda: {
         enabled: kedaAddon
@@ -747,32 +764,33 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
       dnsServiceIP: dnsServiceIP
       outboundType: outboundType
       loadBalancerSku: loadBalancerSku
-      loadBalancerProfile: {
-        allocatedOutboundPorts: allocatedOutboundPorts
-        idleTimeoutInMinutes: idleTimeoutInMinutes
-        managedOutboundIPs: managedOutboundIPCount != 0
-          ? {
-              count: managedOutboundIPCount
-            }
-          : null
-        effectiveOutboundIPs: []
-        backendPoolType: backendPoolType
-        outboundIPPrefixes: !empty(outboundPublicIPPrefixResourceIds)
-          ? {
-              publicIPPrefixes: map(outboundPublicIPPrefixResourceIds ?? [], id => {
-                id: id
-              })
-            }
-          : null
+      loadBalancerProfile: outboundType != 'userDefinedRouting'
+        ? {
+            allocatedOutboundPorts: allocatedOutboundPorts
+            idleTimeoutInMinutes: idleTimeoutInMinutes
+            managedOutboundIPs: managedOutboundIPCount != 0
+              ? {
+                  count: managedOutboundIPCount
+                }
+              : null
+            backendPoolType: backendPoolType
+            outboundIPPrefixes: !empty(outboundPublicIPPrefixResourceIds)
+              ? {
+                  publicIPPrefixes: map(outboundPublicIPPrefixResourceIds ?? [], id => {
+                    id: id
+                  })
+                }
+              : null
 
-        outboundIPs: !empty(outboundPublicIPResourceIds)
-          ? {
-              publicIPs: map(outboundPublicIPResourceIds ?? [], id => {
-                id: id
-              })
-            }
-          : null
-      }
+            outboundIPs: !empty(outboundPublicIPResourceIds)
+              ? {
+                  publicIPs: map(outboundPublicIPResourceIds ?? [], id => {
+                    id: id
+                  })
+                }
+              : null
+          }
+        : null
     }
     publicNetworkAccess: publicNetworkAccess
     aadProfile: !empty(aadProfile)
@@ -788,7 +806,10 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
       : null
     autoScalerProfile: {
       'balance-similar-node-groups': toLower(string(autoScalerProfileBalanceSimilarNodeGroups))
+      'daemonset-eviction-for-empty-nodes': autoScalerProfileDaemonsetEvictionForEmptyNodes
+      'daemonset-eviction-for-occupied-nodes': autoScalerProfileDaemonsetEvictionForOccupiedNodes
       expander: autoScalerProfileExpander
+      'ignore-daemonsets-utilization': autoScalerProfileIgnoreDaemonsetsUtilization
       'max-empty-bulk-delete': '${autoScalerProfileMaxEmptyBulkDelete}'
       'max-graceful-termination-sec': '${autoScalerProfileMaxGracefulTerminationSec}'
       'max-node-provision-time': autoScalerProfileMaxNodeProvisionTime
@@ -817,6 +838,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
       privateDNSZone: privateDNSZone
     }
     azureMonitorProfile: {
+      appMonitoring: appMonitoring
       containerInsights: enableContainerInsights
         ? {
             enabled: enableContainerInsights
@@ -847,21 +869,32 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
     securityProfile: {
       defender: enableAzureDefender
         ? {
+            securityGating: securityGatingConfig
             securityMonitoring: {
               enabled: enableAzureDefender
             }
             logAnalyticsWorkspaceResourceId: monitoringWorkspaceResourceId
           }
         : null
-      workloadIdentity: enableWorkloadIdentity
-        ? {
-            enabled: enableWorkloadIdentity
-          }
-        : null
       imageCleaner: enableImageCleaner
         ? {
             enabled: enableImageCleaner
             intervalHours: imageCleanerIntervalHours
+          }
+        : null
+      imageIntegrity: enableImageIntegrity
+        ? {
+            enabled: enableImageIntegrity
+          }
+        : null
+      nodeRestriction: enableNodeRestriction
+        ? {
+            enabled: enableNodeRestriction
+          }
+        : null
+      workloadIdentity: enableWorkloadIdentity
+        ? {
+            enabled: enableWorkloadIdentity
           }
         : null
     }
@@ -941,6 +974,7 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
       enableUltraSSD: agentPool.?enableUltraSSD
       gpuInstanceProfile: agentPool.?gpuInstanceProfile
       kubeletDiskType: agentPool.?kubeletDiskType
+      linuxOSConfig: agentPool.?linuxOSConfig
       maxCount: agentPool.?maxCount
       maxPods: agentPool.?maxPods
       minCount: agentPool.?minCount
@@ -958,6 +992,9 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
       scaleDownMode: agentPool.?scaleDownMode
       scaleSetEvictionPolicy: agentPool.?scaleSetEvictionPolicy
       scaleSetPriority: agentPool.?scaleSetPriority
+      enableSecureBoot: agentPool.?enableSecureBoot
+      enableVTPM: agentPool.?enableVTPM
+      sshAccess: skuName == 'Automatic' ? 'Disabled' : 'LocalUser'
       spotMaxPrice: agentPool.?spotMaxPrice
       tags: agentPool.?tags ?? tags
       type: agentPool.?type
@@ -965,11 +1002,12 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
       vmSize: agentPool.?vmSize
       vnetSubnetResourceId: agentPool.?vnetSubnetResourceId
       workloadRuntime: agentPool.?workloadRuntime
+      windowsProfile: agentPool.?windowsProfile
     }
   }
 ]
 
-module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.3.5' = if (!empty(fluxExtension)) {
+module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.3.8' = if (!empty(fluxExtension)) {
   name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxExtension'
   params: {
     clusterName: managedCluster.name
@@ -983,6 +1021,7 @@ module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/exte
     releaseNamespace: fluxExtension.?releaseNamespace ?? 'flux-system'
     releaseTrain: fluxExtension.?releaseTrain ?? 'Stable'
     version: fluxExtension.?version
+    targetNamespace: fluxExtension.?targetNamespace
   }
 }
 
@@ -1042,11 +1081,15 @@ resource managedCluster_roleAssignments 'Microsoft.Authorization/roleAssignments
   }
 ]
 
-resource dnsZone 'Microsoft.Network/dnsZones@2018-05-01' existing = if (enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
+resource dnsZone 'Microsoft.Network/dnsZones@2018-05-01' existing = if (publicNetworkAccess != 'Disabled' && enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
   name: last(split((!empty(dnsZoneResourceId) ? any(dnsZoneResourceId) : '/dummmyZone'), '/'))!
 }
 
-resource dnsZone_roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
+resource privateDnsZone 'Microsoft.Network/privateDnsZones@2024-06-01' existing = if (publicNetworkAccess == 'Disabled' && enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
+  name: last(split((!empty(dnsZoneResourceId) ? any(dnsZoneResourceId) : '/dummmyZone'), '/'))
+}
+
+resource dnsZone_roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (publicNetworkAccess != 'Disabled' && enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
   name: guid(
     dnsZone.id,
     subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314'),
@@ -1061,6 +1104,23 @@ resource dnsZone_roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04
     principalType: 'ServicePrincipal'
   }
   scope: dnsZone
+}
+
+resource privateDnsZone_roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (publicNetworkAccess == 'Disabled' && enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
+  name: guid(
+    privateDnsZone.id,
+    subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314'),
+    'DNS Zone Contributor'
+  )
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'befefa01-2a29-4197-83a8-272ff33ce314'
+    ) // 'DNS Zone Contributor'
+    principalId: managedCluster.properties.ingressProfile.webAppRouting.identity.objectId
+    principalType: 'ServicePrincipal'
+  }
+  scope: privateDnsZone
 }
 
 @description('The resource ID of the managed cluster.')
@@ -1153,6 +1213,9 @@ type agentPoolType = {
   @description('Optional. The kubelet disk type of the agent pool.')
   kubeletDiskType: string?
 
+  @description('Optional. The Linux OS configuration of the agent pool.')
+  linuxOSConfig: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-05-02-preview'>.properties.linuxOSConfig?
+
   @description('Optional. The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).')
   maxCount: int?
 
@@ -1213,6 +1276,9 @@ type agentPoolType = {
   @description('Optional. vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.')
   enableVTPM: bool?
 
+  @description('Optional. SSH access method of an agent pool.')
+  sshAccess: ('Disabled' | 'LocalUser')?
+
   @description('Optional. The spot max price of the agent pool.')
   spotMaxPrice: int?
 
@@ -1233,6 +1299,9 @@ type agentPoolType = {
 
   @description('Optional. The workload runtime of the agent pool.')
   workloadRuntime: string?
+
+  @description('Optional. The Windows profile of the agent pool.')
+  windowsProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-05-02-preview'>.properties.windowsProfile?
 
   @description('Optional. The enable default telemetry of the agent pool.')
   enableDefaultTelemetry: bool?

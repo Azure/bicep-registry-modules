@@ -12,11 +12,33 @@ param apiManagementServiceName string
 ])
 param name string
 
-@description('Required. Portal setting properties. Strings may be left empty, but must not be omitted.')
-param properties portalSettingPropertiesType
+@description('Required. Portal setting properties.')
+param properties resourceInput<'Microsoft.ApiManagement/service/portalsettings@2024-05-01'>.properties
+
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
+}
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.apimgmt-portalsetting.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
 }
 
 resource portalSetting 'Microsoft.ApiManagement/service/portalsettings@2024-05-01' = {
@@ -33,41 +55,3 @@ output name string = portalSetting.name
 
 @description('The resource group the API management service portal setting was deployed into.')
 output resourceGroupName string = resourceGroup().name
-
-// ================ //
-// Definitions      //
-// ================ //
-
-type portalSettingPropertiesType = {
-  @sys.description('Required. \'signin\': Redirect Anonymous users to the Sign-In page. \'signup\': Allow users to sign up on a developer portal.')
-  enabled: bool
-
-  @sys.description('Required. Terms of service contract properties.')
-  termsOfService: {
-    @sys.description('Required. Ask user for consent to the terms of service.')
-    consentRequired: bool
-    @sys.description('Required. Display terms of service during a sign-up process.')
-    enabled: bool
-    @sys.description('Required. A terms of service text.')
-    text: string
-  }
-
-  @sys.description('Required. Subscriptions delegation settings.')
-  subscriptions: {
-    @sys.description('Required. Enable or disable delegation for subscriptions.')
-    enabled: bool
-  }
-
-  @sys.description('Required. A delegation Url.')
-  url: string
-
-  @sys.description('Required. User registration delegation settings.')
-  userRegistration: {
-    @sys.description('Required. Enable or disable delegation for user registration.')
-    enabled: bool
-  }
-
-  @secure()
-  @description('Required. A base64-encoded validation key to validate, that a request is coming from Azure API Management.')
-  validationKey: string
-}

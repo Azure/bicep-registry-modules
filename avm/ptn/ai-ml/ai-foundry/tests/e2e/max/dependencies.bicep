@@ -7,25 +7,36 @@ param location string
 @description('Optional. Tags of the resources.')
 param tags object = {}
 
+// NOTE: Foundry currently requires an address space of 192.168.0.0/16 for agent vnet integration
+var addressPrefix = '192.168.0.0/16'
+
 resource vnet 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   name: 'vnet-${workloadName}'
   location: location
   tags: tags
   properties: {
     addressSpace: {
-      addressPrefixes: ['10.0.0.0/20']
+      addressPrefixes: [addressPrefix]
     }
     subnets: [
       {
         name: 'agents'
         properties: {
-          addressPrefix: '10.0.0.0/23'
+          addressPrefix: cidrSubnet(addressPrefix, 23, 0)
+          delegations: [
+            {
+              name: 'Microsoft.App/environments'
+              properties: {
+                serviceName: 'Microsoft.App/environments'
+              }
+            }
+          ]
         }
       }
       {
         name: 'private-endpoints'
         properties: {
-          addressPrefix: '10.0.2.0/23'
+          addressPrefix: cidrSubnet(addressPrefix, 23, 1)
           privateEndpointNetworkPolicies: 'Disabled'
           privateLinkServiceNetworkPolicies: 'Disabled'
         }
@@ -34,68 +45,23 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   }
 }
 
-module blobDnsZone 'dependencies.dns.bicep' = {
-  name: take('module.dns.storage.blob.${workloadName}', 64)
-  params: {
-    name: 'privatelink.blob.${environment().suffixes.storage}'
-    virtualNetworkResourceId: vnet.id
-    tags: tags
+module dnsZones '../../shared/privateDnsZone.bicep' = [
+  for item in [
+    'privatelink.blob.${environment().suffixes.storage}'
+    'privatelink.documents.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}'
+    'privatelink.search.windows.net'
+    'privatelink.${toLower(environment().name) == 'azureusgovernment' ? 'vaultcore.usgovcloudapi.net' : 'vaultcore.azure.net'}'
+    'privatelink.openai.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}'
+    'privatelink.services.ai.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}'
+    'privatelink.cognitiveservices.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}'
+  ]: {
+    params: {
+      name: item
+      virtualNetworkResourceId: vnet.id
+      tags: tags
+    }
   }
-}
-
-module documentsDnsZone 'dependencies.dns.bicep' = {
-  name: take('module.dns.cosmos.documents.${workloadName}', 64)
-  params: {
-    name: 'privatelink.documents.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}'
-    virtualNetworkResourceId: vnet.id
-    tags: tags
-  }
-}
-
-module searchDnsZone 'dependencies.dns.bicep' = {
-  name: take('module.dns.search.${workloadName}', 64)
-  params: {
-    name: 'privatelink.search.windows.net'
-    virtualNetworkResourceId: vnet.id
-    tags: tags
-  }
-}
-
-module keyVaultDnsZone 'dependencies.dns.bicep' = {
-  name: take('module.dns.keyvault.${workloadName}', 64)
-  params: {
-    name: 'privatelink.${toLower(environment().name) == 'azureusgovernment' ? 'vaultcore.usgovcloudapi.net' : 'vaultcore.azure.net'}'
-    virtualNetworkResourceId: vnet.id
-    tags: tags
-  }
-}
-
-module openaiDnsZone 'dependencies.dns.bicep' = {
-  name: take('module.dns.openai.${workloadName}', 64)
-  params: {
-    name: 'privatelink.openai.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}'
-    virtualNetworkResourceId: vnet.id
-    tags: tags
-  }
-}
-
-module servicesAiDnsZone 'dependencies.dns.bicep' = {
-  name: take('module.dns.services.ai.${workloadName}', 64)
-  params: {
-    name: 'privatelink.services.ai.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}'
-    virtualNetworkResourceId: vnet.id
-    tags: tags
-  }
-}
-
-module cognitiveServicesDnsZone 'dependencies.dns.bicep' = {
-  name: take('module.dns.cognitive.services.${workloadName}', 64)
-  params: {
-    name: 'privatelink.cognitiveservices.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}'
-    virtualNetworkResourceId: vnet.id
-    tags: tags
-  }
-}
+]
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: 'id-sample-${workloadName}'
@@ -111,13 +77,13 @@ output subnetPrivateEndpointsResourceId string = first(filter(
 )).?id!
 output subnetAgentResourceId string = first(filter(vnet.properties.subnets, s => s.name == 'agents')).?id!
 
-output blobDnsZoneResourceId string = blobDnsZone.outputs.resourceId
-output documentsDnsZoneResourceId string = documentsDnsZone.outputs.resourceId
-output searchDnsZoneResourceId string = searchDnsZone.outputs.resourceId
-output keyVaultDnsZoneResourceId string = keyVaultDnsZone.outputs.resourceId
-output openaiDnsZoneResourceId string = openaiDnsZone.outputs.resourceId
-output servicesAiDnsZoneResourceId string = servicesAiDnsZone.outputs.resourceId
-output cognitiveServicesDnsZoneResourceId string = cognitiveServicesDnsZone.outputs.resourceId
+output blobDnsZoneResourceId string = dnsZones[0].outputs.resourceId
+output documentsDnsZoneResourceId string = dnsZones[1].outputs.resourceId
+output searchDnsZoneResourceId string = dnsZones[2].outputs.resourceId
+output keyVaultDnsZoneResourceId string = dnsZones[3].outputs.resourceId
+output openaiDnsZoneResourceId string = dnsZones[4].outputs.resourceId
+output servicesAiDnsZoneResourceId string = dnsZones[5].outputs.resourceId
+output cognitiveServicesDnsZoneResourceId string = dnsZones[6].outputs.resourceId
 
 output managedIdentityResourceId string = managedIdentity.id
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId

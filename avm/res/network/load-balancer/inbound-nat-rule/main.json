@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "18405211154213559578"
+      "version": "0.39.26.7824",
+      "templateHash": "14698387200466332797"
     },
     "name": "Load Balancer Inbound NAT Rules",
     "description": "This module deploys a Load Balancer Inbound NAT Rules."
@@ -74,7 +74,7 @@
       "minValue": 0,
       "maxValue": 65534,
       "metadata": {
-        "description": "Conditonal. The port range end for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeStart. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. Required if FrontendPort is not specified."
+        "description": "Conditional. The port range end for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeStart. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. Required if FrontendPort is not specified."
       }
     },
     "frontendPortRangeStart": {
@@ -110,12 +110,12 @@
     "loadBalancer": {
       "existing": true,
       "type": "Microsoft.Network/loadBalancers",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2024-10-01",
       "name": "[parameters('loadBalancerName')]"
     },
     "inboundNatRule": {
       "type": "Microsoft.Network/loadBalancers/inboundNatRules",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2024-10-01",
       "name": "[format('{0}/{1}', parameters('loadBalancerName'), parameters('name'))]",
       "properties": {
         "frontendPort": "[parameters('frontendPort')]",

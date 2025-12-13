@@ -54,15 +54,6 @@ module testDeployment '../../../main.bicep' = {
     clusterSettings: {
       clusterMode: 'activePassiveBgp'
     }
-    domainNameLabel: [
-      '${namePrefix}-dm-${serviceShort}'
-    ]
-    primaryPublicIPName: '${namePrefix}-pip-${serviceShort}'
-    publicIpAvailabilityZones: [
-      1
-      2
-      3
-    ]
   }
 }
 
@@ -73,7 +64,7 @@ output defaultBgpIpAddresses string? = testDeployment.outputs.?defaultBgpIpAddre
 output ipConfigurations array? = testDeployment.outputs.?ipConfigurations
 output location string = testDeployment.outputs.location
 output name string = testDeployment.outputs.name
-output primaryPublicIpAddress string = testDeployment.outputs.primaryPublicIpAddress
+output primaryPublicIpAddress string? = testDeployment.outputs.?primaryPublicIpAddress
 output resourceGroupName string = testDeployment.outputs.resourceGroupName
 output resourceId string = testDeployment.outputs.resourceId
 output secondaryCustomBgpIpAddress string? = testDeployment.outputs.?secondaryCustomBgpIpAddress

@@ -2,6 +2,14 @@
 
 This module deploys a Web or Function App.
 
+You can reference the module as follows:
+```bicep
+module site 'br/public:avm/res/web/site:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -45,15 +53,18 @@ The following section provides usage examples for the module, which were used to
 - [Linux Container Web App, using only defaults](#example-3-linux-container-web-app-using-only-defaults)
 - [WAF-aligned](#example-4-waf-aligned)
 - [Access Restrictions](#example-5-access-restrictions)
-- [Web App, using only defaults](#example-6-web-app-using-only-defaults)
-- [Web App, using large parameter set](#example-7-web-app-using-large-parameter-set)
-- [Linux Web App, using only defaults](#example-8-linux-web-app-using-only-defaults)
-- [Linux Web App, using large parameter set](#example-9-linux-web-app-using-large-parameter-set)
-- [Windows Web App for Containers, using only defaults](#example-10-windows-web-app-for-containers-using-only-defaults)
+- [Web App with Azure Storage Accounts Configuration](#example-6-web-app-with-azure-storage-accounts-configuration)
+- [Web App, using only defaults](#example-7-web-app-using-only-defaults)
+- [Web App, using large parameter set](#example-8-web-app-using-large-parameter-set)
+- [Linux Web App, using only defaults](#example-9-linux-web-app-using-only-defaults)
+- [Linux Web App, using large parameter set](#example-10-linux-web-app-using-large-parameter-set)
+- [Windows Web App for Containers, using only defaults](#example-11-windows-web-app-for-containers-using-only-defaults)
 
 ### Example 1: _Function App, using only defaults_
 
 This instance deploys the module as Function App with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/functionApp.defaults]
 
 
 <details>
@@ -62,7 +73,6 @@ This instance deploys the module as Function App with the minimum set of require
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'functionapp'
@@ -121,6 +131,8 @@ param serverFarmResourceId = '<serverFarmResourceId>'
 
 This instance deploys the module as Function App with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/functionApp.max]
+
 
 <details>
 
@@ -128,7 +140,6 @@ This instance deploys the module as Function App with most of its features enabl
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'functionapp'
@@ -725,6 +736,8 @@ param siteConfig = {
 
 This instance deploys the module as Linux Container Web App with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/linuxContainerWebApp.defaults]
+
 
 <details>
 
@@ -732,7 +745,6 @@ This instance deploys the module as Linux Container Web App with the minimum set
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app,linux,container'
@@ -829,6 +841,8 @@ param siteConfig = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -836,7 +850,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app'
@@ -1026,6 +1039,8 @@ param siteConfig = {
 
 This instance deploys the module demonstrating access restrictions for Front Door and Application Gateway scenarios.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/webApp.accessRestrictions]
+
 
 <details>
 
@@ -1033,7 +1048,6 @@ This instance deploys the module demonstrating access restrictions for Front Doo
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app'
@@ -1253,9 +1267,11 @@ param siteConfig = {
 </details>
 <p>
 
-### Example 6: _Web App, using only defaults_
+### Example 6: _Web App with Azure Storage Accounts Configuration_
 
-This instance deploys the module as Web App with the minimum set of required parameters.
+This instance deploys the module as Web App with azurestorageaccounts configuration demonstrating the correct structure for mounting Azure Storage Accounts.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/webApp.azurestorageaccounts]
 
 
 <details>
@@ -1264,7 +1280,200 @@ This instance deploys the module as Web App with the minimum set of required par
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
+  params: {
+    // Required parameters
+    kind: 'app'
+    name: 'wsazstor001'
+    serverFarmResourceId: '<serverFarmResourceId>'
+    // Non-required parameters
+    configs: [
+      {
+        name: 'azurestorageaccounts'
+        properties: {
+          'config-storage': {
+            accessKey: '<accessKey>'
+            accountName: '<accountName>'
+            mountPath: '\\mounts\\config'
+            protocol: 'Smb'
+            shareName: 'config-share'
+            type: 'AzureFiles'
+          }
+          'data-storage': {
+            accessKey: '<accessKey>'
+            accountName: '<accountName>'
+            mountPath: '\\mounts\\data'
+            protocol: 'Smb'
+            shareName: 'data-share'
+            type: 'AzureFiles'
+          }
+          'logs-storage': {
+            accessKey: '<accessKey>'
+            accountName: '<accountName>'
+            mountPath: '\\mounts\\logs'
+            protocol: 'Smb'
+            shareName: 'logs-share'
+            type: 'AzureFiles'
+          }
+        }
+      }
+      {
+        name: 'appsettings'
+        properties: {
+          STORAGE_CONFIG_MOUNT: '\\mounts\\config'
+          STORAGE_DATA_MOUNT: '\\mounts\\data'
+          STORAGE_LOGS_MOUNT: '\\mounts\\logs'
+        }
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "app"
+    },
+    "name": {
+      "value": "wsazstor001"
+    },
+    "serverFarmResourceId": {
+      "value": "<serverFarmResourceId>"
+    },
+    // Non-required parameters
+    "configs": {
+      "value": [
+        {
+          "name": "azurestorageaccounts",
+          "properties": {
+            "config-storage": {
+              "accessKey": "<accessKey>",
+              "accountName": "<accountName>",
+              "mountPath": "\\mounts\\config",
+              "protocol": "Smb",
+              "shareName": "config-share",
+              "type": "AzureFiles"
+            },
+            "data-storage": {
+              "accessKey": "<accessKey>",
+              "accountName": "<accountName>",
+              "mountPath": "\\mounts\\data",
+              "protocol": "Smb",
+              "shareName": "data-share",
+              "type": "AzureFiles"
+            },
+            "logs-storage": {
+              "accessKey": "<accessKey>",
+              "accountName": "<accountName>",
+              "mountPath": "\\mounts\\logs",
+              "protocol": "Smb",
+              "shareName": "logs-share",
+              "type": "AzureFiles"
+            }
+          }
+        },
+        {
+          "name": "appsettings",
+          "properties": {
+            "STORAGE_CONFIG_MOUNT": "\\mounts\\config",
+            "STORAGE_DATA_MOUNT": "\\mounts\\data",
+            "STORAGE_LOGS_MOUNT": "\\mounts\\logs"
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/site:<version>'
+
+// Required parameters
+param kind = 'app'
+param name = 'wsazstor001'
+param serverFarmResourceId = '<serverFarmResourceId>'
+// Non-required parameters
+param configs = [
+  {
+    name: 'azurestorageaccounts'
+    properties: {
+      'config-storage': {
+        accessKey: '<accessKey>'
+        accountName: '<accountName>'
+        mountPath: '\\mounts\\config'
+        protocol: 'Smb'
+        shareName: 'config-share'
+        type: 'AzureFiles'
+      }
+      'data-storage': {
+        accessKey: '<accessKey>'
+        accountName: '<accountName>'
+        mountPath: '\\mounts\\data'
+        protocol: 'Smb'
+        shareName: 'data-share'
+        type: 'AzureFiles'
+      }
+      'logs-storage': {
+        accessKey: '<accessKey>'
+        accountName: '<accountName>'
+        mountPath: '\\mounts\\logs'
+        protocol: 'Smb'
+        shareName: 'logs-share'
+        type: 'AzureFiles'
+      }
+    }
+  }
+  {
+    name: 'appsettings'
+    properties: {
+      STORAGE_CONFIG_MOUNT: '\\mounts\\config'
+      STORAGE_DATA_MOUNT: '\\mounts\\data'
+      STORAGE_LOGS_MOUNT: '\\mounts\\logs'
+    }
+  }
+]
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 7: _Web App, using only defaults_
+
+This instance deploys the module as Web App with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/webApp.defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module site 'br/public:avm/res/web/site:<version>' = {
   params: {
     // Required parameters
     kind: 'app'
@@ -1319,9 +1528,11 @@ param serverFarmResourceId = '<serverFarmResourceId>'
 </details>
 <p>
 
-### Example 7: _Web App, using large parameter set_
+### Example 8: _Web App, using large parameter set_
 
 This instance deploys the module as Web App with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/webApp.max]
 
 
 <details>
@@ -1330,7 +1541,6 @@ This instance deploys the module as Web App with most of its features enabled.
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app'
@@ -2224,9 +2434,11 @@ param slots = [
 </details>
 <p>
 
-### Example 8: _Linux Web App, using only defaults_
+### Example 9: _Linux Web App, using only defaults_
 
 This instance deploys the module as a Linux Web App with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/webAppLinux.defaults]
 
 
 <details>
@@ -2235,7 +2447,6 @@ This instance deploys the module as a Linux Web App with the minimum set of requ
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app,linux'
@@ -2290,9 +2501,11 @@ param serverFarmResourceId = '<serverFarmResourceId>'
 </details>
 <p>
 
-### Example 9: _Linux Web App, using large parameter set_
+### Example 10: _Linux Web App, using large parameter set_
 
 This instance deploys the module asa Linux Web App with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/webAppLinux.max]
 
 
 <details>
@@ -2301,7 +2514,6 @@ This instance deploys the module asa Linux Web App with most of its features ena
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app,linux'
@@ -3013,9 +3225,11 @@ param slots = [
 </details>
 <p>
 
-### Example 10: _Windows Web App for Containers, using only defaults_
+### Example 11: _Windows Web App for Containers, using only defaults_
 
 This instance deploys the module as a Windows based Container Web App with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/winContainerWebApp.defaults]
 
 
 <details>
@@ -3024,7 +3238,6 @@ This instance deploys the module as a Windows based Container Web App with the m
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app,container,windows'
@@ -14211,6 +14424,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Notes
 
@@ -14254,4 +14468,4 @@ appSettingsKeyValuePairs: {
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
