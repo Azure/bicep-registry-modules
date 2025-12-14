@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "4546294502541965176"
+      "templateHash": "15983491143515760734"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -1229,7 +1229,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. Array of Policies to apply to the Service Product"
+            "description": "Optional. Array of Policies to apply to the Service Product."
           }
         },
         "name": {

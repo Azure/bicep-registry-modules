@@ -1191,7 +1191,7 @@ type productType = {
   @description('Optional. Names of Product Groups.')
   groups: string[]?
 
-  @description('Optional. Array of Policies to apply to the Service Product')
+  @description('Optional. Array of Policies to apply to the Service Product.')
   policies: productPolicyType[]?
 
   @description('Required. Product Name.')
