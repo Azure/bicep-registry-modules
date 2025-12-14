@@ -242,6 +242,11 @@ module testDeployment '../../../main.bicep' = [
           }
           targetResourceId: nestedDependencies.outputs.appInsightsResourceId
         }
+        {
+          name: 'azuremonitor'
+          type: 'azureMonitor'
+          isBuffered: true
+        }
       ]
       lock: {
         kind: 'CanNotDelete'

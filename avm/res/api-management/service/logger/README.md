@@ -37,7 +37,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. Required if the template is used in a standalone deployment. |
-| [`credentials`](#parameter-credentials) | secureObject | The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub. |
+| [`credentials`](#parameter-credentials) | secureObject | The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub, ignored if loggerType = azureMonitor. |
 | [`targetResourceId`](#parameter-targetresourceid) | string | Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub. |
 
 **Optional parameters**
@@ -79,7 +79,7 @@ The name of the parent API Management service. Required if the template is used 
 
 ### Parameter: `credentials`
 
-The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub.
+The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub, ignored if loggerType = azureMonitor.
 
 - Required: No
 - Type: secureObject

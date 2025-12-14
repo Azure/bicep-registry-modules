@@ -479,6 +479,11 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         targetResourceId: '<targetResourceId>'
         type: 'applicationInsights'
       }
+      {
+        isBuffered: true
+        name: 'azuremonitor'
+        type: 'azureMonitor'
+      }
     ]
     managedIdentities: {
       systemAssigned: true
@@ -789,6 +794,11 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "name": "logger",
           "targetResourceId": "<targetResourceId>",
           "type": "applicationInsights"
+        },
+        {
+          "isBuffered": true,
+          "name": "azuremonitor",
+          "type": "azureMonitor"
         }
       ]
     },
@@ -1092,6 +1102,11 @@ param loggers = [
     name: 'logger'
     targetResourceId: '<targetResourceId>'
     type: 'applicationInsights'
+  }
+  {
+    isBuffered: true
+    name: 'azuremonitor'
+    type: 'azureMonitor'
   }
 ]
 param managedIdentities = {
