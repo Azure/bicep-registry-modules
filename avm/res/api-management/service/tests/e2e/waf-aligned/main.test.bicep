@@ -48,8 +48,6 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     applicationInsightsName: 'dep-${namePrefix}-appi-${serviceShort}'
     lawReplicationRegion: secondaryEnforcedLocation
-    networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
-    routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
     location: enforcedLocation
   }
 }
