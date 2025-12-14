@@ -7,7 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - All API versions have been updated to the latest supported versions.
-- New parameters have been added to various tests
+- New parameters `circuitBreaker`, `pool`, `type` added to backend child module.
 
 ### Breaking Changes
 
