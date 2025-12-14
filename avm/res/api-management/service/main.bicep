@@ -378,6 +378,7 @@ module service_authorizationServers 'authorization-server/main.bicep' = [
   }
 ]
 
+@batchSize(1)
 module service_backends 'backend/main.bicep' = [
   for (backend, index) in (backends ?? []): {
     name: '${uniqueString(deployment().name, location)}-Apim-Backend-${index}'
@@ -394,6 +395,9 @@ module service_backends 'backend/main.bicep' = [
       title: backend.?title
       tls: backend.?tls ?? { validateCertificateChain: true, validateCertificateName: true }
       enableTelemetry: enableReferencedModulesTelemetry
+      circuitBreaker: backend.?circuitBreaker
+      pool: backend.?pool
+      type: backend.?type ?? 'Single'
     }
   }
 ]
@@ -965,6 +969,15 @@ type backendType = {
 
   @description('Required. Runtime URL of the Backend.')
   url: string
+
+  @description('Optional. Backend Circuit Breaker Properties.')
+  circuitBreaker: resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.circuitBreaker?
+
+  @description('Optional. Backend pool configuration for load balancing.')
+  pool: resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.pool?
+
+  @description('Optional. Type of the backend. A backend can be either Single or Pool.')
+  type: ('Single' | 'Pool')?
 }
 
 @export()
