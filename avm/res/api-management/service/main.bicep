@@ -1170,6 +1170,8 @@ type subscriptionType = {
   name: string
 }
 
+import { productPolicyType } from 'product/main.bicep'
+
 @export()
 @description('The type of a product.')
 type productType = {
@@ -1188,6 +1190,9 @@ type productType = {
 
   @description('Optional. Names of Product Groups.')
   groups: string[]?
+
+  @description('Optional. Array of Policies to apply to the Service Product')
+  policies: productPolicyType[]?
 
   @description('Required. Product Name.')
   name: string

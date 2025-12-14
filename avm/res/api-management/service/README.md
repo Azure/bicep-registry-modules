@@ -47,6 +47,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.ApiManagement/service/products` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_products.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/products)</li></ul> |
 | `Microsoft.ApiManagement/service/products/apis` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_products_apis.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/products/apis)</li></ul> |
 | `Microsoft.ApiManagement/service/products/groups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_products_groups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/products/groups)</li></ul> |
+| `Microsoft.ApiManagement/service/products/policies` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_products_policies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/products/policies)</li></ul> |
 | `Microsoft.ApiManagement/service/subscriptions` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_subscriptions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/subscriptions)</li></ul> |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
@@ -425,7 +426,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             }
           ]
         }
-        url: ''
+        type: 'Pool'
       }
     ]
     caches: [
@@ -528,6 +529,12 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           'developers'
         ]
         name: 'Starter'
+        policies: [
+          {
+            format: 'xml'
+            value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
+          }
+        ]
         subscriptionRequired: false
       }
     ]
@@ -718,7 +725,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
               }
             ]
           },
-          "url": ""
+          "type": "Pool"
         }
       ]
     },
@@ -843,6 +850,12 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             "developers"
           ],
           "name": "Starter",
+          "policies": [
+            {
+              "format": "xml",
+              "value": "<policies> <inbound> <rate-limit-by-key calls=\"250\" renewal-period=\"60\" counter-key=\"@(context.Request.IpAddress)\" /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>"
+            }
+          ],
           "subscriptionRequired": false
         }
       ]
@@ -1027,7 +1040,7 @@ param backends = [
         }
       ]
     }
-    url: ''
+    type: 'Pool'
   }
 ]
 param caches = [
@@ -1130,6 +1143,12 @@ param products = [
       'developers'
     ]
     name: 'Starter'
+    policies: [
+      {
+        format: 'xml'
+        value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
+      }
+    ]
     subscriptionRequired: false
   }
 ]
@@ -3142,7 +3161,12 @@ Backends.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-backendsname) | string | Backend Name. |
-| [`url`](#parameter-backendsurl) | string | Runtime URL of the Backend. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`url`](#parameter-backendsurl) | string | Runtime URL of the Backend. Required if type is Single and not supported if type is Pool. |
 
 **Optional parameters**
 
@@ -3157,7 +3181,7 @@ Backends.
 | [`resourceId`](#parameter-backendsresourceid) | string | Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. |
 | [`serviceFabricCluster`](#parameter-backendsservicefabriccluster) | object | Backend Service Fabric Cluster Properties. |
 | [`title`](#parameter-backendstitle) | string | Backend Title. |
-| [`tls`](#parameter-backendstls) | object | Backend TLS Properties. |
+| [`tls`](#parameter-backendstls) | object | Backend TLS Properties. Not supported for Backend Pools. |
 | [`type`](#parameter-backendstype) | string | Type of the backend. A backend can be either Single or Pool. |
 
 ### Parameter: `backends.name`
@@ -3169,9 +3193,9 @@ Backend Name.
 
 ### Parameter: `backends.url`
 
-Runtime URL of the Backend.
+Runtime URL of the Backend. Required if type is Single and not supported if type is Pool.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `backends.circuitBreaker`
@@ -3239,7 +3263,7 @@ Backend Title.
 
 ### Parameter: `backends.tls`
 
-Backend TLS Properties.
+Backend TLS Properties. Not supported for Backend Pools.
 
 - Required: No
 - Type: object
@@ -4638,6 +4662,7 @@ Products.
 | [`approvalRequired`](#parameter-productsapprovalrequired) | bool | Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the products APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the products APIs. Can be present only if subscriptionRequired property is present and has a value of false. |
 | [`description`](#parameter-productsdescription) | string | Product description. May include HTML formatting tags. |
 | [`groups`](#parameter-productsgroups) | array | Names of Product Groups. |
+| [`policies`](#parameter-productspolicies) | array | Array of Policies to apply to the Service Product |
 | [`state`](#parameter-productsstate) | string | whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. Default state of Product is notPublished. - notPublished or published. |
 | [`subscriptionRequired`](#parameter-productssubscriptionrequired) | bool | Whether a product subscription is required for accessing APIs included in this product. If true, the product is referred to as "protected" and a valid subscription key is required for a request to an API included in the product to succeed. If false, the product is referred to as "open" and requests to an API included in the product can be made without a subscription key. If property is omitted when creating a new product it's value is assumed to be true. |
 | [`subscriptionsLimit`](#parameter-productssubscriptionslimit) | int | Whether the number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false. |
@@ -4684,6 +4709,56 @@ Names of Product Groups.
 
 - Required: No
 - Type: array
+
+### Parameter: `products.policies`
+
+Array of Policies to apply to the Service Product
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`value`](#parameter-productspoliciesvalue) | string | Contents of the Policy as defined by the format. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`format`](#parameter-productspoliciesformat) | string | Format of the policyContent. |
+| [`name`](#parameter-productspoliciesname) | string | The name of the policy. |
+
+### Parameter: `products.policies.value`
+
+Contents of the Policy as defined by the format.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `products.policies.format`
+
+Format of the policyContent.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'rawxml'
+    'rawxml-link'
+    'xml'
+    'xml-link'
+  ]
+  ```
+
+### Parameter: `products.policies.name`
+
+The name of the policy.
+
+- Required: No
+- Type: string
 
 ### Parameter: `products.state`
 

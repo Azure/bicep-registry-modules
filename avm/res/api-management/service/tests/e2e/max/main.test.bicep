@@ -340,6 +340,12 @@ module testDeployment '../../../main.bicep' = [
           name: 'Starter'
           displayName: 'Starter'
           subscriptionRequired: false
+          policies: [
+            {
+              format: 'xml'
+              value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
+            }
+          ]
         }
       ]
       roleAssignments: [

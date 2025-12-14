@@ -21,7 +21,7 @@ param apis string[]?
 param groups string[]?
 
 @sys.description('Optional. Array of Policies to apply to the Service Product.')
-param policies policyType[]?
+param policies productPolicyType[]?
 
 @sys.description('Required. Product Name.')
 param name string
@@ -142,8 +142,8 @@ output policyResourceIds array = [
 // =============== //
 
 @export()
-@sys.description('The type of a policy.')
-type policyType = {
+@sys.description('The type of a product policy.')
+type productPolicyType = {
   @sys.description('Optional. The name of the policy.')
   name: string?
 
