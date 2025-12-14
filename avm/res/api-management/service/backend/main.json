@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "1505729739204184875"
+      "templateHash": "13260138417129902786"
     },
     "name": "API Management Service Backends",
     "description": "This module deploys an API Management Service Backend."
@@ -169,22 +169,7 @@
       "type": "Microsoft.ApiManagement/service/backends",
       "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
-      "properties": {
-        "circuitBreaker": "[parameters('circuitBreaker')]",
-        "description": "[parameters('description')]",
-        "resourceId": "[parameters('resourceId')]",
-        "pool": "[parameters('pool')]",
-        "properties": {
-          "serviceFabricCluster": "[parameters('serviceFabricCluster')]"
-        },
-        "credentials": "[parameters('credentials')]",
-        "proxy": "[parameters('proxy')]",
-        "title": "[parameters('title')]",
-        "tls": "[parameters('tls')]",
-        "type": "[parameters('type')]",
-        "url": "[parameters('url')]",
-        "protocol": "[parameters('protocol')]"
-      }
+      "properties": "[shallowMerge(createArray(createObject('circuitBreaker', parameters('circuitBreaker'), 'description', parameters('description'), 'resourceId', parameters('resourceId'), 'pool', parameters('pool'), 'properties', createObject('serviceFabricCluster', parameters('serviceFabricCluster')), 'credentials', parameters('credentials'), 'proxy', parameters('proxy'), 'title', parameters('title'), 'tls', parameters('tls'), 'type', parameters('type'), 'protocol', parameters('protocol')), if(equals(parameters('type'), 'Single'), createObject('url', parameters('url')), createObject())))]"
     }
   },
   "outputs": {

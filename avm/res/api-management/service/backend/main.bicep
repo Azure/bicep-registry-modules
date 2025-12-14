@@ -86,8 +86,8 @@ resource backend 'Microsoft.ApiManagement/service/backends@2024-05-01' = {
     title: title
     tls: tls
     type: type
-    url: url
     protocol: protocol
+    ...(type == 'Single' ? { url: url } : {})
   }
 }
 
