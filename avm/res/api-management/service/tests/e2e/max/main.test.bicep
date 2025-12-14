@@ -73,13 +73,15 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // Test Execution //
 // ============== //
 
+var apimName = '${namePrefix}${serviceShort}001'
+var backend1Name = 'backend1'
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: apimName
       location: resourceLocation
       publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
       publisherName: '${namePrefix}-az-amorg-x-001'
@@ -136,12 +138,55 @@ module testDeployment '../../../main.bicep' = [
       ]
       backends: [
         {
-          name: 'backend'
+          name: backend1Name
+          description: 'Test backend with maximum properties'
           tls: {
             validateCertificateChain: false
             validateCertificateName: false
           }
           url: 'http://echoapi.cloudapp.net/api'
+          circuitBreaker: {
+            rules: [
+              {
+                name: 'rule1'
+                failureCondition: {
+                  count: 1
+                  interval: 'PT1H'
+                  statusCodeRanges: [
+                    { min: 400, max: 499 }
+                    { min: 500, max: 599 }
+                  ]
+                  errorReasons: ['OperationNotFound', 'ClientConnectionFailure']
+                }
+                acceptRetryAfter: false
+                tripDuration: 'PT1H'
+              }
+            ]
+          }
+          type: 'Single'
+          credentials: {
+            authorization: {
+              parameter: 'dXNlcm5hbWU6c2VjcmV0cGFzc3dvcmQ=' // base64 encoded 'username:secretpassword'
+              scheme: 'Basic'
+            }
+            query: {
+              queryParam1: [
+                'value1'
+              ]
+            }
+            header: {}
+          }
+        }
+        {
+          name: 'backend2'
+          pool: {
+            services: [
+              {
+                id: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/backends/${backend1Name}'
+              }
+            ]
+          }
+          url: ''
         }
       ]
       caches: [
@@ -225,33 +270,12 @@ module testDeployment '../../../main.bicep' = [
               enabled: true
               text: 'Terms of service text'
             }
-            subscriptions: {
-              enabled: false
-            }
-            url: ''
-            userRegistration: {
-              enabled: false
-            }
-            validationKey: ''
           }
         }
         {
           name: 'signin'
           properties: {
             enabled: false
-            termsOfService: {
-              consentRequired: true
-              enabled: true
-              text: 'Terms of service text'
-            }
-            subscriptions: {
-              enabled: false
-            }
-            url: ''
-            userRegistration: {
-              enabled: false
-            }
-            validationKey: ''
           }
         }
         // TODO: Uncomment when delegation is working properly

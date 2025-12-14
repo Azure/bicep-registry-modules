@@ -226,65 +226,15 @@ module testDeployment '../../../main.bicep' = [
               enabled: true
               text: 'Terms of service text'
             }
-            subscriptions: {
-              enabled: false
-            }
-            url: ''
-            userRegistration: {
-              enabled: false
-            }
-            validationKey: ''
           }
         }
         {
           name: 'signin'
           properties: {
             enabled: false
-            termsOfService: {
-              consentRequired: true
-              enabled: true
-              text: 'Terms of service text'
-            }
-            subscriptions: {
-              enabled: false
-            }
-            url: ''
-            userRegistration: {
-              enabled: false
-            }
-            validationKey: ''
           }
         }
       ]
-      // privateEndpoints: [
-      //   {
-      //     service: 'Gateway'
-      //     subnetResourceId: nestedDependencies.outputs.privateEndpointSubnetResourceId
-      //     privateDnsZoneGroup: {
-      //       privateDnsZoneGroupConfigs: [
-      //         {
-      //           privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
-      //         }
-      //       ]
-      //     }
-      //     tags: {
-      //       'hidden-title': 'This is visible in the resource name'
-      //       Environment: 'Non-Prod'
-      //       Role: 'DeploymentValidation'
-      //     }
-      //   }
-      //   {
-      //     service: 'Gateway'
-      //     subnetResourceId: nestedDependencies.outputs.privateEndpointSubnetResourceId
-      //     privateDnsZoneGroup: {
-      //       privateDnsZoneGroupConfigs: [
-      //         {
-      //           privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
-      //         }
-      //       ]
-      //     }
-      //   }
-      // ]
       products: [
         {
           apis: [
