@@ -10,7 +10,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- None
+- Update default values for `url` and `tls` parameters
 
 ## 0.1.1
 

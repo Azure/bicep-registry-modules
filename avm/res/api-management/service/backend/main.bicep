@@ -28,14 +28,11 @@ param serviceFabricCluster resourceInput<'Microsoft.ApiManagement/service/backen
 @sys.description('Optional. Backend Title.')
 param title string?
 
-@sys.description('Optional. Backend TLS Properties.')
-param tls resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.tls = {
-  validateCertificateChain: false
-  validateCertificateName: false
-}
+@sys.description('Optional. Backend TLS Properties. Not supported for Backend Pools.')
+param tls resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.tls?
 
-@sys.description('Required. Runtime URL of the Backend.')
-param url string
+@sys.description('Conditional. Runtime URL of the Backend. Required if type is Single and not supported if type is Pool.')
+param url string?
 
 @sys.description('Optional. Backend Circuit Breaker Configuration.')
 param circuitBreaker resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.circuitBreaker?

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "3787333618992526414"
+      "templateHash": "1505729739204184875"
     },
     "name": "API Management Service Backends",
     "description": "This module deploys an API Management Service Backend."
@@ -88,17 +88,15 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/tls"
         },
-        "description": "Optional. Backend TLS Properties."
+        "description": "Optional. Backend TLS Properties. Not supported for Backend Pools."
       },
-      "defaultValue": {
-        "validateCertificateChain": false,
-        "validateCertificateName": false
-      }
+      "nullable": true
     },
     "url": {
       "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "Required. Runtime URL of the Backend."
+        "description": "Conditional. Runtime URL of the Backend. Required if type is Single and not supported if type is Pool."
       }
     },
     "circuitBreaker": {

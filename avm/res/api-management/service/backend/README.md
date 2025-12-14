@@ -31,13 +31,13 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Backend Name. |
-| [`url`](#parameter-url) | string | Runtime URL of the Backend. |
 
 **Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. Required if the template is used in a standalone deployment. |
+| [`url`](#parameter-url) | string | Runtime URL of the Backend. Required if type is Single and not supported if type is Pool. |
 
 **Optional parameters**
 
@@ -53,7 +53,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | [`resourceId`](#parameter-resourceid) | string | Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. |
 | [`serviceFabricCluster`](#parameter-servicefabriccluster) | object | Backend Service Fabric Cluster Properties. |
 | [`title`](#parameter-title) | string | Backend Title. |
-| [`tls`](#parameter-tls) | object | Backend TLS Properties. |
+| [`tls`](#parameter-tls) | object | Backend TLS Properties. Not supported for Backend Pools. |
 | [`type`](#parameter-type) | string | Type of the backend. A backend can be either Single or Pool. |
 
 ### Parameter: `name`
@@ -63,18 +63,18 @@ Backend Name.
 - Required: Yes
 - Type: string
 
-### Parameter: `url`
-
-Runtime URL of the Backend.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `apiManagementServiceName`
 
 The name of the parent API Management service. Required if the template is used in a standalone deployment.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `url`
+
+Runtime URL of the Backend. Required if type is Single and not supported if type is Pool.
+
+- Required: No
 - Type: string
 
 ### Parameter: `circuitBreaker`
@@ -151,17 +151,10 @@ Backend Title.
 
 ### Parameter: `tls`
 
-Backend TLS Properties.
+Backend TLS Properties. Not supported for Backend Pools.
 
 - Required: No
 - Type: object
-- Default:
-  ```Bicep
-  {
-      validateCertificateChain: false
-      validateCertificateName: false
-  }
-  ```
 
 ### Parameter: `type`
 

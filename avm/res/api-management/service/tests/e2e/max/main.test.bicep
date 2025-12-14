@@ -139,6 +139,7 @@ module testDeployment '../../../main.bicep' = [
       backends: [
         {
           name: backend1Name
+          type: 'Single'
           description: 'Test backend with maximum properties'
           tls: {
             validateCertificateChain: false
@@ -163,7 +164,6 @@ module testDeployment '../../../main.bicep' = [
               }
             ]
           }
-          type: 'Single'
           credentials: {
             authorization: {
               parameter: 'dXNlcm5hbWU6c2VjcmV0cGFzc3dvcmQ=' // base64 encoded 'username:secretpassword'
@@ -179,6 +179,7 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           name: 'backend2'
+          type: 'Pool'
           pool: {
             services: [
               {
@@ -186,7 +187,6 @@ module testDeployment '../../../main.bicep' = [
               }
             ]
           }
-          url: ''
         }
       ]
       caches: [
