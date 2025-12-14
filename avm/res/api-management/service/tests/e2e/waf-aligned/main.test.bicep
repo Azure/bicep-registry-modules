@@ -218,6 +218,12 @@ module testDeployment '../../../main.bicep' = [
       ]
       portalsettings: [
         {
+          name: 'signin'
+          properties: {
+            enabled: false
+          }
+        }
+        {
           name: 'signup'
           properties: {
             enabled: false
@@ -226,12 +232,6 @@ module testDeployment '../../../main.bicep' = [
               enabled: true
               text: 'Terms of service text'
             }
-          }
-        }
-        {
-          name: 'signin'
-          properties: {
-            enabled: false
           }
         }
       ]
