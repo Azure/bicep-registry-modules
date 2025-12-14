@@ -1,7 +1,7 @@
 # API Management Services `[Microsoft.ApiManagement/service]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
->
+> 
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
@@ -314,7 +314,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       {
         disableGateway: false
         location: '<location>'
-        publicIpAddressResourceId: '<publicIpAddressResourceId>'
         sku: {
           capacity: 1
           name: 'Premium'
@@ -449,19 +448,41 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     portalsettings: [
       {
-        name: 'signin'
-        properties: {
-          enabled: false
-        }
-      }
-      {
         name: 'signup'
         properties: {
           enabled: false
-          termsOfService: {
-            consentRequired: false
+          subscriptions: {
             enabled: false
           }
+          termsOfService: {
+            consentRequired: true
+            enabled: true
+            text: 'Terms of service text'
+          }
+          url: ''
+          userRegistration: {
+            enabled: false
+          }
+          validationKey: ''
+        }
+      }
+      {
+        name: 'signin'
+        properties: {
+          enabled: false
+          subscriptions: {
+            enabled: false
+          }
+          termsOfService: {
+            consentRequired: true
+            enabled: true
+            text: 'Terms of service text'
+          }
+          url: ''
+          userRegistration: {
+            enabled: false
+          }
+          validationKey: ''
         }
       }
     ]
@@ -479,7 +500,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         subscriptionRequired: false
       }
     ]
-    publicIpAddressResourceId: '<publicIpAddressResourceId>'
     publicNetworkAccess: 'Enabled'
     roleAssignments: [
       {
@@ -513,7 +533,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    virtualNetworkType: 'Internal'
+    virtualNetworkType: 'External'
   }
 }
 ```
@@ -546,7 +566,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         {
           "disableGateway": false,
           "location": "<location>",
-          "publicIpAddressResourceId": "<publicIpAddressResourceId>",
           "sku": {
             "capacity": 1,
             "name": "Premium"
@@ -711,19 +730,41 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "portalsettings": {
       "value": [
         {
-          "name": "signin",
-          "properties": {
-            "enabled": false
-          }
-        },
-        {
           "name": "signup",
           "properties": {
             "enabled": false,
-            "termsOfService": {
-              "consentRequired": false,
+            "subscriptions": {
               "enabled": false
-            }
+            },
+            "termsOfService": {
+              "consentRequired": true,
+              "enabled": true,
+              "text": "Terms of service text"
+            },
+            "url": "",
+            "userRegistration": {
+              "enabled": false
+            },
+            "validationKey": ""
+          }
+        },
+        {
+          "name": "signin",
+          "properties": {
+            "enabled": false,
+            "subscriptions": {
+              "enabled": false
+            },
+            "termsOfService": {
+              "consentRequired": true,
+              "enabled": true,
+              "text": "Terms of service text"
+            },
+            "url": "",
+            "userRegistration": {
+              "enabled": false
+            },
+            "validationKey": ""
           }
         }
       ]
@@ -743,9 +784,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "subscriptionRequired": false
         }
       ]
-    },
-    "publicIpAddressResourceId": {
-      "value": "<publicIpAddressResourceId>"
     },
     "publicNetworkAccess": {
       "value": "Enabled"
@@ -791,7 +829,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       }
     },
     "virtualNetworkType": {
-      "value": "Internal"
+      "value": "External"
     }
   }
 }
@@ -816,7 +854,6 @@ param additionalLocations = [
   {
     disableGateway: false
     location: '<location>'
-    publicIpAddressResourceId: '<publicIpAddressResourceId>'
     sku: {
       capacity: 1
       name: 'Premium'
@@ -951,19 +988,41 @@ param policies = [
 ]
 param portalsettings = [
   {
-    name: 'signin'
-    properties: {
-      enabled: false
-    }
-  }
-  {
     name: 'signup'
     properties: {
       enabled: false
-      termsOfService: {
-        consentRequired: false
+      subscriptions: {
         enabled: false
       }
+      termsOfService: {
+        consentRequired: true
+        enabled: true
+        text: 'Terms of service text'
+      }
+      url: ''
+      userRegistration: {
+        enabled: false
+      }
+      validationKey: ''
+    }
+  }
+  {
+    name: 'signin'
+    properties: {
+      enabled: false
+      subscriptions: {
+        enabled: false
+      }
+      termsOfService: {
+        consentRequired: true
+        enabled: true
+        text: 'Terms of service text'
+      }
+      url: ''
+      userRegistration: {
+        enabled: false
+      }
+      validationKey: ''
     }
   }
 ]
@@ -981,7 +1040,6 @@ param products = [
     subscriptionRequired: false
   }
 ]
-param publicIpAddressResourceId = '<publicIpAddressResourceId>'
 param publicNetworkAccess = 'Enabled'
 param roleAssignments = [
   {
@@ -1015,7 +1073,7 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param virtualNetworkType = 'Internal'
+param virtualNetworkType = 'External'
 ```
 
 </details>
@@ -1258,19 +1316,41 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     portalsettings: [
       {
-        name: 'signin'
-        properties: {
-          enabled: false
-        }
-      }
-      {
         name: 'signup'
         properties: {
           enabled: false
-          termsOfService: {
-            consentRequired: false
+          subscriptions: {
             enabled: false
           }
+          termsOfService: {
+            consentRequired: true
+            enabled: true
+            text: 'Terms of service text'
+          }
+          url: ''
+          userRegistration: {
+            enabled: false
+          }
+          validationKey: ''
+        }
+      }
+      {
+        name: 'signin'
+        properties: {
+          enabled: false
+          subscriptions: {
+            enabled: false
+          }
+          termsOfService: {
+            consentRequired: true
+            enabled: true
+            text: 'Terms of service text'
+          }
+          url: ''
+          userRegistration: {
+            enabled: false
+          }
+          validationKey: ''
         }
       }
     ]
@@ -1315,6 +1395,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    virtualNetworkType: 'None'
   }
 }
 ```
@@ -1507,19 +1588,41 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "portalsettings": {
       "value": [
         {
-          "name": "signin",
-          "properties": {
-            "enabled": false
-          }
-        },
-        {
           "name": "signup",
           "properties": {
             "enabled": false,
-            "termsOfService": {
-              "consentRequired": false,
+            "subscriptions": {
               "enabled": false
-            }
+            },
+            "termsOfService": {
+              "consentRequired": true,
+              "enabled": true,
+              "text": "Terms of service text"
+            },
+            "url": "",
+            "userRegistration": {
+              "enabled": false
+            },
+            "validationKey": ""
+          }
+        },
+        {
+          "name": "signin",
+          "properties": {
+            "enabled": false,
+            "subscriptions": {
+              "enabled": false
+            },
+            "termsOfService": {
+              "consentRequired": true,
+              "enabled": true,
+              "text": "Terms of service text"
+            },
+            "url": "",
+            "userRegistration": {
+              "enabled": false
+            },
+            "validationKey": ""
           }
         }
       ]
@@ -1574,6 +1677,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "virtualNetworkType": {
+      "value": "None"
     }
   }
 }
@@ -1732,19 +1838,41 @@ param policies = [
 ]
 param portalsettings = [
   {
-    name: 'signin'
-    properties: {
-      enabled: false
-    }
-  }
-  {
     name: 'signup'
     properties: {
       enabled: false
-      termsOfService: {
-        consentRequired: false
+      subscriptions: {
         enabled: false
       }
+      termsOfService: {
+        consentRequired: true
+        enabled: true
+        text: 'Terms of service text'
+      }
+      url: ''
+      userRegistration: {
+        enabled: false
+      }
+      validationKey: ''
+    }
+  }
+  {
+    name: 'signin'
+    properties: {
+      enabled: false
+      subscriptions: {
+        enabled: false
+      }
+      termsOfService: {
+        consentRequired: true
+        enabled: true
+        text: 'Terms of service text'
+      }
+      url: ''
+      userRegistration: {
+        enabled: false
+      }
+      validationKey: ''
     }
   }
 ]
@@ -1789,6 +1917,7 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
+param virtualNetworkType = 'None'
 ```
 
 </details>
@@ -1809,6 +1938,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`skuCapacity`](#parameter-skucapacity) | int | The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/. |
+| [`virtualNetworkType`](#parameter-virtualnetworktype) | string | The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and StandardV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`. |
 
 **Optional parameters**
 
@@ -1843,15 +1973,14 @@ param tags = {
 | [`portalsettings`](#parameter-portalsettings) | array | Portal settings. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`products`](#parameter-products) | array | Products. |
-| [`publicIpAddressResourceId`](#parameter-publicipaddressresourceid) | string | Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network. |
+| [`publicIpAddressResourceId`](#parameter-publicipaddressresourceid) | string | Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKUs when deployed in Virtual Network. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public endpoint access is allowed for this API Management service. If set to 'Disabled', private endpoints are the exclusive access method. MUST be enabled during service creation. |
 | [`restore`](#parameter-restore) | bool | Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-sku) | string | The pricing tier of this API Management service. |
-| [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the API Management service in. |
+| [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and StandardV2 SKUs only. |
 | [`subscriptions`](#parameter-subscriptions) | array | Subscriptions. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`virtualNetworkType`](#parameter-virtualnetworktype) | string | The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. |
 
 ### Parameter: `name`
 
@@ -1881,6 +2010,22 @@ The scale units for this API Management service. Required if using Basic, Standa
 - Required: No
 - Type: int
 - Default: `3`
+
+### Parameter: `virtualNetworkType`
+
+The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and StandardV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`.
+
+- Required: No
+- Type: string
+- Default: `'None'`
+- Allowed:
+  ```Bicep
+  [
+    'External'
+    'Internal'
+    'None'
+  ]
+  ```
 
 ### Parameter: `additionalLocations`
 
@@ -4509,7 +4654,7 @@ Product terms of use. Developers trying to subscribe to the product will be pres
 
 ### Parameter: `publicIpAddressResourceId`
 
-Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network.
+Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKUs when deployed in Virtual Network.
 
 - Required: No
 - Type: string
@@ -4658,7 +4803,7 @@ The pricing tier of this API Management service.
 
 ### Parameter: `subnetResourceId`
 
-The full resource ID of a subnet in a virtual network to deploy the API Management service in.
+The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and StandardV2 SKUs only.
 
 - Required: No
 - Type: string
@@ -4750,22 +4895,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `virtualNetworkType`
-
-The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only.
-
-- Required: No
-- Type: string
-- Default: `'None'`
-- Allowed:
-  ```Bicep
-  [
-    'External'
-    'Internal'
-    'None'
-  ]
-  ```
 
 ## Outputs
 

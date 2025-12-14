@@ -37,6 +37,16 @@ param tls resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.p
 @sys.description('Required. Runtime URL of the Backend.')
 param url string
 
+@sys.description('Optional. Backend Circuit Breaker Configuration.')
+param circuitBreaker resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.circuitBreaker?
+
+@sys.description('Optional. Backend pool configuration for load balancing.')
+param pool resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.pool?
+
+@sys.description('Optional. Type of the backend. A backend can be either Single or Pool.')
+@allowed(['Single', 'Pool'])
+param type string = 'Single'
+
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -67,15 +77,18 @@ resource backend 'Microsoft.ApiManagement/service/backends@2024-05-01' = {
   name: name
   parent: service
   properties: {
-    title: title
+    circuitBreaker: circuitBreaker
     description: description
     resourceId: resourceId
+    pool: pool
     properties: {
       serviceFabricCluster: serviceFabricCluster
     }
     credentials: credentials
     proxy: proxy
+    title: title
     tls: tls
+    type: type
     url: url
     protocol: protocol
   }

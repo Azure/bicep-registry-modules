@@ -43,15 +43,18 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`circuitBreaker`](#parameter-circuitbreaker) | object | Backend Circuit Breaker Configuration. |
 | [`credentials`](#parameter-credentials) | object | Backend Credentials Contract Properties. |
 | [`description`](#parameter-description) | string | Backend Description. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`pool`](#parameter-pool) | object | Backend pool configuration for load balancing. |
 | [`protocol`](#parameter-protocol) | string | Backend communication protocol. - http or soap. |
 | [`proxy`](#parameter-proxy) | object | Backend Proxy Contract Properties. |
 | [`resourceId`](#parameter-resourceid) | string | Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. |
 | [`serviceFabricCluster`](#parameter-servicefabriccluster) | object | Backend Service Fabric Cluster Properties. |
 | [`title`](#parameter-title) | string | Backend Title. |
 | [`tls`](#parameter-tls) | object | Backend TLS Properties. |
+| [`type`](#parameter-type) | string | Type of the backend. A backend can be either Single or Pool. |
 
 ### Parameter: `name`
 
@@ -74,6 +77,13 @@ The name of the parent API Management service. Required if the template is used 
 - Required: Yes
 - Type: string
 
+### Parameter: `circuitBreaker`
+
+Backend Circuit Breaker Configuration.
+
+- Required: No
+- Type: object
+
 ### Parameter: `credentials`
 
 Backend Credentials Contract Properties.
@@ -95,6 +105,13 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `pool`
+
+Backend pool configuration for load balancing.
+
+- Required: No
+- Type: object
 
 ### Parameter: `protocol`
 
@@ -144,6 +161,21 @@ Backend TLS Properties.
       validateCertificateChain: false
       validateCertificateName: false
   }
+  ```
+
+### Parameter: `type`
+
+Type of the backend. A backend can be either Single or Pool.
+
+- Required: No
+- Type: string
+- Default: `'Single'`
+- Allowed:
+  ```Bicep
+  [
+    'Pool'
+    'Single'
+  ]
   ```
 
 ## Outputs

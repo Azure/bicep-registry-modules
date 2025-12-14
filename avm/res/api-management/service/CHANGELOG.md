@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/CHANGELOG.md).
 
+## 0.13.0
+
+### Changes
+
+- All API versions have been updated to the latest supported versions.
+- New parameters `circuitBreaker`, `pool`, `type` added to backend child module.
+
+### Breaking Changes
+
+- None
+
 ## 0.12.0
 
 ### Changes

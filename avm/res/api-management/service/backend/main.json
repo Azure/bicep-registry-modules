@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "702614170296865172"
+      "version": "0.39.26.7824",
+      "templateHash": "3787333618992526414"
     },
     "name": "API Management Service Backends",
     "description": "This module deploys an API Management Service Backend."
@@ -101,6 +101,37 @@
         "description": "Required. Runtime URL of the Backend."
       }
     },
+    "circuitBreaker": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/circuitBreaker"
+        },
+        "description": "Optional. Backend Circuit Breaker Configuration."
+      },
+      "nullable": true
+    },
+    "pool": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/pool"
+        },
+        "description": "Optional. Backend pool configuration for load balancing."
+      },
+      "nullable": true
+    },
+    "type": {
+      "type": "string",
+      "defaultValue": "Single",
+      "allowedValues": [
+        "Single",
+        "Pool"
+      ],
+      "metadata": {
+        "description": "Optional. Type of the backend. A backend can be either Single or Pool."
+      }
+    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -141,15 +172,18 @@
       "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
-        "title": "[parameters('title')]",
+        "circuitBreaker": "[parameters('circuitBreaker')]",
         "description": "[parameters('description')]",
         "resourceId": "[parameters('resourceId')]",
+        "pool": "[parameters('pool')]",
         "properties": {
           "serviceFabricCluster": "[parameters('serviceFabricCluster')]"
         },
         "credentials": "[parameters('credentials')]",
         "proxy": "[parameters('proxy')]",
+        "title": "[parameters('title')]",
         "tls": "[parameters('tls')]",
+        "type": "[parameters('type')]",
         "url": "[parameters('url')]",
         "protocol": "[parameters('protocol')]"
       }
