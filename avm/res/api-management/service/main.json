@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "3740554832653186069"
+      "templateHash": "15432103709683412964"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -664,6 +664,37 @@
           "type": "string",
           "metadata": {
             "description": "Required. Runtime URL of the Backend."
+          }
+        },
+        "circuitBreaker": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/circuitBreaker"
+            },
+            "description": "Optional. Backend Circuit Breaker Properties."
+          },
+          "nullable": true
+        },
+        "pool": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/pool"
+            },
+            "description": "Optional. Backend pool configuration for load balancing."
+          },
+          "nullable": true
+        },
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "Pool",
+            "Single"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Type of the backend. A backend can be either Single or Pool."
           }
         }
       },
@@ -4752,7 +4783,9 @@
     "service_backends": {
       "copy": {
         "name": "service_backends",
-        "count": "[length(coalesce(parameters('backends'), createArray()))]"
+        "count": "[length(coalesce(parameters('backends'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -4798,6 +4831,15 @@
           },
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
+          "circuitBreaker": {
+            "value": "[tryGet(coalesce(parameters('backends'), createArray())[copyIndex()], 'circuitBreaker')]"
+          },
+          "pool": {
+            "value": "[tryGet(coalesce(parameters('backends'), createArray())[copyIndex()], 'pool')]"
+          },
+          "type": {
+            "value": "[coalesce(tryGet(coalesce(parameters('backends'), createArray())[copyIndex()], 'type'), 'Single')]"
           }
         },
         "template": {

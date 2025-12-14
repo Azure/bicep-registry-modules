@@ -306,7 +306,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module service 'br/public:avm/res/api-management/service:<version>' = {
   params: {
     // Required parameters
-    name: 'apismax001'
+    name: '<name>'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
@@ -368,12 +368,64 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     backends: [
       {
-        name: 'backend'
+        circuitBreaker: {
+          rules: [
+            {
+              acceptRetryAfter: false
+              failureCondition: {
+                count: 1
+                errorReasons: [
+                  'ClientConnectionFailure'
+                  'OperationNotFound'
+                ]
+                interval: 'PT1H'
+                statusCodeRanges: [
+                  {
+                    max: 499
+                    min: 400
+                  }
+                  {
+                    max: 599
+                    min: 500
+                  }
+                ]
+              }
+              name: 'rule1'
+              tripDuration: 'PT1H'
+            }
+          ]
+        }
+        credentials: {
+          authorization: {
+            parameter: 'dXNlcm5hbWU6c2VjcmV0cGFzc3dvcmQ='
+            scheme: 'Basic'
+          }
+          header: {}
+          query: {
+            queryParam1: [
+              'value1'
+            ]
+          }
+        }
+        description: 'Test backend with maximum properties'
+        name: '<name>'
         tls: {
           validateCertificateChain: false
           validateCertificateName: false
         }
+        type: 'Single'
         url: 'http://echoapi.cloudapp.net/api'
+      }
+      {
+        name: 'backend2'
+        pool: {
+          services: [
+            {
+              id: '<id>'
+            }
+          ]
+        }
+        url: ''
       }
     ]
     caches: [
@@ -448,41 +500,20 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     portalsettings: [
       {
-        name: 'signup'
-        properties: {
-          enabled: false
-          subscriptions: {
-            enabled: false
-          }
-          termsOfService: {
-            consentRequired: true
-            enabled: true
-            text: 'Terms of service text'
-          }
-          url: ''
-          userRegistration: {
-            enabled: false
-          }
-          validationKey: ''
-        }
-      }
-      {
         name: 'signin'
         properties: {
           enabled: false
-          subscriptions: {
-            enabled: false
-          }
+        }
+      }
+      {
+        name: 'signup'
+        properties: {
+          enabled: false
           termsOfService: {
             consentRequired: true
             enabled: true
             text: 'Terms of service text'
           }
-          url: ''
-          userRegistration: {
-            enabled: false
-          }
-          validationKey: ''
         }
       }
     ]
@@ -552,7 +583,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apismax001"
+      "value": "<name>"
     },
     "publisherEmail": {
       "value": "apimgmt-noreply@mail.windowsazure.com"
@@ -630,12 +661,64 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "backends": {
       "value": [
         {
-          "name": "backend",
+          "circuitBreaker": {
+            "rules": [
+              {
+                "acceptRetryAfter": false,
+                "failureCondition": {
+                  "count": 1,
+                  "errorReasons": [
+                    "ClientConnectionFailure",
+                    "OperationNotFound"
+                  ],
+                  "interval": "PT1H",
+                  "statusCodeRanges": [
+                    {
+                      "max": 499,
+                      "min": 400
+                    },
+                    {
+                      "max": 599,
+                      "min": 500
+                    }
+                  ]
+                },
+                "name": "rule1",
+                "tripDuration": "PT1H"
+              }
+            ]
+          },
+          "credentials": {
+            "authorization": {
+              "parameter": "dXNlcm5hbWU6c2VjcmV0cGFzc3dvcmQ=",
+              "scheme": "Basic"
+            },
+            "header": {},
+            "query": {
+              "queryParam1": [
+                "value1"
+              ]
+            }
+          },
+          "description": "Test backend with maximum properties",
+          "name": "<name>",
           "tls": {
             "validateCertificateChain": false,
             "validateCertificateName": false
           },
+          "type": "Single",
           "url": "http://echoapi.cloudapp.net/api"
+        },
+        {
+          "name": "backend2",
+          "pool": {
+            "services": [
+              {
+                "id": "<id>"
+              }
+            ]
+          },
+          "url": ""
         }
       ]
     },
@@ -730,41 +813,20 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "portalsettings": {
       "value": [
         {
-          "name": "signup",
+          "name": "signin",
           "properties": {
-            "enabled": false,
-            "subscriptions": {
-              "enabled": false
-            },
-            "termsOfService": {
-              "consentRequired": true,
-              "enabled": true,
-              "text": "Terms of service text"
-            },
-            "url": "",
-            "userRegistration": {
-              "enabled": false
-            },
-            "validationKey": ""
+            "enabled": false
           }
         },
         {
-          "name": "signin",
+          "name": "signup",
           "properties": {
             "enabled": false,
-            "subscriptions": {
-              "enabled": false
-            },
             "termsOfService": {
               "consentRequired": true,
               "enabled": true,
               "text": "Terms of service text"
-            },
-            "url": "",
-            "userRegistration": {
-              "enabled": false
-            },
-            "validationKey": ""
+            }
           }
         }
       ]
@@ -846,7 +908,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 using 'br/public:avm/res/api-management/service:<version>'
 
 // Required parameters
-param name = 'apismax001'
+param name = '<name>'
 param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 // Non-required parameters
@@ -908,12 +970,64 @@ param authorizationServers = [
 ]
 param backends = [
   {
-    name: 'backend'
+    circuitBreaker: {
+      rules: [
+        {
+          acceptRetryAfter: false
+          failureCondition: {
+            count: 1
+            errorReasons: [
+              'ClientConnectionFailure'
+              'OperationNotFound'
+            ]
+            interval: 'PT1H'
+            statusCodeRanges: [
+              {
+                max: 499
+                min: 400
+              }
+              {
+                max: 599
+                min: 500
+              }
+            ]
+          }
+          name: 'rule1'
+          tripDuration: 'PT1H'
+        }
+      ]
+    }
+    credentials: {
+      authorization: {
+        parameter: 'dXNlcm5hbWU6c2VjcmV0cGFzc3dvcmQ='
+        scheme: 'Basic'
+      }
+      header: {}
+      query: {
+        queryParam1: [
+          'value1'
+        ]
+      }
+    }
+    description: 'Test backend with maximum properties'
+    name: '<name>'
     tls: {
       validateCertificateChain: false
       validateCertificateName: false
     }
+    type: 'Single'
     url: 'http://echoapi.cloudapp.net/api'
+  }
+  {
+    name: 'backend2'
+    pool: {
+      services: [
+        {
+          id: '<id>'
+        }
+      ]
+    }
+    url: ''
   }
 ]
 param caches = [
@@ -988,41 +1102,20 @@ param policies = [
 ]
 param portalsettings = [
   {
-    name: 'signup'
-    properties: {
-      enabled: false
-      subscriptions: {
-        enabled: false
-      }
-      termsOfService: {
-        consentRequired: true
-        enabled: true
-        text: 'Terms of service text'
-      }
-      url: ''
-      userRegistration: {
-        enabled: false
-      }
-      validationKey: ''
-    }
-  }
-  {
     name: 'signin'
     properties: {
       enabled: false
-      subscriptions: {
-        enabled: false
-      }
+    }
+  }
+  {
+    name: 'signup'
+    properties: {
+      enabled: false
       termsOfService: {
         consentRequired: true
         enabled: true
         text: 'Terms of service text'
       }
-      url: ''
-      userRegistration: {
-        enabled: false
-      }
-      validationKey: ''
     }
   }
 ]
@@ -1316,41 +1409,20 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     portalsettings: [
       {
-        name: 'signup'
-        properties: {
-          enabled: false
-          subscriptions: {
-            enabled: false
-          }
-          termsOfService: {
-            consentRequired: true
-            enabled: true
-            text: 'Terms of service text'
-          }
-          url: ''
-          userRegistration: {
-            enabled: false
-          }
-          validationKey: ''
-        }
-      }
-      {
         name: 'signin'
         properties: {
           enabled: false
-          subscriptions: {
-            enabled: false
-          }
+        }
+      }
+      {
+        name: 'signup'
+        properties: {
+          enabled: false
           termsOfService: {
             consentRequired: true
             enabled: true
             text: 'Terms of service text'
           }
-          url: ''
-          userRegistration: {
-            enabled: false
-          }
-          validationKey: ''
         }
       }
     ]
@@ -1588,41 +1660,20 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "portalsettings": {
       "value": [
         {
-          "name": "signup",
+          "name": "signin",
           "properties": {
-            "enabled": false,
-            "subscriptions": {
-              "enabled": false
-            },
-            "termsOfService": {
-              "consentRequired": true,
-              "enabled": true,
-              "text": "Terms of service text"
-            },
-            "url": "",
-            "userRegistration": {
-              "enabled": false
-            },
-            "validationKey": ""
+            "enabled": false
           }
         },
         {
-          "name": "signin",
+          "name": "signup",
           "properties": {
             "enabled": false,
-            "subscriptions": {
-              "enabled": false
-            },
             "termsOfService": {
               "consentRequired": true,
               "enabled": true,
               "text": "Terms of service text"
-            },
-            "url": "",
-            "userRegistration": {
-              "enabled": false
-            },
-            "validationKey": ""
+            }
           }
         }
       ]
@@ -1838,41 +1889,20 @@ param policies = [
 ]
 param portalsettings = [
   {
-    name: 'signup'
-    properties: {
-      enabled: false
-      subscriptions: {
-        enabled: false
-      }
-      termsOfService: {
-        consentRequired: true
-        enabled: true
-        text: 'Terms of service text'
-      }
-      url: ''
-      userRegistration: {
-        enabled: false
-      }
-      validationKey: ''
-    }
-  }
-  {
     name: 'signin'
     properties: {
       enabled: false
-      subscriptions: {
-        enabled: false
-      }
+    }
+  }
+  {
+    name: 'signup'
+    properties: {
+      enabled: false
       termsOfService: {
         consentRequired: true
         enabled: true
         text: 'Terms of service text'
       }
-      url: ''
-      userRegistration: {
-        enabled: false
-      }
-      validationKey: ''
     }
   }
 ]
@@ -3118,14 +3148,17 @@ Backends.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`circuitBreaker`](#parameter-backendscircuitbreaker) | object | Backend Circuit Breaker Properties. |
 | [`credentials`](#parameter-backendscredentials) | object | Backend Credentials Contract Properties. |
 | [`description`](#parameter-backendsdescription) | string | Backend Description. |
+| [`pool`](#parameter-backendspool) | object | Backend pool configuration for load balancing. |
 | [`protocol`](#parameter-backendsprotocol) | string | Backend communication protocol. - http or soap. |
 | [`proxy`](#parameter-backendsproxy) | object | Backend Proxy Contract Properties. |
 | [`resourceId`](#parameter-backendsresourceid) | string | Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. |
 | [`serviceFabricCluster`](#parameter-backendsservicefabriccluster) | object | Backend Service Fabric Cluster Properties. |
 | [`title`](#parameter-backendstitle) | string | Backend Title. |
 | [`tls`](#parameter-backendstls) | object | Backend TLS Properties. |
+| [`type`](#parameter-backendstype) | string | Type of the backend. A backend can be either Single or Pool. |
 
 ### Parameter: `backends.name`
 
@@ -3141,6 +3174,13 @@ Runtime URL of the Backend.
 - Required: Yes
 - Type: string
 
+### Parameter: `backends.circuitBreaker`
+
+Backend Circuit Breaker Properties.
+
+- Required: No
+- Type: object
+
 ### Parameter: `backends.credentials`
 
 Backend Credentials Contract Properties.
@@ -3154,6 +3194,13 @@ Backend Description.
 
 - Required: No
 - Type: string
+
+### Parameter: `backends.pool`
+
+Backend pool configuration for load balancing.
+
+- Required: No
+- Type: object
 
 ### Parameter: `backends.protocol`
 
@@ -3196,6 +3243,20 @@ Backend TLS Properties.
 
 - Required: No
 - Type: object
+
+### Parameter: `backends.type`
+
+Type of the backend. A backend can be either Single or Pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Pool'
+    'Single'
+  ]
+  ```
 
 ### Parameter: `caches`
 
