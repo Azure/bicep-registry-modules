@@ -964,11 +964,11 @@ type backendType = {
   @description('Optional. Backend Title.')
   title: string?
 
-  @description('Optional. Backend TLS Properties.')
+  @description('Optional. Backend TLS Properties. Not supported for Backend Pools.')
   tls: resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.tls?
 
-  @description('Required. Runtime URL of the Backend.')
-  url: string
+  @description('Conditional. Runtime URL of the Backend. Required if type is Single and not supported if type is Pool.')
+  url: string?
 
   @description('Optional. Backend Circuit Breaker Properties.')
   circuitBreaker: resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.circuitBreaker?
