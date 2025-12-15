@@ -2,6 +2,14 @@
 
 This module deploys a Load Balancer.
 
+You can reference the module as follows:
+```bicep
+module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -22,8 +30,8 @@ This module deploys a Load Balancer.
 | `Microsoft.Network/loadBalancers` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_loadbalancers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/loadBalancers)</li></ul> |
 | `Microsoft.Network/loadBalancers/backendAddressPools` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_loadbalancers_backendaddresspools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/loadBalancers/backendAddressPools)</li></ul> |
 | `Microsoft.Network/loadBalancers/inboundNatRules` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_loadbalancers_inboundnatrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/loadBalancers/inboundNatRules)</li></ul> |
-| `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
-| `Microsoft.Network/publicIPPrefixes` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipprefixes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/publicIPPrefixes)</li></ul> |
+| `Microsoft.Network/publicIPAddresses` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/publicIPAddresses)</li></ul> |
+| `Microsoft.Network/publicIPPrefixes` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipprefixes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/publicIPPrefixes)</li></ul> |
 
 ## Usage examples
 
@@ -46,6 +54,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -53,7 +63,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
-  name: 'loadBalancerDeployment'
   params: {
     // Required parameters
     frontendIPConfigurations: [
@@ -130,6 +139,8 @@ param location = '<location>'
 
 This instance deploys the module with the minimum set of required parameters and creates an external public IP for the frontend.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/external-pip-creation]
+
 
 <details>
 
@@ -137,7 +148,6 @@ This instance deploys the module with the minimum set of required parameters and
 
 ```bicep
 module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
-  name: 'loadBalancerDeployment'
   params: {
     // Required parameters
     frontendIPConfigurations: [
@@ -248,6 +258,8 @@ param name = 'nlbpip001'
 
 This instance deploys the module with the minimum set of required parameters and creates an external public IP prefix for the frontend.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/external-pipprefix-creation]
+
 
 <details>
 
@@ -255,7 +267,6 @@ This instance deploys the module with the minimum set of required parameters and
 
 ```bicep
 module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
-  name: 'loadBalancerDeployment'
   params: {
     // Required parameters
     frontendIPConfigurations: [
@@ -339,6 +350,8 @@ param name = 'nlbpipfix001'
 
 This instance deploys the module with an externally facing load balancer with a public IP address and VNet backend address pool.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/external-vnet]
+
 
 <details>
 
@@ -346,7 +359,6 @@ This instance deploys the module with an externally facing load balancer with a 
 
 ```bicep
 module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
-  name: 'loadBalancerDeployment'
   params: {
     // Required parameters
     frontendIPConfigurations: [
@@ -829,6 +841,8 @@ param tags = {
 
 This instance deploys the module with an externally facing load balancer with a public IP address and NIC backend address pool.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/external]
+
 
 <details>
 
@@ -836,7 +850,6 @@ This instance deploys the module with an externally facing load balancer with a 
 
 ```bicep
 module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
-  name: 'loadBalancerDeployment'
   params: {
     // Required parameters
     frontendIPConfigurations: [
@@ -1282,6 +1295,8 @@ param tags = {
 
 This instance deploys the module with the minimum set of required parameters to deploy an internal load balancer with a private IP address and empty backend address pool.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/internal]
+
 
 <details>
 
@@ -1289,7 +1304,6 @@ This instance deploys the module with the minimum set of required parameters to 
 
 ```bicep
 module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
-  name: 'loadBalancerDeployment'
   params: {
     // Required parameters
     frontendIPConfigurations: [
@@ -1596,6 +1610,8 @@ param tags = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -1603,7 +1619,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
-  name: 'loadBalancerDeployment'
   params: {
     // Required parameters
     frontendIPConfigurations: [
@@ -1731,6 +1746,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    skuTier: 'Regional'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -1900,6 +1916,9 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
         }
       ]
     },
+    "skuTier": {
+      "value": "Regional"
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -2047,6 +2066,7 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param skuTier = 'Regional'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -2061,6 +2081,8 @@ param tags = {
 
 This instance deploys the module with the minimum set of required parameters to deploy a WAF-aligned internal load balancer.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -2068,7 +2090,6 @@ This instance deploys the module with the minimum set of required parameters to 
 
 ```bicep
 module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
-  name: 'loadBalancerDeployment'
   params: {
     // Required parameters
     frontendIPConfigurations: [
@@ -2410,6 +2431,7 @@ param tags = {
 | [`probes`](#parameter-probes) | array | Array of objects containing all probes, these are references in the load balancing rules. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`skuName`](#parameter-skuname) | string | Name of a load balancer SKU. |
+| [`skuTier`](#parameter-skutier) | string | Tier of a load balancer SKU. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `frontendIPConfigurations`
@@ -3673,6 +3695,21 @@ Name of a load balancer SKU.
   ]
   ```
 
+### Parameter: `skuTier`
+
+Tier of a load balancer SKU.
+
+- Required: No
+- Type: string
+- Default: `'Regional'`
+- Allowed:
+  ```Bicep
+  [
+    'Global'
+    'Regional'
+  ]
+  ```
+
 ### Parameter: `tags`
 
 Tags of the resource.
@@ -3696,8 +3733,10 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
+| `br/public:avm/res/network/public-ip-address:0.10.0` | Remote reference |
 | `br/public:avm/res/network/public-ip-address:0.9.1` | Remote reference |
 | `br/public:avm/res/network/public-ip-prefix:0.7.1` | Remote reference |
+| `br/public:avm/res/network/public-ip-prefix:0.7.2` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
@@ -3759,4 +3798,4 @@ backendAddressPools: [
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

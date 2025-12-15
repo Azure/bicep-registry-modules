@@ -63,6 +63,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      publicNetworkAccess: 'Disabled'
       diagnosticSettings: [
         {
           name: 'customSettingCluster'
@@ -123,3 +124,9 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+@secure()
+output primaryAccessKey string = testDeployment[0].outputs.primaryAccessKey!
+
+@secure()
+output secondaryAccessKey string = testDeployment[0].outputs.secondaryAccessKey!

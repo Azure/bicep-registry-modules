@@ -2,6 +2,14 @@
 
 This module deploys a Compute Disk
 
+You can reference the module as follows:
+```bicep
+module disk 'br/public:avm/res/compute/disk:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -38,6 +46,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -45,7 +55,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: 'diskDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -117,6 +126,8 @@ param location = '<location>'
 
 This instance deploys the module with encryption-at-rest using a Disk Encryption Set (DES) secured by Customer-Managed Keys (CMK), and leveraging a User-Assigned Managed Identity to access the key.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/des-cmk-uami]
+
 
 <details>
 
@@ -124,7 +135,6 @@ This instance deploys the module with encryption-at-rest using a Disk Encryption
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: 'diskDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -196,6 +206,8 @@ param diskSizeGB = 1
 
 This instance deploys the module with an image reference.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/image]
+
 
 <details>
 
@@ -203,7 +215,6 @@ This instance deploys the module with an image reference.
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: 'diskDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -280,6 +291,8 @@ param location = '<location>'
 
 This instance deploys the module with a custom image that is imported from a VHD in a storage account.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/import]
+
 
 <details>
 
@@ -287,7 +300,6 @@ This instance deploys the module with a custom image that is imported from a VHD
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: 'diskDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -369,6 +381,8 @@ param storageAccountId = '<storageAccountId>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -376,7 +390,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: 'diskDeployment'
   params: {
     // Required parameters
     availabilityZone: 2
@@ -563,6 +576,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -570,7 +585,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: 'diskDeployment'
   params: {
     // Required parameters
     availabilityZone: 2
@@ -1214,4 +1228,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

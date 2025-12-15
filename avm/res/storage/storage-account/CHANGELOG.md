@@ -8,6 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Updated `file-service/share` property `accessTier` to allow for `null`
 - Updated default `file-service/share accessTier` to default to `null` when Storage Account sku is in `PremiumV2` family
+- Updated `publicNetworkAccess` enum to include `SecuredByPerimeter`
 
 ### Breaking Changes
 

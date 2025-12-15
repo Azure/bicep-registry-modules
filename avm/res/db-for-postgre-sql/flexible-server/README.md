@@ -2,6 +2,14 @@
 
 This module deploys a DBforPostgreSQL Flexible Server.
 
+You can reference the module as follows:
+```bicep
+module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -48,6 +56,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
 > **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
 ```text
 The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
@@ -59,11 +69,10 @@ The test is skipped because running the HSM scenario requires a persistent Manag
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'dfpshsm003'
+    name: 'dfpshsmu003'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -106,7 +115,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       "value": -1
     },
     "name": {
-      "value": "dfpshsm003"
+      "value": "dfpshsmu003"
     },
     "skuName": {
       "value": "Standard_D2s_v3"
@@ -157,7 +166,7 @@ using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'dfpshsm003'
+param name = 'dfpshsmu003'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
 // Non-required parameters
@@ -188,6 +197,8 @@ param managedIdentities = {
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -195,7 +206,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     availabilityZone: 1
@@ -285,6 +295,8 @@ param administrators = [
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -292,7 +304,6 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     availabilityZone: 1
@@ -450,6 +461,8 @@ param serverThreatProtection = 'Enabled'
 
 This instance deploys the module with private access only.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/private]
+
 
 <details>
 
@@ -457,7 +470,6 @@ This instance deploys the module with private access only.
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -730,6 +742,8 @@ param roleAssignments = [
 
 This instance deploys the module with public access and private endpoints.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/public-with-pe]
+
 
 <details>
 
@@ -737,7 +751,6 @@ This instance deploys the module with public access and private endpoints.
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -911,6 +924,8 @@ param privateEndpoints = [
 
 This instance deploys the module with public access and most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/public]
+
 
 <details>
 
@@ -918,7 +933,6 @@ This instance deploys the module with public access and most of its features ena
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     availabilityZone: 1
@@ -1248,6 +1262,8 @@ param version = '14'
 
 This instance deploys a primary and readonly replication server using the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/replication]
+
 
 <details>
 
@@ -1255,7 +1271,6 @@ This instance deploys a primary and readonly replication server using the module
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -1352,6 +1367,8 @@ param version = '17'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1359,7 +1376,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     availabilityZone: 1
@@ -2946,7 +2962,7 @@ PostgreSQL Server version.
 
 - Required: No
 - Type: string
-- Default: `'17'`
+- Default: `'18'`
 - Allowed:
   ```Bicep
   [
@@ -2957,6 +2973,7 @@ PostgreSQL Server version.
     '15'
     '16'
     '17'
+    '18'
   ]
   ```
 
@@ -2983,4 +3000,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
