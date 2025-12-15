@@ -2,6 +2,22 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/load-balancer/CHANGELOG.md).
 
+## 0.7.0
+
+### Changes
+
+- Added `skuTier` parameter to the Load Balancer module with default setting of `Regional`. This was added to address situations where a Bicep `--what-if` returned `skuTeir` as a changed parameter.
+- Added `noHealthyBackendsBehavior` to the `probes` variable with a default value of `AllProbedDown`. This was added to address situations where a Bicep `--what-if` returned `noHealthyBackendsBehavior` as a changed parameter.
+- Added `probesTheshold` to the `probes` variable with a default value of `1`. This was added to address situations where a Bicep `--what-if` returned `probesThreshold` as a changed parameter.
+- Updated API versions for public IP addresses and prefixes.
+
+### Breaking Changes
+
+- Added the following parameters to address situations where a Bicep `--what-if` returned these parameters as `changed` when in fact they were set by the Load Balancer resource provider:
+  - Added `skuTier` parameter to the Load Balancer module with default setting of `Regional`.
+  - Added `noHealthyBackendsBehavior` to the `probes` variable with a default value of `AllProbedDown`.
+  - Added `probesTheshold` to the `probes` variable with a default value of `1`.
+
 ## 0.6.0
 
 ### Changes
