@@ -8,10 +8,12 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - All API versions have been updated to the latest supported versions.
 - New parameters `circuitBreaker`, `pool`, `type` added to backend child module.
+- New child module `product/policy` added.
 
 ### Breaking Changes
 
-- None
+- Update default values for `url` and `tls` parameters in `backend` child module to align with new `type` parameter.
+- Property `credentials` of the `logger` child module is now conditionally required based on the `type` parameter.
 
 ## 0.12.0
 
