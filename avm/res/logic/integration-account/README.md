@@ -134,25 +134,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         name: 'assembly1'
       }
     ]
-    certificates: [
-      {
-        key: {
-          keyName: 'dep-cert-iamax'
-          keyVault: {
-            id: '<id>'
-          }
-        }
-        metadata: {
-          key1: 'value1'
-          key2: 'value2'
-        }
-        name: 'dep-cert-iamax'
-        tags: {
-          tag1: 'value1'
-          tag2: 'value2'
-        }
-      }
-    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -301,27 +282,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           "assemblyName": "name1",
           "content": "<content>",
           "name": "assembly1"
-        }
-      ]
-    },
-    "certificates": {
-      "value": [
-        {
-          "key": {
-            "keyName": "dep-cert-iamax",
-            "keyVault": {
-              "id": "<id>"
-            }
-          },
-          "metadata": {
-            "key1": "value1",
-            "key2": "value2"
-          },
-          "name": "dep-cert-iamax",
-          "tags": {
-            "tag1": "value1",
-            "tag2": "value2"
-          }
         }
       ]
     },
@@ -484,25 +444,6 @@ param assemblies = [
     assemblyName: 'name1'
     content: '<content>'
     name: 'assembly1'
-  }
-]
-param certificates = [
-  {
-    key: {
-      keyName: 'dep-cert-iamax'
-      keyVault: {
-        id: '<id>'
-      }
-    }
-    metadata: {
-      key1: 'value1'
-      key2: 'value2'
-    }
-    name: 'dep-cert-iamax'
-    tags: {
-      tag1: 'value1'
-      tag2: 'value2'
-    }
   }
 ]
 param diagnosticSettings = [

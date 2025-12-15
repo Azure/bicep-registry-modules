@@ -79,10 +79,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}04'
-    certname: 'dep-${namePrefix}-cert-${serviceShort}'
-    certDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-    logicAppName: 'dep-${namePrefix}-la-${serviceShort}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}01'
   }
 }
 
@@ -193,25 +190,6 @@ module testDeployment '../../../main.bicep' = [
           name: 'assembly1'
           assemblyName: 'name1'
           content: assemblyContent
-        }
-      ]
-      certificates: [
-        {
-          name: 'dep-${namePrefix}-cert-${serviceShort}'
-          key: {
-            keyName: 'dep-${namePrefix}-cert-${serviceShort}'
-            keyVault: {
-              id: nestedDependencies.outputs.keyVaultResourceId
-            }
-          }
-          metadata: {
-            key1: 'value1'
-            key2: 'value2'
-          }
-          tags: {
-            tag1: 'value1'
-            tag2: 'value2'
-          }
         }
       ]
       diagnosticSettings: [

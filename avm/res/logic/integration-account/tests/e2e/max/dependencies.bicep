@@ -7,19 +7,6 @@ param managedIdentityName string
 @description('Required. The name of the Key Vault to create.')
 param keyVaultName string
 
-@secure()
-@description('Required. The name for the SSL certificate.')
-param certname string
-
-@description('Required. The name of the Deployment Script to create for the Certificate generation.')
-param certDeploymentScriptName string
-
-@description('Required. The name of the Logic App to create.')
-param logicAppName string
-
-// Enterprise Integration service principal application ID (consistent across tenants)
-var enterpriseIntegrationAppId = '205478c0-bd83-4e1b-a9d6-db63a3e1e1c8'
-
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
@@ -42,42 +29,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   }
 }
 
-resource logicApp 'Microsoft.Logic/workflows@2019-05-01' = {
-  name: logicAppName
-  location: location
-  properties: {
-    state: 'Enabled'
-    definition: {
-      '$schema': 'https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#'
-      contentVersion: '1.0.0.0'
-      parameters: {}
-      triggers: {
-        manual: {
-          type: 'Request'
-          kind: 'Http'
-          inputs: {
-            schema: {}
-          }
-        }
-      }
-      actions: {
-        Response: {
-          type: 'Response'
-          kind: 'Http'
-          inputs: {
-            statusCode: 200
-            body: {
-              message: 'Hello from Logic App'
-            }
-          }
-          runAfter: {}
-        }
-      }
-      outputs: {}
-    }
-  }
-}
-
 // Grant Reader role to managed identity for service principal lookup
 resource readerRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(managedIdentity.id, 'Reader', subscription().id)
@@ -89,44 +40,6 @@ resource readerRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-0
     ) // Reader
     principalType: 'ServicePrincipal'
   }
-}
-
-// Lookup Enterprise Integration Service Principal Object ID
-resource getServicePrincipalScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
-  name: '${certDeploymentScriptName}-lookup-sp'
-  location: location
-  kind: 'AzurePowerShell'
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${managedIdentity.id}': {}
-    }
-  }
-  properties: {
-    azPowerShellVersion: '11.0'
-    retentionInterval: 'P1D'
-    scriptContent: '''
-      $appId = '205478c0-bd83-4e1b-a9d6-db63a3e1e1c8'
-
-      # Get service principal object ID
-      $sp = Get-AzADServicePrincipal -ApplicationId $appId
-
-      if ($null -eq $sp) {
-        Write-Error "Enterprise Integration service principal not found in tenant"
-        exit 1
-      }
-
-      # Output must be a string
-      $objectId = $sp.Id.ToString()
-
-      $DeploymentScriptOutputs = @{}
-      $DeploymentScriptOutputs['objectId'] = $objectId
-    '''
-  }
-  dependsOn: [
-    readerRoleAssignment
-    logicApp
-  ]
 }
 
 resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
@@ -155,42 +68,6 @@ resource keyPermissions2 'Microsoft.Authorization/roleAssignments@2022-04-01' = 
   }
 }
 
-// Grant Enterprise Integration service access to Key Vault
-resource enterpriseIntegrationKeyVaultAccess 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(keyVault.id, enterpriseIntegrationAppId, 'KeyVault-Crypto-User')
-  scope: keyVault
-  properties: {
-    principalId: getServicePrincipalScript.properties.outputs.objectId
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      '12338af0-0e69-4776-bea7-57ae8d297424'
-    ) // Key Vault Crypto User
-    principalType: 'ServicePrincipal'
-  }
-}
-
-resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
-  name: certDeploymentScriptName
-  location: location
-  kind: 'AzurePowerShell'
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${managedIdentity.id}': {}
-    }
-  }
-  properties: {
-    azPowerShellVersion: '11.0'
-    retentionInterval: 'P1D'
-    arguments: '-KeyVaultName "${keyVault.name}" -CertName "${certname}" -CertSubjectName "CN=*.contoso.com"'
-    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-CertificateInKeyVault.ps1')
-  }
-  dependsOn: [
-    keyPermissions2
-    enterpriseIntegrationKeyVaultAccess
-  ]
-}
-
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 
@@ -199,9 +76,3 @@ output managedIdentityResourceId string = managedIdentity.id
 
 @description('The resource ID of the created Key Vault.')
 output keyVaultResourceId string = keyVault.id
-
-@description('The resource ID of the created Logic App.')
-output logicAppResourceId string = logicApp.id
-
-@description('The name of the created Logic App.')
-output logicAppName string = logicApp.name
