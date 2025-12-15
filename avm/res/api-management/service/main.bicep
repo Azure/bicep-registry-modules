@@ -384,7 +384,7 @@ module service_backends 'backend/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-Apim-Backend-${index}'
     params: {
       apiManagementServiceName: service.name
-      url: backend.url
+      url: backend.?url
       description: backend.?description
       credentials: backend.?credentials
       name: backend.name
