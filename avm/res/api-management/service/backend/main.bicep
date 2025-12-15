@@ -28,7 +28,7 @@ param serviceFabricCluster resourceInput<'Microsoft.ApiManagement/service/backen
 @sys.description('Optional. Backend Title.')
 param title string?
 
-@sys.description('Optional. Backend TLS Properties. Not supported for Backend Pools.')
+@sys.description('Optional. Backend TLS Properties. Not supported for Backend Pools. If not specified and type is Single, TLS properties will default to validateCertificateChain and validateCertificateName set to true.')
 param tls resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.tls?
 
 @sys.description('Conditional. Runtime URL of the Backend. Required if type is Single and not supported if type is Pool.')
@@ -84,9 +84,9 @@ resource backend 'Microsoft.ApiManagement/service/backends@2024-05-01' = {
     }
     credentials: credentials
     proxy: proxy
-    tls: tls
     type: type
     protocol: protocol
+    ...(type == 'Single' ? { tls: tls ?? { validateCertificateChain: true, validateCertificateName: true } } : {})
     ...(type == 'Single' ? { url: url } : {})
   }
 }

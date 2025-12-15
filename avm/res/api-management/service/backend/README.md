@@ -53,7 +53,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | [`resourceId`](#parameter-resourceid) | string | Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. |
 | [`serviceFabricCluster`](#parameter-servicefabriccluster) | object | Backend Service Fabric Cluster Properties. |
 | [`title`](#parameter-title) | string | Backend Title. |
-| [`tls`](#parameter-tls) | object | Backend TLS Properties. Not supported for Backend Pools. |
+| [`tls`](#parameter-tls) | object | Backend TLS Properties. Not supported for Backend Pools. If not specified and type is Single, TLS properties will default to validateCertificateChain and validateCertificateName set to true. |
 | [`type`](#parameter-type) | string | Type of the backend. A backend can be either Single or Pool. |
 
 ### Parameter: `name`
@@ -151,7 +151,7 @@ Backend Title.
 
 ### Parameter: `tls`
 
-Backend TLS Properties. Not supported for Backend Pools.
+Backend TLS Properties. Not supported for Backend Pools. If not specified and type is Single, TLS properties will default to validateCertificateChain and validateCertificateName set to true.
 
 - Required: No
 - Type: object

@@ -393,11 +393,11 @@ module service_backends 'backend/main.bicep' = [
       resourceId: backend.?resourceId
       serviceFabricCluster: backend.?serviceFabricCluster
       title: backend.?title
-      tls: backend.?tls ?? { validateCertificateChain: true, validateCertificateName: true }
+      tls: backend.?tls
       enableTelemetry: enableReferencedModulesTelemetry
       circuitBreaker: backend.?circuitBreaker
       pool: backend.?pool
-      type: backend.?type ?? 'Single'
+      type: backend.?type
     }
   }
 ]
