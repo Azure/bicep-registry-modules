@@ -3032,6 +3032,8 @@ param skuName = 'Standard_LRS'
 
 This instance deploys the module with File Services with PremiumV2 SKU and a file share.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/premium-file-share]
+
 
 <details>
 
@@ -3039,7 +3041,6 @@ This instance deploys the module with File Services with PremiumV2 SKU and a fil
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssapfs001'
