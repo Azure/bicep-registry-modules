@@ -47,6 +47,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
+      isolationScope: 'Regional'
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'

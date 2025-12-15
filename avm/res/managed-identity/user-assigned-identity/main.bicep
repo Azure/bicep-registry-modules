@@ -7,6 +7,9 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
+@description('Optional. Enum to configure regional restrictions on identity assignment, as necessary. Allowed values: "None", "Regional".')
+param isolationScope string?
+
 @description('Optional. The federated identity credentials list to indicate which token from the external IdP should be trusted by your application. Federated identity credentials are supported on applications only. A maximum of 20 federated identity credentials can be added per application object.')
 param federatedIdentityCredentials federatedIdentityCredentialType[]?
 
@@ -80,6 +83,9 @@ resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@
   name: name
   location: location
   tags: tags
+  properties: {
+    isolationScope: !empty(isolationScope ?? '') ? isolationScope : null
+  }
 }
 
 resource userAssignedIdentity_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {

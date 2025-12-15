@@ -482,6 +482,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`federatedIdentityCredentials`](#parameter-federatedidentitycredentials) | array | The federated identity credentials list to indicate which token from the external IdP should be trusted by your application. Federated identity credentials are supported on applications only. A maximum of 20 federated identity credentials can be added per application object. |
+| [`isolationScope`](#parameter-isolationscope) | string | Enum to configure regional restrictions on identity assignment, as necessary. Allowed values: "None", "Regional". |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -544,6 +545,13 @@ The name of the federated identity credential.
 The identifier of the external identity.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `isolationScope`
+
+Enum to configure regional restrictions on identity assignment, as necessary. Allowed values: "None", "Regional".
+
+- Required: No
 - Type: string
 
 ### Parameter: `location`

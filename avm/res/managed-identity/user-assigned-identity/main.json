@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "12911678071512934577"
+      "templateHash": "11020727407027416845"
     },
     "name": "User Assigned Identities",
     "description": "This module deploys a User Assigned Identity."
@@ -175,6 +175,13 @@
         "description": "Optional. Location for all resources."
       }
     },
+    "isolationScope": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Enum to configure regional restrictions on identity assignment, as necessary. Allowed values: \"None\", \"Regional\"."
+      }
+    },
     "federatedIdentityCredentials": {
       "type": "array",
       "items": {
@@ -264,7 +271,10 @@
       "apiVersion": "2024-11-30",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
-      "tags": "[parameters('tags')]"
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "isolationScope": "[if(not(empty(coalesce(parameters('isolationScope'), ''))), parameters('isolationScope'), null())]"
+      }
     },
     "userAssignedIdentity_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
