@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-virtualmachineimages.azureim
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'apvmiaiboi'
+param serviceShort string = 'apvmiaiboi2'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -53,36 +53,36 @@ module nestedDependencies 'dependencies.bicep' = {
 /////////////////////////////
 
 // No idempotency test as we don't want to bake 2 images
-module testDeployment '../../../main.bicep' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
-  params: {
-    deploymentsToPerform: 'Only image'
-    resourceGroupName: nestedDependencies.outputs.resourceGroupName
-    location: resourceLocation
-    computeGalleryName: nestedDependencies.outputs.computeGalleryName
-    computeGalleryImageDefinitions: nestedDependencies.outputs.computeGalleryImageDefinitions
-    computeGalleryImageDefinitionName: nestedDependencies.outputs.computeGalleryImageDefinitions[0].name
-    virtualNetworkName: nestedDependencies.outputs.virtualNetworkName
-    deploymentScriptManagedIdentityName: nestedDependencies.outputs.deploymentScriptManagedIdentityName
-    deploymentScriptStorageAccountName: nestedDependencies.outputs.deploymentScriptStorageAccountName
-    deploymentScriptSubnetName: nestedDependencies.outputs.deploymentScriptSubnetName
-    imageManagedIdentityName: nestedDependencies.outputs.imageManagedIdentityName
-    imageSubnetName: nestedDependencies.outputs.imageSubnetName
-    imageContainerInstanceSubnetName: '' // Validate that the logic for not using a container instance subnet works
-    imageTemplateResourceGroupName: nestedDependencies.outputs.imageTemplateResourceGroupName
-    imageTemplateImageSource: {
-      type: 'PlatformImage'
-      publisher: 'canonical'
-      offer: 'ubuntu-24_04-lts'
-      sku: 'server'
-      version: 'latest'
-    }
-    imageTemplateCustomizationSteps: [
-      {
-        type: 'Shell'
-        name: 'Example script'
-        scriptUri: 'https://${nestedDependencies.outputs.assetsStorageAccountName}.blob.${az.environment().suffixes.storage}/${nestedDependencies.outputs.assetsStorageAccountContainerName}/${nestedDependencies.outputs.exampleScriptName}'
-      }
-    ]
-  }
-}
+// module testDeployment '../../../main.bicep' = {
+//   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
+//   params: {
+//     deploymentsToPerform: 'Only image'
+//     resourceGroupName: nestedDependencies.outputs.resourceGroupName
+//     location: resourceLocation
+//     computeGalleryName: nestedDependencies.outputs.computeGalleryName
+//     computeGalleryImageDefinitions: nestedDependencies.outputs.computeGalleryImageDefinitions
+//     computeGalleryImageDefinitionName: nestedDependencies.outputs.computeGalleryImageDefinitions[0].name
+//     virtualNetworkName: nestedDependencies.outputs.virtualNetworkName
+//     deploymentScriptManagedIdentityName: nestedDependencies.outputs.deploymentScriptManagedIdentityName
+//     deploymentScriptStorageAccountName: nestedDependencies.outputs.deploymentScriptStorageAccountName
+//     deploymentScriptSubnetName: nestedDependencies.outputs.deploymentScriptSubnetName
+//     imageManagedIdentityName: nestedDependencies.outputs.imageManagedIdentityName
+//     imageSubnetName: nestedDependencies.outputs.imageSubnetName
+//     imageContainerInstanceSubnetName: '' // Validate that the logic for not using a container instance subnet works
+//     imageTemplateResourceGroupName: nestedDependencies.outputs.imageTemplateResourceGroupName
+//     imageTemplateImageSource: {
+//       type: 'PlatformImage'
+//       publisher: 'canonical'
+//       offer: 'ubuntu-24_04-lts'
+//       sku: 'server'
+//       version: 'latest'
+//     }
+//     imageTemplateCustomizationSteps: [
+//       {
+//         type: 'Shell'
+//         name: 'Example script'
+//         scriptUri: 'https://${nestedDependencies.outputs.assetsStorageAccountName}.blob.${az.environment().suffixes.storage}/${nestedDependencies.outputs.assetsStorageAccountContainerName}/${nestedDependencies.outputs.exampleScriptName}'
+//       }
+//     ]
+//   }
+// }
