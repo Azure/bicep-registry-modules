@@ -176,6 +176,11 @@ module testDeployment '../../../main.bicep' = [
             }
             header: {}
           }
+          proxy: {
+            url: 'http://myproxy:8888'
+            username: 'proxyUser'
+            password: 'proxyPassword'
+          }
         }
         {
           name: 'backend2'

@@ -943,22 +943,22 @@ type backendType = {
   @description('Required. Backend Name.')
   name: string
 
-  @description('Optional. Backend Credentials Contract Properties.')
+  @description('Optional. Backend Credentials Contract Properties. Not supported for Backend Pools.')
   credentials: resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.credentials?
 
   @description('Optional. Backend Description.')
   description: string?
 
-  @description('Optional. Backend communication protocol. - http or soap.')
+  @description('Optional. Backend communication protocol, http or soap. Not supported for Backend Pools.')
   protocol: string?
 
-  @description('Optional. Backend Proxy Contract Properties.')
+  @description('Optional. Backend Proxy Contract Properties. Not supported for Backend Pools.')
   proxy: resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.proxy?
 
-  @description('Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps.')
+  @description('Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools.')
   resourceId: string?
 
-  @description('Optional. Backend Service Fabric Cluster Properties.')
+  @description('Optional. Backend Service Fabric Cluster Properties. Not supported for Backend Pools.')
   serviceFabricCluster: resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.properties.serviceFabricCluster?
 
   @description('Optional. Backend Title.')
@@ -970,10 +970,10 @@ type backendType = {
   @description('Conditional. Runtime URL of the Backend. Required if type is Single and not supported if type is Pool.')
   url: string?
 
-  @description('Optional. Backend Circuit Breaker Properties.')
+  @description('Optional. Backend Circuit Breaker Properties. Not supported for Backend Pools.')
   circuitBreaker: resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.circuitBreaker?
 
-  @description('Optional. Backend pool configuration for load balancing.')
+  @description('Conditional. Backend pool configuration for load balancing. Required if type is Pool and not supported if type is Single.')
   pool: resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.pool?
 
   @description('Optional. Type of the backend. A backend can be either Single or Pool.')

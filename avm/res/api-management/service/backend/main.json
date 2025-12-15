@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "17020252522363733126"
+      "templateHash": "12627850535593055984"
     },
     "name": "API Management Service Backends",
     "description": "This module deploys an API Management Service Backend."
@@ -30,7 +30,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/credentials"
         },
-        "description": "Optional. Backend Credentials Contract Properties."
+        "description": "Optional. Backend Credentials Contract Properties. Not supported for Backend Pools."
       },
       "nullable": true
     },
@@ -45,7 +45,7 @@
       "type": "string",
       "defaultValue": "http",
       "metadata": {
-        "description": "Optional. Backend communication protocol. - http or soap."
+        "description": "Optional. Backend communication protocol. http or soap. Not supported for Backend Pools."
       }
     },
     "proxy": {
@@ -54,7 +54,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/proxy"
         },
-        "description": "Optional. Backend Proxy Contract Properties."
+        "description": "Optional. Backend Proxy Contract Properties. Not supported for Backend Pools."
       },
       "nullable": true
     },
@@ -62,7 +62,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps."
+        "description": "Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools."
       }
     },
     "serviceFabricCluster": {
@@ -71,7 +71,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/properties/properties/serviceFabricCluster"
         },
-        "description": "Optional. Backend Service Fabric Cluster Properties."
+        "description": "Optional. Backend Service Fabric Cluster Properties. Not supported for Backend Pools."
       },
       "nullable": true
     },
@@ -105,7 +105,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/circuitBreaker"
         },
-        "description": "Optional. Backend Circuit Breaker Configuration."
+        "description": "Optional. Backend Circuit Breaker Configuration. Not supported for Backend Pools."
       },
       "nullable": true
     },
@@ -115,7 +115,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/pool"
         },
-        "description": "Optional. Backend pool configuration for load balancing."
+        "description": "Conditional. Backend pool configuration for load balancing. Required if type is Pool and not supported if type is Single."
       },
       "nullable": true
     },
@@ -169,7 +169,7 @@
       "type": "Microsoft.ApiManagement/service/backends",
       "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
-      "properties": "[shallowMerge(createArray(createObject('circuitBreaker', parameters('circuitBreaker'), 'title', parameters('title'), 'description', parameters('description'), 'resourceId', parameters('resourceId'), 'pool', parameters('pool'), 'properties', createObject('serviceFabricCluster', parameters('serviceFabricCluster')), 'credentials', parameters('credentials'), 'proxy', parameters('proxy'), 'type', parameters('type'), 'protocol', parameters('protocol')), if(equals(parameters('type'), 'Single'), createObject('tls', coalesce(parameters('tls'), createObject('validateCertificateChain', true(), 'validateCertificateName', true()))), createObject()), if(equals(parameters('type'), 'Single'), createObject('url', parameters('url')), createObject())))]"
+      "properties": "[shallowMerge(createArray(createObject('description', parameters('description'), 'title', parameters('title'), 'type', parameters('type')), if(equals(parameters('type'), 'Pool'), createObject('pool', parameters('pool')), createObject()), if(equals(parameters('type'), 'Single'), createObject('resourceId', parameters('resourceId')), createObject()), if(equals(parameters('type'), 'Single'), createObject('credentials', parameters('credentials')), createObject()), if(equals(parameters('type'), 'Single'), createObject('proxy', parameters('proxy')), createObject()), if(equals(parameters('type'), 'Single'), createObject('circuitBreaker', parameters('circuitBreaker')), createObject()), if(equals(parameters('type'), 'Single'), createObject('protocol', parameters('protocol')), createObject()), if(equals(parameters('type'), 'Single'), createObject('properties', createObject('serviceFabricCluster', parameters('serviceFabricCluster'))), createObject()), if(equals(parameters('type'), 'Single'), createObject('tls', coalesce(parameters('tls'), createObject('validateCertificateChain', true(), 'validateCertificateName', true()))), createObject()), if(equals(parameters('type'), 'Single'), createObject('url', parameters('url')), createObject())))]"
     }
   },
   "outputs": {

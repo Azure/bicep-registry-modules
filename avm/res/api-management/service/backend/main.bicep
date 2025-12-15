@@ -7,22 +7,22 @@ param apiManagementServiceName string
 @sys.description('Required. Backend Name.')
 param name string
 
-@sys.description('Optional. Backend Credentials Contract Properties.')
+@sys.description('Optional. Backend Credentials Contract Properties. Not supported for Backend Pools.')
 param credentials resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.credentials?
 
 @sys.description('Optional. Backend Description.')
 param description string?
 
-@sys.description('Optional. Backend communication protocol. - http or soap.')
+@sys.description('Optional. Backend communication protocol. http or soap. Not supported for Backend Pools.')
 param protocol string = 'http'
 
-@sys.description('Optional. Backend Proxy Contract Properties.')
+@sys.description('Optional. Backend Proxy Contract Properties. Not supported for Backend Pools.')
 param proxy resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.proxy?
 
-@sys.description('Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps.')
+@sys.description('Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools.')
 param resourceId string?
 
-@sys.description('Optional. Backend Service Fabric Cluster Properties.')
+@sys.description('Optional. Backend Service Fabric Cluster Properties. Not supported for Backend Pools.')
 param serviceFabricCluster resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.properties.serviceFabricCluster?
 
 @sys.description('Optional. Backend Title.')
@@ -34,10 +34,10 @@ param tls resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.p
 @sys.description('Conditional. Runtime URL of the Backend. Required if type is Single and not supported if type is Pool.')
 param url string?
 
-@sys.description('Optional. Backend Circuit Breaker Configuration.')
+@sys.description('Optional. Backend Circuit Breaker Configuration. Not supported for Backend Pools.')
 param circuitBreaker resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.circuitBreaker?
 
-@sys.description('Optional. Backend pool configuration for load balancing.')
+@sys.description('Conditional. Backend pool configuration for load balancing. Required if type is Pool and not supported if type is Single.')
 param pool resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.pool?
 
 @sys.description('Optional. Type of the backend. A backend can be either Single or Pool.')
@@ -74,18 +74,22 @@ resource backend 'Microsoft.ApiManagement/service/backends@2024-05-01' = {
   name: name
   parent: service
   properties: {
-    circuitBreaker: circuitBreaker
-    title: title
     description: description
-    resourceId: resourceId
-    pool: pool
-    properties: {
-      serviceFabricCluster: serviceFabricCluster
-    }
-    credentials: credentials
-    proxy: proxy
+    title: title
     type: type
-    protocol: protocol
+    ...(type == 'Pool' ? { pool: pool } : {})
+    ...(type == 'Single' ? { resourceId: resourceId } : {})
+    ...(type == 'Single' ? { credentials: credentials } : {})
+    ...(type == 'Single' ? { proxy: proxy } : {})
+    ...(type == 'Single' ? { circuitBreaker: circuitBreaker } : {})
+    ...(type == 'Single' ? { protocol: protocol } : {})
+    ...(type == 'Single'
+      ? {
+          properties: {
+            serviceFabricCluster: serviceFabricCluster
+          }
+        }
+      : {})
     ...(type == 'Single' ? { tls: tls ?? { validateCertificateChain: true, validateCertificateName: true } } : {})
     ...(type == 'Single' ? { url: url } : {})
   }

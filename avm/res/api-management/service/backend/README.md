@@ -37,21 +37,21 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. Required if the template is used in a standalone deployment. |
+| [`pool`](#parameter-pool) | object | Backend pool configuration for load balancing. Required if type is Pool and not supported if type is Single. |
 | [`url`](#parameter-url) | string | Runtime URL of the Backend. Required if type is Single and not supported if type is Pool. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`circuitBreaker`](#parameter-circuitbreaker) | object | Backend Circuit Breaker Configuration. |
-| [`credentials`](#parameter-credentials) | object | Backend Credentials Contract Properties. |
+| [`circuitBreaker`](#parameter-circuitbreaker) | object | Backend Circuit Breaker Configuration. Not supported for Backend Pools. |
+| [`credentials`](#parameter-credentials) | object | Backend Credentials Contract Properties. Not supported for Backend Pools. |
 | [`description`](#parameter-description) | string | Backend Description. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`pool`](#parameter-pool) | object | Backend pool configuration for load balancing. |
-| [`protocol`](#parameter-protocol) | string | Backend communication protocol. - http or soap. |
-| [`proxy`](#parameter-proxy) | object | Backend Proxy Contract Properties. |
-| [`resourceId`](#parameter-resourceid) | string | Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. |
-| [`serviceFabricCluster`](#parameter-servicefabriccluster) | object | Backend Service Fabric Cluster Properties. |
+| [`protocol`](#parameter-protocol) | string | Backend communication protocol. http or soap. Not supported for Backend Pools. |
+| [`proxy`](#parameter-proxy) | object | Backend Proxy Contract Properties. Not supported for Backend Pools. |
+| [`resourceId`](#parameter-resourceid) | string | Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools. |
+| [`serviceFabricCluster`](#parameter-servicefabriccluster) | object | Backend Service Fabric Cluster Properties. Not supported for Backend Pools. |
 | [`title`](#parameter-title) | string | Backend Title. |
 | [`tls`](#parameter-tls) | object | Backend TLS Properties. Not supported for Backend Pools. If not specified and type is Single, TLS properties will default to validateCertificateChain and validateCertificateName set to true. |
 | [`type`](#parameter-type) | string | Type of the backend. A backend can be either Single or Pool. |
@@ -70,6 +70,13 @@ The name of the parent API Management service. Required if the template is used 
 - Required: Yes
 - Type: string
 
+### Parameter: `pool`
+
+Backend pool configuration for load balancing. Required if type is Pool and not supported if type is Single.
+
+- Required: No
+- Type: object
+
 ### Parameter: `url`
 
 Runtime URL of the Backend. Required if type is Single and not supported if type is Pool.
@@ -79,14 +86,14 @@ Runtime URL of the Backend. Required if type is Single and not supported if type
 
 ### Parameter: `circuitBreaker`
 
-Backend Circuit Breaker Configuration.
+Backend Circuit Breaker Configuration. Not supported for Backend Pools.
 
 - Required: No
 - Type: object
 
 ### Parameter: `credentials`
 
-Backend Credentials Contract Properties.
+Backend Credentials Contract Properties. Not supported for Backend Pools.
 
 - Required: No
 - Type: object
@@ -106,16 +113,9 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `pool`
-
-Backend pool configuration for load balancing.
-
-- Required: No
-- Type: object
-
 ### Parameter: `protocol`
 
-Backend communication protocol. - http or soap.
+Backend communication protocol. http or soap. Not supported for Backend Pools.
 
 - Required: No
 - Type: string
@@ -123,21 +123,21 @@ Backend communication protocol. - http or soap.
 
 ### Parameter: `proxy`
 
-Backend Proxy Contract Properties.
+Backend Proxy Contract Properties. Not supported for Backend Pools.
 
 - Required: No
 - Type: object
 
 ### Parameter: `resourceId`
 
-Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps.
+Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools.
 
 - Required: No
 - Type: string
 
 ### Parameter: `serviceFabricCluster`
 
-Backend Service Fabric Cluster Properties.
+Backend Service Fabric Cluster Properties. Not supported for Backend Pools.
 
 - Required: No
 - Type: object

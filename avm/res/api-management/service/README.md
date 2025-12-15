@@ -410,6 +410,11 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         }
         description: 'Test backend with maximum properties'
         name: '<name>'
+        proxy: {
+          password: 'proxyPassword'
+          url: 'http://myproxy:8888'
+          username: 'proxyUser'
+        }
         tls: {
           validateCertificateChain: false
           validateCertificateName: false
@@ -714,6 +719,11 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           },
           "description": "Test backend with maximum properties",
           "name": "<name>",
+          "proxy": {
+            "password": "proxyPassword",
+            "url": "http://myproxy:8888",
+            "username": "proxyUser"
+          },
           "tls": {
             "validateCertificateChain": false,
             "validateCertificateName": false
@@ -1034,6 +1044,11 @@ param backends = [
     }
     description: 'Test backend with maximum properties'
     name: '<name>'
+    proxy: {
+      password: 'proxyPassword'
+      url: 'http://myproxy:8888'
+      username: 'proxyUser'
+    }
     tls: {
       validateCertificateChain: false
       validateCertificateName: false
@@ -3181,20 +3196,20 @@ Backends.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`pool`](#parameter-backendspool) | object | Backend pool configuration for load balancing. Required if type is Pool and not supported if type is Single. |
 | [`url`](#parameter-backendsurl) | string | Runtime URL of the Backend. Required if type is Single and not supported if type is Pool. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`circuitBreaker`](#parameter-backendscircuitbreaker) | object | Backend Circuit Breaker Properties. |
-| [`credentials`](#parameter-backendscredentials) | object | Backend Credentials Contract Properties. |
+| [`circuitBreaker`](#parameter-backendscircuitbreaker) | object | Backend Circuit Breaker Properties. Not supported for Backend Pools. |
+| [`credentials`](#parameter-backendscredentials) | object | Backend Credentials Contract Properties. Not supported for Backend Pools. |
 | [`description`](#parameter-backendsdescription) | string | Backend Description. |
-| [`pool`](#parameter-backendspool) | object | Backend pool configuration for load balancing. |
-| [`protocol`](#parameter-backendsprotocol) | string | Backend communication protocol. - http or soap. |
-| [`proxy`](#parameter-backendsproxy) | object | Backend Proxy Contract Properties. |
-| [`resourceId`](#parameter-backendsresourceid) | string | Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. |
-| [`serviceFabricCluster`](#parameter-backendsservicefabriccluster) | object | Backend Service Fabric Cluster Properties. |
+| [`protocol`](#parameter-backendsprotocol) | string | Backend communication protocol, http or soap. Not supported for Backend Pools. |
+| [`proxy`](#parameter-backendsproxy) | object | Backend Proxy Contract Properties. Not supported for Backend Pools. |
+| [`resourceId`](#parameter-backendsresourceid) | string | Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools. |
+| [`serviceFabricCluster`](#parameter-backendsservicefabriccluster) | object | Backend Service Fabric Cluster Properties. Not supported for Backend Pools. |
 | [`title`](#parameter-backendstitle) | string | Backend Title. |
 | [`tls`](#parameter-backendstls) | object | Backend TLS Properties. Not supported for Backend Pools. |
 | [`type`](#parameter-backendstype) | string | Type of the backend. A backend can be either Single or Pool. |
@@ -3206,6 +3221,13 @@ Backend Name.
 - Required: Yes
 - Type: string
 
+### Parameter: `backends.pool`
+
+Backend pool configuration for load balancing. Required if type is Pool and not supported if type is Single.
+
+- Required: No
+- Type: object
+
 ### Parameter: `backends.url`
 
 Runtime URL of the Backend. Required if type is Single and not supported if type is Pool.
@@ -3215,14 +3237,14 @@ Runtime URL of the Backend. Required if type is Single and not supported if type
 
 ### Parameter: `backends.circuitBreaker`
 
-Backend Circuit Breaker Properties.
+Backend Circuit Breaker Properties. Not supported for Backend Pools.
 
 - Required: No
 - Type: object
 
 ### Parameter: `backends.credentials`
 
-Backend Credentials Contract Properties.
+Backend Credentials Contract Properties. Not supported for Backend Pools.
 
 - Required: No
 - Type: object
@@ -3234,37 +3256,30 @@ Backend Description.
 - Required: No
 - Type: string
 
-### Parameter: `backends.pool`
-
-Backend pool configuration for load balancing.
-
-- Required: No
-- Type: object
-
 ### Parameter: `backends.protocol`
 
-Backend communication protocol. - http or soap.
+Backend communication protocol, http or soap. Not supported for Backend Pools.
 
 - Required: No
 - Type: string
 
 ### Parameter: `backends.proxy`
 
-Backend Proxy Contract Properties.
+Backend Proxy Contract Properties. Not supported for Backend Pools.
 
 - Required: No
 - Type: object
 
 ### Parameter: `backends.resourceId`
 
-Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps.
+Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools.
 
 - Required: No
 - Type: string
 
 ### Parameter: `backends.serviceFabricCluster`
 
-Backend Service Fabric Cluster Properties.
+Backend Service Fabric Cluster Properties. Not supported for Backend Pools.
 
 - Required: No
 - Type: object
