@@ -101,7 +101,6 @@ runs:
           # List of modules requiring service principal + secret authentication
           $modulePath = "${{ inputs.modulePath }}"
           $exceptionModulePaths = @(
-            'avm/ptn/lz/sub-vending'                             # Failing on resource deletion when trying to delete RBAC at subscription level (hub-spoke test)
             'avm/res/azure-stack-hci/cluster'                    # Failing on resource deletion when trying to delete RBAC at subscription level
             'avm/res/azure-stack-hci/logical-network'            # Failing on resource deletion when trying to delete RBAC at subscription level
             'avm/res/azure-stack-hci/network-interface'          # Failing on resource deletion when trying to delete RBAC at subscription level
@@ -418,6 +417,28 @@ runs:
           }
 
           Write-Output '::endgroup::'
+
+    # [Azure login] task(s)
+    # ------------------------------
+    # Default: support both OIDC and service principal with secret
+    # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
+    - name: "Azure Login - Default"
+      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'false' && env.skip_deployment_ci == 'false' }}
+      uses: azure/login@v2
+      with:
+        client-id: ${{ env.VALIDATE_CLIENT_ID }}
+        tenant-id: ${{ env.VALIDATE_TENANT_ID }}
+        subscription-id: ${{ env.VALIDATE_SUBSCRIPTION_ID }}
+        enable-AzPSSession: true
+
+    # Exception: module requires login by using service principal with secret
+    # Should only be leveraged by modules listed in $exceptionModulePaths above
+    - name: "Azure Login - Exception"
+      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'true'  && env.skip_deployment_ci == 'false'}}
+      uses: azure/login@v2
+      with:
+        creds: ${{ env.AZURE_CREDENTIALS }}
+        enable-AzPSSession: true
 
     # [Post-Deployment test] task(s)
     # ------------------------------
