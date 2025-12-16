@@ -2,6 +2,30 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/lz/sub-vending/CHANGELOG.md).
 
+## 0.5.2
+
+### Changes
+
+- Updated `avm/ptn/authorization/role-assignment` module reference from version `0.2.2` to `0.2.4` to include fix for management group scoped role definitions
+- Updated `avm/ptn/authorization/pim-role-assignment` module reference from version `0.1.1` to `0.1.2` to include fix for management group scoped role definitions
+
+### Breaking Changes
+
+- None
+
+## 0.5.1
+
+### Changes
+
+- Fixed deployment failures when `deployment().location` contains spaces (e.g., 'West Europe', 'East US 2') by implementing location normalization for resource names
+- Added 73-region mapping dictionary to convert display names with spaces to short names without spaces
+- Normalized 8 resource name parameters that use `deployment().location` in their default values
+- Resource names now use lowercase names without spaces while respecting user-provided custom values
+
+### Breaking Changes
+
+- **None** - Changes are backward compatible and only affect default parameter values when `deployment().location` contains spaces
+
 ## 0.5.0
 
 ### Changes

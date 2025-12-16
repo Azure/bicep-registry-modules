@@ -44,7 +44,6 @@
 /avm/ptn/sa/modernize-your-code/ @Azure/avm-ptn-sa-modernizeyourcode-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/sa/multi-agent-custom-automation-engine/ @Azure/avm-ptn-sa-multiagentcustomautomationengine-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/sa/chat-with-your-data/ @Azure/avm-ptn-sa-chatwithyourdata-module-owners-bicep @Azure/avm-module-reviewers-bicep
-/avm/ptn/sa/build-your-own-copilot/ @Azure/avm-ptn-sa-buildyourowncopilot-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/sa/document-knowledge-mining/ @Azure/avm-ptn-sa-documentknowledgemining-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/security/security-center/ @Azure/avm-ptn-security-securitycenter-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/subscription/service-health-alerts/ @Azure/avm-ptn-subscription-servicehealthalerts-module-owners-bicep @Azure/avm-module-reviewers-bicep

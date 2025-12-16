@@ -128,14 +128,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
       }
       kind: 'AgentDirectToStore'
     }
-    name: 'idcrag001'
-    // Non-required parameters
-    location: '<location>'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      kind: 'Direct'
-      resourceType: 'Data Collection Rules'
-    }
+    name: 'idcrad001'
   }
 }
 ```
@@ -221,18 +214,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
       }
     },
     "name": {
-      "value": "idcrag001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "tags": {
-      "value": {
-        "hidden-title": "This is visible in the resource name",
-        "kind": "Direct",
-        "resourceType": "Data Collection Rules"
-      }
+      "value": "idcrad001"
     }
   }
 }
@@ -314,14 +296,7 @@ param dataCollectionRuleProperties = {
   }
   kind: 'AgentDirectToStore'
 }
-param name = 'idcrag001'
-// Non-required parameters
-param location = '<location>'
-param tags = {
-  'hidden-title': 'This is visible in the resource name'
-  kind: 'Direct'
-  resourceType: 'Data Collection Rules'
-}
+param name = 'idcrad001'
 ```
 
 </details>
@@ -4078,7 +4053,7 @@ To use this variant, set the property `kind` to `AgentDirectToStore`.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`description`](#parameter-datacollectionrulepropertieskind-agentdirecttostoredescription) | string | The resource ID of the data collection endpoint that this rule can be used with. |
+| [`description`](#parameter-datacollectionrulepropertieskind-agentdirecttostoredescription) | string | Description of the data collection rule. |
 
 ### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.dataFlows`
 
@@ -4116,7 +4091,7 @@ The platform type specifies the type of resources this rule can apply to.
 
 ### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.description`
 
-The resource ID of the data collection endpoint that this rule can be used with.
+Description of the data collection rule.
 
 - Required: No
 - Type: string
