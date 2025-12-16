@@ -36,14 +36,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/managed-identity/user-assigned-identity:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Defaults](#example-1-defaults)
+- [Max](#example-2-max)
+- [Waf-Aligned](#example-3-waf-aligned)
 
-### Example 1: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
+### Example 1: _Defaults_
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
 
@@ -105,10 +102,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
-
-This instance deploys the module with most of its features enabled.
-
+### Example 2: _Max_
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
 
@@ -140,6 +134,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
         subject: 'system:serviceaccount:default:workload-identity-sa'
       }
     ]
+    isolationScope: 'Regional'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -209,6 +204,9 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
           "subject": "system:serviceaccount:default:workload-identity-sa"
         }
       ]
+    },
+    "isolationScope": {
+      "value": "Regional"
     },
     "location": {
       "value": "<location>"
@@ -282,6 +280,7 @@ param federatedIdentityCredentials = [
     subject: 'system:serviceaccount:default:workload-identity-sa'
   }
 ]
+param isolationScope = 'Regional'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -316,10 +315,7 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
+### Example 3: _Waf-Aligned_
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
 
@@ -351,6 +347,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
         subject: 'system:serviceaccount:default:workload-identity-sa'
       }
     ]
+    isolationScope: 'Regional'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -401,6 +398,9 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
           "subject": "system:serviceaccount:default:workload-identity-sa"
         }
       ]
+    },
+    "isolationScope": {
+      "value": "Regional"
     },
     "location": {
       "value": "<location>"
@@ -453,6 +453,7 @@ param federatedIdentityCredentials = [
     subject: 'system:serviceaccount:default:workload-identity-sa'
   }
 ]
+param isolationScope = 'Regional'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -553,6 +554,13 @@ Enum to configure regional restrictions on identity assignment, as necessary. Al
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'None'
+    'Regional'
+  ]
+  ```
 
 ### Parameter: `location`
 
