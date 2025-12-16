@@ -72,21 +72,22 @@ param roleAssignments roleAssignmentType[]?
   'Basic'
   'Standard'
   'Premium'
-  'StandardV2'
   'BasicV2'
+  'StandardV2'
+  'PremiumV2'
 ])
 param sku string = 'Premium'
 
 @description('Conditional. The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/.')
 param skuCapacity int = 3
 
-@description('Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and StandardV2 SKUs only.')
+@description('Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and PremiumV2 SKUs only.')
 param subnetResourceId string?
 
 @description('Optional. Tags of the resource.')
 param tags resourceInput<'Microsoft.ApiManagement/service@2024-05-01'>.tags?
 
-@description('Conditional. The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and StandardV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`.')
+@description('Conditional. The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and PremiumV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`.')
 @allowed([
   'None'
   'External'
@@ -901,7 +902,16 @@ type additionalLocationType = {
     capacity: int
 
     @description('Required. Name of the Sku.')
-    name: ('Basic' | 'BasicV2' | 'Consumption' | 'Developer' | 'Isolated' | 'Premium' | 'Standard' | 'StandardV2')
+    name: (
+      | 'Basic'
+      | 'BasicV2'
+      | 'Consumption'
+      | 'Developer'
+      | 'Isolated'
+      | 'Premium'
+      | 'PremiumV2'
+      | 'Standard'
+      | 'StandardV2')
   }
 
   @description('Optional. Virtual network configuration for the location.')
