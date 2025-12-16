@@ -12,7 +12,6 @@ Describe 'Bicep Landing Zone (Sub) Vending IPAM Tests' {
         $location = $TestInputData.DeploymentOutputs.resourceLocation.Value
         $ipamPoolResourceId = $TestInputData.DeploymentOutputs.ipamPoolResourceId.Value
         Update-AzConfig -DisplayBreakingChangeWarning $false
-        Connect-AzAccount -Identity
         Select-AzSubscription -subscriptionId $subscriptionId
     }
 

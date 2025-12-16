@@ -12,7 +12,6 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
         $location = $TestInputData.DeploymentOutputs.resourceLocation.Value
         $user = Get-AzADUser -DisplayName 'AVM CI Validation User 001'
         Update-AzConfig -DisplayBreakingChangeWarning $false
-        Connect-AzAccount -Identity
         Select-AzSubscription -subscriptionId $subscriptionId
     }
 
