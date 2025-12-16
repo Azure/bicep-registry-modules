@@ -421,41 +421,6 @@ runs:
 
     # [Azure login] task(s)
     # ------------------------------
-    - name: "Set OIDC temporary exception"
-      id: set-oidc-exception
-      if: env.skip_deployment_ci == 'false'
-      uses: azure/powershell@v2
-      with:
-        azPSVersion: "latest"
-        inlineScript: |
-          # Grouping task logs
-          Write-Output '::group::Set OIDC exception'
-
-          # List of modules requiring service principal + secret authentication
-          $modulePath = "${{ inputs.modulePath }}"
-          $exceptionModulePaths = @(
-            #'avm/ptn/lz/sub-vending'                             # Failing on resource deletion when trying to delete RBAC at subscription level (hub-spoke test)
-            'avm/res/azure-stack-hci/cluster'                    # Failing on resource deletion when trying to delete RBAC at subscription level
-            'avm/res/azure-stack-hci/logical-network'            # Failing on resource deletion when trying to delete RBAC at subscription level
-            'avm/res/azure-stack-hci/network-interface'          # Failing on resource deletion when trying to delete RBAC at subscription level
-            'avm/res/azure-stack-hci/virtual-hard-disk'          # Failing on resource deletion when trying to delete RBAC at subscription level
-            'avm/res/azure-stack-hci/virtual-machine-instance'   # Failing on resource deletion when trying to delete RBAC at subscription level
-            'avm/res/compute/image'                              # Failing on resource deletion when trying to delete RBAC at subscription level
-            'avm/res/compute/disk'                               # Failing on resource deletion when trying to delete RBAC at subscription level
-            'avm/res/hybrid-container-service/provisioned-cluster-instance' # Failing on resource deletion when trying to delete RBAC at subscription level
-            'avm/ptn/virtual-machine-images/azure-image-builder' # Failing on resource deletion when trying to delete RBAC at subscription level
-          )
-          if ($exceptionModulePaths.Contains($modulePath)) {
-            $oidcException = 'true'
-            Write-Verbose ('The module [{0}] is in the list of modules temporarily requiring an exception to OIDC.' -f $modulePath) -Verbose
-          } else {
-            $oidcException = 'false'
-            Write-Verbose ('The module [{0}] supports OIDC.' -f $modulePath) -Verbose
-          }
-
-          Write-Output ('{0}={1}' -f 'oidcException', $oidcException) >> $env:GITHUB_OUTPUT
-          Write-Output '::endgroup::'
-
     # Default: support both OIDC and service principal with secret
     # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
     - name: "Azure Login - Default"
