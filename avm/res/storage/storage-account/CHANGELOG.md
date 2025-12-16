@@ -11,7 +11,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- None
+- Updated `blob-service/container/immutabilityPolicy` write access flags `allowProtectedAppendWrites` and `allowProtectedAppendWritesAll` to default to `false` instead of `true`
 
 ## 0.30.0
 
