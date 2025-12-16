@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "11020727407027416845"
+      "templateHash": "13202996540630777457"
     },
     "name": "User Assigned Identities",
     "description": "This module deploys a User Assigned Identity."
@@ -178,6 +178,10 @@
     "isolationScope": {
       "type": "string",
       "nullable": true,
+      "allowedValues": [
+        "None",
+        "Regional"
+      ],
       "metadata": {
         "description": "Optional. Enum to configure regional restrictions on identity assignment, as necessary. Allowed values: \"None\", \"Regional\"."
       }
