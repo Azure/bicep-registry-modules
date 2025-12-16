@@ -1,6 +1,6 @@
-# Application Gateway for Containers Association `[Microsoft.ServiceNetworking/trafficControllers/associations]`
+# Application Gateway for Containers Security Policy `[Microsoft.ServiceNetworking/trafficControllers/securityPolicies]`
 
-This module deploys an Application Gateway for Containers Association
+This module deploys an Application Gateway for Containers Security Policy
 
 ## Navigation
 
@@ -12,7 +12,7 @@ This module deploys an Application Gateway for Containers Association
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.ServiceNetworking/trafficControllers/associations` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicenetworking_trafficcontrollers_associations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/2025-01-01/trafficControllers/associations)</li></ul> |
+| `Microsoft.ServiceNetworking/trafficControllers/securityPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicenetworking_trafficcontrollers_securitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/2025-01-01/trafficControllers/securityPolicies)</li></ul> |
 
 ## Parameters
 
@@ -20,8 +20,8 @@ This module deploys an Application Gateway for Containers Association
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the association to create. |
-| [`subnetResourceId`](#parameter-subnetresourceid) | string | The resource ID of the subnet to associate with the traffic controller. |
+| [`name`](#parameter-name) | string | Name of the security policy to create. |
+| [`wafPolicyResourceId`](#parameter-wafpolicyresourceid) | string | The resource ID of the WAF Policy to associate with the security policy. |
 
 **Conditional parameters**
 
@@ -37,14 +37,14 @@ This module deploys an Application Gateway for Containers Association
 
 ### Parameter: `name`
 
-Name of the association to create.
+Name of the security policy to create.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `subnetResourceId`
+### Parameter: `wafPolicyResourceId`
 
-The resource ID of the subnet to associate with the traffic controller.
+The resource ID of the WAF Policy to associate with the security policy.
 
 - Required: Yes
 - Type: string
@@ -68,7 +68,6 @@ Location for all Resources.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the association. |
+| `name` | string | The name of the security policy. |
 | `resourceGroupName` | string | The name of the resource group the resource was created in. |
-| `resourceId` | string | The resource ID of the association. |
-| `subnetResourceId` | string | The resource ID of the associated subnet. |
+| `resourceId` | string | The resource ID of the security policy. |

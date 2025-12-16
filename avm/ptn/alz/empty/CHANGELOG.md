@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/alz/empty/CHANGELOG.md).
 
+## 0.3.5
+
+### Changes
+
+- Updated `avm/ptn/authorization/role-assignment` module reference from version `0.2.3` to `0.2.4` to include fix for management group scoped role definitions
+
+### Breaking Changes
+
+- None
+
 ## 0.3.4
 
 ### Changes
