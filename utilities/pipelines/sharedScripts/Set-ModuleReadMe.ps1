@@ -2374,10 +2374,23 @@ function Set-ModuleReadMe {
     Write-Verbose ($readMeFileContent | Out-String)
 
     if (Test-Path $ReadMeFilePath) {
-        if ($PSCmdlet.ShouldProcess("File in path [$ReadMeFilePath]", 'Overwrite')) {
-            Set-Content -Path $ReadMeFilePath -Value $readMeFileContent -Force -Encoding 'utf8'
+        # Read existing content for comparison
+        $existingContent = Get-Content -Path $ReadMeFilePath -Encoding 'utf8' -Raw
+        
+        # Normalize line endings for consistent comparison (convert all to LF)
+        $normalizedExisting = $existingContent -replace '\r\n', "`n" -replace '\r', "`n"
+        $newContent = ($readMeFileContent -join "`n") + "`n"
+        $normalizedNew = $newContent -replace '\r\n', "`n" -replace '\r', "`n"
+        
+        # Only write if content has actually changed
+        if ($normalizedExisting -ne $normalizedNew) {
+            if ($PSCmdlet.ShouldProcess("File in path [$ReadMeFilePath]", 'Overwrite')) {
+                Set-Content -Path $ReadMeFilePath -Value $readMeFileContent -Force -Encoding 'utf8'
+            }
+            Write-Verbose "File [$ReadMeFilePath] updated" -Verbose
+        } else {
+            Write-Verbose "File [$ReadMeFilePath] has no changes, skipping write" -Verbose
         }
-        Write-Verbose "File [$ReadMeFilePath] updated" -Verbose
     } else {
         if ($PSCmdlet.ShouldProcess("File in path [$ReadMeFilePath]", 'Create')) {
             $null = New-Item -Path $ReadMeFilePath -Value ($readMeFileContent | Out-String) -Force
