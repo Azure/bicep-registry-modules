@@ -27,6 +27,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.Logic/integrationAccounts` | 2019-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.logic_integrationaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts)</li></ul> |
+| `Microsoft.Logic/integrationAccounts/agreements` | 2019-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.logic_integrationaccounts_agreements.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts/agreements)</li></ul> |
 | `Microsoft.Logic/integrationAccounts/assemblies` | 2019-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.logic_integrationaccounts_assemblies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts/assemblies)</li></ul> |
 | `Microsoft.Logic/integrationAccounts/certificates` | 2019-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.logic_integrationaccounts_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts/certificates)</li></ul> |
 | `Microsoft.Logic/integrationAccounts/maps` | 2019-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.logic_integrationaccounts_maps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Logic/2019-05-01/integrationAccounts/maps)</li></ul> |
@@ -127,6 +128,216 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     // Required parameters
     name: 'iamax001'
     // Non-required parameters
+    agreements: [
+      {
+        agreementType: 'X12'
+        content: {
+          x12: {
+            receiveAgreement: {
+              protocolSettings: {
+                acknowledgementSettings: {
+                  acknowledgementControlNumberLowerBound: 1
+                  acknowledgementControlNumberUpperBound: 999999999
+                  batchFunctionalAcknowledgements: true
+                  batchImplementationAcknowledgements: false
+                  batchTechnicalAcknowledgements: true
+                  needFunctionalAcknowledgement: false
+                  needImplementationAcknowledgement: false
+                  needLoopForValidMessages: false
+                  needTechnicalAcknowledgement: false
+                  rolloverAcknowledgementControlNumber: true
+                  sendSynchronousAcknowledgement: false
+                }
+                envelopeSettings: {
+                  controlStandardsId: 85
+                  controlVersionNumber: '00401'
+                  enableDefaultGroupHeaders: true
+                  groupControlNumberLowerBound: 1
+                  groupControlNumberUpperBound: 999999999
+                  groupHeaderAgencyCode: 'T'
+                  groupHeaderDateFormat: 'CCYYMMDD'
+                  groupHeaderTimeFormat: 'HHMM'
+                  groupHeaderVersion: '00401'
+                  interchangeControlNumberLowerBound: 1
+                  interchangeControlNumberUpperBound: 999999999
+                  overwriteExistingTransactionSetControlNumber: true
+                  receiverApplicationId: 'RECEIVER'
+                  rolloverGroupControlNumber: true
+                  rolloverInterchangeControlNumber: true
+                  rolloverTransactionSetControlNumber: true
+                  senderApplicationId: 'SENDER'
+                  transactionSetControlNumberLowerBound: 1
+                  transactionSetControlNumberUpperBound: 999999999
+                  usageIndicator: 'Test'
+                  useControlStandardsIdAsRepetitionCharacter: false
+                }
+                framingSettings: {
+                  characterSet: 'UTF8'
+                  componentSeparator: 58
+                  dataElementSeparator: 42
+                  replaceCharacter: 36
+                  replaceSeparatorsInPayload: false
+                  segmentTerminator: 126
+                  segmentTerminatorSuffix: 'None'
+                }
+                messageFilter: {
+                  messageFilterType: 'Include'
+                }
+                processingSettings: {
+                  convertImpliedDecimal: true
+                  createEmptyXmlTagsForTrailingSeparators: true
+                  maskSecurityInfo: true
+                  preserveInterchange: true
+                  suspendInterchangeOnError: true
+                  useDotAsDecimalSeparator: true
+                }
+                schemaReferences: [
+                  {
+                    messageId: '850'
+                    schemaName: 'schema1'
+                    schemaVersion: '00401'
+                  }
+                ]
+                securitySettings: {
+                  authorizationQualifier: '00'
+                  securityQualifier: '00'
+                }
+                validationSettings: {
+                  allowLeadingAndTrailingSpacesAndZeroes: false
+                  checkDuplicateGroupControlNumber: false
+                  checkDuplicateInterchangeControlNumber: false
+                  checkDuplicateTransactionSetControlNumber: false
+                  interchangeControlNumberValidityDays: 30
+                  trailingSeparatorPolicy: 'NotAllowed'
+                  trimLeadingAndTrailingSpacesAndZeroes: true
+                  validateCharacterSet: true
+                  validateEDITypes: true
+                  validateXSDTypes: false
+                }
+              }
+              receiverBusinessIdentity: {
+                qualifier: 'ZZ'
+                value: '0987654321'
+              }
+              senderBusinessIdentity: {
+                qualifier: 'ZZ'
+                value: '1234567890'
+              }
+            }
+            sendAgreement: {
+              protocolSettings: {
+                acknowledgementSettings: {
+                  acknowledgementControlNumberLowerBound: 1
+                  acknowledgementControlNumberUpperBound: 999999999
+                  batchFunctionalAcknowledgements: true
+                  batchImplementationAcknowledgements: false
+                  batchTechnicalAcknowledgements: true
+                  needFunctionalAcknowledgement: false
+                  needImplementationAcknowledgement: false
+                  needLoopForValidMessages: false
+                  needTechnicalAcknowledgement: false
+                  rolloverAcknowledgementControlNumber: true
+                  sendSynchronousAcknowledgement: false
+                }
+                envelopeSettings: {
+                  controlStandardsId: 85
+                  controlVersionNumber: '00401'
+                  enableDefaultGroupHeaders: true
+                  groupControlNumberLowerBound: 1
+                  groupControlNumberUpperBound: 999999999
+                  groupHeaderAgencyCode: 'T'
+                  groupHeaderDateFormat: 'CCYYMMDD'
+                  groupHeaderTimeFormat: 'HHMM'
+                  groupHeaderVersion: '00401'
+                  interchangeControlNumberLowerBound: 1
+                  interchangeControlNumberUpperBound: 999999999
+                  overwriteExistingTransactionSetControlNumber: true
+                  receiverApplicationId: 'RECEIVER'
+                  rolloverGroupControlNumber: true
+                  rolloverInterchangeControlNumber: true
+                  rolloverTransactionSetControlNumber: true
+                  senderApplicationId: 'SENDER'
+                  transactionSetControlNumberLowerBound: 1
+                  transactionSetControlNumberUpperBound: 999999999
+                  usageIndicator: 'Test'
+                  useControlStandardsIdAsRepetitionCharacter: false
+                }
+                framingSettings: {
+                  characterSet: 'UTF8'
+                  componentSeparator: 58
+                  dataElementSeparator: 42
+                  replaceCharacter: 36
+                  replaceSeparatorsInPayload: false
+                  segmentTerminator: 126
+                  segmentTerminatorSuffix: 'None'
+                }
+                messageFilter: {
+                  messageFilterType: 'Include'
+                }
+                processingSettings: {
+                  convertImpliedDecimal: true
+                  createEmptyXmlTagsForTrailingSeparators: true
+                  maskSecurityInfo: true
+                  preserveInterchange: true
+                  suspendInterchangeOnError: true
+                  useDotAsDecimalSeparator: true
+                }
+                schemaReferences: [
+                  {
+                    messageId: '850'
+                    schemaName: 'schema1'
+                    schemaVersion: '00401'
+                  }
+                ]
+                securitySettings: {
+                  authorizationQualifier: '00'
+                  securityQualifier: '00'
+                }
+                validationSettings: {
+                  allowLeadingAndTrailingSpacesAndZeroes: false
+                  checkDuplicateGroupControlNumber: false
+                  checkDuplicateInterchangeControlNumber: false
+                  checkDuplicateTransactionSetControlNumber: false
+                  interchangeControlNumberValidityDays: 30
+                  trailingSeparatorPolicy: 'NotAllowed'
+                  trimLeadingAndTrailingSpacesAndZeroes: true
+                  validateCharacterSet: true
+                  validateEDITypes: true
+                  validateXSDTypes: false
+                }
+              }
+              receiverBusinessIdentity: {
+                qualifier: 'ZZ'
+                value: '1234567890'
+              }
+              senderBusinessIdentity: {
+                qualifier: 'ZZ'
+                value: '0987654321'
+              }
+            }
+          }
+        }
+        guestIdentity: {
+          qualifier: 'ZZ'
+          value: '1234567890'
+        }
+        guestPartner: 'partner1'
+        hostIdentity: {
+          qualifier: 'ZZ'
+          value: '0987654321'
+        }
+        hostPartner: 'partner2'
+        metadata: {
+          key1: 'value1'
+          key2: 'value2'
+        }
+        name: 'agreement1'
+        tags: {
+          tag1: 'value1'
+          tag2: 'value2'
+        }
+      }
+    ]
     assemblies: [
       {
         assemblyName: 'name1'
@@ -276,6 +487,218 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
       "value": "iamax001"
     },
     // Non-required parameters
+    "agreements": {
+      "value": [
+        {
+          "agreementType": "X12",
+          "content": {
+            "x12": {
+              "receiveAgreement": {
+                "protocolSettings": {
+                  "acknowledgementSettings": {
+                    "acknowledgementControlNumberLowerBound": 1,
+                    "acknowledgementControlNumberUpperBound": 999999999,
+                    "batchFunctionalAcknowledgements": true,
+                    "batchImplementationAcknowledgements": false,
+                    "batchTechnicalAcknowledgements": true,
+                    "needFunctionalAcknowledgement": false,
+                    "needImplementationAcknowledgement": false,
+                    "needLoopForValidMessages": false,
+                    "needTechnicalAcknowledgement": false,
+                    "rolloverAcknowledgementControlNumber": true,
+                    "sendSynchronousAcknowledgement": false
+                  },
+                  "envelopeSettings": {
+                    "controlStandardsId": 85,
+                    "controlVersionNumber": "00401",
+                    "enableDefaultGroupHeaders": true,
+                    "groupControlNumberLowerBound": 1,
+                    "groupControlNumberUpperBound": 999999999,
+                    "groupHeaderAgencyCode": "T",
+                    "groupHeaderDateFormat": "CCYYMMDD",
+                    "groupHeaderTimeFormat": "HHMM",
+                    "groupHeaderVersion": "00401",
+                    "interchangeControlNumberLowerBound": 1,
+                    "interchangeControlNumberUpperBound": 999999999,
+                    "overwriteExistingTransactionSetControlNumber": true,
+                    "receiverApplicationId": "RECEIVER",
+                    "rolloverGroupControlNumber": true,
+                    "rolloverInterchangeControlNumber": true,
+                    "rolloverTransactionSetControlNumber": true,
+                    "senderApplicationId": "SENDER",
+                    "transactionSetControlNumberLowerBound": 1,
+                    "transactionSetControlNumberUpperBound": 999999999,
+                    "usageIndicator": "Test",
+                    "useControlStandardsIdAsRepetitionCharacter": false
+                  },
+                  "framingSettings": {
+                    "characterSet": "UTF8",
+                    "componentSeparator": 58,
+                    "dataElementSeparator": 42,
+                    "replaceCharacter": 36,
+                    "replaceSeparatorsInPayload": false,
+                    "segmentTerminator": 126,
+                    "segmentTerminatorSuffix": "None"
+                  },
+                  "messageFilter": {
+                    "messageFilterType": "Include"
+                  },
+                  "processingSettings": {
+                    "convertImpliedDecimal": true,
+                    "createEmptyXmlTagsForTrailingSeparators": true,
+                    "maskSecurityInfo": true,
+                    "preserveInterchange": true,
+                    "suspendInterchangeOnError": true,
+                    "useDotAsDecimalSeparator": true
+                  },
+                  "schemaReferences": [
+                    {
+                      "messageId": "850",
+                      "schemaName": "schema1",
+                      "schemaVersion": "00401"
+                    }
+                  ],
+                  "securitySettings": {
+                    "authorizationQualifier": "00",
+                    "securityQualifier": "00"
+                  },
+                  "validationSettings": {
+                    "allowLeadingAndTrailingSpacesAndZeroes": false,
+                    "checkDuplicateGroupControlNumber": false,
+                    "checkDuplicateInterchangeControlNumber": false,
+                    "checkDuplicateTransactionSetControlNumber": false,
+                    "interchangeControlNumberValidityDays": 30,
+                    "trailingSeparatorPolicy": "NotAllowed",
+                    "trimLeadingAndTrailingSpacesAndZeroes": true,
+                    "validateCharacterSet": true,
+                    "validateEDITypes": true,
+                    "validateXSDTypes": false
+                  }
+                },
+                "receiverBusinessIdentity": {
+                  "qualifier": "ZZ",
+                  "value": "0987654321"
+                },
+                "senderBusinessIdentity": {
+                  "qualifier": "ZZ",
+                  "value": "1234567890"
+                }
+              },
+              "sendAgreement": {
+                "protocolSettings": {
+                  "acknowledgementSettings": {
+                    "acknowledgementControlNumberLowerBound": 1,
+                    "acknowledgementControlNumberUpperBound": 999999999,
+                    "batchFunctionalAcknowledgements": true,
+                    "batchImplementationAcknowledgements": false,
+                    "batchTechnicalAcknowledgements": true,
+                    "needFunctionalAcknowledgement": false,
+                    "needImplementationAcknowledgement": false,
+                    "needLoopForValidMessages": false,
+                    "needTechnicalAcknowledgement": false,
+                    "rolloverAcknowledgementControlNumber": true,
+                    "sendSynchronousAcknowledgement": false
+                  },
+                  "envelopeSettings": {
+                    "controlStandardsId": 85,
+                    "controlVersionNumber": "00401",
+                    "enableDefaultGroupHeaders": true,
+                    "groupControlNumberLowerBound": 1,
+                    "groupControlNumberUpperBound": 999999999,
+                    "groupHeaderAgencyCode": "T",
+                    "groupHeaderDateFormat": "CCYYMMDD",
+                    "groupHeaderTimeFormat": "HHMM",
+                    "groupHeaderVersion": "00401",
+                    "interchangeControlNumberLowerBound": 1,
+                    "interchangeControlNumberUpperBound": 999999999,
+                    "overwriteExistingTransactionSetControlNumber": true,
+                    "receiverApplicationId": "RECEIVER",
+                    "rolloverGroupControlNumber": true,
+                    "rolloverInterchangeControlNumber": true,
+                    "rolloverTransactionSetControlNumber": true,
+                    "senderApplicationId": "SENDER",
+                    "transactionSetControlNumberLowerBound": 1,
+                    "transactionSetControlNumberUpperBound": 999999999,
+                    "usageIndicator": "Test",
+                    "useControlStandardsIdAsRepetitionCharacter": false
+                  },
+                  "framingSettings": {
+                    "characterSet": "UTF8",
+                    "componentSeparator": 58,
+                    "dataElementSeparator": 42,
+                    "replaceCharacter": 36,
+                    "replaceSeparatorsInPayload": false,
+                    "segmentTerminator": 126,
+                    "segmentTerminatorSuffix": "None"
+                  },
+                  "messageFilter": {
+                    "messageFilterType": "Include"
+                  },
+                  "processingSettings": {
+                    "convertImpliedDecimal": true,
+                    "createEmptyXmlTagsForTrailingSeparators": true,
+                    "maskSecurityInfo": true,
+                    "preserveInterchange": true,
+                    "suspendInterchangeOnError": true,
+                    "useDotAsDecimalSeparator": true
+                  },
+                  "schemaReferences": [
+                    {
+                      "messageId": "850",
+                      "schemaName": "schema1",
+                      "schemaVersion": "00401"
+                    }
+                  ],
+                  "securitySettings": {
+                    "authorizationQualifier": "00",
+                    "securityQualifier": "00"
+                  },
+                  "validationSettings": {
+                    "allowLeadingAndTrailingSpacesAndZeroes": false,
+                    "checkDuplicateGroupControlNumber": false,
+                    "checkDuplicateInterchangeControlNumber": false,
+                    "checkDuplicateTransactionSetControlNumber": false,
+                    "interchangeControlNumberValidityDays": 30,
+                    "trailingSeparatorPolicy": "NotAllowed",
+                    "trimLeadingAndTrailingSpacesAndZeroes": true,
+                    "validateCharacterSet": true,
+                    "validateEDITypes": true,
+                    "validateXSDTypes": false
+                  }
+                },
+                "receiverBusinessIdentity": {
+                  "qualifier": "ZZ",
+                  "value": "1234567890"
+                },
+                "senderBusinessIdentity": {
+                  "qualifier": "ZZ",
+                  "value": "0987654321"
+                }
+              }
+            }
+          },
+          "guestIdentity": {
+            "qualifier": "ZZ",
+            "value": "1234567890"
+          },
+          "guestPartner": "partner1",
+          "hostIdentity": {
+            "qualifier": "ZZ",
+            "value": "0987654321"
+          },
+          "hostPartner": "partner2",
+          "metadata": {
+            "key1": "value1",
+            "key2": "value2"
+          },
+          "name": "agreement1",
+          "tags": {
+            "tag1": "value1",
+            "tag2": "value2"
+          }
+        }
+      ]
+    },
     "assemblies": {
       "value": [
         {
@@ -439,6 +862,216 @@ using 'br/public:avm/res/logic/integration-account:<version>'
 // Required parameters
 param name = 'iamax001'
 // Non-required parameters
+param agreements = [
+  {
+    agreementType: 'X12'
+    content: {
+      x12: {
+        receiveAgreement: {
+          protocolSettings: {
+            acknowledgementSettings: {
+              acknowledgementControlNumberLowerBound: 1
+              acknowledgementControlNumberUpperBound: 999999999
+              batchFunctionalAcknowledgements: true
+              batchImplementationAcknowledgements: false
+              batchTechnicalAcknowledgements: true
+              needFunctionalAcknowledgement: false
+              needImplementationAcknowledgement: false
+              needLoopForValidMessages: false
+              needTechnicalAcknowledgement: false
+              rolloverAcknowledgementControlNumber: true
+              sendSynchronousAcknowledgement: false
+            }
+            envelopeSettings: {
+              controlStandardsId: 85
+              controlVersionNumber: '00401'
+              enableDefaultGroupHeaders: true
+              groupControlNumberLowerBound: 1
+              groupControlNumberUpperBound: 999999999
+              groupHeaderAgencyCode: 'T'
+              groupHeaderDateFormat: 'CCYYMMDD'
+              groupHeaderTimeFormat: 'HHMM'
+              groupHeaderVersion: '00401'
+              interchangeControlNumberLowerBound: 1
+              interchangeControlNumberUpperBound: 999999999
+              overwriteExistingTransactionSetControlNumber: true
+              receiverApplicationId: 'RECEIVER'
+              rolloverGroupControlNumber: true
+              rolloverInterchangeControlNumber: true
+              rolloverTransactionSetControlNumber: true
+              senderApplicationId: 'SENDER'
+              transactionSetControlNumberLowerBound: 1
+              transactionSetControlNumberUpperBound: 999999999
+              usageIndicator: 'Test'
+              useControlStandardsIdAsRepetitionCharacter: false
+            }
+            framingSettings: {
+              characterSet: 'UTF8'
+              componentSeparator: 58
+              dataElementSeparator: 42
+              replaceCharacter: 36
+              replaceSeparatorsInPayload: false
+              segmentTerminator: 126
+              segmentTerminatorSuffix: 'None'
+            }
+            messageFilter: {
+              messageFilterType: 'Include'
+            }
+            processingSettings: {
+              convertImpliedDecimal: true
+              createEmptyXmlTagsForTrailingSeparators: true
+              maskSecurityInfo: true
+              preserveInterchange: true
+              suspendInterchangeOnError: true
+              useDotAsDecimalSeparator: true
+            }
+            schemaReferences: [
+              {
+                messageId: '850'
+                schemaName: 'schema1'
+                schemaVersion: '00401'
+              }
+            ]
+            securitySettings: {
+              authorizationQualifier: '00'
+              securityQualifier: '00'
+            }
+            validationSettings: {
+              allowLeadingAndTrailingSpacesAndZeroes: false
+              checkDuplicateGroupControlNumber: false
+              checkDuplicateInterchangeControlNumber: false
+              checkDuplicateTransactionSetControlNumber: false
+              interchangeControlNumberValidityDays: 30
+              trailingSeparatorPolicy: 'NotAllowed'
+              trimLeadingAndTrailingSpacesAndZeroes: true
+              validateCharacterSet: true
+              validateEDITypes: true
+              validateXSDTypes: false
+            }
+          }
+          receiverBusinessIdentity: {
+            qualifier: 'ZZ'
+            value: '0987654321'
+          }
+          senderBusinessIdentity: {
+            qualifier: 'ZZ'
+            value: '1234567890'
+          }
+        }
+        sendAgreement: {
+          protocolSettings: {
+            acknowledgementSettings: {
+              acknowledgementControlNumberLowerBound: 1
+              acknowledgementControlNumberUpperBound: 999999999
+              batchFunctionalAcknowledgements: true
+              batchImplementationAcknowledgements: false
+              batchTechnicalAcknowledgements: true
+              needFunctionalAcknowledgement: false
+              needImplementationAcknowledgement: false
+              needLoopForValidMessages: false
+              needTechnicalAcknowledgement: false
+              rolloverAcknowledgementControlNumber: true
+              sendSynchronousAcknowledgement: false
+            }
+            envelopeSettings: {
+              controlStandardsId: 85
+              controlVersionNumber: '00401'
+              enableDefaultGroupHeaders: true
+              groupControlNumberLowerBound: 1
+              groupControlNumberUpperBound: 999999999
+              groupHeaderAgencyCode: 'T'
+              groupHeaderDateFormat: 'CCYYMMDD'
+              groupHeaderTimeFormat: 'HHMM'
+              groupHeaderVersion: '00401'
+              interchangeControlNumberLowerBound: 1
+              interchangeControlNumberUpperBound: 999999999
+              overwriteExistingTransactionSetControlNumber: true
+              receiverApplicationId: 'RECEIVER'
+              rolloverGroupControlNumber: true
+              rolloverInterchangeControlNumber: true
+              rolloverTransactionSetControlNumber: true
+              senderApplicationId: 'SENDER'
+              transactionSetControlNumberLowerBound: 1
+              transactionSetControlNumberUpperBound: 999999999
+              usageIndicator: 'Test'
+              useControlStandardsIdAsRepetitionCharacter: false
+            }
+            framingSettings: {
+              characterSet: 'UTF8'
+              componentSeparator: 58
+              dataElementSeparator: 42
+              replaceCharacter: 36
+              replaceSeparatorsInPayload: false
+              segmentTerminator: 126
+              segmentTerminatorSuffix: 'None'
+            }
+            messageFilter: {
+              messageFilterType: 'Include'
+            }
+            processingSettings: {
+              convertImpliedDecimal: true
+              createEmptyXmlTagsForTrailingSeparators: true
+              maskSecurityInfo: true
+              preserveInterchange: true
+              suspendInterchangeOnError: true
+              useDotAsDecimalSeparator: true
+            }
+            schemaReferences: [
+              {
+                messageId: '850'
+                schemaName: 'schema1'
+                schemaVersion: '00401'
+              }
+            ]
+            securitySettings: {
+              authorizationQualifier: '00'
+              securityQualifier: '00'
+            }
+            validationSettings: {
+              allowLeadingAndTrailingSpacesAndZeroes: false
+              checkDuplicateGroupControlNumber: false
+              checkDuplicateInterchangeControlNumber: false
+              checkDuplicateTransactionSetControlNumber: false
+              interchangeControlNumberValidityDays: 30
+              trailingSeparatorPolicy: 'NotAllowed'
+              trimLeadingAndTrailingSpacesAndZeroes: true
+              validateCharacterSet: true
+              validateEDITypes: true
+              validateXSDTypes: false
+            }
+          }
+          receiverBusinessIdentity: {
+            qualifier: 'ZZ'
+            value: '1234567890'
+          }
+          senderBusinessIdentity: {
+            qualifier: 'ZZ'
+            value: '0987654321'
+          }
+        }
+      }
+    }
+    guestIdentity: {
+      qualifier: 'ZZ'
+      value: '1234567890'
+    }
+    guestPartner: 'partner1'
+    hostIdentity: {
+      qualifier: 'ZZ'
+      value: '0987654321'
+    }
+    hostPartner: 'partner2'
+    metadata: {
+      key1: 'value1'
+      key2: 'value2'
+    }
+    name: 'agreement1'
+    tags: {
+      tag1: 'value1'
+      tag2: 'value2'
+    }
+  }
+]
 param assemblies = [
   {
     assemblyName: 'name1'
@@ -789,6 +1422,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`agreements`](#parameter-agreements) | array | All agreements to create. |
 | [`assemblies`](#parameter-assemblies) | array | All assemblies to create. |
 | [`certificates`](#parameter-certificates) | array | All certificates to create. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
@@ -809,6 +1443,154 @@ Name of the integration account to create.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `agreements`
+
+All agreements to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`agreementType`](#parameter-agreementsagreementtype) | string | The agreement type. |
+| [`content`](#parameter-agreementscontent) | object | The agreement content settings. |
+| [`guestIdentity`](#parameter-agreementsguestidentity) | object | The guest identity for the agreement. |
+| [`guestPartner`](#parameter-agreementsguestpartner) | string | The guest partner name for the agreement. |
+| [`hostIdentity`](#parameter-agreementshostidentity) | object | The host identity for the agreement. |
+| [`hostPartner`](#parameter-agreementshostpartner) | string | The host partner name for the agreement. |
+| [`name`](#parameter-agreementsname) | string | The name of the agreement resource. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-agreementslocation) | string | Resource location. |
+| [`metadata`](#parameter-agreementsmetadata) | object | The agreement metadata. |
+| [`tags`](#parameter-agreementstags) | object | Resource tags. |
+
+### Parameter: `agreements.agreementType`
+
+The agreement type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AS2'
+    'Edifact'
+    'NotSpecified'
+    'X12'
+  ]
+  ```
+
+### Parameter: `agreements.content`
+
+The agreement content settings.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `agreements.guestIdentity`
+
+The guest identity for the agreement.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`qualifier`](#parameter-agreementsguestidentityqualifier) | string | The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32. |
+| [`value`](#parameter-agreementsguestidentityvalue) | string | The user defined business identity value. |
+
+### Parameter: `agreements.guestIdentity.qualifier`
+
+The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agreements.guestIdentity.value`
+
+The user defined business identity value.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agreements.guestPartner`
+
+The guest partner name for the agreement.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agreements.hostIdentity`
+
+The host identity for the agreement.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`qualifier`](#parameter-agreementshostidentityqualifier) | string | The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32. |
+| [`value`](#parameter-agreementshostidentityvalue) | string | The user defined business identity value. |
+
+### Parameter: `agreements.hostIdentity.qualifier`
+
+The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agreements.hostIdentity.value`
+
+The user defined business identity value.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agreements.hostPartner`
+
+The host partner name for the agreement.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agreements.name`
+
+The name of the agreement resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agreements.location`
+
+Resource location.
+
+- Required: No
+- Type: string
+
+### Parameter: `agreements.metadata`
+
+The agreement metadata.
+
+- Required: No
+- Type: object
+
+### Parameter: `agreements.tags`
+
+Resource tags.
+
+- Required: No
+- Type: object
 
 ### Parameter: `assemblies`
 

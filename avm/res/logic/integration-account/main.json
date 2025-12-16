@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "17600710988766800470"
+      "templateHash": "16409693263308119481"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -288,6 +288,83 @@
         "description": "The type for an integration account assembly."
       }
     },
+    "integrationAccountAgreementType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the agreement resource."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource location."
+          }
+        },
+        "agreementType": {
+          "type": "string",
+          "allowedValues": [
+            "AS2",
+            "Edifact",
+            "NotSpecified",
+            "X12"
+          ],
+          "metadata": {
+            "description": "Required. The agreement type."
+          }
+        },
+        "guestIdentity": {
+          "$ref": "#/definitions/businessIdentityType",
+          "metadata": {
+            "description": "Required. The guest identity for the agreement."
+          }
+        },
+        "guestPartner": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The guest partner name for the agreement."
+          }
+        },
+        "hostIdentity": {
+          "$ref": "#/definitions/businessIdentityType",
+          "metadata": {
+            "description": "Required. The host identity for the agreement."
+          }
+        },
+        "hostPartner": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The host partner name for the agreement."
+          }
+        },
+        "content": {
+          "type": "object",
+          "metadata": {
+            "description": "Required. The agreement content settings."
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The agreement metadata."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource tags."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for an integration account agreement."
+      }
+    },
     "_1.keyVaultReferenceType": {
       "type": "object",
       "properties": {
@@ -417,6 +494,29 @@
         "description": "The type for a B2B partner content.",
         "__bicep_imported_from!": {
           "sourceTemplate": "partner/main.bicep"
+        }
+      }
+    },
+    "businessIdentityType": {
+      "type": "object",
+      "properties": {
+        "qualifier": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32."
+          }
+        },
+        "value": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The user defined business identity value."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a business identity.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "agreement/main.bicep"
         }
       }
     },
@@ -767,6 +867,16 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. All certificates to create."
+      }
+    },
+    "agreements": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/integrationAccountAgreementType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. All agreements to create."
       }
     },
     "state": {
@@ -1925,6 +2035,224 @@
       },
       "dependsOn": [
         "integrationAccount"
+      ]
+    },
+    "integrationAccount_agreements": {
+      "copy": {
+        "name": "integrationAccount_agreements",
+        "count": "[length(coalesce(parameters('agreements'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-integrationAccount-Agreement-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('agreements'), createArray())[copyIndex()].name]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "integrationAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "agreementType": {
+            "value": "[coalesce(parameters('agreements'), createArray())[copyIndex()].agreementType]"
+          },
+          "guestIdentity": {
+            "value": "[coalesce(parameters('agreements'), createArray())[copyIndex()].guestIdentity]"
+          },
+          "guestPartner": {
+            "value": "[coalesce(parameters('agreements'), createArray())[copyIndex()].guestPartner]"
+          },
+          "hostIdentity": {
+            "value": "[coalesce(parameters('agreements'), createArray())[copyIndex()].hostIdentity]"
+          },
+          "hostPartner": {
+            "value": "[coalesce(parameters('agreements'), createArray())[copyIndex()].hostPartner]"
+          },
+          "content": {
+            "value": "[coalesce(parameters('agreements'), createArray())[copyIndex()].content]"
+          },
+          "metadata": {
+            "value": "[tryGet(coalesce(parameters('agreements'), createArray())[copyIndex()], 'metadata')]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(coalesce(parameters('agreements'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.39.26.7824",
+              "templateHash": "4028595586405226812"
+            },
+            "name": "Integration Account Agreements",
+            "description": "This module deploys an Integration Account Agreement."
+          },
+          "definitions": {
+            "businessIdentityType": {
+              "type": "object",
+              "properties": {
+                "qualifier": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32."
+                  }
+                },
+                "value": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The user defined business identity value."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a business identity."
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The Name of the agreement resource."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Resource location."
+              }
+            },
+            "integrationAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent integration account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "agreementType": {
+              "type": "string",
+              "allowedValues": [
+                "AS2",
+                "Edifact",
+                "NotSpecified",
+                "X12"
+              ],
+              "metadata": {
+                "description": "Required. The agreement type."
+              }
+            },
+            "guestIdentity": {
+              "$ref": "#/definitions/businessIdentityType",
+              "metadata": {
+                "description": "Required. The business identity of the guest partner."
+              }
+            },
+            "guestPartner": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The integration account partner that is set as guest partner for this agreement."
+              }
+            },
+            "hostIdentity": {
+              "$ref": "#/definitions/businessIdentityType",
+              "metadata": {
+                "description": "Required. The business identity of the host partner."
+              }
+            },
+            "hostPartner": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The integration account partner that is set as host partner for this agreement."
+              }
+            },
+            "content": {
+              "type": "object",
+              "metadata": {
+                "description": "Required. The agreement content."
+              }
+            },
+            "metadata": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The agreement metadata."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Logic/integrationAccounts/agreements@2019-05-01#properties/tags"
+                },
+                "description": "Optional. Resource tags."
+              },
+              "nullable": true
+            }
+          },
+          "resources": {
+            "integrationAccount": {
+              "existing": true,
+              "type": "Microsoft.Logic/integrationAccounts",
+              "apiVersion": "2019-05-01",
+              "name": "[parameters('integrationAccountName')]"
+            },
+            "agreement": {
+              "type": "Microsoft.Logic/integrationAccounts/agreements",
+              "apiVersion": "2019-05-01",
+              "name": "[format('{0}/{1}', parameters('integrationAccountName'), parameters('name'))]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "agreementType": "[parameters('agreementType')]",
+                "content": "[parameters('content')]",
+                "guestIdentity": "[parameters('guestIdentity')]",
+                "guestPartner": "[parameters('guestPartner')]",
+                "hostIdentity": "[parameters('hostIdentity')]",
+                "hostPartner": "[parameters('hostPartner')]",
+                "metadata": "[parameters('metadata')]"
+              },
+              "tags": "[parameters('tags')]"
+            }
+          },
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the integration account agreement."
+              },
+              "value": "[resourceId('Microsoft.Logic/integrationAccounts/agreements', parameters('integrationAccountName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the integration account agreement."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the integration account agreement was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "integrationAccount",
+        "integrationAccount_partners"
       ]
     }
   },

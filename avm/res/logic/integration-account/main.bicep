@@ -34,6 +34,9 @@ param assemblies integrationAccountAssemblyType[]?
 @description('Optional. All certificates to create.')
 param certificates integrationAccountCertificateType[]?
 
+@description('Optional. All agreements to create.')
+param agreements integrationAccountAgreementType[]?
+
 @description('Optional. The state. - Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended.')
 @allowed([
   'Completed'
@@ -292,6 +295,28 @@ module integrationAccount_certificates 'certificate/main.bicep' = [
   }
 ]
 
+module integrationAccount_agreements 'agreement/main.bicep' = [
+  for (agreement, index) in (agreements ?? []): {
+    name: '${uniqueString(deployment().name, location)}-integrationAccount-Agreement-${index}'
+    params: {
+      name: agreement.name
+      location: location
+      integrationAccountName: integrationAccount.name
+      agreementType: agreement.agreementType
+      guestIdentity: agreement.guestIdentity
+      guestPartner: agreement.guestPartner
+      hostIdentity: agreement.hostIdentity
+      hostPartner: agreement.hostPartner
+      content: agreement.content
+      metadata: agreement.?metadata
+      tags: agreement.?tags ?? tags
+    }
+    dependsOn: [
+      integrationAccount_partners
+    ]
+  }
+]
+
 resource integrationAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: roleAssignment.?name ?? guid(
@@ -445,6 +470,40 @@ type integrationAccountAssemblyType = {
   contentType: string?
 
   @description('Optional. The assembly metadata.')
+  metadata: object?
+
+  @description('Optional. Resource tags.')
+  tags: object?
+}
+
+import { businessIdentityType } from 'agreement/main.bicep'
+@description('The type for an integration account agreement.')
+type integrationAccountAgreementType = {
+  @description('Required. The name of the agreement resource.')
+  name: string
+
+  @description('Optional. Resource location.')
+  location: string?
+
+  @description('Required. The agreement type.')
+  agreementType: ('AS2' | 'Edifact' | 'NotSpecified' | 'X12')
+
+  @description('Required. The guest identity for the agreement.')
+  guestIdentity: businessIdentityType
+
+  @description('Required. The guest partner name for the agreement.')
+  guestPartner: string
+
+  @description('Required. The host identity for the agreement.')
+  hostIdentity: businessIdentityType
+
+  @description('Required. The host partner name for the agreement.')
+  hostPartner: string
+
+  @description('Required. The agreement content settings.')
+  content: object
+
+  @description('Optional. The agreement metadata.')
   metadata: object?
 
   @description('Optional. Resource tags.')

@@ -192,6 +192,216 @@ module testDeployment '../../../main.bicep' = [
           content: assemblyContent
         }
       ]
+      agreements: [
+        {
+          name: 'agreement1'
+          agreementType: 'X12'
+          guestPartner: 'partner1'
+          hostPartner: 'partner2'
+          guestIdentity: {
+            qualifier: 'ZZ'
+            value: '1234567890'
+          }
+          hostIdentity: {
+            qualifier: 'ZZ'
+            value: '0987654321'
+          }
+          content: {
+            x12: {
+              receiveAgreement: {
+                protocolSettings: {
+                  acknowledgementSettings: {
+                    acknowledgementControlNumberLowerBound: 1
+                    acknowledgementControlNumberUpperBound: 999999999
+                    batchFunctionalAcknowledgements: true
+                    batchImplementationAcknowledgements: false
+                    batchTechnicalAcknowledgements: true
+                    needFunctionalAcknowledgement: false
+                    needImplementationAcknowledgement: false
+                    needLoopForValidMessages: false
+                    needTechnicalAcknowledgement: false
+                    rolloverAcknowledgementControlNumber: true
+                    sendSynchronousAcknowledgement: false
+                  }
+                  envelopeSettings: {
+                    controlStandardsId: 85
+                    controlVersionNumber: '00401'
+                    enableDefaultGroupHeaders: true
+                    groupControlNumberLowerBound: 1
+                    groupControlNumberUpperBound: 999999999
+                    groupHeaderAgencyCode: 'T'
+                    groupHeaderDateFormat: 'CCYYMMDD'
+                    groupHeaderTimeFormat: 'HHMM'
+                    groupHeaderVersion: '00401'
+                    interchangeControlNumberLowerBound: 1
+                    interchangeControlNumberUpperBound: 999999999
+                    overwriteExistingTransactionSetControlNumber: true
+                    receiverApplicationId: 'RECEIVER'
+                    rolloverGroupControlNumber: true
+                    rolloverInterchangeControlNumber: true
+                    rolloverTransactionSetControlNumber: true
+                    senderApplicationId: 'SENDER'
+                    transactionSetControlNumberLowerBound: 1
+                    transactionSetControlNumberUpperBound: 999999999
+                    usageIndicator: 'Test'
+                    useControlStandardsIdAsRepetitionCharacter: false
+                  }
+                  framingSettings: {
+                    characterSet: 'UTF8'
+                    componentSeparator: 58
+                    dataElementSeparator: 42
+                    replaceCharacter: 36
+                    replaceSeparatorsInPayload: false
+                    segmentTerminator: 126
+                    segmentTerminatorSuffix: 'None'
+                  }
+                  messageFilter: {
+                    messageFilterType: 'Include'
+                  }
+                  processingSettings: {
+                    convertImpliedDecimal: true
+                    createEmptyXmlTagsForTrailingSeparators: true
+                    maskSecurityInfo: true
+                    preserveInterchange: true
+                    suspendInterchangeOnError: true
+                    useDotAsDecimalSeparator: true
+                  }
+                  schemaReferences: [
+                    {
+                      messageId: '850'
+                      schemaName: 'schema1'
+                      schemaVersion: '00401'
+                    }
+                  ]
+                  securitySettings: {
+                    authorizationQualifier: '00'
+                    securityQualifier: '00'
+                  }
+                  validationSettings: {
+                    allowLeadingAndTrailingSpacesAndZeroes: false
+                    checkDuplicateGroupControlNumber: false
+                    checkDuplicateInterchangeControlNumber: false
+                    checkDuplicateTransactionSetControlNumber: false
+                    interchangeControlNumberValidityDays: 30
+                    trailingSeparatorPolicy: 'NotAllowed'
+                    trimLeadingAndTrailingSpacesAndZeroes: true
+                    validateCharacterSet: true
+                    validateEDITypes: true
+                    validateXSDTypes: false
+                  }
+                }
+                receiverBusinessIdentity: {
+                  qualifier: 'ZZ'
+                  value: '0987654321'
+                }
+                senderBusinessIdentity: {
+                  qualifier: 'ZZ'
+                  value: '1234567890'
+                }
+              }
+              sendAgreement: {
+                protocolSettings: {
+                  acknowledgementSettings: {
+                    acknowledgementControlNumberLowerBound: 1
+                    acknowledgementControlNumberUpperBound: 999999999
+                    batchFunctionalAcknowledgements: true
+                    batchImplementationAcknowledgements: false
+                    batchTechnicalAcknowledgements: true
+                    needFunctionalAcknowledgement: false
+                    needImplementationAcknowledgement: false
+                    needLoopForValidMessages: false
+                    needTechnicalAcknowledgement: false
+                    rolloverAcknowledgementControlNumber: true
+                    sendSynchronousAcknowledgement: false
+                  }
+                  envelopeSettings: {
+                    controlStandardsId: 85
+                    controlVersionNumber: '00401'
+                    enableDefaultGroupHeaders: true
+                    groupControlNumberLowerBound: 1
+                    groupControlNumberUpperBound: 999999999
+                    groupHeaderAgencyCode: 'T'
+                    groupHeaderDateFormat: 'CCYYMMDD'
+                    groupHeaderTimeFormat: 'HHMM'
+                    groupHeaderVersion: '00401'
+                    interchangeControlNumberLowerBound: 1
+                    interchangeControlNumberUpperBound: 999999999
+                    overwriteExistingTransactionSetControlNumber: true
+                    receiverApplicationId: 'RECEIVER'
+                    rolloverGroupControlNumber: true
+                    rolloverInterchangeControlNumber: true
+                    rolloverTransactionSetControlNumber: true
+                    senderApplicationId: 'SENDER'
+                    transactionSetControlNumberLowerBound: 1
+                    transactionSetControlNumberUpperBound: 999999999
+                    usageIndicator: 'Test'
+                    useControlStandardsIdAsRepetitionCharacter: false
+                  }
+                  framingSettings: {
+                    characterSet: 'UTF8'
+                    componentSeparator: 58
+                    dataElementSeparator: 42
+                    replaceCharacter: 36
+                    replaceSeparatorsInPayload: false
+                    segmentTerminator: 126
+                    segmentTerminatorSuffix: 'None'
+                  }
+                  messageFilter: {
+                    messageFilterType: 'Include'
+                  }
+                  processingSettings: {
+                    convertImpliedDecimal: true
+                    createEmptyXmlTagsForTrailingSeparators: true
+                    maskSecurityInfo: true
+                    preserveInterchange: true
+                    suspendInterchangeOnError: true
+                    useDotAsDecimalSeparator: true
+                  }
+                  schemaReferences: [
+                    {
+                      messageId: '850'
+                      schemaName: 'schema1'
+                      schemaVersion: '00401'
+                    }
+                  ]
+                  securitySettings: {
+                    authorizationQualifier: '00'
+                    securityQualifier: '00'
+                  }
+                  validationSettings: {
+                    allowLeadingAndTrailingSpacesAndZeroes: false
+                    checkDuplicateGroupControlNumber: false
+                    checkDuplicateInterchangeControlNumber: false
+                    checkDuplicateTransactionSetControlNumber: false
+                    interchangeControlNumberValidityDays: 30
+                    trailingSeparatorPolicy: 'NotAllowed'
+                    trimLeadingAndTrailingSpacesAndZeroes: true
+                    validateCharacterSet: true
+                    validateEDITypes: true
+                    validateXSDTypes: false
+                  }
+                }
+                receiverBusinessIdentity: {
+                  qualifier: 'ZZ'
+                  value: '1234567890'
+                }
+                senderBusinessIdentity: {
+                  qualifier: 'ZZ'
+                  value: '0987654321'
+                }
+              }
+            }
+          }
+          metadata: {
+            key1: 'value1'
+            key2: 'value2'
+          }
+          tags: {
+            tag1: 'value1'
+            tag2: 'value2'
+          }
+        }
+      ]
       diagnosticSettings: [
         {
           name: 'customSetting'
