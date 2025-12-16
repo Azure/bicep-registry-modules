@@ -27,9 +27,10 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.ServiceNetworking/trafficControllers` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicenetworking_trafficcontrollers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/2023-11-01/trafficControllers)</li></ul> |
-| `Microsoft.ServiceNetworking/trafficControllers/associations` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicenetworking_trafficcontrollers_associations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/2023-11-01/trafficControllers/associations)</li></ul> |
-| `Microsoft.ServiceNetworking/trafficControllers/frontends` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicenetworking_trafficcontrollers_frontends.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/2023-11-01/trafficControllers/frontends)</li></ul> |
+| `Microsoft.ServiceNetworking/trafficControllers` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicenetworking_trafficcontrollers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/2025-01-01/trafficControllers)</li></ul> |
+| `Microsoft.ServiceNetworking/trafficControllers/associations` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicenetworking_trafficcontrollers_associations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/2025-01-01/trafficControllers/associations)</li></ul> |
+| `Microsoft.ServiceNetworking/trafficControllers/frontends` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicenetworking_trafficcontrollers_frontends.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/2025-01-01/trafficControllers/frontends)</li></ul> |
+| `Microsoft.ServiceNetworking/trafficControllers/securityPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicenetworking_trafficcontrollers_securitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceNetworking/2025-01-01/trafficControllers/securityPolicies)</li></ul> |
 
 ## Usage examples
 
@@ -177,6 +178,12 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    securityPolicies: [
+      {
+        name: '<name>'
+        wafPolicyResourceId: '<wafPolicyResourceId>'
+      }
+    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -267,6 +274,14 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
         }
       ]
     },
+    "securityPolicies": {
+      "value": [
+        {
+          "name": "<name>",
+          "wafPolicyResourceId": "<wafPolicyResourceId>"
+        }
+      ]
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -341,6 +356,12 @@ param roleAssignments = [
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param securityPolicies = [
+  {
+    name: '<name>'
+    wafPolicyResourceId: '<wafPolicyResourceId>'
   }
 ]
 param tags = {
@@ -526,6 +547,7 @@ param tags = {
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings for all Resources in the solution. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`securityPolicies`](#parameter-securitypolicies) | array | List of Application Gateway for Containers security policies. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 
 ### Parameter: `name`
@@ -892,6 +914,34 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `securityPolicies`
+
+List of Application Gateway for Containers security policies.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-securitypoliciesname) | string | The name of the Application Gateway for Containers security policy. |
+| [`wafPolicyResourceId`](#parameter-securitypolicieswafpolicyresourceid) | string | The resource ID of the WAF Policy to associate with the security policy. |
+
+### Parameter: `securityPolicies.name`
+
+The name of the Application Gateway for Containers security policy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `securityPolicies.wafPolicyResourceId`
+
+The resource ID of the WAF Policy to associate with the security policy.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `tags`
 
 Resource tags.
@@ -910,6 +960,7 @@ Resource tags.
 | `name` | string | The name of the Application Gateway for Containers. |
 | `resourceGroupName` | string | The name of the resource group the resource was created in. |
 | `resourceId` | string | The resource ID of the Application Gateway for Containers. |
+| `securityPolicies` | array | The security policies of the Application Gateway for Containers. |
 
 ## Cross-referenced modules
 
@@ -917,9 +968,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.3.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Notes
 
