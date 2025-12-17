@@ -319,12 +319,12 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
     defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
       ? defaultIdentity!.name
       : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
-    keyVaultKeyUri: 'https://dep-avmx-kv-dddaenc-01.vault.azure.net/keys/keyEncryptionKey'
-    // keyVaultKeyUri: !empty(customerManagedKey)
-    //   ? !isHSMManagedCMK
-    //       ? '${cMKKeyVault::cMKKey!.properties.keyUri}'
-    //       : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}'
-    //   : null
+    // keyVaultKeyUri: 'https://dep-avmx-kv-dddaenc-01.vault.azure.net/keys/keyEncryptionKey'
+    keyVaultKeyUri: !empty(customerManagedKey)
+      ? !isHSMManagedCMK
+          ? '${cMKKeyVault::cMKKey!.properties.keyUri}'
+          : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}'
+      : null
     cors: cors
     enablePartitionMerge: enablePartitionMerge
     enablePerRegionPerPartitionAutoscale: enablePerRegionPerPartitionAutoscale
