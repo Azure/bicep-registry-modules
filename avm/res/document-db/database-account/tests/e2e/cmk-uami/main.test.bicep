@@ -20,7 +20,7 @@ param namePrefix string = '#_namePrefix_#'
 // The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'eastus2'
-var keyVaultName = 'dep-${namePrefix}-kv-${serviceShort}'
+var keyVaultName = 'dep-${namePrefix}-kv-${serviceShort}-01'
 
 // ============ //
 // Dependencies //
@@ -71,33 +71,33 @@ module initDeployment '../../../main.bicep' = {
   }
 }
 
-module testDeployment '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-cmk'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    zoneRedundant: false
-    customerManagedKey: {
-      keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-    }
-    defaultIdentity: {
-      name: 'UserAssignedIdentity'
-      resourceId: nestedDependencies.outputs.managedIdentityResourceId
-    }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
-    // Explicit 1
-    networkRestrictions: {
-      publicNetworkAccess: 'Enabled'
-    }
-    // Explicit 2
-    disableKeyBasedMetadataWriteAccess: false
-  }
-  dependsOn: [
-    initDeployment
-  ]
-}
+// module testDeployment '../../../main.bicep' = {
+//   scope: resourceGroup
+//   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-cmk'
+//   params: {
+//     name: '${namePrefix}${serviceShort}001'
+//     zoneRedundant: false
+//     customerManagedKey: {
+//       keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
+//       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+//     }
+//     defaultIdentity: {
+//       name: 'UserAssignedIdentity'
+//       resourceId: nestedDependencies.outputs.managedIdentityResourceId
+//     }
+//     managedIdentities: {
+//       userAssignedResourceIds: [
+//         nestedDependencies.outputs.managedIdentityResourceId
+//       ]
+//     }
+//     // Explicit 1
+//     networkRestrictions: {
+//       publicNetworkAccess: 'Enabled'
+//     }
+//     // Explicit 2
+//     disableKeyBasedMetadataWriteAccess: false
+//   }
+//   dependsOn: [
+//     initDeployment
+//   ]
+// }
