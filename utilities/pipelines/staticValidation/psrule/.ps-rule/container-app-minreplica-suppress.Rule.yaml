@@ -11,4 +11,3 @@ spec:
     source: Template
     withinPath:
       - avm/ptn/sa/multi-agent-custom-automation-engine/
-      - avm/ptn/sa/conversation-knowledge-mining/
