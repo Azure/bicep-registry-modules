@@ -47,12 +47,40 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-module initDeployment '../../../main.bicep' = {
+// module initDeployment '../../../main.bicep' = {
+//   scope: resourceGroup
+//   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-base'
+//   params: {
+//     name: '${namePrefix}${serviceShort}001'
+//     zoneRedundant: false
+//     managedIdentities: {
+//       userAssignedResourceIds: [
+//         nestedDependencies.outputs.managedIdentityResourceId
+//       ]
+//     }
+//     defaultIdentity: {
+//       name: 'UserAssignedIdentity'
+//       resourceId: nestedDependencies.outputs.managedIdentityResourceId
+//     }
+//     // Explicit 1
+//     networkRestrictions: {
+//       publicNetworkAccess: 'Enabled'
+//     }
+//     // Explicit 2
+//     disableKeyBasedMetadataWriteAccess: false
+//   }
+// }
+
+module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-base'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-cmk'
   params: {
     name: '${namePrefix}${serviceShort}001'
     zoneRedundant: false
+    customerManagedKey: {
+      keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
+      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+    }
     managedIdentities: {
       userAssignedResourceIds: [
         nestedDependencies.outputs.managedIdentityResourceId
@@ -69,35 +97,7 @@ module initDeployment '../../../main.bicep' = {
     // Explicit 2
     disableKeyBasedMetadataWriteAccess: false
   }
+  // dependsOn: [
+  //   initDeployment
+  // ]
 }
-
-// module testDeployment '../../../main.bicep' = {
-//   scope: resourceGroup
-//   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-cmk'
-//   params: {
-//     name: '${namePrefix}${serviceShort}001'
-//     zoneRedundant: false
-//     customerManagedKey: {
-//       keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-//       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-//     }
-//     defaultIdentity: {
-//       name: 'UserAssignedIdentity'
-//       resourceId: nestedDependencies.outputs.managedIdentityResourceId
-//     }
-//     managedIdentities: {
-//       userAssignedResourceIds: [
-//         nestedDependencies.outputs.managedIdentityResourceId
-//       ]
-//     }
-//     // Explicit 1
-//     networkRestrictions: {
-//       publicNetworkAccess: 'Enabled'
-//     }
-//     // Explicit 2
-//     disableKeyBasedMetadataWriteAccess: false
-//   }
-//   dependsOn: [
-//     initDeployment
-//   ]
-// }
