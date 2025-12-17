@@ -7,13 +7,6 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. Enum to configure regional restrictions on identity assignment, as necessary. Allowed values: "None", "Regional".')
-@allowed([
-  'None'
-  'Regional'
-])
-param isolationScope string?
-
 @description('Optional. The federated identity credentials list to indicate which token from the external IdP should be trusted by your application. Federated identity credentials are supported on applications only. A maximum of 20 federated identity credentials can be added per application object.')
 param federatedIdentityCredentials federatedIdentityCredentialType[]?
 
@@ -30,6 +23,13 @@ param tags resourceInput<'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+@description('Optional. Enum to configure regional restrictions on identity assignment, as necessary. Allowed values: "None", "Regional".')
+@allowed([
+  'None'
+  'Regional'
+])
+param isolationScope string?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -88,7 +88,7 @@ resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@
   location: location
   tags: tags
   properties: {
-    isolationScope: !empty(isolationScope ?? '') ? isolationScope : null
+    isolationScope: isolationScope
   }
 }
 
