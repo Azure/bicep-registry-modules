@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "14934179640159732505"
+      "templateHash": "4782086184094554594"
     },
     "name": "API Management Service Products",
     "description": "This module deploys an API Management Service Product."
@@ -451,10 +451,10 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'name'), 'policy')]"
+            "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'name')]"
           },
           "format": {
-            "value": "[coalesce(tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'format'), 'xml')]"
+            "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'format')]"
           },
           "value": {
             "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].value]"
@@ -594,6 +594,9 @@
     },
     "policyResourceIds": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "metadata": {
         "description": "The Resources IDs of the API management service product policies."
       },
