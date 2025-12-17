@@ -17,8 +17,8 @@ param name string
   'Cool'
   'TransactionOptimized'
 ])
-@description('Conditional. Access tier for specific share. Required if the Storage Account kind is set to FileStorage (should be set to "Premium"). GpV2 account can choose between TransactionOptimized (default), Hot, and Cool.')
-param accessTier string = 'TransactionOptimized'
+@description('Conditional. Access tier for specific share. Required if the Storage Account kind is set to FileStorage (should be set to "Premium"). GpV2 account can choose between TransactionOptimized, Hot, and Cool.')
+param accessTier string?
 
 @description('Optional. The maximum size of the share, in gigabytes. Must be greater than 0, and less than or equal to 5120 (5TB). For Large File Shares, the maximum size is 102400 (100TB).')
 param shareQuota int = 5120
@@ -117,15 +117,15 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
   name: storageAccountName
 
-  resource fileService 'fileServices@2024-01-01' existing = {
+  resource fileService 'fileServices@2025-01-01' existing = {
     name: fileServicesName
   }
 }
 
-resource fileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2024-01-01' = {
+resource fileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2025-01-01' = {
   name: name
   parent: storageAccount::fileService
   properties: {
