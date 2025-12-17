@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "320213569350748336"
+      "version": "0.39.26.7824",
+      "templateHash": "10264966361145289420"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Content Processing solution accelerator](https://github.com/microsoft/content-processing-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/content-processing-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -336,8 +336,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "18421381145511279077"
+              "version": "0.39.26.7824",
+              "templateHash": "2779842231546071291"
             }
           },
           "definitions": {
@@ -21430,8 +21430,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "2793197383642316382"
+              "version": "0.39.26.7824",
+              "templateHash": "11438993289824448790"
             }
           },
           "parameters": {
@@ -22022,8 +22022,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "5661355526507463097"
+              "version": "0.39.26.7824",
+              "templateHash": "5367106659064154619"
             },
             "name": "Container Registry Module"
           },
@@ -33479,8 +33479,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "1861155514965779587"
+              "version": "0.39.26.7824",
+              "templateHash": "14778776168178406345"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service."
@@ -34712,8 +34712,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "1527359859714316268"
+                      "version": "0.39.26.7824",
+                      "templateHash": "15543669199012061397"
                     }
                   },
                   "definitions": {
@@ -36417,8 +36417,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "7420599935384266971"
+                              "version": "0.39.26.7824",
+                              "templateHash": "4291957610087788581"
                             }
                           },
                           "definitions": {
@@ -36567,8 +36567,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "14813510581117442781"
+                              "version": "0.39.26.7824",
+                              "templateHash": "11111367661509803427"
                             }
                           },
                           "definitions": {

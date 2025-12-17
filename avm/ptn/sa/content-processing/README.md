@@ -145,7 +145,7 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the Content Processing Solution Accelerator using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/enterprise-grade]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sandbox]
 
 
 <details>
@@ -240,7 +240,7 @@ param solutionName = 'scpmin'
 
 This instance deploys the Content Processing Solution Accelerator
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sandbox]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
 
 <details>
