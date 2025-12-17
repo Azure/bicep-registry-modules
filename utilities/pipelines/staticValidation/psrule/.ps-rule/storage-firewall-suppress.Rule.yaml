@@ -7,10 +7,7 @@ metadata:
 spec:
   rule:
     - Azure.Storage.Firewall
-    - Azure.ContainerApp.MinReplicas
   if:
     source: Template
     withinPath:
       - avm/ptn/virtual-machine-images/azure-image-builder/ # Storage Accounts the AIB is supposed to access may not have active firewalls. Ref: https://github.com/danielsollondon/azvmimagebuilder/issues/31
-      - avm/ptn/sa/multi-agent-custom-automation-engine/
-      - avm/ptn/sa/conversation-knowledge-mining/

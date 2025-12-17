@@ -1,0 +1,13 @@
+
+# Synopsis: Suppress Rules for Resources that cannot activate firewalls
+apiVersion: github.com/microsoft/PSRule/v1
+kind: SuppressionGroup
+metadata:
+  name: "SuppressMinReplica"
+spec:
+  rule:
+    - Azure.ContainerApp.MinReplicas
+  if:
+    source: Template
+    withinPath:
+      - avm/ptn/sa/conversation-knowledge-mining/
