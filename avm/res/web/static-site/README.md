@@ -2,6 +2,14 @@
 
 This module deploys a Static Web App.
 
+You can reference the module as follows:
+```bicep
+module staticSite 'br/public:avm/res/web/static-site:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -50,6 +58,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -57,7 +67,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module staticSite 'br/public:avm/res/web/static-site:<version>' = {
-  name: 'staticSiteDeployment'
   params: {
     name: 'wssmin001'
   }
@@ -103,6 +112,8 @@ param name = 'wssmin001'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -110,7 +121,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module staticSite 'br/public:avm/res/web/static-site:<version>' = {
-  name: 'staticSiteDeployment'
   params: {
     // Required parameters
     name: 'wssmax001'
@@ -429,6 +439,8 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -436,7 +448,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module staticSite 'br/public:avm/res/web/static-site:<version>' = {
-  name: 'staticSiteDeployment'
   params: {
     // Required parameters
     name: 'wsswaf001'

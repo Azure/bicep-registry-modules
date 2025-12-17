@@ -31,7 +31,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}-${namePrefix}'
   params: {
     principalId: testUserObjectId
-    roleDefinitionIdOrName: subscriptionResourceId(
+    roleDefinitionIdOrName: managementGroupResourceId(
       'Microsoft.Authorization/roleDefinitions',
       'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
     )

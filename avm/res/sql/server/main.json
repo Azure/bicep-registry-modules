@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "7739782694136635317"
+      "version": "0.39.26.7824",
+      "templateHash": "3703020670659148713"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -2248,7 +2248,7 @@
         "administrators": "[union(createObject('administratorType', 'ActiveDirectory'), coalesce(parameters('administrators'), createObject()))]",
         "federatedClientId": "[parameters('federatedClientId')]",
         "isIPv6Enabled": "[parameters('isIPv6Enabled')]",
-        "keyId": "[if(not(equals(parameters('customerManagedKey'), null())), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(not(variables('isHSMManagedCMK')), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), format('https://{0}.managedhsm.azure.net/keys/{1}/{2}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName, parameters('customerManagedKey').keyVersion)), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUri, format('https://{0}.managedhsm.azure.net/keys/{1}}}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName)), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUriWithVersion, fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.')))), null())]",
+        "keyId": "[if(not(equals(parameters('customerManagedKey'), null())), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(not(variables('isHSMManagedCMK')), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), format('https://{0}.managedhsm.azure.net/keys/{1}/{2}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName, parameters('customerManagedKey').keyVersion)), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUri, format('https://{0}.managedhsm.azure.net/keys/{1}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName)), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUriWithVersion, fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.')))), null())]",
         "version": "12.0",
         "minimalTlsVersion": "[parameters('minimalTlsVersion')]",
         "primaryUserAssignedIdentityId": "[parameters('primaryUserAssignedIdentityResourceId')]",
@@ -2457,8 +2457,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "5732137952298524321"
+              "version": "0.39.26.7824",
+              "templateHash": "187514141222505895"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database."
@@ -3213,7 +3213,7 @@
                 "collation": "[parameters('collation')]",
                 "createMode": "[parameters('createMode')]",
                 "elasticPoolId": "[parameters('elasticPoolResourceId')]",
-                "encryptionProtector": "[if(not(empty(parameters('customerManagedKey'))), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(not(variables('isHSMManagedCMK')), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), format('https://{0}.managedhsm.azure.net/keys/{1}/{2}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName, parameters('customerManagedKey').keyVersion)), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUri, format('https://{0}.managedhsm.azure.net/keys/{1}}}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName)), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUriWithVersion, fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.')))), null())]",
+                "encryptionProtector": "[if(not(empty(parameters('customerManagedKey'))), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(not(variables('isHSMManagedCMK')), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), format('https://{0}.managedhsm.azure.net/keys/{1}/{2}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName, parameters('customerManagedKey').keyVersion)), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUri, format('https://{0}.managedhsm.azure.net/keys/{1}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName)), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUriWithVersion, fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.')))), null())]",
                 "encryptionProtectorAutoRotation": "[tryGet(parameters('customerManagedKey'), 'autoRotationEnabled')]",
                 "federatedClientId": "[parameters('federatedClientId')]",
                 "freeLimitExhaustionBehavior": "[parameters('freeLimitExhaustionBehavior')]",
@@ -3330,8 +3330,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "10103867898404317854"
+                      "version": "0.39.26.7824",
+                      "templateHash": "13123232463186414429"
                     },
                     "name": "Azure SQL Server Database Short Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
@@ -3441,8 +3441,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "16692622848109346051"
+                      "version": "0.39.26.7824",
+                      "templateHash": "15206682237606175692"
                     },
                     "name": "SQL Server Database Long Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -3651,8 +3651,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "15772225373478955825"
+              "version": "0.39.26.7824",
+              "templateHash": "1733423336361222327"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool."
@@ -4820,8 +4820,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "17767623128817859681"
+              "version": "0.39.26.7824",
+              "templateHash": "3841110712005924932"
             },
             "name": "Azure SQL Server Firewall Rule",
             "description": "This module deploys an Azure SQL Server Firewall Rule."
@@ -4927,8 +4927,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "12386388980192147605"
+              "version": "0.39.26.7824",
+              "templateHash": "8492844379308217081"
             },
             "name": "Azure SQL Server Virtual Network Rules",
             "description": "This module deploys an Azure SQL Server Virtual Network Rule."
@@ -5049,8 +5049,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "15605655343619342835"
+              "version": "0.39.26.7824",
+              "templateHash": "5279550187376165695"
             },
             "name": "Azure SQL Server Security Alert Policies",
             "description": "This module deploys an Azure SQL Server Security Alert Policy."
@@ -5224,8 +5224,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "5274232111762504132"
+              "version": "0.39.26.7824",
+              "templateHash": "10092162295370595463"
             },
             "name": "Azure SQL Server Vulnerability Assessments",
             "description": "This module deploys an Azure SQL Server Vulnerability Assessment."
@@ -5352,8 +5352,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "8928547598938386225"
+                      "version": "0.39.26.7824",
+                      "templateHash": "2185022990623310445"
                     }
                   },
                   "parameters": {
@@ -5448,8 +5448,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "15215416822418967895"
+              "version": "0.39.26.7824",
+              "templateHash": "7398069928503308425"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key."
@@ -5557,7 +5557,7 @@
           "serverKeyType": {
             "value": "AzureKeyVault"
           },
-          "uri": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(not(variables('isHSMManagedCMK')), createObject('value', format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion)), createObject('value', format('https://{0}.managedhsm.azure.net/keys/{1}/{2}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName, parameters('customerManagedKey').keyVersion))), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), if(not(variables('isHSMManagedCMK')), createObject('value', reference('cMKKeyVault::cMKKey').keyUri), createObject('value', format('https://{0}.managedhsm.azure.net/keys/{1}}}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName))), if(not(variables('isHSMManagedCMK')), createObject('value', reference('cMKKeyVault::cMKKey').keyUriWithVersion), createObject('value', fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.')))))]"
+          "uri": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(not(variables('isHSMManagedCMK')), createObject('value', format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion)), createObject('value', format('https://{0}.managedhsm.azure.net/keys/{1}/{2}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName, parameters('customerManagedKey').keyVersion))), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), if(not(variables('isHSMManagedCMK')), createObject('value', reference('cMKKeyVault::cMKKey').keyUri), createObject('value', format('https://{0}.managedhsm.azure.net/keys/{1}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName))), if(not(variables('isHSMManagedCMK')), createObject('value', reference('cMKKeyVault::cMKKey').keyUriWithVersion), createObject('value', fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.')))))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -5566,8 +5566,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "15215416822418967895"
+              "version": "0.39.26.7824",
+              "templateHash": "7398069928503308425"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key."
@@ -5686,8 +5686,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "13422538027677192725"
+              "version": "0.39.26.7824",
+              "templateHash": "443247778605325916"
             },
             "name": "Azure SQL Server Encryption Protector",
             "description": "This module deploys an Azure SQL Server Encryption Protector."
@@ -5818,8 +5818,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "15400870683652077444"
+              "version": "0.39.26.7824",
+              "templateHash": "16723116616667912196"
             },
             "name": "Azure SQL Server Audit Settings",
             "description": "This module deploys an Azure SQL Server Audit Settings."
@@ -5961,8 +5961,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "4511471796721644467"
+                      "version": "0.39.26.7824",
+                      "templateHash": "623303847189521629"
                     }
                   },
                   "parameters": {
@@ -6049,8 +6049,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "9566016312965733378"
+              "version": "0.39.26.7824",
+              "templateHash": "13065384800228530324"
             }
           },
           "definitions": {
@@ -6215,8 +6215,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "14308529021358575952"
+              "version": "0.39.26.7824",
+              "templateHash": "11585026026133533203"
             },
             "name": "Azure SQL Server failover group",
             "description": "This module deploys Azure SQL Server failover group."

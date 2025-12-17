@@ -2,6 +2,14 @@
 
 This module deploys Deployment Scripts.
 
+You can reference the module as follows:
+```bicep
+module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -39,6 +47,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with an Azure CLI script.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cli]
+
 
 <details>
 
@@ -46,7 +56,6 @@ This instance deploys the module with an Azure CLI script.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: 'deploymentScriptDeployment'
   params: {
     // Required parameters
     kind: 'AzureCLI'
@@ -165,6 +174,8 @@ param storageAccountResourceId = '<storageAccountResourceId>'
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -172,7 +183,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: 'deploymentScriptDeployment'
   params: {
     // Required parameters
     kind: 'AzurePowerShell'
@@ -261,6 +271,8 @@ param scriptContent = 'Write-Host \'AVM Deployment Script test!\''
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -268,7 +280,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: 'deploymentScriptDeployment'
   params: {
     // Required parameters
     kind: 'AzureCLI'
@@ -511,6 +522,8 @@ param timeout = 'PT1H'
 
 This instance deploys the module with access to a private endpoint.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/private-endpoint]
+
 
 <details>
 
@@ -518,7 +531,6 @@ This instance deploys the module with access to a private endpoint.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: 'deploymentScriptDeployment'
   params: {
     // Required parameters
     kind: 'AzureCLI'
@@ -643,6 +655,8 @@ param timeout = 'PT1H'
 
 This instance deploys the module with access to a private network.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/private-network]
+
 
 <details>
 
@@ -650,7 +664,6 @@ This instance deploys the module with access to a private network.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: 'deploymentScriptDeployment'
   params: {
     // Required parameters
     kind: 'AzureCLI'
@@ -775,6 +788,8 @@ param timeout = 'PT1H'
 
 This instance deploys the module with an Azure PowerShell script.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ps]
+
 
 <details>
 
@@ -782,7 +797,6 @@ This instance deploys the module with an Azure PowerShell script.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: 'deploymentScriptDeployment'
   params: {
     // Required parameters
     kind: 'AzurePowerShell'
@@ -886,6 +900,8 @@ param storageAccountResourceId = '<storageAccountResourceId>'
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -893,7 +909,6 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: 'deploymentScriptDeployment'
   params: {
     // Required parameters
     kind: 'AzureCLI'

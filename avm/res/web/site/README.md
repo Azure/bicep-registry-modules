@@ -2,6 +2,14 @@
 
 This module deploys a Web or Function App.
 
+You can reference the module as follows:
+```bicep
+module site 'br/public:avm/res/web/site:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -56,6 +64,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module as Function App with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/functionApp.defaults]
+
 
 <details>
 
@@ -63,7 +73,6 @@ This instance deploys the module as Function App with the minimum set of require
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'functionapp'
@@ -122,6 +131,8 @@ param serverFarmResourceId = '<serverFarmResourceId>'
 
 This instance deploys the module as Function App with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/functionApp.max]
+
 
 <details>
 
@@ -129,7 +140,6 @@ This instance deploys the module as Function App with most of its features enabl
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'functionapp'
@@ -726,6 +736,8 @@ param siteConfig = {
 
 This instance deploys the module as Linux Container Web App with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/linuxContainerWebApp.defaults]
+
 
 <details>
 
@@ -733,7 +745,6 @@ This instance deploys the module as Linux Container Web App with the minimum set
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app,linux,container'
@@ -830,6 +841,8 @@ param siteConfig = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -837,7 +850,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app'
@@ -1027,6 +1039,8 @@ param siteConfig = {
 
 This instance deploys the module demonstrating access restrictions for Front Door and Application Gateway scenarios.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/webApp.accessRestrictions]
+
 
 <details>
 
@@ -1034,7 +1048,6 @@ This instance deploys the module demonstrating access restrictions for Front Doo
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app'
@@ -1258,6 +1271,8 @@ param siteConfig = {
 
 This instance deploys the module as Web App with azurestorageaccounts configuration demonstrating the correct structure for mounting Azure Storage Accounts.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/webApp.azurestorageaccounts]
+
 
 <details>
 
@@ -1265,7 +1280,6 @@ This instance deploys the module as Web App with azurestorageaccounts configurat
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app'
@@ -1451,6 +1465,8 @@ param location = '<location>'
 
 This instance deploys the module as Web App with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/webApp.defaults]
+
 
 <details>
 
@@ -1458,7 +1474,6 @@ This instance deploys the module as Web App with the minimum set of required par
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app'
@@ -1517,6 +1532,8 @@ param serverFarmResourceId = '<serverFarmResourceId>'
 
 This instance deploys the module as Web App with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/webApp.max]
+
 
 <details>
 
@@ -1524,7 +1541,6 @@ This instance deploys the module as Web App with most of its features enabled.
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app'
@@ -2422,6 +2438,8 @@ param slots = [
 
 This instance deploys the module as a Linux Web App with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/webAppLinux.defaults]
+
 
 <details>
 
@@ -2429,7 +2447,6 @@ This instance deploys the module as a Linux Web App with the minimum set of requ
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app,linux'
@@ -2488,6 +2505,8 @@ param serverFarmResourceId = '<serverFarmResourceId>'
 
 This instance deploys the module asa Linux Web App with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/webAppLinux.max]
+
 
 <details>
 
@@ -2495,7 +2514,6 @@ This instance deploys the module asa Linux Web App with most of its features ena
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app,linux'
@@ -3211,6 +3229,8 @@ param slots = [
 
 This instance deploys the module as a Windows based Container Web App with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/winContainerWebApp.defaults]
+
 
 <details>
 
@@ -3218,7 +3238,6 @@ This instance deploys the module as a Windows based Container Web App with the m
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app,container,windows'

@@ -5,7 +5,7 @@ param lock lockType?
 @description('Required. Name of the Data Collection Rule to assign the role(s) to.')
 param dataCollectionRuleName string
 
-resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' existing = {
+resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2024-03-11' existing = {
   name: dataCollectionRuleName
 }
 

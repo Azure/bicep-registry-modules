@@ -2,6 +2,14 @@
 
 This module deploys a NAT Gateway.
 
+You can reference the module as follows:
+```bicep
+module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -40,6 +48,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -47,7 +57,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: 'natGatewayDeployment'
   params: {
     // Required parameters
     availabilityZone: 1
@@ -101,6 +110,8 @@ param name = 'nngmin001'
 
 This instance deploys the module using an existing Public IP address.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/existingPip]
+
 
 <details>
 
@@ -108,7 +119,6 @@ This instance deploys the module using an existing Public IP address.
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: 'natGatewayDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -170,6 +180,8 @@ param publicIpResourceIds = '<publicIpResourceIds>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -177,7 +189,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: 'natGatewayDeployment'
   params: {
     // Required parameters
     availabilityZone: 1
@@ -457,6 +468,8 @@ param tags = {
 
 This example shows how you can provide a Public IP Prefix to the module, while also generating one in the module.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/prefixCombined]
+
 
 <details>
 
@@ -464,7 +477,6 @@ This example shows how you can provide a Public IP Prefix to the module, while a
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: 'natGatewayDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -550,6 +562,8 @@ param publicIPPrefixes = [
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -557,7 +571,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: 'natGatewayDeployment'
   params: {
     // Required parameters
     availabilityZone: 1

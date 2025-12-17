@@ -1,11 +1,19 @@
 # Event Hub Namespaces `[Microsoft.EventHub/namespaces]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
+>
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
 This module deploys an Event Hub Namespace.
+
+You can reference the module as follows:
+```bicep
+module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
@@ -53,6 +61,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
 > **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
 ```text
 The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
@@ -64,10 +74,9 @@ The test is skipped because running the HSM scenario requires a persistent Manag
 
 ```bicep
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     // Required parameters
-    name: 'ehnhsm001'
+    name: 'ehnhsmu001'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -99,7 +108,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ehnhsm001"
+      "value": "ehnhsmu001"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -137,7 +146,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
 using 'br/public:avm/res/event-hub/namespace:<version>'
 
 // Required parameters
-param name = 'ehnhsm001'
+param name = 'ehnhsmu001'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'
@@ -160,6 +169,8 @@ param skuName = 'Premium'
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
+
 
 <details>
 
@@ -167,7 +178,6 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'ehnenc001'
@@ -260,6 +270,8 @@ param skuName = 'Premium'
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -267,7 +279,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     name: 'ehnmin001'
   }
@@ -313,6 +324,8 @@ param name = 'ehnmin001'
 
 This instance deploys the module saving all its secrets in a key vault.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/kvSecrets]
+
 
 <details>
 
@@ -320,7 +333,6 @@ This instance deploys the module saving all its secrets in a key vault.
 
 ```bicep
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'ehnkv001'
@@ -395,6 +407,8 @@ param secretsExportConfiguration = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -402,7 +416,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'ehnmax001'
@@ -1041,6 +1054,8 @@ param zoneRedundant = true
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1048,7 +1063,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'ehnwaf001'
