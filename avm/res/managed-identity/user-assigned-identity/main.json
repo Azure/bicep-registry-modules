@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "13202996540630777457"
+      "templateHash": "14339656899326360086"
     },
     "name": "User Assigned Identities",
     "description": "This module deploys a User Assigned Identity."
@@ -175,17 +175,6 @@
         "description": "Optional. Location for all resources."
       }
     },
-    "isolationScope": {
-      "type": "string",
-      "nullable": true,
-      "allowedValues": [
-        "None",
-        "Regional"
-      ],
-      "metadata": {
-        "description": "Optional. Enum to configure regional restrictions on identity assignment, as necessary. Allowed values: \"None\", \"Regional\"."
-      }
-    },
     "federatedIdentityCredentials": {
       "type": "array",
       "items": {
@@ -228,6 +217,17 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "isolationScope": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "None",
+        "Regional"
+      ],
+      "metadata": {
+        "description": "Optional. Enum to configure regional restrictions on identity assignment, as necessary. Allowed values: \"None\", \"Regional\"."
       }
     }
   },
@@ -277,7 +277,7 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "isolationScope": "[if(not(empty(coalesce(parameters('isolationScope'), ''))), parameters('isolationScope'), null())]"
+        "isolationScope": "[parameters('isolationScope')]"
       }
     },
     "userAssignedIdentity_lock": {
