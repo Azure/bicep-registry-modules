@@ -77,21 +77,25 @@ resource backend 'Microsoft.ApiManagement/service/backends@2024-05-01' = {
     description: description
     title: title
     type: type
-    ...(type == 'Pool' ? { pool: pool } : {})
-    ...(type == 'Single' ? { resourceId: resourceId } : {})
-    ...(type == 'Single' ? { credentials: credentials } : {})
-    ...(type == 'Single' ? { proxy: proxy } : {})
-    ...(type == 'Single' ? { circuitBreaker: circuitBreaker } : {})
-    ...(type == 'Single' ? { protocol: protocol } : {})
     ...(type == 'Single'
       ? {
+          resourceId: resourceId
+          credentials: credentials
+          proxy: proxy
+          circuitBreaker: circuitBreaker
+          protocol: protocol
           properties: {
             serviceFabricCluster: serviceFabricCluster
           }
+          tls: tls ?? {
+            validateCertificateChain: true
+            validateCertificateName: true
+          }
+          url: url
         }
-      : {})
-    ...(type == 'Single' ? { tls: tls ?? { validateCertificateChain: true, validateCertificateName: true } } : {})
-    ...(type == 'Single' ? { url: url } : {})
+      : {
+          pool: pool
+        })
   }
 }
 

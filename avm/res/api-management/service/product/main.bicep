@@ -110,8 +110,8 @@ module product_policies 'policy/main.bicep' = [
     params: {
       apiManagementServiceName: apiManagementServiceName
       productName: name
-      name: policy.?name ?? 'policy'
-      format: policy.?format ?? 'xml'
+      name: policy.?name
+      format: policy.?format
       value: policy.value
     }
   }
@@ -133,7 +133,7 @@ output apiResourceIds array = [for index in range(0, length(apis ?? [])): produc
 output groupResourceIds array = [for index in range(0, length(groups ?? [])): product_groups[index].outputs.resourceId]
 
 @sys.description('The Resources IDs of the API management service product policies.')
-output policyResourceIds array = [
+output policyResourceIds string[] = [
   for index in range(0, length(policies ?? [])): product_policies[index].outputs.resourceId
 ]
 

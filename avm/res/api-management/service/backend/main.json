@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "12627850535593055984"
+      "templateHash": "11473395075944648701"
     },
     "name": "API Management Service Backends",
     "description": "This module deploys an API Management Service Backend."
@@ -169,7 +169,7 @@
       "type": "Microsoft.ApiManagement/service/backends",
       "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
-      "properties": "[shallowMerge(createArray(createObject('description', parameters('description'), 'title', parameters('title'), 'type', parameters('type')), if(equals(parameters('type'), 'Pool'), createObject('pool', parameters('pool')), createObject()), if(equals(parameters('type'), 'Single'), createObject('resourceId', parameters('resourceId')), createObject()), if(equals(parameters('type'), 'Single'), createObject('credentials', parameters('credentials')), createObject()), if(equals(parameters('type'), 'Single'), createObject('proxy', parameters('proxy')), createObject()), if(equals(parameters('type'), 'Single'), createObject('circuitBreaker', parameters('circuitBreaker')), createObject()), if(equals(parameters('type'), 'Single'), createObject('protocol', parameters('protocol')), createObject()), if(equals(parameters('type'), 'Single'), createObject('properties', createObject('serviceFabricCluster', parameters('serviceFabricCluster'))), createObject()), if(equals(parameters('type'), 'Single'), createObject('tls', coalesce(parameters('tls'), createObject('validateCertificateChain', true(), 'validateCertificateName', true()))), createObject()), if(equals(parameters('type'), 'Single'), createObject('url', parameters('url')), createObject())))]"
+      "properties": "[shallowMerge(createArray(createObject('description', parameters('description'), 'title', parameters('title'), 'type', parameters('type')), if(equals(parameters('type'), 'Single'), createObject('resourceId', parameters('resourceId'), 'credentials', parameters('credentials'), 'proxy', parameters('proxy'), 'circuitBreaker', parameters('circuitBreaker'), 'protocol', parameters('protocol'), 'properties', createObject('serviceFabricCluster', parameters('serviceFabricCluster')), 'tls', coalesce(parameters('tls'), createObject('validateCertificateChain', true(), 'validateCertificateName', true())), 'url', parameters('url')), createObject('pool', parameters('pool')))))]"
     }
   },
   "outputs": {
