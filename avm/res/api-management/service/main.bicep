@@ -151,10 +151,6 @@ param policies policyType[]?
 @description('Optional. Portal settings.')
 param portalsettings portalSettingsType[]?
 
-// import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-// @sys.description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note: Private endpoints are supported with Developer, Basic, Standard, Premium, BasicV2, and StandardV2 SKUs only. Consumption SKU does not support private endpoints. \'virtualNetworkType\' must be set to \'None\' (or left empty which defaults to \'None\') on initial deployment of Private Endpoints.')
-// param privateEndpoints privateEndpointSingleServiceType[]?
-
 @description('Optional. Products.')
 param products productType[]?
 
