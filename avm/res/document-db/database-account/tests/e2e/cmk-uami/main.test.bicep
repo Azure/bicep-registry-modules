@@ -58,6 +58,10 @@ module initDeployment '../../../main.bicep' = {
         nestedDependencies.outputs.managedIdentityResourceId
       ]
     }
+    defaultIdentity: {
+      name: 'UserAssignedIdentity'
+      resourceId: nestedDependencies.outputs.managedIdentityResourceId
+    }
     // Explicit 1
     networkRestrictions: {
       publicNetworkAccess: 'Enabled'
@@ -81,11 +85,11 @@ module testDeployment '../../../main.bicep' = {
       name: 'UserAssignedIdentity'
       resourceId: nestedDependencies.outputs.managedIdentityResourceId
     }
-    // managedIdentities: {
-    //   userAssignedResourceIds: [
-    //     nestedDependencies.outputs.managedIdentityResourceId
-    //   ]
-    // }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        nestedDependencies.outputs.managedIdentityResourceId
+      ]
+    }
     // Explicit 1
     networkRestrictions: {
       publicNetworkAccess: 'Enabled'
