@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "13034089720101824034"
+      "version": "0.39.26.7824",
+      "templateHash": "18305769593571585264"
     },
     "name": "Modernize Your Code Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Modernize-your-code-solution-accelerator](https://github.com/microsoft/Modernize-your-code-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Modernize-your-code-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -4647,8 +4647,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "15778862436122585167"
+              "version": "0.39.26.7824",
+              "templateHash": "5390661730325111128"
             }
           },
           "definitions": {
@@ -21940,8 +21940,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "3181665311878795587"
+              "version": "0.39.26.7824",
+              "templateHash": "6560025362786680052"
             },
             "name": "AI Services and Project Module",
             "description": "This module creates an AI Services resource and an AI Foundry project within it. It supports private networking, OpenAI deployments, and role assignments."
@@ -23281,8 +23281,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "220127085938241886"
+                      "version": "0.39.26.7824",
+                      "templateHash": "14429112311677855622"
                     }
                   },
                   "definitions": {
@@ -24996,8 +24996,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "14205022069293553223"
+                              "version": "0.39.26.7824",
+                              "templateHash": "12797226417049698978"
                             }
                           },
                           "definitions": {
@@ -25150,8 +25150,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "12063034585175087716"
+                              "version": "0.39.26.7824",
+                              "templateHash": "422299638943108486"
                             }
                           },
                           "definitions": {
@@ -25368,8 +25368,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "220127085938241886"
+                      "version": "0.39.26.7824",
+                      "templateHash": "14429112311677855622"
                     }
                   },
                   "definitions": {
@@ -27083,8 +27083,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "14205022069293553223"
+                              "version": "0.39.26.7824",
+                              "templateHash": "12797226417049698978"
                             }
                           },
                           "definitions": {
@@ -27237,8 +27237,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "12063034585175087716"
+                              "version": "0.39.26.7824",
+                              "templateHash": "422299638943108486"
                             }
                           },
                           "definitions": {
@@ -27539,8 +27539,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "8737165639797720533"
+              "version": "0.39.26.7824",
+              "templateHash": "12528046637724897516"
             }
           },
           "definitions": {
@@ -35784,8 +35784,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "12175012219825004021"
+              "version": "0.39.26.7824",
+              "templateHash": "16975514596162206658"
             }
           },
           "definitions": {
@@ -39647,8 +39647,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "5400870525857167617"
+              "version": "0.39.26.7824",
+              "templateHash": "6879410075649987426"
             }
           },
           "definitions": {

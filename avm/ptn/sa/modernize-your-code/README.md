@@ -307,6 +307,8 @@ param location = '<location>'
 
 This instance deploys the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-Your-Code-Solution-Accelerator) using parameters that deploy the enterprise-grade configuration.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -314,7 +316,6 @@ This instance deploys the [Modernize Your Code Solution Accelerator](https://git
 
 ```bicep
 module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = {
-  name: 'modernizeYourCodeDeployment'
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
