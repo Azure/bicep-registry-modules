@@ -2,6 +2,14 @@
 
 This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways.
 
+You can reference the module as follows:
+```bicep
+module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -22,12 +30,12 @@ This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure
 | `Microsoft.Network/expressRouteGateways` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_expressroutegateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/expressRouteGateways)</li></ul> |
 | `Microsoft.Network/p2svpnGateways` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_p2svpngateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/p2svpnGateways)</li></ul> |
 | `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
-| `Microsoft.Network/virtualHubs` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/virtualHubs)</li></ul> |
-| `Microsoft.Network/virtualHubs/hubRouteTables` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubroutetables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/virtualHubs/hubRouteTables)</li></ul> |
-| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubvirtualnetworkconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/virtualHubs/hubVirtualNetworkConnections)</li></ul> |
-| `Microsoft.Network/virtualHubs/routingIntent` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_routingintent.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/virtualHubs/routingIntent)</li></ul> |
+| `Microsoft.Network/virtualHubs` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs)</li></ul> |
+| `Microsoft.Network/virtualHubs/hubRouteTables` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubroutetables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs/hubRouteTables)</li></ul> |
+| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubvirtualnetworkconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs/hubVirtualNetworkConnections)</li></ul> |
+| `Microsoft.Network/virtualHubs/routingIntent` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_routingintent.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs/routingIntent)</li></ul> |
 | `Microsoft.Network/virtualHubs/routingIntent` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_routingintent.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/virtualHubs/routingIntent)</li></ul> |
-| `Microsoft.Network/virtualWans` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualwans.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/virtualWans)</li></ul> |
+| `Microsoft.Network/virtualWans` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualwans.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualWans)</li></ul> |
 | `Microsoft.Network/vpnGateways` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_vpngateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways)</li></ul> |
 | `Microsoft.Network/vpnGateways/natRules` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_vpngateways_natrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways/natRules)</li></ul> |
 | `Microsoft.Network/vpnGateways/vpnConnections` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_vpngateways_vpnconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways/vpnConnections)</li></ul> |
@@ -52,6 +60,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -59,7 +69,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
-  name: 'virtualWanDeployment'
   params: {
     // Required parameters
     virtualHubParameters: [
@@ -193,6 +202,8 @@ param tags = {
 
 This instance deploys the module with a large parameter set.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -200,7 +211,6 @@ This instance deploys the module with a large parameter set.
 
 ```bicep
 module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
-  name: 'virtualWanDeployment'
   params: {
     // Required parameters
     virtualHubParameters: [
@@ -532,6 +542,8 @@ param tags = {
 
 This instance deploys a Virtual WAN with multiple Virtual Hubs.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/multiple-hubs]
+
 
 <details>
 
@@ -539,7 +551,6 @@ This instance deploys a Virtual WAN with multiple Virtual Hubs.
 
 ```bicep
 module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
-  name: 'virtualWanDeployment'
   params: {
     // Required parameters
     virtualHubParameters: [
@@ -707,6 +718,8 @@ param virtualWanParameters = {
 
 This instance deploys a Virtual WAN with multiple Secure Hubs utilizing Azure Firewall.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/multiple-secure-hubs]
+
 
 <details>
 
@@ -714,7 +727,6 @@ This instance deploys a Virtual WAN with multiple Secure Hubs utilizing Azure Fi
 
 ```bicep
 module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
-  name: 'virtualWanDeployment'
   params: {
     // Required parameters
     virtualHubParameters: [
@@ -930,6 +942,8 @@ param virtualWanParameters = {
 
 This instance deploys a Virtual WAN with a single Secure Hub itilizing Azure Firewall.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/secure-hub]
+
 
 <details>
 
@@ -937,7 +951,6 @@ This instance deploys a Virtual WAN with a single Secure Hub itilizing Azure Fir
 
 ```bicep
 module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
-  name: 'virtualWanDeployment'
   params: {
     // Required parameters
     virtualHubParameters: [
@@ -1087,6 +1100,8 @@ param virtualWanParameters = {
 
 This instance deploys the module in alignment with the Well-Architected Framework principles.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1094,7 +1109,6 @@ This instance deploys the module in alignment with the Well-Architected Framewor
 
 ```bicep
 module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
-  name: 'virtualWanDeployment'
   params: {
     // Required parameters
     virtualHubParameters: [
@@ -3128,7 +3142,7 @@ Point-to-site VPN server configuration parameters for the Virtual WAN.
 | [`vpnClientIpsecPolicies`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpolicies) | array | List of VPN client IPsec policies. |
 | [`vpnClientRevokedCertificates`](#parameter-virtualwanparametersp2svpnparametersvpnclientrevokedcertificates) | array | List of revoked VPN client certificates. |
 | [`vpnClientRootCertificates`](#parameter-virtualwanparametersp2svpnparametersvpnclientrootcertificates) | array | List of VPN client root certificates. |
-| [`vpnProtocols`](#parameter-virtualwanparametersp2svpnparametersvpnprotocols) | string | Supported VPN protocols. |
+| [`vpnProtocols`](#parameter-virtualwanparametersp2svpnparametersvpnprotocols) | array | Supported VPN protocols. |
 
 ### Parameter: `virtualWanParameters.p2sVpnParameters.createP2sVpnServerConfiguration`
 
@@ -3309,7 +3323,7 @@ List of VPN client root certificates.
 Supported VPN protocols.
 
 - Required: No
-- Type: string
+- Type: array
 - Allowed:
   ```Bicep
   [
