@@ -20,6 +20,9 @@ param apis string[]?
 @sys.description('Optional. Names of Product Groups.')
 param groups string[]?
 
+@sys.description('Optional. Array of Policies to apply to the Service Product.')
+param policies productPolicyType[]?
+
 @sys.description('Required. Product Name.')
 param name string
 
@@ -101,6 +104,19 @@ module product_groups 'group/main.bicep' = [
   }
 ]
 
+module product_policies 'policy/main.bicep' = [
+  for (policy, index) in policies ?? []: {
+    name: '${deployment().name}-Policy-${index}'
+    params: {
+      apiManagementServiceName: apiManagementServiceName
+      productName: name
+      name: policy.?name
+      format: policy.?format
+      value: policy.value
+    }
+  }
+]
+
 @sys.description('The resource ID of the API management service product.')
 output resourceId string = product.id
 
@@ -115,3 +131,25 @@ output apiResourceIds array = [for index in range(0, length(apis ?? [])): produc
 
 @sys.description('The Resources IDs of the API management service product groups.')
 output groupResourceIds array = [for index in range(0, length(groups ?? [])): product_groups[index].outputs.resourceId]
+
+@sys.description('The Resources IDs of the API management service product policies.')
+output policyResourceIds string[] = [
+  for index in range(0, length(policies ?? [])): product_policies[index].outputs.resourceId
+]
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@sys.description('The type of a product policy.')
+type productPolicyType = {
+  @sys.description('Optional. The name of the policy.')
+  name: string?
+
+  @sys.description('Optional. Format of the policyContent.')
+  format: ('rawxml' | 'rawxml-link' | 'xml' | 'xml-link')?
+
+  @sys.description('Required. Contents of the Policy as defined by the format.')
+  value: string
+}

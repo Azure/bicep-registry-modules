@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "4781753017990092454"
+      "version": "0.39.26.7824",
+      "templateHash": "12653943354268019102"
     },
     "name": "API Management Service Loggers",
     "description": "This module deploys an API Management Service Logger."
@@ -62,7 +62,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ApiManagement/service/loggers@2024-05-01#properties/properties/properties/credentials"
         },
-        "description": "Conditional. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub."
+        "description": "Conditional. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub, ignored if loggerType = azureMonitor."
       },
       "nullable": true
     },
@@ -105,13 +105,7 @@
       "type": "Microsoft.ApiManagement/service/loggers",
       "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
-      "properties": {
-        "credentials": "[parameters('credentials')]",
-        "description": "[parameters('description')]",
-        "isBuffered": "[parameters('isBuffered')]",
-        "loggerType": "[parameters('type')]",
-        "resourceId": "[parameters('targetResourceId')]"
-      }
+      "properties": "[shallowMerge(createArray(createObject('description', parameters('description'), 'isBuffered', parameters('isBuffered'), 'loggerType', parameters('type'), 'resourceId', parameters('targetResourceId')), if(not(equals(parameters('type'), 'azureMonitor')), createObject('credentials', parameters('credentials')), createObject())))]"
     }
   },
   "outputs": {
