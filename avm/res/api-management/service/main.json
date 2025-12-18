@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "6855140238061765971"
+      "templateHash": "2127373671901889075"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -475,6 +475,7 @@
                 "Developer",
                 "Isolated",
                 "Premium",
+                "PremiumV2",
                 "Standard",
                 "StandardV2"
               ],
@@ -2429,8 +2430,9 @@
         "Basic",
         "Standard",
         "Premium",
+        "BasicV2",
         "StandardV2",
-        "BasicV2"
+        "PremiumV2"
       ],
       "metadata": {
         "description": "Optional. The pricing tier of this API Management service."
@@ -2447,7 +2449,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and StandardV2 SKUs only."
+        "description": "Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and PremiumV2 SKUs only."
       }
     },
     "tags": {
@@ -2469,7 +2471,7 @@
         "Internal"
       ],
       "metadata": {
-        "description": "Conditional. The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and StandardV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`."
+        "description": "Conditional. The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and PremiumV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`."
       }
     },
     "diagnosticSettings": {

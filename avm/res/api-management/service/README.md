@@ -67,8 +67,9 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-2-using-only-defaults)
 - [Deploying a Developer SKU](#example-3-deploying-a-developer-sku)
 - [Using large parameter set](#example-4-using-large-parameter-set)
-- [Deploying an APIM v2 sku](#example-5-deploying-an-apim-v2-sku)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Deploying an APIM PremiumV2 SKU with a large parameter set](#example-5-deploying-an-apim-premiumv2-sku-with-a-large-parameter-set)
+- [Deploying an APIM BasicV2 SKU with minimal parameters](#example-6-deploying-an-apim-basicv2-sku-with-minimal-parameters)
+- [WAF-aligned](#example-7-waf-aligned)
 
 ### Example 1: _Deploying a Consumption SKU_
 
@@ -1221,11 +1222,11 @@ param virtualNetworkType = 'External'
 </details>
 <p>
 
-### Example 5: _Deploying an APIM v2 sku_
+### Example 5: _Deploying an APIM PremiumV2 SKU with a large parameter set_
 
-This instance deploys the module using a v2 SKU.
+This instance deploys the PremiumV2 SKU with most of its features enabled.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/v2Sku]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/v2max]
 
 
 <details>
@@ -1236,7 +1237,832 @@ You can find the full example and the setup of its dependencies in the deploymen
 module service 'br/public:avm/res/api-management/service:<version>' = {
   params: {
     // Required parameters
-    name: 'apisv2s001'
+    name: '<name>'
+    publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
+    publisherName: 'az-amorg-x-001'
+    // Non-required parameters
+    apiDiagnostics: [
+      {
+        apiName: 'echo-api'
+        loggerName: 'logger'
+        metrics: true
+        name: 'applicationinsights'
+      }
+    ]
+    apis: [
+      {
+        apiVersionSetName: 'echo-version-set'
+        displayName: 'Echo API'
+        name: 'echo-api'
+        path: 'echo'
+        protocols: [
+          'http'
+          'https'
+        ]
+        serviceUrl: 'http://echoapi.cloudapp.net/api'
+      }
+    ]
+    apiVersionSets: [
+      {
+        description: 'echo-version-set'
+        displayName: 'echo-version-set'
+        name: 'echo-version-set'
+        versioningScheme: 'Segment'
+      }
+    ]
+    authorizationServers: [
+      {
+        authorizationEndpoint: '<authorizationEndpoint>'
+        clientId: 'apimclientid'
+        clientRegistrationEndpoint: 'http://localhost'
+        clientSecret: '<clientSecret>'
+        displayName: 'AuthServer1'
+        grantTypes: [
+          'authorizationCode'
+        ]
+        name: 'AuthServer1'
+        tokenEndpoint: '<tokenEndpoint>'
+      }
+    ]
+    availabilityZones: []
+    backends: [
+      {
+        circuitBreaker: {
+          rules: [
+            {
+              acceptRetryAfter: false
+              failureCondition: {
+                count: 1
+                errorReasons: [
+                  'ClientConnectionFailure'
+                  'OperationNotFound'
+                ]
+                interval: 'PT1H'
+                statusCodeRanges: [
+                  {
+                    max: 499
+                    min: 400
+                  }
+                  {
+                    max: 599
+                    min: 500
+                  }
+                ]
+              }
+              name: 'rule1'
+              tripDuration: 'PT1H'
+            }
+          ]
+        }
+        credentials: {
+          authorization: {
+            parameter: 'dXNlcm5hbWU6c2VjcmV0cGFzc3dvcmQ='
+            scheme: 'Basic'
+          }
+          header: {}
+          query: {
+            queryParam1: [
+              'value1'
+            ]
+          }
+        }
+        description: 'Test backend with maximum properties'
+        name: '<name>'
+        proxy: {
+          password: 'proxyPassword'
+          url: 'http://myproxy:8888'
+          username: 'proxyUser'
+        }
+        tls: {
+          validateCertificateChain: false
+          validateCertificateName: false
+        }
+        type: 'Single'
+        url: 'http://echoapi.cloudapp.net/api'
+      }
+      {
+        name: 'backend2'
+        pool: {
+          services: [
+            {
+              id: '<id>'
+            }
+          ]
+        }
+        type: 'Pool'
+      }
+    ]
+    caches: [
+      {
+        connectionString: 'connectionstringtest'
+        name: 'westeurope'
+        useFromLocation: 'westeurope'
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    identityProviders: [
+      {
+        allowedTenants: [
+          'mytenant.onmicrosoft.com'
+        ]
+        authority: '<authority>'
+        clientId: 'apimClientid'
+        clientLibrary: 'MSAL-2'
+        clientSecret: 'apimSlientSecret'
+        name: 'aad'
+        signInTenant: 'mytenant.onmicrosoft.com'
+      }
+    ]
+    location: '<location>'
+    loggers: [
+      {
+        credentials: {
+          instrumentationKey: '<instrumentationKey>'
+        }
+        description: 'Logger to Azure Application Insights'
+        isBuffered: false
+        name: 'logger'
+        targetResourceId: '<targetResourceId>'
+        type: 'applicationInsights'
+      }
+      {
+        isBuffered: true
+        name: 'azuremonitor'
+        type: 'azureMonitor'
+      }
+    ]
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    namedValues: [
+      {
+        displayName: 'apimkey'
+        name: 'apimkey'
+        secret: true
+      }
+    ]
+    policies: [
+      {
+        format: 'xml'
+        value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
+      }
+    ]
+    products: [
+      {
+        apis: [
+          'echo-api'
+        ]
+        approvalRequired: false
+        displayName: 'Starter'
+        groups: [
+          'developers'
+        ]
+        name: 'Starter'
+        policies: [
+          {
+            format: 'xml'
+            value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
+          }
+        ]
+        subscriptionRequired: false
+      }
+    ]
+    publicNetworkAccess: 'Enabled'
+    roleAssignments: [
+      {
+        name: '6432d807-dc34-488e-8b15-9c560f79b111'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    sku: 'PremiumV2'
+    subnetResourceId: '<subnetResourceId>'
+    subscriptions: [
+      {
+        displayName: 'testArmSubscriptionAllApis'
+        name: 'testArmSubscriptionAllApis'
+        scope: '/apis'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    virtualNetworkType: 'External'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "<name>"
+    },
+    "publisherEmail": {
+      "value": "apimgmt-noreply@mail.windowsazure.com"
+    },
+    "publisherName": {
+      "value": "az-amorg-x-001"
+    },
+    // Non-required parameters
+    "apiDiagnostics": {
+      "value": [
+        {
+          "apiName": "echo-api",
+          "loggerName": "logger",
+          "metrics": true,
+          "name": "applicationinsights"
+        }
+      ]
+    },
+    "apis": {
+      "value": [
+        {
+          "apiVersionSetName": "echo-version-set",
+          "displayName": "Echo API",
+          "name": "echo-api",
+          "path": "echo",
+          "protocols": [
+            "http",
+            "https"
+          ],
+          "serviceUrl": "http://echoapi.cloudapp.net/api"
+        }
+      ]
+    },
+    "apiVersionSets": {
+      "value": [
+        {
+          "description": "echo-version-set",
+          "displayName": "echo-version-set",
+          "name": "echo-version-set",
+          "versioningScheme": "Segment"
+        }
+      ]
+    },
+    "authorizationServers": {
+      "value": [
+        {
+          "authorizationEndpoint": "<authorizationEndpoint>",
+          "clientId": "apimclientid",
+          "clientRegistrationEndpoint": "http://localhost",
+          "clientSecret": "<clientSecret>",
+          "displayName": "AuthServer1",
+          "grantTypes": [
+            "authorizationCode"
+          ],
+          "name": "AuthServer1",
+          "tokenEndpoint": "<tokenEndpoint>"
+        }
+      ]
+    },
+    "availabilityZones": {
+      "value": []
+    },
+    "backends": {
+      "value": [
+        {
+          "circuitBreaker": {
+            "rules": [
+              {
+                "acceptRetryAfter": false,
+                "failureCondition": {
+                  "count": 1,
+                  "errorReasons": [
+                    "ClientConnectionFailure",
+                    "OperationNotFound"
+                  ],
+                  "interval": "PT1H",
+                  "statusCodeRanges": [
+                    {
+                      "max": 499,
+                      "min": 400
+                    },
+                    {
+                      "max": 599,
+                      "min": 500
+                    }
+                  ]
+                },
+                "name": "rule1",
+                "tripDuration": "PT1H"
+              }
+            ]
+          },
+          "credentials": {
+            "authorization": {
+              "parameter": "dXNlcm5hbWU6c2VjcmV0cGFzc3dvcmQ=",
+              "scheme": "Basic"
+            },
+            "header": {},
+            "query": {
+              "queryParam1": [
+                "value1"
+              ]
+            }
+          },
+          "description": "Test backend with maximum properties",
+          "name": "<name>",
+          "proxy": {
+            "password": "proxyPassword",
+            "url": "http://myproxy:8888",
+            "username": "proxyUser"
+          },
+          "tls": {
+            "validateCertificateChain": false,
+            "validateCertificateName": false
+          },
+          "type": "Single",
+          "url": "http://echoapi.cloudapp.net/api"
+        },
+        {
+          "name": "backend2",
+          "pool": {
+            "services": [
+              {
+                "id": "<id>"
+              }
+            ]
+          },
+          "type": "Pool"
+        }
+      ]
+    },
+    "caches": {
+      "value": [
+        {
+          "connectionString": "connectionstringtest",
+          "name": "westeurope",
+          "useFromLocation": "westeurope"
+        }
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "identityProviders": {
+      "value": [
+        {
+          "allowedTenants": [
+            "mytenant.onmicrosoft.com"
+          ],
+          "authority": "<authority>",
+          "clientId": "apimClientid",
+          "clientLibrary": "MSAL-2",
+          "clientSecret": "apimSlientSecret",
+          "name": "aad",
+          "signInTenant": "mytenant.onmicrosoft.com"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "loggers": {
+      "value": [
+        {
+          "credentials": {
+            "instrumentationKey": "<instrumentationKey>"
+          },
+          "description": "Logger to Azure Application Insights",
+          "isBuffered": false,
+          "name": "logger",
+          "targetResourceId": "<targetResourceId>",
+          "type": "applicationInsights"
+        },
+        {
+          "isBuffered": true,
+          "name": "azuremonitor",
+          "type": "azureMonitor"
+        }
+      ]
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "namedValues": {
+      "value": [
+        {
+          "displayName": "apimkey",
+          "name": "apimkey",
+          "secret": true
+        }
+      ]
+    },
+    "policies": {
+      "value": [
+        {
+          "format": "xml",
+          "value": "<policies> <inbound> <rate-limit-by-key calls=\"250\" renewal-period=\"60\" counter-key=\"@(context.Request.IpAddress)\" /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>"
+        }
+      ]
+    },
+    "products": {
+      "value": [
+        {
+          "apis": [
+            "echo-api"
+          ],
+          "approvalRequired": false,
+          "displayName": "Starter",
+          "groups": [
+            "developers"
+          ],
+          "name": "Starter",
+          "policies": [
+            {
+              "format": "xml",
+              "value": "<policies> <inbound> <rate-limit-by-key calls=\"250\" renewal-period=\"60\" counter-key=\"@(context.Request.IpAddress)\" /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>"
+            }
+          ],
+          "subscriptionRequired": false
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "6432d807-dc34-488e-8b15-9c560f79b111",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "sku": {
+      "value": "PremiumV2"
+    },
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
+    },
+    "subscriptions": {
+      "value": [
+        {
+          "displayName": "testArmSubscriptionAllApis",
+          "name": "testArmSubscriptionAllApis",
+          "scope": "/apis"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "virtualNetworkType": {
+      "value": "External"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/api-management/service:<version>'
+
+// Required parameters
+param name = '<name>'
+param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
+param publisherName = 'az-amorg-x-001'
+// Non-required parameters
+param apiDiagnostics = [
+  {
+    apiName: 'echo-api'
+    loggerName: 'logger'
+    metrics: true
+    name: 'applicationinsights'
+  }
+]
+param apis = [
+  {
+    apiVersionSetName: 'echo-version-set'
+    displayName: 'Echo API'
+    name: 'echo-api'
+    path: 'echo'
+    protocols: [
+      'http'
+      'https'
+    ]
+    serviceUrl: 'http://echoapi.cloudapp.net/api'
+  }
+]
+param apiVersionSets = [
+  {
+    description: 'echo-version-set'
+    displayName: 'echo-version-set'
+    name: 'echo-version-set'
+    versioningScheme: 'Segment'
+  }
+]
+param authorizationServers = [
+  {
+    authorizationEndpoint: '<authorizationEndpoint>'
+    clientId: 'apimclientid'
+    clientRegistrationEndpoint: 'http://localhost'
+    clientSecret: '<clientSecret>'
+    displayName: 'AuthServer1'
+    grantTypes: [
+      'authorizationCode'
+    ]
+    name: 'AuthServer1'
+    tokenEndpoint: '<tokenEndpoint>'
+  }
+]
+param availabilityZones = []
+param backends = [
+  {
+    circuitBreaker: {
+      rules: [
+        {
+          acceptRetryAfter: false
+          failureCondition: {
+            count: 1
+            errorReasons: [
+              'ClientConnectionFailure'
+              'OperationNotFound'
+            ]
+            interval: 'PT1H'
+            statusCodeRanges: [
+              {
+                max: 499
+                min: 400
+              }
+              {
+                max: 599
+                min: 500
+              }
+            ]
+          }
+          name: 'rule1'
+          tripDuration: 'PT1H'
+        }
+      ]
+    }
+    credentials: {
+      authorization: {
+        parameter: 'dXNlcm5hbWU6c2VjcmV0cGFzc3dvcmQ='
+        scheme: 'Basic'
+      }
+      header: {}
+      query: {
+        queryParam1: [
+          'value1'
+        ]
+      }
+    }
+    description: 'Test backend with maximum properties'
+    name: '<name>'
+    proxy: {
+      password: 'proxyPassword'
+      url: 'http://myproxy:8888'
+      username: 'proxyUser'
+    }
+    tls: {
+      validateCertificateChain: false
+      validateCertificateName: false
+    }
+    type: 'Single'
+    url: 'http://echoapi.cloudapp.net/api'
+  }
+  {
+    name: 'backend2'
+    pool: {
+      services: [
+        {
+          id: '<id>'
+        }
+      ]
+    }
+    type: 'Pool'
+  }
+]
+param caches = [
+  {
+    connectionString: 'connectionstringtest'
+    name: 'westeurope'
+    useFromLocation: 'westeurope'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param identityProviders = [
+  {
+    allowedTenants: [
+      'mytenant.onmicrosoft.com'
+    ]
+    authority: '<authority>'
+    clientId: 'apimClientid'
+    clientLibrary: 'MSAL-2'
+    clientSecret: 'apimSlientSecret'
+    name: 'aad'
+    signInTenant: 'mytenant.onmicrosoft.com'
+  }
+]
+param location = '<location>'
+param loggers = [
+  {
+    credentials: {
+      instrumentationKey: '<instrumentationKey>'
+    }
+    description: 'Logger to Azure Application Insights'
+    isBuffered: false
+    name: 'logger'
+    targetResourceId: '<targetResourceId>'
+    type: 'applicationInsights'
+  }
+  {
+    isBuffered: true
+    name: 'azuremonitor'
+    type: 'azureMonitor'
+  }
+]
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param namedValues = [
+  {
+    displayName: 'apimkey'
+    name: 'apimkey'
+    secret: true
+  }
+]
+param policies = [
+  {
+    format: 'xml'
+    value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
+  }
+]
+param products = [
+  {
+    apis: [
+      'echo-api'
+    ]
+    approvalRequired: false
+    displayName: 'Starter'
+    groups: [
+      'developers'
+    ]
+    name: 'Starter'
+    policies: [
+      {
+        format: 'xml'
+        value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
+      }
+    ]
+    subscriptionRequired: false
+  }
+]
+param publicNetworkAccess = 'Enabled'
+param roleAssignments = [
+  {
+    name: '6432d807-dc34-488e-8b15-9c560f79b111'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param sku = 'PremiumV2'
+param subnetResourceId = '<subnetResourceId>'
+param subscriptions = [
+  {
+    displayName: 'testArmSubscriptionAllApis'
+    name: 'testArmSubscriptionAllApis'
+    scope: '/apis'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param virtualNetworkType = 'External'
+```
+
+</details>
+<p>
+
+### Example 6: _Deploying an APIM BasicV2 SKU with minimal parameters_
+
+This instance deploys the module using a BasicV2 SKU with minimal parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/v2min]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module service 'br/public:avm/res/api-management/service:<version>' = {
+  params: {
+    // Required parameters
+    name: 'apisv2min001'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
@@ -1260,7 +2086,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apisv2s001"
+      "value": "apisv2min001"
     },
     "publisherEmail": {
       "value": "apimgmt-noreply@mail.windowsazure.com"
@@ -1290,7 +2116,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 using 'br/public:avm/res/api-management/service:<version>'
 
 // Required parameters
-param name = 'apisv2s001'
+param name = 'apisv2min001'
 param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 // Non-required parameters
@@ -1301,7 +2127,7 @@ param sku = 'BasicV2'
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -2017,7 +2843,7 @@ param virtualNetworkType = 'None'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`skuCapacity`](#parameter-skucapacity) | int | The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/. |
-| [`virtualNetworkType`](#parameter-virtualnetworktype) | string | The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and StandardV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`. |
+| [`virtualNetworkType`](#parameter-virtualnetworktype) | string | The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and PremiumV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`. |
 
 **Optional parameters**
 
@@ -2057,7 +2883,7 @@ param virtualNetworkType = 'None'
 | [`restore`](#parameter-restore) | bool | Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-sku) | string | The pricing tier of this API Management service. |
-| [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and StandardV2 SKUs only. |
+| [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and PremiumV2 SKUs only. |
 | [`subscriptions`](#parameter-subscriptions) | array | Subscriptions. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
@@ -2092,7 +2918,7 @@ The scale units for this API Management service. Required if using Basic, Standa
 
 ### Parameter: `virtualNetworkType`
 
-The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and StandardV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`.
+The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and PremiumV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`.
 
 - Required: No
 - Type: string
@@ -2173,6 +2999,7 @@ Name of the Sku.
     'Developer'
     'Isolated'
     'Premium'
+    'PremiumV2'
     'Standard'
     'StandardV2'
   ]
@@ -4962,6 +5789,7 @@ The pricing tier of this API Management service.
     'Consumption'
     'Developer'
     'Premium'
+    'PremiumV2'
     'Standard'
     'StandardV2'
   ]
@@ -4969,7 +5797,7 @@ The pricing tier of this API Management service.
 
 ### Parameter: `subnetResourceId`
 
-The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and StandardV2 SKUs only.
+The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and PremiumV2 SKUs only.
 
 - Required: No
 - Type: string
