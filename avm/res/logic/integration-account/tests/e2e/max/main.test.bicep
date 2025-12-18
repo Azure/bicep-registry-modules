@@ -161,11 +161,11 @@ module testDeployment '../../../main.bicep' = [
             businessIdentities: [
               {
                 qualifier: 'ZZ'
-                value: '1234567890'
+                value: '0987654321'
               }
               {
                 qualifier: 'ZZZ'
-                value: '0987654321'
+                value: '1122334455'
               }
             ]
           }
