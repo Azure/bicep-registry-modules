@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/storage/storage-account/CHANGELOG.md).
 
+## 0.31.0
+
+### Changes
+
+- Updated `file-service/share` property `accessTier` to allow for `null`
+- Updated default `file-service/share accessTier` to default to `null` when Storage Account sku is in `PremiumV2` family
+
+### Breaking Changes
+
+- Updated `blob-service/container/immutabilityPolicy` write access flags `allowProtectedAppendWrites` and `allowProtectedAppendWritesAll` to default to `false` instead of `true`
+
 ## 0.30.0
 
 ### Changes
