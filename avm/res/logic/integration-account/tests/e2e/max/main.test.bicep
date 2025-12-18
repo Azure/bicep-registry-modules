@@ -158,7 +158,16 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           b2bPartnerContent: {
-            businessIdentities: []
+            businessIdentities: [
+              {
+                qualifier: 'ZZ'
+                value: '1234567890'
+              }
+              {
+                qualifier: 'ZZZ'
+                value: '0987654321'
+              }
+            ]
           }
           name: 'partner2'
           metadata: {

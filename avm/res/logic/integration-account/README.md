@@ -414,7 +414,16 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
       }
       {
         b2bPartnerContent: {
-          businessIdentities: []
+          businessIdentities: [
+            {
+              qualifier: 'ZZ'
+              value: '1234567890'
+            }
+            {
+              qualifier: 'ZZZ'
+              value: '0987654321'
+            }
+          ]
         }
         metadata: {
           key1: 'value1'
@@ -786,7 +795,16 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         },
         {
           "b2bPartnerContent": {
-            "businessIdentities": []
+            "businessIdentities": [
+              {
+                "qualifier": "ZZ",
+                "value": "1234567890"
+              },
+              {
+                "qualifier": "ZZZ",
+                "value": "0987654321"
+              }
+            ]
           },
           "metadata": {
             "key1": "value1",
@@ -1148,7 +1166,16 @@ param partners = [
   }
   {
     b2bPartnerContent: {
-      businessIdentities: []
+      businessIdentities: [
+        {
+          qualifier: 'ZZ'
+          value: '1234567890'
+        }
+        {
+          qualifier: 'ZZZ'
+          value: '0987654321'
+        }
+      ]
     }
     metadata: {
       key1: 'value1'
