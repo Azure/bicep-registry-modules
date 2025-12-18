@@ -1270,6 +1270,47 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    maps: [
+      {
+        content: '<content>'
+        mapType: 'Xslt'
+        metadata: {
+          description: 'Transform purchase order to internal format'
+          version: '1.0'
+        }
+        name: 'PurchaseOrderTransform'
+      }
+    ]
+    partners: [
+      {
+        b2bPartnerContent: {
+          businessIdentities: [
+            {
+              qualifier: 'ZZ'
+              value: 'CONTOSO-SUPPLIER-001'
+            }
+          ]
+        }
+        metadata: {
+          description: 'Primary supplier partner'
+        }
+        name: 'ContosoSupplier'
+      }
+      {
+        b2bPartnerContent: {
+          businessIdentities: [
+            {
+              qualifier: 'ZZ'
+              value: 'FABRIKAM-BUYER-001'
+            }
+          ]
+        }
+        metadata: {
+          description: 'Primary buyer partner'
+        }
+        name: 'FabrikamBuyer'
+      }
+    ]
     roleAssignments: [
       {
         name: '1f98c16b-ea00-4686-8b81-05353b594ea3'
@@ -1287,6 +1328,17 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    schemas: [
+      {
+        content: '<content>'
+        metadata: {
+          description: 'Purchase order validation schema'
+          version: '1.0'
+        }
+        name: 'PurchaseOrderSchema'
+        schemaType: 'Xml'
       }
     ]
     tags: {
@@ -1342,6 +1394,51 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         "name": "myCustomLockName"
       }
     },
+    "maps": {
+      "value": [
+        {
+          "content": "<content>",
+          "mapType": "Xslt",
+          "metadata": {
+            "description": "Transform purchase order to internal format",
+            "version": "1.0"
+          },
+          "name": "PurchaseOrderTransform"
+        }
+      ]
+    },
+    "partners": {
+      "value": [
+        {
+          "b2bPartnerContent": {
+            "businessIdentities": [
+              {
+                "qualifier": "ZZ",
+                "value": "CONTOSO-SUPPLIER-001"
+              }
+            ]
+          },
+          "metadata": {
+            "description": "Primary supplier partner"
+          },
+          "name": "ContosoSupplier"
+        },
+        {
+          "b2bPartnerContent": {
+            "businessIdentities": [
+              {
+                "qualifier": "ZZ",
+                "value": "FABRIKAM-BUYER-001"
+              }
+            ]
+          },
+          "metadata": {
+            "description": "Primary buyer partner"
+          },
+          "name": "FabrikamBuyer"
+        }
+      ]
+    },
     "roleAssignments": {
       "value": [
         {
@@ -1360,6 +1457,19 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "schemas": {
+      "value": [
+        {
+          "content": "<content>",
+          "metadata": {
+            "description": "Purchase order validation schema",
+            "version": "1.0"
+          },
+          "name": "PurchaseOrderSchema",
+          "schemaType": "Xml"
         }
       ]
     },
@@ -1408,6 +1518,47 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param maps = [
+  {
+    content: '<content>'
+    mapType: 'Xslt'
+    metadata: {
+      description: 'Transform purchase order to internal format'
+      version: '1.0'
+    }
+    name: 'PurchaseOrderTransform'
+  }
+]
+param partners = [
+  {
+    b2bPartnerContent: {
+      businessIdentities: [
+        {
+          qualifier: 'ZZ'
+          value: 'CONTOSO-SUPPLIER-001'
+        }
+      ]
+    }
+    metadata: {
+      description: 'Primary supplier partner'
+    }
+    name: 'ContosoSupplier'
+  }
+  {
+    b2bPartnerContent: {
+      businessIdentities: [
+        {
+          qualifier: 'ZZ'
+          value: 'FABRIKAM-BUYER-001'
+        }
+      ]
+    }
+    metadata: {
+      description: 'Primary buyer partner'
+    }
+    name: 'FabrikamBuyer'
+  }
+]
 param roleAssignments = [
   {
     name: '1f98c16b-ea00-4686-8b81-05353b594ea3'
@@ -1425,6 +1576,17 @@ param roleAssignments = [
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param schemas = [
+  {
+    content: '<content>'
+    metadata: {
+      description: 'Purchase order validation schema'
+      version: '1.0'
+    }
+    name: 'PurchaseOrderSchema'
+    schemaType: 'Xml'
   }
 ]
 param tags = {
