@@ -53,7 +53,7 @@ var hubConfigurations = [
 ]
 
 #disable-next-line BCP081
-module virtualWan 'br/public:avm/res/network/virtual-wan:0.4.2' = {
+module virtualWan 'br/public:avm/res/network/virtual-wan:0.4.3' = {
   name: '${uniqueString(deployment().name, location)}-${virtualWanParameters.virtualWanName}'
   params: {
     // Required parameters
@@ -70,7 +70,7 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:0.4.2' = {
 }
 
 #disable-next-line BCP081
-module virtualHubModule 'br/public:avm/res/network/virtual-hub:0.4.2' = [
+module virtualHubModule 'br/public:avm/res/network/virtual-hub:0.4.3' = [
   for config in hubConfigurations: {
     name: '${uniqueString(deployment().name, location)}-${config.hub.hubName}'
     params: {
@@ -95,7 +95,7 @@ module virtualHubModule 'br/public:avm/res/network/virtual-hub:0.4.2' = [
   }
 ]
 
-module firewallModule 'br/public:avm/res/network/azure-firewall:0.9.1' = [
+module firewallModule 'br/public:avm/res/network/azure-firewall:0.9.2' = [
   for config in hubConfigurations: if (config.deploySecureHub) {
     name: config.hub.?secureHubParameters.?azureFirewallName!
     params: {
@@ -144,9 +144,7 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
     vpnClientIpsecPolicies: virtualWanParameters.?p2sVpnParameters.?vpnClientIpsecPolicies
     vpnClientRevokedCertificates: virtualWanParameters.?p2sVpnParameters.?vpnClientRevokedCertificates
     vpnClientRootCertificates: virtualWanParameters.?p2sVpnParameters.?vpnClientRootCertificates
-    vpnProtocols: [
-      'OpenVPN'
-    ]
+    vpnProtocols: virtualWanParameters.?p2sVpnParameters.?vpnProtocols ?? ['OpenVPN']
   }
 }
 
@@ -326,7 +324,7 @@ import { vpnClientIpsecPoliciesType } from 'br/public:avm/res/network/vpn-server
 import { vnetRoutesStaticRoutesType } from 'br/public:avm/res/network/p2s-vpn-gateway:0.1.3'
 
 @description('Imports types from the Virtual Hub module.')
-import { hubVirtualNetworkConnectionType, routingIntentType, hubRouteTableType } from 'br/public:avm/res/network/virtual-hub:0.4.2'
+import { hubVirtualNetworkConnectionType, routingIntentType, hubRouteTableType } from 'br/public:avm/res/network/virtual-hub:0.4.3'
 
 @description('Imports the full diagnostic setting type from the AVM common types module.')
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
@@ -395,7 +393,7 @@ type virtualWanParameterType = {
     vpnClientRootCertificates: array?
 
     @description('Optional. Supported VPN protocols.')
-    vpnProtocols: ('IkeV2' | 'OpenVPN')?
+    vpnProtocols: ('IkeV2' | 'OpenVPN')[]?
   }?
 
   @description('Optional. Role assignments to be applied to the Virtual WAN.')
