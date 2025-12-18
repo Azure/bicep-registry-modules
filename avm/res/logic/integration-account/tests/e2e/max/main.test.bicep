@@ -301,11 +301,12 @@ module testDeployment '../../../main.bicep' = [
                 }
                 receiverBusinessIdentity: {
                   qualifier: 'ZZ'
-                  value: '0987654321'
+                  value: '1234567890'
                 }
                 senderBusinessIdentity: {
                   qualifier: 'ZZ'
-                  value: '1234567890'
+
+                  value: '0987654321'
                 }
               }
               sendAgreement: {

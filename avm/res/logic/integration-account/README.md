@@ -217,11 +217,11 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
               }
               receiverBusinessIdentity: {
                 qualifier: 'ZZ'
-                value: '0987654321'
+                value: '1234567890'
               }
               senderBusinessIdentity: {
                 qualifier: 'ZZ'
-                value: '1234567890'
+                value: '0987654321'
               }
             }
             sendAgreement: {
@@ -586,11 +586,11 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
                 },
                 "receiverBusinessIdentity": {
                   "qualifier": "ZZ",
-                  "value": "0987654321"
+                  "value": "1234567890"
                 },
                 "senderBusinessIdentity": {
                   "qualifier": "ZZ",
-                  "value": "1234567890"
+                  "value": "0987654321"
                 }
               },
               "sendAgreement": {
@@ -969,11 +969,11 @@ param agreements = [
           }
           receiverBusinessIdentity: {
             qualifier: 'ZZ'
-            value: '0987654321'
+            value: '1234567890'
           }
           senderBusinessIdentity: {
             qualifier: 'ZZ'
-            value: '1234567890'
+            value: '0987654321'
           }
         }
         sendAgreement: {
