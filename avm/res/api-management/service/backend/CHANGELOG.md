@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/backend/CHANGELOG.md).
 
+## 0.2.0
+
+### Changes
+
+- Add new parameters: `circuitBreaker`, `pool`, `type`
+
+### Breaking Changes
+
+- Update default values for `url` and `tls` parameters
+
 ## 0.1.1
 
 ### Changes
