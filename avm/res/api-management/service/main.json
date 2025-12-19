@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "2127373671901889075"
+      "templateHash": "7825652695134906687"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -101,6 +101,7 @@
           "type": "array",
           "allowedValues": [
             "authorizationCode",
+            "authorizationCodeWithPkce",
             "clientCredentials",
             "implicit",
             "resourceOwnerPassword"
@@ -4583,7 +4584,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "10777822680978117143"
+              "templateHash": "13725740350916592056"
             },
             "name": "API Management Service Authorization Servers",
             "description": "This module deploys an API Management Service Authorization Server."
@@ -4690,6 +4691,7 @@
               },
               "allowedValues": [
                 "authorizationCode",
+                "authorizationCodeWithPkce",
                 "clientCredentials",
                 "implicit",
                 "resourceOwnerPassword"

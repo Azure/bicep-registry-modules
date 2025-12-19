@@ -743,7 +743,12 @@ type authorizationServerType = {
   serverDescription: string?
 
   @description('Required. Form of an authorization grant, which the client uses to request the access token. - authorizationCode, implicit, resourceOwnerPassword, clientCredentials.')
-  grantTypes: ('authorizationCode' | 'clientCredentials' | 'implicit' | 'resourceOwnerPassword')[]
+  grantTypes: (
+    | 'authorizationCode'
+    | 'authorizationCodeWithPkce'
+    | 'clientCredentials'
+    | 'implicit'
+    | 'resourceOwnerPassword')[]
 
   @description('Optional. Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner password.')
   @secure()
