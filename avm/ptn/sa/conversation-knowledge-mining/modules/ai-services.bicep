@@ -135,8 +135,8 @@ param managedIdentities managedIdentityAllType?
 @description('Optional. Array of deployments about cognitive service accounts to create.')
 param deployments deploymentType[]?
 
-@description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
-param secretsExportConfiguration secretsExportConfigurationType?
+@description('Optional. The resource ID of an existing Foundry project to use.')
+param existingFoundryProjectResourceId string = ''
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -172,7 +172,9 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource cognitiveServiceNew 'Microsoft.CognitiveServices/accounts@2025-06-01' = {
+var useExistingService = !empty(existingFoundryProjectResourceId)
+
+resource cognitiveServiceNew 'Microsoft.CognitiveServices/accounts@2025-06-01' = if(!useExistingService) {
   name: name
   kind: kind
   identity: identity
@@ -232,58 +234,78 @@ resource cognitiveServiceNew 'Microsoft.CognitiveServices/accounts@2025-06-01' =
   }
 }
 
-module cognitive_service_dependencies './dependencies.bicep' = {
+var existingCognitiveServiceDetails = split(existingFoundryProjectResourceId, '/')
+
+resource cognitiveServiceExisting 'Microsoft.CognitiveServices/accounts@2025-09-01' existing = if(useExistingService) {
+  name: existingCognitiveServiceDetails[8]
+  scope: resourceGroup(existingCognitiveServiceDetails[2], existingCognitiveServiceDetails[4])
+}
+
+module cognitive_service_dependencies './dependencies.bicep' = if(!useExistingService) {
   params: {
     projectName: projectName
     projectDescription: projectDescription
-    name: cognitiveServiceNew.name
+    name:  cognitiveServiceNew.name
     location: location
     deployments: deployments
     diagnosticSettings: diagnosticSettings
     lock: lock
     privateEndpoints: privateEndpoints
     roleAssignments: roleAssignments
-    secretsExportConfiguration: secretsExportConfiguration
     sku: sku
     tags: tags
   }
 }
 
-// ========== Outputs ========== //
+module existing_cognitive_service_dependencies './dependencies.bicep' = if(useExistingService) {
+  params: {
+    name:  cognitiveServiceExisting.name
+    projectName: projectName
+    projectDescription: projectDescription
+    existingFoundryProjectResourceId: existingFoundryProjectResourceId
+    location: location
+    deployments: deployments
+    diagnosticSettings: diagnosticSettings
+    lock: lock
+    privateEndpoints: privateEndpoints
+    roleAssignments: roleAssignments
+    sku: sku
+    tags: tags
+  }
+  scope: resourceGroup(existingCognitiveServiceDetails[2], existingCognitiveServiceDetails[4])
+}
+
+var cognitiveService = useExistingService ? cognitiveServiceExisting : cognitiveServiceNew
 
 @description('The name of the cognitive services account.')
-output name string = cognitiveServiceNew.name
+output name string = useExistingService ? cognitiveServiceExisting.name : cognitiveServiceNew.name
 
 @description('The resource ID of the cognitive services account.')
-output resourceId string = cognitiveServiceNew.id
+output resourceId string = useExistingService ? cognitiveServiceExisting.id : cognitiveServiceNew.id
 
 @description('The resource group the cognitive services account was deployed into.')
-output subscriptionId string = subscription().subscriptionId
+output subscriptionId string =  useExistingService ? existingCognitiveServiceDetails[2] : subscription().subscriptionId
 
 @description('The resource group the cognitive services account was deployed into.')
-output resourceGroupName string = resourceGroup().name
+output resourceGroupName string =  useExistingService ? existingCognitiveServiceDetails[4] : resourceGroup().name
 
 @description('The service endpoint of the cognitive services account.')
-output endpoint string = cognitiveServiceNew.properties.endpoint
+output endpoint string = useExistingService ? cognitiveServiceExisting!.properties.endpoint : cognitiveService.properties.endpoint
 
 @description('All endpoints available for the cognitive services account, types depends on the cognitive service kind.')
-output endpoints endpointType = cognitiveServiceNew.properties.endpoints
+output endpoints endpointType = useExistingService ? cognitiveServiceExisting!.properties.endpoints : cognitiveService.properties.endpoints
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string? = cognitiveServiceNew.?identity.?principalId
+output systemAssignedMIPrincipalId string? = useExistingService ? cognitiveServiceExisting!.identity.principalId : cognitiveService.?identity.?principalId
 
 @description('The location the resource was deployed into.')
-output location string = cognitiveServiceNew.location
+output location string = useExistingService ? cognitiveServiceExisting!.location : cognitiveService.location
 
-import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
-output exportedSecrets secretsOutputType = cognitive_service_dependencies!.outputs.exportedSecrets
-
-@description('The private endpoints of the cognitive services account.')
-output privateEndpoints privateEndpointOutputType[] = cognitive_service_dependencies!.outputs.privateEndpoints
+@description('The private endpoints of the congitive services account.')
+output privateEndpoints privateEndpointOutputType[] = useExistingService ? existing_cognitive_service_dependencies!.outputs.privateEndpoints : cognitive_service_dependencies!.outputs.privateEndpoints
 
 import { aiProjectOutputType } from './project.bicep'
-output aiProjectInfo aiProjectOutputType = cognitive_service_dependencies!.outputs.aiProjectInfo
+output aiProjectInfo aiProjectOutputType = useExistingService ? existing_cognitive_service_dependencies!.outputs.aiProjectInfo : cognitive_service_dependencies!.outputs.aiProjectInfo
 
 // ================ //
 // Definitions      //
@@ -364,17 +386,4 @@ type endpointType = {
   name: string?
   @description('The endpoint URI.')
   endpoint: string?
-}
-
-@export()
-@description('The type of the secrets exported to the provided Key Vault.')
-type secretsExportConfigurationType = {
-  @description('Required. The key vault name where to store the keys and connection strings generated by the modules.')
-  keyVaultResourceId: string
-
-  @description('Optional. The name for the accessKey1 secret to create.')
-  accessKey1Name: string?
-
-  @description('Optional. The name for the accessKey2 secret to create.')
-  accessKey2Name: string?
 }

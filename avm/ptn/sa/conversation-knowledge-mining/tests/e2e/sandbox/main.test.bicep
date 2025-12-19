@@ -37,12 +37,14 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-07-01' = {
 
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
+  for iteration in ['init']: {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       solutionName: take('${namePrefix}${serviceShort}001', 16)
+      location: enforcedLocation
       aiServiceLocation: enforcedLocation
+      usecase: 'telecom'
     }
   }
 ]

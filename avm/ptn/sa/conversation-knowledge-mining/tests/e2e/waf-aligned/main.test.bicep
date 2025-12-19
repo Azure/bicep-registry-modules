@@ -46,7 +46,9 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       solutionName: take('${namePrefix}${serviceShort}001', 16)
+      location: enforcedLocation
       aiServiceLocation: enforcedLocation
+      secondaryLocation: enforcedLocation
       enableScalability: true
       enableTelemetry: true
       enableMonitoring: true
@@ -54,6 +56,7 @@ module testDeployment '../../../main.bicep' = [
       enableRedundancy: true
       vmAdminUsername: 'adminuser'
       vmAdminPassword: vmAdminPassword
+      usecase: 'telecom'
     }
   }
 ]
