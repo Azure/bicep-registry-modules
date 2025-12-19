@@ -2349,7 +2349,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
             $expectedNameFormat | Should -Be $true -Because 'the handle ''-test-'' should be part of the module test invocation''s resource name to allow identification.'
         }
 
-        It '[<moduleFolderName>] `sericeShort` should be unique across repository' -TestCases $deploymentTestFileTestCases {
+        It '[<moduleFolderName>] `serviceShort` should be unique across repository' -TestCases $deploymentTestFileTestCases {
 
             param(
                 [object[]] $testFileContent,
