@@ -130,6 +130,9 @@ module containerAppUpsert 'br/public:avm/ptn/azd/container-app-upsert:<version>'
     containerAppsEnvironmentName: '<containerAppsEnvironmentName>'
     name: '<name>'
     // Non-required parameters
+    allowedOrigins: [
+      'https://www.bing.com'
+    ]
     containerProbes: [
       {
         httpGet: {
@@ -204,6 +207,11 @@ module containerAppUpsert 'br/public:avm/ptn/azd/container-app-upsert:<version>'
       "value": "<name>"
     },
     // Non-required parameters
+    "allowedOrigins": {
+      "value": [
+        "https://www.bing.com"
+      ]
+    },
     "containerProbes": {
       "value": [
         {
@@ -296,6 +304,9 @@ using 'br/public:avm/ptn/azd/container-app-upsert:<version>'
 param containerAppsEnvironmentName = '<containerAppsEnvironmentName>'
 param name = '<name>'
 // Non-required parameters
+param allowedOrigins = [
+  'https://www.bing.com'
+]
 param containerProbes = [
   {
     httpGet: {
@@ -364,6 +375,7 @@ param userAssignedIdentityResourceId = '<userAssignedIdentityResourceId>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`allowedOrigins`](#parameter-allowedorigins) | array | Allowed origins. |
 | [`containerCpuCoreCount`](#parameter-containercpucorecount) | string | The number of CPU cores allocated to a single container instance, e.g., 0.5. |
 | [`containerMaxReplicas`](#parameter-containermaxreplicas) | int | The maximum number of replicas to run. Must be at least 1. |
 | [`containerMemory`](#parameter-containermemory) | string | The amount of memory allocated to a single container instance, e.g., 1Gi. |
@@ -404,6 +416,13 @@ The name of the Container App.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `allowedOrigins`
+
+Allowed origins.
+
+- Required: No
+- Type: array
 
 ### Parameter: `containerCpuCoreCount`
 
