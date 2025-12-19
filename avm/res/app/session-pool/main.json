@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "14248350204192589126"
+      "templateHash": "3271245120536758923"
     },
     "name": "Container App Session Pool",
     "description": "This module deploys a Container App Session Pool."
@@ -197,6 +197,7 @@
       },
       "defaultValue": {
         "lifecycleConfiguration": {
+          "cooldownPeriodInSeconds": 300,
           "lifecycleType": "Timed"
         }
       }

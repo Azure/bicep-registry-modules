@@ -17,6 +17,7 @@ param customContainerTemplate resourceInput<'Microsoft.App/sessionPools@2025-07-
 @description('Optional. The pool configuration if the poolManagementType is dynamic.')
 param dynamicPoolConfiguration resourceInput<'Microsoft.App/sessionPools@2025-07-01'>.properties.dynamicPoolConfiguration = {
   lifecycleConfiguration: {
+    cooldownPeriodInSeconds: 300
     lifecycleType: 'Timed'
   }
 }

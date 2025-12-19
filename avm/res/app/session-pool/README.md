@@ -433,6 +433,7 @@ The pool configuration if the poolManagementType is dynamic.
   ```Bicep
   {
       lifecycleConfiguration: {
+        cooldownPeriodInSeconds: 300
         lifecycleType: 'Timed'
       }
   }
