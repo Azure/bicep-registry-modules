@@ -97,6 +97,7 @@ Form of an authorization grant, which the client uses to request the access toke
   ```Bicep
   [
     'authorizationCode'
+    'authorizationCodeWithPkce'
     'clientCredentials'
     'implicit'
     'resourceOwnerPassword'
