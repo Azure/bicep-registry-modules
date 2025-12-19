@@ -87,9 +87,7 @@ resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@
   name: name
   location: location
   tags: tags
-  properties: {
-    isolationScope: isolationScope
-  }
+  properties: isolationScope != null ? { isolationScope: isolationScope } : {}
 }
 
 resource userAssignedIdentity_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
