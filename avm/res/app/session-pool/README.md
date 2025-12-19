@@ -429,6 +429,14 @@ The pool configuration if the poolManagementType is dynamic.
 
 - Required: No
 - Type: object
+- Default:
+  ```Bicep
+  {
+      lifecycleConfiguration: {
+        lifecycleType: 'Timed'
+      }
+  }
+  ```
 
 ### Parameter: `enableTelemetry`
 

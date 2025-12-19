@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "10637456249855363651"
+      "templateHash": "14248350204192589126"
     },
     "name": "Container App Session Pool",
     "description": "This module deploys a Container App Session Pool."
@@ -195,7 +195,11 @@
         },
         "description": "Optional. The pool configuration if the poolManagementType is dynamic."
       },
-      "nullable": true
+      "defaultValue": {
+        "lifecycleConfiguration": {
+          "lifecycleType": "Timed"
+        }
+      }
     },
     "scaleConfiguration": {
       "type": "object",
@@ -310,7 +314,7 @@
       }
     ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(variables('formattedUserAssignedIdentities'))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(variables('formattedUserAssignedIdentities'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "Azure ContainerApps Session Executor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0fb8eba5-a2bb-4abe-b1c1-49dfad359bb0')]",
       "Container Apps SessionPools Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f7669afb-68b2-44b4-9c5f-6d2a47fddda0')]",
@@ -353,7 +357,7 @@
         "containerType": "[parameters('containerType')]",
         "environmentId": "[parameters('environmentResourceId')]",
         "customContainerTemplate": "[if(equals(parameters('containerType'), 'CustomContainer'), parameters('customContainerTemplate'), null())]",
-        "dynamicPoolConfiguration": "[parameters('dynamicPoolConfiguration')]",
+        "dynamicPoolConfiguration": "[if(equals(parameters('poolManagementType'), 'Dynamic'), parameters('dynamicPoolConfiguration'), null())]",
         "secrets": "[parameters('secrets')]",
         "managedIdentitySettings": "[parameters('managedIdentitySettings')]",
         "scaleConfiguration": "[parameters('scaleConfiguration')]",

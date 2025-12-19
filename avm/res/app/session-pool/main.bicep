@@ -15,7 +15,11 @@ param containerType string
 param customContainerTemplate resourceInput<'Microsoft.App/sessionPools@2025-07-01'>.properties.customContainerTemplate?
 
 @description('Optional. The pool configuration if the poolManagementType is dynamic.')
-param dynamicPoolConfiguration resourceInput<'Microsoft.App/sessionPools@2025-07-01'>.properties.dynamicPoolConfiguration?
+param dynamicPoolConfiguration resourceInput<'Microsoft.App/sessionPools@2025-07-01'>.properties.dynamicPoolConfiguration = {
+  lifecycleConfiguration: {
+    lifecycleType: 'Timed'
+  }
+}
 
 @description('Optional. The scale configuration of the session pool.')
 param scaleConfiguration resourceInput<'Microsoft.App/sessionPools@2025-07-01'>.properties.scaleConfiguration = {
@@ -67,8 +71,8 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -137,7 +141,7 @@ resource sessionPool 'Microsoft.App/sessionPools@2025-07-01' = {
     containerType: containerType
     environmentId: environmentResourceId
     customContainerTemplate: containerType == 'CustomContainer' ? customContainerTemplate : null
-    dynamicPoolConfiguration: dynamicPoolConfiguration
+    dynamicPoolConfiguration: poolManagementType == 'Dynamic' ? dynamicPoolConfiguration : null
     secrets: secrets
     managedIdentitySettings: managedIdentitySettings
     scaleConfiguration: scaleConfiguration
