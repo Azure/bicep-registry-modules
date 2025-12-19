@@ -684,7 +684,7 @@ module cognitiveServicesCu 'br/public:avm/res/cognitive-services/account:0.14.1'
       virtualNetworkRules: []
       ipRules: []
     }
-    managedIdentities: { userAssignedResourceIds: [userAssignedIdentity!.outputs.resourceId] } //To create accounts or projects, you must enable a managed identity on your resource
+    managedIdentities: { systemAssigned: true, userAssignedResourceIds: [userAssignedIdentity!.outputs.resourceId] } //To create accounts or projects, you must enable a managed identity on your resource
     disableLocalAuth: true
     customSubDomainName: aiServicesNameCu
     apiProperties: {
@@ -735,11 +735,6 @@ module searchSearchServices 'br/public:avm/res/search/search-service:0.12.0' = {
     // Required parameters
     name: aiSearchName
     enableTelemetry: enableTelemetry
-    authOptions: {
-      aadOrApiKey: {
-        aadAuthFailureMode: 'http401WithBearerChallenge'
-      }
-    }
     diagnosticSettings: enableMonitoring ? [
       {
         workspaceResourceId: logAnalyticsWorkspaceResourceId
@@ -1225,9 +1220,9 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.5.0' = {
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }] : null
     // WAF aligned configuration for Scalability
     skuName: enableScalability || enableRedundancy ? 'P1v3' : 'B3'
-    skuCapacity: enableScalability ? 1 : 1
+    skuCapacity: 1
     // WAF aligned configuration for Redundancy
-    zoneRedundant: enableRedundancy ? true : false
+    zoneRedundant: false
   }
 }
 
