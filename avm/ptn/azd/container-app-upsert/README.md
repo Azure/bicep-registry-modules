@@ -423,7 +423,6 @@ Allowed origins.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `containerCpuCoreCount`
 

@@ -13,7 +13,7 @@ param location string = resourceGroup().location
 param tags object?
 
 @description('Optional. Allowed origins.')
-param allowedOrigins array = []
+param allowedOrigins string[]?
 
 @description('Required. Name of the environment for container apps.')
 param containerAppsEnvironmentName string

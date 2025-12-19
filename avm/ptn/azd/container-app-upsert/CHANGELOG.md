@@ -8,6 +8,10 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Add new `allowedOrigins` param to configure allowed origins
 
+### Breaking Changes
+
+- None
+
 ## 0.2.0
 
 ### Changes
