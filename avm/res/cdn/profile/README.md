@@ -911,6 +911,11 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       }
     ]
     location: 'global'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+      notes: 'This resource cannot be deleted for security reasons.'
+    }
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -1133,6 +1138,13 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     "location": {
       "value": "global"
     },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName",
+        "notes": "This resource cannot be deleted for security reasons."
+      }
+    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true,
@@ -1353,6 +1365,11 @@ param diagnosticSettings = [
   }
 ]
 param location = 'global'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+  notes: 'This resource cannot be deleted for security reasons.'
+}
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
