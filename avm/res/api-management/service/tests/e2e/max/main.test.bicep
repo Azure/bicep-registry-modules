@@ -129,7 +129,7 @@ module testDeployment '../../../main.bicep' = [
           clientSecret: customSecret
           clientRegistrationEndpoint: 'http://localhost'
           grantTypes: [
-            'authorizationCode'
+            'authorizationCodeWithPkce'
           ]
           name: 'AuthServer1'
           displayName: 'AuthServer1'
