@@ -136,6 +136,9 @@ param caches cacheType[]?
 @description('Optional. API Diagnostics.')
 param apiDiagnostics apiDiagnosticType[]?
 
+@description('Optional. API Management Service Diagnostics.')
+param serviceDiagnostics serviceDiagnosticType[]?
+
 @description('Optional. Identity providers.')
 param identityProviders identityProviderType[]?
 
@@ -558,6 +561,26 @@ module service_subscriptions 'subscription/main.bicep' = [
       secondaryKey: subscription.?secondaryKey
       state: subscription.?state
       enableTelemetry: enableReferencedModulesTelemetry
+    }
+  }
+]
+
+module service_diagnostics 'diagnostic/main.bicep' = [
+  for (diagnostic, index) in (serviceDiagnostics ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Apim-ServiceDiagnostic-${index}'
+    params: {
+      apiManagementServiceName: service.name
+      name: diagnostic.name
+      loggerId: diagnostic.loggerId
+      alwaysLog: diagnostic.?alwaysLog
+      backend: diagnostic.?backend
+      frontend: diagnostic.?frontend
+      httpCorrelationProtocol: diagnostic.?httpCorrelationProtocol
+      logClientIp: diagnostic.?logClientIp
+      metrics: diagnostic.?metrics
+      operationNameFormat: diagnostic.?operationNameFormat
+      samplingPercentage: diagnostic.?samplingPercentage
+      verbosity: diagnostic.?verbosity
     }
   }
 ]
@@ -1154,6 +1177,41 @@ type policyType = {
 
 @export()
 @description('The type of a subscription.')
+type serviceDiagnosticType = {
+  @description('Required. Diagnostic Name.')
+  name: string
+
+  @description('Required. Logger resource ID.')
+  loggerId: string
+
+  @description('Optional. Specifies for what type of messages sampling settings should not apply.')
+  alwaysLog: string?
+
+  @description('Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Backend.')
+  backend: resourceInput<'Microsoft.ApiManagement/service/diagnostics@2024-05-01'>.properties.backend?
+
+  @description('Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Gateway.')
+  frontend: resourceInput<'Microsoft.ApiManagement/service/diagnostics@2024-05-01'>.properties.frontend?
+
+  @description('Optional. Sets correlation protocol to use for Application Insights diagnostics.')
+  httpCorrelationProtocol: string?
+
+  @description('Optional. Log the ClientIP.')
+  logClientIp: bool?
+
+  @description('Optional. Emit custom metrics via emit-metric policy.')
+  metrics: bool?
+
+  @description('Optional. The format of the Operation Name for Application Insights telemetries.')
+  operationNameFormat: string?
+
+  @description('Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged.')
+  samplingPercentage: int?
+
+  @description('Optional. The verbosity level applied to traces emitted by trace policies.')
+  verbosity: string?
+}
+
 type subscriptionType = {
   @description('Optional. Determines whether tracing can be enabled.')
   allowTracing: bool?

@@ -209,6 +209,19 @@ module testDeployment '../../../main.bicep' = [
           name: 'applicationinsights'
         }
       ]
+      serviceDiagnostics: [
+        {
+          name: 'applicationinsights'
+          loggerId: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/loggers/logger'
+          alwaysLog: 'allErrors'
+          httpCorrelationProtocol: 'W3C'
+          logClientIp: true
+          metrics: true
+          operationNameFormat: 'URI'
+          samplingPercentage: 100
+          verbosity: 'verbose'
+        }
+      ]
       diagnosticSettings: [
         {
           name: 'customSetting'
