@@ -412,6 +412,25 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      certificates: [
+        {
+          name: 'certificate1'
+          key: {
+            keyVault: {
+              id: nestedDependencies.outputs.keyVaultResourceId
+            }
+            keyName: nestedDependencies.outputs.keyVaultKeyName
+          }
+          metadata: {
+            key1: 'value1'
+            key2: 'value2'
+          }
+          tags: {
+            tag1: 'value1'
+            tag2: 'value2'
+          }
+        }
+      ]
       diagnosticSettings: [
         {
           name: 'customSetting'

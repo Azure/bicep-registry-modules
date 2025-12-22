@@ -29,16 +29,20 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   }
 }
 
-// Grant Reader role to managed identity for service principal lookup
-resource readerRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(managedIdentity.id, 'Reader', subscription().id)
+resource keyVaultKey 'Microsoft.KeyVault/vaults/keys@2024-11-01' = {
+  name: 'testkey01'
+  parent: keyVault
   properties: {
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-    ) // Reader
-    principalType: 'ServicePrincipal'
+    kty: 'RSA'
+    keySize: 2048
+    keyOps: [
+      'encrypt'
+      'decrypt'
+      'sign'
+      'verify'
+      'wrapKey'
+      'unwrapKey'
+    ]
   }
 }
 
@@ -68,6 +72,19 @@ resource keyPermissions2 'Microsoft.Authorization/roleAssignments@2022-04-01' = 
   }
 }
 
+resource keyPermissions3 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-logicapps-KeyVault-Crypto-User-RoleAssignment')
+  scope: keyVault
+  properties: {
+    principalId: '7cd684f4-8a78-49b0-91ec-6a35d38739ba' // Logic Apps Managed Identity
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '12338af0-0e69-4776-bea7-57ae8d297424'
+    ) // Key Vault Crypto User
+    principalType: 'ServicePrincipal'
+  }
+}
+
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 
@@ -76,3 +93,6 @@ output managedIdentityResourceId string = managedIdentity.id
 
 @description('The resource ID of the created Key Vault.')
 output keyVaultResourceId string = keyVault.id
+
+@description('The name of the created Key Vault key.')
+output keyVaultKeyName string = keyVaultKey.name
