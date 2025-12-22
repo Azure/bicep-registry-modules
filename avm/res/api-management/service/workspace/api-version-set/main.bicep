@@ -1,10 +1,10 @@
 metadata name = 'API Management Workspace API Version Sets'
 metadata description = 'This module deploys an API Version Set in an API Management Workspace.'
 
-@sys.description('Conditional. The name of the parent API Management service.')
+@sys.description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
 
-@sys.description('Conditional. The name of the parent Workspace.')
+@sys.description('Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment.')
 param workspaceName string
 
 @sys.description('Required. API Version set name.')
@@ -16,7 +16,11 @@ param name string
 param displayName string
 
 @sys.description('Required. An value that determines where the API Version identifier will be located in a HTTP request.')
-@allowed(['Header', 'Query', 'Segment'])
+@allowed([
+  'Header'
+  'Query'
+  'Segment'
+])
 param versioningScheme string
 
 @sys.description('Optional. Description of API Version Set.')
