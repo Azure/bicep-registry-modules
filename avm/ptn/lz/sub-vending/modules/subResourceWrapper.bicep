@@ -52,8 +52,11 @@ param virtualNetworkName string = ''
 @sys.description('An object of tag key/value pairs to be set on the Virtual Network that is created. NOTE: Tags will be overwritten on resoruce if any exist already.')
 param virtualNetworkTags object = {}
 
-@sys.description('The address space of the virtual network, supplied as multiple CIDR blocks, e.g. `["10.0.0.0/16","172.16.0.0/12"]`')
+@sys.description('An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `["10.0.0.0/16","172.16.0.0/12"]`) OR a single IPAM pool resource ID. When specifying an IPAM pool resource ID, you must also set virtualNetworkIpamPoolNumberOfIpAddresses.')
 param virtualNetworkAddressSpace string[] = []
+
+@sys.description('The number of IP addresses to allocate from the IPAM pool. Required when virtualNetworkAddressSpace contains an IPAM pool resource ID.')
+param virtualNetworkIpamPoolNumberOfIpAddresses string?
 
 @sys.description('The subnets of the Virtual Network that will be created by this module.')
 param virtualNetworkSubnets subnetType[] = []
@@ -139,7 +142,7 @@ param deploymentScriptNetworkSecurityGroupName string = ''
 param virtualNetworkDeploymentScriptAddressPrefix string = ''
 
 @sys.description('''
-An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.
+An object of resource providers and resource providers features to register. If not specified, a default list of common resource providers will be registered. To disable resource provider registration entirely, provide an empty object `{}`.
 }`''')
 param resourceProviders object = {
   'Microsoft.ApiManagement': []
@@ -186,8 +189,6 @@ param resourceProviders object = {
   'Microsoft.Management': []
   'Microsoft.Maps': []
   'Microsoft.MarketplaceOrdering': []
-  'Microsoft.Media': []
-  'Microsoft.MixedReality': []
   'Microsoft.Network': []
   'Microsoft.NotificationHubs': []
   'Microsoft.OperationalInsights': []
@@ -630,6 +631,12 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (virt
     tags: virtualNetworkTags
     location: virtualNetworkLocation
     addressPrefixes: virtualNetworkAddressSpace
+    ipamPoolNumberOfIpAddresses: !empty(virtualNetworkAddressSpace) && contains(
+        virtualNetworkAddressSpace[0],
+        '/Microsoft.Network/networkManagers/'
+      )
+      ? virtualNetworkIpamPoolNumberOfIpAddresses
+      : null
     dnsServers: virtualNetworkDnsServers
     ddosProtectionPlanResourceId: virtualNetworkDdosPlanResourceId
     peerings: (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(hubVirtualNetworkResourceIdChecked) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))
@@ -653,6 +660,7 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (virt
         ? {
             name: subnet.name
             addressPrefix: subnet.?addressPrefix
+            ipamPoolPrefixAllocations: subnet.?ipamPoolPrefixAllocations
             networkSecurityGroupResourceId: (virtualNetworkDeployBastion || subnet.name == 'AzureBastionSubnet')
               ? createBastionNsg.?outputs.resourceId
               : resourceId(
@@ -923,7 +931,7 @@ module createLzVirtualWanConnection 'hubVirtualNetworkConnections.bicep' = if (v
   }
 }
 
-module createLzRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = [
+module createLzRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignment:0.2.4' = [
   for assignment in roleAssignmentsSubscription: if (roleAssignmentEnabled && !empty(roleAssignmentsSubscription)) {
     name: take(
       '${deploymentNames.createLzRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
@@ -956,7 +964,7 @@ module createLzRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignme
   }
 ]
 
-module createLzRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = [
+module createLzRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-assignment:0.2.4' = [
   for assignment in roleAssignmentsResourceGroupSelf: if (roleAssignmentEnabled && !empty(roleAssignmentsResourceGroupSelf)) {
     dependsOn: [
       createResourceGroupForLzNetworking
@@ -993,7 +1001,7 @@ module createLzRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-ass
   }
 ]
 
-module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = [
+module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-assignment:0.2.4' = [
   for assignment in roleAssignmentsResourceGroupNotSelf: if (roleAssignmentEnabled && !empty(roleAssignmentsResourceGroupNotSelf)) {
     name: take(
       '${deploymentNames.createLzRoleAssignmentsRsgsNotSelf}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
@@ -1026,7 +1034,7 @@ module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-
     }
   }
 ]
-module createLzUMIRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = [
+module createLzUMIRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignment:0.2.4' = [
   for (assignment, i) in umiRoleAssignmentsSubscriptionFlattened: if (roleAssignmentEnabled && !empty(umiRoleAssignmentsSubscriptionFlattened)) {
     name: take(
       '${deploymentNames.createLzUMIRoleAssignmentsSub}-${uniqueString(createUserAssignedManagedIdentity[i].name,assignment.definition, assignment.relativeScope)}',
@@ -1059,7 +1067,7 @@ module createLzUMIRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assig
   }
 ]
 
-module createLzUMIRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = [
+module createLzUMIRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-assignment:0.2.4' = [
   for (assignment, i) in umiRoleAssignmentsResourceGroupSelfFlattened: if (roleAssignmentEnabled && !empty(umiRoleAssignmentsResourceGroupSelfFlattened)) {
     name: take(
       '${deploymentNames.createLzUMIRoleAssignmentsRsgsSelf}-${uniqueString(createUserAssignedManagedIdentity[i].name,assignment.definition, assignment.relativeScope)}',
@@ -1093,7 +1101,7 @@ module createLzUMIRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-
   }
 ]
 
-module createLzUMIRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = [
+module createLzUMIRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-assignment:0.2.4' = [
   for (assignment, i) in umiRoleAssignmentsResourceGroupNotSelfFlattened: if (roleAssignmentEnabled && !empty(umiRoleAssignmentsResourceGroupNotSelfFlattened)) {
     name: take(
       '${deploymentNames.createLzUMIRoleAssignmentsRsgsNotSelf}-${uniqueString(createUserAssignedManagedIdentity[i].name,assignment.definition, assignment.relativeScope)}',
@@ -1127,7 +1135,7 @@ module createLzUMIRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/ro
   }
 ]
 
-module createLzPimActiveRoleAssignmentsSub 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.1' = [
+module createLzPimActiveRoleAssignmentsSub 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.2' = [
   for assignment in pimRoleAssignmentsSubscription: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsSubscription) && assignment.roleAssignmentType == 'Active') {
     name: take(
       '${deploymentNames.createLzPimRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
@@ -1165,7 +1173,7 @@ module createLzPimActiveRoleAssignmentsSub 'br/public:avm/ptn/authorization/pim-
   }
 ]
 
-module createLzPimEligibleRoleAssignmentsSub 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.1' = [
+module createLzPimEligibleRoleAssignmentsSub 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.2' = [
   for assignment in pimRoleAssignmentsSubscription: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsSubscription) && assignment.roleAssignmentType == 'Eligible') {
     name: take(
       '${deploymentNames.createLzPimRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
@@ -1203,7 +1211,7 @@ module createLzPimEligibleRoleAssignmentsSub 'br/public:avm/ptn/authorization/pi
   }
 ]
 
-module createLzPimEligibleRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.1' = [
+module createLzPimEligibleRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.2' = [
   for assignment in pimRoleAssignmentsResourceGroupSelf: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsResourceGroupSelf) && assignment.roleAssignmentType == 'Eligible') {
     dependsOn: [
       createResourceGroupForLzNetworking
@@ -1245,7 +1253,7 @@ module createLzPimEligibleRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorizati
   }
 ]
 
-module createLzPimActiveRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.1' = [
+module createLzPimActiveRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.2' = [
   for assignment in pimRoleAssignmentsResourceGroupSelf: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsResourceGroupSelf) && assignment.roleAssignmentType == 'Active') {
     dependsOn: [
       createResourceGroupForLzNetworking
@@ -1287,7 +1295,7 @@ module createLzPimActiveRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization
   }
 ]
 
-module createLzEliglblePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.1' = [
+module createLzEliglblePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.2' = [
   for assignment in pimRoleAssignmentsResourceGroupNotSelf: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsResourceGroupNotSelf) && assignment.roleAssignmentType == 'Eligible') {
     name: take(
       '${deploymentNames.createLzPimRoleAssignmentsRsgsNotSelf}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
@@ -1325,7 +1333,7 @@ module createLzEliglblePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authoriz
   }
 ]
 
-module createLzActivePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.1' = [
+module createLzActivePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.2' = [
   for assignment in pimRoleAssignmentsResourceGroupNotSelf: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsResourceGroupNotSelf) && assignment.roleAssignmentType == 'Active') {
     name: take(
       '${deploymentNames.createLzPimRoleAssignmentsRsgsNotSelf}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
@@ -1409,7 +1417,7 @@ module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-ident
   }
 }
 
-module createRoleAssignmentsDeploymentScript 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = if (!empty(resourceProviders)) {
+module createRoleAssignmentsDeploymentScript 'br/public:avm/ptn/authorization/role-assignment:0.2.4' = if (!empty(resourceProviders)) {
   name: take('${deploymentNames.createRoleAssignmentsDeploymentScript}', 64)
   params: {
     location: deploymentScriptLocation
@@ -1420,7 +1428,7 @@ module createRoleAssignmentsDeploymentScript 'br/public:avm/ptn/authorization/ro
   }
 }
 
-module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = if (!empty(resourceProviders)) {
+module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/authorization/role-assignment:0.2.4' = if (!empty(resourceProviders)) {
   name: take('${deploymentNames.createRoleAssignmentsDeploymentScriptStorageAccount}', 64)
   params: {
     location: deploymentScriptLocation
@@ -1730,10 +1738,17 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
     params: {
       name: vnet.name
       addressPrefixes: vnet.addressPrefixes
+      ipamPoolNumberOfIpAddresses: !empty(vnet.addressPrefixes) && contains(
+          vnet.addressPrefixes[0],
+          '/Microsoft.Network/networkManagers/'
+        )
+        ? vnet.?ipamPoolNumberOfIpAddresses
+        : null
       subnets: [
         for subnet in (vnet.?subnets ?? []): {
           name: subnet.name
           addressPrefix: subnet.?addressPrefix
+          ipamPoolPrefixAllocations: subnet.?ipamPoolPrefixAllocations
           networkSecurityGroupResourceId: ((vnet.?deployBastion ?? false) || subnet.name == 'AzureBastionSubnet')
             ? createBastionNsg.?outputs.resourceId
             : !empty(subnet.?networkSecurityGroup)
@@ -1807,10 +1822,10 @@ module createAdditionalLzVirtualWanConnection 'hubVirtualNetworkConnections.bice
             }
             propagatedRouteTables: {
               ids: !empty(virtualNetworkVwanPropagatedRouteTablesResourceIds)
-                    ? virtualNetworkVwanPropagatedRouteTablesResourceIds
-                    : array({
-                        id: '${vnet.?alternativeVwanHubResourceId ?? virtualHubResourceIdChecked}/hubRouteTables/defaultRouteTable'
-                      })
+                ? virtualNetworkVwanPropagatedRouteTablesResourceIds
+                : array({
+                    id: '${vnet.?alternativeVwanHubResourceId ?? virtualHubResourceIdChecked}/hubRouteTables/defaultRouteTable'
+                  })
               labels: virtualWanHubConnectionPropogatedLabels
             }
           }
@@ -2028,6 +2043,9 @@ type subnetType = {
   @description('Conditional. List of address prefixes for the subnet. Required if `addressPrefix` is empty.')
   addressPrefixes: string[]?
 
+  @description('Optional. Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate.')
+  ipamPoolPrefixAllocations: object[]?
+
   @description('Optional. Application gateway IP configurations of virtual network resource.')
   applicationGatewayIPConfigurations: object[]?
 
@@ -2237,8 +2255,11 @@ type virtualNetworkType = {
   @description('Required. The name of the virtual network resource.')
   name: string
 
-  @description('Required. The address prefixes for the virtual network.')
+  @description('Required. An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `["10.0.0.0/16"]`) OR a single IPAM pool resource ID. When specifying an IPAM pool resource ID, you must also set ipamPoolNumberOfIpAddresses.')
   addressPrefixes: array
+
+  @description('Optional. The number of IP addresses to allocate from the IPAM pool. Required when addressPrefixes contains an IPAM pool resource ID.')
+  ipamPoolNumberOfIpAddresses: string?
 
   @description('Required. The location of the virtual network.')
   location: string

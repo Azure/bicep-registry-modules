@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "10739474921909261763"
+      "version": "0.39.26.7824",
+      "templateHash": "10520637689483791079"
     },
     "name": "Application Gateway Web Application Firewall (WAF) Policies",
     "description": "This module deploys an Application Gateway Web Application Firewall (WAF) Policy."
@@ -27,10 +27,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2025-01-01#properties/tags"
+        },
         "description": "Optional. Resource tags."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -42,22 +45,31 @@
     "managedRules": {
       "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2025-01-01#properties/properties/properties/managedRules"
+        },
         "description": "Required. Describes the managedRules structure."
       }
     },
     "customRules": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2025-01-01#properties/properties/properties/customRules"
+        },
         "description": "Optional. The custom rules inside the policy."
-      }
+      },
+      "nullable": true
     },
     "policySettings": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2025-01-01#properties/properties/properties/policySettings"
+        },
         "description": "Optional. The PolicySettings for policy."
-      }
+      },
+      "nullable": true
     }
   },
   "resources": {
@@ -83,12 +95,12 @@
     },
     "applicationGatewayWAFPolicy": {
       "type": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "managedRules": "[coalesce(parameters('managedRules'), createObject())]",
+        "managedRules": "[parameters('managedRules')]",
         "customRules": "[parameters('customRules')]",
         "policySettings": "[parameters('policySettings')]"
       }
@@ -121,7 +133,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('applicationGatewayWAFPolicy', '2024-03-01', 'full').location]"
+      "value": "[reference('applicationGatewayWAFPolicy', '2025-01-01', 'full').location]"
     }
   }
 }

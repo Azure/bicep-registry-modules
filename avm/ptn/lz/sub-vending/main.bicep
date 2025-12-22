@@ -145,8 +145,13 @@ param virtualNetworkName string?
 ''')
 param virtualNetworkTags object = {}
 
-@description('''Optional. The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `["10.0.0.0/16","172.16.0.0/12"]`.''')
+@description('''Optional. An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `["10.0.0.0/16","172.16.0.0/12"]`) OR a single IPAM pool resource ID to allocate IP addresses from. When specifying an IPAM pool resource ID, you must also set a value for the `virtualNetworkIpamPoolNumberOfIpAddresses` parameter.
+''')
 param virtualNetworkAddressSpace string[] = []
+
+@description('''Optional. The number of IP addresses to allocate from the IPAM pool. Required when `virtualNetworkAddressSpace` contains an IPAM pool resource ID. Example: `'256'` for a /24 network.
+''')
+param virtualNetworkIpamPoolNumberOfIpAddresses string?
 
 @description('''Optional. The subnets of the Virtual Network that will be created by this module.''')
 param virtualNetworkSubnets subnetType[]?
@@ -309,7 +314,7 @@ param deploymentScriptStorageAccountName string = 'stgds${substring(uniqueString
 param deploymentScriptLocation string = deployment().location
 
 @description('''
-Optional. An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.
+Optional. An object of resource providers and resource providers features to register. If not specified, a default list of common resource providers will be registered. To disable resource provider registration entirely, provide an empty object `{}`.
 ''')
 param resourceProviders object = {
   'Microsoft.ApiManagement': []
@@ -356,8 +361,6 @@ param resourceProviders object = {
   'Microsoft.Management': []
   'Microsoft.Maps': []
   'Microsoft.MarketplaceOrdering': []
-  'Microsoft.Media': []
-  'Microsoft.MixedReality': []
   'Microsoft.Network': []
   'Microsoft.NotificationHubs': []
   'Microsoft.OperationalInsights': []
@@ -422,6 +425,111 @@ var deploymentNames = {
   )
 }
 
+var azureRegionShortNameDisplayNameAsKey = {
+  'australia central': 'australiacentral'
+  'australia central 2': 'australiacentral2'
+  'australia east': 'australiaeast'
+  'australia southeast': 'australiasoutheast'
+  'belgium central': 'belgiumcentral'
+  'brazil south': 'brazilsouth'
+  'brazil southeast': 'brazilsoutheast'
+  'canada central': 'canadacentral'
+  'canada east': 'canadaeast'
+  'central india': 'centralindia'
+  'central us': 'centralus'
+  'central us euap': 'centraluseuap'
+  'chile central': 'chilecentral'
+  'east asia': 'eastasia'
+  'east us': 'eastus'
+  'east us 2': 'eastus2'
+  'east us 2 euap': 'eastus2euap'
+  'france central': 'francecentral'
+  'france south': 'francesouth'
+  'germany north': 'germanynorth'
+  'germany west central': 'germanywestcentral'
+  'indonesia central': 'indonesiacentral'
+  'israel central': 'israelcentral'
+  'italy north': 'italynorth'
+  'japan east': 'japaneast'
+  'japan west': 'japanwest'
+  'korea central': 'koreacentral'
+  'korea south': 'koreasouth'
+  'malaysia south': 'malaysiasouth'
+  'malaysia west': 'malaysiawest'
+  'mexico central': 'mexicocentral'
+  'new zealand north': 'newzealandnorth'
+  'north central us': 'northcentralus'
+  'north europe': 'northeurope'
+  'norway east': 'norwayeast'
+  'norway west': 'norwaywest'
+  'poland central': 'polandcentral'
+  'qatar central': 'qatarcentral'
+  'south africa north': 'southafricanorth'
+  'south africa west': 'southafricawest'
+  'south central us': 'southcentralus'
+  'south india': 'southindia'
+  'southeast asia': 'southeastasia'
+  'spain central': 'spaincentral'
+  'sweden central': 'swedencentral'
+  'sweden south': 'swedensouth'
+  'switzerland north': 'switzerlandnorth'
+  'switzerland west': 'switzerlandwest'
+  'taiwan north': 'taiwannorth'
+  'uae central': 'uaecentral'
+  'uae north': 'uaenorth'
+  'uk south': 'uksouth'
+  'uk west': 'ukwest'
+  'usdod central': 'usdodcentral'
+  'usdod east': 'usdodeast'
+  'usgov arizona': 'usgovarizona'
+  'usgov texas': 'usgovtexas'
+  'usgov virginia': 'usgovvirginia'
+  'west central us': 'westcentralus'
+  'west europe': 'westeurope'
+  'west india': 'westindia'
+  'west us': 'westus'
+  'west us 2': 'westus2'
+  'west us 3': 'westus3'
+}
+
+var locationLowered = toLower(deployment().location)
+var locationLoweredAndSpacesRemoved = contains(locationLowered, ' ')
+  ? azureRegionShortNameDisplayNameAsKey[locationLowered]
+  : locationLowered
+
+// Normalized resource names - replaces deployment().location in default values to remove spaces and capitals
+var userAssignedIdentityResourceGroupNameNormalized = toLower(userAssignedIdentityResourceGroupName) == toLower('rsg-${deployment().location}-identities')
+  ? 'rsg-${locationLoweredAndSpacesRemoved}-identities'
+  : replace(userAssignedIdentityResourceGroupName, ' ', '')
+
+var virtualNetworkLocationNormalized = contains(toLower(virtualNetworkLocation), ' ')
+  ? azureRegionShortNameDisplayNameAsKey[toLower(virtualNetworkLocation)]
+  : toLower(virtualNetworkLocation)
+
+var deploymentScriptResourceGroupNameNormalized = toLower(deploymentScriptResourceGroupName) == toLower('rsg-${deployment().location}-ds')
+  ? 'rsg-${locationLoweredAndSpacesRemoved}-ds'
+  : replace(deploymentScriptResourceGroupName, ' ', '')
+
+var deploymentScriptNameNormalized = toLower(deploymentScriptName) == toLower('ds-${deployment().location}')
+  ? 'ds-${locationLoweredAndSpacesRemoved}'
+  : replace(deploymentScriptName, ' ', '')
+
+var deploymentScriptManagedIdentityNameNormalized = toLower(deploymentScriptManagedIdentityName) == toLower('id-${deployment().location}')
+  ? 'id-${locationLoweredAndSpacesRemoved}'
+  : replace(deploymentScriptManagedIdentityName, ' ', '')
+
+var deploymentScriptVirtualNetworkNameNormalized = toLower(deploymentScriptVirtualNetworkName) == toLower('vnet-ds-${deployment().location}')
+  ? 'vnet-ds-${locationLoweredAndSpacesRemoved}'
+  : replace(deploymentScriptVirtualNetworkName, ' ', '')
+
+var deploymentScriptNetworkSecurityGroupNameNormalized = toLower(deploymentScriptNetworkSecurityGroupName) == toLower('nsg-ds-${deployment().location}')
+  ? 'nsg-ds-${locationLoweredAndSpacesRemoved}'
+  : replace(deploymentScriptNetworkSecurityGroupName, ' ', '')
+
+var deploymentScriptLocationNormalized = contains(toLower(deploymentScriptLocation), ' ')
+  ? azureRegionShortNameDisplayNameAsKey[toLower(deploymentScriptLocation)]
+  : toLower(deploymentScriptLocation)
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.lz-subvending.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, virtualNetworkLocation), 0, 4)}'
@@ -469,10 +577,11 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     virtualNetworkResourceGroupName: virtualNetworkResourceGroupName
     virtualNetworkResourceGroupTags: virtualNetworkResourceGroupTags
     virtualNetworkResourceGroupLockEnabled: virtualNetworkResourceGroupLockEnabled
-    virtualNetworkLocation: virtualNetworkLocation
+    virtualNetworkLocation: virtualNetworkLocationNormalized
     virtualNetworkName: virtualNetworkName
     virtualNetworkTags: virtualNetworkTags
     virtualNetworkAddressSpace: virtualNetworkAddressSpace
+    virtualNetworkIpamPoolNumberOfIpAddresses: virtualNetworkIpamPoolNumberOfIpAddresses
     virtualNetworkSubnets: virtualNetworkSubnets
     virtualNetworkDnsServers: virtualNetworkDnsServers
     virtualNetworkDdosPlanResourceId: virtualNetworkDdosPlanResourceId
@@ -488,20 +597,20 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     roleAssignmentEnabled: roleAssignmentEnabled
     roleAssignments: roleAssignments
     pimRoleAssignments: pimRoleAssignments
-    deploymentScriptResourceGroupName: deploymentScriptResourceGroupName
-    deploymentScriptName: deploymentScriptName
-    deploymentScriptManagedIdentityName: deploymentScriptManagedIdentityName
+    deploymentScriptResourceGroupName: deploymentScriptResourceGroupNameNormalized
+    deploymentScriptName: deploymentScriptNameNormalized
+    deploymentScriptManagedIdentityName: deploymentScriptManagedIdentityNameNormalized
     resourceProviders: resourceProviders
-    deploymentScriptVirtualNetworkName: deploymentScriptVirtualNetworkName
-    deploymentScriptLocation: deploymentScriptLocation
-    deploymentScriptNetworkSecurityGroupName: deploymentScriptNetworkSecurityGroupName
+    deploymentScriptVirtualNetworkName: deploymentScriptVirtualNetworkNameNormalized
+    deploymentScriptLocation: deploymentScriptLocationNormalized
+    deploymentScriptNetworkSecurityGroupName: deploymentScriptNetworkSecurityGroupNameNormalized
     virtualNetworkDeploymentScriptAddressPrefix: virtualNetworkDeploymentScriptAddressPrefix
     deploymentScriptStorageAccountName: deploymentScriptStorageAccountName
     virtualNetworkDeployNatGateway: virtualNetworkDeployNatGateway
     virtualNetworkNatGatewayConfiguration: virtualNetworkNatGatewayConfiguration
     virtualNetworkBastionConfiguration: virtualNetworkBastionConfiguration
     virtualNetworkDeployBastion: virtualNetworkDeployBastion
-    userAssignedIdentityResourceGroupName: userAssignedIdentityResourceGroupName
+    userAssignedIdentityResourceGroupName: userAssignedIdentityResourceGroupNameNormalized
     userAssignedManagedIdentities: userAssignedManagedIdentities
     userAssignedIdentitiesResourceGroupLockEnabled: userAssignedIdentitiesResourceGroupLockEnabled
     peerAllVirtualNetworks: peerAllVirtualNetworks

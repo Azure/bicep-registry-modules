@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "6235303872569409245"
+      "templateHash": "9899220769339718701"
     },
     "name": "Data Collection Rules",
     "description": "This module deploys a Data Collection Rule."
@@ -32,6 +32,9 @@
           "Direct": {
             "$ref": "#/definitions/directDcrPropertiesType"
           },
+          "AgentDirectToStore": {
+            "$ref": "#/definitions/agentDirectToStoreType"
+          },
           "WorkspaceTransforms": {
             "$ref": "#/definitions/workspaceTransformsDcrPropertiesType"
           },
@@ -42,7 +45,7 @@
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "The type for data collection rule properties. Depending on the kind, the properties will be different."
+        "description": "Required. The type for data collection rule properties. Depending on the kind, the properties will be different."
       }
     },
     "linuxDcrPropertiesType": {
@@ -376,6 +379,57 @@
       },
       "metadata": {
         "description": "The type for the properties of the 'Direct' data collection rule."
+      }
+    },
+    "agentDirectToStoreType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "AgentDirectToStore"
+          ],
+          "metadata": {
+            "description": "Required. The platform type specifies the type of resources this rule can apply to."
+          }
+        },
+        "dataSources": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Insights/dataCollectionRules@2024-03-11#properties/properties/properties/dataSources"
+            },
+            "description": "Required. Specification of data sources that will be collected."
+          }
+        },
+        "dataFlows": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Insights/dataCollectionRules@2024-03-11#properties/properties/properties/dataFlows"
+            },
+            "description": "Required. The specification of data flows."
+          }
+        },
+        "destinations": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Insights/dataCollectionRules@2024-03-11#properties/properties/properties/destinations"
+            },
+            "description": "Required. Specification of destinations that can be used in data flows."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Description of the data collection rule."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the properties of the 'AgentDirectToStore' data collection rule."
       }
     },
     "workspaceTransformsDcrPropertiesType": {
@@ -728,14 +782,14 @@
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
-    "dataCollectionRulePropertiesUnion": "[union(createObject('description', tryGet(parameters('dataCollectionRuleProperties'), 'description')), if(contains(createArray('Linux', 'Windows', 'All', 'PlatformTelemetry'), parameters('dataCollectionRuleProperties').kind), createObject('dataSources', parameters('dataCollectionRuleProperties').dataSources), createObject()), if(contains(createArray('Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms', 'PlatformTelemetry'), parameters('dataCollectionRuleProperties').kind), createObject('dataFlows', parameters('dataCollectionRuleProperties').dataFlows, 'destinations', parameters('dataCollectionRuleProperties').destinations), createObject()), if(contains(createArray('Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms'), parameters('dataCollectionRuleProperties').kind), createObject('dataCollectionEndpointId', tryGet(parameters('dataCollectionRuleProperties'), 'dataCollectionEndpointResourceId'), 'streamDeclarations', tryGet(parameters('dataCollectionRuleProperties'), 'streamDeclarations')), createObject()), if(equals(parameters('dataCollectionRuleProperties').kind, 'AgentSettings'), createObject('agentSettings', parameters('dataCollectionRuleProperties').agentSettings), createObject()))]",
+    "dataCollectionRulePropertiesUnion": "[union(createObject('description', tryGet(parameters('dataCollectionRuleProperties'), 'description')), if(contains(createArray('Linux', 'Windows', 'All', 'PlatformTelemetry', 'AgentDirectToStore'), parameters('dataCollectionRuleProperties').kind), createObject('dataSources', parameters('dataCollectionRuleProperties').dataSources), createObject()), if(contains(createArray('Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms', 'PlatformTelemetry', 'AgentDirectToStore'), parameters('dataCollectionRuleProperties').kind), createObject('dataFlows', parameters('dataCollectionRuleProperties').dataFlows, 'destinations', parameters('dataCollectionRuleProperties').destinations), createObject()), if(contains(createArray('Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms'), parameters('dataCollectionRuleProperties').kind), createObject('dataCollectionEndpointId', tryGet(parameters('dataCollectionRuleProperties'), 'dataCollectionEndpointResourceId'), 'streamDeclarations', tryGet(parameters('dataCollectionRuleProperties'), 'streamDeclarations')), createObject()), if(equals(parameters('dataCollectionRuleProperties').kind, 'AgentSettings'), createObject('agentSettings', parameters('dataCollectionRuleProperties').agentSettings), createObject()))]",
     "enableReferencedModulesTelemetry": false
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.insights-datacollectionrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
