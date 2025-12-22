@@ -1,10 +1,10 @@
 metadata name = 'API Management Service Diagnostics'
 metadata description = 'This module deploys an API Management Service Diagnostic.'
 
-@sys.description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
+@description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
 
-@sys.description('Required. Diagnostic Name.')
+@description('Required. Diagnostic Name.')
 param name string
 
 @description('Required. Logger resource ID.')

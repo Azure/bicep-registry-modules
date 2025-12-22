@@ -843,7 +843,7 @@ type apiType = {
   @description('Optional. Description of the API Revision.')
   apiRevisionDescription: string?
 
-  @sys.description('''Optional. Type of API to create.
+  @description('''Optional. Type of API to create.
 * `http` creates a REST API
 * `soap` creates a SOAP pass-through API
 * `websocket` creates websocket API

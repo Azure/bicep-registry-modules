@@ -1,13 +1,13 @@
 metadata name = 'API Management Workspace Diagnostics'
 metadata description = 'This module deploys a Diagnostic at API Management Workspace scope.'
 
-@sys.description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
+@description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
 
-@sys.description('Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment.')
+@description('Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment.')
 param workspaceName string
 
-@sys.description('Required. Diagnostic Name.')
+@description('Required. Diagnostic Name.')
 param name string
 
 @description('Required. Logger resource ID.')

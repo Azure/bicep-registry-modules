@@ -73,11 +73,11 @@ resource subscription 'Microsoft.ApiManagement/service/workspaces/subscriptions@
   }
 }
 
-@sys.description('The resource ID of the workspace subscription.')
+@description('The resource ID of the workspace subscription.')
 output resourceId string = subscription.id
 
-@sys.description('The name of the workspace subscription.')
+@description('The name of the workspace subscription.')
 output name string = subscription.name
 
-@sys.description('The resource group the workspace subscription was deployed into.')
+@description('The resource group the workspace subscription was deployed into.')
 output resourceGroupName string = resourceGroup().name

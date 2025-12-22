@@ -49,11 +49,11 @@ resource namedValue 'Microsoft.ApiManagement/service/workspaces/namedValues@2024
   }
 }
 
-@sys.description('The resource ID of the workspace named value.')
+@description('The resource ID of the workspace named value.')
 output resourceId string = namedValue.id
 
-@sys.description('The name of the workspace named value.')
+@description('The name of the workspace named value.')
 output name string = namedValue.name
 
-@sys.description('The resource group the workspace named value was deployed into.')
+@description('The resource group the workspace named value was deployed into.')
 output resourceGroupName string = resourceGroup().name
