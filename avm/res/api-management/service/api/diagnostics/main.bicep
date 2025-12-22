@@ -43,7 +43,7 @@ param metrics bool = false
 
 @allowed([
   'Name'
-  'URI'
+  'Url'
 ])
 @description('Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights.')
 param operationNameFormat string = 'Name'
