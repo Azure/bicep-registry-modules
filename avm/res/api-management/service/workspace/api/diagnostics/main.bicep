@@ -1,14 +1,17 @@
 metadata name = 'API Management Workspace APIs Diagnostics'
 metadata description = 'This module deploys an API Diagnostic in an API Management Workspace.'
 
-@description('Required. The name of the parent API Management service.')
+@description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
 
-@description('Required. The name of the parent Workspace.')
+@description('Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment.')
 param workspaceName string
 
 @description('Required. The name of the parent API.')
 param apiName string
+
+@description('Required. The name of the logger.')
+param loggerName string
 
 @allowed([
   'azuremonitor'
@@ -17,9 +20,6 @@ param apiName string
 ])
 @description('Optional. Name of diagnostic resource.')
 param name string = 'local'
-
-@description('Required. The name of the logger.')
-param loggerName string
 
 @description('Optional. Specifies for what type of messages sampling settings should not apply.')
 param alwaysLog string = 'allErrors'

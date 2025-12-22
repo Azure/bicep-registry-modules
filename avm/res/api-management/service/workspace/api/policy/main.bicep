@@ -1,20 +1,25 @@
 metadata name = 'API Management Workspace APIs Policies'
 metadata description = 'This module deploys an API Policy in an API Management Workspace.'
 
-@description('Conditional. The name of the parent API Management service.')
+@description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
 
-@description('Conditional. The name of the parent Workspace.')
+@description('Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment.')
 param workspaceName string
 
-@description('Conditional. The name of the parent API.')
+@description('Conditional. The name of the parent API. Required if the template is used in a standalone deployment.')
 param apiName string
 
 @description('Required. The name of the policy.')
 param name string
 
 @description('Optional. Format of the policyContent.')
-@allowed(['rawxml', 'rawxml-link', 'xml', 'xml-link'])
+@allowed([
+  'rawxml'
+  'rawxml-link'
+  'xml'
+  'xml-link'
+])
 param format string = 'xml'
 
 @description('Required. Contents of the Policy as defined by the format.')

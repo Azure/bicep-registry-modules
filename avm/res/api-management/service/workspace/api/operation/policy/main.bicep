@@ -1,16 +1,16 @@
 metadata name = 'API Management Workspace API Operation Policies'
 metadata description = 'This module deploys an API Operation Policy in an API Management Workspace.'
 
-@description('Conditional. The name of the parent API Management service.')
+@description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
 
-@description('Conditional. The name of the parent Workspace.')
+@description('Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment.')
 param workspaceName string
 
-@description('Conditional. The name of the parent API.')
+@description('Conditional. The name of the parent API. Required if the template is used in a standalone deployment.')
 param apiName string
 
-@description('Conditional. The name of the parent Operation.')
+@description('Conditional. The name of the parent operation. Required if the template is used in a standalone deployment.')
 param operationName string
 
 @description('Required. The name of the policy.')
@@ -43,8 +43,8 @@ resource policy 'Microsoft.ApiManagement/service/workspaces/apis/operations/poli
   name: name
   parent: service::workspace::api::operation
   properties: {
-    format: format
     value: value
+    format: format
   }
 }
 

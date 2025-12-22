@@ -1,13 +1,13 @@
 metadata name = 'API Management Workspace API Operations'
 metadata description = 'This module deploys an API Operation under an API Management Workspace.'
 
-@sys.description('Conditional. The name of the parent API Management service.')
+@sys.description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
 
-@sys.description('Conditional. The name of the parent Workspace.')
+@sys.description('Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment.')
 param workspaceName string
 
-@sys.description('Conditional. The name of the parent API.')
+@sys.description('Conditional. The name of the parent API. Required if the template is used in a standalone deployment.')
 param apiName string
 
 @sys.description('Required. The name of the operation.')
@@ -16,7 +16,10 @@ param name string
 @sys.description('Required. The display name of the operation.')
 param displayName string
 
-@sys.description('Required. A Valid HTTP Operation Method.')
+@sys.description('Optional. The policies to apply to the operation.')
+param policies policyType[]?
+
+@sys.description('Required. A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them.')
 param method string
 
 @minLength(1)
@@ -25,7 +28,7 @@ param method string
 param urlTemplate string
 
 @maxLength(1000)
-@sys.description('Optional. Description of the operation.')
+@sys.description('Optional. Description of the operation. May include HTML formatting tags.')
 param description string?
 
 @sys.description('Optional. An entity containing request details.')
@@ -36,9 +39,6 @@ param responses resourceInput<'Microsoft.ApiManagement/service/workspaces/apis/o
 
 @sys.description('Optional. Collection of URL template parameters.')
 param templateParameters resourceInput<'Microsoft.ApiManagement/service/workspaces/apis/operations@2024-05-01'>.properties.templateParameters?
-
-@sys.description('Optional. The policies to apply to the operation.')
-param policies policyType[]?
 
 resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
@@ -81,19 +81,6 @@ module operation_policies 'policy/main.bicep' = [
   }
 ]
 
-@export()
-@sys.description('The type of a policy.')
-type policyType = {
-  @sys.description('Required. The name of the policy.')
-  name: string
-
-  @sys.description('Required. Format of the policyContent.')
-  format: ('rawxml' | 'rawxml-link' | 'xml' | 'xml-link')
-
-  @sys.description('Required. Contents of the Policy as defined by the format.')
-  value: string
-}
-
 @sys.description('The resource ID of the operation.')
 output resourceId string = operation.id
 
@@ -102,3 +89,20 @@ output name string = operation.name
 
 @sys.description('The resource group the operation was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@sys.description('The type of a policy.')
+type policyType = {
+  @sys.description('Required. The name of the policy.')
+  name: string
+
+  @sys.description('Optional. Format of the policyContent.')
+  format: ('rawxml' | 'rawxml-link' | 'xml' | 'xml-link')?
+
+  @sys.description('Required. Contents of the Policy as defined by the format.')
+  value: string
+}
