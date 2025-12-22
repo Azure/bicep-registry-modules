@@ -5,7 +5,7 @@ param name string
 param location string
 
 @description('Optional. Tags to be applied to the resources.')
-param tags object = {}
+param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
 
 @description('Required. Managed Identity princpial to assign data plane roles for the Cosmos DB Account.')
 param dataAccessIdentityPrincipalId string

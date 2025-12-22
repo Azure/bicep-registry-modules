@@ -203,17 +203,6 @@ module appIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.
     enableTelemetry: enableTelemetry
   }
 }
-// Extracts subscription, resource group, and workspace name from the resource ID when using an existing Log Analytics workspace
-// var useExistingLogAnalytics = !empty(existingLogAnalyticsWorkspaceId)
-
-// var existingLawSubscription = useExistingLogAnalytics ? split(existingLogAnalyticsWorkspaceId, '/')[2] : ''
-// var existingLawResourceGroup = useExistingLogAnalytics ? split(existingLogAnalyticsWorkspaceId, '/')[4] : ''
-// var existingLawName = useExistingLogAnalytics ? split(existingLogAnalyticsWorkspaceId, '/')[8] : ''
-
-// resource existingLogAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-08-01' existing = if (useExistingLogAnalytics) {
-//   name: existingLawName
-//   scope: resourceGroup(existingLawSubscription, existingLawResourceGroup)
-// }
 
 // ========== Log Analytics Workspace ========== //
 // WAF best practices for Log Analytics: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-log-analytics
