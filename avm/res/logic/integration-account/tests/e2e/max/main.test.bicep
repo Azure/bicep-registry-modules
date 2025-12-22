@@ -79,7 +79,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-03'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-01'
   }
 }
 
