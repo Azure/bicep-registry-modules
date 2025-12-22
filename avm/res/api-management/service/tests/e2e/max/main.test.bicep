@@ -353,6 +353,187 @@ module testDeployment '../../../main.bicep' = [
           displayName: 'testArmSubscriptionAllApis'
         }
       ]
+      workspaces: [
+        {
+          name: 'test-workspace-1'
+          displayName: 'Test Workspace 1'
+          description: 'A comprehensive test workspace with all child modules'
+          apis: [
+            {
+              name: 'workspace-echo-api'
+              displayName: 'Workspace Echo API'
+              path: 'workspace-echo'
+              serviceUrl: 'http://echoapi.cloudapp.net/api'
+              apiRevision: '1'
+              apiRevisionDescription: 'Initial revision of workspace API'
+              apiType: 'http'
+              apiVersion: 'v1'
+              apiVersionDescription: 'Version 1 of workspace API'
+              description: 'Workspace Echo API for testing'
+              format: 'openapi+json'
+              isCurrent: true
+              protocols: [
+                'https'
+              ]
+              subscriptionRequired: true
+              type: 'http'
+              policies: [
+                {
+                  name: 'workspaceApiPolicy'
+                  format: 'xml'
+                  value: '<policies><inbound><base /></inbound><backend><base /></backend><outbound><base /></outbound></policies>'
+                }
+              ]
+              operations: [
+                {
+                  name: 'get-resource'
+                  displayName: 'Get Resource'
+                  method: 'GET'
+                  urlTemplate: '/resource'
+                  description: 'Get resource operation'
+                  policies: [
+                    {
+                      name: 'operationPolicy'
+                      format: 'xml'
+                      value: '<policies><inbound><base /></inbound><backend><base /></backend><outbound><base /></outbound></policies>'
+                    }
+                  ]
+                }
+              ]
+              diagnostics: [
+                {
+                  name: 'applicationinsights'
+                  loggerName: 'workspace-logger'
+                  alwaysLog: 'allErrors'
+                  httpCorrelationProtocol: 'W3C'
+                  logClientIp: true
+                  metrics: true
+                  operationNameFormat: 'Url'
+                  samplingPercentage: 100
+                  verbosity: 'verbose'
+                }
+              ]
+            }
+          ]
+          apiVersionSets: [
+            {
+              name: 'workspace-version-set'
+              displayName: 'Workspace Version Set'
+              description: 'Version set for workspace APIs'
+              versioningScheme: 'Segment'
+            }
+          ]
+          backends: [
+            {
+              name: 'workspace-backend'
+              type: 'Single'
+              title: 'Workspace Backend'
+              description: 'Backend for workspace APIs'
+              url: 'https://workspace-backend.example.com'
+              protocol: 'http'
+              tls: {
+                validateCertificateChain: true
+                validateCertificateName: true
+              }
+              credentials: {
+                authorization: {
+                  parameter: 'd29ya3NwYWNlLWF1dGg=' // base64 encoded 'workspace-auth'
+                  scheme: 'Basic'
+                }
+                header: {
+                  'x-workspace-header': [
+                    'workspace-value'
+                  ]
+                }
+              }
+            }
+          ]
+          diagnostics: [
+            {
+              name: 'applicationinsights'
+              loggerId: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/test-workspace/loggers/workspace-logger'
+              alwaysLog: 'allErrors'
+              httpCorrelationProtocol: 'W3C'
+              logClientIp: true
+              metrics: true
+              operationNameFormat: 'Url'
+              samplingPercentage: 100
+              verbosity: 'verbose'
+            }
+          ]
+          loggers: [
+            {
+              name: 'workspace-logger'
+              type: 'applicationInsights'
+              description: 'Workspace Application Insights Logger'
+              isBuffered: false
+              credentials: {
+                instrumentationKey: nestedDependencies.outputs.appInsightsInstrumentationKey
+              }
+              targetResourceId: nestedDependencies.outputs.appInsightsResourceId
+            }
+          ]
+          namedValues: [
+            {
+              name: 'workspace-named-value'
+              displayName: 'Workspace Named Value'
+              value: 'workspace-secret-value'
+              secret: true
+              tags: [
+                'test'
+                'max-test'
+              ]
+            }
+          ]
+          policies: [
+            {
+              name: 'workspace-policy'
+              format: 'xml'
+              value: '<policies><inbound><rate-limit-by-key calls="100" renewal-period="60" counter-key="@(context.Request.IpAddress)" /></inbound><backend><forward-request /></backend><outbound></outbound></policies>'
+            }
+          ]
+          products: [
+            {
+              name: 'workspace-product'
+              displayName: 'Workspace Product'
+              description: 'A test product in workspace with all features'
+              approvalRequired: true
+              subscriptionRequired: true
+              subscriptionsLimit: 5
+              state: 'published'
+              terms: 'Terms and conditions for workspace product'
+              apiLinks: [
+                {
+                  name: 'workspace-api-link'
+                  apiId: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/test-workspace/apis/workspace-echo-api'
+                }
+              ]
+              groupLinks: [
+                {
+                  name: 'workspace-group-link'
+                  groupId: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/groups/developers'
+                }
+              ]
+              policies: [
+                {
+                  name: 'workspace-product-policy'
+                  format: 'xml'
+                  value: '<policies><inbound><quota-by-key calls="1000" renewal-period="3600" counter-key="@(context.Subscription.Id)" /></inbound><backend><forward-request /></backend><outbound></outbound></policies>'
+                }
+              ]
+            }
+          ]
+          subscriptions: [
+            {
+              name: 'workspace-subscription'
+              displayName: 'Workspace Test Subscription'
+              scope: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/test-workspace/apis/workspace-echo-api'
+              allowTracing: true
+              state: 'active'
+            }
+          ]
+        }
+      ]
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [
