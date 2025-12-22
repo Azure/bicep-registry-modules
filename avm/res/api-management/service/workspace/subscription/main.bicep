@@ -1,8 +1,11 @@
-metadata name = 'API Management Service Subscriptions'
-metadata description = 'This module deploys an API Management Service Subscription.'
+metadata name = 'API Management Workspace Subscriptions'
+metadata description = 'This module deploys a Subscription in an API Management Workspace.'
 
 @description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
+
+@description('Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment.')
+param workspaceName string
 
 @description('Required. API Management Service Subscriptions name.')
 @minLength(1)
@@ -48,35 +51,17 @@ param state string?
 @description('Required. Subscription name.')
 param name string
 
-@description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
+resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
+  name: apiManagementServiceName
 
-#disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.apimgmt-subscription.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-        }
-      }
-    }
+  resource workspace 'workspaces@2024-05-01' existing = {
+    name: workspaceName
   }
 }
 
-resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
-  name: apiManagementServiceName
-}
-
-resource subscription 'Microsoft.ApiManagement/service/subscriptions@2024-05-01' = {
+resource subscription 'Microsoft.ApiManagement/service/workspaces/subscriptions@2024-05-01' = {
   name: name
-  parent: service
+  parent: service::workspace
   properties: {
     displayName: displayName
     allowTracing: allowTracing
@@ -88,11 +73,11 @@ resource subscription 'Microsoft.ApiManagement/service/subscriptions@2024-05-01'
   }
 }
 
-@description('The resource ID of the API management service subscription.')
+@sys.description('The resource ID of the workspace subscription.')
 output resourceId string = subscription.id
 
-@description('The name of the API management service subscription.')
+@sys.description('The name of the workspace subscription.')
 output name string = subscription.name
 
-@description('The resource group the API management service subscription was deployed into.')
+@sys.description('The resource group the workspace subscription was deployed into.')
 output resourceGroupName string = resourceGroup().name
