@@ -1,8 +1,11 @@
-metadata name = 'API Management Service Products'
-metadata description = 'This module deploys an API Management Service Product.'
+metadata name = 'API Management Workspace Products'
+metadata description = 'This module deploys a Product in an API Management Workspace.'
 
 @sys.description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
+
+@sys.description('Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment.')
+param workspaceName string
 
 @minLength(1)
 @maxLength(256)
@@ -21,13 +24,13 @@ param approvalRequired bool = false
 @sys.description('Optional. Product description. May include HTML formatting tags.')
 param description string = ''
 
-@sys.description('Optional. Names of Product APIs.')
-param apis string[]?
+@sys.description('Optional. Names of Product API Links.')
+param apiLinks apiLinkType[]?
 
-@sys.description('Optional. Names of Product Groups.')
-param groups string[]?
+@sys.description('Optional. Names of Product Group Links.')
+param groupLinks groupLinkType[]?
 
-@sys.description('Optional. Array of Policies to apply to the Service Product.')
+@sys.description('Optional. Array of Policies to apply to the Product.')
 param policies productPolicyType[]?
 
 @allowed([
@@ -46,37 +49,17 @@ param subscriptionsLimit int = 1
 @sys.description('Optional. Product terms of use. Developers trying to subscribe to the product will be presented and required to accept these terms before they can complete the subscription process.')
 param terms string = ''
 
-@sys.description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
-
-var enableReferencedModulesTelemetry bool = false
-
 resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
-}
 
-#disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.apimgmt-product.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-        }
-      }
-    }
+  resource workspace 'workspaces@2024-05-01' existing = {
+    name: workspaceName
   }
 }
 
-resource product 'Microsoft.ApiManagement/service/products@2024-05-01' = {
+resource product 'Microsoft.ApiManagement/service/workspaces/products@2024-05-01' = {
   name: name
-  parent: service
+  parent: service::workspace
   properties: {
     description: description
     displayName: displayName
@@ -88,35 +71,38 @@ resource product 'Microsoft.ApiManagement/service/products@2024-05-01' = {
   }
 }
 
-module product_apis 'api/main.bicep' = [
-  for (api, index) in (apis ?? []): {
-    name: '${deployment().name}-Api-${index}'
+module product_apiLinks 'api-link/main.bicep' = [
+  for (apiLink, index) in apiLinks ?? []: {
+    name: '${deployment().name}-api-link-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
-      name: api
+      workspaceName: workspaceName
       productName: product.name
-      enableTelemetry: enableReferencedModulesTelemetry
+      name: apiLink.name
+      apiId: apiLink.apiId
     }
   }
 ]
 
-module product_groups 'group/main.bicep' = [
-  for (group, index) in (groups ?? []): {
-    name: '${deployment().name}-Group-${index}'
+module product_groupLinks 'group-link/main.bicep' = [
+  for (groupLink, index) in groupLinks ?? []: {
+    name: '${deployment().name}-group-link-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
-      name: group
+      workspaceName: workspaceName
       productName: product.name
-      enableTelemetry: enableReferencedModulesTelemetry
+      name: groupLink.name
+      groupId: groupLink.groupId
     }
   }
 ]
 
 module product_policies 'policy/main.bicep' = [
   for (policy, index) in policies ?? []: {
-    name: '${deployment().name}-Policy-${index}'
+    name: '${deployment().name}-policy-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
+      workspaceName: workspaceName
       productName: product.name
       name: policy.name
       format: policy.?format
@@ -125,25 +111,14 @@ module product_policies 'policy/main.bicep' = [
   }
 ]
 
-@sys.description('The resource ID of the API management service product.')
+@sys.description('The resource ID of the workspace product.')
 output resourceId string = product.id
 
-@sys.description('The name of the API management service product.')
+@sys.description('The name of the workspace product.')
 output name string = product.name
 
-@sys.description('The resource group the API management service product was deployed into.')
+@sys.description('The resource group the workspace product was deployed into.')
 output resourceGroupName string = resourceGroup().name
-
-@sys.description('The Resources IDs of the API management service product APIs.')
-output apiResourceIds array = [for index in range(0, length(apis ?? [])): product_apis[index].outputs.resourceId]
-
-@sys.description('The Resources IDs of the API management service product groups.')
-output groupResourceIds array = [for index in range(0, length(groups ?? [])): product_groups[index].outputs.resourceId]
-
-@sys.description('The Resources IDs of the API management service product policies.')
-output policyResourceIds string[] = [
-  for index in range(0, length(policies ?? [])): product_policies[index].outputs.resourceId
-]
 
 // =============== //
 //   Definitions   //
@@ -160,4 +135,24 @@ type productPolicyType = {
 
   @sys.description('Required. Contents of the Policy as defined by the format.')
   value: string
+}
+
+@export()
+@sys.description('The type of a product API link.')
+type apiLinkType = {
+  @sys.description('Required. The name of the API link.')
+  name: string
+
+  @sys.description('Required. Full resource Id of an API.')
+  apiId: string
+}
+
+@export()
+@sys.description('The type of a product group link.')
+type groupLinkType = {
+  @sys.description('Required. The name of the Product Group link.')
+  name: string
+
+  @sys.description('Required. Full resource Id of a Group.')
+  groupId: string
 }

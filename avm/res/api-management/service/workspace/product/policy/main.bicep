@@ -1,8 +1,11 @@
-metadata name = 'API Management Service Product Policies'
-metadata description = 'This module deploys an API Management Service Product Policy.'
+metadata name = 'API Management Workspace Product Policies'
+metadata description = 'This module deploys a Policy for a Product in an API Management Workspace.'
 
 @description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
+
+@description('Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment.')
+param workspaceName string
 
 @description('Conditional. The name of the parent product. Required if the template is used in a standalone deployment.')
 param productName string
@@ -25,25 +28,29 @@ param value string
 resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 
-  resource product 'products@2024-05-01' existing = {
-    name: productName
+  resource workspace 'workspaces@2024-05-01' existing = {
+    name: workspaceName
+
+    resource product 'products@2024-05-01' existing = {
+      name: productName
+    }
   }
 }
 
-resource policy 'Microsoft.ApiManagement/service/products/policies@2024-05-01' = {
+resource policy 'Microsoft.ApiManagement/service/workspaces/products/policies@2024-05-01' = {
   name: name
-  parent: service::product
+  parent: service::workspace::product
   properties: {
     format: format
     value: value
   }
 }
 
-@description('The resource ID of the Product policy.')
+@description('The resource ID of the workspace product policy.')
 output resourceId string = policy.id
 
-@description('The name of the Product policy.')
+@description('The name of the workspace product policy.')
 output name string = policy.name
 
-@description('The resource group the Product policy was deployed into.')
+@description('The resource group the workspace product policy was deployed into.')
 output resourceGroupName string = resourceGroup().name
