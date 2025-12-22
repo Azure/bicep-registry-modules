@@ -59,6 +59,19 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
+resource keyPermissions2 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-logicapps-KeyVault-Administrator-RoleAssignment')
+  scope: keyVault
+  properties: {
+    principalId: '7cd684f4-8a78-49b0-91ec-6a35d38739ba' // Logic Apps Managed Identity
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '00482a5a-887f-4fb3-b363-3b7fe8e74483'
+    ) // Key Vault Administrator
+    principalType: 'ServicePrincipal'
+  }
+}
+
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 
