@@ -19,7 +19,7 @@ param approvalRequired bool = false
 
 @maxLength(1000)
 @sys.description('Optional. Product description. May include HTML formatting tags.')
-param description string = ''
+param description string?
 
 @sys.description('Optional. Names of Product APIs.')
 param apis string[]?
