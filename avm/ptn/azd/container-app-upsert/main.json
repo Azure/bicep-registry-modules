@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "3283442724055270610"
+      "version": "0.39.26.7824",
+      "templateHash": "12697644751497558406"
     },
     "name": "Azd Container App Upsert",
     "description": "Creates or updates an existing Azure Container App.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case"
@@ -287,6 +287,16 @@
         "description": "Optional. Tags of the resource."
       }
     },
+    "allowedOrigins": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Allowed origins."
+      }
+    },
     "containerAppsEnvironmentName": {
       "type": "string",
       "metadata": {
@@ -512,7 +522,7 @@
     },
     "app": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-container-app-update', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -534,6 +544,9 @@
           },
           "identityName": {
             "value": "[parameters('identityName')]"
+          },
+          "allowedOrigins": {
+            "value": "[parameters('allowedOrigins')]"
           },
           "ingressEnabled": {
             "value": "[parameters('ingressEnabled')]"
