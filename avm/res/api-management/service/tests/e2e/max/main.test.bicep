@@ -527,9 +527,121 @@ module testDeployment '../../../main.bicep' = [
             {
               name: 'workspace-subscription'
               displayName: 'Workspace Test Subscription'
-              scope: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/test-workspace/apis/workspace-echo-api'
+              scope: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/test-workspace-1/apis/workspace-echo-api'
               allowTracing: true
               state: 'active'
+            }
+          ]
+        }
+        {
+          name: 'test-workspace-2'
+          displayName: 'Test Workspace 2'
+          description: 'Second test workspace with minimal configuration'
+          apis: [
+            {
+              name: 'workspace-simple-api'
+              displayName: 'Workspace Simple API'
+              path: 'workspace-simple'
+              serviceUrl: 'https://simple-backend.example.com/api'
+              protocols: [
+                'https'
+                'http'
+              ]
+              subscriptionRequired: false
+              type: 'http'
+            }
+            {
+              name: 'workspace-graphql-api'
+              displayName: 'Workspace GraphQL API'
+              path: 'workspace-graphql'
+              apiType: 'graphql'
+              type: 'graphql'
+              description: 'GraphQL API in workspace'
+              protocols: [
+                'https'
+              ]
+            }
+          ]
+          apiVersionSets: [
+            {
+              name: 'workspace-version-set-2'
+              displayName: 'Workspace Version Set 2'
+              versioningScheme: 'Header'
+              versionHeaderName: 'api-version'
+            }
+          ]
+          backends: [
+            {
+              name: 'workspace-backend-2'
+              type: 'Single'
+              url: 'https://backend2.example.com'
+              description: 'Second workspace backend with minimal config'
+            }
+            {
+              name: 'workspace-pool-backend'
+              type: 'Pool'
+              description: 'Pool backend in workspace'
+              pool: {
+                services: [
+                  {
+                    id: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/test-workspace-2/backends/workspace-backend-2'
+                  }
+                ]
+              }
+            }
+          ]
+          diagnostics: [
+            {
+              name: 'applicationinsights'
+              loggerId: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/test-workspace-2/loggers/ws2-logger'
+              metrics: true
+              operationNameFormat: 'Name'
+              samplingPercentage: 50
+            }
+          ]
+          loggers: [
+            {
+              name: 'ws2-logger'
+              type: 'azureMonitor'
+              description: 'Azure Monitor logger for workspace 2'
+              isBuffered: true
+            }
+          ]
+          namedValues: [
+            {
+              name: 'ws2-config-value'
+              displayName: 'Workspace 2 Config'
+              value: 'workspace-2-config'
+            }
+          ]
+          policies: [
+            {
+              name: 'ws2-policy'
+              format: 'rawxml'
+              value: '<policies><inbound><set-header name="X-Workspace" exists-action="override"><value>workspace-2</value></set-header></inbound><backend><forward-request /></backend><outbound></outbound></policies>'
+            }
+          ]
+          products: [
+            {
+              name: 'ws2-product'
+              displayName: 'Workspace 2 Product'
+              subscriptionRequired: false
+              state: 'notPublished'
+              apiLinks: [
+                {
+                  name: 'ws2-api-link'
+                  apiId: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/test-workspace-2/apis/workspace-simple-api'
+                }
+              ]
+            }
+          ]
+          subscriptions: [
+            {
+              name: 'ws2-subscription'
+              displayName: 'Workspace 2 Subscription'
+              scope: '/apis'
+              allowTracing: false
+              state: 'submitted'
             }
           ]
         }
