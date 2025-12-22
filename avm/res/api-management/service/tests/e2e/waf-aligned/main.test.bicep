@@ -210,6 +210,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       policies: [
         {
+          name: 'policy1'
           format: 'xml'
           value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
         }
