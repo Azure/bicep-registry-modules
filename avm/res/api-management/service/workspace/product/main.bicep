@@ -47,7 +47,7 @@ param subscriptionRequired bool = false
 param subscriptionsLimit int = 1
 
 @sys.description('Optional. Product terms of use. Developers trying to subscribe to the product will be presented and required to accept these terms before they can complete the subscription process.')
-param terms string = ''
+param terms string?
 
 resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName

@@ -4,6 +4,9 @@ metadata description = 'This module deploys an API Management Service Subscripti
 @description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
 
+@description('Required. Subscription name.')
+param name string
+
 @description('Required. API Management Service Subscriptions name.')
 @minLength(1)
 @maxLength(100)
@@ -44,9 +47,6 @@ param secondaryKey string?
 * cancelled - the subscription has been cancelled by the developer or administrator
 * expired - the subscription reached its expiration date and was deactivated.''')
 param state string?
-
-@description('Required. Subscription name.')
-param name string
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true

@@ -7,8 +7,8 @@ param apiManagementServiceName string
 @description('Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment.')
 param workspaceName string
 
-@description('Optional. The name of the policy.')
-param name string = 'policy'
+@description('Required. The name of the policy.')
+param name string
 
 @description('Optional. Format of the policyContent.')
 @allowed([

@@ -7,6 +7,9 @@ param apiManagementServiceName string
 @description('Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment.')
 param workspaceName string
 
+@description('Required. Subscription name.')
+param name string
+
 @description('Required. API Management Service Subscriptions name.')
 @minLength(1)
 @maxLength(100)
@@ -47,9 +50,6 @@ param secondaryKey string?
 * cancelled - the subscription has been cancelled by the developer or administrator
 * expired - the subscription reached its expiration date and was deactivated.''')
 param state string?
-
-@description('Required. Subscription name.')
-param name string
 
 resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
