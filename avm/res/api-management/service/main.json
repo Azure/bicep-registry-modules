@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "10196786591093237419"
+      "templateHash": "1680573290558630557"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -9188,7 +9188,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "12113701918308654355"
+              "templateHash": "4329345109195975108"
             },
             "name": "API Management Service Workspace",
             "description": "This module deploys an API Management Service Workspace."
@@ -12268,7 +12268,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.39.26.7824",
-                      "templateHash": "18206827165467359487"
+                      "templateHash": "16927512650051470600"
                     },
                     "name": "API Management Workspace Backends",
                     "description": "This module deploys a Backend in an API Management Workspace."
@@ -12277,13 +12277,13 @@
                     "apiManagementServiceName": {
                       "type": "string",
                       "metadata": {
-                        "description": "Conditional. The name of the parent API Management service."
+                        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
                       }
                     },
                     "workspaceName": {
                       "type": "string",
                       "metadata": {
-                        "description": "Conditional. The name of the parent Workspace."
+                        "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
                       }
                     },
                     "name": {
