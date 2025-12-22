@@ -38,7 +38,7 @@ param metrics bool = false
 
 @allowed([
   'Name'
-  'URI'
+  'Url'
 ])
 @description('Optional. The format of the Operation Name for Application Insights telemetries.')
 param operationNameFormat string = 'Name'

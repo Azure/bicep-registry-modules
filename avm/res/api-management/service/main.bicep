@@ -1112,7 +1112,7 @@ type apiDiagnosticType = {
   metrics: bool?
 
   @description('Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights.')
-  operationNameFormat: ('Name' | 'URI')?
+  operationNameFormat: ('Name' | 'Url')?
 
   @description('Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged.')
   samplingPercentage: int?
@@ -1254,7 +1254,7 @@ type serviceDiagnosticType = {
   metrics: bool?
 
   @description('Optional. The format of the Operation Name for Application Insights telemetries.')
-  operationNameFormat: ('Name' | 'URI')?
+  operationNameFormat: ('Name' | 'Url')?
 
   @description('Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged.')
   samplingPercentage: int?

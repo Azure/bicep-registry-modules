@@ -462,7 +462,7 @@ type diagnosticType = {
   metrics: bool?
 
   @sys.description('Optional. The format of the Operation Name for Application Insights telemetries.')
-  operationNameFormat: ('Name' | 'URI')?
+  operationNameFormat: ('Name' | 'Url')?
 
   @sys.description('Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged.')
   samplingPercentage: int?
